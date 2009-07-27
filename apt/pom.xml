@@ -1,0 +1,69 @@
+<project>
+
+  <parent>
+    <groupId>org.chromattic</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.chromattic</groupId>
+  <artifactId>chromattic.apt</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>Chromattic Framework APT Plugin</name>
+  <description>Chromattic Framework APT Plugin</description>
+  
+  <dependencies>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.api</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.spi</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.api</artifactId>
+      <version>1.0.0-beta1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.core</artifactId>
+      <version>1.0.0-beta1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.spi</artifactId>
+      <version>1.0.0-beta1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.apt</artifactId>
+      <version>1.0.0-beta1</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgument>-proc:none</compilerArgument>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

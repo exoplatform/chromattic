@@ -1,0 +1,57 @@
+<project>
+
+<!--
+  <repositories>
+    <repository>
+      <id>exo-int</id>
+      <name>exoplatform.org internal repository</name>
+      <url>http://maven2.exoplatform.org/rest/maven2</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+-->
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.chromattic</groupId>
+  <artifactId>parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0.0</version>
+  <name>Chromattic Framework Parent</name>
+  <description>Chromattic Framework Parent</description>
+  
+  <dependencies>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <!-- This plugins triggers the generation of a jar containing the source code when the
+           jar phase is executed -->
+       <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.0.3</version>
+          <inherited>true</inherited>
+          <executions>
+             <execution>
+                <id>attach-sources</id>
+                <goals>
+                   <goal>jar</goal>
+                </goals>
+             </execution>
+          </executions>
+       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <target>1.5</target>
+          <source>1.5</source>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
