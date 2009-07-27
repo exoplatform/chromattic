@@ -364,7 +364,7 @@ class DomainSessionImpl extends DomainSession {
         ctx = new ObjectContext(mapper);
         log.trace("Inserted context {} loaded from node id {}", ctx, id);
         contexts.put(id, ctx);
-        ctx.state = new ObjectState.Persistent(node, this);
+        ctx.state = new PersistentContextState(node, this);
         fireEvent(LifeCycleType.LOADED, ctx);
       }
       else {
@@ -389,7 +389,7 @@ class DomainSessionImpl extends DomainSession {
       }
       log.trace("Inserted context {} for id {}", ctx, id);
       contexts.put(id, ctx);
-      ctx.state = new ObjectState.Persistent(node, this);
+      ctx.state = new PersistentContextState(node, this);
       fireEvent(LifeCycleType.PERSISTED, ctx);
     }
     else {
@@ -400,7 +400,7 @@ class DomainSessionImpl extends DomainSession {
   public void nodeRemoved(String nodeId) throws RepositoryException {
     log.trace("Removing context for id {}", nodeId);
     ObjectContext ctx = contexts.remove(nodeId);
-    ctx.state = new ObjectState.Removed(nodeId);
+    ctx.state = new RemovedContextState(nodeId);
     fireEvent(LifeCycleType.REMOVED, ctx);
     log.trace("Removed context {} for id {}", ctx, nodeId);
   }

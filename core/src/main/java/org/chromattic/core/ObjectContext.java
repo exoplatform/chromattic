@@ -60,7 +60,7 @@ public class ObjectContext implements MethodHandler {
   final Object object;
 
   /** . */
-  ObjectState state;
+  ContextState state;
 
   public ObjectContext(TypeMapper mapper) {
     this(mapper, null);
@@ -70,7 +70,7 @@ public class ObjectContext implements MethodHandler {
     this.state = null;
     this.mapper = mapper;
     this.object = mapper.createObject(this);
-    this.state = new ObjectState.Transient(name);
+    this.state = new TransientContextState(name);
   }
 
   public DomainSession getSession() {
@@ -172,7 +172,7 @@ public class ObjectContext implements MethodHandler {
     return new PropertyMap(this);
   }
 
-  public Object getProperty(String propertyName, SimpleValueInfo type) {
+  public Object getPropertyValue(String propertyName, SimpleValueInfo type) {
     try {
       Value value;
       Node node = state.getNode();
@@ -211,7 +211,7 @@ public class ObjectContext implements MethodHandler {
     }
   }
 
-  public Object getPropertyList(String propertyName, SimpleValueInfo simpleType, ListType listType) {
+  public <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType) {
     try {
       Value[] values;
       Node node = state.getNode();
@@ -236,7 +236,7 @@ public class ObjectContext implements MethodHandler {
           Object o = valueMapper.get(value);
           list.add(o);
         }
-        return list;
+        return (T)list;
       } else {
         Object array = Array.newInstance((Class<?>)simpleType.getTypeInfo().getType(), values.length);
         for (int i = 0;i < values.length;i++) {
@@ -244,7 +244,7 @@ public class ObjectContext implements MethodHandler {
           Object o = valueMapper.get(value);
           Array.set(array, i, o);
         }
-        return array;
+        return (T)array;
       }
     }
     catch (RepositoryException e) {
@@ -252,7 +252,7 @@ public class ObjectContext implements MethodHandler {
     }
   }
 
-  public void setProperty(String propertyName, SimpleValueInfo type, Object o) {
+  public void setPropertyValue(String propertyName, SimpleValueInfo type, Object o) {
     try {
       ValueMapper<?> valueMapper = getValueMapper(type);
 
@@ -283,34 +283,7 @@ public class ObjectContext implements MethodHandler {
     }
   }
 
-  private static PropertyDefinition getPropertyDefinition(NodeType nodeType, String propertyName) throws RepositoryException {
-    for (PropertyDefinition def : nodeType.getPropertyDefinitions()) {
-      if (def.getName().equals(propertyName)) {
-        return def;
-      }
-    }
-    return null;
-  }
-
-  private static PropertyDefinition getPropertyDefinition(Node node, String propertyName) throws RepositoryException {
-    if (node.hasProperty(propertyName)) {
-      return node.getProperty(propertyName).getDefinition();
-    } else {
-      NodeType primaryNodeType = node.getPrimaryNodeType();
-      PropertyDefinition def = getPropertyDefinition(primaryNodeType, propertyName);
-      if (def == null) {
-        for (NodeType mixinNodeType : node.getMixinNodeTypes()) {
-          def = getPropertyDefinition(mixinNodeType, propertyName);
-          if (def != null) {
-            break;
-          }
-        }
-      }
-      return def;
-    }
-  }
-
-  public void setPropertyList(String propertyName, SimpleValueInfo type, ListType listType, Object objects) {
+  public <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects) {
     if (objects == null) {
       throw new NullPointerException();
     }
@@ -350,6 +323,33 @@ public class ObjectContext implements MethodHandler {
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  private static PropertyDefinition getPropertyDefinition(NodeType nodeType, String propertyName) throws RepositoryException {
+    for (PropertyDefinition def : nodeType.getPropertyDefinitions()) {
+      if (def.getName().equals(propertyName)) {
+        return def;
+      }
+    }
+    return null;
+  }
+
+  private static PropertyDefinition getPropertyDefinition(Node node, String propertyName) throws RepositoryException {
+    if (node.hasProperty(propertyName)) {
+      return node.getProperty(propertyName).getDefinition();
+    } else {
+      NodeType primaryNodeType = node.getPrimaryNodeType();
+      PropertyDefinition def = getPropertyDefinition(primaryNodeType, propertyName);
+      if (def == null) {
+        for (NodeType mixinNodeType : node.getMixinNodeTypes()) {
+          def = getPropertyDefinition(mixinNodeType, propertyName);
+          if (def != null) {
+            break;
+          }
+        }
+      }
+      return def;
     }
   }
 

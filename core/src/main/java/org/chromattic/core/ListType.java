@@ -18,12 +18,16 @@
  */
 package org.chromattic.core;
 
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public enum ListType {
+public class ListType<T> {
 
-  ARRAY, LIST
+  public static ListType<Object[]> ARRAY = new ListType<Object[]>();
+
+  public static ListType<List<Object>> LIST = new ListType<List<Object>>();
 
 }

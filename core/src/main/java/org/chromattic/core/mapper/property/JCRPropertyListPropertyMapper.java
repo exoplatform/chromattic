@@ -58,11 +58,11 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
 
   @Override
   public Object get(ObjectContext context) throws Throwable {
-    return context.getPropertyList(jcrPropertyName, info.getElementValue(), listType);
+    return context.getPropertyValues(jcrPropertyName, info.getElementValue(), listType);
   }
 
   @Override
   public void set(ObjectContext context, Object value) throws Throwable {
-    context.setPropertyList(jcrPropertyName, info.getElementValue(), listType, value);
+    context.setPropertyValues(jcrPropertyName, info.getElementValue(), listType, value);
   }
 }

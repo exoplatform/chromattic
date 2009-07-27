@@ -16,36 +16,40 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper.property;
+package org.chromattic.core;
 
-import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.ObjectContext;
-import org.chromattic.core.bean.SingleValuedPropertyInfo;
+import org.chromattic.api.Status;
 import org.chromattic.core.bean.SimpleValueInfo;
+
+import javax.jcr.Node;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyPropertyMapper extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>> {
+abstract class ContextState {
 
-  /** . */
-  private final String jcrPropertyName;
+  abstract String getId();
 
-  public JCRPropertyPropertyMapper(SingleValuedPropertyInfo<SimpleValueInfo> info, String jcrPropertyName) {
-    super(info);
+  abstract String getName();
 
-    //
-    this.jcrPropertyName = jcrPropertyName;
-  }
+  abstract String getPath();
 
-  @Override
-  public Object get(ObjectContext context) throws Throwable {
-    return context.getPropertyValue(jcrPropertyName, info.getValue());
-  }
+  abstract void setName(String name);
 
-  @Override
-  public void set(ObjectContext context, Object o) throws Throwable {
-    context.setPropertyValue(jcrPropertyName, info.getValue(), o);
-  }
+  abstract Node getNode();
+
+  abstract DomainSession getSession();
+
+  abstract Status getStatus();
+
+/*
+  abstract Object getPropertyValue(String propertyName, SimpleValueInfo type);
+
+  abstract Object getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType listType);
+
+  abstract void setPropertyValue(String propertyName, SimpleValueInfo type, Object o);
+
+  abstract void setPropertyValues(String propertyName, SimpleValueInfo type, ListType listType, Object objects);
+*/
 }
