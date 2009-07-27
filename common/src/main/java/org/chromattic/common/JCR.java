@@ -22,6 +22,9 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.Property;
 import javax.jcr.NodeIterator;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.nodetype.NodeType;
 import java.util.Iterator;
 
 /**
@@ -117,4 +120,30 @@ public class JCR {
     }
   }
 
+  public static PropertyDefinition getPropertyDefinition(NodeType nodeType, String propertyName) throws RepositoryException {
+    for (PropertyDefinition def : nodeType.getPropertyDefinitions()) {
+      if (def.getName().equals(propertyName)) {
+        return def;
+      }
+    }
+    return null;
+  }
+
+  public static PropertyDefinition getPropertyDefinition(Node node, String propertyName) throws RepositoryException {
+    if (node.hasProperty(propertyName)) {
+      return node.getProperty(propertyName).getDefinition();
+    } else {
+      NodeType primaryNodeType = node.getPrimaryNodeType();
+      PropertyDefinition def = getPropertyDefinition(primaryNodeType, propertyName);
+      if (def == null) {
+        for (NodeType mixinNodeType : node.getMixinNodeTypes()) {
+          def = getPropertyDefinition(mixinNodeType, propertyName);
+          if (def != null) {
+            break;
+          }
+        }
+      }
+      return def;
+    }
+  }
 }

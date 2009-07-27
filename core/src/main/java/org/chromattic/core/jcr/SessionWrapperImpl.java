@@ -29,6 +29,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeManager;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -59,6 +61,11 @@ public class SessionWrapperImpl implements SessionWrapper {
 
     //
     sessionMapping.put(session, this);
+  }
+
+  public NodeType getNodeType(String nodeTypeName) throws RepositoryException {
+    NodeTypeManager mgr = session.getWorkspace().getNodeTypeManager();
+    return mgr.getNodeType(nodeTypeName);
   }
 
   public Node addNode(String relPath, NodeDef nodeType) throws RepositoryException {

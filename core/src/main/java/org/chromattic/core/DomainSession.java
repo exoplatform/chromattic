@@ -51,7 +51,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract String _persist(ObjectContext parentCtx, String relPath, ObjectContext childCtx) throws RepositoryException;
 
-  protected abstract <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException;
+  protected abstract <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
 
   protected abstract <O> O _findById(Class<O> clazz, String id) throws RepositoryException;
 
@@ -112,7 +112,12 @@ public abstract class DomainSession implements ChromatticSession {
   }
 
   public final <O> O create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException {
-    return _create(clazz, name);
+    try {
+      return _create(clazz, name);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
   }
 
   public <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {

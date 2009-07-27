@@ -22,12 +22,29 @@ import org.chromattic.api.Status;
 import org.chromattic.core.bean.SimpleValueInfo;
 
 import javax.jcr.Node;
+import javax.jcr.nodetype.NodeType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 abstract class ContextState {
+
+  /** . */
+  private final NodeType primaryNodeType;
+
+  protected ContextState(NodeType primaryNodeType) {
+    if (primaryNodeType == null) {
+      throw new NullPointerException("No null primary node type accepted");
+    }
+
+    //
+    this.primaryNodeType = primaryNodeType;
+  }
+
+  public final NodeType getPrimaryNodeType() {
+    return primaryNodeType;
+  }
 
   abstract String getId();
 

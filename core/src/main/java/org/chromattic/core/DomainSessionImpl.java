@@ -173,7 +173,7 @@ class DomainSessionImpl extends DomainSession {
     return childId;
   }
 
-  protected <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException {
+  protected <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException {
     if (clazz == null) {
       throw new NullPointerException();
     }
@@ -185,7 +185,9 @@ class DomainSessionImpl extends DomainSession {
 
     //
     TypeMapper typeMapper = domain.getTypeMapper(clazz);
-    ObjectContext ctx = new ObjectContext(typeMapper, name);
+    NodeType nodeType = sessionWrapper.getNodeType(typeMapper.getNodeDef().getPrimaryNodeTypeName());
+    TransientContextState state = new TransientContextState(name, nodeType);
+    ObjectContext ctx = new ObjectContext(typeMapper, state);
     fireEvent(LifeCycleType.CREATED, ctx);
     return (O)ctx.getObject();
   }
@@ -400,7 +402,7 @@ class DomainSessionImpl extends DomainSession {
   public void nodeRemoved(String nodeId) throws RepositoryException {
     log.trace("Removing context for id {}", nodeId);
     ObjectContext ctx = contexts.remove(nodeId);
-    ctx.state = new RemovedContextState(nodeId);
+    ctx.state = new RemovedContextState(nodeId, ctx.state.getPrimaryNodeType());
     fireEvent(LifeCycleType.REMOVED, ctx);
     log.trace("Removed context {} for id {}", ctx, nodeId);
   }

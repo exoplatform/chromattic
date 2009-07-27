@@ -54,11 +54,11 @@ public class ObjectContext implements MethodHandler {
     this(mapper, null);
   }
 
-  public ObjectContext(TypeMapper mapper, String name) {
+  public ObjectContext(TypeMapper mapper, TransientContextState state) {
     this.state = null;
     this.mapper = mapper;
     this.object = mapper.createObject(this);
-    this.state = new TransientContextState(name);
+    this.state = state;
   }
 
   public DomainSession getSession() {

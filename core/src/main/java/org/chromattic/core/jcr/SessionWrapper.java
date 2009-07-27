@@ -23,6 +23,7 @@ import org.chromattic.core.jcr.NodeDef;
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
 import java.util.Iterator;
 
 /**
@@ -30,6 +31,8 @@ import java.util.Iterator;
  * @version $Revision$
  */
 public interface SessionWrapper {
+
+  NodeType getNodeType(String nodeTypeName) throws RepositoryException;
 
   Node addNode(String relPath, NodeDef nodeDef) throws RepositoryException;
 
