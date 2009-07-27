@@ -18,10 +18,10 @@
  */
 package org.chromattic.core.mapper.property;
 
-import org.chromattic.bean.SimpleValueInfo;
-import org.chromattic.bean.MultiValuedPropertyInfo;
-import org.chromattic.bean.ArrayPropertyInfo;
-import org.chromattic.bean.ListPropertyInfo;
+import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.bean.MultiValuedPropertyInfo;
+import org.chromattic.core.bean.ArrayPropertyInfo;
+import org.chromattic.core.bean.ListPropertyInfo;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.ListType;

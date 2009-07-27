@@ -20,9 +20,9 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.bean.MultiValuedPropertyInfo;
-import org.chromattic.bean.MapPropertyInfo;
-import org.chromattic.bean.BeanValueInfo;
+import org.chromattic.core.bean.MultiValuedPropertyInfo;
+import org.chromattic.core.bean.MapPropertyInfo;
+import org.chromattic.core.bean.BeanValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

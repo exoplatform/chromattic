@@ -19,7 +19,7 @@
 package org.chromattic.core;
 
 import org.chromattic.api.Status;
-import org.chromattic.util.JCR;
+import org.chromattic.common.JCR;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;

@@ -19,7 +19,7 @@
 package org.chromattic.core.mapper;
 
 import org.chromattic.core.ObjectContext;
-import org.chromattic.bean.PropertyInfo;
+import org.chromattic.core.bean.PropertyInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

@@ -30,9 +30,9 @@ import java.util.HashMap;
 import org.reflext.jlr.JavaLangReflectTypeModel;
 import org.reflext.jlr.JavaLangReflectMethodModel;
 import org.reflext.core.TypeDomain;
-import org.chromattic.bean.AccessMode;
-import org.chromattic.bean.PropertyInfo;
-import org.chromattic.bean.SingleValuedPropertyInfo;
+import org.chromattic.core.bean.AccessMode;
+import org.chromattic.core.bean.PropertyInfo;
+import org.chromattic.core.bean.SingleValuedPropertyInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

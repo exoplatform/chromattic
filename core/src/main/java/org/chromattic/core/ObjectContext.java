@@ -40,8 +40,8 @@ import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.mapper.MethodMapper;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.bean.PropertyInfo;
-import org.chromattic.bean.SimpleValueInfo;
+import org.chromattic.core.bean.PropertyInfo;
+import org.chromattic.core.bean.SimpleValueInfo;
 import org.reflext.api.MethodInfo;
 
 /**

@@ -18,8 +18,8 @@
  */
 package org.chromattic.test.bean;
 
-import org.chromattic.bean.BeanInfo;
-import org.chromattic.bean.AccessMode;
+import org.chromattic.core.bean.BeanInfo;
+import org.chromattic.core.bean.AccessMode;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Collections;

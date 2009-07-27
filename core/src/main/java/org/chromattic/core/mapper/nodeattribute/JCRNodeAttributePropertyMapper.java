@@ -22,8 +22,8 @@ import org.chromattic.api.Status;
 import org.chromattic.core.NodeAttributeType;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.bean.SingleValuedPropertyInfo;
-import org.chromattic.bean.SimpleValueInfo;
+import org.chromattic.core.bean.SingleValuedPropertyInfo;
+import org.chromattic.core.bean.SimpleValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

@@ -18,7 +18,7 @@
  */
 package org.chromattic.core;
 
-import org.chromattic.util.JCR;
+import org.chromattic.common.JCR;
 import org.chromattic.common.TypeAdapter;
 import org.chromattic.common.AdaptingIterator;
 import org.chromattic.api.UndeclaredRepositoryException;

@@ -19,12 +19,12 @@
 package org.chromattic.core;
 
 import org.chromattic.common.logging.Logger;
+import org.chromattic.common.JCR;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.NodeDef;
-import org.chromattic.util.JCR;
 
 import javax.jcr.Session;
 import javax.jcr.RepositoryException;

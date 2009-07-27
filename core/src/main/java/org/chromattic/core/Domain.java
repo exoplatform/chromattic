@@ -18,7 +18,7 @@
  */
 package org.chromattic.core;
 
-import org.chromattic.mapping.TypeMapping;
+import org.chromattic.core.mapping.TypeMapping;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.mapper.TypeMapperBuilder;
 import org.chromattic.core.jcr.SessionWrapper;

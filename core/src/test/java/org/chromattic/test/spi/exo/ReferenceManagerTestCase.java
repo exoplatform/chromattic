@@ -27,7 +27,7 @@ import javax.jcr.Property;
 
 import org.chromattic.exo.RepositoryBootstrap;
 import org.chromattic.common.Collections;
-import org.chromattic.util.JCR;
+import org.chromattic.common.JCR;
 import org.chromattic.core.jcr.ReferenceManager;
 
 import java.util.Iterator;

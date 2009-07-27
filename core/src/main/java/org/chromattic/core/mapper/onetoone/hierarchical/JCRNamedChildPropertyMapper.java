@@ -21,8 +21,8 @@ package org.chromattic.core.mapper.onetoone.hierarchical;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.DomainSession;
-import org.chromattic.bean.SingleValuedPropertyInfo;
-import org.chromattic.bean.BeanValueInfo;
+import org.chromattic.core.bean.SingleValuedPropertyInfo;
+import org.chromattic.core.bean.BeanValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

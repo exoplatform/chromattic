@@ -19,7 +19,7 @@
 package org.chromattic.core.mapper;
 
 
-import org.chromattic.bean.PropertyInfo;
+import org.chromattic.core.bean.PropertyInfo;
 
 import java.util.Set;
 

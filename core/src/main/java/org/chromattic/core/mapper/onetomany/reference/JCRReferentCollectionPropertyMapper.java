@@ -20,8 +20,8 @@ package org.chromattic.core.mapper.onetomany.reference;
 
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.bean.CollectionPropertyInfo;
-import org.chromattic.bean.BeanValueInfo;
+import org.chromattic.core.bean.CollectionPropertyInfo;
+import org.chromattic.core.bean.BeanValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
