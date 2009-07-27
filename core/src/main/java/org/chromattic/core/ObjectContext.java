@@ -18,23 +18,11 @@
  */
 package org.chromattic.core;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Property;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.Node;
-import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.nodetype.NodeType;
-
 import java.lang.reflect.Method;
-import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 
 import org.chromattic.api.Status;
-import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.mapper.MethodMapper;
@@ -145,212 +133,24 @@ public class ObjectContext implements MethodHandler {
     return session.setRelated(relatedCtx, name, this);
   }
 
-  private ValueMapper<?> getValueMapper(SimpleValueInfo type) {
-    switch (type.getSimpleType()) {
-      case STRING:
-        return ValueMapper.STRING;
-      case INT:
-        return ValueMapper.INTEGER;
-      case LONG:
-        return ValueMapper.LONG;
-      case BOOLEAN:
-        return ValueMapper.BOOLEAN;
-      case FLOAT:
-        return ValueMapper.FLOAT;
-      case DOUBLE:
-        return ValueMapper.DOUBLE;
-      case DATE:
-        return ValueMapper.DATE;
-      case BINARY:
-        return ValueMapper.BINARY;
-      default:
-        throw new UnsupportedOperationException();
-    }
-  }
-
   public Map<String, Object> getPropertyMap() {
     return new PropertyMap(this);
   }
 
   public Object getPropertyValue(String propertyName, SimpleValueInfo type) {
-    try {
-      Value value;
-      Node node = state.getNode();
-      if (node.hasProperty(propertyName)) {
-        Property property = node.getProperty(propertyName);
-        PropertyDefinition def = property.getDefinition();
-        if (def.isMultiple()) {
-          Value[] values = property.getValues();
-          if (values.length == 0) {
-            value = null;
-          } else {
-            value = values[0];
-          }
-        } else {
-          value = property.getValue();
-        }
-      } else {
-        value = null;
-      }
-
-      //
-      ValueMapper<?> valueMapper = getValueMapper(type);
-
-      //
-      if (value != null) {
-        return valueMapper.get(value);
-      } else {
-        if (type.isPrimitive()) {
-          throw new IllegalStateException("Cannot convert null to primitive type " + type.getSimpleType());
-        }
-        return null;
-      }
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    return state.getPropertyValue(propertyName, type);
   }
 
   public <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType) {
-    try {
-      Value[] values;
-      Node node = state.getNode();
-      if (node.hasProperty(propertyName)) {
-        Property property = node.getProperty(propertyName);
-        PropertyDefinition def = property.getDefinition();
-        if (def.isMultiple()) {
-          values = property.getValues();
-        } else {
-          values = new Value[]{property.getValue()};
-        }
-      } else {
-        values = new Value[0];
-      }
-      ValueFactory valueFactory = state.getSession().getJCRSession().getValueFactory();
-      ValueMapper<Object> valueMapper = (ValueMapper<Object>)getValueMapper(simpleType);
-
-      //
-      if (listType == ListType.LIST) {
-        List<Object> list = new ArrayList<Object>(values.length);
-        for (Value value : values) {
-          Object o = valueMapper.get(value);
-          list.add(o);
-        }
-        return (T)list;
-      } else {
-        Object array = Array.newInstance((Class<?>)simpleType.getTypeInfo().getType(), values.length);
-        for (int i = 0;i < values.length;i++) {
-          Value value = values[i];
-          Object o = valueMapper.get(value);
-          Array.set(array, i, o);
-        }
-        return (T)array;
-      }
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    return state.getPropertyValues(propertyName, simpleType, listType);
   }
 
   public void setPropertyValue(String propertyName, SimpleValueInfo type, Object o) {
-    try {
-      ValueMapper<?> valueMapper = getValueMapper(type);
-
-      //
-      Value value;
-      if (o != null) {
-        ValueFactory valueFactory = state.getSession().getJCRSession().getValueFactory();
-        value = ((ValueMapper<Object>)valueMapper).get(valueFactory, o);
-      } else {
-        value = null;
-      }
-
-      //
-      Node node = state.getNode();
-      PropertyDefinition def = getPropertyDefinition(node, propertyName);
-      if (def.isMultiple()) {
-        if (value == null) {
-          node.setProperty(propertyName, new Value[0]);
-        } else {
-          node.setProperty(propertyName, new Value[]{value});
-        }
-      } else {
-        node.setProperty(propertyName, value);
-      }
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    state.setPropertyValue(propertyName, type, o);
   }
 
   public <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects) {
-    if (objects == null) {
-      throw new NullPointerException();
-    }
-    try {
-      ValueFactory valueFactory = state.getSession().getJCRSession().getValueFactory();
-      ValueMapper<Object> valueMapper = (ValueMapper<Object>)getValueMapper(type);
-      Value[] values;
-      if (listType == ListType.LIST) {
-        List<?> list = (List<?>)objects;
-        values = new Value[list.size()];
-        int i = 0;
-        for (Object object : list) {
-          values[i++] = valueMapper.get(valueFactory, object);
-        }
-      } else {
-        values = new Value[Array.getLength(objects)];
-        for (int i = 0;i < values.length;i++) {
-          Object o = Array.get(objects, i);
-          values[i] = valueMapper.get(valueFactory, o);
-        }
-      }
-
-      //
-      Node node = state.getNode();
-      PropertyDefinition def = getPropertyDefinition(node, propertyName);
-      if (def.isMultiple()) {
-        node.setProperty(propertyName, values);
-      } else {
-        if (values.length > 1) {
-          throw new IllegalArgumentException("Cannot update with an array of length greater than 1");
-        } else if (values.length == 1) {
-          node.setProperty(propertyName, values[0]);
-        } else {
-          node.setProperty(propertyName, (Value)null);
-        }
-      }
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  private static PropertyDefinition getPropertyDefinition(NodeType nodeType, String propertyName) throws RepositoryException {
-    for (PropertyDefinition def : nodeType.getPropertyDefinitions()) {
-      if (def.getName().equals(propertyName)) {
-        return def;
-      }
-    }
-    return null;
-  }
-
-  private static PropertyDefinition getPropertyDefinition(Node node, String propertyName) throws RepositoryException {
-    if (node.hasProperty(propertyName)) {
-      return node.getProperty(propertyName).getDefinition();
-    } else {
-      NodeType primaryNodeType = node.getPrimaryNodeType();
-      PropertyDefinition def = getPropertyDefinition(primaryNodeType, propertyName);
-      if (def == null) {
-        for (NodeType mixinNodeType : node.getMixinNodeTypes()) {
-          def = getPropertyDefinition(mixinNodeType, propertyName);
-          if (def != null) {
-            break;
-          }
-        }
-      }
-      return def;
-    }
+    state.setPropertyValues(propertyName, type, listType, objects);
   }
 
   public void removeChild(String name) {

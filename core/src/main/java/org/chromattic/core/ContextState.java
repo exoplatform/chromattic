@@ -43,13 +43,12 @@ abstract class ContextState {
 
   abstract Status getStatus();
 
-/*
   abstract Object getPropertyValue(String propertyName, SimpleValueInfo type);
 
-  abstract Object getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType listType);
+  abstract <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType);
 
   abstract void setPropertyValue(String propertyName, SimpleValueInfo type, Object o);
 
-  abstract void setPropertyValues(String propertyName, SimpleValueInfo type, ListType listType, Object objects);
-*/
+  abstract <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects);
+
 }
