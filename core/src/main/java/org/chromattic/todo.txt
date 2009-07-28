@@ -21,8 +21,9 @@
 - name mapping, for instance foo -> exo:foo
 - improve @OneToMany Map<String, ?> remove() method to remove by getting a child and not the default iterator operation
 - type coercion unit testing
-- undefined properties unit test
-- residual properties unit test
+- undefined properties unit test for lists
+- residual properties unit test for lists
+
 
 
 *** Patrice

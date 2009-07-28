@@ -18,15 +18,12 @@
  */
 package org.chromattic.core.mapper;
 
-import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.bean.SimpleType;
 
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import javax.jcr.PropertyType;
-import javax.jcr.ValueFormatException;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.PropertyDefinition;
 import java.util.Date;
 import java.util.Calendar;
 import java.io.InputStream;
@@ -35,307 +32,136 @@ import java.io.InputStream;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ValueMapper<T> {
-
-  public static ValueMapper<?> getValueMapper(Object o) {
-    if (o instanceof String) {
-      return ValueMapper.STRING;
-    } else if (o instanceof Integer) {
-      return ValueMapper.INTEGER;
-    } else if (o instanceof Long) {
-      return ValueMapper.LONG;
-    } else if (o instanceof Date) {
-      return ValueMapper.DATE;
-    } else if (o instanceof Double) {
-      return ValueMapper.DOUBLE;
-    }  else if (o instanceof Float) {
-      return ValueMapper.FLOAT;
-    }  else if (o instanceof InputStream) {
-      return ValueMapper.BINARY;
-    } else if (o instanceof Boolean) {
-      return ValueMapper.BOOLEAN;
-    } else {
-      throw new AssertionError();
-    }
-  }
-
-  public static ValueMapper<?> getValueMapper(SimpleValueInfo type) {
-    switch (type.getSimpleType()) {
-      case STRING:
-        return ValueMapper.STRING;
-      case INT:
-        return ValueMapper.INTEGER;
-      case LONG:
-        return ValueMapper.LONG;
-      case BOOLEAN:
-        return ValueMapper.BOOLEAN;
-      case FLOAT:
-        return ValueMapper.FLOAT;
-      case DOUBLE:
-        return ValueMapper.DOUBLE;
-      case DATE:
-        return ValueMapper.DATE;
-      case BINARY:
-        return ValueMapper.BINARY;
-      default:
-        throw new UnsupportedOperationException();
-    }
-  }
-  
-  public static ValueMapper<?> getValueMapper(Value value) {
-    return getValueMapper(value.getType());
-  }
-
-  public static ValueMapper<?> getValueMapper(PropertyDefinition def) {
-    int propertyType = def.getRequiredType();
-    return getValueMapper(propertyType);
-  }
-
-  public static ValueMapper<?> getValueMapper(int propertyType) {
-    switch (propertyType) {
-      case PropertyType.BINARY:
-        return ValueMapper.BINARY;
-      case PropertyType.BOOLEAN:
-        return ValueMapper.BOOLEAN;
-      case PropertyType.DATE:
-        return ValueMapper.DATE;
-      case PropertyType.LONG:
-        return ValueMapper.INTEGER;
-      case PropertyType.DOUBLE:
-        return ValueMapper.DOUBLE;
-      case PropertyType.STRING:
-      case PropertyType.NAME:
-      case PropertyType.PATH:
-        return ValueMapper.STRING;
-      case PropertyType.REFERENCE:
-        throw new UnsupportedOperationException("Reference type is not supported via a map");
-      case PropertyType.UNDEFINED:
-        throw new UnsupportedOperationException("Undefined type is not supported via a map");
-      default:
-        throw new UnsupportedOperationException();
-    }
-  }
+public class ValueMapper {
 
   /** . */
-  private final Class<T> type;
+  public static final ValueMapper instance = new ValueMapper();
 
-  public ValueMapper(Class<T> type) {
-    this.type = type;
+  private ValueMapper() {
   }
 
-  public Class<T> getType() {
-    return type;
-  }
-
-  public final T get(Value value) throws RepositoryException {
-    if (value == null) {
-      throw new NullPointerException("Was not expecting null value");
-    }
-    return convert(value);
-  }
-
-  public final Value get(ValueFactory valueFactory, Object o) throws UndeclaredRepositoryException {
-    if (valueFactory == null) {
-      throw new NullPointerException();
-    }
-    if (o == null) {
-      throw new NullPointerException();
-    }
-    try {
-      return convert(valueFactory, o);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  protected abstract T convert(Value value) throws RepositoryException;
-
-  protected abstract Value convert(ValueFactory valueFactory, Object o) throws RepositoryException;
-
-  public static ValueMapper<String> STRING = new ValueMapper<String>(String.class) {
-    @Override
-    protected String convert(Value value) throws RepositoryException {
-      int type = value.getType();
-      if (type == PropertyType.STRING) {
-        try {
-          return value.getString();
-        }
-        catch (ValueFormatException e) {
-          throw new IllegalArgumentException(e);
-        }
-      } else {
-        throw new IllegalArgumentException("Could not convert " + type + " to string");
+  public final Object get(Value value, SimpleType wantedType) throws RepositoryException {
+    int propertyType = value.getType();
+    if (wantedType != null) {
+      switch (wantedType) {
+        case BINARY:
+          if (propertyType == PropertyType.BINARY) {
+            return value.getStream();
+          } else {
+            throw new ClassCastException();
+          }
+        case STRING:
+          if (propertyType == PropertyType.STRING || propertyType == PropertyType.NAME || propertyType == PropertyType.PATH) {
+            return value.getString();
+          } else {
+            throw new ClassCastException();
+          }
+        case INT:
+          if (propertyType == PropertyType.LONG) {
+            return (int)value.getLong();
+          } else {
+            throw new ClassCastException();
+          }
+        case LONG:
+          if (propertyType == PropertyType.LONG) {
+            return value.getLong();
+          } else {
+            throw new ClassCastException();
+          }
+        case FLOAT:
+          if (propertyType == PropertyType.DOUBLE) {
+            return (float)value.getDouble();
+          } else {
+            throw new ClassCastException();
+          }
+        case DOUBLE:
+          if (propertyType == PropertyType.DOUBLE) {
+            return value.getDouble();
+          } else {
+            throw new ClassCastException();
+          }
+        case BOOLEAN:
+          if (propertyType == PropertyType.BOOLEAN) {
+            return value.getBoolean();
+          } else {
+            throw new ClassCastException();
+          }
+        case DATE:
+          if (propertyType == PropertyType.DATE) {
+            return value.getDate().getTime();
+          } else {
+            throw new ClassCastException();
+          }
+        default:
+          throw new AssertionError("Property type " + propertyType + " not handled");
       }
-    }
-
-    @Override
-    protected Value convert(ValueFactory valueFactory, Object o) {
-      return valueFactory.createValue((String)o);
-    }
-  };
-
-  public static ValueMapper<Integer> INTEGER = new ValueMapper<Integer>(Integer.class) {
-    @Override
-    protected Integer convert(Value value) throws RepositoryException {
-      int type = value.getType();
-      if (type == PropertyType.LONG) {
-        try {
-          return (int)value.getLong();
-        }
-        catch (ValueFormatException e) {
-          throw new IllegalArgumentException(e);
-        }
-      } else {
-        throw new IllegalArgumentException("Could not convert " + type + " to int");
-      }
-    }
-
-    @Override
-    protected Value convert(ValueFactory valueFactory, Object o) {
-      Number n = (Number)o;
-      long l = n.longValue();
-      return valueFactory.createValue(l);
-    }
-  };
-
-  public static ValueMapper<Long> LONG = new ValueMapper<Long>(Long.class) {
-    @Override
-    protected Long convert(Value value) throws RepositoryException {
-      int type = value.getType();
-      if (type == PropertyType.LONG) {
-        try {
-          return value.getLong();
-        }
-        catch (ValueFormatException e) {
-          throw new IllegalArgumentException(e);
-        }
-      } else {
-        throw new IllegalArgumentException("Could not convert " + type + " to long");
-      }
-    }
-
-    @Override
-    protected Value convert(ValueFactory valueFactory, Object o) {
-      Number n = (Number)o;
-      long l = n.longValue();
-      return valueFactory.createValue(l);
-    }
-  };
-
-  public static ValueMapper<Double> DOUBLE = new ValueMapper<Double>(Double.class) {
-    @Override
-    protected Double convert(Value value) throws RepositoryException {
-      int type = value.getType();
-      if (type == PropertyType.DOUBLE) {
-        try {
-          return (double)value.getLong();
-        }
-        catch (ValueFormatException e) {
-          throw new IllegalArgumentException(e);
-        }
-      } else {
-        throw new IllegalArgumentException("Could not convert " + type + " to double");
-      }
-    }
-
-    @Override
-    protected Value convert(ValueFactory valueFactory, Object o) {
-      Number n = (Number)o;
-      double d = n.doubleValue();
-      return valueFactory.createValue(d);
-    }
-  };
-
-  public static ValueMapper<Float> FLOAT = new ValueMapper<Float>(Float.class) {
-    @Override
-    protected Float convert(Value value) throws RepositoryException {
-      int type = value.getType();
-      if (type == PropertyType.DOUBLE) {
-        try {
-          return (float)value.getLong();
-        }
-        catch (ValueFormatException e) {
-          throw new IllegalArgumentException(e);
-        }
-      } else {
-        throw new IllegalArgumentException("Could not convert " + type + " to float");
-      }
-    }
-
-    @Override
-    protected Value convert(ValueFactory valueFactory, Object o) {
-      Number n = (Number)o;
-      double d = n.doubleValue();
-      return valueFactory.createValue(d);
-    }
-  };
-
-  public static ValueMapper<InputStream> BINARY = new ValueMapper<InputStream>(InputStream.class) {
-    @Override
-    protected InputStream convert(Value value) throws RepositoryException {
-      int type = value.getType();
-      if (type == PropertyType.BINARY) {
-        try {
-          return value.getStream();
-        }
-        catch (ValueFormatException e) {
-          throw new IllegalArgumentException(e);
-        }
-      } else {
-        throw new IllegalArgumentException("Could not convert " + type + " to input stream");
-      }
-    }
-
-    @Override
-    protected Value convert(ValueFactory valueFactory, Object o) {
-      return valueFactory.createValue((InputStream)o);
-    }
-  };
-
-  public static ValueMapper<Boolean> BOOLEAN = new ValueMapper<Boolean>(Boolean.class) {
-    @Override
-    protected Boolean convert(Value value) throws RepositoryException {
-      int type = value.getType();
-      if (type == PropertyType.BOOLEAN) {
-        try {
+    } else {
+      switch (propertyType) {
+        case PropertyType.BOOLEAN:
           return value.getBoolean();
-        }
-        catch (ValueFormatException e) {
-          throw new IllegalArgumentException(e);
-        }
-      } else {
-        throw new IllegalArgumentException("Could not convert " + type + " to boolean");
-      }
-    }
-
-    @Override
-    protected Value convert(ValueFactory valueFactory, Object o) {
-      return valueFactory.createValue((Boolean)o);
-    }
-  };
-
-  public static ValueMapper<Date> DATE = new ValueMapper<Date>(Date.class) {
-    @Override
-    protected Date convert(Value value) throws RepositoryException {
-      int type = value.getType();
-      if (type == PropertyType.DATE) {
-        try {
+        case PropertyType.LONG:
+          return (int)value.getLong();
+        case PropertyType.DOUBLE:
+          return value.getDouble();
+        case PropertyType.NAME:
+        case PropertyType.PATH:
+        case PropertyType.STRING:
+          return value.getString();
+        case PropertyType.BINARY:
+          return value.getStream();
+        case PropertyType.DATE:
           return value.getDate().getTime();
-        }
-        catch (ValueFormatException e) {
-          throw new IllegalArgumentException(e);
-        }
+        default:
+          throw new AssertionError("Property type " + propertyType + " not handled");
+      }
+    }
+  }
+
+  public final Value get(ValueFactory valueFactory, Object o, SimpleType type) {
+    if (type == null) {
+      if (o instanceof String) {
+        type = SimpleType.STRING;
+      } else if (o instanceof Integer) {
+        type = SimpleType.INT;
+      } else if (o instanceof Long) {
+        type = SimpleType.LONG;
+      } else if (o instanceof Date) {
+        type = SimpleType.DATE;
+      } else if (o instanceof Double) {
+        type = SimpleType.DOUBLE;
+      }  else if (o instanceof Float) {
+        type = SimpleType.FLOAT;
+      }  else if (o instanceof InputStream) {
+        type = SimpleType.BINARY;
+      } else if (o instanceof Boolean) {
+        type = SimpleType.BOOLEAN;
       } else {
-        throw new IllegalArgumentException("Could not convert " + type + " to date");
+        throw new AssertionError();
       }
     }
 
-    @Override
-    protected Value convert(ValueFactory valueFactory, Object o) {
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTime((Date)o);
-      return valueFactory.createValue(calendar);
+    //
+    switch (type) {
+      case STRING:
+        return valueFactory.createValue((String)o);
+      case LONG:
+        return valueFactory.createValue((Long)o);
+      case INT:
+        return valueFactory.createValue((Integer)o);
+      case DATE:
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime((Date)o);
+        return valueFactory.createValue(calendar);
+      case BINARY:
+        return valueFactory.createValue((InputStream)o);
+      case DOUBLE:
+        return valueFactory.createValue((Double)o);
+      case FLOAT:
+        return valueFactory.createValue((Float)o);
+      case BOOLEAN:
+        return valueFactory.createValue((Boolean)o);
+      default:
+        throw new AssertionError("Simple type " + type + " not accepted");
     }
-  };
+  }
 }

@@ -20,7 +20,9 @@ package org.chromattic.core;
 
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.api.NoSuchPropertyException;
 import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.mapper.ValueMapper;
 import org.chromattic.common.JCR;
 
@@ -29,6 +31,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.Property;
 import javax.jcr.ValueFactory;
+import javax.jcr.PropertyType;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.List;
 import java.util.ArrayList;
@@ -116,14 +119,8 @@ class PersistentContextState extends ContextState {
 
       //
       if (value != null) {
-        ValueMapper<?> valueMapper;
-        if (type == null) {
-          valueMapper = ValueMapper.getValueMapper(value);
-        } else {
-          valueMapper = ValueMapper.getValueMapper(type);
-        }
-
-        return valueMapper.get(value);
+        SimpleType st = type != null ? type.getSimpleType() : null;
+        return ValueMapper.instance.get(value, st);
       } else {
         if (type != null && type.isPrimitive()) {
           throw new IllegalStateException("Cannot convert null to primitive type " + type.getSimpleType());
@@ -150,13 +147,12 @@ class PersistentContextState extends ContextState {
       } else {
         values = new Value[0];
       }
-      ValueMapper<Object> valueMapper = (ValueMapper<Object>)ValueMapper.getValueMapper(simpleType);
 
       //
       if (listType == ListType.LIST) {
         List<Object> list = new ArrayList<Object>(values.length);
         for (Value value : values) {
-          Object o = valueMapper.get(value);
+          Object o = ValueMapper.instance.get(value, simpleType.getSimpleType());
           list.add(o);
         }
         return (T)list;
@@ -164,7 +160,7 @@ class PersistentContextState extends ContextState {
         Object array = Array.newInstance((Class<?>)simpleType.getTypeInfo().getType(), values.length);
         for (int i = 0;i < values.length;i++) {
           Value value = values[i];
-          Object o = valueMapper.get(value);
+          Object o = ValueMapper.instance.get(value, simpleType.getSimpleType());
           Array.set(array, i, o);
         }
         return (T)array;
@@ -177,21 +173,31 @@ class PersistentContextState extends ContextState {
 
   void setPropertyValue(String propertyName, SimpleValueInfo type, Object o) {
     try {
-
-      //
-      PropertyDefinition def = JCR.getPropertyDefinition(node, propertyName);
-
-      //
       Value value;
       if (o != null) {
         ValueFactory valueFactory = session.getJCRSession().getValueFactory();
-        ValueMapper<?> valueMapper = ValueMapper.getValueMapper(def);
-        if (valueMapper == null) {
-          valueMapper = ValueMapper.getValueMapper(o);
-        }
-        value = ((ValueMapper<Object>)valueMapper).get(valueFactory, o);
+        SimpleType st = type != null ? type.getSimpleType() : null;
+        value = ValueMapper.instance.get(valueFactory, o, st);
       } else {
         value = null;
+      }
+
+      //
+      PropertyDefinition def = JCR.findPropertyDefinition(node, propertyName);
+
+      //
+      if (def == null) {
+        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() + "  with type " + node.getPrimaryNodeType().getName());
+      }
+
+      //
+      if (value != null) {
+        int neededType = def.getRequiredType();
+        if (neededType != PropertyType.UNDEFINED) {
+          if (neededType != value.getType()) {
+            throw new ClassCastException();
+          }
+        }
       }
 
       //
@@ -216,20 +222,20 @@ class PersistentContextState extends ContextState {
     }
     try {
       ValueFactory valueFactory = session.getJCRSession().getValueFactory();
-      ValueMapper<Object> valueMapper = (ValueMapper<Object>)ValueMapper.getValueMapper(type);
+      SimpleType st = type != null ? type.getSimpleType() : null;
       Value[] values;
       if (listType == ListType.LIST) {
         List<?> list = (List<?>)objects;
         values = new Value[list.size()];
         int i = 0;
         for (Object object : list) {
-          values[i++] = valueMapper.get(valueFactory, object);
+          values[i++] = ValueMapper.instance.get(valueFactory, object, st);
         }
       } else {
         values = new Value[Array.getLength(objects)];
         for (int i = 0;i < values.length;i++) {
           Object o = Array.get(objects, i);
-          values[i] = valueMapper.get(valueFactory, o);
+          values[i] = ValueMapper.instance.get(valueFactory, o, st);
         }
       }
 

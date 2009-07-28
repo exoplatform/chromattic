@@ -146,4 +146,12 @@ public class JCR {
       return def;
     }
   }
+
+  public static PropertyDefinition findPropertyDefinition(Node node, String propertyName) throws RepositoryException {
+    PropertyDefinition def = getPropertyDefinition(node, propertyName);
+    if (def == null) {
+      return getPropertyDefinition(node, "*");
+    }
+    return def;
+  }
 }

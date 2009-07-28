@@ -21,6 +21,7 @@ package org.chromattic.test.property;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.common.IO;
+import org.chromattic.api.NoSuchPropertyException;
 
 import javax.jcr.Node;
 import java.util.Calendar;
@@ -178,5 +179,17 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
     assertEquals("bar", new String(IO.getBytes(aNode.getProperty("bytes_property").getStream()), "UTF8"));
     a.setBytes(null);
     assertFalse(aNode.hasProperty("bytes_property"));
+  }
+
+  public void testMissing() throws Exception {
+    a.getMissing();
+
+    //
+    try {
+      a.setMissing("foo");
+      fail();
+    }
+    catch (NoSuchPropertyException ignore) {
+    }
   }
 }

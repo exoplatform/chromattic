@@ -96,4 +96,9 @@ public abstract class TP_A {
 
   public abstract void setBytes(InputStream s);
 
+  @Property(name = "missing_property")
+  public abstract String getMissing();
+
+  public abstract void setMissing(String s);
+
 }
