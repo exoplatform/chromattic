@@ -19,8 +19,10 @@
 - ordered children support with list
 - sorted map support for ordered children ?
 - name mapping, for instance foo -> exo:foo
-- listener unit tests
 - improve @OneToMany Map<String, ?> remove() method to remove by getting a child and not the default iterator operation
+- type coercion unit testing
+- undefined properties unit test
+- residual properties unit test
 
 
 *** Patrice

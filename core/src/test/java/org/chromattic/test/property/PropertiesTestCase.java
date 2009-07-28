@@ -18,8 +18,8 @@
  */
 package org.chromattic.test.property;
 
-import org.chromattic.core.DomainSession;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.api.ChromatticSession;
 
 import java.util.Map;
 
@@ -33,20 +33,43 @@ public class PropertiesTestCase extends AbstractTestCase {
     addClass(TP_B.class);
   }
 
-  public void testFoo() throws Exception {
-
-    DomainSession session = login();
-
-    TP_B b = session.create(TP_B.class, "ozoijeif");
-    session.persist(b);
-
+  public void testGetString() throws Exception {
+    ChromatticSession session = login();
+    TP_B b = session.insert(TP_B.class, "ozoijeif");
     b.setString("bar");
-
     Map<String, Object> properties = b.getProperties();
-
     Object value = properties.get("string_property");
-
     assertEquals("bar", value);
+  }
 
+  public void testPutString() throws Exception {
+    ChromatticSession session = login();
+    TP_B b = session.insert(TP_B.class, "ozoijeif");
+    Map<String, Object> properties = b.getProperties();
+    Object value = properties.put("string_property", "bar");
+    assertEquals(null, value);
+    assertEquals("bar", b.getString());
+  }
+
+  public void testRemoveString() throws Exception {
+    ChromatticSession session = login();
+    TP_B b = session.insert(TP_B.class, "ozoijeif");
+    b.setString("bar");
+    Map<String, Object> properties = b.getProperties();
+    Object value = properties.remove("string_property");
+    assertEquals("bar", value);
+    assertEquals(null, b.getString());
+  }
+
+  public void testPutWrongType() throws Exception {
+    ChromatticSession session = login();
+    TP_B b = session.insert(TP_B.class, "ozoijeif");
+    Map<String, Object> properties = b.getProperties();
+    try {
+      properties.put("string_property", 5);
+      fail();
+    }
+    catch (ClassCastException ignore) {
+    }
   }
 }

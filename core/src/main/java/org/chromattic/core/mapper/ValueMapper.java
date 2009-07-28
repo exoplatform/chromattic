@@ -16,15 +16,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core;
+package org.chromattic.core.mapper;
 
 import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.core.bean.SimpleValueInfo;
 
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import javax.jcr.PropertyType;
 import javax.jcr.ValueFormatException;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.PropertyDefinition;
 import java.util.Date;
 import java.util.Calendar;
 import java.io.InputStream;
@@ -33,7 +35,86 @@ import java.io.InputStream;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-abstract class ValueMapper<T> {
+public abstract class ValueMapper<T> {
+
+  public static ValueMapper<?> getValueMapper(Object o) {
+    if (o instanceof String) {
+      return ValueMapper.STRING;
+    } else if (o instanceof Integer) {
+      return ValueMapper.INTEGER;
+    } else if (o instanceof Long) {
+      return ValueMapper.LONG;
+    } else if (o instanceof Date) {
+      return ValueMapper.DATE;
+    } else if (o instanceof Double) {
+      return ValueMapper.DOUBLE;
+    }  else if (o instanceof Float) {
+      return ValueMapper.FLOAT;
+    }  else if (o instanceof InputStream) {
+      return ValueMapper.BINARY;
+    } else if (o instanceof Boolean) {
+      return ValueMapper.BOOLEAN;
+    } else {
+      throw new AssertionError();
+    }
+  }
+
+  public static ValueMapper<?> getValueMapper(SimpleValueInfo type) {
+    switch (type.getSimpleType()) {
+      case STRING:
+        return ValueMapper.STRING;
+      case INT:
+        return ValueMapper.INTEGER;
+      case LONG:
+        return ValueMapper.LONG;
+      case BOOLEAN:
+        return ValueMapper.BOOLEAN;
+      case FLOAT:
+        return ValueMapper.FLOAT;
+      case DOUBLE:
+        return ValueMapper.DOUBLE;
+      case DATE:
+        return ValueMapper.DATE;
+      case BINARY:
+        return ValueMapper.BINARY;
+      default:
+        throw new UnsupportedOperationException();
+    }
+  }
+  
+  public static ValueMapper<?> getValueMapper(Value value) {
+    return getValueMapper(value.getType());
+  }
+
+  public static ValueMapper<?> getValueMapper(PropertyDefinition def) {
+    int propertyType = def.getRequiredType();
+    return getValueMapper(propertyType);
+  }
+
+  public static ValueMapper<?> getValueMapper(int propertyType) {
+    switch (propertyType) {
+      case PropertyType.BINARY:
+        return ValueMapper.BINARY;
+      case PropertyType.BOOLEAN:
+        return ValueMapper.BOOLEAN;
+      case PropertyType.DATE:
+        return ValueMapper.DATE;
+      case PropertyType.LONG:
+        return ValueMapper.INTEGER;
+      case PropertyType.DOUBLE:
+        return ValueMapper.DOUBLE;
+      case PropertyType.STRING:
+      case PropertyType.NAME:
+      case PropertyType.PATH:
+        return ValueMapper.STRING;
+      case PropertyType.REFERENCE:
+        throw new UnsupportedOperationException("Reference type is not supported via a map");
+      case PropertyType.UNDEFINED:
+        throw new UnsupportedOperationException("Undefined type is not supported via a map");
+      default:
+        throw new UnsupportedOperationException();
+    }
+  }
 
   /** . */
   private final Class<T> type;
@@ -53,15 +134,15 @@ abstract class ValueMapper<T> {
     return convert(value);
   }
 
-  public final Value get(ValueFactory valueFactory, T t) throws UndeclaredRepositoryException {
+  public final Value get(ValueFactory valueFactory, Object o) throws UndeclaredRepositoryException {
     if (valueFactory == null) {
       throw new NullPointerException();
     }
-    if (t == null) {
+    if (o == null) {
       throw new NullPointerException();
     }
     try {
-      return convert(valueFactory, t);
+      return convert(valueFactory, o);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -70,7 +151,7 @@ abstract class ValueMapper<T> {
 
   protected abstract T convert(Value value) throws RepositoryException;
 
-  protected abstract Value convert(ValueFactory valueFactory, T t) throws RepositoryException;
+  protected abstract Value convert(ValueFactory valueFactory, Object o) throws RepositoryException;
 
   public static ValueMapper<String> STRING = new ValueMapper<String>(String.class) {
     @Override
@@ -89,8 +170,8 @@ abstract class ValueMapper<T> {
     }
 
     @Override
-    protected Value convert(ValueFactory valueFactory, String s) {
-      return valueFactory.createValue(s);
+    protected Value convert(ValueFactory valueFactory, Object o) {
+      return valueFactory.createValue((String)o);
     }
   };
 
@@ -111,8 +192,10 @@ abstract class ValueMapper<T> {
     }
 
     @Override
-    protected Value convert(ValueFactory valueFactory, Integer s) {
-      return valueFactory.createValue(s);
+    protected Value convert(ValueFactory valueFactory, Object o) {
+      Number n = (Number)o;
+      long l = n.longValue();
+      return valueFactory.createValue(l);
     }
   };
 
@@ -122,7 +205,7 @@ abstract class ValueMapper<T> {
       int type = value.getType();
       if (type == PropertyType.LONG) {
         try {
-          return (long)value.getLong();
+          return value.getLong();
         }
         catch (ValueFormatException e) {
           throw new IllegalArgumentException(e);
@@ -133,8 +216,10 @@ abstract class ValueMapper<T> {
     }
 
     @Override
-    protected Value convert(ValueFactory valueFactory, Long s) {
-      return valueFactory.createValue(s);
+    protected Value convert(ValueFactory valueFactory, Object o) {
+      Number n = (Number)o;
+      long l = n.longValue();
+      return valueFactory.createValue(l);
     }
   };
 
@@ -155,8 +240,10 @@ abstract class ValueMapper<T> {
     }
 
     @Override
-    protected Value convert(ValueFactory valueFactory, Double s) {
-      return valueFactory.createValue(s);
+    protected Value convert(ValueFactory valueFactory, Object o) {
+      Number n = (Number)o;
+      double d = n.doubleValue();
+      return valueFactory.createValue(d);
     }
   };
 
@@ -177,8 +264,10 @@ abstract class ValueMapper<T> {
     }
 
     @Override
-    protected Value convert(ValueFactory valueFactory, Float s) {
-      return valueFactory.createValue(s);
+    protected Value convert(ValueFactory valueFactory, Object o) {
+      Number n = (Number)o;
+      double d = n.doubleValue();
+      return valueFactory.createValue(d);
     }
   };
 
@@ -199,8 +288,8 @@ abstract class ValueMapper<T> {
     }
 
     @Override
-    protected Value convert(ValueFactory valueFactory, InputStream s) {
-      return valueFactory.createValue(s);
+    protected Value convert(ValueFactory valueFactory, Object o) {
+      return valueFactory.createValue((InputStream)o);
     }
   };
 
@@ -221,8 +310,8 @@ abstract class ValueMapper<T> {
     }
 
     @Override
-    protected Value convert(ValueFactory valueFactory, Boolean s) {
-      return valueFactory.createValue(s);
+    protected Value convert(ValueFactory valueFactory, Object o) {
+      return valueFactory.createValue((Boolean)o);
     }
   };
 
@@ -243,9 +332,9 @@ abstract class ValueMapper<T> {
     }
 
     @Override
-    protected Value convert(ValueFactory valueFactory, Date s) {
+    protected Value convert(ValueFactory valueFactory, Object o) {
       Calendar calendar = Calendar.getInstance();
-      calendar.setTime(s);
+      calendar.setTime((Date)o);
       return valueFactory.createValue(calendar);
     }
   };

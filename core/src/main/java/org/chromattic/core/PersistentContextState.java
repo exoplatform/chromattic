@@ -21,6 +21,7 @@ package org.chromattic.core;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.mapper.ValueMapper;
 import org.chromattic.common.JCR;
 
 import javax.jcr.Node;
@@ -29,7 +30,6 @@ import javax.jcr.Value;
 import javax.jcr.Property;
 import javax.jcr.ValueFactory;
 import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.nodetype.NodeType;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.reflect.Array;
@@ -115,13 +115,17 @@ class PersistentContextState extends ContextState {
       }
 
       //
-      ValueMapper<?> valueMapper = getValueMapper(type);
-
-      //
       if (value != null) {
+        ValueMapper<?> valueMapper;
+        if (type == null) {
+          valueMapper = ValueMapper.getValueMapper(value);
+        } else {
+          valueMapper = ValueMapper.getValueMapper(type);
+        }
+
         return valueMapper.get(value);
       } else {
-        if (type.isPrimitive()) {
+        if (type != null && type.isPrimitive()) {
           throw new IllegalStateException("Cannot convert null to primitive type " + type.getSimpleType());
         }
         return null;
@@ -146,7 +150,7 @@ class PersistentContextState extends ContextState {
       } else {
         values = new Value[0];
       }
-      ValueMapper<Object> valueMapper = (ValueMapper<Object>)getValueMapper(simpleType);
+      ValueMapper<Object> valueMapper = (ValueMapper<Object>)ValueMapper.getValueMapper(simpleType);
 
       //
       if (listType == ListType.LIST) {
@@ -173,19 +177,24 @@ class PersistentContextState extends ContextState {
 
   void setPropertyValue(String propertyName, SimpleValueInfo type, Object o) {
     try {
-      ValueMapper<?> valueMapper = getValueMapper(type);
+
+      //
+      PropertyDefinition def = JCR.getPropertyDefinition(node, propertyName);
 
       //
       Value value;
       if (o != null) {
         ValueFactory valueFactory = session.getJCRSession().getValueFactory();
+        ValueMapper<?> valueMapper = ValueMapper.getValueMapper(def);
+        if (valueMapper == null) {
+          valueMapper = ValueMapper.getValueMapper(o);
+        }
         value = ((ValueMapper<Object>)valueMapper).get(valueFactory, o);
       } else {
         value = null;
       }
 
       //
-      PropertyDefinition def = JCR.getPropertyDefinition(node, propertyName);
       if (def.isMultiple()) {
         if (value == null) {
           node.setProperty(propertyName, new Value[0]);
@@ -207,7 +216,7 @@ class PersistentContextState extends ContextState {
     }
     try {
       ValueFactory valueFactory = session.getJCRSession().getValueFactory();
-      ValueMapper<Object> valueMapper = (ValueMapper<Object>)getValueMapper(type);
+      ValueMapper<Object> valueMapper = (ValueMapper<Object>)ValueMapper.getValueMapper(type);
       Value[] values;
       if (listType == ListType.LIST) {
         List<?> list = (List<?>)objects;
@@ -245,28 +254,5 @@ class PersistentContextState extends ContextState {
 
   public String toString() {
     return "ObjectStatus[id=" + id + ",status=" + Status.PERSISTENT + "]";
-  }
-
-  private ValueMapper<?> getValueMapper(SimpleValueInfo type) {
-    switch (type.getSimpleType()) {
-      case STRING:
-        return ValueMapper.STRING;
-      case INT:
-        return ValueMapper.INTEGER;
-      case LONG:
-        return ValueMapper.LONG;
-      case BOOLEAN:
-        return ValueMapper.BOOLEAN;
-      case FLOAT:
-        return ValueMapper.FLOAT;
-      case DOUBLE:
-        return ValueMapper.DOUBLE;
-      case DATE:
-        return ValueMapper.DATE;
-      case BINARY:
-        return ValueMapper.BINARY;
-      default:
-        throw new UnsupportedOperationException();
-    }
   }
 }

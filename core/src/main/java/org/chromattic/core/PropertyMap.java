@@ -52,6 +52,22 @@ class PropertyMap extends AbstractMap<String, Object> {
     return set;
   }
 
+  @Override
+  public Object remove(Object key) {
+    if (key instanceof String) {
+      return put((String)key, null);
+    } else {
+      return null;
+    }
+  }
+
+  @Override
+  public Object put(String key, Object value) {
+    Object previous = ctx.getPropertyValue(key, null);
+    ctx.setPropertyValue(key, null, value);
+    return previous;
+  }
+
   private class SetImpl extends AbstractSet<Map.Entry<String, Object>> {
 
     public Iterator<Map.Entry<String, Object>> iterator() {

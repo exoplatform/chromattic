@@ -48,6 +48,9 @@ public class ObjectContext implements MethodHandler {
   final Object object;
 
   /** . */
+  final PropertyMap properties;
+
+  /** . */
   ContextState state;
 
   public ObjectContext(TypeMapper mapper) {
@@ -59,6 +62,7 @@ public class ObjectContext implements MethodHandler {
     this.mapper = mapper;
     this.object = mapper.createObject(this);
     this.state = state;
+    this.properties = new PropertyMap(this);
   }
 
   public DomainSession getSession() {
@@ -134,7 +138,7 @@ public class ObjectContext implements MethodHandler {
   }
 
   public Map<String, Object> getPropertyMap() {
-    return new PropertyMap(this);
+    return properties;
   }
 
   public Object getPropertyValue(String propertyName, SimpleValueInfo type) {
