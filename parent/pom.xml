@@ -37,7 +37,18 @@
   <version>1.0.0</version>
   <name>Chromattic Framework Parent</name>
   <description>Chromattic Framework Parent</description>
-  
+
+  <organization>
+    <name>eXo Platform SAS</name>
+    <url>http://www.exoplatform.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>LGPL, version 2.1</name>
+      <url>http://www.opensource.org/licenses/lgpl-license.php</url>
+    </license>
+  </licenses>
+
   <dependencies>
 
   </dependencies>
