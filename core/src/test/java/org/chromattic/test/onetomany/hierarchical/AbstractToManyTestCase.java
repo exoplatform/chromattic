@@ -25,6 +25,7 @@ import org.chromattic.api.Status;
 
 import javax.jcr.Node;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -128,5 +129,79 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     session.remove(a);
     assertEquals(Status.REMOVED, session.getStatus(a));
     assertEquals(Status.REMOVED, session.getStatus(b));
+  }
+
+  public void testTransientCollectionClear() throws Exception {
+    testCollectionClear(false);
+  }
+
+  public void testTransientCollectionRemove() throws Exception {
+    testCollectionRemove(false);
+  }
+
+  public void testTransientCollectionIterator() throws Exception {
+    testTransientCollectionIterator(false);
+  }
+
+  public void testPersistentCollectionClear() throws Exception {
+    testCollectionClear(true);
+  }
+
+  public void testPersistentCollectionRemove() throws Exception {
+    testCollectionRemove(true);
+  }
+
+  public void testPersistentCollectionIterator() throws Exception {
+    testTransientCollectionIterator(true);
+  }
+
+  private void testCollectionRemove(boolean save) throws Exception {
+    ChromatticSession session = login();
+    O one = session.insert(oneSide, "totm_d");
+    M many = session.create(manySide, "totm_e");
+    Collection<M> c = getMany(one);
+    c.add(many);
+    if (save) session.save();
+    c.remove(many);
+    assertEquals(Status.REMOVED, session.getStatus(many));
+    assertTrue(c.isEmpty());
+  }
+
+  private void testCollectionClear(boolean save) throws Exception {
+    ChromatticSession session = login();
+    O one = session.insert(oneSide, "totm_d");
+    M many = session.create(manySide, "totm_e");
+    Collection<M> c = getMany(one);
+    c.add(many);
+    if (save) session.save();
+    c.clear();
+    assertEquals(Status.REMOVED, session.getStatus(many));
+    assertTrue(c.isEmpty());
+  }
+
+  private void testTransientCollectionIterator(boolean save) throws Exception {
+    ChromatticSession session = login();
+    O one = session.insert(oneSide, "totm_d");
+    M many = session.create(manySide, "totm_e");
+    Collection<M> c = getMany(one);
+    c.add(many);
+    if (save) session.save();
+    Iterator<M> i = c.iterator();
+    try {
+      i.remove();
+      fail();
+    }
+    catch (IllegalStateException ignore) {
+    }
+    assertSame(many, i.next());
+    i.remove();
+    assertEquals(Status.REMOVED, session.getStatus(many));
+    assertTrue(c.isEmpty());
+    try {
+      i.remove();
+      fail();
+    }
+    catch (IllegalStateException ignore) {
+    }
   }
 }
