@@ -21,8 +21,10 @@ package org.chromattic.test.onetomany.reference;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
+import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.Node;
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -78,5 +80,20 @@ public class OneToManyTestCase extends AbstractTestCase {
     assertFalse(a1.getBs().contains(b));
     assertEquals(1, a2.getBs().size());
     assertTrue(a2.getBs().contains(b));
+  }
+
+  public void testCannotRemoveReferenced() throws Exception {
+    ChromatticSession session = login();
+
+    TOTMR_A_3 a = session.insert(TOTMR_A_3.class, "totmr_a_d");
+    TOTMR_B_3 b = session.insert(TOTMR_B_3.class, "totmr_b_d");
+    Collection<TOTMR_B_3> bs = a.getBs();
+    bs.add(b);
+
+    session.remove(a);
+
+    assertNull(b.getA());
+
+    session.save();
   }
 }

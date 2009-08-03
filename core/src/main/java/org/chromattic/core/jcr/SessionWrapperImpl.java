@@ -20,6 +20,7 @@
 package org.chromattic.core.jcr;
 
 import org.chromattic.common.logging.Logger;
+import org.chromattic.common.JCR;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
 import javax.jcr.Session;
@@ -133,6 +134,14 @@ public class SessionWrapperImpl implements SessionWrapper {
       property.setValue((Node)null);
     }
 
+    // Update reference manager
+    for (PropertyIterator i = node.getProperties(); i.hasNext();) {
+      Property property = i.nextProperty();
+      if (property.getType() == PropertyType.REFERENCE) {
+        refMgr.setReferenced(node, property.getName(), null);
+      }
+    }
+
     // Remove now
     String id = node.getUUID();
     node.remove();
@@ -144,27 +153,16 @@ public class SessionWrapperImpl implements SessionWrapper {
     refMgr.clear();
   }
 
-  public Node getRelated(Node node, String name) throws RepositoryException {
-    if (node.hasProperty(name)) {
-      Property property = node.getProperty(name);
-      if (property.getType() == PropertyType.REFERENCE) {
-        return property.getNode();
-      } else {
-        // throw new MappingException("Property " + name + " is not mapped to a reference type");
-        // maybe issue a warn
-        return null;
-      }
-    } else {
-      return null;
-    }
+  public Node getReferenced(Node referent, String propertyName) throws RepositoryException {
+    return refMgr.getReferenced(referent, propertyName);
   }
 
-  public Node setRelated(Node node, String name, Node relatedNode) throws RepositoryException {
-    return refMgr.setReference(node, name, relatedNode);
+  public Node setReferenced(Node referent, String propertyName, Node referenced) throws RepositoryException {
+    return refMgr.setReferenced(referent, propertyName, referenced);
   }
 
-  public Iterator<Node> getRelateds(Node node, String name) throws RepositoryException {
-    return refMgr.getReferences(node, name);
+  public Iterator<Node> getReferents(Node referenced, String propertyName) throws RepositoryException {
+    return refMgr.getReferents(referenced, propertyName);
   }
 
   @Override

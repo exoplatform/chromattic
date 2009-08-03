@@ -28,6 +28,7 @@ import javax.jcr.Session;
 import javax.jcr.RepositoryException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
@@ -60,69 +61,84 @@ public class ReferenceManager {
     this.session = session;
   }
 
-  public Iterator<Node> getReferences(Node dst, String name) throws RepositoryException {
-    Entry entry = getEntry(dst);
+  public Iterator<Node> getReferents(Node referenced, String name) throws RepositoryException {
+    Entry entry = getEntry(referenced);
     return entry.iterator(name);
   }
 
-  public Node setReference(Node src, String name, Node newDst) throws RepositoryException {
+  public Node getReferenced(Node referent, String propertyName) throws RepositoryException {
+    if (referent.hasProperty(propertyName)) {
+      Property property = referent.getProperty(propertyName);
+      if (property.getType() == PropertyType.REFERENCE) {
+        return property.getNode();
+      } else {
+        // throw new MappingException("Property " + name + " is not mapped to a reference type");
+        // maybe issue a warn
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 
-    Node oldDst = null;
-    if (src.hasProperty(name)) {
-      oldDst = src.getProperty(name).getNode();
-      Entry entry = getEntry(oldDst);
+  public Node setReferenced(Node referent, String propertyName, Node referenced) throws RepositoryException {
+
+    Node oldReferenced = null;
+    if (referent.hasProperty(propertyName)) {
+      oldReferenced = referent.getProperty(propertyName).getNode();
+      Entry entry = getEntry(oldReferenced);
 
       boolean scheduleForAddition = true;
-      Set<Node> propertyScheduledForAddition = entry.propertiesScheduledForAddition.get(name);
+      Set<Node> propertyScheduledForAddition = entry.propertiesScheduledForAddition.get(propertyName);
       if (propertyScheduledForAddition != null) {
-        if (propertyScheduledForAddition.contains(src)) {
-          propertyScheduledForAddition.remove(src);
+        if (propertyScheduledForAddition.contains(referent)) {
+          propertyScheduledForAddition.remove(referent);
           scheduleForAddition = false;
         }
       }
 
       //
       if (scheduleForAddition) {
-        Set<Node> propertyScheduledForRemoval = entry.propertiesScheduledForRemoval.get(name);
+        Set<Node> propertyScheduledForRemoval = entry.propertiesScheduledForRemoval.get(propertyName);
         if (propertyScheduledForRemoval == null) {
           propertyScheduledForRemoval = new HashSet<Node>();
-          entry.propertiesScheduledForRemoval.put(name, propertyScheduledForRemoval);
+          entry.propertiesScheduledForRemoval.put(propertyName, propertyScheduledForRemoval);
         }
-        propertyScheduledForRemoval.add(src);
+        propertyScheduledForRemoval.add(referent);
         entry.version++;
       }
     }
 
     //
-    src.setProperty(name, newDst);
+    referent.setProperty(propertyName, referenced);
 
     //
-    if (newDst != null) {
-      Entry entry = getEntry(newDst);
-      Set<Node> srcs = entry.propertiesScheduledForAddition.get(name);
+    if (referenced != null) {
+      Entry entry = getEntry(referenced);
+      Set<Node> srcs = entry.propertiesScheduledForAddition.get(propertyName);
       if (srcs == null) {
         srcs = new HashSet<Node>();
-        entry.propertiesScheduledForAddition.put(name, srcs);
+        entry.propertiesScheduledForAddition.put(propertyName, srcs);
       }
-      srcs.add(src);
+      srcs.add(referent);
       entry.version++;
     } else {
       //
     }
 
     //
-    return oldDst;
+    return oldReferenced;
   }
 
   public void clear() {
     entries.clear();
   }
 
-  private Entry getEntry(Node dst) throws RepositoryException {
-    Entry entry = entries.get(dst.getUUID());
+  private Entry getEntry(Node referenced) throws RepositoryException {
+    Entry entry = entries.get(referenced.getUUID());
     if (entry == null) {
-      entry = new Entry(dst);
-      entries.put(dst.getUUID(), entry);
+      entry = new Entry(referenced);
+      entries.put(referenced.getUUID(), entry);
     }
     return entry;
   }
@@ -133,7 +149,7 @@ public class ReferenceManager {
     private int version;
 
     /** . */
-    private final Node dst;
+    private final Node referenced;
 
     /** . */
     private final Map<String, Set<Node>> propertiesScheduledForAddition;
@@ -141,9 +157,9 @@ public class ReferenceManager {
     /** . */
     private final Map<String, Set<Node>> propertiesScheduledForRemoval;
 
-    private Entry(Node dst) {
+    private Entry(Node referenced) {
       this.version = 0;
-      this.dst = dst;
+      this.referenced = referenced;
       this.propertiesScheduledForAddition = new HashMap<String, Set<Node>>();
       this.propertiesScheduledForRemoval = new HashMap<String, Set<Node>>();
     }
@@ -152,7 +168,7 @@ public class ReferenceManager {
 
       // Julien : that looks like a query that would be executed each time
       // does it make sense to cache it ?
-      PropertyIterator properties = dst.getReferences();
+      PropertyIterator properties = referenced.getReferences();
 
       Set<Node> blah = propertiesScheduledForRemoval.get(name);
       if (blah == null) {
@@ -217,9 +233,5 @@ public class ReferenceManager {
         }
       };
     }
-
-
   }
-
-
 }

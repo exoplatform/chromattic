@@ -62,13 +62,13 @@ public class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b5");
 
     //
-    assertNull(mgr.setReference(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferences(a, "ref")));
+    assertNull(mgr.setReferenced(b, "ref", a));
+    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
     
     //
     session.save();
     mgr = new ReferenceManager(session);
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferences(a, "ref")));
+    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
   }
 
   public void testRemoveTransient() throws Exception {
@@ -80,17 +80,17 @@ public class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b6");
 
     //
-    assertEquals(null, mgr.setReference(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferences(a, "ref")));
+    assertEquals(null, mgr.setReferenced(b, "ref", a));
+    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
 
     //
-    assertEquals(a, mgr.setReference(b, "ref", null));
-    assertEquals(0, Collections.set(mgr.getReferences(a, "ref")).size());
+    assertEquals(a, mgr.setReferenced(b, "ref", null));
+    assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
 
     //
     session.save();
     mgr = new ReferenceManager(session);
-    assertEquals(0, Collections.set(mgr.getReferences(a, "ref")).size());
+    assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
   }
 
   public void testRemovePersistent() throws Exception {
@@ -102,22 +102,22 @@ public class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b7");
 
     //
-    assertEquals(null, mgr.setReference(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferences(a, "ref")));
+    assertEquals(null, mgr.setReferenced(b, "ref", a));
+    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
 
     //
     session.save();
     mgr = new ReferenceManager(session);
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferences(a, "ref")));
+    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
 
     //
-    assertEquals(a, mgr.setReference(b, "ref", null));
-    assertEquals(0, Collections.set(mgr.getReferences(a, "ref")).size());
+    assertEquals(a, mgr.setReferenced(b, "ref", null));
+    assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
 
     //
     session.save();
     mgr = new ReferenceManager(session);
-    assertEquals(0, Collections.set(mgr.getReferences(a, "ref")).size());
+    assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
   }
 
   public void testReAddTransientlyRemovedPersistent() throws Exception {
@@ -129,26 +129,26 @@ public class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b8");
 
     //
-    assertEquals(null, mgr.setReference(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferences(a, "ref")));
+    assertEquals(null, mgr.setReferenced(b, "ref", a));
+    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
 
     //
     session.save();
     mgr = new ReferenceManager(session);
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferences(a, "ref")));
+    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
 
     //
-    assertEquals(a, mgr.setReference(b, "ref", null));
-    assertEquals(0, Collections.set(mgr.getReferences(a, "ref")).size());
+    assertEquals(a, mgr.setReferenced(b, "ref", null));
+    assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
 
     //
-    assertEquals(null, mgr.setReference(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferences(a, "ref")));
+    assertEquals(null, mgr.setReferenced(b, "ref", a));
+    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
 
     //
     session.save();
     mgr = new ReferenceManager(session);
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferences(a, "ref")));
+    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
   }
 
   public void testUpdate() throws Exception {
@@ -162,20 +162,20 @@ public class ReferenceManagerTestCase extends TestCase {
     Node c = root.addNode("c9");
 
     //
-    assertEquals(null, mgr.setReference(c, "ref", a));
-    assertEquals(Collections.set(c), Collections.set(mgr.getReferences(a, "ref")));
-    assertEquals(0, Collections.set(mgr.getReferences(b, "ref")).size());
+    assertEquals(null, mgr.setReferenced(c, "ref", a));
+    assertEquals(Collections.set(c), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(0, Collections.set(mgr.getReferents(b, "ref")).size());
 
     //
-    assertEquals(a, mgr.setReference(c, "ref", b));
-    assertEquals(0, Collections.set(mgr.getReferences(a, "ref")).size());
-    assertEquals(Collections.set(c), Collections.set(mgr.getReferences(b, "ref")));
+    assertEquals(a, mgr.setReferenced(c, "ref", b));
+    assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
+    assertEquals(Collections.set(c), Collections.set(mgr.getReferents(b, "ref")));
 
     //
     session.save();
     mgr = new ReferenceManager(session);
-    assertEquals(0, Collections.set(mgr.getReferences(a, "ref")).size());
-    assertEquals(Collections.set(c), Collections.set(mgr.getReferences(b, "ref")));
+    assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
+    assertEquals(Collections.set(c), Collections.set(mgr.getReferents(b, "ref")));
   }
 
   public void testPhantomConcurrentRemoveModification() throws Exception {
@@ -187,8 +187,8 @@ public class ReferenceManagerTestCase extends TestCase {
     session.save();
 
     ReferenceManager mgr = new ReferenceManager(session);
-    Iterator i = mgr.getReferences(a, "ref");
-    mgr.setReference(b, "ref", a);
+    Iterator i = mgr.getReferents(a, "ref");
+    mgr.setReferenced(b, "ref", a);
     try {
       i.next();
       fail();
@@ -207,8 +207,8 @@ public class ReferenceManagerTestCase extends TestCase {
     session.save();
 
     ReferenceManager mgr = new ReferenceManager(session);
-    Iterator i = mgr.getReferences(a, "ref");
-    mgr.setReference(b, "ref", null);
+    Iterator i = mgr.getReferents(a, "ref");
+    mgr.setReferenced(b, "ref", null);
     try {
       i.next();
       fail();
@@ -227,8 +227,8 @@ public class ReferenceManagerTestCase extends TestCase {
     session.save();
 
     ReferenceManager mgr = new ReferenceManager(session);
-    Iterator i = mgr.getReferences(a, "ref");
-    Iterator j = mgr.getReferences(a, "ref");
+    Iterator i = mgr.getReferents(a, "ref");
+    Iterator j = mgr.getReferents(a, "ref");
     j.next();
     j.remove();
     try {
@@ -250,8 +250,8 @@ public class ReferenceManagerTestCase extends TestCase {
     session.save();
 
     ReferenceManager mgr = new ReferenceManager(session);
-    Iterator i = mgr.getReferences(a, "ref");
-    mgr.setReference(c, "ref", a);
+    Iterator i = mgr.getReferents(a, "ref");
+    mgr.setReferenced(c, "ref", a);
     try {
       i.next();
       fail();
@@ -270,9 +270,9 @@ public class ReferenceManagerTestCase extends TestCase {
     session.save();
 
     ReferenceManager mgr = new ReferenceManager(session);
-    mgr.setReference(b, "ref", null);
-    Iterator i = mgr.getReferences(a, "ref");
-    mgr.setReference(b, "ref", a);
+    mgr.setReferenced(b, "ref", null);
+    Iterator i = mgr.getReferents(a, "ref");
+    mgr.setReferenced(b, "ref", a);
     try {
       i.next();
       fail();
@@ -296,9 +296,9 @@ public class ReferenceManagerTestCase extends TestCase {
     session.save();
 
     ReferenceManager mgr = new ReferenceManager(session);
-    mgr.setReference(b, "ref", a);
-    Iterator i = mgr.getReferences(a, "ref");
-    mgr.setReference(b, "ref", null);
+    mgr.setReferenced(b, "ref", a);
+    Iterator i = mgr.getReferents(a, "ref");
+    mgr.setReferenced(b, "ref", null);
     try {
       i.next();
       fail();
@@ -316,9 +316,9 @@ public class ReferenceManagerTestCase extends TestCase {
     session.save();
 
     ReferenceManager mgr = new ReferenceManager(session);
-    mgr.setReference(b, "ref", a);
-    Iterator i = mgr.getReferences(a, "ref");
-    Iterator j = mgr.getReferences(a, "ref");
+    mgr.setReferenced(b, "ref", a);
+    Iterator i = mgr.getReferents(a, "ref");
+    Iterator j = mgr.getReferents(a, "ref");
     j.next();
     j.remove();
     try {
@@ -339,9 +339,9 @@ public class ReferenceManagerTestCase extends TestCase {
     session.save();
 
     ReferenceManager mgr = new ReferenceManager(session);
-    mgr.setReference(b, "ref", a);
-    Iterator i = mgr.getReferences(a, "ref");
-    mgr.setReference(c, "ref", a);
+    mgr.setReferenced(b, "ref", a);
+    Iterator i = mgr.getReferents(a, "ref");
+    mgr.setReferenced(c, "ref", a);
     try {
       i.next();
       fail();
@@ -359,10 +359,10 @@ public class ReferenceManagerTestCase extends TestCase {
     session.save();
 
     ReferenceManager mgr = new ReferenceManager(session);
-    mgr.setReference(b, "ref", a);
-    mgr.setReference(b, "ref", null);
-    Iterator i = mgr.getReferences(a, "ref");
-    mgr.setReference(b, "ref", a);
+    mgr.setReferenced(b, "ref", a);
+    mgr.setReferenced(b, "ref", null);
+    Iterator i = mgr.getReferents(a, "ref");
+    mgr.setReferenced(b, "ref", a);
     try {
       i.next();
       fail();

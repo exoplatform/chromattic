@@ -280,7 +280,7 @@ class DomainSessionImpl extends DomainSession {
       throw new IllegalStateException();
     }
     Node node = ctx.state.getNode();
-    Node related = sessionWrapper.getRelated(node, name);
+    Node related = sessionWrapper.getReferenced(node, name);
     if (related != null) {
       return findByNode(Object.class, related);
     } else {
@@ -308,15 +308,15 @@ class DomainSessionImpl extends DomainSession {
       Node relatedNode = relatedCtx.state.getNode();
 
       //
-      return relatedNode != sessionWrapper.setRelated(node, name, relatedNode);
+      return relatedNode != sessionWrapper.setReferenced(node, name, relatedNode);
     } else {
-      return null != sessionWrapper.setRelated(node, name, null);
+      return null != sessionWrapper.setReferenced(node, name, null);
     }
   }
 
   protected <T> Iterator<T> _getRelateds(ObjectContext ctx, String name, Class<T> filterClass) throws RepositoryException {
     Node node = ctx.state.getNode();
-    Iterator<Node> nodes = sessionWrapper.getRelateds(node, name);
+    Iterator<Node> nodes = sessionWrapper.getReferents(node, name);
     return new ReferentCollectionIterator<T>(this, nodes, filterClass, name);
   }
 

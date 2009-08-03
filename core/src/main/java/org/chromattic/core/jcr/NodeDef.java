@@ -37,6 +37,10 @@ public class NodeDef {
   /** . */
   private final Set<String> mixinNames;
 
+  public NodeDef(String primaryNodeTypeName) {
+    this(primaryNodeTypeName, Collections.<String>emptySet());
+  }
+
   public NodeDef(String primaryNodeTypeName, Set<String> mixinNames) throws NullPointerException {
     if (primaryNodeTypeName == null) {
       throw new NullPointerException();

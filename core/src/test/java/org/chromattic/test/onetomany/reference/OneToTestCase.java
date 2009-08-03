@@ -37,13 +37,13 @@ public class OneToTestCase extends AbstractTestCase {
     addClass(TOTMR_B_1.class);
   }
 
-  public void _testLoad() throws Exception {
+  public void testLoad() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getJCRSession().getRootNode();
     Node aNode = rootNode.addNode("totmr_a", "totmr_a");
     Node bNode = rootNode.addNode("totmr_b", "totmr_b");
     bNode.setProperty("ref", aNode);
-    // rootNode.save(); // This is awkwardly required
+    rootNode.save(); // This is awkwardly required
 
     //
     TOTMR_A_1 a = session.findByNode(TOTMR_A_1.class, aNode);
@@ -62,7 +62,7 @@ public class OneToTestCase extends AbstractTestCase {
     assertEquals(1, bs.size());
   }
 
-  public void _testPersistent() throws Exception {
+  public void testPersistent() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getJCRSession().getRootNode();
     Node aNode = rootNode.addNode("totmr_a", "totmr_a");
@@ -117,7 +117,7 @@ public class OneToTestCase extends AbstractTestCase {
     assertFalse(bs1.contains(b));
   }
 
-  public void _testTransient() throws Exception {
+  public void testTransient() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getJCRSession().getRootNode();
     Node aNode = rootNode.addNode("totmr_a", "totmr_a");
@@ -133,18 +133,17 @@ public class OneToTestCase extends AbstractTestCase {
       bs.add(b);
       fail();
     }
-    catch (IllegalArgumentException e) {
+    catch (IllegalStateException e) {
     }
     assertEquals(0, bs.size());
   }
 
-  public void _testRemove() throws Exception {
+  public void testRemove() throws Exception {
     ChromatticSession session = login();
 
     TOTMR_A_1 a = session.create(TOTMR_A_1.class, "totmr_a_c");
     String aId = session.persist(a);
-    TOTMR_B_1 b = session.create(TOTMR_B_1.class, "totmr_b_c");
-    String bId = session.persist(b);
+    TOTMR_B_1 b = session.insert(TOTMR_B_1.class, "totmr_b_c");
     a.getBs().add(b);
     session.save();
 
@@ -154,5 +153,4 @@ public class OneToTestCase extends AbstractTestCase {
     session.remove(a);
     session.save();
   }
-
 }
