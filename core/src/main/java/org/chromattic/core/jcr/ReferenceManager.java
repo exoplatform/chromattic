@@ -29,6 +29,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
+import javax.jcr.ItemNotFoundException;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
@@ -70,7 +71,13 @@ public class ReferenceManager {
     if (referent.hasProperty(propertyName)) {
       Property property = referent.getProperty(propertyName);
       if (property.getType() == PropertyType.REFERENCE) {
-        return property.getNode();
+        try {
+          return property.getNode();
+        }
+        catch (ItemNotFoundException e) {
+          // The node has been transiently removed or concurrently removed
+          return null;
+        }
       } else {
         // throw new MappingException("Property " + name + " is not mapped to a reference type");
         // maybe issue a warn

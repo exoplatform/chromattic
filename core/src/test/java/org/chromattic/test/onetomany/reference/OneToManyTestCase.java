@@ -82,18 +82,31 @@ public class OneToManyTestCase extends AbstractTestCase {
     assertTrue(a2.getBs().contains(b));
   }
 
-  public void testCannotRemoveReferenced() throws Exception {
+  public void testRemoveReferent() throws Exception {
     ChromatticSession session = login();
 
+    //
     TOTMR_A_3 a = session.insert(TOTMR_A_3.class, "totmr_a_d");
     TOTMR_B_3 b = session.insert(TOTMR_B_3.class, "totmr_b_d");
     Collection<TOTMR_B_3> bs = a.getBs();
     bs.add(b);
 
+    //
+    session.remove(b);
+    assertTrue(bs.isEmpty());
+  }
+
+  public void testRemoveReferenced() throws Exception {
+    ChromatticSession session = login();
+
+    //
+    TOTMR_A_3 a = session.insert(TOTMR_A_3.class, "totmr_a_d");
+    TOTMR_B_3 b = session.insert(TOTMR_B_3.class, "totmr_b_d");
+    Collection<TOTMR_B_3> bs = a.getBs();
+    bs.add(b);
+
+    //
     session.remove(a);
-
     assertNull(b.getA());
-
-    session.save();
   }
 }
