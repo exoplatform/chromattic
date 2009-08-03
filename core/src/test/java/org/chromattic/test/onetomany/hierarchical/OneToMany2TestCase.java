@@ -31,17 +31,17 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ToManyTestCase extends AbstractToManyTestCase<TOTM_A_1, TOTM_B_1> {
+public class OneToMany2TestCase extends AbstractToManyTestCase<TOTM_A_3, TOTM_B_3> {
 
-  public Class<TOTM_A_1> getOneSideClass() {
-    return TOTM_A_1.class;
+  public Class<TOTM_A_3> getOneSideClass() {
+    return TOTM_A_3.class;
   }
 
-  public Class<TOTM_B_1> getManySideClass() {
-    return TOTM_B_1.class;
+  public Class<TOTM_B_3> getManySideClass() {
+    return TOTM_B_3.class;
   }
 
-  public Collection<TOTM_B_1> getMany(TOTM_A_1 many) {
+  public Collection<TOTM_B_3> getMany(TOTM_A_3 many) {
     return many.getChildren();
   }
 }

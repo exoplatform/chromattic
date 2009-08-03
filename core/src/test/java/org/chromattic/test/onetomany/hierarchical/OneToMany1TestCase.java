@@ -21,30 +21,20 @@ package org.chromattic.test.onetomany.hierarchical;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
-import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.Node;
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToTestCase extends AbstractOneToTestCase<TOTM_A_2, TOTM_B_2> {
+public class OneToMany1TestCase extends AbstractTestCase {
 
-  public Class<TOTM_A_2> getOneSideClass() {
-    return TOTM_A_2.class;
-  }
 
-  public Class<TOTM_B_2> getManySideClass() {
-    return TOTM_B_2.class;
-  }
-
-  public void setOne(TOTM_B_2 many, TOTM_A_2 one) {
-    throw new UnsupportedOperationException();
-  }
-
-  public TOTM_A_2 getOne(TOTM_B_2 many) {
-    return many.getParent();
+  protected void createDomain() {
+    addClass(TOTM_A_3.class);
+    addClass(TOTM_B_3.class);
   }
 
   public void testAdd() throws Exception {
@@ -53,13 +43,17 @@ public class OneToTestCase extends AbstractOneToTestCase<TOTM_A_2, TOTM_B_2> {
 
     //
     Node aNode = rootNode.addNode("totm_a_a", "totm_a");
-    TOTM_A_2 a = session.findByNode(TOTM_A_2.class, aNode);
+    TOTM_A_3 a = session.findByNode(TOTM_A_3.class, aNode);
     assertNotNull(a);
+    Collection<TOTM_B_3> children = a.getChildren();
+    assertNotNull(children);
+    assertEquals(0, children.size());
 
     //
     Node bNode = aNode.addNode("b", "totm_b");
-    TOTM_B_2 b = session.findByNode(TOTM_B_2.class, bNode);
+    TOTM_B_3 b = session.findByNode(TOTM_B_3.class, bNode);
     assertEquals(a, b.getParent());
+    assertTrue(children.contains(b));
   }
 
   public void testLoad() throws Exception {
@@ -73,38 +67,13 @@ public class OneToTestCase extends AbstractOneToTestCase<TOTM_A_2, TOTM_B_2> {
 
     //
     session = login();
-    TOTM_A_2 a = session.findById(TOTM_A_2.class, aId);
+    TOTM_A_3 a = session.findById(TOTM_A_3.class, aId);
     assertNotNull(a);
-    TOTM_B_2 b = session.findById(TOTM_B_2.class, bId);
+    TOTM_B_3 b = session.findById(TOTM_B_3.class, bId);
     assertEquals(a, b.getParent());
-  }
-
-  public void testTransientGetParent() throws Exception {
-    ChromatticSession session = login();
-    TOTM_B_2 b = session.create(TOTM_B_2.class, "totm_b_c");
-    try {
-      b.getParent();
-    }
-    catch (IllegalStateException expected) {
-    }
-  }
-
-  public void testRemovedGetParent() throws Exception {
-    DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
-    Node aNode = rootNode.addNode("totm_a_b", "totm_a");
-    String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "totm_b");
-    String bId = bNode.getUUID();
-    rootNode.save();
-
-    session = login();
-    TOTM_B_2 b = session.findById(TOTM_B_2.class, bId);
-    session.remove(b);
-    try {
-      b.getParent();
-    }
-    catch (IllegalStateException expected) {
-    }
+    assertEquals(a, b.getParent());
+    Collection<TOTM_B_3> children = a.getChildren();
+    assertNotNull(children);
+    assertTrue(children.contains(b));
   }
 }
