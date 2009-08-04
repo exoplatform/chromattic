@@ -29,7 +29,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class OneToManyTestCase<O, M> extends AbstractLinkTestCase<O, M> {
+public abstract class AbstractOneToManyTestCase<O, M> extends AbstractLinkTestCase<O, M> {
 
   protected abstract O getOne(M many);
 
