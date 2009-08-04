@@ -16,39 +16,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.chromattic.test.onetomany.reference;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.util.Collection;
+import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.RelationshipType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReferenceOneToTestCase extends AbstractOneToTestCase<TOTMR_A_1, TOTMR_B_1> {
+@NodeMapping(name = "totmp_b")
+public abstract class TOTMP_B_3 {
 
-  protected Class<TOTMR_A_1> getOneSideClass() {
-    return TOTMR_A_1.class;
-  }
+  @ManyToOne(type = RelationshipType.PATH)
+  @MappedBy(value = "ref")
+  public abstract TOTMP_A_3 getA();
 
-  protected Class<TOTMR_B_1> getManySideClass() {
-    return TOTMR_B_1.class;
-  }
+  public abstract void setA(TOTMP_A_3 a);
 
-  protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
-    referent.setProperty(propertyName, referenced);
-  }
-
-  protected Collection<TOTMR_B_1> getMany(TOTMR_A_1 one) {
-    return one.getBs();
-  }
-
-  protected String getOneNodeType() {
-    return "totmr_a";
-  }
-
-  protected String getManyNodeType() {
-    return "totmr_b";
-  }
 }

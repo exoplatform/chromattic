@@ -19,7 +19,6 @@
 
 package org.chromattic.test.onetomany.reference;
 
-import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
 
@@ -31,34 +30,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class OneToTestCase<O, M> extends AbstractTestCase {
-
-  /** . */
-  private final Class<O> oneClass = getOneSideClass();
-
-  /** . */
-  private final Class<M> manyClass = getManySideClass();
-
-  /** . */
-  private final String oneNT = getOneNodeType();
-
-  /** . */
-  private final String manyNT = getManyNodeType();
-
-  protected void createDomain() {
-    addClass(oneClass);
-    addClass(manyClass);
-  }
-
-  protected abstract Class<O> getOneSideClass();
-
-  protected abstract Class<M> getManySideClass();
-
-  protected abstract String getOneNodeType();
-
-  protected abstract String getManyNodeType();
-
-  protected abstract void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException;
+public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O, M> {
 
   protected abstract Collection<M> getMany(O one);
 

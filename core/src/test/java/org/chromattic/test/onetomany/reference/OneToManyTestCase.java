@@ -19,7 +19,6 @@
 
 package org.chromattic.test.onetomany.reference;
 
-import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
 
@@ -30,65 +29,66 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToManyTestCase extends AbstractTestCase {
+public abstract class OneToManyTestCase<O, M> extends AbstractLinkTestCase<O, M> {
 
-  protected void createDomain() {
-    addClass(TOTMR_A_3.class);
-    addClass(TOTMR_B_3.class);
-  }
+  protected abstract O getOne(M many);
+
+  protected abstract void setOne(M many, O one);
+
+  protected abstract Collection<M> getMany(O one);
 
   public void testAddPersistent() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getJCRSession().getRootNode();
-    Node aNode1 = rootNode.addNode("totmr_a_1", "totmr_a");
-    Node aNode2 = rootNode.addNode("totmr_a_2", "totmr_a");
-    Node bNode = rootNode.addNode("totmr_b", "totmr_b");
+    Node aNode1 = rootNode.addNode("totmr_a_1", oneNT);
+    Node aNode2 = rootNode.addNode("totmr_a_2", oneNT);
+    Node bNode = rootNode.addNode("totmr_b", manyNT);
 
     //
-    TOTMR_A_3 a1 = session.findByNode(TOTMR_A_3.class, aNode1);
-    TOTMR_A_3 a2 = session.findByNode(TOTMR_A_3.class, aNode2);
-    TOTMR_B_3 b = session.findByNode(TOTMR_B_3.class, bNode);
+    O a1 = session.findByNode(oneClass, aNode1);
+    O a2 = session.findByNode(oneClass, aNode2);
+    M b = session.findByNode(manyClass, bNode);
 
     //
-    b.setA(a1);
-    assertSame(a1, b.getA());
-    assertEquals(1, a1.getBs().size());
-    assertTrue(a1.getBs().contains(b));
-    assertEquals(0, a2.getBs().size());
-    assertFalse(a2.getBs().contains(b));
+    setOne(b, a1);
+    assertSame(a1, getOne(b));
+    assertEquals(1, getMany(a1).size());
+    assertTrue(getMany(a1).contains(b));
+    assertEquals(0, getMany(a2).size());
+    assertFalse(getMany(a2).contains(b));
 
     //
-    b.setA(a2);
-    assertSame(a2, b.getA());
-    assertEquals(0, a1.getBs().size());
-    assertFalse(a1.getBs().contains(b));
-    assertEquals(1, a2.getBs().size());
-    assertTrue(a2.getBs().contains(b));
+    setOne(b, a2);
+    assertSame(a2, getOne(b));
+    assertEquals(0, getMany(a1).size());
+    assertFalse(getMany(a1).contains(b));
+    assertEquals(1, getMany(a2).size());
+    assertTrue(getMany(a2).contains(b));
 
     //
-    a1.getBs().add(b);
-    assertSame(a1, b.getA());
-    assertEquals(1, a1.getBs().size());
-    assertTrue(a1.getBs().contains(b));
-    assertEquals(0, a2.getBs().size());
-    assertFalse(a2.getBs().contains(b));
+    getMany(a1).add(b);
+    assertSame(a1, getOne(b));
+    assertEquals(1, getMany(a1).size());
+    assertTrue(getMany(a1).contains(b));
+    assertEquals(0, getMany(a2).size());
+    assertFalse(getMany(a2).contains(b));
 
     //
-    a2.getBs().add(b);
-    assertSame(a2, b.getA());
-    assertEquals(0, a1.getBs().size());
-    assertFalse(a1.getBs().contains(b));
-    assertEquals(1, a2.getBs().size());
-    assertTrue(a2.getBs().contains(b));
+    getMany(a2).add(b);
+    assertSame(a2, getOne(b));
+    assertEquals(0, getMany(a1).size());
+    assertFalse(getMany(a1).contains(b));
+    assertEquals(1, getMany(a2).size());
+    assertTrue(getMany(a2).contains(b));
   }
 
   public void testRemoveReferent() throws Exception {
     ChromatticSession session = login();
 
     //
-    TOTMR_A_3 a = session.insert(TOTMR_A_3.class, "totmr_a_d");
-    TOTMR_B_3 b = session.insert(TOTMR_B_3.class, "totmr_b_d");
-    Collection<TOTMR_B_3> bs = a.getBs();
+    O a = session.insert(oneClass, "totmr_a_d");
+    M b = session.insert(manyClass, "totmr_b_d");
+    Collection<M> bs = getMany(a);
     bs.add(b);
 
     //
@@ -100,13 +100,13 @@ public class OneToManyTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    TOTMR_A_3 a = session.insert(TOTMR_A_3.class, "totmr_a_d");
-    TOTMR_B_3 b = session.insert(TOTMR_B_3.class, "totmr_b_d");
-    Collection<TOTMR_B_3> bs = a.getBs();
+    O a = session.insert(oneClass, "totmr_a_d");
+    M b = session.insert(manyClass, "totmr_b_d");
+    Collection<M> bs = getMany(a);
     bs.add(b);
 
     //
     session.remove(a);
-    assertNull(b.getA());
+    assertNull(getOne(b));
   }
 }

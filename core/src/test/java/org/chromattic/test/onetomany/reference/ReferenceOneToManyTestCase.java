@@ -26,22 +26,26 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReferenceOneToTestCase extends AbstractOneToTestCase<TOTMR_A_1, TOTMR_B_1> {
+public class ReferenceOneToManyTestCase extends OneToManyTestCase<TOTMR_A_3, TOTMR_B_3> {
 
-  protected Class<TOTMR_A_1> getOneSideClass() {
-    return TOTMR_A_1.class;
+  protected TOTMR_A_3 getOne(TOTMR_B_3 many) {
+    return many.getA();
   }
 
-  protected Class<TOTMR_B_1> getManySideClass() {
-    return TOTMR_B_1.class;
+  protected void setOne(TOTMR_B_3 many, TOTMR_A_3 one) {
+    many.setA(one);
   }
 
-  protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
-    referent.setProperty(propertyName, referenced);
-  }
-
-  protected Collection<TOTMR_B_1> getMany(TOTMR_A_1 one) {
+  protected Collection<TOTMR_B_3> getMany(TOTMR_A_3 one) {
     return one.getBs();
+  }
+
+  protected Class<TOTMR_A_3> getOneSideClass() {
+    return TOTMR_A_3.class;
+  }
+
+  protected Class<TOTMR_B_3> getManySideClass() {
+    return TOTMR_B_3.class;
   }
 
   protected String getOneNodeType() {
@@ -50,5 +54,9 @@ public class ReferenceOneToTestCase extends AbstractOneToTestCase<TOTMR_A_1, TOT
 
   protected String getManyNodeType() {
     return "totmr_b";
+  }
+
+  protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
+    referent.setProperty(propertyName, referenced);
   }
 }

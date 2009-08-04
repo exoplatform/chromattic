@@ -16,39 +16,58 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.chromattic.test.onetomany.reference;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
+import javax.jcr.Value;
+import javax.jcr.PropertyType;
 import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReferenceOneToTestCase extends AbstractOneToTestCase<TOTMR_A_1, TOTMR_B_1> {
+public class PathOneToManyTestCase extends OneToManyTestCase<TOTMP_A_3, TOTMP_B_3> {
 
-  protected Class<TOTMR_A_1> getOneSideClass() {
-    return TOTMR_A_1.class;
+  protected Class<TOTMP_A_3> getOneSideClass() {
+    return TOTMP_A_3.class;
   }
 
-  protected Class<TOTMR_B_1> getManySideClass() {
-    return TOTMR_B_1.class;
+  protected Class<TOTMP_B_3> getManySideClass() {
+    return TOTMP_B_3.class;
   }
 
   protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
-    referent.setProperty(propertyName, referenced);
+    if (referenced != null) {
+      String path = referenced.getPath();
+      ValueFactory valueFactory = referent.getSession().getValueFactory();
+      Value value = valueFactory.createValue(path, PropertyType.PATH);
+      referent.setProperty(propertyName, value);
+    } else {
+      referent.setProperty(propertyName, (String)null);
+    }
   }
 
-  protected Collection<TOTMR_B_1> getMany(TOTMR_A_1 one) {
+  protected Collection<TOTMP_B_3> getMany(TOTMP_A_3 one) {
     return one.getBs();
   }
 
+  protected TOTMP_A_3 getOne(TOTMP_B_3 many) {
+    return many.getA();
+  }
+
+  protected void setOne(TOTMP_B_3 many, TOTMP_A_3 one) {
+    many.setA(one);
+  }
+
   protected String getOneNodeType() {
-    return "totmr_a";
+    return "totmp_a";
   }
 
   protected String getManyNodeType() {
-    return "totmr_b";
+    return "totmp_b";
   }
 }

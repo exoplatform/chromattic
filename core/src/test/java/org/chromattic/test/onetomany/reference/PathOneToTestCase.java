@@ -30,7 +30,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PathOneToTestCase extends OneToTestCase<TOTMP_A_1, TOTMP_B_1> {
+public class PathOneToTestCase extends AbstractOneToTestCase<TOTMP_A_1, TOTMP_B_1> {
 
   protected Class<TOTMP_A_1> getOneSideClass() {
     return TOTMP_A_1.class;

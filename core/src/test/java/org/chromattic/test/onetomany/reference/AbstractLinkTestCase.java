@@ -18,37 +18,41 @@
  */
 package org.chromattic.test.onetomany.reference;
 
+import org.chromattic.test.AbstractTestCase;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReferenceOneToTestCase extends AbstractOneToTestCase<TOTMR_A_1, TOTMR_B_1> {
+public abstract class AbstractLinkTestCase<O, M> extends AbstractTestCase {
 
-  protected Class<TOTMR_A_1> getOneSideClass() {
-    return TOTMR_A_1.class;
+  /** . */
+  protected final Class<O> oneClass = getOneSideClass();
+
+  /** . */
+  protected final Class<M> manyClass = getManySideClass();
+
+  /** . */
+  protected final String oneNT = getOneNodeType();
+
+  /** . */
+  protected final String manyNT = getManyNodeType();
+
+  protected void createDomain() {
+    addClass(oneClass);
+    addClass(manyClass);
   }
 
-  protected Class<TOTMR_B_1> getManySideClass() {
-    return TOTMR_B_1.class;
-  }
+  protected abstract Class<O> getOneSideClass();
 
-  protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
-    referent.setProperty(propertyName, referenced);
-  }
+  protected abstract Class<M> getManySideClass();
 
-  protected Collection<TOTMR_B_1> getMany(TOTMR_A_1 one) {
-    return one.getBs();
-  }
+  protected abstract String getOneNodeType();
 
-  protected String getOneNodeType() {
-    return "totmr_a";
-  }
+  protected abstract String getManyNodeType();
 
-  protected String getManyNodeType() {
-    return "totmr_b";
-  }
+  protected abstract void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException;
 }
