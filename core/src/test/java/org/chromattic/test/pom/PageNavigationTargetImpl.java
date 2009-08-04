@@ -22,6 +22,7 @@ package org.chromattic.test.pom;
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.RelationshipType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -30,7 +31,7 @@ import org.chromattic.api.annotations.MappedBy;
 @NodeMapping(name = "exo:pagenavigationtarget")
 public abstract class PageNavigationTargetImpl extends NavigationTargetImpl {
 
-  @ManyToOne
+  @ManyToOne(type = RelationshipType.REFERENCE)
   @MappedBy("page")
   public abstract PageImpl getPage();
 

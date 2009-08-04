@@ -24,12 +24,10 @@ import junit.framework.TestCase;
 import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.Node;
-import javax.jcr.Property;
 
 import org.chromattic.exo.RepositoryBootstrap;
 import org.chromattic.common.Collections;
-import org.chromattic.common.JCR;
-import org.chromattic.core.jcr.ReferenceManager;
+import org.chromattic.core.jcr.AbstractRelationshipManager;
 
 import java.util.Iterator;
 import java.util.ConcurrentModificationException;
@@ -38,10 +36,13 @@ import java.util.ConcurrentModificationException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReferenceManagerTestCase extends TestCase {
+public abstract class ReferenceManagerTestCase extends TestCase {
+
+  protected abstract AbstractRelationshipManager createLinkManager(Session session);
 
   /** . */
   private Repository repo;
+
 
   @Override
   protected void setUp() throws Exception {
@@ -55,7 +56,7 @@ public class ReferenceManagerTestCase extends TestCase {
 
   public void testAdd() throws Exception {
     Session session = repo.login();
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a5");
     a.addMixin("mix:referenceable");
@@ -67,13 +68,13 @@ public class ReferenceManagerTestCase extends TestCase {
     
     //
     session.save();
-    mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
   }
 
   public void testRemoveTransient() throws Exception {
     Session session = repo.login();
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a6");
     a.addMixin("mix:referenceable");
@@ -89,13 +90,13 @@ public class ReferenceManagerTestCase extends TestCase {
 
     //
     session.save();
-    mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
   }
 
   public void testRemovePersistent() throws Exception {
     Session session = repo.login();
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a7");
     a.addMixin("mix:referenceable");
@@ -107,7 +108,7 @@ public class ReferenceManagerTestCase extends TestCase {
 
     //
     session.save();
-    mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
 
     //
@@ -116,13 +117,13 @@ public class ReferenceManagerTestCase extends TestCase {
 
     //
     session.save();
-    mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
   }
 
   public void testReAddTransientlyRemovedPersistent() throws Exception {
     Session session = repo.login();
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a8");
     a.addMixin("mix:referenceable");
@@ -134,7 +135,7 @@ public class ReferenceManagerTestCase extends TestCase {
 
     //
     session.save();
-    mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
 
     //
@@ -147,13 +148,13 @@ public class ReferenceManagerTestCase extends TestCase {
 
     //
     session.save();
-    mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
   }
 
   public void testUpdate() throws Exception {
     Session session = repo.login();
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a9");
     a.addMixin("mix:referenceable");
@@ -173,7 +174,7 @@ public class ReferenceManagerTestCase extends TestCase {
 
     //
     session.save();
-    mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
     assertEquals(Collections.set(c), Collections.set(mgr.getReferents(b, "ref")));
   }
@@ -186,7 +187,7 @@ public class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b10");
     session.save();
 
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     Iterator i = mgr.getReferents(a, "ref");
     mgr.setReferenced(b, "ref", a);
     try {
@@ -203,10 +204,11 @@ public class ReferenceManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
-    b.setProperty("ref", a);
+    AbstractRelationshipManager mgr = createLinkManager(session);
+    mgr.setReferenced(b, "ref", a);
     session.save();
 
-    ReferenceManager mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     Iterator i = mgr.getReferents(a, "ref");
     mgr.setReferenced(b, "ref", null);
     try {
@@ -223,10 +225,11 @@ public class ReferenceManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
-    b.setProperty("ref", a);
+    AbstractRelationshipManager mgr = createLinkManager(session);
+    mgr.setReferenced(b, "ref", a);
     session.save();
 
-    ReferenceManager mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     Iterator i = mgr.getReferents(a, "ref");
     Iterator j = mgr.getReferents(a, "ref");
     j.next();
@@ -246,10 +249,11 @@ public class ReferenceManagerTestCase extends TestCase {
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b11");
     Node c = root.addNode("c11");
-    b.setProperty("ref", a);
+    AbstractRelationshipManager mgr = createLinkManager(session);
+    mgr.setReferenced(b, "ref", a);
     session.save();
 
-    ReferenceManager mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     Iterator i = mgr.getReferents(a, "ref");
     mgr.setReferenced(c, "ref", a);
     try {
@@ -266,10 +270,11 @@ public class ReferenceManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
-    b.setProperty("ref", a);
+    AbstractRelationshipManager mgr = createLinkManager(session);
+    mgr.setReferenced(b, "ref", a);
     session.save();
 
-    ReferenceManager mgr = new ReferenceManager(session);
+    mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", null);
     Iterator i = mgr.getReferents(a, "ref");
     mgr.setReferenced(b, "ref", a);
@@ -281,12 +286,6 @@ public class ReferenceManagerTestCase extends TestCase {
     }
   }
 
-
-
-
-
-
-
   public void testTransientConcurrentRemoveModification() throws Exception {
     Session session = repo.login();
     Node root = session.getRootNode();
@@ -295,7 +294,7 @@ public class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b10");
     session.save();
 
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     Iterator i = mgr.getReferents(a, "ref");
     mgr.setReferenced(b, "ref", null);
@@ -315,7 +314,7 @@ public class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b10");
     session.save();
 
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     Iterator i = mgr.getReferents(a, "ref");
     Iterator j = mgr.getReferents(a, "ref");
@@ -338,7 +337,7 @@ public class ReferenceManagerTestCase extends TestCase {
     Node c = root.addNode("c11");
     session.save();
 
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     Iterator i = mgr.getReferents(a, "ref");
     mgr.setReferenced(c, "ref", a);
@@ -358,7 +357,7 @@ public class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b10");
     session.save();
 
-    ReferenceManager mgr = new ReferenceManager(session);
+    AbstractRelationshipManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     mgr.setReferenced(b, "ref", null);
     Iterator i = mgr.getReferents(a, "ref");
@@ -369,127 +368,5 @@ public class ReferenceManagerTestCase extends TestCase {
     }
     catch (ConcurrentModificationException e) {
     }
-  }
-
-  public void testAddRef() throws Exception {
-    Session session = repo.login();
-
-    //
-    Node root = session.getRootNode();
-    Node a = root.addNode("a1");
-    a.addMixin("mix:referenceable");
-    Node b = root.addNode("b1");
-
-    //
-    Property ref = b.setProperty("ref", a);
-    assertTrue(ref.isNew());
-    assertFalse(ref.isModified());
-    assertEquals(0, Collections.set(JCR.adapt(a.getReferences())).size());
-
-    //
-    session.save();
-    assertFalse(ref.isNew());
-    assertFalse(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
-  }
-
-  public void testRemoveRef() throws Exception {
-    Session session = repo.login();
-
-    //
-    Node root = session.getRootNode();
-    Node a = root.addNode("a2");
-    a.addMixin("mix:referenceable");
-    Node b = root.addNode("b2");
-    b.setProperty("ref", a);
-    session.save();
-
-    //
-    session = repo.login();
-    root = session.getRootNode();
-    a = root.getNode("a2");
-    b = root.getNode("b2");
-    Property ref = b.getProperty("ref");
-    assertFalse(ref.isNew());
-    assertFalse(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
-
-    //
-    ref.remove();
-    assertFalse(ref.isNew());
-    assertTrue(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
-
-    //
-    session.save();
-    assertFalse(ref.isNew());
-    assertTrue(ref.isModified());
-    assertEquals(0, Collections.set(JCR.adapt(a.getReferences())).size());
-  }
-
-  public void testReAddRef() throws Exception {
-    Session session = repo.login();
-
-    //
-    Node root = session.getRootNode();
-    Node a = root.addNode("a3");
-    a.addMixin("mix:referenceable");
-    Node b = root.addNode("b3");
-    b.setProperty("ref", a);
-    session.save();
-
-    //
-    session = repo.login();
-    root = session.getRootNode();
-    a = root.getNode("a3");
-    b = root.getNode("b3");
-    Property ref = b.getProperty("ref");
-
-    //
-    ref.remove();
-    b.setProperty("ref", a);
-    assertFalse(ref.isNew());
-    assertTrue(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
-
-    //
-    session.save();
-    b.setProperty("ref", a);
-    assertFalse(ref.isNew());
-    assertTrue(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
-  }
-
-  public void testUpdateRef() throws Exception {
-    Session session = repo.login();
-
-    //
-    Node root = session.getRootNode();
-    Node a = root.addNode("a4");
-    a.addMixin("mix:referenceable");
-    Node b = root.addNode("b4");
-    b.addMixin("mix:referenceable");
-    Node c = root.addNode("c4");
-    Property ref = c.setProperty("ref", a);
-
-    //
-    assertTrue(ref.isNew());
-    assertFalse(ref.isModified());
-    assertEquals(0, Collections.set(JCR.adapt(a.getReferences())).size());
-    assertEquals(0, Collections.set(JCR.adapt(b.getReferences())).size());
-
-    //
-    c.setProperty("ref", b);
-    assertTrue(ref.isNew());
-    assertTrue(ref.isModified());
-    assertEquals(0, Collections.set(JCR.adapt(a.getReferences())).size());
-    assertEquals(0, Collections.set(JCR.adapt(b.getReferences())).size());
-
-    //
-    session.save();
-    assertFalse(ref.isNew());
-    assertFalse(ref.isModified());
-    assertEquals(0, Collections.set(JCR.adapt(a.getReferences())).size());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(b.getReferences())));
   }
 }

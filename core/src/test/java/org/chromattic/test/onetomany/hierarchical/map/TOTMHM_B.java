@@ -20,7 +20,6 @@
 package org.chromattic.test.onetomany.hierarchical.map;
 
 import org.chromattic.api.annotations.NodeMapping;
-import org.chromattic.api.annotations.Hierarchic;
 import org.chromattic.api.annotations.ManyToOne;
 
 /**
@@ -31,6 +30,5 @@ import org.chromattic.api.annotations.ManyToOne;
 public abstract class TOTMHM_B {
 
   @ManyToOne
-  @Hierarchic
   public abstract TOTMHM_A getParent();
 }

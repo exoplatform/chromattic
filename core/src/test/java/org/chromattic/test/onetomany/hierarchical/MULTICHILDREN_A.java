@@ -21,7 +21,6 @@ package org.chromattic.test.onetomany.hierarchical;
 
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.Hierarchic;
 
 import java.util.Collection;
 
@@ -33,15 +32,12 @@ import java.util.Collection;
 public abstract class MULTICHILDREN_A {
 
   @OneToMany
-  @Hierarchic
   public abstract Collection<MULTICHILDREN_B> getBs();
 
   @OneToMany
-  @Hierarchic
   public abstract Collection<MULTICHILDREN_C> getCs();
 
   @OneToMany
-  @Hierarchic
-  public abstract Collection<MULTICHILDREN_D> getDs(); 
+  public abstract Collection<MULTICHILDREN_D> getDs();
 
 }

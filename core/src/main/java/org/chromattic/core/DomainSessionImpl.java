@@ -26,6 +26,7 @@ import org.chromattic.api.DuplicateNameException;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.NodeDef;
+import org.chromattic.core.jcr.LinkType;
 
 import javax.jcr.Session;
 import javax.jcr.RepositoryException;
@@ -280,7 +281,7 @@ class DomainSessionImpl extends DomainSession {
       throw new IllegalStateException();
     }
     Node node = ctx.state.getNode();
-    Node related = sessionWrapper.getReferenced(node, name);
+    Node related = sessionWrapper.getReferenced(node, name, LinkType.REFERENCE);
     if (related != null) {
       return findByNode(Object.class, related);
     } else {
@@ -308,15 +309,15 @@ class DomainSessionImpl extends DomainSession {
       Node relatedNode = relatedCtx.state.getNode();
 
       //
-      return relatedNode != sessionWrapper.setReferenced(node, name, relatedNode);
+      return relatedNode != sessionWrapper.setReferenced(node, name, relatedNode, LinkType.REFERENCE);
     } else {
-      return null != sessionWrapper.setReferenced(node, name, null);
+      return null != sessionWrapper.setReferenced(node, name, null, LinkType.REFERENCE);
     }
   }
 
   protected <T> Iterator<T> _getRelateds(ObjectContext ctx, String name, Class<T> filterClass) throws RepositoryException {
     Node node = ctx.state.getNode();
-    Iterator<Node> nodes = sessionWrapper.getReferents(node, name);
+    Iterator<Node> nodes = sessionWrapper.getReferents(node, name, LinkType.REFERENCE);
     return new ReferentCollectionIterator<T>(this, nodes, filterClass, name);
   }
 

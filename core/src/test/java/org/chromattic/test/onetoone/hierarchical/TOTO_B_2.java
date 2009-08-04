@@ -21,7 +21,6 @@ package org.chromattic.test.onetoone.hierarchical;
 
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Hierarchic;
 import org.chromattic.api.annotations.RelatedMappedBy;
 
 /**
@@ -32,7 +31,6 @@ import org.chromattic.api.annotations.RelatedMappedBy;
 public abstract class TOTO_B_2 {
 
   @OneToOne
-  @Hierarchic
   @RelatedMappedBy("b")
   public abstract TOTO_A_2 getA();
 

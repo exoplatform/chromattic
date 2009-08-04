@@ -22,6 +22,7 @@ package org.chromattic.test.onetomany.reference;
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.RelationshipType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -30,7 +31,7 @@ import org.chromattic.api.annotations.MappedBy;
 @NodeMapping(name = "totmr_b")
 public abstract class TOTMR_B_3 {
 
-  @ManyToOne
+  @ManyToOne(type = RelationshipType.REFERENCE)
   @MappedBy(value = "ref")
   public abstract TOTMR_A_3 getA();
 

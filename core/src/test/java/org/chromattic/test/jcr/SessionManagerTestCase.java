@@ -27,6 +27,7 @@ import org.chromattic.exo.ExoSessionLifeCycle;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.SessionWrapperImpl;
 import org.chromattic.core.jcr.NodeDef;
+import org.chromattic.core.jcr.LinkType;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.common.Collections;
 
@@ -56,19 +57,19 @@ public class SessionManagerTestCase extends TestCase {
   public void testRemoveTransientReferent() throws Exception {
     Node a = mgr.addNode("a", blah);
     Node b = mgr.addNode("b", blah);
-    mgr.setReferenced(a, "ref", b);
+    mgr.setReferenced(a, "ref", b, LinkType.REFERENCE);
     mgr.remove(a);
-    Set<Node> referents = Collections.set(mgr.getReferents(b, "ref"));
+    Set<Node> referents = Collections.set(mgr.getReferents(b, "ref", LinkType.REFERENCE));
     assertEquals(Collections.<Node>set(), referents);
   }
 
   public void testRemovePersistentReferent() throws Exception {
     Node a = mgr.addNode("a", blah);
     Node b = mgr.addNode("b", blah);
-    mgr.setReferenced(a, "ref", b);
+    mgr.setReferenced(a, "ref", b, LinkType.REFERENCE);
     mgr.remove(a);
     mgr.save();
-    Set<Node> referents = Collections.set(mgr.getReferents(b, "ref"));
+    Set<Node> referents = Collections.set(mgr.getReferents(b, "ref", LinkType.REFERENCE));
     assertEquals(Collections.<Node>set(), referents);
   }
 }

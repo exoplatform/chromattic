@@ -19,8 +19,7 @@
 
 package org.chromattic.core.mapping.value;
 
-import org.chromattic.core.mapping.value.Multiplicity;
-import org.chromattic.core.mapping.value.RelationshipType;
+import org.chromattic.api.RelationshipType;
 import org.reflext.api.ClassTypeInfo;
 
 /**

@@ -20,7 +20,6 @@
 package org.chromattic.test.onetomany.hierarchical;
 
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.Hierarchic;
 import org.chromattic.api.annotations.NodeMapping;
 
 import java.util.Collection;
@@ -33,7 +32,6 @@ import java.util.Collection;
 public abstract class TOTM_A_3 {
 
   @OneToMany
-  @Hierarchic
   public abstract Collection<TOTM_B_3> getChildren();
 
 }

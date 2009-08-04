@@ -19,7 +19,6 @@
 
 package org.chromattic.test.pom;
 
-import org.chromattic.api.annotations.Hierarchic;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.MappedBy;
@@ -39,15 +38,12 @@ public abstract class NavigationImpl {
   public abstract SiteImpl getSite();
 
   @OneToMany
-  @Hierarchic
   public abstract Collection<NavigationImpl> getChildren();
 
   @ManyToOne
-  @Hierarchic
   public abstract NavigationImpl getParent();
 
   @OneToOne
-  @Hierarchic
   @MappedBy("target")
   public abstract NavigationTargetImpl getTarget();
 

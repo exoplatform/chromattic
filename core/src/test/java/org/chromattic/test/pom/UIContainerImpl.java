@@ -21,7 +21,6 @@ package org.chromattic.test.pom;
 
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.Hierarchic;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.Create;
 
@@ -35,11 +34,9 @@ import java.util.Collection;
 public abstract class UIContainerImpl extends UIComponentImpl {
 
   @OneToMany
-  @Hierarchic
   public abstract Collection<UIComponentImpl> getChildren();
 
   @ManyToOne
-  @Hierarchic
   public abstract UIContainerImpl getParent();
 
   @Create

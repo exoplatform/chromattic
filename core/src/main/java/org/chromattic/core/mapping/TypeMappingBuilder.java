@@ -23,7 +23,6 @@ import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Hierarchic;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.ManyToOne;
@@ -36,7 +35,7 @@ import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.FindById;
 import org.chromattic.api.annotations.Mixin;
 import org.chromattic.api.annotations.WorkspaceName;
-import org.chromattic.core.mapping.value.RelationshipType;
+import org.chromattic.api.RelationshipType;
 import org.chromattic.core.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.core.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.core.mapping.value.SimpleMapping;
@@ -192,22 +191,16 @@ public class TypeMappingBuilder {
           BeanValueInfo bvi = (BeanValueInfo)vi;
           ClassTypeInfo typeInfo = bvi.getTypeInfo();
           OneToOne oneToOneAnn = propertyInfo.getAnnotation(OneToOne.class);
-          Hierarchic hierarchicAnn = propertyInfo.getAnnotation(Hierarchic.class);
-
-          //
-          if (hierarchicAnn == null) {
-            throw new IllegalStateException();
-          }
 
           // The mapped by of a one to one mapping discrimines between the parent and the child
           RelationshipMapping hierarchyMapping;
           MappedBy mappedBy = propertyInfo.getAnnotation(MappedBy.class);
           if (mappedBy != null) {
-            hierarchyMapping = new NamedOneToOneMapping(typeInfo, mappedBy.value(), RelationshipType.HIERARCHY, true);
+            hierarchyMapping = new NamedOneToOneMapping(typeInfo, mappedBy.value(), RelationshipType.HIERARCHIC, true);
           } else {
             RelatedMappedBy relatedMappedBy = propertyInfo.getAnnotation(RelatedMappedBy.class);
             if (relatedMappedBy != null) {
-              hierarchyMapping = new NamedOneToOneMapping(typeInfo, relatedMappedBy.value(), RelationshipType.HIERARCHY, false);
+              hierarchyMapping = new NamedOneToOneMapping(typeInfo, relatedMappedBy.value(), RelationshipType.HIERARCHIC, false);
             } else {
               throw new IllegalStateException("No related by mapping found for property " + propertyInfo + " when introspecting " + info);
             }
@@ -247,13 +240,13 @@ public class TypeMappingBuilder {
 
           //
           OneToManyMapping mapping;
-          Hierarchic hierarchicAnn = propertyInfo.getAnnotation(Hierarchic.class);
-          if (hierarchicAnn != null) {
+          RelationshipType type = oneToManyAnn.type();
+          if (type == RelationshipType.HIERARCHIC) {
             MappedBy mappedBy = propertyInfo.getAnnotation(MappedBy.class);
             if (mappedBy != null) {
               throw new IllegalStateException();
             }
-            mapping = new OneToManyMapping(bvi.getTypeInfo(), RelationshipType.HIERARCHY);
+            mapping = new OneToManyMapping(bvi.getTypeInfo(), RelationshipType.HIERARCHIC);
           } else {
             RelatedMappedBy mappedBy = propertyInfo.getAnnotation(RelatedMappedBy.class);
             if (mappedBy == null) {
@@ -279,11 +272,11 @@ public class TypeMappingBuilder {
 
           //
           ManyToOne manyToOneAnn = propertyInfo.getAnnotation(ManyToOne.class);
-          Hierarchic hierarchicAnn = propertyInfo.getAnnotation(Hierarchic.class);
+          RelationshipType type = manyToOneAnn.type();
 
           //
-          if (hierarchicAnn != null) {
-            RelationshipMapping hierarchyMapping = new ManyToOneMapping(bvi.getTypeInfo(), RelationshipType.HIERARCHY);
+          if (type == RelationshipType.HIERARCHIC) {
+            RelationshipMapping hierarchyMapping = new ManyToOneMapping(bvi.getTypeInfo(), RelationshipType.HIERARCHIC);
             PropertyMapping<RelationshipMapping> manyToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
             propertyMappings.add(manyToOneMapping);
           } else {

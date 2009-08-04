@@ -20,8 +20,7 @@
 package org.chromattic.core.mapping.value;
 
 import org.reflext.api.ClassTypeInfo;
-import org.chromattic.core.mapping.value.RelationshipType;
-import org.chromattic.core.mapping.value.Multiplicity;
+import org.chromattic.api.RelationshipType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

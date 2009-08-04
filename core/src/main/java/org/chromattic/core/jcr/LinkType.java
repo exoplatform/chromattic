@@ -16,25 +16,19 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
-package org.chromattic.test.onetomany.reference.polymorphism;
-
-import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.NodeMapping;
-import org.chromattic.api.annotations.RelatedMappedBy;
-import org.chromattic.api.RelationshipType;
-
-import java.util.Collection;
+package org.chromattic.core.jcr;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totmrp_a")
-public abstract class TOTMRP_A {
+public enum LinkType {
 
-  @OneToMany(type = RelationshipType.REFERENCE)
-  @RelatedMappedBy("ref")
-  public abstract Collection<TOTMRP_B> getBs();
+  REFERENCE(0), PATH(1);
 
+  final int index;
+
+  LinkType(int index) {
+    this.index = index;
+  }
 }

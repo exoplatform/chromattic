@@ -20,7 +20,6 @@
 package org.chromattic.test.pom;
 
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.Hierarchic;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Create;
 
@@ -33,11 +32,9 @@ import java.util.Collection;
 public abstract class Sites<T extends SiteImpl> {
 
   @OneToMany
-  @Hierarchic
   public abstract Collection<T> getSites();
 
   @OneToOne
-  @Hierarchic
   public abstract WorkspaceImpl getWorkspace();
 
   public T createSite(String siteName) {

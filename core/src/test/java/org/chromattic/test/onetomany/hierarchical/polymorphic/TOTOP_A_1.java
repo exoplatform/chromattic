@@ -21,7 +21,6 @@ package org.chromattic.test.onetomany.hierarchical.polymorphic;
 
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.Hierarchic;
 
 import java.util.Collection;
 
@@ -33,7 +32,6 @@ import java.util.Collection;
 public abstract class TOTOP_A_1 {
 
   @OneToMany
-  @Hierarchic
   public abstract Collection<TOTOP_B_1> getBs();
 
 }

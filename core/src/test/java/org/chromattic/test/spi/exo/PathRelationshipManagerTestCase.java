@@ -17,24 +17,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.reference.polymorphism;
+package org.chromattic.test.spi.exo;
 
-import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.NodeMapping;
-import org.chromattic.api.annotations.RelatedMappedBy;
-import org.chromattic.api.RelationshipType;
+import org.chromattic.core.jcr.ReferenceManager;
+import org.chromattic.core.jcr.AbstractRelationshipManager;
+import org.chromattic.core.jcr.PathRelationshipManager;
 
-import java.util.Collection;
+import javax.jcr.Session;
+import javax.jcr.Node;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totmrp_a")
-public abstract class TOTMRP_A {
+public class PathRelationshipManagerTestCase extends ReferenceManagerTestCase {
 
-  @OneToMany(type = RelationshipType.REFERENCE)
-  @RelatedMappedBy("ref")
-  public abstract Collection<TOTMRP_B> getBs();
-
+  protected AbstractRelationshipManager createLinkManager(Session session) {
+    return new PathRelationshipManager(session);
+  }
 }

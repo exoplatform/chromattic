@@ -20,7 +20,6 @@
 package org.chromattic.core.jcr;
 
 import org.chromattic.common.logging.Logger;
-import org.chromattic.common.JCR;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
 import javax.jcr.Session;
@@ -52,7 +51,7 @@ public class SessionWrapperImpl implements SessionWrapper {
   public final Session session;
 
   /** . */
-  private ReferenceManager refMgr;
+  private AbstractRelationshipManager[] mgrs;
 
   /** . */
   private SessionLifeCycle sessionLifeCycle;
@@ -62,7 +61,10 @@ public class SessionWrapperImpl implements SessionWrapper {
     //
     this.sessionLifeCycle = sessionLifeCycle;
     this.session = session;
-    this.refMgr = new ReferenceManager(session);
+    this.mgrs = new AbstractRelationshipManager[] {
+      new ReferenceManager(session),
+      new PathRelationshipManager(session)
+    };
 
     //
     sessionMapping.put(session, this);
@@ -138,7 +140,9 @@ public class SessionWrapperImpl implements SessionWrapper {
     for (PropertyIterator i = node.getProperties(); i.hasNext();) {
       Property property = i.nextProperty();
       if (property.getType() == PropertyType.REFERENCE) {
-        refMgr.setReferenced(node, property.getName(), null);
+        mgrs[LinkType.REFERENCE.index].setReferenced(node, property.getName(), null);
+      } else if (property.getType() == PropertyType.PATH) {
+        mgrs[LinkType.PATH.index].setReferenced(node, property.getName(), null);
       }
     }
 
@@ -150,19 +154,21 @@ public class SessionWrapperImpl implements SessionWrapper {
 
   public void save() throws RepositoryException {
     sessionLifeCycle.save(session);
-    refMgr.clear();
+    for (AbstractRelationshipManager mgr : mgrs) {
+      mgr.clear();
+    }
   }
 
-  public Node getReferenced(Node referent, String propertyName) throws RepositoryException {
-    return refMgr.getReferenced(referent, propertyName);
+  public Node getReferenced(Node referent, String propertyName, LinkType linkType) throws RepositoryException {
+    return mgrs[linkType.index].getReferenced(referent, propertyName);
   }
 
-  public Node setReferenced(Node referent, String propertyName, Node referenced) throws RepositoryException {
-    return refMgr.setReferenced(referent, propertyName, referenced);
+  public Node setReferenced(Node referent, String propertyName, Node referenced, LinkType linkType) throws RepositoryException {
+    return mgrs[linkType.index].setReferenced(referent, propertyName, referenced);
   }
 
-  public Iterator<Node> getReferents(Node referenced, String propertyName) throws RepositoryException {
-    return refMgr.getReferents(referenced, propertyName);
+  public Iterator<Node> getReferents(Node referenced, String propertyName, LinkType linkType) throws RepositoryException {
+    return mgrs[linkType.index].getReferents(referenced, propertyName);
   }
 
   @Override
@@ -187,7 +193,9 @@ public class SessionWrapperImpl implements SessionWrapper {
   }
 
   public void close() {
-    refMgr.clear();
+    for (AbstractRelationshipManager mgr : mgrs) {
+      mgr.clear();
+    }
     sessionLifeCycle.close(session);
   }
 }

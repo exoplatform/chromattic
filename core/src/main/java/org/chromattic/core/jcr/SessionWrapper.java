@@ -51,11 +51,11 @@ public interface SessionWrapper {
 
   void save() throws RepositoryException;
 
-  Node setReferenced(Node referent, String propertyName, Node referenced) throws RepositoryException;
+  Node setReferenced(Node referent, String propertyName, Node referenced, LinkType linkType) throws RepositoryException;
 
-  Node getReferenced(Node referent, String propertyName) throws RepositoryException;
+  Node getReferenced(Node referent, String propertyName, LinkType linkType) throws RepositoryException;
 
-  Iterator<Node> getReferents(Node referenced, String propertyName) throws RepositoryException;
+  Iterator<Node> getReferents(Node referenced, String propertyName, LinkType linkType) throws RepositoryException;
 
   Session getSession();
 

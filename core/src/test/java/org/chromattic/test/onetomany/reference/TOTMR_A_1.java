@@ -22,6 +22,7 @@ package org.chromattic.test.onetomany.reference;
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.RelatedMappedBy;
+import org.chromattic.api.RelationshipType;
 
 import java.util.Collection;
 
@@ -32,7 +33,7 @@ import java.util.Collection;
 @NodeMapping(name = "totmr_a")
 public abstract class TOTMR_A_1 {
 
-  @OneToMany
+  @OneToMany(type = RelationshipType.REFERENCE)
   @RelatedMappedBy("ref")
   public abstract Collection<TOTMR_B_1> getBs();
 

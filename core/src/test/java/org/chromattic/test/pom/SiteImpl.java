@@ -21,7 +21,6 @@ package org.chromattic.test.pom;
 
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.Hierarchic;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.MappedBy;
 
@@ -37,16 +36,13 @@ public abstract class SiteImpl<T extends Sites> {
   public abstract void setName(String name);
 
   @ManyToOne
-  @Hierarchic
   public abstract T getSites();
 
   @OneToOne
-  @Hierarchic
   @MappedBy("root")
   public abstract PageImpl getRoot();
 
   @OneToOne
-  @Hierarchic
   @MappedBy("navigation")
   public abstract NavigationImpl getNavigation();
 

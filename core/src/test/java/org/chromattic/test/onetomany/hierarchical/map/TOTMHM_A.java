@@ -21,7 +21,6 @@ package org.chromattic.test.onetomany.hierarchical.map;
 
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.Hierarchic;
 
 import java.util.Map;
 
@@ -33,6 +32,5 @@ import java.util.Map;
 public abstract class TOTMHM_A {
 
   @OneToMany
-  @Hierarchic
   public abstract Map<String, TOTMHM_B> getChildren();
 }
