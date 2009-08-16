@@ -34,9 +34,7 @@
 - a cache invalidation framework based on transforming node to object id + class
 
 *** Patrice
-- mapping of @Property for InputStream
-- mapping of @Property List<T> 
-- @Workspace to inject the name of the workspace where the Node was loaded
+- mapping of @Property List<T>
 - @Property(name="foo", default="bar") : Needed to initialize a property with a default value (in case it was no done in nodetype def)
 - alternatively : @Initialize public <T> T someCustomMethod(T objectToInitialize) {// let me implement whatever logic I want to initialize my object with default values}
 - <T> T Session.loadOrCreate(Class<T> clazz, String absPath) // tries to load an object from location "absPath" and initializes a new one if it does not exist (the parent location must exist)
