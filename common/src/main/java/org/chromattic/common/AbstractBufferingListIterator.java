@@ -44,6 +44,9 @@ public class AbstractBufferingListIterator<E> implements ListIterator<E> {
   /** . */
   private int offset;
 
+  /** . */
+  private Boolean forward;
+
   /** The last returned element or the value <tt>MARKER</tt>. */
   private E e;
 
@@ -56,6 +59,7 @@ public class AbstractBufferingListIterator<E> implements ListIterator<E> {
     this.elements = new ArrayList<E>();
     this.offset = 0;
     this.e = e;
+    this.forward = null;
   }
 
   public boolean hasNext() {
@@ -71,12 +75,14 @@ public class AbstractBufferingListIterator<E> implements ListIterator<E> {
       E next = iterator.next();
       elements.add(next);
       e = next;
+      forward = true;
       return next;
     } else {
       offset--;
       int index = elements.size() - (offset + 1);
       E next = elements.get(index);
       e = next;
+      forward = true;
       return next;
     }
   }
@@ -89,15 +95,39 @@ public class AbstractBufferingListIterator<E> implements ListIterator<E> {
     offset++;
     E previous = elements.get(index);
     e = previous;
+    forward = false;
     return previous;
   }
 
   public int nextIndex() {
-    return elements.size() - (offset - 1);
+    return elements.size() - offset;
   }
 
   public int previousIndex() {
     return elements.size() - (offset + 1);
+  }
+
+  private E peekNext() {
+    if (offset == 0) {
+      if (iterator.hasNext()) {
+        E next = iterator.next();
+        elements.add(next);
+        offset++;
+        return next;
+      } else {
+        throw new AssertionError("internal bug");
+      }
+    } else {
+      return elements.get(elements.size() - offset);
+    }
+  }
+
+  private E peekPrevious() {
+    int index = elements.size() - (offset + 1);
+    if (index < 0) {
+      throw new AssertionError("internal bug");
+    }
+    return elements.get(index);
   }
 
   public void remove() {
@@ -105,8 +135,13 @@ public class AbstractBufferingListIterator<E> implements ListIterator<E> {
       throw new IllegalStateException();
     }
 
-    // Compute index
-    int index = elements.size() - (offset + 1);
+    // Compute index to be removed
+    int index;
+    if (forward) {
+      index = elements.size() - (offset + 1);
+    } else {
+      index = elements.size() - offset;
+    }
 
     // Update model state
     model.remove(index, e);
@@ -114,28 +149,15 @@ public class AbstractBufferingListIterator<E> implements ListIterator<E> {
     // Update local state
     elements.remove(index);
 
+    // Update offset
+    if (!forward) {
+      offset--;
+    }
+
     // Mark for IllegalStateException
     @SuppressWarnings("unchecked") E tmp = (E)MARKER;
-    e = tmp;
-
-    // Renew the iterator
-    iterator = model.iterator();
-    int length = elements.size();
-    while (length-- > 0) {
-      iterator.next();
-    }
-  }
-
-  public void add(E e) {
-    // Compute index
-    int index = elements.size() - offset;
-
-    // Update model state
-    model.add(index, e);
-
-    // Update local state
-    elements.add(index, e);
-    offset++;
+    this.e = tmp;
+    this.forward = null;
 
     // Renew the iterator
     iterator = model.iterator();
@@ -150,14 +172,62 @@ public class AbstractBufferingListIterator<E> implements ListIterator<E> {
       throw new IllegalStateException();
     }
 
-    // Compute index
-    int index = elements.size() - (offset + 1);
+    // Compute index to be removed
+    int index;
+    if (forward) {
+      index = elements.size() - (offset + 1);
+    } else {
+      index = elements.size() - offset;
+    }
 
     // Update model state
     model.set(index, this.e, e);
 
     // Update local state
     elements.set(index, e);
+
+    // Renew the iterator
+    iterator = model.iterator();
+    int length = elements.size();
+    while (length-- > 0) {
+      iterator.next();
+    }
+  }
+
+  public void add(E e) {
+    // Compute index
+    int index = elements.size() - offset;
+
+    // Compute position
+    ElementPosition<E> position;
+    if (hasPrevious()) {
+      E previous = peekPrevious();
+      if  (hasNext()) {
+        E next = peekNext();
+        position = new ElementPosition.Middle<E>(index, previous, next);
+      } else {
+        position = new ElementPosition.Last<E>(index, previous);
+      }
+    } else {
+      if (hasNext()) {
+        E next = peekNext();
+        position = new ElementPosition.First<E>(next);
+      } else {
+        position = null;
+      }
+    }
+
+    // Update model state
+    model.add(position, e);
+
+    // Update local state
+    elements.add(index, e);
+    offset++;
+
+    // Mark for IllegalStateException
+    @SuppressWarnings("unchecked") E tmp = (E)MARKER;
+    this.e = tmp;
+    this.forward = null;
 
     // Renew the iterator
     iterator = model.iterator();
