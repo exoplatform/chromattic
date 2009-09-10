@@ -17,105 +17,93 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.chromattic</groupId>
-    <artifactId>parent</artifactId>
-    <version>1.0.0</version>
+    <artifactId>chromattic.parent</artifactId>
+    <version>1.0.0-beta2</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.chromattic</groupId>
   <artifactId>chromattic.core</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+
   <name>Chromattic Framework Core</name>
   <description>Chromattic Framework Core</description>
-  
+
   <dependencies>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.spi</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.common</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.reflext</groupId>
-      <artifactId>reflext.api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.reflext</groupId>
-      <artifactId>reflext.core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.reflext</groupId>
-      <artifactId>reflext.spi</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.reflext</groupId>
-      <artifactId>reflext.jlr</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.exo</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.cglib</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.spi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.jlr</artifactId>
     </dependency>
 
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
-      <version>1.0</version>
     </dependency>
 
   </dependencies>
 
   <profiles>
-     <profile>
-        <id>Java6</id>
-        <activation>
-           <jdk>1.6</jdk>
-        </activation>
-       <dependencies>
+    <profile>
+      <id>Java6</id>
+      <activation>
+        <jdk>1.6</jdk>
+      </activation>
+      <dependencies>
 
-         <dependency>
-           <groupId>org.chromattic</groupId>
-           <artifactId>chromattic.apt</artifactId>
-           <version>1.0.0-SNAPSHOT</version>
-           <scope>test</scope>
-         </dependency>
+        <dependency>
+          <groupId>org.chromattic</groupId>
+          <artifactId>chromattic.apt</artifactId>
+          <scope>test</scope>
+        </dependency>
 
-       </dependencies>
-     </profile>
+      </dependencies>
+    </profile>
   </profiles>
 
 </project>

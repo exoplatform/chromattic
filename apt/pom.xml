@@ -17,58 +17,51 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.chromattic</groupId>
-    <artifactId>parent</artifactId>
-    <version>1.0.0</version>
+    <artifactId>chromattic.parent</artifactId>
+    <version>1.0.0-beta2</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.chromattic</groupId>
   <artifactId>chromattic.apt</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+
   <name>Chromattic Framework APT Plugin</name>
   <description>Chromattic Framework APT Plugin</description>
-  
+
   <dependencies>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.spi</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.spi</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.apt</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
   </dependencies>

@@ -17,46 +17,49 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.chromattic</groupId>
-    <artifactId>parent</artifactId>
-    <version>1.0.0</version>
+    <artifactId>chromattic.parent</artifactId>
+    <version>1.0.0-beta2</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.chromattic</groupId>
   <artifactId>chromattic.exo</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+
   <name>Chromattic Framework eXo JCR Plugin</name>
   <description>Chromattic Framework eXo JCR Plugin</description>
-  
+
+  <repositories>
+    <repository>
+      <id>exo-int</id>
+      <name>exoplatform.org internal repository</name>
+      <url>http://maven2.exoplatform.org/rest/maven2</url>
+    </repository>
+  </repositories>
+
   <dependencies>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.spi</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
-      <version>2.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>exo.jcr.component.core</artifactId>
-      <version>1.11.1</version>
     </dependency>
 
   </dependencies>

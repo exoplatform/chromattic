@@ -17,14 +17,16 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
+   
    <groupId>org.chromattic</groupId>
-   <artifactId>main</artifactId>
+   <artifactId>chromattic.parent</artifactId>
+   <version>1.0.0-beta2</version>
    <packaging>pom</packaging>
-   <name>Chromattic Framework Main</name>
+
+   <name>Chromattic Framework</name>
    <description>The Chromattic projects is an object mapper framework that use Java Content Repository as back end storage.</description>
-   <version>1.0.0-SNAPSHOT</version>
    <url>http://chromattic.googlecode.com/</url>
 
   <organization>
@@ -38,14 +40,253 @@
     </license>
   </licenses>
 
+  <scm>
+    <connection>scm:git:git://github.com/vietj/chromattic.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/vietj/chromattic.git</developerConnection>
+    <url>https://github.com/vietj/chromattic</url>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <!-- Copy the distribution jar file to a local and dedicated remote repository 
+        -  This variable has to be set in ~/.m2/settings.xml -->
+      <id>repository.chromattic.org</id>
+      <url>${chromattic.distrib.repo.url}</url>
+    </repository>
+  </distributionManagement>
+
+  <properties>
+    <!-- Dependencies versions -->
+    <reflext.version>1.0.0-beta2</reflext.version>
+    
+    <!-- Plugins settings -->
+
+    <!-- Cross plugins settings -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- maven-compiler-plugin -->
+    <maven.compiler.target>1.5</maven.compiler.target>
+    <maven.compiler.source>1.5</maven.compiler.source>
+
+    <!-- maven-release-plugin -->
+    <useReleaseProfile>false</useReleaseProfile>
+    <arguments>-Prelease,sign-artifacts</arguments>
+    <pushChanges>false</pushChanges>
+    <autoVersionSubmodules>true</autoVersionSubmodules>
+  </properties>
+
+  <dependencyManagement>
+
+    <dependencies>
+
+      <!-- Internal dependencies -->
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.api</artifactId>
+        <version>1.0.0-beta2</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.apt</artifactId>
+        <version>1.0.0-beta2</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.cglib</artifactId>
+        <version>1.0.0-beta2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.common</artifactId>
+        <version>1.0.0-beta2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.exo</artifactId>
+        <version>1.0.0-beta2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.spi</artifactId>
+        <version>1.0.0-beta2</version>
+      </dependency>
+
+      <!-- External dependencies -->
+
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>2.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.jcr</groupId>
+        <artifactId>jcr</artifactId>
+        <version>1.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.jcr</groupId>
+        <artifactId>exo.jcr.component.core</artifactId>
+        <version>1.11.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.kernel</groupId>
+        <artifactId>exo.kernel.container</artifactId>
+        <version>2.1.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.5.8</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.5.8</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.reflext</groupId>
+        <artifactId>reflext.api</artifactId>
+        <version>${reflext.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.reflext</groupId>
+        <artifactId>reflext.apt</artifactId>
+        <version>${reflext.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.reflext</groupId>
+        <artifactId>reflext.core</artifactId>
+        <version>${reflext.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.reflext</groupId>
+        <artifactId>reflext.jlr</artifactId>
+        <version>${reflext.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.reflext</groupId>
+        <artifactId>reflext.spi</artifactId>
+        <version>${reflext.version}</version>
+      </dependency>
+
+    </dependencies>
+
+  </dependencyManagement>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <!-- All plugins versions have to be set -->
+      <!-- Plugins are sorted by shortname : clean, deploy, ... -->
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>1.0-beta-1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>2.0.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.4.3</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <profiles>
+  
      <profile>
         <id>Java5</id>
         <activation>
            <jdk>1.5</jdk>
         </activation>
         <modules>
-           <module>parent</module>
            <module>api</module>
            <module>spi</module>
            <module>common</module>
@@ -54,13 +295,13 @@
            <module>core</module>
         </modules>
      </profile>
+     
      <profile>
         <id>Java6</id>
         <activation>
            <jdk>1.6</jdk>
         </activation>
         <modules>
-           <module>parent</module>
            <module>api</module>
            <module>spi</module>
            <module>common</module>
@@ -70,6 +311,121 @@
            <module>core</module>
         </modules>
      </profile>
+     
+    <profile>
+      <!-- Ensure our build is following some maven best practices and the environment is following some constraints -->
+      <!-- Controls can be inactivated by adding -P-enforce or -Dskip-enforce in the command line -->
+      <id>enforce</id>
+      <activation>
+        <property>
+          <name>!skip-enforce</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-plugin-versions</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireJavaVersion>
+                      <message>Reflext requires at least Java 1.5 to build.</message>
+                      <version>1.5</version>
+                    </requireJavaVersion>
+                    <requirePluginVersions>
+                      <message>Best practice is to always define plugin versions!</message>
+                      <banLatest>true</banLatest>
+                      <banRelease>true</banRelease>
+                      <phases>deploy,site</phases>
+                    </requirePluginVersions>
+                    <requireMavenVersion>
+                      <!-- Version 2.0.9 started specifying default versions for all core plugins in the super pom. -->
+                      <version>2.0.9</version>
+                    </requireMavenVersion>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- Generation of a jar containing the source code -->
+      <!-- Generation can be inactivated by adding -P-sources or -Dskip-sources in the command line -->
+      <id>sources</id>
+      <activation>
+        <property>
+          <name>!skip-sources</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- This profile is used when we are doing a release -->
+      <id>release</id>
+      <build>
+        <plugins>
+          <!-- Check that the property for the remote repository lacation is defined -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-plugin-versions</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireProperty>
+                      <property>chromattic.distrib.repo.url</property>
+                      <message>"You must define the property chromattic.distrib.repo.url to give the url where you'll deploy released artifacts"</message>
+                    </requireProperty>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
   </profiles>
 
 </project>
