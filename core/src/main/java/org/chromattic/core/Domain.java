@@ -56,6 +56,12 @@ public class Domain {
   final boolean stateCacheEnabled;
 
   /** . */
+  final boolean hasPropertyOptimized;
+  /** . */
+
+  final boolean hasNodeOptimized;
+
+  /** . */
   final String rootNodePath;
 
   public Domain(
@@ -63,6 +69,8 @@ public class Domain {
     Instrumentor instrumentor,
     ObjectFormatter objectFormatter,
     boolean stateCacheEnabled,
+    boolean hasPropertyOptimized,
+    boolean hasNodeOptimized,
     String rootNodePath) {
 
     //
@@ -85,7 +93,17 @@ public class Domain {
     this.instrumentor = instrumentor;
     this.objectFormatter = objectFormatter;
     this.stateCacheEnabled = stateCacheEnabled;
+    this.hasPropertyOptimized = hasPropertyOptimized;
+    this.hasNodeOptimized = hasNodeOptimized;
     this.rootNodePath = rootNodePath;
+  }
+
+  public boolean isHasPropertyOptimized() {
+    return hasPropertyOptimized;
+  }
+
+  public boolean isHasNodeOptimized() {
+    return hasNodeOptimized;
   }
 
   public DomainSession getSession(SessionWrapper jcrSession) {

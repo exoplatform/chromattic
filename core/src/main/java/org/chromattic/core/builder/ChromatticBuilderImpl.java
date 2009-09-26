@@ -60,10 +60,22 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   /** . */
   private String rootNodePath;
 
+  /** . */
+  private Boolean optimizeJCREnabled;
+
+  /** . */
+  private boolean optimizeJCRHasPropertyEnabled;
+
+  /** . */
+  private boolean optimizeJCRHasNodeEnabled;
+
   public ChromatticBuilderImpl() {
     setOption(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl");
     setOption(SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle");
     setOption(OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName());
+    setOption(CACHE_STATE_ENABLED, false);
+    setOption(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, false);
+    setOption(JCR_OPTIMIZE_HAS_NODE_ENABLED, false);
     setOption(ROOT_NODE_PATH, "/");
   }
 
@@ -99,10 +111,16 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       sessionProvider = create((OptionInstance<String>)optionInstance, SessionLifeCycle.class);
     } else if (optionInstance.getOption() == OBJECT_FORMATTER_CLASSNAME) {
       objectFormatter = create((OptionInstance<String>)optionInstance, ObjectFormatter.class);
-    } else if (optionInstance.getOption() == STATE_CACHE_ENABLED) {
+    } else if (optionInstance.getOption() == CACHE_STATE_ENABLED) {
       stateCacheEnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
     } else if (optionInstance.getOption() == ROOT_NODE_PATH) {
       rootNodePath = ((OptionInstance<String>)optionInstance).getValue();
+    } else if (optionInstance.getOption() == JCR_OPTIMIZE_ENABLED) {
+      optimizeJCREnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
+    } else if (optionInstance.getOption() == JCR_OPTIMIZE_HAS_PROPERTY_ENABLED) {
+      optimizeJCRHasPropertyEnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
+    } else if (optionInstance.getOption() == JCR_OPTIMIZE_HAS_NODE_ENABLED) {
+      optimizeJCRHasNodeEnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
     }
   }
 
@@ -125,8 +143,16 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       mappings.add(mapping);
     }
 
+    //
+    boolean hasPropertyOptimized = optimizeJCRHasPropertyEnabled;
+    boolean hasNodeOptimized = optimizeJCRHasNodeEnabled;
+    if (optimizeJCREnabled != null) {
+      hasPropertyOptimized = optimizeJCREnabled;
+      hasNodeOptimized = optimizeJCREnabled;
+    }
+
     // Build domain
-    Domain domain = new Domain(mappings, instrumentor, objectFormatter, stateCacheEnabled, rootNodePath);
+    Domain domain = new Domain(mappings, instrumentor, objectFormatter, stateCacheEnabled, hasPropertyOptimized, hasNodeOptimized, rootNodePath);
 
     //
     return new ChromatticImpl(domain, sessionProvider);

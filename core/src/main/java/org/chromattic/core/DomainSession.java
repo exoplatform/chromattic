@@ -26,12 +26,14 @@ import org.chromattic.api.event.EventListener;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.ObjectQueryBuilder;
 import org.chromattic.core.jcr.LinkType;
+import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.query.QueryManager;
 import org.chromattic.core.query.ObjectQueryBuilderImpl;
 import org.chromattic.common.JCR;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
+import javax.jcr.Property;
 import java.util.Iterator;
 import java.lang.reflect.UndeclaredThrowableException;
 

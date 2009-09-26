@@ -51,7 +51,7 @@ public class SessionManagerTestCase extends TestCase {
     Session session = sessionLF.login();
 
     //
-    this.mgr = new SessionWrapperImpl(sessionLF, session);
+    this.mgr = new SessionWrapperImpl(sessionLF, session, false, false);
   }
 
   public void testRemoveTransientReferent() throws Exception {

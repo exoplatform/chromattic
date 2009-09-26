@@ -26,6 +26,7 @@ import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.mapper.ValueMapper;
 import org.chromattic.core.mapper.TypeMapper;
+import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.common.JCR;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.CopyingInputStream;
@@ -73,7 +74,10 @@ class PersistentContextState extends ContextState {
   /** . */
   private final Map<String, Object> propertyCache;
 
-  PersistentContextState(TypeMapper mapper, Node node, DomainSession session) throws RepositoryException {
+  /** . */
+  private final SessionWrapper sessionWrapper;
+
+  PersistentContextState(TypeMapper mapper, Node node, DomainSession session, SessionWrapper sessionWrapper) throws RepositoryException {
     super(node.getPrimaryNodeType());
 
     //
@@ -83,6 +87,7 @@ class PersistentContextState extends ContextState {
     this.node = node;
     this.name = node.getName();
     this.session = session;
+    this.sessionWrapper = sessionWrapper;
     this.propertyCache = session.domain.stateCacheEnabled ? new HashMap<String, Object>() : null;
   }
 
@@ -126,8 +131,8 @@ class PersistentContextState extends ContextState {
       //
       if (value == null) {
         Value jcrValue;
-        if (node.hasProperty(propertyName)) {
-          Property property = node.getProperty(propertyName);
+        Property property = sessionWrapper.getProperty(node, propertyName);
+        if (property != null) {
           PropertyDefinition def = property.getDefinition();
           if (def.isMultiple()) {
             Value[] values = property.getValues();
@@ -188,8 +193,8 @@ class PersistentContextState extends ContextState {
   <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType) {
     try {
       Value[] values;
-      if (node.hasProperty(propertyName)) {
-        Property property = node.getProperty(propertyName);
+      Property property = sessionWrapper.getProperty(node, propertyName);
+      if (property != null) {
         PropertyDefinition def = property.getDefinition();
         if (def.isMultiple()) {
           values = property.getValues();

@@ -179,14 +179,14 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     // Check insertion capability
-    if (dstParentNode.hasNode(name)) {
+    Node previousNode = sessionWrapper.getNode(dstParentNode, name);
+    if (previousNode != null) {
       log.trace("Found existing child with same name {}", name);
       if (onDuplicate == NameConflictResolution.FAIL) {
         String msg = "Attempt to insert context " + dstCtx + " as an existing child with name " + relPath + " child of node " + dstParentNode.getPath();
         log.error(msg);
         throw new DuplicateNameException(msg);
       } else {
-        Node previousNode = dstParentNode.getNode(name);
         log.trace("About to remove same name {} child with id {}", previousNode.getPath(), previousNode.getName());
         previousNode.remove();
       }
@@ -382,8 +382,8 @@ public class DomainSessionImpl extends DomainSession {
   protected void _removeChild(ObjectContext ctx, String name) throws RepositoryException {
     name = encodeName(name);
     Node node = ctx.state.getNode();
-    if (node.hasNode(name)) {
-      Node childNode = node.getNode(name);
+    Node childNode = sessionWrapper.getNode(node, name);
+    if (childNode != null) {
       remove(childNode);
     }
   }
@@ -436,7 +436,7 @@ public class DomainSessionImpl extends DomainSession {
         ctx = new ObjectContext(mapper);
         log.trace("Inserted context {} loaded from node id {}", ctx, id);
         contexts.put(id, ctx);
-        ctx.state = new PersistentContextState(mapper, node, this);
+        ctx.state = new PersistentContextState(mapper, node, this, sessionWrapper);
         broadcaster.loaded(ctx.getObject());
       }
       else {
@@ -461,7 +461,7 @@ public class DomainSessionImpl extends DomainSession {
       }
       log.trace("Inserted context {} for id {}", ctx, id);
       contexts.put(id, ctx);
-      ctx.state = new PersistentContextState(mapper, node, this);
+      ctx.state = new PersistentContextState(mapper, node, this, sessionWrapper);
       broadcaster.persisted(ctx.getObject());
     }
     else {

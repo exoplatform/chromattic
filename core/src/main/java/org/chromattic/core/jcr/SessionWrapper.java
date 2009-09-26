@@ -22,6 +22,7 @@ package org.chromattic.core.jcr;
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
+import javax.jcr.Property;
 import javax.jcr.nodetype.NodeType;
 import java.util.Iterator;
 
@@ -31,9 +32,13 @@ import java.util.Iterator;
  */
 public interface SessionWrapper {
 
+  Property getProperty(Node node, String relPath) throws RepositoryException;
+
+  Node getNode(Node node, String relPath) throws RepositoryException;
+
   NodeType getNodeType(String nodeTypeName) throws RepositoryException;
 
-  Node addNode(Node parentNode, String name, NodeDef nodeDef) throws RepositoryException;
+  Node addNode(Node parentNode, String relPath, NodeDef nodeDef) throws RepositoryException;
 
   void orderBefore(Node parentNode, Node srcNode, Node dstNode) throws RepositoryException;
 

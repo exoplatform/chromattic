@@ -20,15 +20,15 @@
 package org.chromattic.test.onetomany.hierarchical.list;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.test.onetomany.hierarchical.map.TOTMHM_A;
-import org.chromattic.test.onetomany.hierarchical.map.TOTMHM_B;
-import org.chromattic.api.ChromatticSession;
 import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Arrays;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -221,4 +221,41 @@ public class ListOneToManyTestCase extends AbstractTestCase {
     assertEquals("1", i.nextNode().getName());
     assertFalse(i.hasNext());
   }
+
+/*
+  public void testSort() throws Exception {
+    DomainSession session = login();
+    A a = session.insert(A.class, "aaa");
+    List<B> bs = a.getChildren();
+    bs.add(session.create(B.class, "3"));
+    bs.add(session.create(B.class, "2"));
+    bs.add(session.create(B.class, "1"));
+
+    Comparator<B> comparator = new Comparator<B>() {
+      public int compare(B o1, B o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    };
+//    Collections.sort(bs, comparator);
+    Object[] aa = bs.toArray();
+    Arrays.sort(aa, (Comparator)comparator);
+    ListIterator i = bs.listIterator();
+    for (int j=0; j<aa.length; j++) {
+        i.next();
+        i.set(aa[j]);
+    }
+
+    //
+*/
+/*
+    Node aNode = session.getNode(a);
+    NodeIterator i = aNode.getNodes();
+    assertEquals("1", i.nextNode().getName());
+    assertEquals("2", i.nextNode().getName());
+    assertEquals("3", i.nextNode().getName());
+    assertFalse(i.hasNext());
+*/
+/*
+  }
+*/
 }

@@ -55,7 +55,7 @@ public class ChromatticImpl implements Chromattic {
   public ChromatticSession openSession() {
     try {
       Session session = sessionLifeCycle.login();
-      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session);
+      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
       return domain.getSession(wrapper);
     }
     catch (RepositoryException e) {
@@ -66,7 +66,7 @@ public class ChromatticImpl implements Chromattic {
   public ChromatticSession openSession(String workspace) {
     try {
       Session session = sessionLifeCycle.login(workspace);
-      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session);
+      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
       return domain.getSession(wrapper);
     }
     catch (RepositoryException e) {
@@ -77,7 +77,7 @@ public class ChromatticImpl implements Chromattic {
   public ChromatticSession openSession(Credentials credentials, String workspace) {
     try {
       Session session = sessionLifeCycle.login(credentials, workspace);
-      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session);
+      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
       return domain.getSession(wrapper);
     }
     catch (RepositoryException e) {
@@ -88,7 +88,7 @@ public class ChromatticImpl implements Chromattic {
   public ChromatticSession openSession(Credentials credentials) {
     try {
       Session session = sessionLifeCycle.login(credentials);
-      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session);
+      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
       return domain.getSession(wrapper);
     }
     catch (RepositoryException e) {

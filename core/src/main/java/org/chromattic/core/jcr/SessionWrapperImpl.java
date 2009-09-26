@@ -29,6 +29,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,9 +57,21 @@ public class SessionWrapperImpl implements SessionWrapper {
   /** . */
   private SessionLifeCycle sessionLifeCycle;
 
-  public SessionWrapperImpl(SessionLifeCycle sessionLifeCycle, Session session) {
+  /** . */
+  private final boolean hasPropertyOptimized;
+
+  /** . */
+  private final boolean hasNodeOptimized;
+
+  public SessionWrapperImpl(
+    SessionLifeCycle sessionLifeCycle,
+    Session session,
+    boolean hasPropertyOptimized,
+    boolean hasNodeOptimized) {
 
     //
+    this.hasPropertyOptimized = hasPropertyOptimized;
+    this.hasNodeOptimized = hasNodeOptimized;
     this.sessionLifeCycle = sessionLifeCycle;
     this.session = session;
     this.linkMgrs = new AbstractLinkManager[] {
@@ -68,6 +81,40 @@ public class SessionWrapperImpl implements SessionWrapper {
 
     //
     sessionMapping.put(session, this);
+  }
+
+  public Property getProperty(Node node, String relPath) throws RepositoryException {
+    if (hasPropertyOptimized) {
+      try {
+        return node.getProperty(relPath);
+      }
+      catch (PathNotFoundException e) {
+        return null;
+      }
+    } else {
+      if (node.hasProperty(relPath)) {
+        return node.getProperty(relPath);
+      } else {
+        return null;
+      }
+    }
+  }
+
+  public Node getNode(Node node, String relPath) throws RepositoryException {
+    if (hasNodeOptimized) {
+      try {
+        return node.getNode(relPath);
+      }
+      catch (PathNotFoundException e) {
+        return null;
+      }
+    } else {
+      if (node.hasNode(relPath)) {
+        return node.getNode(relPath);
+      } else {
+        return null;
+      }
+    }
   }
 
   public NodeType getNodeType(String nodeTypeName) throws RepositoryException {

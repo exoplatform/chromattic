@@ -55,6 +55,12 @@ public abstract class AbstractTestCase extends TestCase {
   public static final String MODE_CACHE = "cache";
 
   /** . */
+  public static final String MODE_HAS_NODE = "has_node";
+
+  /** . */
+  public static final String MODE_HAS_PROPERTY = "has_property";
+
+  /** . */
   public static final String MODE_ALL = "all";
 
   /** . */
@@ -97,18 +103,22 @@ public abstract class AbstractTestCase extends TestCase {
   protected void setUp() throws Exception {
     String p1 = getClass().getName().replace('.', '_');
     String p2 = config.stateCacheEnabled ? "cache" : "nocache";
-    String p3 = config.instrumentorClassName.lastIndexOf('.') == -1 ?
+    String p3 = config.optimizeHasNodeEnabled ? "hasnodeoptimized" : "hasnodenotoptimized";
+    String p4 = config.optimizeHasPropertyEnabled ? "haspropertyoptimized" : "haspropertynotoptimized";
+    String p5 = config.instrumentorClassName.lastIndexOf('.') == -1 ?
       config.instrumentorClassName :
       config.instrumentorClassName.substring(config.instrumentorClassName.lastIndexOf('.') + 1);
-    String p4 = testName;
-    String rootNodePath = "/" + p1 + "/" + p2 + "/" + p3 + "/" + p4;
+    String p6 = testName;
+    String rootNodePath = "/" + p1 + "/" + p2 + "/" + p3 + "/" + p4  + "/" + p5 + "/" + p6;
 
     //
     builder = ChromatticBuilder.create();
 
     //
-    builder.setOption(ChromatticBuilder.STATE_CACHE_ENABLED, config.stateCacheEnabled);
+    builder.setOption(ChromatticBuilder.CACHE_STATE_ENABLED, config.stateCacheEnabled);
     builder.setOption(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
+    builder.setOption(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, config.optimizeHasPropertyEnabled);
+    builder.setOption(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, config.optimizeHasNodeEnabled);
     builder.setOption(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
 
     //
@@ -125,6 +135,8 @@ public abstract class AbstractTestCase extends TestCase {
     Node n2 = !n1.hasNode(p2) ? n1.addNode(p2) : n1.getNode(p2);
     Node n3 = !n2.hasNode(p3) ? n2.addNode(p3) : n2.getNode(p3);
     Node n4 = !n3.hasNode(p4) ? n3.addNode(p4) : n3.getNode(p4);
+    Node n5 = !n4.hasNode(p5) ? n4.addNode(p5) : n4.getNode(p5);
+    Node n6 = !n5.hasNode(p6) ? n5.addNode(p6) : n5.getNode(p6);
     jcrSession.save();
   }
 
@@ -159,16 +171,22 @@ public abstract class AbstractTestCase extends TestCase {
     //
     if (MODE_ALL.equals(testMode)) {
       if (aptEnabled) {
-        configs.add(new Config(APT_INSTRUMENTOR, false));
+        configs.add(new Config(APT_INSTRUMENTOR, false, false, false));
       }
-      configs.add(new Config(CGLIB_INSTRUMENTOR, false));
-      configs.add(new Config(CGLIB_INSTRUMENTOR, true));
+      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, false));
+      configs.add(new Config(CGLIB_INSTRUMENTOR, true, false, false));
+      configs.add(new Config(CGLIB_INSTRUMENTOR, false, true, false));
+      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, true));
     } else if (MODE_APT.equals(testMode)) {
-      configs.add(new Config(APT_INSTRUMENTOR, false));
+      configs.add(new Config(APT_INSTRUMENTOR, false, false, false));
     } else if (MODE_CGLIB.equals(testMode)) {
-      configs.add(new Config(CGLIB_INSTRUMENTOR, false));
+      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, false));
     } else if (MODE_CACHE.equals(testMode)) {
-      configs.add(new Config(CGLIB_INSTRUMENTOR, true));
+      configs.add(new Config(CGLIB_INSTRUMENTOR, true, false, false));
+    } else if (MODE_HAS_NODE.equals(testMode)) {
+      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, true));
+    } else if (MODE_HAS_PROPERTY.equals(testMode)) {
+      configs.add(new Config(CGLIB_INSTRUMENTOR, true, true, false));
     }
 
     //
@@ -203,9 +221,21 @@ public abstract class AbstractTestCase extends TestCase {
     /** . */
     private final boolean stateCacheEnabled;
 
-    public Config(String instrumentorClassName, boolean stateCacheEnabled) {
+    /** . */
+    private final boolean optimizeHasPropertyEnabled;
+
+    /** . */
+    private final boolean optimizeHasNodeEnabled;
+
+    public Config(
+      String instrumentorClassName,
+      boolean stateCacheEnabled,
+      boolean optimizeHasPropertyEnabled,
+      boolean optimizeHasNodeEnabled) {
       this.instrumentorClassName = instrumentorClassName;
       this.stateCacheEnabled = stateCacheEnabled;
+      this.optimizeHasNodeEnabled = optimizeHasNodeEnabled;
+      this.optimizeHasPropertyEnabled = optimizeHasPropertyEnabled;
     }
 
     public String getInstrumentorClassName() {

@@ -62,10 +62,34 @@ public abstract class ChromatticBuilder {
    * maintains a cache that avoids to use the underlying JCR session. As a consequence
    * any change made directly to the JCR session will not be visible in the object domain.
    */
-  public static final Option<Boolean> STATE_CACHE_ENABLED =
+  public static final Option<Boolean> CACHE_STATE_ENABLED =
     new Option<Boolean>(
-      "org.chromattic.api.Option.state_cache.enabled",
-      "state cache enabled");
+      "org.chromattic.api.Option.cache.state.enabled",
+      "cache state enabled");
+
+  /**
+   * Enable / disable all JCR optimizations.
+   */
+  public static final Option<Boolean> JCR_OPTIMIZE_ENABLED =
+    new Option<Boolean>(
+      "org.chromattic.api.Option.optimize.jcr.enabled",
+      "jcr optmisation enabled");
+
+  /**
+   * Enable / disable access to JCR has property.
+   */
+  public static final Option<Boolean> JCR_OPTIMIZE_HAS_PROPERTY_ENABLED =
+    new Option<Boolean>(
+      "org.chromattic.api.Option.optimize.jcr.has_property.enabled",
+      "jcr has property optimization enabled");
+
+  /**
+   * Enable / disable access to JCR has property.
+   */
+  public static final Option<Boolean> JCR_OPTIMIZE_HAS_NODE_ENABLED =
+    new Option<Boolean>(
+      "org.chromattic.api.Option.jcr.optimize.has_node.enabled",
+      "jcr has node optimization enabled");
 
   /**
    * The path of the root node. The default value is the path of the JCR workspace root node.
