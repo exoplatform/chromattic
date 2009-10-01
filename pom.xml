@@ -48,14 +48,20 @@
 
   <distributionManagement>
     <repository>
-      <!-- Copy the distribution jar file to a local and dedicated remote repository 
-        -  This variable has to be set in ~/.m2/settings.xml -->
-      <id>repository.chromattic.org</id>
-      <url>${chromattic.distrib.repo.url}</url>
+      <id>repository.exoplatform.org</id>
+      <url>${chromattic.releases.repo.url}</url>
     </repository>
+    <snapshotRepository>
+      <id>repository.exoplatform.org</id>
+      <url>${chromattic.snapshots.repo.url}</url>    
+    </snapshotRepository>
   </distributionManagement>
 
   <properties>
+    <!-- Repositories URLs -->
+    <chromattic.releases.repo.url>http://repository.exoplatform.org/content/repositories/chromattic-releases/</chromattic.releases.repo.url>
+    <chromattic.snapshots.repo.url>http://repository.exoplatform.org/content/repositories/chromattic-snapshots/</chromattic.snapshots.repo.url>
+  
     <!-- Dependencies versions -->
     <reflext.version>1.0.0-beta3</reflext.version>
     
@@ -335,7 +341,7 @@
                 <configuration>
                   <rules>
                     <requireJavaVersion>
-                      <message>Reflext requires at least Java 1.5 to build.</message>
+                      <message>Chromattic requires at least Java 1.5 to build.</message>
                       <version>1.5</version>
                     </requireJavaVersion>
                     <requirePluginVersions>
@@ -389,27 +395,6 @@
       <id>release</id>
       <build>
         <plugins>
-          <!-- Check that the property for the remote repository lacation is defined -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>enforce-plugin-versions</id>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <requireProperty>
-                      <property>chromattic.distrib.repo.url</property>
-                      <message>"You must define the property chromattic.distrib.repo.url to give the url where you'll deploy released artifacts"</message>
-                    </requireProperty>
-                  </rules>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
