@@ -27,13 +27,15 @@ import java.util.Set;
 import java.util.HashSet;
 
 /**
+ * The meta data for the mapping of a java class to a node type and set of mixins. Note that
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class TypeMapping {
+public abstract class TypeMapping {
 
   /** . */
-  private final ClassTypeInfo objectClass;
+  protected final ClassTypeInfo objectClass;
 
   /** . */
   private final Set<PropertyMapping> propertyMappings;
@@ -42,41 +44,23 @@ public class TypeMapping {
   private final Set<MethodMapping> methodMappings;
 
   /** . */
-  private final String nodeTypeName;
-
-  /** . */
-  private final Set<String> mixinNames;
-
-  /** . */
   private final NameConflictResolution onDuplicate;
 
   public TypeMapping(
     ClassTypeInfo objectClass,
     Set<PropertyMapping> propertyMappings,
     Set<MethodMapping> methodMappings,
-    String nodeTypeName,
-    Set<String> mixinNames,
     NameConflictResolution onDuplicate) {
 
     //
     this.objectClass = objectClass;
     this.propertyMappings = Collections.unmodifiableSet(new HashSet<PropertyMapping>(propertyMappings));
     this.methodMappings = Collections.unmodifiableSet(new HashSet<MethodMapping>(methodMappings));
-    this.nodeTypeName = nodeTypeName;
-    this.mixinNames = mixinNames;
     this.onDuplicate = onDuplicate;
   }
 
   public ClassTypeInfo getObjectClass() {
     return objectClass;
-  }
-
-  public Set<String> getMixinNames() {
-    return mixinNames;
-  }
-
-  public String getNodeTypeName() {
-    return nodeTypeName;
   }
 
   public Set<PropertyMapping> getPropertyMappings() {
@@ -106,10 +90,5 @@ public class TypeMapping {
       return objectClass.equals(that.objectClass);
     }
     return false;
-  }
-
-  @Override
-  public String toString() {
-    return "JavaTypeInfo[objectClass=" + objectClass.getName() + ",nodeTypeName=" + nodeTypeName + "]";
   }
 }

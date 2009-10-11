@@ -39,16 +39,10 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class TypeMapper implements MethodInvoker {
+public abstract class TypeMapper implements MethodInvoker {
 
   /** . */
-  private final Class<?> objectClass;
-
-  /** . */
-  private final String primaryNodeTypeName;
-
-  /** . */
-  private final List<String> mixinNodeTypeNames;
+  protected final Class<?> objectClass;
 
   /** . */
   final Set<MethodMapper> methodMappers;
@@ -69,8 +63,6 @@ public class TypeMapper implements MethodInvoker {
     Class<?> objectClass,
     Set<PropertyMapper> propertyMappers,
     Set<MethodMapper> methodMappers,
-    String primaryNodeTypeName,
-    Set<String> mixinNodeTypeNames,
     NameConflictResolution onDuplicate,
     Instrumentor instrumentor) {
 
@@ -95,8 +87,6 @@ public class TypeMapper implements MethodInvoker {
     this.dispatchers = dispatchers;
     this.objectClass = objectClass;
     this.methodMappers = methodMappers;
-    this.primaryNodeTypeName = primaryNodeTypeName;
-    this.mixinNodeTypeNames = Collections.unmodifiableList(new ArrayList<String>(mixinNodeTypeNames));
     this.onDuplicate = onDuplicate;
     this.propertyMappers = propertyMappers;
     this.factory = instrumentor.getProxyClass(objectClass);
@@ -127,6 +117,8 @@ public class TypeMapper implements MethodInvoker {
     }
   }
 
+  public abstract String getTypeName();
+
   public Object createObject(EntityContext context) {
     return factory.createProxy(context);
   }
@@ -143,20 +135,7 @@ public class TypeMapper implements MethodInvoker {
     return objectClass;
   }
 
-  public String getPrimaryNodeTypeName() {
-    return primaryNodeTypeName;
-  }
-
-  public List<String> getMixinNodeTypeNames() {
-    return mixinNodeTypeNames;
-  }
-
   public NameConflictResolution getOnDuplicate() {
     return onDuplicate;
-  }
-
-  @Override
-  public String toString() {
-    return "TypeMapper[class=" + objectClass + ",primaryNodeTypeName=" + primaryNodeTypeName + "]";
   }
 }

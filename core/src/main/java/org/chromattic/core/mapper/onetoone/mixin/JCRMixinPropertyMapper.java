@@ -16,25 +16,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper.embedded;
-
-import org.chromattic.core.bean.SingleValuedPropertyInfo;
-import org.chromattic.core.bean.BeanValueInfo;
-import org.chromattic.core.mapper.PropertyMapper;
+package org.chromattic.core.mapper.onetoone.mixin;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCREmbeddedPropertyMapper extends PropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>> {
-
-  /** . */
-  private final Class relatedClass;
-
-  public JCREmbeddedPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
-    super(info);
-
-    //
-    relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getTypeInfo().getName());
-  }
+public class JCRMixinPropertyMapper {
 }

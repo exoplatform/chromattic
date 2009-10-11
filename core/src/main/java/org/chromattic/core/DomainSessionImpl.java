@@ -23,6 +23,7 @@ import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.core.mapper.NodeTypeMapper;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
@@ -95,7 +96,7 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     log.trace("Setting context {} for insertion", ctx);
-    log.trace("Adding node for context {} and node type {}", ctx, ctx.mapper.getPrimaryNodeTypeName());
+    log.trace("Adding node for context {} and node type {}", ctx, ctx.mapper);
 
     //
     return _persist(getRoot(), relPath, ctx);
@@ -147,6 +148,12 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   private String _persist(Node srcNode, String relPath, EntityContext dstCtx) throws RepositoryException {
+    if (!(dstCtx.mapper instanceof NodeTypeMapper)) {
+      throw new IllegalArgumentException("Cannot persist an object mapper to a mixin type " + dstCtx.mapper);
+    }
+    NodeTypeMapper mapper = (NodeTypeMapper)dstCtx.mapper;
+
+    //
     Node dstParentNode;
     String name;
     int pos = relPath.indexOf('/');
@@ -182,8 +189,8 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    String primaryNodeTypeName = dstCtx.mapper.getPrimaryNodeTypeName();
-    List<String> mixinNodeTypeNames = dstCtx.mapper.getMixinNodeTypeNames();
+    String primaryNodeTypeName = mapper.getPrimaryNodeTypeName();
+    List<String> mixinNodeTypeNames = mapper.getMixinNodeTypeNames();
     log.trace("Setting context {} for insertion", dstCtx);
     log.trace("Adding node for context {} and node type {} as child of node {}", dstCtx, primaryNodeTypeName, dstParentNode.getPath());
 

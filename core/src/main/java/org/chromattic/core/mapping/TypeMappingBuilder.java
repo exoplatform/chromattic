@@ -36,11 +36,11 @@ import org.chromattic.api.annotations.FindById;
 import org.chromattic.api.annotations.Mixin;
 import org.chromattic.api.annotations.WorkspaceName;
 import org.chromattic.api.annotations.NamingPolicy;
-import org.chromattic.api.annotations.Embedded;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.core.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.core.mapping.value.OneToOneMapping;
 import org.chromattic.core.mapping.value.SimpleMapping;
 import org.chromattic.core.mapping.value.NamedOneToOneMapping;
 import org.chromattic.core.mapping.value.NamedManyToOneMapping;
@@ -49,7 +49,6 @@ import org.chromattic.core.mapping.value.ManyToOneMapping;
 import org.chromattic.core.mapping.value.OneToManyMapping;
 import org.chromattic.core.mapping.value.NamedOneToManyMapping;
 import org.chromattic.core.mapping.value.PropertyMapMapping;
-import org.chromattic.core.mapping.value.EmbeddedMapping;
 import org.chromattic.core.NodeAttributeType;
 import org.chromattic.core.bean.BeanInfo;
 import org.chromattic.core.bean.PropertyInfo;
@@ -68,6 +67,7 @@ import org.reflext.api.TypeInfo;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.introspection.HierarchyScope;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
@@ -90,25 +90,9 @@ public class TypeMappingBuilder {
   }
 
   private TypeMapping _build() {
-    NodeMapping nodeMapping = javaClass.getDeclaredAnnotation(NodeMapping.class);
-    if (nodeMapping == null) {
-      throw new IllegalStateException("Class " + javaClass + " is not annotated ");
-    }
-
-    //
-    String primaryNodeTypeName = nodeMapping.name();
     Set<PropertyMapping> propertyMappings = new HashSet<PropertyMapping>();
     Set<MethodMapping> methodMappings = new HashSet<MethodMapping>();
     BeanInfo info = new BeanInfo(javaClass);
-
-    //
-    Mixin mixin = new AnnotationIntrospector<Mixin>(Mixin.class).resolve(javaClass);
-    Set<String> mixinNames = new HashSet<String>();
-    if (mixin != null) {
-      for (String mixinName : mixin.name()) {
-        mixinNames.add(mixinName);
-      }
-    }
 
     // Property
     for (PropertyInfo propertyInfo : info.getProperties(Property.class)) {
@@ -205,22 +189,33 @@ public class TypeMappingBuilder {
           BeanValueInfo bvi = (BeanValueInfo)vi;
           ClassTypeInfo typeInfo = bvi.getTypeInfo();
           OneToOne oneToOneAnn = propertyInfo.getAnnotation(OneToOne.class);
+          RelationshipType type = oneToOneAnn.type();
 
-          // The mapped by of a one to one mapping discrimines between the parent and the child
-          RelationshipMapping hierarchyMapping;
-          MappedBy mappedBy = propertyInfo.getAnnotation(MappedBy.class);
-          if (mappedBy != null) {
-            hierarchyMapping = new NamedOneToOneMapping(typeInfo, mappedBy.value(), RelationshipType.HIERARCHIC, true);
-          } else {
-            RelatedMappedBy relatedMappedBy = propertyInfo.getAnnotation(RelatedMappedBy.class);
-            if (relatedMappedBy != null) {
-              hierarchyMapping = new NamedOneToOneMapping(typeInfo, relatedMappedBy.value(), RelationshipType.HIERARCHIC, false);
+          //
+          PropertyMapping<RelationshipMapping> oneToOneMapping;
+          if (type == RelationshipType.HIERARCHIC) {
+            // The mapped by of a one to one mapping discrimines between the parent and the child
+            RelationshipMapping hierarchyMapping;
+            MappedBy mappedBy = propertyInfo.getAnnotation(MappedBy.class);
+            if (mappedBy != null) {
+              hierarchyMapping = new NamedOneToOneMapping(typeInfo, mappedBy.value(), RelationshipType.HIERARCHIC, true);
             } else {
-              throw new IllegalStateException("No related by mapping found for property " + propertyInfo + " when introspecting " + info);
+              RelatedMappedBy relatedMappedBy = propertyInfo.getAnnotation(RelatedMappedBy.class);
+              if (relatedMappedBy != null) {
+                hierarchyMapping = new NamedOneToOneMapping(typeInfo, relatedMappedBy.value(), RelationshipType.HIERARCHIC, false);
+              } else {
+                throw new IllegalStateException("No related by mapping found for property " + propertyInfo + " when introspecting " + info);
+              }
             }
+            oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
+            propertyMappings.add(oneToOneMapping);
+          } else if (type == RelationshipType.MIXIN) {
+            OneToOneMapping embeddedMapping = new OneToOneMapping(typeInfo, RelationshipType.MIXIN);
+            PropertyMapping<OneToOneMapping> a = new PropertyMapping<OneToOneMapping>(propertyInfo, embeddedMapping);
+            propertyMappings.add(a);
+          } else {
+            throw new IllegalStateException();
           }
-          PropertyMapping<RelationshipMapping> oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
-          propertyMappings.add(oneToOneMapping);
         } else {
           throw new IllegalStateException();
         }
@@ -310,29 +305,6 @@ public class TypeMappingBuilder {
       }
     }
 
-    // Embedded
-    for (PropertyInfo propertyInfo : info.getProperties(Embedded.class)) {
-      if (propertyInfo instanceof SingleValuedPropertyInfo) {
-        SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
-        ValueInfo vi = svpi.getValue();
-        if (vi instanceof BeanValueInfo) {
-          BeanValueInfo bvi = (BeanValueInfo)vi;
-
-          //
-          ClassTypeInfo embeddableTI = bvi.getTypeInfo();
-
-          //
-          EmbeddedMapping embeddedMapping = new EmbeddedMapping(embeddableTI);
-          PropertyMapping<EmbeddedMapping> a = new PropertyMapping<EmbeddedMapping>(propertyInfo, embeddedMapping);
-          propertyMappings.add(a);
-        } else {
-          throw new IllegalStateException();
-        }
-      } else {
-        throw new IllegalStateException();
-      }
-    }
-
     //
     MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL);
 
@@ -402,13 +374,46 @@ public class TypeMappingBuilder {
       onDuplicate = namingPolicy.onDuplicate();
     }
 
+    NodeMapping nodeMapping = javaClass.getDeclaredAnnotation(NodeMapping.class);
+    Mixin mixin = new AnnotationIntrospector<Mixin>(Mixin.class).resolve(javaClass);
+    String[] mixinNames = mixin != null ? mixin.name() : new String[0];
+
     //
-    return new TypeMapping(
-      javaClass,
-      propertyMappings,
-      methodMappings,
-      primaryNodeTypeName,
-      mixinNames,
-      onDuplicate);
+    if (nodeMapping == null) {
+      if  (mixin == null) {
+        throw new IllegalStateException("Class " + javaClass + " is not annotated ");
+      }
+      if (mixinNames.length == 0) {
+        throw new IllegalStateException("Class " + javaClass + " is annotated with @Mixin but does not contain any name");
+      }
+      if (mixinNames.length > 1) {
+        throw new IllegalStateException("Class " + javaClass + " is annotated with @Mixin but contains more than one name");
+      }
+
+      //
+      return new MixinTypeMapping(
+        javaClass,
+        propertyMappings,
+        methodMappings,
+        onDuplicate,
+        mixinNames[0]);
+    } else {
+      Set<String> tmp = new HashSet<String>();
+      if (mixin != null) {
+        tmp.addAll(Arrays.asList(mixinNames));
+      }
+
+      //
+      String primaryNodeTypeName = nodeMapping.name();
+
+      //
+      return new NodeTypeMapping(
+        javaClass,
+        propertyMappings,
+        methodMappings,
+        onDuplicate,
+        primaryNodeTypeName,
+        tmp);
+    }
   }
 }

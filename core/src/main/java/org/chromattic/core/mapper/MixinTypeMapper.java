@@ -16,24 +16,42 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapping.value;
+package org.chromattic.core.mapper;
 
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.api.NameConflictResolution;
+import org.chromattic.spi.instrument.Instrumentor;
+
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EmbeddedMapping extends ValueMapping {
+public class MixinTypeMapper extends TypeMapper {
 
-  /** The embeddable type. */
-  private final ClassTypeInfo embeddableType;
+  /** . */
+  private final String mixinName;
 
-  public EmbeddedMapping(ClassTypeInfo embeddableType) {
-    this.embeddableType = embeddableType;
+  public MixinTypeMapper(
+    Class<?> objectClass,
+    Set<PropertyMapper> propertyMappers,
+    Set<MethodMapper> methodMappers,
+    NameConflictResolution onDuplicate,
+    Instrumentor instrumentor,
+    String mixinName) {
+    super(
+      objectClass,
+      propertyMappers,
+      methodMappers,
+      onDuplicate,
+      instrumentor);
+
+    //
+    this.mixinName = mixinName;
   }
 
-  public ClassTypeInfo getEmbeddableType() {
-    return embeddableType;
+  @Override
+  public String getTypeName() {
+    return mixinName;
   }
 }

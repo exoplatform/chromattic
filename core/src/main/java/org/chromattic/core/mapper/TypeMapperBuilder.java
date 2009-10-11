@@ -19,6 +19,9 @@
 
 package org.chromattic.core.mapper;
 
+import org.chromattic.core.mapper.onetoone.mixin.JCRMixinParentPropertyMapper;
+import org.chromattic.core.mapping.MixinTypeMapping;
+import org.chromattic.core.mapping.NodeTypeMapping;
 import org.chromattic.core.mapping.TypeMapping;
 import org.chromattic.core.mapping.PropertyMapping;
 import org.chromattic.core.mapping.MethodMapping;
@@ -37,7 +40,6 @@ import org.chromattic.core.mapping.value.RelationshipMapping;
 import org.chromattic.core.mapping.value.OneToManyMapping;
 import org.chromattic.core.mapping.value.NamedOneToManyMapping;
 import org.chromattic.core.mapping.value.PropertyMapMapping;
-import org.chromattic.core.mapping.value.EmbeddedMapping;
 import org.chromattic.common.SetMap;
 import org.chromattic.core.mapper.onetomany.reference.JCRReferentCollectionPropertyMapper;
 import org.chromattic.core.mapper.onetomany.reference.JCRNamedReferentPropertyMapper;
@@ -50,7 +52,6 @@ import org.chromattic.core.mapper.property.JCRPropertyPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyMapPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyListPropertyMapper;
 import org.chromattic.core.mapper.nodeattribute.JCRNodeAttributePropertyMapper;
-import org.chromattic.core.mapper.embedded.JCREmbeddedPropertyMapper;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
@@ -63,6 +64,7 @@ import org.chromattic.core.bean.ListPropertyInfo;
 import org.chromattic.api.RelationshipType;
 import org.reflext.api.ClassTypeInfo;
 
+import java.util.List;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
@@ -161,10 +163,16 @@ public class TypeMapperBuilder {
                   propertyMappers.add(bilto);
                 }
               }
+            } else if (pmhm.getType() == RelationshipType.MIXIN) {
+              if (typeMapping instanceof NodeTypeMapping) {
+                JCRMixinParentPropertyMapper mapper = new JCRMixinParentPropertyMapper((SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo());
+                propertyMappers.add(mapper);
+              } else if (typeMapping instanceof MixinTypeMapping) {
+                throw new UnsupportedOperationException("todo");
+              } else {
+                throw new AssertionError();
+              }
             }
-          } else if (pmvm instanceof EmbeddedMapping) {
-            JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper((SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo());
-            propertyMappers.add(mapper);
           }
 
           //
@@ -265,20 +273,37 @@ public class TypeMapperBuilder {
       }
 
       //
-      HashSet<String> mixinNames = new HashSet<String>();
-      for (String mixinName : typeMapping.getMixinNames()) {
-        mixinNames.add(mixinName);
-      }
+      TypeMapper mapper;
+      if (typeMapping instanceof NodeTypeMapping) {
+        NodeTypeMapping nodeTypeMapping = (NodeTypeMapping)typeMapping;
 
-      //
-      TypeMapper mapper = new TypeMapper(
-        (Class<?>)typeMapping.getObjectClass().getType(),
-        propertyMappers,
-        methodMappers,
-        typeMapping.getNodeTypeName(),
-        mixinNames,
-        typeMapping.getOnDuplicate(),
-        instrumentor);
+        //
+        List<String> mixinNames = new ArrayList<String>();
+        for (String mixinName : nodeTypeMapping.getMixinNames()) {
+          mixinNames.add(mixinName);
+        }
+
+        //
+        mapper = new NodeTypeMapper(
+          (Class<?>)typeMapping.getObjectClass().getType(),
+          propertyMappers,
+          methodMappers,
+          typeMapping.getOnDuplicate(),
+          instrumentor,
+          nodeTypeMapping.getNodeTypeName(),
+          mixinNames);
+      } else {
+        MixinTypeMapping mixinTypeMapping = (MixinTypeMapping)typeMapping;
+
+        //
+        mapper = new MixinTypeMapper(
+          (Class<?>)typeMapping.getObjectClass().getType(),
+          propertyMappers,
+          methodMappers,
+          typeMapping.getOnDuplicate(),
+          instrumentor,
+          mixinTypeMapping.getMixinName());
+      }
 
       // Finish wiring
       for (PropertyMapper pm : propertyMappers) {

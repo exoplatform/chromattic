@@ -21,6 +21,7 @@ package org.chromattic.core.query;
 import org.chromattic.api.query.ObjectQueryBuilder;
 import org.chromattic.api.query.ObjectQuery;
 import org.chromattic.api.query.ObjectQueryResult;
+import org.chromattic.core.mapper.NodeTypeMapper;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.Domain;
 import org.chromattic.core.DomainSession;
@@ -38,7 +39,7 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
   private String where;
 
   /** . */
-  private TypeMapper mapper;
+  private NodeTypeMapper mapper;
 
   /** . */
   private DomainSession session;
@@ -56,12 +57,19 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
     if (this.fromClass != null) {
       throw new IllegalStateException();
     }
+
+    //
     Domain domain = session.getDomain();
     TypeMapper mapper = domain.getTypeMapper(fromClass);
     if (mapper == null) {
       throw new IllegalArgumentException("Class " + fromClass.getName() + " is not mapped");
     }
-    this.mapper = mapper;
+    if (!(mapper instanceof NodeTypeMapper)) {
+      throw new IllegalArgumentException("Class " + fromClass.getName() + " is mapped to a mixin type");
+    }
+
+    //
+    this.mapper = (NodeTypeMapper)mapper;
     this.fromClass = fromClass;
     return this;
   }
