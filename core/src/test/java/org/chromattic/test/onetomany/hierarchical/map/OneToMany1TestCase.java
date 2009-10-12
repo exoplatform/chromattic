@@ -17,31 +17,30 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.hierarchical;
+package org.chromattic.test.onetomany.hierarchical.map;
 
-import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
-import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.Status;
+import org.chromattic.test.onetomany.hierarchical.AbstractOneToManyTestCase;
 
-import javax.jcr.Node;
 import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToMany2TestCase extends AbstractToManyTestCase<TOTM_A_3, TOTM_B_3> {
+public class OneToMany1TestCase extends AbstractOneToManyTestCase<TOTM_A_3, TOTM_B_3> {
 
-  public Class<TOTM_A_3> getOneSideClass() {
-    return TOTM_A_3.class;
-  }
-
-  public Class<TOTM_B_3> getManySideClass() {
-    return TOTM_B_3.class;
-  }
-
+  @Override
   public Collection<TOTM_B_3> getMany(TOTM_A_3 many) {
-    return many.getChildren();
+    return many.getChildren().values();
+  }
+
+  @Override
+  public TOTM_A_3 getOne(TOTM_B_3 many) {
+    return many.getParent();
+  }
+
+  @Override
+  public void setOne(TOTM_B_3 many, TOTM_A_3 one) {
+    many.setParent(one);
   }
 }

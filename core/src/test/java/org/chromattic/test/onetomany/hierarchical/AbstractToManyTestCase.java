@@ -18,6 +18,7 @@
  */
 package org.chromattic.test.onetomany.hierarchical;
 
+import org.chromattic.common.TypeLiteral;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
@@ -36,21 +37,19 @@ import java.util.Iterator;
 public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
 
   /** . */
-  private Class<O> oneSide = getOneSideClass();
+  private final Class<O> oneSide = TypeLiteral.get(getClass(), 0);
 
   /** . */
-  private Class<M> manySide = getManySideClass();
+  private final Class<M> manySide = TypeLiteral.get(getClass(), 1);
 
   protected void createDomain() {
     addClass(oneSide);
     addClass(manySide);
   }
 
-  protected abstract Class<O> getOneSideClass();
+  public abstract Collection<M> getMany(O many);
 
-  protected abstract Class<M> getManySideClass();
-
-  protected abstract Collection<M> getMany(O many);
+  public abstract void add(O o, M m);
 
   public void testAdd1() throws Exception {
 
@@ -87,7 +86,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
 
     //
     M b = session.create(manySide, "totm_b_a");
-    assertTrue(children.add(b));
+    add(a, b);
     assertEquals(1, children.size());
     assertTrue(children.contains(b));
 
@@ -120,7 +119,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     O a = session.insert(oneSide, "totm_a_c");
     String aId = session.getId(a);
     M b = session.create(manySide, "totm_b_c");
-    getMany(a).add(b);
+    add(a, b);
     session.save();
 
     session = login();
@@ -162,7 +161,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     O one = session.insert(oneSide, "totm_d");
     M many = session.create(manySide, "totm_e");
     Collection<M> c = getMany(one);
-    c.add(many);
+    add(one, many);
     if (save) session.save();
     c.remove(many);
     assertEquals(Status.REMOVED, session.getStatus(many));
@@ -174,7 +173,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     O one = session.insert(oneSide, "totm_d");
     M many = session.create(manySide, "totm_e");
     Collection<M> c = getMany(one);
-    c.add(many);
+    add(one, many);
     if (save) session.save();
     c.clear();
     assertEquals(Status.REMOVED, session.getStatus(many));
@@ -186,7 +185,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     O one = session.insert(oneSide, "totm_d");
     M many = session.create(manySide, "totm_e");
     Collection<M> c = getMany(one);
-    c.add(many);
+    add(one, many);
     if (save) session.save();
     Iterator<M> i = c.iterator();
     try {
@@ -217,7 +216,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     String mId = session.getId(m);
     Collection<M> ms1 = getMany(o1);
     Collection<M> ms2 = getMany(o2);
-    ms2.add(m);
+    add(o2, m);
     assertEquals(Collections.<Object>emptySet(), new HashSet<Object>(ms1));
     assertEquals(Collections.singleton(m), new HashSet<Object>(ms2));
     session.save();

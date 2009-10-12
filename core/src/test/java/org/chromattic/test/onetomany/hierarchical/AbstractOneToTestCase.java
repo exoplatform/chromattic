@@ -19,6 +19,7 @@
 
 package org.chromattic.test.onetomany.hierarchical;
 
+import org.chromattic.common.TypeLiteral;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
@@ -32,25 +33,21 @@ import javax.jcr.Node;
 public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
 
   /** . */
-  private Class<O> oneSide = getOneSideClass();
+  private final Class<O> oneSide = TypeLiteral.get(getClass(), 0);
 
   /** . */
-  private Class<M> manySide = getManySideClass();
+  private final Class<M> manySide = TypeLiteral.get(getClass(), 1);
 
   protected void createDomain() {
     addClass(oneSide);
     addClass(manySide);
   }
 
-  public abstract Class<O> getOneSideClass();
-
-  public abstract Class<M> getManySideClass();
-
   public abstract void setOne(M many, O one);
 
   public abstract O getOne(M many);
 
-  public void testAdd() throws Exception {
+  public final void testAdd() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getRoot();
 
@@ -65,7 +62,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
     assertEquals(a, getOne(b));
   }
 
-  public void testLoad() throws Exception {
+  public final void testLoad() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totm_a_b", "totm_a");
@@ -82,7 +79,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
     assertEquals(a, getOne(b));
   }
 
-  public void testTransientGetParent() throws Exception {
+  public final void testTransientGetParent() throws Exception {
     ChromatticSession session = login();
     M b = session.create(manySide, "totm_b_c");
     try {
@@ -92,7 +89,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
     }
   }
 
-  public void testRemovedGetParent() throws Exception {
+  public final void testRemovedGetParent() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totm_a_b", "totm_a");
@@ -111,7 +108,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
     }
   }
 
-  public void testMove() throws Exception {
+  public final void testMove() throws Exception {
     DomainSession session = login();
     O o1 = session.insert(oneSide, "o1");
     O o2 = session.insert(oneSide, "o2");

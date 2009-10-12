@@ -87,9 +87,9 @@ class AnyChildList<E> extends AbstractList<E> {
         Object insertedParent = addedCtx.getParent();
         EntityContext addedParentCtx = session.unwrap(insertedParent);
 
-        //
+        // It's a move
         if (addedParentCtx != parentCtx) {
-          throw new UnsupportedOperationException("Not yet supported but that should be a node move operation");
+          parentCtx.addChild(addedCtx);
         }
         break;
       default:
@@ -132,9 +132,9 @@ class AnyChildList<E> extends AbstractList<E> {
         Object insertedParent = addedCtx.getParent();
         EntityContext addedParentCtx = session.unwrap(insertedParent);
 
-        //
+        // It's a move
         if (addedParentCtx != parentCtx) {
-          throw new UnsupportedOperationException("Not yet supported but that should be a node move operation");
+          parentCtx.addChild(addedCtx);
         }
         break;
       default:
