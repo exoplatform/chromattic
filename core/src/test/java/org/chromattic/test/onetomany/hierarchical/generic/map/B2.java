@@ -20,7 +20,6 @@
 package org.chromattic.test.onetomany.hierarchical.generic.map;
 
 import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.NodeMapping;
 
 /**
@@ -28,14 +27,11 @@ import org.chromattic.api.annotations.NodeMapping;
  * @version $Revision$
  */
 @NodeMapping(name = "totm_b")
-public abstract class TOTM_B_3 {
-
-  @Name
-  public abstract String getName();
+public abstract class B2 {
 
   @ManyToOne
-  public abstract TOTM_A_3 getParent();
+  public abstract A2 getParent();
 
-  public abstract void setParent(TOTM_A_3 parent);
+  public abstract void setParent(A2 parent);
 
 }

@@ -25,13 +25,13 @@ import org.chromattic.test.onetomany.hierarchical.generic.AbstractOneToTestCase;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToMany3TestCase extends AbstractOneToTestCase<TOTM_A_3, TOTM_B_3> {
+public class OneToMany3TestCase extends AbstractOneToTestCase<A3, B3> {
 
-  public void setOne(TOTM_B_3 many, TOTM_A_3 one) {
+  public void setOne(B3 many, A3 one) {
     many.setParent(one);
   }
 
-  public TOTM_A_3 getOne(TOTM_B_3 many) {
+  public A3 getOne(B3 many) {
     return many.getParent();
   }
 }

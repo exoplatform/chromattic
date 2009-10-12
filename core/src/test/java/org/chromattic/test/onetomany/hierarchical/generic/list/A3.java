@@ -29,9 +29,9 @@ import java.util.List;
  * @version $Revision$
  */
 @NodeMapping(name = "totm_a")
-public abstract class TOTM_A_3 {
+public abstract class A3 {
 
   @OneToMany
-  public abstract List<TOTM_B_3> getChildren();
+  public abstract List<B3> getChildren();
 
 }

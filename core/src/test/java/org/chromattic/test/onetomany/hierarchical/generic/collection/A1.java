@@ -29,9 +29,9 @@ import java.util.Collection;
  * @version $Revision$
  */
 @NodeMapping(name = "totm_a")
-public abstract class TOTM_A_1 {
+public abstract class A1 {
 
   @OneToMany
-  public abstract Collection<TOTM_B_1> getChildren();
+  public abstract Collection<B1> getChildren();
 
 }

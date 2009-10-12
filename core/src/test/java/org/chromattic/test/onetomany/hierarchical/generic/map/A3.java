@@ -20,11 +20,18 @@
 package org.chromattic.test.onetomany.hierarchical.generic.map;
 
 import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.OneToMany;
+
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 @NodeMapping(name = "totm_a")
-public abstract class TOTM_A_2 {
+public abstract class A3 {
+
+  @OneToMany
+  public abstract Map<String , B3> getChildren();
+
 }

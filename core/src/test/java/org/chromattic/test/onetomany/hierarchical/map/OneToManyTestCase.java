@@ -35,8 +35,8 @@ import java.util.Map;
 public class OneToManyTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TOTMHM_A.class);
-    addClass(TOTMHM_B.class);
+    addClass(A.class);
+    addClass(B.class);
   }
 
   public void testLoad() throws Exception {
@@ -50,12 +50,12 @@ public class OneToManyTestCase extends AbstractTestCase {
 
     //
     session = login();
-    TOTMHM_A a = session.findById(TOTMHM_A.class, aId);
+    A a = session.findById(A.class, aId);
     assertNotNull(a);
-    TOTMHM_B b = session.findById(TOTMHM_B.class, bId);
+    B b = session.findById(B.class, bId);
     assertEquals(a, b.getParent());
     assertEquals(a, b.getParent());
-    Map<String, TOTMHM_B> children = a.getChildren();
+    Map<String, B> children = a.getChildren();
     assertNotNull(children);
     assertTrue(children.containsKey("b"));
     assertEquals(b, children.get("b"));
@@ -64,8 +64,8 @@ public class OneToManyTestCase extends AbstractTestCase {
   public void testPut() throws Exception {
     ChromatticSession session = login();
 
-    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
-    TOTMHM_B b = session.create(TOTMHM_B.class);
+    A a = session.insert(A.class, "totmhm_a");
+    B b = session.create(B.class);
 
     assertNull(a.getChildren().put("totmhm_b", b));
 
@@ -77,7 +77,7 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testGetWithInvalidName() throws Exception {
     ChromatticSession session = login();
-    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
+    A a = session.insert(A.class, "totmhm_a");
     try {
       a.getChildren().get("/foo");
       fail();
@@ -88,14 +88,14 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testGetWithNullName() throws Exception {
     ChromatticSession session = login();
-    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
+    A a = session.insert(A.class, "totmhm_a");
     assertNull(a.getChildren().get(null));
   }
 
   public void testPutWithInvalidName() throws Exception {
     ChromatticSession session = login();
-    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
-    TOTMHM_B b = session.create(TOTMHM_B.class);
+    A a = session.insert(A.class, "totmhm_a");
+    B b = session.create(B.class);
     try {
       a.getChildren().put("/foo", b);
       fail();
@@ -106,8 +106,8 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testPutWithNullName() throws Exception {
     ChromatticSession session = login();
-    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
-    TOTMHM_B b = session.create(TOTMHM_B.class);
+    A a = session.insert(A.class, "totmhm_a");
+    B b = session.create(B.class);
     try {
       a.getChildren().put(null, b);
       fail();
@@ -118,9 +118,9 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testRemoveTransient() throws Exception {
     ChromatticSession session = login();
-    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
-    TOTMHM_B b = session.create(TOTMHM_B.class);
-    Map<String, TOTMHM_B> children = a.getChildren();
+    A a = session.insert(A.class, "totmhm_a");
+    B b = session.create(B.class);
+    Map<String, B> children = a.getChildren();
     children.put("b", b);
     assertSame(b, children.remove("b"));
     assertEquals(Status.REMOVED, session.getStatus(b));
@@ -129,8 +129,8 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testRemovePersistent() throws Exception {
     ChromatticSession session = login();
-    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
-    TOTMHM_B b = session.create(TOTMHM_B.class);
+    A a = session.insert(A.class, "totmhm_a");
+    B b = session.create(B.class);
     a.getChildren().put("b", b);
     session.save();
     assertSame(b, a.getChildren().remove("b"));
@@ -140,9 +140,9 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testDuplicatePutFails() throws Exception {
     ChromatticSession session = login();
-    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
-    TOTMHM_B b1 = session.create(TOTMHM_B.class);
-    TOTMHM_B b2 = session.create(TOTMHM_B.class);
+    A a = session.insert(A.class, "totmhm_a");
+    B b1 = session.create(B.class);
+    B b2 = session.create(B.class);
     a.getChildren().put("b", b1);
     try {
       a.getChildren().put("b", b2);

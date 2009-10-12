@@ -22,7 +22,7 @@ package org.chromattic.test.onetomany.hierarchical.list;
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.Name;
-import org.chromattic.test.onetomany.hierarchical.map.TOTMHM_A;
+import org.chromattic.test.onetomany.hierarchical.map.A;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

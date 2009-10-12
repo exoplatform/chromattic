@@ -17,21 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.hierarchical.generic.map;
+package org.chromattic.test.onetomany.hierarchical.generic.collection;
 
 import org.chromattic.api.annotations.NodeMapping;
-import org.chromattic.api.annotations.OneToMany;
-
-import java.util.Map;
+import org.chromattic.api.annotations.Name;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_a")
-public abstract class TOTM_A_3 {
+@NodeMapping(name = "totm_b")
+public abstract class B1 {
 
-  @OneToMany
-  public abstract Map<String ,TOTM_B_3> getChildren();
+  @Name
+  public abstract String getName();
+
+  public abstract void setName(String name);
 
 }

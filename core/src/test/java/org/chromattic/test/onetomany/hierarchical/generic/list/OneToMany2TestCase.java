@@ -27,14 +27,14 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToMany2TestCase extends AbstractToManyTestCase<TOTM_A_3, TOTM_B_3> {
+public class OneToMany2TestCase extends AbstractToManyTestCase<A3, B3> {
 
-  public Collection<TOTM_B_3> getMany(TOTM_A_3 many) {
+  public Collection<B3> getMany(A3 many) {
     return many.getChildren();
   }
 
   @Override
-  public void add(TOTM_A_3 totm_a_3, TOTM_B_3 totm_b_3) {
+  public void add(A3 totm_a_3, B3 totm_b_3) {
     totm_a_3.getChildren().add(totm_b_3);
   }
 }

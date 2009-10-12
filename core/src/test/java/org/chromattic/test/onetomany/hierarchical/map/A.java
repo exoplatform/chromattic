@@ -29,8 +29,8 @@ import java.util.Map;
  * @version $Revision$
  */
 @NodeMapping(name = "totm_a")
-public abstract class TOTMHM_A {
+public abstract class A {
 
   @OneToMany
-  public abstract Map<String, TOTMHM_B> getChildren();
+  public abstract Map<String, B> getChildren();
 }

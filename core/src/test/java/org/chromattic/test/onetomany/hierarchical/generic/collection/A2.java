@@ -20,18 +20,11 @@
 package org.chromattic.test.onetomany.hierarchical.generic.collection;
 
 import org.chromattic.api.annotations.NodeMapping;
-import org.chromattic.api.annotations.Name;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_b")
-public abstract class TOTM_B_1 {
-
-  @Name
-  public abstract String getName();
-
-  public abstract void setName(String name);
-
+@NodeMapping(name = "totm_a")
+public abstract class A2 {
 }

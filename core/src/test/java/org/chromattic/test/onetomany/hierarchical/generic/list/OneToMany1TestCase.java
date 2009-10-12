@@ -27,20 +27,20 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToMany1TestCase extends AbstractOneToManyTestCase<TOTM_A_3, TOTM_B_3> {
+public class OneToMany1TestCase extends AbstractOneToManyTestCase<A3, B3> {
 
   @Override
-  public Collection<TOTM_B_3> getMany(TOTM_A_3 many) {
+  public Collection<B3> getMany(A3 many) {
     return many.getChildren();
   }
 
   @Override
-  public TOTM_A_3 getOne(TOTM_B_3 many) {
+  public A3 getOne(B3 many) {
     return many.getParent();
   }
 
   @Override
-  public void setOne(TOTM_B_3 many, TOTM_A_3 one) {
+  public void setOne(B3 many, A3 one) {
     many.setParent(one);
   }
 }
