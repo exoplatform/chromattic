@@ -16,41 +16,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.chromattic.core.bean;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class SimpleType<T> {
+public class PrimitiveSimpleType<T> extends SimpleType<T> {
 
   /** . */
-  private final SimpleTypeKind kind;
+  public static final SimpleType<Integer> INT = new PrimitiveSimpleType<Integer>(SimpleTypeKind.INT, Integer.class, int.class);
 
   /** . */
-  private final Class<T> javaType;
+  public static final SimpleType<Boolean> BOOLEAN = new PrimitiveSimpleType<Boolean>(SimpleTypeKind.BOOLEAN, Boolean.class, boolean.class);
 
   /** . */
-  private final Class<?> listElementType;
+  public static final SimpleType<Long> LONG = new PrimitiveSimpleType<Long>(SimpleTypeKind.LONG, Long.class, long.class);
 
-  SimpleType(SimpleTypeKind kind, Class<T> javaType, Class<?> listElementType) {
-    this.kind = kind;
-    this.javaType = javaType;
-    this.listElementType = listElementType;
+  /** . */
+  public static final SimpleType<Double> DOUBLE = new PrimitiveSimpleType<Double>(SimpleTypeKind.DOUBLE, Double.class, double.class);
+
+  /** . */
+  public static final SimpleType<Float> FLOAT = new PrimitiveSimpleType<Float>(SimpleTypeKind.FLOAT, Float.class, float.class);
+
+  public PrimitiveSimpleType(SimpleTypeKind kind, Class<T> javaType, Class<?> listElementType) {
+    super(kind, javaType, listElementType);
   }
 
-  public abstract boolean isPrimitive();
-
-  public SimpleTypeKind getKind() {
-    return kind;
-  }
-
-  public Class<T> getJavaType() {
-    return javaType;
-  }
-
-  public Class<?> getListElementType() {
-    return listElementType;
+  @Override
+  public boolean isPrimitive() {
+    return true;
   }
 }

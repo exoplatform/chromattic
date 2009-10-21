@@ -111,7 +111,7 @@ class PersistentEntityContextState extends EntityContextState {
     return Status.PERSISTENT;
   }
 
-  <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type) {
+  <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> svi) {
     try {
       V value = null;
 
@@ -143,7 +143,7 @@ class PersistentEntityContextState extends EntityContextState {
 
         //
         if (jcrValue != null) {
-          SimpleType<V> st = type != null ? type.getSimpleType() : null;
+          SimpleType<V> st = svi != null ? svi.getSimpleType() : null;
           value = ValueMapper.instance.get(jcrValue, st);
 
           //
@@ -162,9 +162,9 @@ class PersistentEntityContextState extends EntityContextState {
 
       //
       if (value == null) {
-        if (type != null) {
+        if (svi != null) {
           // Let's try default value
-          List<V> defaultValue = type.getDefaultValue();
+          List<V> defaultValue = svi.getDefaultValue();
 
           //
           if (defaultValue != null && defaultValue.size() > 0) {
@@ -172,8 +172,8 @@ class PersistentEntityContextState extends EntityContextState {
           }
 
           //
-          if (value == null && type.isPrimitive()) {
-            throw new IllegalStateException("Cannot convert null to primitive type " + type.getSimpleType());
+          if (value == null && svi.getSimpleType().isPrimitive()) {
+            throw new IllegalStateException("Cannot convert null to primitive type " + svi.getSimpleType());
           }
         }
       } else {
@@ -194,7 +194,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType listType) {
+  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType) {
     try {
       Value[] values;
       Property property = session.getSessionWrapper().getProperty(node, propertyName);
@@ -210,10 +210,10 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      List<V> list = listType.create(simpleType, values.length);
+      List<V> list = listType.create(svi.getSimpleType(), values.length);
       for (int i = 0;i < values.length;i++) {
         Value value = values[i];
-        V v = ValueMapper.instance.get(value, simpleType.getSimpleType());
+        V v = ValueMapper.instance.get(value, svi.getSimpleType());
         list.set(i, v);
       }
       return list;
@@ -223,7 +223,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V propertyValue) {
+  <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> svi, V propertyValue) {
     try {
       if (propertyCache != null) {
         if (propertyValue instanceof InputStream) {
@@ -235,7 +235,7 @@ class PersistentEntityContextState extends EntityContextState {
       Value jcrValue;
       if (propertyValue != null) {
         ValueFactory valueFactory = session.getJCRSession().getValueFactory();
-        SimpleType<V> st = type != null ? type.getSimpleType() : null;
+        SimpleType<V> st = svi != null ? svi.getSimpleType() : null;
         jcrValue = ValueMapper.instance.get(valueFactory, propertyValue, st);
       } else {
         jcrValue = null;
@@ -290,13 +290,13 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType listType, List<V> objects) {
+  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType, List<V> objects) {
     if (objects == null) {
       throw new NullPointerException();
     }
     try {
       ValueFactory valueFactory = session.getJCRSession().getValueFactory();
-      SimpleType<V> st = type != null ? type.getSimpleType() : null;
+      SimpleType<V> st = svi != null ? svi.getSimpleType() : null;
       Value[] values;
       int size = objects.size();
       values = new Value[size];

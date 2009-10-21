@@ -16,41 +16,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
-package org.chromattic.core;
-
-import org.chromattic.api.Status;
-import org.chromattic.core.bean.SimpleValueInfo;
-
-import javax.jcr.Node;
-import java.util.List;
+package org.chromattic.core.bean;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-abstract class EntityContextState {
+public enum SimpleTypeKind {
 
-  abstract String getId();
-
-  abstract String getName();
-
-  abstract String getPath();
-
-  abstract void setName(String name);
-
-  abstract Node getNode();
-
-  abstract DomainSession getSession();
-
-  abstract Status getStatus();
-
-  abstract <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> svi);
-
-  abstract <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType);
-
-  abstract <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> svi, V o);
-
-  abstract <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType, List<V> objects);
+  STRING, PATH, INT, BOOLEAN, LONG, DATE, DOUBLE, FLOAT, BINARY
 
 }

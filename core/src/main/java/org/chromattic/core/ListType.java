@@ -19,7 +19,7 @@
 package org.chromattic.core;
 
 import org.chromattic.common.collection.WrappedArrayList;
-import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.bean.SimpleType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,29 +30,29 @@ import java.util.List;
  */
 public abstract class ListType {
 
-  public abstract <E> List<E> create(SimpleValueInfo<E> elementType, int size);
+  public abstract <E> List<E> create(SimpleType<E> elementType, int size);
 
-  public abstract <E> Object unwrap(SimpleValueInfo<E> elementType, List<E> list);
+  public abstract <E> Object unwrap(SimpleType<E> elementType, List<E> list);
 
-  public abstract <E> List<E> wrap(SimpleValueInfo<E> elementType, Object array);
+  public abstract <E> List<E> wrap(SimpleType<E> elementType, Object array);
 
   public static final ListType ARRAY = new ListType() {
 
     @Override
-    public <E> List<E> create(SimpleValueInfo<E> elementType, int size) {
+    public <E> List<E> create(SimpleType<E> elementType, int size) {
       return WrappedArrayList.create(
-        elementType.getSimpleType().getJavaType(),
-        (Class<Object>)elementType.getTypeInfo().getType(),
+        elementType.getJavaType(),
+        elementType.getListElementType(),
         size);
     }
 
     @Override
-    public <E> List<E> wrap(SimpleValueInfo<E> elementType, Object array) {
-      return WrappedArrayList.wrap(elementType.getSimpleType().getJavaType(), array);
+    public <E> List<E> wrap(SimpleType<E> elementType, Object array) {
+      return WrappedArrayList.wrap(elementType.getJavaType(), array);
     }
 
     @Override
-    public <E> Object unwrap(SimpleValueInfo<E> elementType, List<E> list) {
+    public <E> Object unwrap(SimpleType<E> elementType, List<E> list) {
       return ((WrappedArrayList)list).getArray();
     }
   };
@@ -60,7 +60,7 @@ public abstract class ListType {
   public static final ListType LIST = new ListType() {
 
     @Override
-    public <E> List<E> create(SimpleValueInfo<E> elementType, int size) {
+    public <E> List<E> create(SimpleType<E> elementType, int size) {
       ArrayList<E> list = new ArrayList<E>(size);
       for (int i = 0;i < size;i++) {
         list.add(null);
@@ -69,12 +69,12 @@ public abstract class ListType {
     }
 
     @Override
-    public <E> List<E> wrap(SimpleValueInfo<E> elementType, Object array) {
+    public <E> List<E> wrap(SimpleType<E> elementType, Object array) {
       return (List<E>)array;
     }
 
     @Override
-    public <E> Object unwrap(SimpleValueInfo<E> elementType, List<E> list) {
+    public <E> Object unwrap(SimpleType<E> elementType, List<E> list) {
       return list;
     }
   };

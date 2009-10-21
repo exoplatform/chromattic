@@ -42,7 +42,7 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
   private final ListType listType;
 
   /** . */
-  private final SimpleValueInfo elementType;
+  private final SimpleValueInfo<?> elementType;
 
   public JCRPropertyListPropertyMapper(MultiValuedPropertyInfo<SimpleValueInfo> info, String jcrPropertyName) {
     super(info);
@@ -65,13 +65,21 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
 
   @Override
   public Object get(EntityContext context) throws Throwable {
-    List list = context.getPropertyValues(jcrPropertyName, info.getElementValue(), listType);
-    return listType.unwrap(elementType, list);
+    return get(context, elementType);
+  }
+
+  private <V> Object get(EntityContext context, SimpleValueInfo<V> elementType) throws Throwable {
+    List<V> list = context.getPropertyValues(jcrPropertyName, elementType, listType);
+    return listType.unwrap(elementType.getSimpleType(), list);
   }
 
   @Override
   public void set(EntityContext context, Object value) throws Throwable {
-    List<?> list = listType.wrap(elementType, value);
-    context.setPropertyValues(jcrPropertyName, info.getElementValue(), listType, list);
+    set(context, value, elementType);
+  }
+
+  private <V> void set(EntityContext context, Object value, SimpleValueInfo<V> elementType) throws Throwable {
+    List<V> list = listType.wrap(elementType.getSimpleType(), value);
+    context.setPropertyValues(jcrPropertyName, elementType, listType, list);
   }
 }

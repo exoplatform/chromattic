@@ -38,6 +38,7 @@ import org.chromattic.api.annotations.WorkspaceName;
 import org.chromattic.api.annotations.NamingPolicy;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.core.bean.*;
 import org.chromattic.core.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.core.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.core.mapping.value.OneToOneMapping;
@@ -50,15 +51,6 @@ import org.chromattic.core.mapping.value.OneToManyMapping;
 import org.chromattic.core.mapping.value.NamedOneToManyMapping;
 import org.chromattic.core.mapping.value.PropertyMapMapping;
 import org.chromattic.core.NodeAttributeType;
-import org.chromattic.core.bean.BeanInfo;
-import org.chromattic.core.bean.PropertyInfo;
-import org.chromattic.core.bean.MapPropertyInfo;
-import org.chromattic.core.bean.MultiValuedPropertyInfo;
-import org.chromattic.core.bean.SingleValuedPropertyInfo;
-import org.chromattic.core.bean.ValueInfo;
-import org.chromattic.core.bean.SimpleValueInfo;
-import org.chromattic.core.bean.SimpleType;
-import org.chromattic.core.bean.BeanValueInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.AnnotationIntrospector;
 import org.reflext.api.MethodInfo;
@@ -158,11 +150,11 @@ public class TypeMappingBuilder {
             JCRNodeAttributeMapping memberMapping = new JCRNodeAttributeMapping(nat);
             SimpleType simpleType = svi.getSimpleType();
             if (nat == NodeAttributeType.PATH) {
-              if (simpleType != SimpleType.PATH) {
+              if (simpleType != ObjectSimpleType.PATH) {
                 throw new IllegalStateException("Type " + simpleType + " is not accepted for path attribute mapping");
               }
             } else {
-              if (simpleType != SimpleType.STRING) {
+              if (simpleType != ObjectSimpleType.STRING) {
                 throw new IllegalStateException("Type " + simpleType + " is not accepted for attribute mapping");
               }
             }
@@ -236,7 +228,7 @@ public class TypeMappingBuilder {
             throw new IllegalStateException("Wrong key value type " + mapProperty.getKeyValue());
           }
           SimpleValueInfo svi = (SimpleValueInfo)mapProperty.getKeyValue();
-          if (svi.getSimpleType() != SimpleType.STRING) {
+          if (svi.getSimpleType() != ObjectSimpleType.STRING) {
             throw new IllegalStateException();
           }
         }
