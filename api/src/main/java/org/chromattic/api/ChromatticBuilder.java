@@ -97,7 +97,7 @@ public abstract class ChromatticBuilder {
   public static final Option<Boolean> JCR_OPTIMIZE_HAS_NODE_ENABLED =
     new Option<Boolean>(
       Option.Type.BOOLEAN,
-      "org.chromattic.api.Option.jcr.optimize.has_node.enabled",
+      "org.chromattic.api.Option.optimize.jcr.has_node.enabled",
       "jcr has node optimization enabled");
 
   /**
