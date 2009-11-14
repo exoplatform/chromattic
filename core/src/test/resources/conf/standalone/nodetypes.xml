@@ -520,6 +520,11 @@
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>
     </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="*" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+    </propertyDefinitions>
   </nodeType>
 
   <nodeType name="totmr_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
