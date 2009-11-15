@@ -24,6 +24,10 @@ package org.chromattic.test.type.stringenum;
  */
 public enum Currency {
 
-  EURO, DOLLAR
+//  @EnumKey("Û")
+  EURO,
+
+//  @EnumKey("$")
+  DOLLAR
 
 }
