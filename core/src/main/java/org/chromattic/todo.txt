@@ -12,7 +12,7 @@
 - detect mix of 2 sessions
 - test reference iterator remove
 - test reference iterator concurrent modification exceptions
-- pluggable simple types : enums, annotated classes
+- pluggable simple types : annotated classes
 - name mapping, for instance foo -> exo:foo
 - type coercion unit testing
 - undefined properties unit test for lists
