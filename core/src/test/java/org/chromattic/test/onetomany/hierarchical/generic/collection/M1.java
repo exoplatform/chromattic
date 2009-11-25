@@ -17,25 +17,27 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.hierarchical.generic.map;
+package org.chromattic.test.onetomany.hierarchical.generic.collection;
 
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.OneToMany;
+
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_b")
-public abstract class B2 {
+@NodeMapping(name = "multichildren_a")
+public abstract class M1 {
 
-  @Name
-  public abstract String getName();
+  @OneToMany
+  public abstract Collection<M2> getBs();
 
-  @ManyToOne
-  public abstract A2 getParent();
+  @OneToMany
+  public abstract Collection<M3> getCs();
 
-  public abstract void setParent(A2 parent);
+  @OneToMany
+  public abstract Collection<M4> getDs();
 
 }

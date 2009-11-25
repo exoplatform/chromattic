@@ -16,26 +16,28 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.onetomany.hierarchical.generic.collection;
 
-package org.chromattic.test.onetomany.hierarchical.generic.map;
+import org.chromattic.test.onetomany.hierarchical.generic.AbstractMultiChildrenTestCase;
 
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.NodeMapping;
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_b")
-public abstract class B2 {
+public class MultiChildrenTestCase extends AbstractMultiChildrenTestCase<M1, M2, M3, M4> {
 
-  @Name
-  public abstract String getName();
-
-  @ManyToOne
-  public abstract A2 getParent();
-
-  public abstract void setParent(A2 parent);
-
+  @Override
+  public <T extends M2> Collection<T> getMany(M1 one, Class<T> manySide) {
+    if (manySide == M2.class) {
+      return (Collection<T>)one.getBs();
+    } else if (manySide == M3.class) {
+      return (Collection<T>)one.getCs();
+    } else if (manySide == M4.class) {
+      return (Collection<T>)one.getDs();
+    } else {
+      throw new AssertionError();
+    }
+  }
 }

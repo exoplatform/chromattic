@@ -20,10 +20,9 @@
 package org.chromattic.test.onetomany.hierarchical.generic.map;
 
 import org.chromattic.test.onetomany.hierarchical.generic.AbstractOneToManyTestCase;
+import org.chromattic.test.support.AbstractMapToCollectionAdapter;
 
-import java.util.AbstractCollection;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,25 +32,10 @@ public class OneToMany1TestCase extends AbstractOneToManyTestCase<A3, B3> {
 
   @Override
   public Collection<B3> getMany(final A3 one) {
-    return new AbstractCollection<B3>() {
+    return new AbstractMapToCollectionAdapter<B3>(one.getChildren()) {
       @Override
-      public boolean add(B3 b3) {
-        if (b3 == null) {
-          one.getChildren().put(null, null);
-          return true;
-        } else {
-          String name = b3.getName();
-          one.getChildren().put(name, b3);
-          return true;
-        }
-      }
-      @Override
-      public Iterator<B3> iterator() {
-        return one.getChildren().values().iterator();
-      }
-      @Override
-      public int size() {
-        return one.getChildren().size();
+      public String getKey(B3 b3) {
+        return b3 != null ? b3.getName() : null;
       }
     };
   }

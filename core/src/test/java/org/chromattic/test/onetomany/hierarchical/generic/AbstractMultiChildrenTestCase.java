@@ -16,52 +16,73 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.onetomany.hierarchical.generic;
 
-package org.chromattic.test.onetomany.hierarchical;
-
-import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.common.TypeLiteral;
+import org.chromattic.test.AbstractTestCase;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MultiChildrenTestCase extends AbstractTestCase {
+public abstract class AbstractMultiChildrenTestCase<O, M1, M2 extends M1, M3 extends M1> extends AbstractTestCase {
+
+  /** . */
+  private final Class<O> oneSide = TypeLiteral.get(getClass(), 0);
+
+  /** . */
+  private final Class<M1> manySide1 = TypeLiteral.get(getClass(), 1);
+
+  /** . */
+  private final Class<M2> manySide2 = TypeLiteral.get(getClass(), 2);
+
+  /** . */
+  private final Class<M3> manySide3 = TypeLiteral.get(getClass(), 3);
+
+  public abstract <M extends M1> Collection<M> getMany(O one, Class<M> manySide);
 
   protected void createDomain() {
-    addClass(MULTICHILDREN_A.class);
-    addClass(MULTICHILDREN_B.class);
-    addClass(MULTICHILDREN_C.class);
-    addClass(MULTICHILDREN_D.class);
+    addClass(oneSide);
+    addClass(manySide1);
+    addClass(manySide2);
+    addClass(manySide3);
   }
 
   public void testFoo() throws Exception {
     ChromatticSession session = login();
 
-    MULTICHILDREN_A a = session.create(MULTICHILDREN_A.class, "a");
-    MULTICHILDREN_B b = session.create(MULTICHILDREN_B.class, "b");
-    MULTICHILDREN_C c = session.create(MULTICHILDREN_C.class, "c");
-    MULTICHILDREN_D d = session.create(MULTICHILDREN_D.class, "d");
+    //
+    O a = session.create(oneSide, "a");
+    M1 b = session.create(manySide1, "b");
+    M2 c = session.create(manySide2, "c");
+    M3 d = session.create(manySide3, "d");
 
+    //
     session.persist(a);
-    a.getBs().add(b);
-    a.getBs().add(c);
-    a.getBs().add(d);
+    getMany(a, manySide1).add(b);
+    getMany(a, manySide2).add(c);
+    getMany(a, manySide3).add(d);
 
-    ArrayList<MULTICHILDREN_B> bsCopy = new ArrayList<MULTICHILDREN_B>(a.getBs());
-    ArrayList<MULTICHILDREN_C> csCopy = new ArrayList<MULTICHILDREN_C>(a.getCs());
-    ArrayList<MULTICHILDREN_D> dsCopy = new ArrayList<MULTICHILDREN_D>(a.getDs());
+    //
+    ArrayList<M1> bsCopy = new ArrayList<M1>(getMany(a, manySide1));
+    ArrayList<M2> csCopy = new ArrayList<M2>(getMany(a, manySide2));
+    ArrayList<M3> dsCopy = new ArrayList<M3>(getMany(a, manySide3));
 
+    //
     assertEquals(3, bsCopy.size());
     assertTrue(bsCopy.contains(b));
     assertTrue(bsCopy.contains(c));
     assertTrue(bsCopy.contains(d));
 
+    //
     assertEquals(1, csCopy.size());
     assertTrue(csCopy.contains(c));
 
+    //
     assertEquals(1, dsCopy.size());
     assertTrue(dsCopy.contains(d));
   }

@@ -19,23 +19,35 @@
 
 package org.chromattic.test.onetomany.hierarchical.generic.map;
 
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.test.onetomany.hierarchical.generic.AbstractMultiChildrenTestCase;
+import org.chromattic.test.support.AbstractMapToCollectionAdapter;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_b")
-public abstract class B2 {
+public class MultiChildrenTestCase extends AbstractMultiChildrenTestCase<M1, M2, M3, M4> {
 
-  @Name
-  public abstract String getName();
-
-  @ManyToOne
-  public abstract A2 getParent();
-
-  public abstract void setParent(A2 parent);
-
+  @Override
+  public <M extends M2> Collection<M> getMany(M1 one, Class<M> manySide) {
+    Map<String, M> c;
+    if (manySide == M2.class) {
+      c = (Map<String, M>)one.getBs();
+    } else if (manySide == M3.class) {
+      c = (Map<String, M>)one.getCs();
+    } else if (manySide == M4.class) {
+      c = (Map<String, M>)one.getDs();
+    } else {
+      throw new AssertionError();
+    }
+    return new AbstractMapToCollectionAdapter<M>(c) {
+      @Override
+      public String getKey(M m) {
+        return m.getName();
+      }
+    };
+  }
 }

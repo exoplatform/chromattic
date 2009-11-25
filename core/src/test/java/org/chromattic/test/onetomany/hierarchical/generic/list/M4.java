@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.hierarchical;
+package org.chromattic.test.onetomany.hierarchical.generic.list;
 
 import org.chromattic.api.annotations.NodeMapping;
 
@@ -25,6 +25,6 @@ import org.chromattic.api.annotations.NodeMapping;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "multichildren_c")
-public class MULTICHILDREN_C extends MULTICHILDREN_B {
+@NodeMapping(name = "multichildren_d")
+public class M4 extends M2 {
 }
