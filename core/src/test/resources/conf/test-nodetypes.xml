@@ -580,40 +580,6 @@
     </propertyDefinitions>
   </nodeType>
 
-  <nodeType name="totop_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-    <supertypes>
-      <supertype>nt:base</supertype>
-      <supertype>mix:referenceable</supertype>
-    </supertypes>
-    <childNodeDefinitions>
-      <childNodeDefinition name="*" defaultPrimaryType="totop_c" autoCreated="false" mandatory="false"
-        onParentVersion="COPY" protected="false" sameNameSiblings="false">
-        <requiredPrimaryTypes>
-          <requiredPrimaryType>totop_b</requiredPrimaryType>
-        </requiredPrimaryTypes>
-      </childNodeDefinition>
-    </childNodeDefinitions>
-  </nodeType>
-
-  <nodeType name="totop_b" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-    <supertypes>
-      <supertype>nt:base</supertype>
-      <supertype>mix:referenceable</supertype>
-    </supertypes>
-  </nodeType>
-
-  <nodeType name="totop_c" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-    <supertypes>
-      <supertype>totop_b</supertype>
-    </supertypes>
-  </nodeType>
-
-  <nodeType name="totop_d" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-    <supertypes>
-      <supertype>totop_b</supertype>
-    </supertypes>
-  </nodeType>
-
   <nodeType name="totmrp_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>nt:base</supertype>
