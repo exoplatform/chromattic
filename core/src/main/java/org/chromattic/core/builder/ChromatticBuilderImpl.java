@@ -77,7 +77,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     // Configure system options
     for (Option<?> option : getSystemOptions()) {
       String value = System.getProperty(option.getName());
-      OptionInstance<?> instance = option.getInstance(value);
+      Option.Instance<?> instance = option.getInstance(value);
       if (instance != null) {
         setOption(instance, false);
       }
@@ -93,36 +93,36 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     setOption(ROOT_NODE_PATH, "/", false);
   }
 
-  private <T> T create(OptionInstance<String> optionInstance, Class<T> expectedClass) {
+  private <T> T create(Option.Instance<String> optionInstance, Class<T> expectedClass) {
     Option<String> option = optionInstance.getOption();
     String s = optionInstance.getValue();
     return ObjectInstantiator.newInstance(s, expectedClass);
   }
 
-  protected <T> void configure(OptionInstance<T> optionInstance) {
+  protected <T> void configure(Option.Instance<T> optionInstance) {
     if (optionInstance.getOption() == INSTRUMENTOR_CLASSNAME) {
-      instrumentor = create((OptionInstance<String>)optionInstance, Instrumentor.class);
+      instrumentor = create((Option.Instance<String>)optionInstance, Instrumentor.class);
     } else if (optionInstance.getOption() == SESSION_LIFECYCLE_CLASSNAME) {
-      sessionProvider = create((OptionInstance<String>)optionInstance, SessionLifeCycle.class);
+      sessionProvider = create((Option.Instance<String>)optionInstance, SessionLifeCycle.class);
     } else if (optionInstance.getOption() == OBJECT_FORMATTER_CLASSNAME) {
-      objectFormatter = create((OptionInstance<String>)optionInstance, ObjectFormatter.class);
+      objectFormatter = create((Option.Instance<String>)optionInstance, ObjectFormatter.class);
     } else if (optionInstance.getOption() == CACHE_STATE_ENABLED) {
-      stateCacheEnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
+      stateCacheEnabled = ((Option.Instance<Boolean>)optionInstance).getValue();
     } else if (optionInstance.getOption() == ROOT_NODE_PATH) {
-      rootNodePath = ((OptionInstance<String>)optionInstance).getValue();
+      rootNodePath = ((Option.Instance<String>)optionInstance).getValue();
     } else if (optionInstance.getOption() == JCR_OPTIMIZE_ENABLED) {
-      optimizeJCREnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
+      optimizeJCREnabled = ((Option.Instance<Boolean>)optionInstance).getValue();
     } else if (optionInstance.getOption() == JCR_OPTIMIZE_HAS_PROPERTY_ENABLED) {
-      optimizeJCRHasPropertyEnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
+      optimizeJCRHasPropertyEnabled = ((Option.Instance<Boolean>)optionInstance).getValue();
     } else if (optionInstance.getOption() == JCR_OPTIMIZE_HAS_NODE_ENABLED) {
-      optimizeJCRHasNodeEnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
+      optimizeJCRHasNodeEnabled = ((Option.Instance<Boolean>)optionInstance).getValue();
     }
   }
 
   protected Chromattic boot() throws Exception {
 
     // Configure from options
-    for (OptionInstance<?> optionInstance : options.values()) {
+    for (Option.Instance<?> optionInstance : options.values()) {
       configure(optionInstance);
     }
 

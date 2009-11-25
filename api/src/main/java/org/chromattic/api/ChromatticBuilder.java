@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.Arrays;
 
 /**
+ * The builder configures and create a Chromattic runtime.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
@@ -151,9 +153,9 @@ public abstract class ChromatticBuilder {
   protected final Set<Class<?>> classes = new HashSet<Class<?>>();
 
   /** . */
-  protected final Map<String, OptionInstance<?>> options = new HashMap<String, OptionInstance<?>>();
+  protected final Map<String, Option.Instance<?>> options = new HashMap<String, Option.Instance<?>>();
 
-  public OptionInstance<?> getOption(String name) {
+  public Option.Instance<?> getOption(String name) {
     return options.get(name);
   }
 
@@ -161,24 +163,36 @@ public abstract class ChromatticBuilder {
     setOption(option, value, true);
   }
 
-  public <T> void setOption(OptionInstance<T> optionInstance, boolean overwrite) {
+  public <T> void setOption(Option.Instance<T> optionInstance, boolean overwrite) {
     setOption(optionInstance.getOption(), optionInstance.getValue(), overwrite);
   }
 
   public <T> void setOption(Option<T> option, T value, boolean overwrite) {
     if (overwrite || options.get(option.getName()) == null) {
-      OptionInstance<T> instance = new OptionInstance<T>(option, value);
+      Option.Instance<T> instance = new Option.Instance<T>(option, value);
       options.put(option.getName(), instance);
     }
   }
 
-  public void add(Class<?> clazz) {
+  /**
+   * Adds a class definition.
+   *
+   * @param clazz the class to add
+   * @throws NullPointerException if the provided class is null
+   */
+  public void add(Class<?> clazz) throws NullPointerException {
     if (clazz == null) {
       throw new NullPointerException();
     }
     classes.add(clazz);
   }
 
+  /**
+   * Builds the runtime and return a configured {@link org.chromattic.api.Chromattic} instance.
+   *
+   * @return the chromattic instance
+   * @throws Exception any exception
+   */
   public Chromattic build() throws Exception {
     return boot();
   }
@@ -188,11 +202,16 @@ public abstract class ChromatticBuilder {
   /**
    * A configuration option.
    *
-   * @param <T> the option type
+   * @param <D> the option data type
    */
-  public final static class Option<T> {
+  public final static class Option<D> {
 
-    public abstract static class Type<T> {
+    /**
+     * The type of an option.
+     *
+     * @param <D> the data type
+     */
+    public abstract static class Type<D> {
 
       /** . */
       public static final Type<String> STRING = new Type<String>(String.class) {
@@ -209,17 +228,13 @@ public abstract class ChromatticBuilder {
       };
 
       /** . */
-      private final Class<T> javaType;
+      private final Class<D> javaType;
 
-      private Type(Class<T> javaType) {
+      private Type(Class<D> javaType) {
         this.javaType = javaType;
       }
 
-      public final Class<T> getJavaType() {
-        return javaType;
-      }
-
-      public final T parse(String value) {
+      public final D parse(String value) {
         if (value == null) {
           return null;
         } else {
@@ -227,7 +242,58 @@ public abstract class ChromatticBuilder {
         }
       }
 
-      protected abstract T doParse(String value);
+      protected abstract D doParse(String value);
+
+    }
+
+    /**
+     * The instance of an option.
+     *
+     * @param <D> the data type
+     */
+    public static class Instance<D> {
+
+      /** . */
+      private final Option<D> option;
+
+      /** . */
+      private final D value;
+
+      private Instance(Option<D> option, D value) {
+        if (option == null) {
+          throw new NullPointerException("No null option accepted");
+        }
+        if (value == null) {
+          throw new NullPointerException("No null option value accepted");
+        }
+        this.option = option;
+        this.value = value;
+      }
+
+      public Option<D> getOption() {
+        return option;
+      }
+
+      public D getValue() {
+        return value;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+        if (obj == this) {
+          return true;
+        }
+        if (obj instanceof Instance) {
+          Instance that = (Instance)obj;
+          return option.name.equals(that.option.name);
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        return option.name.hashCode();
+      }
     }
 
     /** . */
@@ -237,15 +303,15 @@ public abstract class ChromatticBuilder {
     private final String displayName;
 
     /** . */
-    private final Type<T> type;
+    private final Type<D> type;
 
-    private Option(Type<T> type, String name, String displayName) {
+    private Option(Type<D> type, String name, String displayName) {
       this.name = name;
       this.displayName = displayName;
       this.type = type;
     }
 
-    public Type<T> getType() {
+    public Type<D> getType() {
       return type;
     }
 
@@ -257,56 +323,11 @@ public abstract class ChromatticBuilder {
       return displayName;
     }
 
-    public OptionInstance<T> getInstance(String value) {
-      T t = type.parse(value);
-      return t != null ? new OptionInstance<T>(this, t) : null;
+    public Option.Instance<D> getInstance(String value) {
+      D t = type.parse(value);
+      return t != null ? new Option.Instance<D>(this, t) : null;
     }
   }
 
-  protected abstract <T> void configure(OptionInstance<T> option);
-
-  protected static class OptionInstance<T> {
-
-    /** . */
-    private final Option<T> option;
-
-    /** . */
-    private final T value;
-
-    private OptionInstance(Option<T> option, T value) {
-      if (option == null) {
-        throw new NullPointerException("No null option accepted");
-      }
-      if (value == null) {
-        throw new NullPointerException("No null option value accepted");
-      }
-      this.option = option;
-      this.value = value;
-    }
-
-    public Option<T> getOption() {
-      return option;
-    }
-
-    public T getValue() {
-      return value;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (obj == this) {
-        return true;
-      }
-      if (obj instanceof OptionInstance) {
-        OptionInstance that = (OptionInstance)obj;
-        return option.name.equals(that.option.name);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return option.name.hashCode();
-    }
-  }
+  protected abstract <T> void configure(Option.Instance<T> option);
 }
