@@ -16,39 +16,22 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.support;
 
-import java.util.AbstractCollection;
-import java.util.Iterator;
-import java.util.Map;
+package org.chromattic.test.onetomany.hierarchical.list;
+
+import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.OneToMany;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractMapToCollectionAdapter<E> extends AbstractCollection<E> {
+@NodeMapping(name = "totm_a")
+public abstract class A3 {
 
-  /** . */
-  private final Map<String, E> map;
+  @OneToMany
+  public abstract List<B3> getChildren();
 
-  public AbstractMapToCollectionAdapter(Map<String, E> map) {
-    this.map = map;
-  }
-
-  public abstract String getKey(E e);
-
-  @Override
-  public boolean add(E e) {
-    String name = getKey(e);
-    map.put(name, e);
-    return true;
-  }
-  @Override
-  public Iterator<E> iterator() {
-    return map.values().iterator();
-  }
-  @Override
-  public int size() {
-    return map.size();
-  }
 }

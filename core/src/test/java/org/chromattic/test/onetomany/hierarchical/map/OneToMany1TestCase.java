@@ -16,39 +16,37 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.support;
 
-import java.util.AbstractCollection;
-import java.util.Iterator;
-import java.util.Map;
+package org.chromattic.test.onetomany.hierarchical.map;
+
+import org.chromattic.test.onetomany.hierarchical.AbstractOneToManyTestCase;
+import org.chromattic.test.support.AbstractMapToCollectionAdapter;
+
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractMapToCollectionAdapter<E> extends AbstractCollection<E> {
-
-  /** . */
-  private final Map<String, E> map;
-
-  public AbstractMapToCollectionAdapter(Map<String, E> map) {
-    this.map = map;
-  }
-
-  public abstract String getKey(E e);
+public class OneToMany1TestCase extends AbstractOneToManyTestCase<A3, B3> {
 
   @Override
-  public boolean add(E e) {
-    String name = getKey(e);
-    map.put(name, e);
-    return true;
+  public Collection<B3> getMany(final A3 one) {
+    return new AbstractMapToCollectionAdapter<B3>(one.getChildren()) {
+      @Override
+      public String getKey(B3 b3) {
+        return b3 != null ? b3.getName() : null;
+      }
+    };
   }
+
   @Override
-  public Iterator<E> iterator() {
-    return map.values().iterator();
+  public A3 getOne(B3 many) {
+    return many.getParent();
   }
+
   @Override
-  public int size() {
-    return map.size();
+  public void setOne(B3 many, A3 one) {
+    many.setParent(one);
   }
 }

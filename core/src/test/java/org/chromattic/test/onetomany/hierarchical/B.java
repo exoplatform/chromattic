@@ -19,41 +19,19 @@
 
 package org.chromattic.test.onetomany.hierarchical;
 
-import org.chromattic.core.DomainSession;
-import org.chromattic.test.AbstractTestCase;
-
-import javax.jcr.Node;
+import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.ManyToOne;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MultiParentTestCase extends AbstractTestCase {
+@NodeMapping(name = "parents_b")
+public abstract class B {
 
-  protected void createDomain() {
-    addClass(A.class);
-    addClass(B.class);
-  }
+  @ManyToOne
+  public abstract A getAParent();
 
-  public void testLoad() throws Exception {
-    DomainSession session = login();
-    Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("parents_a", "parents_a");
-    String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "parents_b");
-    String bId = bNode.getUUID();
-    Node cNode = bNode.addNode("c", "parents_b");
-    String cId = cNode.getUUID();
-    rootNode.save();
-
-    //
-    session = login();
-    A a = session.findById(A.class, aId);
-    B b = session.findById(B.class, bId);
-    B c = session.findById(B.class, cId);
-    assertSame(b, c.getBParent());
-    assertNull(c.getAParent());
-    assertSame(a, b.getAParent());
-    assertNull(b.getBParent());
-  }
+  @ManyToOne
+  public abstract B getBParent();
 }

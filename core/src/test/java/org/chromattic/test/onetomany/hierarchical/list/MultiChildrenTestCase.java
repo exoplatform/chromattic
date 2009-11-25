@@ -16,39 +16,30 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.support;
 
-import java.util.AbstractCollection;
-import java.util.Iterator;
-import java.util.Map;
+package org.chromattic.test.onetomany.hierarchical.list;
+
+import org.chromattic.test.onetomany.hierarchical.AbstractMultiChildrenTestCase;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractMapToCollectionAdapter<E> extends AbstractCollection<E> {
-
-  /** . */
-  private final Map<String, E> map;
-
-  public AbstractMapToCollectionAdapter(Map<String, E> map) {
-    this.map = map;
-  }
-
-  public abstract String getKey(E e);
+public class MultiChildrenTestCase extends AbstractMultiChildrenTestCase<M1, M2, M3, M4> {
 
   @Override
-  public boolean add(E e) {
-    String name = getKey(e);
-    map.put(name, e);
-    return true;
-  }
-  @Override
-  public Iterator<E> iterator() {
-    return map.values().iterator();
-  }
-  @Override
-  public int size() {
-    return map.size();
+  public <T extends M2> Collection<T> getMany(M1 one, Class<T> manySide) {
+    if (manySide == M2.class) {
+      return (List<T>)one.getBs();
+    } else if (manySide == M3.class) {
+      return (List<T>)one.getCs();
+    } else if (manySide == M4.class) {
+      return (List<T>)one.getDs();
+    } else {
+      throw new AssertionError();
+    }
   }
 }

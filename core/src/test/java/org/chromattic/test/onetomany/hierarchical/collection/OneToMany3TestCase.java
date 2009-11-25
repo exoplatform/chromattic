@@ -16,39 +16,22 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.support;
 
-import java.util.AbstractCollection;
-import java.util.Iterator;
-import java.util.Map;
+package org.chromattic.test.onetomany.hierarchical.collection;
+
+import org.chromattic.test.onetomany.hierarchical.AbstractOneToTestCase;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractMapToCollectionAdapter<E> extends AbstractCollection<E> {
+public class OneToMany3TestCase extends AbstractOneToTestCase<A3, B3> {
 
-  /** . */
-  private final Map<String, E> map;
-
-  public AbstractMapToCollectionAdapter(Map<String, E> map) {
-    this.map = map;
+  public void setOne(B3 many, A3 one) {
+    many.setParent(one);
   }
 
-  public abstract String getKey(E e);
-
-  @Override
-  public boolean add(E e) {
-    String name = getKey(e);
-    map.put(name, e);
-    return true;
-  }
-  @Override
-  public Iterator<E> iterator() {
-    return map.values().iterator();
-  }
-  @Override
-  public int size() {
-    return map.size();
+  public A3 getOne(B3 many) {
+    return many.getParent();
   }
 }

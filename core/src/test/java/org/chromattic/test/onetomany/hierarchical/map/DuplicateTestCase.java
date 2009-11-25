@@ -16,44 +16,31 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.onetomany.hierarchical.map;
 
-package org.chromattic.test.onetomany.hierarchical;
-
-import org.chromattic.core.DomainSession;
+import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.Status;
 import org.chromattic.test.AbstractTestCase;
-
-import javax.jcr.Node;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MultiParentTestCase extends AbstractTestCase {
+public class DuplicateTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(A.class);
-    addClass(B.class);
+    addClass(A4.class);
+    addClass(B4.class);
   }
 
-  public void testLoad() throws Exception {
-    DomainSession session = login();
-    Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("parents_a", "parents_a");
-    String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "parents_b");
-    String bId = bNode.getUUID();
-    Node cNode = bNode.addNode("c", "parents_b");
-    String cId = cNode.getUUID();
-    rootNode.save();
-
-    //
-    session = login();
-    A a = session.findById(A.class, aId);
-    B b = session.findById(B.class, bId);
-    B c = session.findById(B.class, cId);
-    assertSame(b, c.getBParent());
-    assertNull(c.getAParent());
-    assertSame(a, b.getAParent());
-    assertNull(b.getBParent());
+  public void testDuplicatePutSucceeds() throws Exception {
+    ChromatticSession session = login();
+    A4 a = session.insert(A4.class, "a");
+    B4 b1 = session.create(B4.class);
+    B4 b2 = session.create(B4.class);
+    a.getChildren().put("b", b1);
+    assertSame(b1, a.getChildren().put("b", b2));
+    assertSame(b2, a.getChildren().get("b"));
+    assertEquals(Status.REMOVED, session.getStatus(b1));
   }
 }
