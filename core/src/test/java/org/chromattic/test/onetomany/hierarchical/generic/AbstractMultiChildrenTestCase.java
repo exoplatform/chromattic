@@ -86,4 +86,32 @@ public abstract class AbstractMultiChildrenTestCase<O, M1, M2 extends M1, M3 ext
     assertEquals(1, dsCopy.size());
     assertTrue(dsCopy.contains(d));
   }
+
+  public void testBar() throws Exception {
+
+    ChromatticSession session = login();
+
+    O a = session.create(oneSide, "a");
+    String aId = session.persist(a);
+    M2 c = session.create(manySide2, "c");
+    getMany(a, manySide1).add(c);
+    String cId = session.getId(c);
+    M3 d = session.create(manySide3, "d");
+    getMany(a, manySide1).add(d);
+    String dId = session.getId(d);
+    session.save();
+
+    session = login();
+    a = session.findById(oneSide, aId);
+    c = session.findById(manySide2, cId);
+    d = session.findById(manySide3, dId);
+    Collection<M1> bs =  getMany(a, manySide1);
+    assertTrue(bs.contains(c));
+    assertTrue(bs.contains(d));
+    assertEquals(2, bs.size());
+    Collection<M1> copy = new ArrayList<M1>(bs);
+    assertTrue(copy.contains(c));
+    assertTrue(copy.contains(d));
+    assertEquals(2, copy.size());
+  }
 }
