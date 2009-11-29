@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.common;
+package org.chromattic.test.common.collection.delta;
 
 import junit.framework.TestCase;
 import org.chromattic.common.collection.delta.DeltaList;
@@ -38,6 +38,17 @@ public class DeltaListTestCase extends TestCase {
     assertEquals(2, (int)deltaList.get(2));
     try {
       deltaList.get(3);
+      fail();
+    }
+    catch (IndexOutOfBoundsException e) {
+    }
+  }
+
+  public void testGetAtMinus1() {
+    List<Integer> list = Arrays.asList(0, 1, 2);
+    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    try {
+      deltaList.get(-1);
       fail();
     }
     catch (IndexOutOfBoundsException e) {

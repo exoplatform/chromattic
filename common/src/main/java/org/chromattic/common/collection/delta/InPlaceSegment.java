@@ -41,12 +41,13 @@ public class InPlaceSegment<E> extends Segment<E> {
   }
 
   @Override
-  public E get(int index) {
-    if (index < listSize) {
-      return owner.list.get(listIndex + index);
-    } else {
-      return super.get(index - listSize);
-    }
+  protected E localGet(int index) {
+    return owner.list.get(listIndex + index);
+  }
+
+  @Override
+  protected int localSize() {
+    return listSize;
   }
 
   @Override

@@ -32,11 +32,27 @@ public abstract class Segment<E> {
   /** . */
   Segment<E> next;
 
-  public E get(int index) {
-    if (next == null) {
-      throw new IndexOutOfBoundsException();
+  public final E get(int index) {
+    if (index < 0) {
+      if (previous == null) {
+        throw new IndexOutOfBoundsException();
+      } else {
+        return previous.get(index + previous.localSize());
+      }
     }
-    return next.get(index);
+
+    //
+    int localSize = localSize();
+    if (index >= localSize) {
+      if (next == null) {
+        throw new IndexOutOfBoundsException();
+      } else {
+        return next.get(index - localSize);
+      }
+    }
+
+    //
+    return localGet(index);
   }
 
   public void add(int index, E e) {
@@ -63,6 +79,10 @@ public abstract class Segment<E> {
   public Iterator<E> iterator() {
     return new IteratorImpl<E>(this);
   }
+
+  protected abstract E localGet(int index);
+
+  protected abstract int localSize();
 
   protected abstract Iterator<E> localIterator();
 }

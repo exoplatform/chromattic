@@ -31,12 +31,13 @@ public class InsertionSegment<E> extends Segment<E> {
   final LinkedList<E> insertions = new LinkedList<E>();
 
   @Override
-  public E get(int index) {
-    if (index < insertions.size()) {
-      return insertions.get(index);
-    } else {
-      return super.get(index - insertions.size());
-    }
+  protected E localGet(int index) {
+    return insertions.get(index);
+  }
+
+  @Override
+  protected int localSize() {
+    return insertions.size();
   }
 
   @Override
