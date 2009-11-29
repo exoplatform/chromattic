@@ -71,7 +71,7 @@ public abstract class AbstractInsertionSegment<E> extends Segment<E> {
   }
 
   @Override
-  protected void localString(StringBuilder builder) {
+  protected void format(StringBuilder builder) {
     builder.append("{");
     int count = 0;
     for (E e : insertions) {

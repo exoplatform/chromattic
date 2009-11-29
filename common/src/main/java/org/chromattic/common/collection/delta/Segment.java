@@ -127,6 +127,10 @@ public abstract class Segment<E> {
     return size;
   }
 
+  public final Iterator<E> iterator() {
+    return new IteratorImpl<E>(this);
+  }
+
   public final int complexity() {
     int complexity = 0;
     for (Segment<E> segment = this;segment != null;segment = segment.getNext()) {
@@ -156,40 +160,21 @@ public abstract class Segment<E> {
     return segment;
   }
 
-  final void setAfter(Segment<E> segment) {
-    Segment<E> next = getNext();
-    if (next != null) {
-      Segment<E> nextNext = next.getNext();
-      if (nextNext != null) {
-        segment.setNext(nextNext);
-        nextNext.setPrevious(segment);
-      }
-      next.setNext(null);
-      next.setPrevious(null);
-    }
-    segment.setPrevious(this);
-    setNext(segment);
-  }
-
   // *********************
 
-  protected abstract void localString(StringBuilder builder);
+  protected abstract void format(StringBuilder builder);
 
-  public String string() {
+  public String format() {
     StringBuilder builder = new StringBuilder("[");
     int count = 0;
     for (Segment<E> segment = this;segment != null;segment = segment.getNext()) {
       if (count > 0) {
         builder.append(",");
       }
-      segment.localString(builder);
+      segment.format(builder);
       count ++;
     }
     builder.append("]");
     return builder.toString();
-  }
-
-  public final Iterator<E> iterator() {
-    return new IteratorImpl<E>(this);
   }
 }

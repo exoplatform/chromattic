@@ -81,6 +81,6 @@ public class DeltaList<E> {
   }
 
   public String toString() {
-    return head.string();
+    return head.format();
   }
 }
