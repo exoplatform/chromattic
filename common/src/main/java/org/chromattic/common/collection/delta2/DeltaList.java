@@ -16,44 +16,56 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.common.collection.delta;
+package org.chromattic.common.collection.delta2;
 
-import junit.framework.TestCase;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class RandomTestCase extends TestCase {
+public class DeltaList<E> {
 
   /** . */
-  private final int numOps = 100;
+  private Segment<E> head;
 
   /** . */
-  private final Random rnd = new Random(100);
+  private Segment<E> tail;
 
-  public void testFoo() {
-    for (int j = 0;j < 1000;j++) {
-      rnd.setSeed(j);
-      List<Integer> list = createRandomList(3);
-      DeltaListWrapper wrapper = new DeltaListWrapper(list);
-      for (int i = 0;i < numOps;i++) {
-        wrapper.performOperation(rnd);
-      }
-    }
+  /** . */
+  final List<E> list;
+
+  public DeltaList(List<E> list) {
+    InPlaceSegment<E> head = new InPlaceSegment<E>(this);
+    head.listIndex = 0;
+    head.listSize = list.size();
+
+    //
+    InsertionSegment<E> tail = new InsertionSegment<E>();
+
+    //
+    head.next = tail;
+    tail.previous = head;
+
+    //
+    this.list = list;
+    this.head = head;
+    this.tail = tail;
   }
 
-  private List<Integer> createRandomList(int size) {
-    ArrayList<Integer> list = new ArrayList<Integer>(3);
-    for (int i = 0;i < size;i++) {
-      list.add(i);
-    }
-    Collections.shuffle(list, rnd);
-    return list;
+  public E get(int index) {
+    return head.get(index);
+  }
+
+  public void add(int index, E e) {
+    head.add(index, e);
+  }
+
+  public E remove(int index) {
+    return head.remove(index);
+  }
+
+  public int size() {
+    return head.size();
   }
 }

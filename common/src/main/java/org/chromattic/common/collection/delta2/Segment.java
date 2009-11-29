@@ -16,44 +16,45 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.common.collection.delta;
-
-import junit.framework.TestCase;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+package org.chromattic.common.collection.delta2;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class RandomTestCase extends TestCase {
+public abstract class Segment<E> {
 
   /** . */
-  private final int numOps = 100;
+  Segment<E> previous;
 
   /** . */
-  private final Random rnd = new Random(100);
+  Segment<E> next;
 
-  public void testFoo() {
-    for (int j = 0;j < 1000;j++) {
-      rnd.setSeed(j);
-      List<Integer> list = createRandomList(3);
-      DeltaListWrapper wrapper = new DeltaListWrapper(list);
-      for (int i = 0;i < numOps;i++) {
-        wrapper.performOperation(rnd);
-      }
+  public E get(int index) {
+    if (next == null) {
+      throw new IndexOutOfBoundsException();
     }
+    return next.get(index);
   }
 
-  private List<Integer> createRandomList(int size) {
-    ArrayList<Integer> list = new ArrayList<Integer>(3);
-    for (int i = 0;i < size;i++) {
-      list.add(i);
+  public void add(int index, E e) {
+    if (next == null) {
+      throw new IndexOutOfBoundsException();
     }
-    Collections.shuffle(list, rnd);
-    return list;
+    next.add(index, e);
+  }
+
+  public E remove(int index) {
+    if (next == null) {
+      throw new IndexOutOfBoundsException();
+    }
+    return next.remove(index);
+  }
+
+  public int size() {
+    if (next == null) {
+      return 0;
+    }
+    return next.size();
   }
 }

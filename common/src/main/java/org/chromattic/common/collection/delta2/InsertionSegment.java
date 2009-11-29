@@ -16,44 +16,48 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.common.collection.delta;
+package org.chromattic.common.collection.delta2;
 
-import junit.framework.TestCase;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.LinkedList;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class RandomTestCase extends TestCase {
+public class InsertionSegment<E> extends Segment<E> {
 
   /** . */
-  private final int numOps = 100;
+  final LinkedList<E> insertions = new LinkedList<E>();
 
-  /** . */
-  private final Random rnd = new Random(100);
-
-  public void testFoo() {
-    for (int j = 0;j < 1000;j++) {
-      rnd.setSeed(j);
-      List<Integer> list = createRandomList(3);
-      DeltaListWrapper wrapper = new DeltaListWrapper(list);
-      for (int i = 0;i < numOps;i++) {
-        wrapper.performOperation(rnd);
-      }
+  @Override
+  public E get(int index) {
+    if (index < insertions.size()) {
+      return insertions.get(index);
+    } else {
+      return super.get(index - insertions.size());
     }
   }
 
-  private List<Integer> createRandomList(int size) {
-    ArrayList<Integer> list = new ArrayList<Integer>(3);
-    for (int i = 0;i < size;i++) {
-      list.add(i);
+  @Override
+  public void add(int index, E e) {
+    if  (index <= insertions.size()) {
+      insertions.add(index, e);
+    } else {
+      super.add(index - insertions.size(), e);
     }
-    Collections.shuffle(list, rnd);
-    return list;
+  }
+
+  @Override
+  public E remove(int index) {
+    if (index < insertions.size()) {
+      return insertions.remove(index);
+    } else {
+      return super.remove(index - insertions.size());
+    }
+  }
+
+  @Override
+  public int size() {
+    return insertions.size() + super.size();
   }
 }

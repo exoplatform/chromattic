@@ -19,7 +19,7 @@
 package org.chromattic.test.common.collection.delta;
 
 import junit.framework.Assert;
-import org.chromattic.common.collection.delta.DeltaList;
+import org.chromattic.common.collection.delta2.DeltaList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,13 +48,13 @@ public class DeltaListWrapper {
   }
 
   public void add(int index, int element) {
-    deltaList.add(index, element);
     shadow.add(index, element);
+    deltaList.add(index, element);
   }
 
   public void remove(int index) {
-    deltaList.remove(index);
     shadow.remove(index);
+    deltaList.remove(index);
   }
 
   public void performOperation(Random rnd) {
