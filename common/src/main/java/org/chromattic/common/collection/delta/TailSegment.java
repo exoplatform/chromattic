@@ -16,28 +16,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.chromattic.common.collection.delta;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractSegment<E> extends Segment<E> {
+public class TailSegment<E> extends AbstractInsertionSegment<E> {
 
   /** . */
   private Segment<E> previous;
 
-  /** . */
-  private Segment<E> next;
-
   @Override
   Segment<E> getNext() {
-    return next;
+    return null;
   }
 
   @Override
   void setNext(Segment<E> next) {
-    this.next = next;
+    throw new UnsupportedOperationException();
   }
 
   @Override

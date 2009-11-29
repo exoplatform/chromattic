@@ -19,60 +19,53 @@
 package org.chromattic.common.collection.delta;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedList;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DeltaList<E> {
+public abstract class AbstractInsertionSegment<E> extends Segment<E> {
 
   /** . */
-  private Segment<E> head;
+  final LinkedList<E> insertions = new LinkedList<E>();
 
-  /** . */
-  private Segment<E> tail;
-
-  /** . */
-  final List<E> list;
-
-  public DeltaList(List<E> list) {
-    InPlaceSegment<E> segment = new InPlaceSegment<E>(this);
-    segment.listIndex = 0;
-    segment.listSize = list.size();
-
-    //
-    HeadSegment<E> head = new HeadSegment<E>();
-
-    //
-    TailSegment<E> tail = new TailSegment<E>();
-
-    //
-    head.addAfter(segment).addAfter(tail);
-
-    //
-    this.list = list;
-    this.head = head;
-    this.tail = tail;
+  @Override
+  protected E localGet(int index) {
+    return insertions.get(index);
   }
 
-  public E get(int index) {
-    return head.get(index);
+  @Override
+  protected int localSize() {
+    return insertions.size();
   }
 
+  @Override
   public void add(int index, E e) {
-    head.add(index, e);
+    if  (index <= insertions.size()) {
+      insertions.add(index, e);
+    } else {
+      super.add(index - insertions.size(), e);
+    }
   }
 
+  @Override
   public E remove(int index) {
-    return head.remove(index);
+    if (index < insertions.size()) {
+      return insertions.remove(index);
+    } else {
+      return super.remove(index - insertions.size());
+    }
   }
 
+  @Override
   public int size() {
-    return head.size();
+    return insertions.size() + super.size();
   }
 
-  public Iterator<E> iterator() {
-    return head.iterator();
+  @Override
+  public Iterator<E> localIterator() {
+    return insertions.iterator();
   }
+
 }

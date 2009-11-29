@@ -16,63 +16,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.common.collection.delta;
 
-import java.util.Iterator;
-import java.util.List;
+package org.chromattic.common.collection.delta;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DeltaList<E> {
+public class HeadSegment<E> extends AbstractInsertionSegment<E> {
 
   /** . */
-  private Segment<E> head;
+  private Segment<E> next;
 
-  /** . */
-  private Segment<E> tail;
-
-  /** . */
-  final List<E> list;
-
-  public DeltaList(List<E> list) {
-    InPlaceSegment<E> segment = new InPlaceSegment<E>(this);
-    segment.listIndex = 0;
-    segment.listSize = list.size();
-
-    //
-    HeadSegment<E> head = new HeadSegment<E>();
-
-    //
-    TailSegment<E> tail = new TailSegment<E>();
-
-    //
-    head.addAfter(segment).addAfter(tail);
-
-    //
-    this.list = list;
-    this.head = head;
-    this.tail = tail;
+  @Override
+  Segment<E> getNext() {
+    return next;
   }
 
-  public E get(int index) {
-    return head.get(index);
+  @Override
+  void setNext(Segment<E> next) {
+    this.next = next;
   }
 
-  public void add(int index, E e) {
-    head.add(index, e);
+  @Override
+  Segment<E> getPrevious() {
+    return null;
   }
 
-  public E remove(int index) {
-    return head.remove(index);
-  }
-
-  public int size() {
-    return head.size();
-  }
-
-  public Iterator<E> iterator() {
-    return head.iterator();
+  @Override
+  void setPrevious(Segment<E> previous) {
+    throw new UnsupportedOperationException();
   }
 }

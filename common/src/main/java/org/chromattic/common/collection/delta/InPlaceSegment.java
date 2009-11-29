@@ -25,10 +25,16 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class InPlaceSegment<E> extends AbstractSegment<E> {
+public class InPlaceSegment<E> extends Segment<E> {
 
   /** . */
   final DeltaList<E> owner;
+
+  /** . */
+  private Segment<E> previous;
+
+  /** . */
+  private Segment<E> next;
 
   /** The index in the list. */
   int listIndex;
@@ -38,6 +44,26 @@ public class InPlaceSegment<E> extends AbstractSegment<E> {
 
   public InPlaceSegment(DeltaList<E> owner) {
     this.owner = owner;
+  }
+
+  @Override
+  Segment<E> getNext() {
+    return next;
+  }
+
+  @Override
+  void setNext(Segment<E> next) {
+    this.next = next;
+  }
+
+  @Override
+  Segment<E> getPrevious() {
+    return previous;
+  }
+
+  @Override
+  void setPrevious(Segment<E> previous) {
+    this.previous = previous;
   }
 
   @Override

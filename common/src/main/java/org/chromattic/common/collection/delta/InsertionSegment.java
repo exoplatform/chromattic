@@ -18,53 +18,35 @@
  */
 package org.chromattic.common.collection.delta;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class InsertionSegment<E> extends AbstractSegment<E> {
+public class InsertionSegment<E> extends AbstractInsertionSegment<E> {
 
   /** . */
-  final LinkedList<E> insertions = new LinkedList<E>();
+  private Segment<E> previous;
+
+  /** . */
+  private Segment<E> next;
 
   @Override
-  protected E localGet(int index) {
-    return insertions.get(index);
+  Segment<E> getNext() {
+    return next;
   }
 
   @Override
-  protected int localSize() {
-    return insertions.size();
+  void setNext(Segment<E> next) {
+    this.next = next;
   }
 
   @Override
-  public void add(int index, E e) {
-    if  (index <= insertions.size()) {
-      insertions.add(index, e);
-    } else {
-      super.add(index - insertions.size(), e);
-    }
+  Segment<E> getPrevious() {
+    return previous;
   }
 
   @Override
-  public E remove(int index) {
-    if (index < insertions.size()) {
-      return insertions.remove(index);
-    } else {
-      return super.remove(index - insertions.size());
-    }
-  }
-
-  @Override
-  public int size() {
-    return insertions.size() + super.size();
-  }
-
-  @Override
-  public Iterator<E> localIterator() {
-    return insertions.iterator();
+  void setPrevious(Segment<E> previous) {
+    this.previous = previous;
   }
 }
