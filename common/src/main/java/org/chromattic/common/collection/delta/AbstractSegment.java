@@ -24,49 +24,29 @@ package org.chromattic.common.collection.delta;
  */
 public abstract class AbstractSegment<E> extends Segment<E> {
 
-/*
-  */
-/** . *//*
-
+  /** . */
   private Segment<E> previous;
 
-  */
-/** . *//*
-
+  /** . */
   private Segment<E> next;
 
-*/
-/*
-  void addBefore(Segment<E> segment) {
-    segment.next = this;
-    segment.previous = previous;
-    previous.next = segment;
-    previous = segment;
-  }
-*//*
-
-
-  Segment<E> addAfter(Segment<E> segment) {
-    if (next != null) {
-      segment.next = next;
-      next.previous = segment;
-    }
-
-    //
-    segment.previous = this;
-    next = segment;
-
-    //
-    return segment;
-  }
-
-  boolean hasNext() {
-    return next != null;
-  }
-
+  @Override
   Segment<E> getNext() {
     return next;
   }
-*/
 
+  @Override
+  void setNext(Segment<E> next) {
+    this.next = next;
+  }
+
+  @Override
+  Segment<E> getPrevious() {
+    return previous;
+  }
+
+  @Override
+  void setPrevious(Segment<E> previous) {
+    this.previous = previous;
+  }
 }

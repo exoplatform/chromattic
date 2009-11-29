@@ -26,14 +26,23 @@ import java.util.Iterator;
  */
 public abstract class Segment<E> {
 
-  /** . */
-  private Segment<E> previous;
+  abstract Segment<E> getNext();
 
-  /** . */
-  private Segment<E> next;
+  abstract void setNext(Segment<E> next);
+
+  abstract Segment<E> getPrevious();
+
+  abstract void setPrevious(Segment<E> previous);
+
+  protected abstract E localGet(int index);
+
+  protected abstract int localSize();
+
+  protected abstract Iterator<E> localIterator();
 
   public final E get(int index) {
     if (index < 0) {
+      Segment<E> previous = getPrevious();
       if (previous == null) {
         throw new IndexOutOfBoundsException();
       } else {
@@ -44,6 +53,7 @@ public abstract class Segment<E> {
     //
     int localSize = localSize();
     if (index >= localSize) {
+      Segment<E> next = getNext();
       if (next == null) {
         throw new IndexOutOfBoundsException();
       } else {
@@ -55,38 +65,27 @@ public abstract class Segment<E> {
     return localGet(index);
   }
 
-/*
-  void addBefore(Segment<E> segment) {
-    segment.next = this;
-    segment.previous = previous;
-    previous.next = segment;
-    previous = segment;
+  final boolean hasNext() {
+    return getNext() != null;
   }
-*/
 
-  Segment<E> addAfter(Segment<E> segment) {
+  final Segment<E> addAfter(Segment<E> segment) {
+    Segment<E> next = getNext();
     if (next != null) {
-      segment.next = next;
-      next.previous = segment;
+      segment.setNext(next);
+      next.setPrevious(segment);
     }
 
     //
-    segment.previous = this;
-    next = segment;
+    segment.setPrevious(this);
+    setNext(segment);
 
     //
     return segment;
   }
 
-  boolean hasNext() {
-    return next != null;
-  }
-
-  Segment<E> getNext() {
-    return next;
-  }
-
   public void add(int index, E e) {
+    Segment<E> next = getNext();
     if (next == null) {
       throw new IndexOutOfBoundsException();
     }
@@ -94,6 +93,7 @@ public abstract class Segment<E> {
   }
 
   public E remove(int index) {
+    Segment<E> next = getNext();
     if (next == null) {
       throw new IndexOutOfBoundsException();
     }
@@ -101,6 +101,7 @@ public abstract class Segment<E> {
   }
 
   public int size() {
+    Segment<E> next = getNext();
     if (next == null) {
       return 0;
     }
@@ -110,10 +111,4 @@ public abstract class Segment<E> {
   public Iterator<E> iterator() {
     return new IteratorImpl<E>(this);
   }
-
-  protected abstract E localGet(int index);
-
-  protected abstract int localSize();
-
-  protected abstract Iterator<E> localIterator();
 }
