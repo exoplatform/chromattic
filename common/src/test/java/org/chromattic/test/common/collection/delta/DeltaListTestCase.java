@@ -189,8 +189,10 @@ public class DeltaListTestCase extends TestCase {
     List<Integer> list = Arrays.asList(0, 1, 2);
     DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
     deltaList.add(1, 1);
+    System.out.println("deltaList = " + deltaList);
     deltaList.remove(1);
-    assertEquals(2, deltaList.getComplexity());
+    System.out.println("deltaList = " + deltaList);
+    assertEquals(3, deltaList.complexity());
   }
 
   public void testAddRemoved() {

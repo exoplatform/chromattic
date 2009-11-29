@@ -75,4 +75,12 @@ public class DeltaList<E> {
   public Iterator<E> iterator() {
     return head.iterator();
   }
+
+  public final int complexity() {
+    return head.complexity();
+  }
+
+  public String toString() {
+    return head.string();
+  }
 }

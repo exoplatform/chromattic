@@ -143,4 +143,18 @@ public class InPlaceSegment<E> extends Segment<E> {
       }
     };
   }
+
+  @Override
+  protected void localString(StringBuilder builder) {
+    builder.append("(");
+    int count = 0;
+    for (E e : owner.list.subList(listIndex, listIndex + listSize)) {
+      if (count > 0) {
+        builder.append(",");
+      }
+      builder.append(e);
+      count++;
+    }
+    builder.append(")");
+  }
 }

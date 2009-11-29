@@ -52,7 +52,17 @@ public abstract class AbstractInsertionSegment<E> extends Segment<E> {
 
   @Override
   protected E localRemove(int index) {
-    return insertions.remove(index);
+    E removed = insertions.remove(index);
+/*
+    if (insertions.size() == 0) {
+      Segment<E> previous = getPrevious();
+      Segment<E> next = getNext();
+      if (previous != null && next != null) {
+        previous.setNext(next);
+      }
+    }
+*/
+    return removed;
   }
 
   @Override
@@ -60,4 +70,17 @@ public abstract class AbstractInsertionSegment<E> extends Segment<E> {
     return insertions.iterator();
   }
 
+  @Override
+  protected void localString(StringBuilder builder) {
+    builder.append("{");
+    int count = 0;
+    for (E e : insertions) {
+      if (count > 0) {
+        builder.append(",");
+      }
+      builder.append(e);
+      count++;
+    }
+    builder.append("}");
+  }
 }
