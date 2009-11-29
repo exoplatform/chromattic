@@ -77,26 +77,26 @@ public class InPlaceSegment<E> extends Segment<E> {
   }
 
   @Override
-  public void add(int index, E e) {
-    if (index < listSize) {
-      InsertionSegment<E> is = new InsertionSegment<E>();
-      is.insertions.add(e);
-
-      //
-      InPlaceSegment<E> ips = new InPlaceSegment<E>(owner);
-      ips.listIndex = listIndex + index;
-      ips.listSize = listSize - index;
-
-      //
-      listSize = index;
-
-      //
-      addAfter(is).addAfter(ips);
-    } else {
-      super.add(index - listSize, e);
-    }
+  protected boolean localCanAdd(int index) {
+    return index < listSize;
   }
 
+  @Override
+  protected void localAdd(int index, E element) {
+    InsertionSegment<E> is = new InsertionSegment<E>();
+    is.insertions.add(element);
+
+    //
+    InPlaceSegment<E> ips = new InPlaceSegment<E>(owner);
+    ips.listIndex = listIndex + index;
+    ips.listSize = listSize - index;
+
+    //
+    listSize = index;
+
+    //
+    addAfter(is).addAfter(ips);
+  }
 
   @Override
   public E remove(int index) {

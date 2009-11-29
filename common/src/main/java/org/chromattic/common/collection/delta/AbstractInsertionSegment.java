@@ -41,12 +41,13 @@ public abstract class AbstractInsertionSegment<E> extends Segment<E> {
   }
 
   @Override
-  public void add(int index, E e) {
-    if  (index <= insertions.size()) {
-      insertions.add(index, e);
-    } else {
-      super.add(index - insertions.size(), e);
-    }
+  protected boolean localCanAdd(int index) {
+    return index <= insertions.size();
+  }
+
+  @Override
+  protected void localAdd(int index, E element) {
+    insertions.add(index, element);
   }
 
   @Override
