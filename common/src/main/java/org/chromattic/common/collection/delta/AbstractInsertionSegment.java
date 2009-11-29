@@ -51,17 +51,8 @@ public abstract class AbstractInsertionSegment<E> extends Segment<E> {
   }
 
   @Override
-  public E remove(int index) {
-    if (index < insertions.size()) {
-      return insertions.remove(index);
-    } else {
-      return super.remove(index - insertions.size());
-    }
-  }
-
-  @Override
-  public int size() {
-    return insertions.size() + super.size();
+  protected E localRemove(int index) {
+    return insertions.remove(index);
   }
 
   @Override

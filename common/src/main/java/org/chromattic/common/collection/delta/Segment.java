@@ -42,6 +42,8 @@ public abstract class Segment<E> {
 
   protected abstract void localAdd(int index, E element);
 
+  protected abstract E localRemove(int index);
+
   protected abstract Iterator<E> localIterator();
 
   public final E get(int index) {
@@ -95,6 +97,36 @@ public abstract class Segment<E> {
     }
   }
 
+  public final E remove(int index) {
+    Segment<E> segment = this;
+    while (true) {
+      if (index < 0) {
+        throw new IndexOutOfBoundsException();
+      } else {
+        int localSize = segment.localSize();
+        if (index < localSize) {
+          return segment.localRemove(index);
+        } else {
+          Segment<E> next = segment.getNext();
+          if (next == null) {
+            throw new IndexOutOfBoundsException();
+          } else {
+            index -= localSize;
+            segment = next;
+          }
+        }
+      }
+    }
+  }
+
+  public final int size() {
+    int size = 0;
+    for (Segment<E> segment = this;segment != null;segment = segment.getNext()) {
+      size += segment.localSize();
+    }
+    return size;
+  }
+
   final boolean hasNext() {
     return getNext() != null;
   }
@@ -112,22 +144,6 @@ public abstract class Segment<E> {
 
     //
     return segment;
-  }
-
-  public E remove(int index) {
-    Segment<E> next = getNext();
-    if (next == null) {
-      throw new IndexOutOfBoundsException();
-    }
-    return next.remove(index);
-  }
-
-  public int size() {
-    Segment<E> next = getNext();
-    if (next == null) {
-      return 0;
-    }
-    return next.size();
   }
 
   public Iterator<E> iterator() {

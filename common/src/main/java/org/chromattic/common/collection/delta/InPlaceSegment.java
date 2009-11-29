@@ -99,40 +99,30 @@ public class InPlaceSegment<E> extends Segment<E> {
   }
 
   @Override
-  public E remove(int index) {
-    if (index < listSize) {
-      if (index  == 0) {
-        E removed = owner.list.get(listIndex);
-        listIndex++;
-        listSize--;
-        return removed;
-      } else if (index == listSize - 1) {
-        return owner.list.get(listIndex + --listSize);
-      } else {
-        InPlaceSegment<E> ips = new InPlaceSegment<E>(owner);
-
-        //
-        ips.listIndex = listIndex + index + 1;
-        ips.listSize = listSize - index - 1;
-
-        //
-        listSize = index;
-
-        //
-        addAfter(ips);
-
-        //
-        return owner.list.get(index);
-      }
+  protected E localRemove(int index) {
+    if (index  == 0) {
+      E removed = owner.list.get(listIndex);
+      listIndex++;
+      listSize--;
+      return removed;
+    } else if (index == listSize - 1) {
+      return owner.list.get(listIndex + --listSize);
     } else {
-      return super.remove(index - listSize);
+      InPlaceSegment<E> ips = new InPlaceSegment<E>(owner);
+
+      //
+      ips.listIndex = listIndex + index + 1;
+      ips.listSize = listSize - index - 1;
+
+      //
+      listSize = index;
+
+      //
+      addAfter(ips);
+
+      //
+      return owner.list.get(index);
     }
-  }
-
-
-  @Override
-  public int size() {
-    return listSize + super.size();
   }
 
   @Override
