@@ -16,48 +16,45 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.common.collection.delta2;
-
-import java.util.LinkedList;
+package org.chromattic.common.collection.delta;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class InsertionSegment<E> extends Segment<E> {
+public abstract class Segment<E> {
 
   /** . */
-  final LinkedList<E> insertions = new LinkedList<E>();
+  Segment<E> previous;
 
-  @Override
+  /** . */
+  Segment<E> next;
+
   public E get(int index) {
-    if (index < insertions.size()) {
-      return insertions.get(index);
-    } else {
-      return super.get(index - insertions.size());
+    if (next == null) {
+      throw new IndexOutOfBoundsException();
     }
+    return next.get(index);
   }
 
-  @Override
   public void add(int index, E e) {
-    if  (index <= insertions.size()) {
-      insertions.add(index, e);
-    } else {
-      super.add(index - insertions.size(), e);
+    if (next == null) {
+      throw new IndexOutOfBoundsException();
     }
+    next.add(index, e);
   }
 
-  @Override
   public E remove(int index) {
-    if (index < insertions.size()) {
-      return insertions.remove(index);
-    } else {
-      return super.remove(index - insertions.size());
+    if (next == null) {
+      throw new IndexOutOfBoundsException();
     }
+    return next.remove(index);
   }
 
-  @Override
   public int size() {
-    return insertions.size() + super.size();
+    if (next == null) {
+      return 0;
+    }
+    return next.size();
   }
 }

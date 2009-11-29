@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.common.collection.delta2;
+package org.chromattic.common.collection.delta;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

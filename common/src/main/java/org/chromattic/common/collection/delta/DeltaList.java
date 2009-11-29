@@ -16,45 +16,56 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.common.collection.delta2;
+package org.chromattic.common.collection.delta;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class Segment<E> {
+public class DeltaList<E> {
 
   /** . */
-  Segment<E> previous;
+  private Segment<E> head;
 
   /** . */
-  Segment<E> next;
+  private Segment<E> tail;
+
+  /** . */
+  final List<E> list;
+
+  public DeltaList(List<E> list) {
+    InPlaceSegment<E> head = new InPlaceSegment<E>(this);
+    head.listIndex = 0;
+    head.listSize = list.size();
+
+    //
+    InsertionSegment<E> tail = new InsertionSegment<E>();
+
+    //
+    head.next = tail;
+    tail.previous = head;
+
+    //
+    this.list = list;
+    this.head = head;
+    this.tail = tail;
+  }
 
   public E get(int index) {
-    if (next == null) {
-      throw new IndexOutOfBoundsException();
-    }
-    return next.get(index);
+    return head.get(index);
   }
 
   public void add(int index, E e) {
-    if (next == null) {
-      throw new IndexOutOfBoundsException();
-    }
-    next.add(index, e);
+    head.add(index, e);
   }
 
   public E remove(int index) {
-    if (next == null) {
-      throw new IndexOutOfBoundsException();
-    }
-    return next.remove(index);
+    return head.remove(index);
   }
 
   public int size() {
-    if (next == null) {
-      return 0;
-    }
-    return next.size();
+    return head.size();
   }
 }
