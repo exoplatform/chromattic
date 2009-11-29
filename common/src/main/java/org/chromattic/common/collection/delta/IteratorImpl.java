@@ -43,10 +43,10 @@ public class IteratorImpl<E> implements Iterator<E> {
       if (iterator.hasNext()) {
         return true;
       }
-      if (segment.next == null) {
+      if (!segment.hasNext()) {
         return false;
       }
-      segment = segment.next;
+      segment = segment.getNext();
       iterator = segment.localIterator();
     }
   }

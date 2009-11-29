@@ -27,10 +27,10 @@ import java.util.Iterator;
 public abstract class Segment<E> {
 
   /** . */
-  Segment<E> previous;
+  private Segment<E> previous;
 
   /** . */
-  Segment<E> next;
+  private Segment<E> next;
 
   public final E get(int index) {
     if (index < 0) {
@@ -53,6 +53,37 @@ public abstract class Segment<E> {
 
     //
     return localGet(index);
+  }
+
+/*
+  void addBefore(Segment<E> segment) {
+    segment.next = this;
+    segment.previous = previous;
+    previous.next = segment;
+    previous = segment;
+  }
+*/
+
+  Segment<E> addAfter(Segment<E> segment) {
+    if (next != null) {
+      segment.next = next;
+      next.previous = segment;
+    }
+
+    //
+    segment.previous = this;
+    next = segment;
+
+    //
+    return segment;
+  }
+
+  boolean hasNext() {
+    return next != null;
+  }
+
+  Segment<E> getNext() {
+    return next;
   }
 
   public void add(int index, E e) {

@@ -45,8 +45,7 @@ public class DeltaList<E> {
     InsertionSegment<E> tail = new InsertionSegment<E>();
 
     //
-    head.next = tail;
-    tail.previous = head;
+    head.addAfter(tail);
 
     //
     this.list = list;

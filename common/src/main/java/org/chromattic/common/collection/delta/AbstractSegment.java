@@ -18,53 +18,55 @@
  */
 package org.chromattic.common.collection.delta;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class InsertionSegment<E> extends AbstractSegment<E> {
+public abstract class AbstractSegment<E> extends Segment<E> {
 
-  /** . */
-  final LinkedList<E> insertions = new LinkedList<E>();
+/*
+  */
+/** . *//*
 
-  @Override
-  protected E localGet(int index) {
-    return insertions.get(index);
+  private Segment<E> previous;
+
+  */
+/** . *//*
+
+  private Segment<E> next;
+
+*/
+/*
+  void addBefore(Segment<E> segment) {
+    segment.next = this;
+    segment.previous = previous;
+    previous.next = segment;
+    previous = segment;
   }
+*//*
 
-  @Override
-  protected int localSize() {
-    return insertions.size();
-  }
 
-  @Override
-  public void add(int index, E e) {
-    if  (index <= insertions.size()) {
-      insertions.add(index, e);
-    } else {
-      super.add(index - insertions.size(), e);
+  Segment<E> addAfter(Segment<E> segment) {
+    if (next != null) {
+      segment.next = next;
+      next.previous = segment;
     }
+
+    //
+    segment.previous = this;
+    next = segment;
+
+    //
+    return segment;
   }
 
-  @Override
-  public E remove(int index) {
-    if (index < insertions.size()) {
-      return insertions.remove(index);
-    } else {
-      return super.remove(index - insertions.size());
-    }
+  boolean hasNext() {
+    return next != null;
   }
 
-  @Override
-  public int size() {
-    return insertions.size() + super.size();
+  Segment<E> getNext() {
+    return next;
   }
+*/
 
-  @Override
-  public Iterator<E> localIterator() {
-    return insertions.iterator();
-  }
 }

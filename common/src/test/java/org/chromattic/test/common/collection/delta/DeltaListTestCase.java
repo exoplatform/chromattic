@@ -59,6 +59,7 @@ public class DeltaListTestCase extends TestCase {
     List<Integer> list = Arrays.asList(0, 1, 2);
     DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
     deltaList.add(0, -1);
+    assertEquals(-1, (int)deltaList.get(0));
     assertEquals(0, (int)deltaList.get(1));
     assertEquals(1, (int)deltaList.get(2));
     assertEquals(2, (int)deltaList.get(3));

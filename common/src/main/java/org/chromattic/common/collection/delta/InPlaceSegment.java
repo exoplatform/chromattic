@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class InPlaceSegment<E> extends Segment<E> {
+public class InPlaceSegment<E> extends AbstractSegment<E> {
 
   /** . */
   final DeltaList<E> owner;
@@ -65,18 +65,7 @@ public class InPlaceSegment<E> extends Segment<E> {
       listSize = index;
 
       //
-      if (next != null) {
-        ips.next = next;
-        next.previous = ips;
-      }
-
-      //
-      ips.previous = is;
-      is.next = ips;
-
-      //
-      is.previous = this;
-      next = is;
+      addAfter(is).addAfter(ips);
     } else {
       super.add(index - listSize, e);
     }
@@ -104,14 +93,7 @@ public class InPlaceSegment<E> extends Segment<E> {
         listSize = index;
 
         //
-        if (next != null) {
-          next.previous = ips;
-          ips.next = next;
-        }
-
-        //
-        next = ips;
-        ips.previous = this;
+        addAfter(ips);
 
         //
         return owner.list.get(index);
