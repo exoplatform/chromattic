@@ -41,28 +41,38 @@ public abstract class Segment<E> {
   protected abstract Iterator<E> localIterator();
 
   public final E get(int index) {
-    if (index < 0) {
-      Segment<E> previous = getPrevious();
-      if (previous == null) {
-        throw new IndexOutOfBoundsException();
+
+    //
+    Segment<E> segment = this;
+
+    //
+    while (true) {
+      if (index < 0) {
+        Segment<E> previous = segment.getPrevious();
+        if (previous == null) {
+          throw new IndexOutOfBoundsException();
+        } else {
+          index += previous.localSize();
+          segment = previous;
+        }
       } else {
-        return previous.get(index + previous.localSize());
+        int localSize = segment.localSize();
+        if (index >= localSize) {
+          Segment<E> next = segment.getNext();
+          if (next == null) {
+            throw new IndexOutOfBoundsException();
+          } else {
+            index -= localSize;
+            segment = next;
+          }
+        } else {
+          break;
+        }
       }
     }
 
     //
-    int localSize = localSize();
-    if (index >= localSize) {
-      Segment<E> next = getNext();
-      if (next == null) {
-        throw new IndexOutOfBoundsException();
-      } else {
-        return next.get(index - localSize);
-      }
-    }
-
-    //
-    return localGet(index);
+    return segment.localGet(index);
   }
 
   final boolean hasNext() {
