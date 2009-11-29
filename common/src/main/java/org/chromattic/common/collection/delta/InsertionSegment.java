@@ -18,6 +18,7 @@
  */
 package org.chromattic.common.collection.delta;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -59,5 +60,10 @@ public class InsertionSegment<E> extends Segment<E> {
   @Override
   public int size() {
     return insertions.size() + super.size();
+  }
+
+  @Override
+  public Iterator<E> localIterator() {
+    return insertions.iterator();
   }
 }

@@ -21,10 +21,7 @@ package org.chromattic.test.common.collection.delta;
 import junit.framework.Assert;
 import org.chromattic.common.collection.delta.DeltaList;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -82,10 +79,14 @@ public class DeltaListWrapper {
   public void checkSame() {
     int size = shadow.size();
     Assert.assertEquals(size, deltaList.size());
+    Iterator<Integer> iterator = deltaList.iterator();
     for (int i = 0;i < size;i++) {
       int shadowElement = shadow.get(i);
       int element = deltaList.get(i);
       Assert.assertEquals(shadowElement, element);
+      Assert.assertTrue(iterator.hasNext());
+      int itElt = iterator.next();
+      Assert.assertEquals(shadowElement, itElt);
     }
   }
 }

@@ -19,50 +19,46 @@
 package org.chromattic.common.collection.delta;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class Segment<E> {
+public class IteratorImpl<E> implements Iterator<E> {
 
-  /** . */
-  Segment<E> previous;
+  /** The current segment. */
+  private Segment<E> segment;
 
-  /** . */
-  Segment<E> next;
+  /** The iterator of the current segment. */
+  private Iterator<E> iterator;
 
-  public E get(int index) {
-    if (next == null) {
-      throw new IndexOutOfBoundsException();
+  public IteratorImpl(Segment<E> segment) {
+    this.segment = segment;
+    this.iterator = segment.localIterator();
+  }
+
+  public boolean hasNext() {
+    while (true) {
+      if (iterator.hasNext()) {
+        return true;
+      }
+      if (segment.next == null) {
+        return false;
+      }
+      segment = segment.next;
+      iterator = segment.localIterator();
     }
-    return next.get(index);
   }
 
-  public void add(int index, E e) {
-    if (next == null) {
-      throw new IndexOutOfBoundsException();
+  public E next() {
+    if (!hasNext()) {
+      throw new NoSuchElementException();
     }
-    next.add(index, e);
+    return iterator.next();
   }
 
-  public E remove(int index) {
-    if (next == null) {
-      throw new IndexOutOfBoundsException();
-    }
-    return next.remove(index);
+  public void remove() {
+    throw new UnsupportedOperationException();
   }
-
-  public int size() {
-    if (next == null) {
-      return 0;
-    }
-    return next.size();
-  }
-
-  public Iterator<E> iterator() {
-    return new IteratorImpl<E>(this);
-  }
-
-  protected abstract Iterator<E> localIterator();
 }

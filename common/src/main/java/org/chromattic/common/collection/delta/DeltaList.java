@@ -18,6 +18,7 @@
  */
 package org.chromattic.common.collection.delta;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -67,5 +68,9 @@ public class DeltaList<E> {
 
   public int size() {
     return head.size();
+  }
+
+  public Iterator<E> iterator() {
+    return head.iterator();
   }
 }

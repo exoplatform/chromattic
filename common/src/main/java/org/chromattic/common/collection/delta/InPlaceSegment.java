@@ -18,6 +18,9 @@
  */
 package org.chromattic.common.collection.delta;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -121,5 +124,24 @@ public class InPlaceSegment<E> extends Segment<E> {
   @Override
   public int size() {
     return listSize + super.size();
+  }
+
+  @Override
+  public Iterator<E> localIterator() {
+    return new Iterator<E>() {
+      int index = 0;
+      public boolean hasNext() {
+        return index < listSize;
+      }
+      public E next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        return owner.list.get(listIndex + index++);
+      }
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 }
