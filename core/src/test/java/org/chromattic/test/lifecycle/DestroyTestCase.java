@@ -18,11 +18,15 @@
  */
 package org.chromattic.test.lifecycle;
 
+import org.chromattic.api.ChromatticException;
+import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.EventQueue;
 import org.chromattic.test.support.LifeCycleEventType;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
+
+import javax.jcr.nodetype.ConstraintViolationException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -32,6 +36,8 @@ public class DestroyTestCase extends AbstractTestCase {
 
   protected void createDomain() {
     addClass(TLF_A.class);
+    addClass(M1.class);
+    addClass(M2.class);
   }
 
   public void testTransitiveDestroy() throws Exception {
@@ -100,6 +106,30 @@ public class DestroyTestCase extends AbstractTestCase {
     listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, cId, cPath, cName, c);
     listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, aId, aPath, aName, a);
     listener.assertEmpty();
+    session.save();
+  }
+
+  public void testDestroyWithMandatoryChild() throws Exception {
+    ChromatticSession session = login();
+
+    M1 m1 = session.insert(M1.class, "m");
+    M2 m2 = session.create(M2.class);
+    m1.setMandatory(m2);
+
+    session.save();
+
+    try {
+      session.remove(m2);
+      fail();
+    }
+    catch (UndeclaredRepositoryException e) {
+      assertTrue(e.getCause() instanceof ConstraintViolationException);
+    }
+
+    //
+    session.remove(m1);
+
+    //
     session.save();
   }
 }

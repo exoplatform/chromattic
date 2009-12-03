@@ -193,16 +193,19 @@ public class SessionWrapperImpl implements SessionWrapper {
     LinkedList<String> ids = new LinkedList<String>();
 
     //
-    remove(node, ids);
+    collectRemovedIds(node, ids);
+
+    //
+    node.remove();
 
     // Remove now
     return ids.iterator();
   }
 
-  public void remove(Node node, LinkedList<String> ids) throws RepositoryException {
+  public void collectRemovedIds(Node node, LinkedList<String> ids) throws RepositoryException {
     for (NodeIterator i = node.getNodes(); i.hasNext();) {
       Node child = i.nextNode();
-      remove(child, ids);
+      collectRemovedIds(child, ids);
     }
 
     // Cleanup
@@ -221,9 +224,8 @@ public class SessionWrapperImpl implements SessionWrapper {
       }
     }
 
-    // Remove now
+    //
     String id = node.getUUID();
-    node.remove();
     ids.add(id);
   }
 

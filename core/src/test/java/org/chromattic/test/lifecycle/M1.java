@@ -16,25 +16,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.lifecycle;
 
-package org.chromattic.test.onetomany.hierarchical.list;
-
-import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.OneToOne;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_b")
-public abstract class B1 implements Comparable<B1> {
+@NodeMapping(name = "mandatory_1")
+public abstract class M1 {
 
-  @Name
-  public abstract String getName();
+  @OneToOne
+  @MappedBy("mandatory")
+  public abstract M2 getMandatory();
+  
+  public abstract void setMandatory(M2 mandatory);
 
-  public abstract void setName(String name);
-
-  public int compareTo(B1 o) {
-    return getName().compareTo(o.getName());
-  }
 }

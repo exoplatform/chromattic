@@ -283,6 +283,28 @@
     </childNodeDefinitions>
   </nodeType>
 
+  <nodeType name="mandatory_1" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <childNodeDefinitions>
+      <childNodeDefinition name="mandatory" defaultPrimaryType="mandatory_2" autoCreated="false" mandatory="true"
+        onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>mandatory_2</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+    </childNodeDefinitions>
+  </nodeType>
+
+  <nodeType name="mandatory_2" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+  </nodeType>
+
   <nodeType name="toto_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>nt:base</supertype>
