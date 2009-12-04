@@ -18,6 +18,12 @@
  */
 package org.chromattic.test.support;
 
+import junit.framework.Assert;
+import org.chromattic.common.Safe;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -57,5 +63,46 @@ public class PropertyChangedEvent extends StateChangeEvent {
 
   public Object getValue() {
     return value;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (obj instanceof PropertyChangedEvent) {
+      PropertyChangedEvent that = (PropertyChangedEvent)obj;
+      if (value instanceof InputStream && that.value instanceof InputStream) {
+        InputStream s1 = (InputStream)value;
+        InputStream s2 = (InputStream)that.value;
+        while (true) {
+          try {
+            int i1 = s1.read();
+            int i2 = s2.read();
+            if (i1 != i2) {
+              return false;
+            }
+            if (i1 == -1) {
+              break;
+            }
+          }
+          catch (IOException e) {
+            return false;
+          }
+        }
+      } else {
+        if (!Safe.equals(value, that.value)) {
+          return false;
+        }
+      }
+      return Safe.equals(id, that.id) && Safe.equals(object, that.object) && Safe.equals(name, that.name);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    // We don't use value because input stream would not provide a correct hash code
+    return Safe.hashCode(id) + Safe.hashCode(object) + Safe.hashCode(name);
   }
 }

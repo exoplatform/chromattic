@@ -115,13 +115,10 @@ public class EventBroadcaster implements EventListener {
     }
   }
 
-  public void removed(PersistentEntityContextState state, Object o) {
+  public void removed(String id, String path, String name, Object o) {
     if (lifeCycleListeners == null) {
       return;
     }
-    String id = state.getId();
-    String path = state.getPath();
-    String name = state.getName();
     for (EventListener listener : lifeCycleListeners) {
       try {
         ((LifeCycleListener)listener).removed(id, path, name, o);

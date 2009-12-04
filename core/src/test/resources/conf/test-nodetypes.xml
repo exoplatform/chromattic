@@ -305,6 +305,12 @@
     </supertypes>
   </nodeType>
 
+  <nodeType name="not_referenceable" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+    </supertypes>
+  </nodeType>
+
   <nodeType name="toto_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>nt:base</supertype>

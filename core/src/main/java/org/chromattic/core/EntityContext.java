@@ -86,7 +86,7 @@ public class EntityContext implements MethodHandler {
     DomainSession session = state.getSession();
     switch (type) {
       case NAME:
-        return session.getName(this);
+        return state.getName();
       case ID:
         return state.getId();
       case PATH:
@@ -257,7 +257,7 @@ public class EntityContext implements MethodHandler {
 
   @Override
   public String toString() {
-    return "ObjectContext[status=" + state + ",mapper=" + mapper + "]";
+    return "ObjectContext[state=" + state + ",mapper=" + mapper + "]";
   }
 
   public Object invoke(Object o, Method method, Object[] args) throws Throwable {

@@ -18,6 +18,8 @@
  */
 package org.chromattic.test.support;
 
+import org.chromattic.common.Safe;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -73,6 +75,23 @@ public class LifeCycleEvent extends Event {
 
   public Object getObject() {
     return object;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (obj instanceof LifeCycleEvent) {
+      LifeCycleEvent that = (LifeCycleEvent)obj;
+      return Safe.equals(type, that.type) && Safe.equals(path, that.path) && Safe.equals(name, that.name) && Safe.equals(object, that.object);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Safe.hashCode(type) + Safe.hashCode(path) + Safe.hashCode(name) + Safe.hashCode(object);
   }
 
   @Override

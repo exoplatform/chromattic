@@ -20,6 +20,7 @@ package org.chromattic.test.lifecycle;
 
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.core.DomainSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.EventQueue;
 import org.chromattic.test.support.LifeCycleEventType;

@@ -36,10 +36,7 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.nodetype.NodeType;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -51,7 +48,7 @@ public class DomainSessionImpl extends DomainSession {
   final Domain domain;
 
   /** . */
-  private final Map<String, EntityContext> contexts;
+  private Map<Node, EntityContext> contexts;
 
   /** . */
   private final Logger log = Logger.getLogger(DomainSession.class);
@@ -61,28 +58,7 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     this.domain = domain;
-    this.contexts = new HashMap<String, EntityContext>();
-  }
-
-  protected String _getName(EntityContext ctx) {
-    if (ctx == null) {
-      throw new NullPointerException();
-    }
-
-    //
-    String name;
-    if (ctx.getStatus() == Status.PERSISTENT) {
-      name = ctx.state.getName();
-      Object parent = getParent(ctx);
-      EntityContext parentCtx = parent != null ? unwrap(parent) : null;
-      name = decodeName(parentCtx, name);
-    }
-    else {
-      name = ctx.state.getName();
-    }
-
-    //
-    return name;
+    this.contexts = new HashMap<Node, EntityContext>();
   }
 
   protected void _setName(EntityContext ctx, String name) {
@@ -223,12 +199,27 @@ public class DomainSessionImpl extends DomainSession {
     //
     Node dstNode = sessionWrapper.addNode(srcNode, name, primaryNodeTypeName, Collections.<String>emptyList());
 
-    //
-    nodeAdded(dstNode, dstCtx);
-    String relatedId = dstNode.getUUID();
+/*
+    // If the node is not referenceable, make it so
+    boolean referenceable = false;
+    for (NodeType nt : dstNode.getMixinNodeTypes()) {
+      if (nt.getName().equals("mix:referenceable")) {
+        referenceable = true;
+      }
+    }
+    if (!referenceable) {
+      dstNode.addMixin("mix:referenceable");
+    }
+*/
 
     //
-    log.trace("Added context {} for id {} and path {}", dstCtx, relatedId, dstNode.getPath());
+    nodeAdded(dstNode, dstCtx);
+
+    //
+    String relatedId = dstCtx.getId();
+
+    //
+    log.trace("Added context {} for path {}", dstCtx, relatedId, dstNode.getPath());
     return relatedId;
   }
 
@@ -339,25 +330,42 @@ public class DomainSessionImpl extends DomainSession {
       throw new NullPointerException();
     }
 
-    //
-    EntityContext ctx = contexts.get(id);
-
     // Attempt to load the object
+    try {
+      log.trace("About to load node with id {} and class {}", id, clazz.getName());
+      Node node = sessionWrapper.getNodeByUUID(id);
+      return _findByNode(clazz, node);
+    }
+    catch (ItemNotFoundException e) {
+      log.trace("Could not find node with id {}", id, clazz.getName());
+      return null;
+    }
+  }
+
+  @Override
+  protected <O> O _findByNode(Class<O> clazz, Node node) throws RepositoryException {
+    if (clazz == null) {
+      throw new NullPointerException();
+    }
+    if (node == null) {
+      throw new NullPointerException();
+    }
+
+    // Attempt to get the object
+    EntityContext ctx = contexts.get(node);
+
+    //
     if (ctx == null) {
       try {
-        log.trace("About to load node with id {} and class {}", id, clazz.getName());
-        Node node = sessionWrapper.getNodeByUUID(id);
+        log.trace("About to read node with path {} and class {}", node.getPath(), clazz.getName());
         nodeRead(node);
-        log.trace("Loaded node with id {}", id, clazz.getName());
-        ctx = contexts.get(id);
-        log.trace("Obtained context {} node for id {} and class {}", ctx, id, clazz.getName());
+        log.trace("Loaded node with path {}", node.getPath(), clazz.getName());
+        ctx = contexts.get(node);
+        log.trace("Obtained context {} node for path {} and class {}", ctx, node.getPath(), clazz.getName());
       }
       catch (ItemNotFoundException e) {
-        log.trace("Could not find node with id {}", id, clazz.getName());
+        log.trace("Could not find node with path {}", node.getPath(), clazz.getName());
         return null;
-      }
-      catch (RepositoryException e) {
-        throw new RuntimeException(e);
       }
     }
 
@@ -397,11 +405,47 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
+  private static class Removed {
+
+    private final String id;
+    private final String path;
+    private final String name;
+    private final EntityContext ctx;
+
+    private Removed(String id, String path, String name, EntityContext ctx) {
+      this.id = id;
+      this.path = path;
+      this.name = name;
+      this.ctx = ctx;
+    }
+  }
+
   private void remove(Node node) throws RepositoryException {
-    Iterator<String> ids = sessionWrapper.remove(node);
-    while (ids.hasNext()) {
-      String id = ids.next();
-      nodeRemoved(id);
+    List<Removed> removeds = new LinkedList<Removed>();
+    String pathToRemove = node.getPath();
+    for (Map.Entry<Node, EntityContext> ctxEntry : contexts.entrySet()) {
+      Node ctxNode = ctxEntry.getKey();
+      if (ctxNode.getPath().startsWith(pathToRemove)) {
+        EntityContext ctx = ctxEntry.getValue();
+        removeds.add(new Removed(ctx.getId(), ctx.getPath(), ctx.getName(), ctx));
+      }
+    }
+
+    // Perform removal
+    sessionWrapper.remove(node);
+
+    //
+    Collection<EntityContext> ctxs = contexts.values();
+
+    //
+    for (Removed removed : removeds) {
+
+      String path = removed.path;
+      log.trace("Removing context for path {}", path);
+      removed.ctx.state = new RemovedEntityContextState(path);
+      ctxs.remove(removed.ctx);
+      broadcaster.removed(removed.id, removed.path, removed.name, removed.ctx.getObject());
+      log.trace("Removed context {} for path {}", removed.ctx, path);
     }
   }
 
@@ -496,23 +540,22 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  public void nodeRead(Node node) throws RepositoryException {
+  private void nodeRead(Node node) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();
     TypeMapper mapper = domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
-      String id = node.getUUID();
-      EntityContext ctx = contexts.get(id);
+      EntityContext ctx = contexts.get(node);
       if (ctx == null) {
         ctx = new EntityContext(mapper);
-        log.trace("Inserted context {} loaded from node id {}", ctx, id);
-        contexts.put(id, ctx);
+        log.trace("Inserted context {} loaded from node path {}", ctx, node.getPath());
+        contexts.put(node, ctx);
         PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
         ctx.state = persistentState;
         broadcaster.loaded(persistentState, ctx.getObject());
       }
       else {
-        log.trace("Context {} is already present for id ", ctx, id);
+        log.trace("Context {} is already present for path ", ctx, node.getPath());
       }
     }
     else {
@@ -520,38 +563,24 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  public void nodeAdded(Node node, EntityContext ctx) throws RepositoryException {
+  private void nodeAdded(Node node, EntityContext ctx) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();
     TypeMapper mapper = domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
-      String id = node.getUUID();
-      if (contexts.containsKey(id)) {
-        String msg = "Attempt to replace an existing context " + ctx + " with id " + id;
+      if (contexts.containsKey(node)) {
+        String msg = "Attempt to replace an existing context " + ctx + " with path " + node.getPath();
         log.error(msg);
         throw new AssertionError(msg);
       }
-      log.trace("Inserted context {} for id {}", ctx, id);
-      contexts.put(id, ctx);
+      log.trace("Inserted context {} for path {}", ctx, node.getPath());
+      contexts.put(node, ctx);
       PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
       ctx.state = persistentState;
       broadcaster.added(persistentState, ctx.getObject());
     }
     else {
       log.trace("Could not find mapper for node type {}", nodeTypeName);
-    }
-  }
-
-  public void nodeRemoved(String nodeId) throws RepositoryException {
-    log.trace("Removing context for id {}", nodeId);
-    EntityContext ctx = contexts.remove(nodeId);
-    if (ctx != null) {
-      PersistentEntityContextState persistentState = (PersistentEntityContextState)ctx.state; 
-      ctx.state = new RemovedEntityContextState(nodeId);
-      broadcaster.removed(persistentState, ctx.getObject());
-      log.trace("Removed context {} for id {}", ctx, nodeId);
-    } else {
-      log.trace("Context absent for removal for id {}", ctx, nodeId);
     }
   }
 
@@ -588,32 +617,6 @@ public class DomainSessionImpl extends DomainSession {
     }
     JCR.validateName(internal);
     return internal;
-  }
-
-  private String decodeName(EntityContext ctx, String internal) {
-    ObjectFormatter formatter = null;
-    if (ctx != null) {
-      formatter = ctx.mapper.getFormatter();
-    }
-    if (formatter == null) {
-      formatter = domain.objectFormatter;
-    }
-
-    //
-    String external;
-    try {
-      external = formatter.decodeNodeName(null, internal);
-    }
-    catch (Exception e) {
-      if (e instanceof IllegalStateException) {
-        throw (IllegalStateException)e;
-      }
-      throw new UndeclaredThrowableException(e);
-    }
-    if (external == null) {
-      throw new IllegalStateException("Null name returned by decoder");
-    }
-    return external;
   }
 
   public void close() {

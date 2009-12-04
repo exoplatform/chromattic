@@ -22,21 +22,19 @@ package org.chromattic.core;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.NoSuchPropertyException;
+import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
+import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.mapper.ValueMapper;
 import org.chromattic.core.jcr.info.NodeInfo;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.CopyingInputStream;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.Property;
-import javax.jcr.ValueFactory;
-import javax.jcr.PropertyType;
+import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -51,15 +49,6 @@ import java.io.IOException;
 class PersistentEntityContextState extends EntityContextState {
 
   /** . */
-  private final String name;
-
-  /** . */
-  private final String path;
-
-  /** . */
-  private final String id;
-
-  /** . */
   private final Node node;
 
   /** . */
@@ -72,27 +61,68 @@ class PersistentEntityContextState extends EntityContextState {
   private final NodeInfo nodeInfo;
 
   PersistentEntityContextState(Node node, DomainSession session) throws RepositoryException {
-
-    //
-    this.id = node.getUUID();
-    this.path = node.getPath();
     this.node = node;
-    this.name = node.getName();
     this.session = session;
     this.propertyCache = session.domain.stateCacheEnabled ? new HashMap<String, Object>() : null;
     this.nodeInfo = session.domain.nodeInfoManager.getNodeInfo(node);
   }
 
   String getId() {
-    return id;
+    try {
+      return node.getUUID();
+    }
+    catch (UnsupportedRepositoryOperationException e) {
+      return null;
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
   }
 
   String getPath() {
-    return path;
+    try {
+      return node.getPath();
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
   }
 
   String getName() {
-    return name;
+    try {
+      ObjectFormatter formatter = null;
+      Node parentNode = node.getParent();
+      String nodeTypeName = parentNode.getPrimaryNodeType().getName();
+      TypeMapper parentMapper = session.domain.getTypeMapper(nodeTypeName);
+      if (parentMapper != null) {
+        formatter = parentMapper.getFormatter();
+      }
+      if (formatter == null) {
+        formatter = session.domain.objectFormatter;
+      }
+
+      //
+      String internalName = node.getName();
+
+      //
+      String external;
+      try {
+        external = formatter.decodeNodeName(null, internalName);
+      }
+      catch (Exception e) {
+        if (e instanceof IllegalStateException) {
+          throw (IllegalStateException)e;
+        }
+        throw new UndeclaredThrowableException(e);
+      }
+      if (external == null) {
+        throw new IllegalStateException("Null name returned by decoder");
+      }
+      return external;
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
   }
 
   void setName(String name) {
@@ -325,6 +355,6 @@ class PersistentEntityContextState extends EntityContextState {
   }
 
   public String toString() {
-    return "ObjectStatus[id=" + id + ",status=" + Status.PERSISTENT + "]";
+    return "ObjectStatus[path=" + getPath() + ",status=" + Status.PERSISTENT + "]";
   }
 }

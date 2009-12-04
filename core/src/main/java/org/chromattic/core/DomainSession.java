@@ -55,8 +55,6 @@ public abstract class DomainSession implements ChromatticSession {
   }
 
 
-  protected abstract String _getName(EntityContext ctx) throws RepositoryException;
-
   protected abstract void _setName(EntityContext ctx, String name) throws RepositoryException;
 
   protected abstract String _persist(EntityContext ctx, String name) throws RepositoryException;
@@ -66,6 +64,8 @@ public abstract class DomainSession implements ChromatticSession {
   protected abstract <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
 
   protected abstract <O> O _findById(Class<O> clazz, String id) throws RepositoryException;
+
+  protected abstract <O> O _findByNode(Class<O> clazz, Node node) throws RepositoryException;
 
   protected abstract void _save() throws RepositoryException;
 
@@ -219,18 +219,8 @@ public abstract class DomainSession implements ChromatticSession {
 
 
   public final <O> O findByNode(Class<O> clazz, Node node) throws UndeclaredRepositoryException {
-    if (node == null) {
-      throw new NullPointerException();
-    }
-
-    //
     try {
-      if (domain.getTypeMapper(node.getPrimaryNodeType().getName()) != null) {
-        return findById(clazz, node.getUUID());
-      }
-      else {
-        return null;
-      }
+      return _findByNode(clazz, node);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -325,12 +315,10 @@ public abstract class DomainSession implements ChromatticSession {
   }
 
   public final String getName(EntityContext ctx) throws UndeclaredRepositoryException {
-    try {
-      return _getName(ctx);
+    if (ctx == null) {
+      throw new NullPointerException();
     }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    return ctx.getName();
   }
 
   public final void setName(EntityContext ctx, String name) throws UndeclaredRepositoryException {

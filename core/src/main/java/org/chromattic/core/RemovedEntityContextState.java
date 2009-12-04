@@ -32,10 +32,10 @@ import java.util.List;
 class RemovedEntityContextState extends EntityContextState {
 
   /** . */
-  private final String id;
+  private final String path;
 
-  RemovedEntityContextState(String id) {
-    this.id = id;
+  RemovedEntityContextState(String path) {
+    this.path = path;
   }
 
   String getName() {
@@ -83,6 +83,6 @@ class RemovedEntityContextState extends EntityContextState {
   }
 
   public String toString() {
-    return "ObjectStatus[id=" + id + ",status=" + Status.REMOVED + "]";
+    return "ObjectStatus[path=" + path + ",status=" + Status.REMOVED + "]";
   }
 }
