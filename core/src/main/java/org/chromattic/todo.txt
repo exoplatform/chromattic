@@ -30,15 +30,12 @@
 - @Property(name="foo", default="bar") : Needed to initialize a property with a default value (in case it was no done in nodetype def)
 - alternatively : @Initialize public <T> T someCustomMethod(T objectToInitialize) {// let me implement whatever logic I want to initialize my object with default values}
 - <T> T Session.loadOrCreate(Class<T> clazz, String absPath) // tries to load an object from location "absPath" and initializes a new one if it does not exist (the parent location must exist)
--   @Property(name="foo") public abstract boolean getFoo(); will fail when you call it if the value in JCR is NULL
-
 
 *** crazy ideas
 
 (patrice)
 - @FindByPath to get a desendant from its relPath
 - @FindByName to get a child by name
-- Provide ready to use annotated classes/interfaces for buitin jcr types like nt:file et nt:resource
 - enable write on @Name and @Path : this would move the node when persisting!
 julien: I would rather do it as a collection move i.e
 if you do
