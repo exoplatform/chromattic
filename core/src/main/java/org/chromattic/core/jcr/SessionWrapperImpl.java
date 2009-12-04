@@ -33,7 +33,6 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.RandomAccess;
 
@@ -189,23 +188,25 @@ public class SessionWrapperImpl implements SessionWrapper {
    * @param node the node to remove
    * @throws RepositoryException any repository exception
    */
-  public Iterator<Node> remove(Node node) throws RepositoryException {
-    LinkedList<Node> removedNodes = new LinkedList<Node>();
+  public void remove(Node node) throws RepositoryException {
 
     //
-    collectRemovedIds(node, removedNodes);
+    cleanReferencesForRemoval(node);
 
     //
     node.remove();
-
-    // Remove now
-    return removedNodes.iterator();
   }
 
-  public void collectRemovedIds(Node node, LinkedList<Node> removedNodes) throws RepositoryException {
+  /**
+   * Need to find a way to optimized this method as it forces us to visit the entire children hierarchy.
+   *
+   * @param node the node to be removed
+   * @throws RepositoryException any repository exception
+   */
+  public void cleanReferencesForRemoval(Node node) throws RepositoryException {
     for (NodeIterator i = node.getNodes(); i.hasNext();) {
       Node child = i.nextNode();
-      collectRemovedIds(child, removedNodes);
+      cleanReferencesForRemoval(child);
     }
 
     // Cleanup
@@ -223,9 +224,6 @@ public class SessionWrapperImpl implements SessionWrapper {
         linkMgrs[LinkType.PATH.index].setReferenced(node, property.getName(), null);
       }
     }
-
-    //
-    removedNodes.add(node);
   }
 
   public void save() throws RepositoryException {

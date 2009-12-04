@@ -55,7 +55,7 @@ public interface SessionWrapper {
 
   Node getNodeByUUID(String uuid) throws RepositoryException;
 
-  Iterator<Node> remove(Node node) throws RepositoryException;
+  void remove(Node node) throws RepositoryException;
 
   void save() throws RepositoryException;
 
