@@ -22,6 +22,7 @@ import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.OneToMany;
 
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -29,31 +30,47 @@ import java.util.Map;
  * @version $Revision$
  */
 @NodeMapping(name = "nt:folder")
-public abstract class NTFolder extends NTHierarchyNode implements Iterable {
+public abstract class NTFolder extends NTHierarchyNode implements Iterable<NTHierarchyNode> {
 
   @Create
-  protected abstract NTFile create();
+  protected abstract NTFile createFile();
+
+  @Create
+  protected abstract NTFolder createFolder();
 
   @OneToMany
   public abstract Map<String, NTHierarchyNode> getChildren();
 
-  public NTFile createFile(String fileName) {
-    return createFile(fileName, null);
+  public Iterator<NTHierarchyNode> iterator() {
+    return getChildren().values().iterator();
+  }
+
+  public NTFolder createFolder(String folderName) {
+    if (folderName == null) {
+      throw new NullPointerException();
+    }
+    NTFolder folder = createFolder();
+    addChild(folderName, folder);
+    return folder;
   }
 
   public NTFile createFile(String fileName, Resource contentResource) {
     if (fileName == null) {
       throw new NullPointerException();
     }
-    Map<String, NTHierarchyNode> children = getChildren();
-    if (children.containsKey(fileName)) {
-      throw new IllegalStateException("File " + fileName + " already exists");
+    NTFile file = createFile();
+    addChild(fileName, file);
+    if (contentResource != null) {
+      file.setContentResource(contentResource);
     }
-    NTFile file = create();
-    children.put(fileName, file);
-    if (contentResource != null)
-    file.setContentResource(contentResource);
     return file;
+  }
+
+  public void addChild(NTHierarchyNode child) {
+    if (child == null) {
+      throw new NullPointerException();
+    }
+    addChild(child.getName(), child);
   }
 
   public void addChild(String childName, NTHierarchyNode child) {
@@ -68,13 +85,6 @@ public abstract class NTFolder extends NTHierarchyNode implements Iterable {
       throw new IllegalStateException();
     }
     children.put(childName, child);
-  }
-
-  public void addChild(NTHierarchyNode child) {
-    if (child == null) {
-      throw new NullPointerException();
-    }
-    addChild(child.getName(), child);
   }
 
   public NTHierarchyNode getChild(String childName) {
@@ -94,4 +104,12 @@ public abstract class NTFolder extends NTHierarchyNode implements Iterable {
     }
   }
 
+  public NTFolder getFolder(String fileName) {
+    NTHierarchyNode hierarchyNode = getChild(fileName);
+    if (hierarchyNode instanceof NTFolder) {
+      return (NTFolder)hierarchyNode;
+    } else {
+      throw new IllegalStateException();
+    }
+  }
 }

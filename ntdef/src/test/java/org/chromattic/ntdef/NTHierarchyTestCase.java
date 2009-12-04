@@ -22,8 +22,11 @@ import junit.framework.TestCase;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.common.Collections;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -47,8 +50,18 @@ public class NTHierarchyTestCase extends TestCase {
     ChromatticSession session = chromattic.openSession();
     NTFolder folder = session.insert(NTFolder.class, "folder");
     NTFile autoexec = folder.createFile("autoexec.bat", Resource.createPlainText("foo"));
+    NTFolder bin = folder.createFolder("bin");
     assertNotNull(autoexec);
     assertEquals("autoexec.bat", autoexec.getName());
+    assertNotNull(bin);
+    Map<String, NTHierarchyNode> copy = new HashMap<String, NTHierarchyNode>();
+    for (NTHierarchyNode h : folder) {
+      copy.put(h.getName(), h);
+    }
+    assertEquals(Collections.set("bin", "autoexec.bat"), copy.keySet());
+    assertSame(autoexec, copy.get("autoexec.bat"));
+    assertSame(bin, copy.get("bin"));
+    session.save();
   }
 
   public void testNTFile() throws Exception {
