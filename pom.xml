@@ -99,7 +99,6 @@
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt</artifactId>
         <version>1.0.0-beta10-SNAPSHOT</version>
-        <scope>compile</scope>
       </dependency>
 
       <dependency>
