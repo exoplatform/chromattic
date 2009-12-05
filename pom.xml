@@ -99,14 +99,12 @@
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt</artifactId>
         <version>1.0.0-beta10-SNAPSHOT</version>
-        <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt2</artifactId>
         <version>1.0.0-beta10-SNAPSHOT</version>
-        <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -136,6 +134,12 @@
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.spi</artifactId>
+        <version>1.0.0-beta10-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.ntdef</artifactId>
         <version>1.0.0-beta10-SNAPSHOT</version>
       </dependency>
 
