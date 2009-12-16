@@ -19,6 +19,8 @@
 
 package org.chromattic.core;
 
+import org.chromattic.api.ChromatticException;
+import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.NoSuchPropertyException;
@@ -256,8 +258,13 @@ class PersistentEntityContextState extends EntityContextState {
   <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> svi, V propertyValue) {
     try {
       if (propertyCache != null) {
-        if (propertyValue instanceof InputStream) {
-          propertyValue = (V)new CopyingInputStream((InputStream)propertyValue);
+        if (propertyValue instanceof InputStream && (propertyValue instanceof CloneableInputStream)) {
+          try {
+            propertyValue = (V)new CloneableInputStream((InputStream)propertyValue);
+          }
+          catch (IOException e) {
+            throw new ChromatticIOException("Could not read stream", e);
+          }
         }
       }
 
@@ -304,8 +311,8 @@ class PersistentEntityContextState extends EntityContextState {
       if (propertyCache != null) {
         if (propertyValue != null) {
           if (propertyValue instanceof InputStream) {
-            byte[] bytes = ((CopyingInputStream)propertyValue).getBytes();
-            propertyValue = (V)new CloneableInputStream(bytes);
+            CloneableInputStream stream = ((CloneableInputStream)propertyValue);
+            propertyValue = (V)stream.clone();
           } else if (propertyValue instanceof Date) {
             propertyValue = (V)((Date)propertyValue).clone();
           }

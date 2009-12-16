@@ -48,7 +48,7 @@ public class DomainSessionImpl extends DomainSession {
   final Domain domain;
 
   /** . */
-  private Map<Node, EntityContext> contexts;
+  private Map<String, EntityContext> contexts;
 
   /** . */
   private final Logger log = Logger.getLogger(DomainSession.class);
@@ -58,7 +58,7 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     this.domain = domain;
-    this.contexts = new HashMap<Node, EntityContext>();
+    this.contexts = new HashMap<String, EntityContext>();
   }
 
   protected void _setName(EntityContext ctx, String name) {
@@ -199,18 +199,10 @@ public class DomainSessionImpl extends DomainSession {
     //
     Node dstNode = sessionWrapper.addNode(srcNode, name, primaryNodeTypeName, Collections.<String>emptyList());
 
-/*
     // If the node is not referenceable, make it so
-    boolean referenceable = false;
-    for (NodeType nt : dstNode.getMixinNodeTypes()) {
-      if (nt.getName().equals("mix:referenceable")) {
-        referenceable = true;
-      }
-    }
-    if (!referenceable) {
+    if (!domain.nodeInfoManager.isReferenceable(dstNode)) {
       dstNode.addMixin("mix:referenceable");
     }
-*/
 
     //
     nodeAdded(dstNode, dstCtx);
@@ -351,8 +343,14 @@ public class DomainSessionImpl extends DomainSession {
       throw new NullPointerException();
     }
 
+    //
+    if (!domain.nodeInfoManager.isReferenceable(node)) {
+      log.trace("Cannot map non referenceable node {} to a chromattic object", node.getPath());
+      return null;
+    }
+
     // Attempt to get the object
-    EntityContext ctx = contexts.get(node);
+    EntityContext ctx = contexts.get(node.getUUID());
 
     //
     if (ctx == null) {
@@ -360,7 +358,7 @@ public class DomainSessionImpl extends DomainSession {
         log.trace("About to read node with path {} and class {}", node.getPath(), clazz.getName());
         nodeRead(node);
         log.trace("Loaded node with path {}", node.getPath(), clazz.getName());
-        ctx = contexts.get(node);
+        ctx = contexts.get(node.getUUID());
         log.trace("Obtained context {} node for path {} and class {}", ctx, node.getPath(), clazz.getName());
       }
       catch (ItemNotFoundException e) {
@@ -423,10 +421,10 @@ public class DomainSessionImpl extends DomainSession {
   private void remove(Node node) throws RepositoryException {
     List<Removed> removeds = new LinkedList<Removed>();
     String pathToRemove = node.getPath();
-    for (Map.Entry<Node, EntityContext> ctxEntry : contexts.entrySet()) {
-      Node ctxNode = ctxEntry.getKey();
+    for (Map.Entry<String, EntityContext> ctxEntry : contexts.entrySet()) {
+      EntityContext ctx = ctxEntry.getValue();
+      Node ctxNode = ctx.state.getNode();
       if (ctxNode.getPath().startsWith(pathToRemove)) {
-        EntityContext ctx = ctxEntry.getValue();
         removeds.add(new Removed(ctx.getId(), ctx.getPath(), ctx.getName(), ctx));
       }
     }
@@ -545,11 +543,11 @@ public class DomainSessionImpl extends DomainSession {
     String nodeTypeName = nodeType.getName();
     TypeMapper mapper = domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
-      EntityContext ctx = contexts.get(node);
+      EntityContext ctx = contexts.get(node.getUUID());
       if (ctx == null) {
         ctx = new EntityContext(mapper);
         log.trace("Inserted context {} loaded from node path {}", ctx, node.getPath());
-        contexts.put(node, ctx);
+        contexts.put(node.getUUID(), ctx);
         PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
         ctx.state = persistentState;
         broadcaster.loaded(persistentState, ctx.getObject());
@@ -568,13 +566,13 @@ public class DomainSessionImpl extends DomainSession {
     String nodeTypeName = nodeType.getName();
     TypeMapper mapper = domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
-      if (contexts.containsKey(node)) {
+      if (contexts.containsKey(node.getUUID())) {
         String msg = "Attempt to replace an existing context " + ctx + " with path " + node.getPath();
         log.error(msg);
         throw new AssertionError(msg);
       }
       log.trace("Inserted context {} for path {}", ctx, node.getPath());
-      contexts.put(node, ctx);
+      contexts.put(node.getUUID(), ctx);
       PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
       ctx.state = persistentState;
       broadcaster.added(persistentState, ctx.getObject());

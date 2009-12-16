@@ -20,38 +20,42 @@ package org.chromattic.core.jcr.info;
 
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeTypeInfo {
+public class NodeTypeInfo extends TypeInfo {
 
   /** . */
-  private final String name;
-
-  /** . */
-  private final Map<String, PropertyDefinitionInfo> propertyDefinitions;
+  private Set<String> mixinNames;
 
   public NodeTypeInfo(NodeType nodeType) {
-    Map<String, PropertyDefinitionInfo> propertyDefinitions = new HashMap<String, PropertyDefinitionInfo>();
-    for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions()) {
-      PropertyDefinitionInfo propertyDefinitionInfo = new PropertyDefinitionInfo(propertyDefinition);
-      propertyDefinitions.put(propertyDefinitionInfo.getName(), propertyDefinitionInfo);
+    super(nodeType);
+
+    //
+    if (nodeType.isMixin()) {
+      throw new IllegalArgumentException();
     }
 
     //
-    this.name = nodeType.getName();
-    this.propertyDefinitions = propertyDefinitions;
+    Set<String> mixinNames = new HashSet<String>();
+    for (NodeType superType : nodeType.getSupertypes()) {
+      if (superType.isMixin()) {
+        mixinNames.add(superType.getName());
+      }
+    }
+
+    //
+    this.mixinNames = Collections.unmodifiableSet(mixinNames);
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public PropertyDefinitionInfo getPropertyDefinitionInfo(String name) {
-    return propertyDefinitions.get(name);
+  public Set<String> getMixinNames() {
+    return mixinNames;
   }
 }

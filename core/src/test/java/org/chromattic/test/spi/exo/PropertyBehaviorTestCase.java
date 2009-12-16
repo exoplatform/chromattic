@@ -22,6 +22,8 @@ import org.chromattic.common.Collections;
 import org.chromattic.common.JCR;
 import org.chromattic.exo.RepositoryBootstrap;
 
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -67,7 +69,7 @@ public class PropertyBehaviorTestCase extends TestCase {
     session.save();
     assertFalse(ref.isNew());
     assertFalse(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
+    assertEquals(ref, a.getReferences());
   }
 
   public void testRemoveRef() throws Exception {
@@ -89,13 +91,13 @@ public class PropertyBehaviorTestCase extends TestCase {
     Property ref = b.getProperty("ref");
     assertFalse(ref.isNew());
     assertFalse(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
+    assertEquals(ref, a.getReferences());
 
     //
     ref.remove();
     assertFalse(ref.isNew());
     assertTrue(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
+    assertEquals(ref, a.getReferences());
 
     //
     session.save();
@@ -127,14 +129,14 @@ public class PropertyBehaviorTestCase extends TestCase {
     b.setProperty("ref", a);
     assertFalse(ref.isNew());
     assertTrue(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
+    assertEquals(ref, a.getReferences());
 
     //
     session.save();
     b.setProperty("ref", a);
     assertFalse(ref.isNew());
     assertTrue(ref.isModified());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(a.getReferences())));
+    assertEquals(ref, a.getReferences());
   }
 
   public void testUpdateRef() throws Exception {
@@ -167,6 +169,11 @@ public class PropertyBehaviorTestCase extends TestCase {
     assertFalse(ref.isNew());
     assertFalse(ref.isModified());
     assertEquals(0, Collections.set(JCR.adapt(a.getReferences())).size());
-    assertEquals(Collections.set(ref), Collections.set(JCR.adapt(b.getReferences())));
+    assertEquals(ref, b.getReferences());
+  }
+
+  private void assertEquals(Property p, PropertyIterator i) throws RepositoryException {
+    assertTrue(i.hasNext());
+    assertEquals(p.getName(), i.nextProperty().getName());
   }
 }

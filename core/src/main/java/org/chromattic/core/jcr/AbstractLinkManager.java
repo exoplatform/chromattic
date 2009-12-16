@@ -21,7 +21,6 @@ package org.chromattic.core.jcr;
 
 import org.chromattic.common.CompoundIterator;
 import org.chromattic.common.AbstractFilterIterator;
-import org.chromattic.api.UndeclaredRepositoryException;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -31,7 +30,6 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 
@@ -89,7 +87,7 @@ public abstract class AbstractLinkManager {
         Entry entry = getEntry(oldReferenced);
 
         boolean scheduleForAddition = true;
-        Set<Node> propertyScheduledForAddition = entry.propertiesScheduledForAddition.get(propertyName);
+        NodeSet propertyScheduledForAddition = entry.propertiesScheduledForAddition.get(propertyName);
         if (propertyScheduledForAddition != null) {
           if (propertyScheduledForAddition.contains(referent)) {
             propertyScheduledForAddition.remove(referent);
@@ -99,9 +97,9 @@ public abstract class AbstractLinkManager {
 
         //
         if (scheduleForAddition) {
-          Set<Node> propertyScheduledForRemoval = entry.propertiesScheduledForRemoval.get(propertyName);
+          NodeSet propertyScheduledForRemoval = entry.propertiesScheduledForRemoval.get(propertyName);
           if (propertyScheduledForRemoval == null) {
-            propertyScheduledForRemoval = new HashSet<Node>();
+            propertyScheduledForRemoval = new NodeSet();
             entry.propertiesScheduledForRemoval.put(propertyName, propertyScheduledForRemoval);
           }
           propertyScheduledForRemoval.add(referent);
@@ -116,9 +114,9 @@ public abstract class AbstractLinkManager {
     //
     if (referenced != null) {
       Entry entry = getEntry(referenced);
-      Set<Node> srcs = entry.propertiesScheduledForAddition.get(propertyName);
+      NodeSet srcs = entry.propertiesScheduledForAddition.get(propertyName);
       if (srcs == null) {
-        srcs = new HashSet<Node>();
+        srcs = new NodeSet();
         entry.propertiesScheduledForAddition.put(propertyName, srcs);
       }
       srcs.add(referent);
@@ -153,16 +151,16 @@ public abstract class AbstractLinkManager {
     private final Node referenced;
 
     /** . */
-    private final Map<String, Set<Node>> propertiesScheduledForAddition;
+    private final Map<String, NodeSet> propertiesScheduledForAddition;
 
     /** . */
-    private final Map<String, Set<Node>> propertiesScheduledForRemoval;
+    private final Map<String, NodeSet> propertiesScheduledForRemoval;
 
     private Entry(Node referenced) {
       this.version = 0;
       this.referenced = referenced;
-      this.propertiesScheduledForAddition = new HashMap<String, Set<Node>>();
-      this.propertiesScheduledForRemoval = new HashMap<String, Set<Node>>();
+      this.propertiesScheduledForAddition = new HashMap<String, NodeSet>();
+      this.propertiesScheduledForRemoval = new HashMap<String, NodeSet>();
     }
 
     public Iterator<Node> iterator(final String propertyName) throws RepositoryException {
@@ -188,9 +186,9 @@ public abstract class AbstractLinkManager {
       };
 
       //
-      Set<Node> srcs = propertiesScheduledForAddition.get(propertyName);
+      NodeSet srcs = propertiesScheduledForAddition.get(propertyName);
       if (srcs == null) {
-        srcs = new HashSet<Node>();
+        srcs = new NodeSet();
         propertiesScheduledForAddition.put(propertyName, srcs);
       }
       final Iterator<Node> i2 = srcs.iterator();

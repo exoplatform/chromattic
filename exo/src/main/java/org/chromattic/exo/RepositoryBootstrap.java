@@ -40,7 +40,7 @@ public class RepositoryBootstrap {
     StandaloneContainer.addConfigurationURL(containerConf);
 
     //
-    String loginConf = Thread.currentThread().getContextClassLoader().getResource("login.conf").toString();
+    String loginConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/login.conf").toString();
     System.setProperty("java.security.auth.login.config", loginConf);
 
     //

@@ -40,17 +40,39 @@ public class NodeInfoManager {
   private final Object nodeTypeInfosLock = new Object();
 
   /** . */
-  private volatile Map<String, NodeTypeInfo> nodeTypeInfos = new HashMap<String, NodeTypeInfo>();
+  private volatile Map<String, TypeInfo> nodeTypeInfos = new HashMap<String, TypeInfo>();
+
+  public boolean isReferenceable(Node node) throws RepositoryException {
+
+    //
+    for (NodeType nt : node.getMixinNodeTypes()) {
+      if (nt.getName().equals("mix:referenceable")) {
+        return true;
+      }
+    }
+
+    //
+    NodeTypeInfo ntInfo = (NodeTypeInfo)getTypeInfo(node.getPrimaryNodeType());
+
+    //
+    return ntInfo.getMixinNames().contains("mix:referenceable");
+  }
 
   public NodeInfo getNodeInfo(Node node) throws RepositoryException {
+
+    //
     NodeType primaryNodeType = node.getPrimaryNodeType();
     String primaryNodeTypeName = primaryNodeType.getName();
     NodeType[] mixinNodeTypes = node.getMixinNodeTypes();
-    if (mixinNodeTypes.length == 0) {
+
+    //
+    if (mixinNodeTypes.length == 0 || (mixinNodeTypes.length == 1 && mixinNodeTypes[0].getName().equals("mix:referenceable"))) {
+
+      //
       NodeInfo nodeInfo = primaryNodeInfos.get(primaryNodeTypeName);
       if (nodeInfo == null) {
         synchronized (primaryNodeInfosLock) {
-          NodeTypeInfo primaryNodeTypeInfo = getNodeTypeInfo(primaryNodeType);
+          NodeTypeInfo primaryNodeTypeInfo = (NodeTypeInfo)getTypeInfo(primaryNodeType);
           nodeInfo = new NodeInfo(primaryNodeTypeInfo);
           Map<String, NodeInfo> copy = new HashMap<String, NodeInfo>(primaryNodeInfos);
           copy.put(primaryNodeTypeName, nodeInfo);
@@ -59,23 +81,21 @@ public class NodeInfoManager {
       }
       return nodeInfo;
     } else {
-      NodeTypeInfo primaryNodeTypeInfo = getNodeTypeInfo(primaryNodeType);
-      NodeTypeInfo[] mixinNodeTypeInfos = new NodeTypeInfo[mixinNodeTypes.length];
-      for (int i = 0;i < mixinNodeTypes.length;i++) {
-        NodeType mixinNodeType = mixinNodeTypes[i];
-        mixinNodeTypeInfos[i] = getNodeTypeInfo(mixinNodeType);
-      }
-      return new MixinsNodeInfo(primaryNodeTypeInfo, mixinNodeTypeInfos);
+      throw new UnsupportedOperationException("todo");
     }
   }
 
-  private NodeTypeInfo getNodeTypeInfo(NodeType nodeType) {
+  private TypeInfo getTypeInfo(NodeType nodeType) {
     String nodeTypeName = nodeType.getName();
-    NodeTypeInfo nodeTypeInfo = nodeTypeInfos.get(nodeTypeName);
+    TypeInfo nodeTypeInfo = nodeTypeInfos.get(nodeTypeName);
     if (nodeTypeInfo == null) {
       synchronized (nodeTypeInfosLock) {
-        nodeTypeInfo = new NodeTypeInfo(nodeType);
-        Map<String, NodeTypeInfo> copy = new HashMap<String, NodeTypeInfo>(nodeTypeInfos);
+        if (nodeType.isMixin()) {
+          nodeTypeInfo = new MixinTypeInfo(nodeType);
+        } else {
+          nodeTypeInfo = new NodeTypeInfo(nodeType);
+        }
+        Map<String, TypeInfo> copy = new HashMap<String, TypeInfo>(nodeTypeInfos);
         copy.put(nodeTypeName, nodeTypeInfo);
         nodeTypeInfos = copy;
       }

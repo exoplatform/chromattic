@@ -21,7 +21,9 @@ package org.chromattic.test.spi.exo;
 
 import junit.framework.TestCase;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Node;
 
@@ -61,15 +63,16 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a5");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b5");
+    b.addMixin("mix:referenceable");
 
     //
     assertNull(mgr.setReferenced(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(b, mgr.getReferents(a, "ref"));
     
     //
     session.save();
     mgr = createLinkManager(session);
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(b, mgr.getReferents(a, "ref"));
   }
 
   public void testRemoveTransient() throws Exception {
@@ -79,10 +82,11 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a6");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b6");
+    b.addMixin("mix:referenceable");
 
     //
     assertEquals(null, mgr.setReferenced(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(b, mgr.getReferents(a, "ref"));
 
     //
     assertEquals(a, mgr.setReferenced(b, "ref", null));
@@ -101,15 +105,16 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a7");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b7");
+    b.addMixin("mix:referenceable");
 
     //
     assertEquals(null, mgr.setReferenced(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(b, mgr.getReferents(a, "ref"));
 
     //
     session.save();
     mgr = createLinkManager(session);
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(b, mgr.getReferents(a, "ref"));
 
     //
     assertEquals(a, mgr.setReferenced(b, "ref", null));
@@ -128,15 +133,16 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a8");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b8");
+    b.addMixin("mix:referenceable");
 
     //
     assertEquals(null, mgr.setReferenced(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(b, mgr.getReferents(a, "ref"));
 
     //
     session.save();
     mgr = createLinkManager(session);
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(b, mgr.getReferents(a, "ref"));
 
     //
     assertEquals(a, mgr.setReferenced(b, "ref", null));
@@ -144,12 +150,12 @@ public abstract class LinkManagerTestCase extends TestCase {
 
     //
     assertEquals(null, mgr.setReferenced(b, "ref", a));
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(b, mgr.getReferents(a, "ref"));
 
     //
     session.save();
     mgr = createLinkManager(session);
-    assertEquals(Collections.set(b), Collections.set(mgr.getReferents(a, "ref")));
+    assertEquals(b, mgr.getReferents(a, "ref"));
   }
 
   public void testUpdate() throws Exception {
@@ -161,6 +167,7 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node b = root.addNode("b9");
     b.addMixin("mix:referenceable");
     Node c = root.addNode("c9");
+    c.addMixin("mix:referenceable");
 
     //
     assertEquals(null, mgr.setReferenced(c, "ref", a));
@@ -176,7 +183,7 @@ public abstract class LinkManagerTestCase extends TestCase {
     session.save();
     mgr = createLinkManager(session);
     assertEquals(0, Collections.set(mgr.getReferents(a, "ref")).size());
-    assertEquals(Collections.set(c), Collections.set(mgr.getReferents(b, "ref")));
+    assertEquals(c, mgr.getReferents(b, "ref"));
   }
 
   public void testPhantomConcurrentRemoveModification() throws Exception {
@@ -185,6 +192,7 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
+    b.addMixin("mix:referenceable");
     session.save();
 
     AbstractLinkManager mgr = createLinkManager(session);
@@ -204,6 +212,7 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
+    b.addMixin("mix:referenceable");
     AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     session.save();
@@ -225,6 +234,7 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
+    b.addMixin("mix:referenceable");
     AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     session.save();
@@ -248,7 +258,9 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a11");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b11");
+    b.addMixin("mix:referenceable");
     Node c = root.addNode("c11");
+    c.addMixin("mix:referenceable");
     AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     session.save();
@@ -270,6 +282,7 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
+    b.addMixin("mix:referenceable");
     AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     session.save();
@@ -292,6 +305,7 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
+    b.addMixin("mix:referenceable");
     session.save();
 
     AbstractLinkManager mgr = createLinkManager(session);
@@ -312,6 +326,7 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
+    b.addMixin("mix:referenceable");
     session.save();
 
     AbstractLinkManager mgr = createLinkManager(session);
@@ -334,7 +349,9 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a11");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b11");
+    b.addMixin("mix:referenceable");
     Node c = root.addNode("c11");
+    c.addMixin("mix:referenceable");
     session.save();
 
     AbstractLinkManager mgr = createLinkManager(session);
@@ -355,6 +372,7 @@ public abstract class LinkManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
+    b.addMixin("mix:referenceable");
     session.save();
 
     AbstractLinkManager mgr = createLinkManager(session);
@@ -368,5 +386,10 @@ public abstract class LinkManagerTestCase extends TestCase {
     }
     catch (ConcurrentModificationException e) {
     }
+  }
+
+  private void assertEquals(Node p, Iterator<Node> i) throws RepositoryException {
+    assertTrue(i.hasNext());
+    assertEquals(p.getPath(), i.next().getPath());
   }
 }

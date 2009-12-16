@@ -19,6 +19,7 @@
 
 package org.chromattic.core;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Iterator;
@@ -26,8 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.io.InputStream;
 
+import org.chromattic.api.ChromatticException;
+import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.common.IO;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.common.JCR;
 import org.chromattic.common.CopyingInputStream;
@@ -169,11 +173,16 @@ public class EntityContext implements MethodHandler {
 
     //
     if (o instanceof InputStream && broadcaster.hasStateChangeListeners()) {
-      CopyingInputStream in = new CopyingInputStream((InputStream)o);
+      CloneableInputStream in;
+      try {
+        in = new CloneableInputStream((InputStream)o);
+      }
+      catch (IOException e) {
+        throw new ChromatticIOException("Could not read stream", e);
+      }
       @SuppressWarnings("unchecked") V v = (V)in;
       state.setPropertyValue(propertyName, type, v);
-      byte[] bytes = in.getBytes();
-      broadcaster.propertyChanged(state.getId(), object, propertyName, new CloneableInputStream(bytes));
+      broadcaster.propertyChanged(state.getId(), object, propertyName, in.clone());
     } else {
       state.setPropertyValue(propertyName, type, o);
       broadcaster.propertyChanged(state.getId(), object, propertyName, o);
