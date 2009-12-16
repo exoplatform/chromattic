@@ -32,7 +32,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testFoo() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     assertEquals(0, (int)deltaList.get(0));
     assertEquals(1, (int)deltaList.get(1));
     assertEquals(2, (int)deltaList.get(2));
@@ -46,7 +46,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testGetAtMinus1() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     try {
       deltaList.get(-1);
       fail();
@@ -57,7 +57,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testAddAt0() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     deltaList.add(0, -1);
     assertEquals(-1, (int)deltaList.get(0));
     assertEquals(0, (int)deltaList.get(1));
@@ -73,7 +73,7 @@ public class DeltaListTestCase extends TestCase {
   
   public void testAddAt1() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     deltaList.add(1, -1);
     assertEquals(0, (int)deltaList.get(0));
     assertEquals(-1, (int)deltaList.get(1));
@@ -89,7 +89,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testAddAt2() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     deltaList.add(2, -1);
     assertEquals(0, (int)deltaList.get(0));
     assertEquals(1, (int)deltaList.get(1));
@@ -105,7 +105,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testAddAt3() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     deltaList.add(3, -1);
     assertEquals(0, (int)deltaList.get(0));
     assertEquals(1, (int)deltaList.get(1));
@@ -121,7 +121,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testRemoveAt0() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     assertEquals(0, (int)deltaList.remove(0));
     assertEquals(1, (int)deltaList.get(0));
     assertEquals(2, (int)deltaList.get(1));
@@ -135,7 +135,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testRemoveAt1() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     assertEquals(1, (int)deltaList.remove(1));
     assertEquals(2, deltaList.size());
     assertEquals(0, (int)deltaList.get(0));
@@ -150,7 +150,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testRemoveAt2() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     assertEquals(2, (int)deltaList.remove(2));
     assertEquals(0, (int)deltaList.get(0));
     assertEquals(1, (int)deltaList.get(1));
@@ -164,7 +164,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testRemoveAll1() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     assertEquals(0, (int)deltaList.remove(0));
     assertEquals(2, deltaList.size());
     assertEquals(1, (int)deltaList.remove(0));
@@ -175,7 +175,7 @@ public class DeltaListTestCase extends TestCase {
 
   public void testRemoveAll2() {
     List<Integer> list = Arrays.asList(0, 1, 2);
-    DeltaList<Integer> deltaList = new DeltaList<Integer>(list);
+    List<Integer> deltaList = DeltaList.create(list);
     assertEquals(2, (int)deltaList.remove(2));
     assertEquals(2, deltaList.size());
     assertEquals(1, (int)deltaList.remove(1));

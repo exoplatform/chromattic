@@ -28,7 +28,7 @@ import java.util.NoSuchElementException;
 public class InPlaceSegment<E> extends Segment<E> {
 
   /** . */
-  final DeltaList<E> owner;
+  final DeltaList<E, ?> owner;
 
   /** . */
   private Segment<E> previous;
@@ -42,7 +42,7 @@ public class InPlaceSegment<E> extends Segment<E> {
   /** The size in the list. */
   int listSize;
 
-  public InPlaceSegment(DeltaList<E> owner) {
+  public InPlaceSegment(DeltaList<E, ?> owner) {
     this.owner = owner;
   }
 
@@ -68,7 +68,7 @@ public class InPlaceSegment<E> extends Segment<E> {
 
   @Override
   protected E localGet(int index) {
-    return owner.list.get(listIndex + index);
+    return owner.listget(listIndex + index);
   }
 
   @Override
@@ -101,12 +101,12 @@ public class InPlaceSegment<E> extends Segment<E> {
   @Override
   protected E localRemove(int index) {
     if (index  == 0) {
-      E removed = owner.list.get(listIndex);
+      E removed = owner.listget(listIndex);
       listIndex++;
       listSize--;
       return removed;
     } else if (index == listSize - 1) {
-      return owner.list.get(listIndex + --listSize);
+      return owner.listget(listIndex + --listSize);
     } else {
       InPlaceSegment<E> ips = new InPlaceSegment<E>(owner);
 
@@ -121,7 +121,7 @@ public class InPlaceSegment<E> extends Segment<E> {
       addAfter(ips);
 
       //
-      return owner.list.get(index);
+      return owner.listget(index);
     }
   }
 
@@ -136,7 +136,7 @@ public class InPlaceSegment<E> extends Segment<E> {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        return owner.list.get(listIndex + index++);
+        return owner.listget(listIndex + index++);
       }
       public void remove() {
         throw new UnsupportedOperationException();
@@ -148,7 +148,8 @@ public class InPlaceSegment<E> extends Segment<E> {
   protected void format(StringBuilder builder) {
     builder.append("(");
     int count = 0;
-    for (E e : owner.list.subList(listIndex, listIndex + listSize)) {
+    for (int i = listIndex;i < listIndex + listSize;i++) {
+      E e = owner.listget(i);
       if (count > 0) {
         builder.append(",");
       }

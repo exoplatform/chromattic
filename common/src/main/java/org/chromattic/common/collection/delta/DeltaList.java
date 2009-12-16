@@ -18,14 +18,28 @@
  */
 package org.chromattic.common.collection.delta;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DeltaList<E> {
+public class DeltaList<E, L> implements List<E> {
+
+  public static <E> List<E> create(List<E> list) {
+    ListAdapter<E, List<E>> adapter = new ListAdapter<E, List<E>>() {
+      public E get(List<E> list, int index) {
+        return list.get(index);
+      }
+      public int size(List<E> list) {
+        return list.size();
+      }
+    };
+    return new DeltaList<E, List<E>>(adapter, list);
+  }
 
   /** . */
   private Segment<E> head;
@@ -34,12 +48,15 @@ public class DeltaList<E> {
   private Segment<E> tail;
 
   /** . */
-  final List<E> list;
+  private final L list;
 
-  public DeltaList(List<E> list) {
+  /** . */
+  private final ListAdapter<E, L> adapter;
+
+  private DeltaList(ListAdapter<E, L> adapter, L list) {
     InPlaceSegment<E> segment = new InPlaceSegment<E>(this);
     segment.listIndex = 0;
-    segment.listSize = list.size();
+    segment.listSize = adapter.size(list);
 
     //
     HeadSegment<E> head = new HeadSegment<E>();
@@ -52,8 +69,13 @@ public class DeltaList<E> {
 
     //
     this.list = list;
+    this.adapter = adapter;
     this.head = head;
     this.tail = tail;
+  }
+
+  E listget(int index) {
+    return adapter.get(list, index);
   }
 
   public E get(int index) {
@@ -82,5 +104,77 @@ public class DeltaList<E> {
 
   public String toString() {
     return head.format();
+  }
+
+  public boolean isEmpty() {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean contains(Object o) {
+    throw new UnsupportedOperationException();
+  }
+
+  public Object[] toArray() {
+    throw new UnsupportedOperationException();
+  }
+
+  public <T> T[] toArray(T[] a) {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean add(E e) {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean remove(Object o) {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean containsAll(Collection<?> c) {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean addAll(Collection<? extends E> c) {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean addAll(int index, Collection<? extends E> c) {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean removeAll(Collection<?> c) {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean retainAll(Collection<?> c) {
+    throw new UnsupportedOperationException();
+  }
+
+  public void clear() {
+    throw new UnsupportedOperationException();
+  }
+
+  public E set(int index, E element) {
+    throw new UnsupportedOperationException();
+  }
+
+  public int indexOf(Object o) {
+    throw new UnsupportedOperationException();
+  }
+
+  public int lastIndexOf(Object o) {
+    throw new UnsupportedOperationException();
+  }
+
+  public ListIterator<E> listIterator() {
+    throw new UnsupportedOperationException();
+  }
+
+  public ListIterator<E> listIterator(int index) {
+    throw new UnsupportedOperationException();
+  }
+
+  public List<E> subList(int fromIndex, int toIndex) {
+    throw new UnsupportedOperationException();
   }
 }

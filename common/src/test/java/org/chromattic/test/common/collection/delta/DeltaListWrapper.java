@@ -33,14 +33,14 @@ public class DeltaListWrapper {
   private final List<Integer> list;
 
   /** . */
-  private final DeltaList<Integer> deltaList;
+  private final List<Integer> deltaList;
 
   /** . */
   private final List<Integer> shadow;
 
   public DeltaListWrapper(List<Integer> list) {
     this.list = list;
-    this.deltaList = new DeltaList<Integer>(Collections.unmodifiableList(list));
+    this.deltaList = DeltaList.create(Collections.unmodifiableList(list));
     this.shadow = new ArrayList<Integer>(list);
   }
 
