@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class InPlaceSegment<E> extends Segment<E> {
+class InPlaceSegment<E> extends Segment<E> {
 
   /** . */
   final DeltaList<E, ?> owner;

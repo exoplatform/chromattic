@@ -22,7 +22,7 @@ package org.chromattic.common.collection.delta;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class InsertionSegment<E> extends AbstractInsertionSegment<E> {
+class InsertionSegment<E> extends AbstractInsertionSegment<E> {
 
   /** . */
   private Segment<E> previous;

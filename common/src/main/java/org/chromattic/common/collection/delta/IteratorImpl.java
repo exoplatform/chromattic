@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class IteratorImpl<E> implements Iterator<E> {
+class IteratorImpl<E> implements Iterator<E> {
 
   /** The current segment. */
   private Segment<E> segment;

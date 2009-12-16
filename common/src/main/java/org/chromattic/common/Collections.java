@@ -19,6 +19,8 @@
 
 package org.chromattic.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentMap;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +44,10 @@ public class Collections {
       list.add(i.next());
     }
     return list;
+  }
+
+  public static <E> List<E> list(E... elements) {
+    return new ArrayList<E>(Arrays.asList(elements));
   }
 
   public static <E> HashSet<E> set(Iterator<E> i) {

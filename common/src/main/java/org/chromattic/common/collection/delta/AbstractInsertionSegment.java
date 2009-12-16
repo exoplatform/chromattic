@@ -25,7 +25,7 @@ import java.util.LinkedList;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractInsertionSegment<E> extends Segment<E> {
+abstract class AbstractInsertionSegment<E> extends Segment<E> {
 
   /** . */
   final LinkedList<E> insertions = new LinkedList<E>();

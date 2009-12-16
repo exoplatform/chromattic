@@ -18,6 +18,10 @@
  */
 package org.chromattic.common.collection.delta;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -27,5 +31,9 @@ public interface ListAdapter<E, L> {
   E get(L list, int index);
 
   int size(L list);
+
+  void remove(L list, int from, int to);
+
+  void insert(L list, int index, List<E> elements);
 
 }

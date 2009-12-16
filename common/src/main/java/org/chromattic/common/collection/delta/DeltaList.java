@@ -27,7 +27,7 @@ import java.util.ListIterator;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DeltaList<E, L> implements List<E> {
+public final class DeltaList<E, L> implements List<E> {
 
   public static <E> List<E> create(List<E> list) {
     ListAdapter<E, List<E>> adapter = new ListAdapter<E, List<E>>() {
@@ -36,6 +36,12 @@ public class DeltaList<E, L> implements List<E> {
       }
       public int size(List<E> list) {
         return list.size();
+      }
+      public void remove(List<E> list, int from, int to) {
+        list.subList(from, to).clear();
+      }
+      public void insert(List<E> list, int index, List<E> elements) {
+        list.addAll(index, elements);
       }
     };
     return new DeltaList<E, List<E>>(adapter, list);
@@ -78,6 +84,43 @@ public class DeltaList<E, L> implements List<E> {
     return adapter.get(list, index);
   }
 
+  public void save() {
+
+    Segment<E> segment = head;
+    int index = 0;
+
+    //
+    while (segment != null) {
+      if (segment instanceof InPlaceSegment) {
+        InPlaceSegment<E> inPlaceSegment = (InPlaceSegment<E>)segment;
+        if (index < inPlaceSegment.listIndex) {
+          // Need to remove elements
+          adapter.remove(list, index, inPlaceSegment.listIndex);
+        }
+        index += inPlaceSegment.listSize;
+      } else {
+        AbstractInsertionSegment<E> insertionSegment = (AbstractInsertionSegment<E>)segment;
+        int inSize = insertionSegment.insertions.size();
+        if (inSize > 0) {
+          adapter.insert(list, index, insertionSegment.insertions);
+          index += inSize;
+        }
+      }
+      segment = segment.getNext();
+    }
+
+    // Need to remove any trailing data
+    int size = adapter.size(list);
+    if (index < size) {
+      adapter.remove(list, index, size); 
+    }
+  }
+
+  public int complexity() {
+    return head.complexity();
+  }
+
+
   public E get(int index) {
     return head.get(index);
   }
@@ -98,16 +141,12 @@ public class DeltaList<E, L> implements List<E> {
     return head.iterator();
   }
 
-  public final int complexity() {
-    return head.complexity();
-  }
-
   public String toString() {
     return head.format();
   }
 
   public boolean isEmpty() {
-    throw new UnsupportedOperationException();
+    return size() == 0;
   }
 
   public boolean contains(Object o) {
