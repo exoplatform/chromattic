@@ -16,44 +16,48 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.jcr.info;
+package org.chromattic.core.mapping;
 
-import javax.jcr.nodetype.NodeType;
-import java.util.Collections;
-import java.util.HashSet;
+import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.format.ObjectFormatter;
+import org.reflext.api.ClassTypeInfo;
+
 import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PrimaryNodeTypeInfo extends NodeTypeInfo
+public class PrimaryTypeMapping extends NodeTypeMapping
 {
 
   /** . */
-  private Set<String> mixinNames;
+  private final String nodeTypeName;
 
-  public PrimaryNodeTypeInfo(NodeType nodeType) {
-    super(nodeType);
-
-    //
-    if (nodeType.isMixin()) {
-      throw new IllegalArgumentException();
-    }
-
-    //
-    Set<String> mixinNames = new HashSet<String>();
-    for (NodeType superType : nodeType.getSupertypes()) {
-      if (superType.isMixin()) {
-        mixinNames.add(superType.getName());
-      }
-    }
+  public PrimaryTypeMapping(
+    ClassTypeInfo objectClass,
+    Set<PropertyMapping> propertyMappings,
+    Set<MethodMapping> methodMappings,
+    NameConflictResolution onDuplicate,
+    String nodeTypeName,
+    Class<? extends ObjectFormatter> formatterClass) {
+    super(
+      objectClass,
+      propertyMappings,
+      methodMappings,
+      onDuplicate,
+      formatterClass);
 
     //
-    this.mixinNames = Collections.unmodifiableSet(mixinNames);
+    this.nodeTypeName = nodeTypeName;
   }
 
-   public Set<String> getMixinNames() {
-    return mixinNames;
+   public String getNodeTypeName() {
+    return nodeTypeName;
+  }
+
+  @Override
+  public String toString() {
+    return "JavaTypeInfo[objectClass=" + objectClass.getName() + ",nodeTypeName=" + nodeTypeName + "]";
   }
 }

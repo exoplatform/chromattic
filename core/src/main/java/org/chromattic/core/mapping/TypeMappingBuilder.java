@@ -368,7 +368,7 @@ public class TypeMappingBuilder {
       }
 
       //
-      return new MixinNodeTypeMapping(
+      return new MixinTypeMapping(
         javaClass,
         propertyMappings,
         methodMappings,
@@ -382,7 +382,7 @@ public class TypeMappingBuilder {
       Class<? extends ObjectFormatter> formatter = formattedBy != null ? formattedBy.value() : null;
 
       //
-      return new PrimaryNodeTypeMapping(
+      return new PrimaryTypeMapping(
         javaClass,
         propertyMappings,
         methodMappings,

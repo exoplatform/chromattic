@@ -16,23 +16,46 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.jcr.info;
+package org.chromattic.core.mapping;
 
-import javax.jcr.nodetype.NodeType;
+import org.chromattic.api.NameConflictResolution;
+import org.reflext.api.ClassTypeInfo;
+
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinNodeTypeInfo extends NodeTypeInfo
+public class MixinTypeMapping extends NodeTypeMapping
 {
 
-  public MixinNodeTypeInfo(NodeType nodeType) {
-    super(nodeType);
+  /** . */
+  private final String mixinTypeName;
+
+  public MixinTypeMapping(
+    ClassTypeInfo objectClass,
+    Set<PropertyMapping> propertyMappings,
+    Set<MethodMapping> methodMappings,
+    NameConflictResolution onDuplicate,
+    String mixinTypeName) {
+    super(
+      objectClass,
+      propertyMappings,
+      methodMappings,
+      onDuplicate,
+      null);
 
     //
-    if (!nodeType.isMixin()) {
-      throw new IllegalArgumentException();
-    }
+    this.mixinTypeName = mixinTypeName;
+  }
+
+   public String getMixinTypeName() {
+    return mixinTypeName;
+  }
+
+  @Override
+  public String toString() {
+    return "MixinTypeMapping[objectClass=" + objectClass.getName() + ",mixinName=" + mixinTypeName + "]";
   }
 }

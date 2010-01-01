@@ -18,32 +18,21 @@
  */
 package org.chromattic.core.jcr.info;
 
+import javax.jcr.nodetype.NodeType;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeInfo {
+public class MixinTypeInfo extends NodeTypeInfo
+{
 
-  /** . */
-  private final PrimaryTypeInfo primaryNodeTypeInfo;
+  public MixinTypeInfo(NodeType nodeType) {
+    super(nodeType);
 
-  protected NodeInfo(PrimaryTypeInfo primaryNodeTypeInfo) {
-    this.primaryNodeTypeInfo = primaryNodeTypeInfo;
-  }
-
-  public PrimaryTypeInfo getPrimaryNodeTypeInfo() {
-    return primaryNodeTypeInfo;
-  }
-
-  public PropertyDefinitionInfo getPropertyDefinitionInfo(String name) {
-    return primaryNodeTypeInfo.getPropertyDefinitionInfo(name);
-  }
-
-  public PropertyDefinitionInfo findPropertyDefinition(String propertyName) {
-    PropertyDefinitionInfo propertyDefinitionInfo = getPropertyDefinitionInfo(propertyName);
-    if (propertyDefinitionInfo == null) {
-      return getPropertyDefinitionInfo("*");
+    //
+    if (!nodeType.isMixin()) {
+      throw new IllegalArgumentException();
     }
-    return propertyDefinitionInfo;
   }
 }

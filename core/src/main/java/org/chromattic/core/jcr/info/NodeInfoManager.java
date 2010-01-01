@@ -52,7 +52,7 @@ public class NodeInfoManager {
     }
 
     //
-    PrimaryNodeTypeInfo ntInfo = (PrimaryNodeTypeInfo)getTypeInfo(node.getPrimaryNodeType());
+    PrimaryTypeInfo ntInfo = (PrimaryTypeInfo)getTypeInfo(node.getPrimaryNodeType());
 
     //
     return ntInfo.getMixinNames().contains("mix:referenceable");
@@ -72,7 +72,7 @@ public class NodeInfoManager {
       NodeInfo nodeInfo = primaryNodeInfos.get(primaryNodeTypeName);
       if (nodeInfo == null) {
         synchronized (primaryNodeInfosLock) {
-          PrimaryNodeTypeInfo primaryNodeTypeInfo = (PrimaryNodeTypeInfo)getTypeInfo(primaryNodeType);
+          PrimaryTypeInfo primaryNodeTypeInfo = (PrimaryTypeInfo)getTypeInfo(primaryNodeType);
           nodeInfo = new NodeInfo(primaryNodeTypeInfo);
           Map<String, NodeInfo> copy = new HashMap<String, NodeInfo>(primaryNodeInfos);
           copy.put(primaryNodeTypeName, nodeInfo);
@@ -91,9 +91,9 @@ public class NodeInfoManager {
     if (nodeTypeInfo == null) {
       synchronized (nodeTypeInfosLock) {
         if (nodeType.isMixin()) {
-          nodeTypeInfo = new MixinNodeTypeInfo(nodeType);
+          nodeTypeInfo = new MixinTypeInfo(nodeType);
         } else {
-          nodeTypeInfo = new PrimaryNodeTypeInfo(nodeType);
+          nodeTypeInfo = new PrimaryTypeInfo(nodeType);
         }
         Map<String, NodeTypeInfo> copy = new HashMap<String, NodeTypeInfo>(nodeTypeInfos);
         copy.put(nodeTypeName, nodeTypeInfo);

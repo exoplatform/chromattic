@@ -19,6 +19,7 @@
 package org.chromattic.core.mapper;
 
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.spi.instrument.Instrumentor;
 
 import java.util.Set;
@@ -27,33 +28,43 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinNodeTypeMapper extends NodeTypeMapper
+public class PrimaryTypeMapper extends NodeTypeMapper
 {
 
   /** . */
-  private final String mixinTypeName;
+  private final String nodeTypeName;
 
-  public MixinNodeTypeMapper(
+  public PrimaryTypeMapper(
     Class<?> objectClass,
     Set<PropertyMapper> propertyMappers,
     Set<MethodMapper> methodMappers,
     NameConflictResolution onDuplicate,
     Instrumentor instrumentor,
-    String mixinTypeName) {
+    ObjectFormatter formatter,
+    String nodeTypeName) {
     super(
       objectClass,
       propertyMappers,
       methodMappers,
       onDuplicate,
-      null,
+      formatter,
       instrumentor);
 
     //
-    this.mixinTypeName = mixinTypeName;
+    this.nodeTypeName = nodeTypeName;
   }
 
    @Override
   public String getTypeName() {
-    return mixinTypeName;
+    return nodeTypeName;
+  }
+
+  public String getNodeTypeName() {
+    return nodeTypeName;
+  }
+
+  @Override
+  public String toString() {
+    return "NodeTypeMapper[class=" + objectClass + ",nodeTypeName=" + nodeTypeName + "]";
   }
 }

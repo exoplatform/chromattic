@@ -16,11 +16,10 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapping;
+package org.chromattic.core.mapper;
 
 import org.chromattic.api.NameConflictResolution;
-import org.chromattic.api.format.ObjectFormatter;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.spi.instrument.Instrumentor;
 
 import java.util.Set;
 
@@ -28,36 +27,33 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PrimaryNodeTypeMapping extends NodeTypeMapping
+public class MixinTypeMapper extends NodeTypeMapper
 {
 
   /** . */
-  private final String nodeTypeName;
+  private final String mixinTypeName;
 
-  public PrimaryNodeTypeMapping(
-    ClassTypeInfo objectClass,
-    Set<PropertyMapping> propertyMappings,
-    Set<MethodMapping> methodMappings,
+  public MixinTypeMapper(
+    Class<?> objectClass,
+    Set<PropertyMapper> propertyMappers,
+    Set<MethodMapper> methodMappers,
     NameConflictResolution onDuplicate,
-    String nodeTypeName,
-    Class<? extends ObjectFormatter> formatterClass) {
+    Instrumentor instrumentor,
+    String mixinTypeName) {
     super(
       objectClass,
-      propertyMappings,
-      methodMappings,
+      propertyMappers,
+      methodMappers,
       onDuplicate,
-      formatterClass);
+      null,
+      instrumentor);
 
     //
-    this.nodeTypeName = nodeTypeName;
+    this.mixinTypeName = mixinTypeName;
   }
 
-   public String getNodeTypeName() {
-    return nodeTypeName;
-  }
-
-  @Override
-  public String toString() {
-    return "JavaTypeInfo[objectClass=" + objectClass.getName() + ",nodeTypeName=" + nodeTypeName + "]";
+   @Override
+  public String getTypeName() {
+    return mixinTypeName;
   }
 }
