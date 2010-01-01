@@ -27,7 +27,8 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinNodeTypeMapper extends TypeMapper {
+public class MixinNodeTypeMapper extends NodeTypeMapper
+{
 
   /** . */
   private final String mixinTypeName;

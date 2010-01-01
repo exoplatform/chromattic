@@ -21,22 +21,18 @@ package org.chromattic.core;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.io.InputStream;
 
-import org.chromattic.api.ChromatticException;
 import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.api.format.ObjectFormatter;
-import org.chromattic.common.IO;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.common.JCR;
-import org.chromattic.common.CopyingInputStream;
 import org.chromattic.common.CloneableInputStream;
-import org.chromattic.core.mapper.TypeMapper;
+import org.chromattic.core.mapper.NodeTypeMapper;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.jcr.LinkType;
@@ -51,7 +47,7 @@ public class EntityContext implements MethodHandler {
   private final Logger log = Logger.getLogger(EntityContext.class);
 
   /** . */
-  final TypeMapper mapper;
+  final NodeTypeMapper mapper;
 
   /** . */
   final Object object;
@@ -62,11 +58,11 @@ public class EntityContext implements MethodHandler {
   /** . */
   EntityContextState state;
 
-  public EntityContext(TypeMapper mapper) {
+  public EntityContext(NodeTypeMapper mapper) {
     this(mapper, null);
   }
 
-  public EntityContext(TypeMapper mapper, TransientEntityContextState state) {
+  public EntityContext(NodeTypeMapper mapper, TransientEntityContextState state) {
     this.state = null;
     this.mapper = mapper;
     this.object = mapper.createObject(this);

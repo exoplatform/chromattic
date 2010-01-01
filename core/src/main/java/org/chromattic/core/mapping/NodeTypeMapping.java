@@ -33,7 +33,8 @@ import java.util.HashSet;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class TypeMapping {
+public abstract class NodeTypeMapping
+{
 
   /** . */
   protected final ClassTypeInfo objectClass;
@@ -50,7 +51,7 @@ public abstract class TypeMapping {
   /** . */
   private Class<? extends ObjectFormatter> formatterClass;
 
-  public TypeMapping(
+  public NodeTypeMapping(
     ClassTypeInfo objectClass,
     Set<PropertyMapping> propertyMappings,
     Set<MethodMapping> methodMappings,
@@ -65,7 +66,7 @@ public abstract class TypeMapping {
     this.formatterClass = formatterClass;
   }
 
-  public ClassTypeInfo getObjectClass() {
+   public ClassTypeInfo getObjectClass() {
     return objectClass;
   }
 
@@ -95,8 +96,8 @@ public abstract class TypeMapping {
     if (obj == this) {
       return true;
     }
-    if (obj instanceof TypeMapping) {
-      TypeMapping that = (TypeMapping)obj;
+    if (obj instanceof NodeTypeMapping) {
+      NodeTypeMapping that = (NodeTypeMapping)obj;
       return objectClass.equals(that.objectClass);
     }
     return false;

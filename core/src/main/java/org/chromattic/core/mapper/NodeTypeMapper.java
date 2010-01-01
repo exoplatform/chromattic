@@ -40,7 +40,7 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class TypeMapper implements MethodInvoker {
+public abstract class NodeTypeMapper implements MethodInvoker {
 
   /** . */
   protected final Class<?> objectClass;
@@ -63,7 +63,7 @@ public abstract class TypeMapper implements MethodInvoker {
   /** . */
   private final NameConflictResolution onDuplicate;
 
-  public TypeMapper(
+  public NodeTypeMapper(
     Class<?> objectClass,
     Set<PropertyMapper> propertyMappers,
     Set<MethodMapper> methodMappers,
@@ -98,7 +98,7 @@ public abstract class TypeMapper implements MethodInvoker {
     this.factory = instrumentor.getProxyClass(objectClass);
   }
 
-  public Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable {
+   public Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable {
     MethodInvoker invoker = dispatchers.get(method);
     if (invoker != null) {
       return invoker.invoke(ctx, method, args);

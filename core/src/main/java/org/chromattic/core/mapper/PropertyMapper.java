@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
  */
 public class PropertyMapper<P extends PropertyInfo> implements MethodInvoker {
 
-  TypeMapper mapper;
+  NodeTypeMapper mapper;
 
   protected final P info;
 

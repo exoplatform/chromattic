@@ -25,7 +25,7 @@ import org.chromattic.core.bean.BeanInfoFactory;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
-import org.chromattic.core.mapping.TypeMapping;
+import org.chromattic.core.mapping.NodeTypeMapping;
 import org.chromattic.core.mapping.TypeMappingBuilder;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
@@ -142,10 +142,10 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
     //
     TypeMappingBuilder mappingBuilder = new TypeMappingBuilder(beanInfoBuilder);
-    Set<TypeMapping> mappings = new HashSet<TypeMapping>();
+    Set<NodeTypeMapping> mappings = new HashSet<NodeTypeMapping>();
     for (Class clazz : classes) {
       ClassTypeInfo typeInfo = (ClassTypeInfo)typeDomain.getType(clazz);
-      TypeMapping mapping = mappingBuilder.build(typeInfo);
+      NodeTypeMapping mapping = mappingBuilder.build(typeInfo);
       mappings.add(mapping);
     }
 

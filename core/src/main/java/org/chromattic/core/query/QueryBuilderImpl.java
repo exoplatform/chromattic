@@ -21,7 +21,7 @@ package org.chromattic.core.query;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.core.mapper.PrimaryNodeTypeMapper;
-import org.chromattic.core.mapper.TypeMapper;
+import org.chromattic.core.mapper.NodeTypeMapper;
 import org.chromattic.core.Domain;
 import org.chromattic.core.DomainSession;
 
@@ -59,7 +59,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
     //
     Domain domain = session.getDomain();
-    TypeMapper mapper = domain.getTypeMapper(fromClass);
+    NodeTypeMapper mapper = domain.getTypeMapper(fromClass);
     if (mapper == null) {
       throw new IllegalArgumentException("Class " + fromClass.getName() + " is not mapped");
     }

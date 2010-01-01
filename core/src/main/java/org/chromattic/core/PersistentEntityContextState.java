@@ -19,7 +19,6 @@
 
 package org.chromattic.core;
 
-import org.chromattic.api.ChromatticException;
 import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
@@ -27,12 +26,11 @@ import org.chromattic.api.NoSuchPropertyException;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
-import org.chromattic.core.mapper.TypeMapper;
+import org.chromattic.core.mapper.NodeTypeMapper;
 import org.chromattic.core.mapper.ValueMapper;
 import org.chromattic.core.jcr.info.NodeInfo;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
-import org.chromattic.common.CopyingInputStream;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -95,7 +93,7 @@ class PersistentEntityContextState extends EntityContextState {
       ObjectFormatter formatter = null;
       Node parentNode = node.getParent();
       String nodeTypeName = parentNode.getPrimaryNodeType().getName();
-      TypeMapper parentMapper = session.domain.getTypeMapper(nodeTypeName);
+      NodeTypeMapper parentMapper = session.domain.getTypeMapper(nodeTypeName);
       if (parentMapper != null) {
         formatter = parentMapper.getFormatter();
       }

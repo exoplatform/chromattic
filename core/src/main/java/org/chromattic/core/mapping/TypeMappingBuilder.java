@@ -61,11 +61,11 @@ public class TypeMappingBuilder {
     this.beanInfoBuilder = beanInfoBuilder;
   }
 
-  public TypeMapping build(ClassTypeInfo javaClass) {
+  public NodeTypeMapping build(ClassTypeInfo javaClass) {
     return _build(javaClass);
   }
 
-  private TypeMapping _build(ClassTypeInfo javaClass) {
+  private NodeTypeMapping _build(ClassTypeInfo javaClass) {
     Set<PropertyMapping> propertyMappings = new HashSet<PropertyMapping>();
     Set<MethodMapping> methodMappings = new HashSet<MethodMapping>();
     BeanInfo info = beanInfoBuilder.build(javaClass);

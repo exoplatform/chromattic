@@ -31,13 +31,13 @@ import java.util.Set;
 public abstract class RelatedPropertyMapper<P extends PropertyInfo> extends PropertyMapper<P> {
 
   /** . */
-  protected Set<TypeMapper> relatedTypes;
+  protected Set<NodeTypeMapper> relatedTypes;
 
   protected RelatedPropertyMapper(P info) {
     super(info);
   }
 
-  public Set<TypeMapper> getRelatedTypes() {
+  public Set<NodeTypeMapper> getRelatedTypes() {
     return relatedTypes;
   }
 

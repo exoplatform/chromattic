@@ -26,7 +26,7 @@ import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.mapper.PrimaryNodeTypeMapper;
-import org.chromattic.core.mapper.TypeMapper;
+import org.chromattic.core.mapper.NodeTypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
 
@@ -172,7 +172,7 @@ public class DomainSessionImpl extends DomainSession {
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
     NodeType parentNodeType = srcNode.getPrimaryNodeType();
-    TypeMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
+    NodeTypeMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
     if (parentTypeMapper != null) {
       onDuplicate = parentTypeMapper.getOnDuplicate();
     }
@@ -246,7 +246,7 @@ public class DomainSessionImpl extends DomainSession {
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
     NodeType parentNodeType = dstNode.getPrimaryNodeType();
-    TypeMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
+    NodeTypeMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
     if (parentTypeMapper != null) {
       onDuplicate = parentTypeMapper.getOnDuplicate();
     }
@@ -296,7 +296,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    TypeMapper typeMapper = domain.getTypeMapper(clazz);
+    NodeTypeMapper typeMapper = domain.getTypeMapper(clazz);
     TransientEntityContextState state = new TransientEntityContextState(this);
 
     //
@@ -541,7 +541,7 @@ public class DomainSessionImpl extends DomainSession {
   private void nodeRead(Node node) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();
-    TypeMapper mapper = domain.getTypeMapper(nodeTypeName);
+    NodeTypeMapper mapper = domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
       EntityContext ctx = contexts.get(node.getUUID());
       if (ctx == null) {
@@ -564,7 +564,7 @@ public class DomainSessionImpl extends DomainSession {
   private void nodeAdded(Node node, EntityContext ctx) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();
-    TypeMapper mapper = domain.getTypeMapper(nodeTypeName);
+    NodeTypeMapper mapper = domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
       if (contexts.containsKey(node.getUUID())) {
         String msg = "Attempt to replace an existing context " + ctx + " with path " + node.getPath();

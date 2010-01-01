@@ -19,8 +19,8 @@
 
 package org.chromattic.core;
 
-import org.chromattic.core.mapping.TypeMapping;
-import org.chromattic.core.mapper.TypeMapper;
+import org.chromattic.core.mapper.NodeTypeMapper;
+import org.chromattic.core.mapping.NodeTypeMapping;
 import org.chromattic.core.mapper.TypeMapperBuilder;
 import org.chromattic.core.jcr.info.NodeInfoManager;
 import org.chromattic.core.query.QueryManager;
@@ -38,10 +38,10 @@ import java.util.HashMap;
 public class Domain {
 
   /** . */
-  private final Map<String, TypeMapper> typeMapperByNodeType;
+  private final Map<String, NodeTypeMapper> typeMapperByNodeType;
 
   /** . */
-  private final Map<Class<?>, TypeMapper> typeMapperByClass;
+  private final Map<Class<?>, NodeTypeMapper> typeMapperByClass;
 
   /** . */
   private final Instrumentor instrumentor;
@@ -68,7 +68,7 @@ public class Domain {
   final QueryManager queryManager;
 
   public Domain(
-    Set<TypeMapping> typeMappings,
+    Set<NodeTypeMapping> typeMappings,
     Instrumentor instrumentor,
     ObjectFormatter objectFormatter,
     boolean stateCacheEnabled,
@@ -80,9 +80,9 @@ public class Domain {
     TypeMapperBuilder builder = new TypeMapperBuilder(typeMappings, instrumentor);
 
     //
-    Map<String, TypeMapper> typeMapperByNodeType = new HashMap<String, TypeMapper>();
-    Map<Class<?>, TypeMapper> typeMapperByClass = new HashMap<Class<?>, TypeMapper>();
-    for (TypeMapper typeMapper : builder.build()) {
+    Map<String, NodeTypeMapper> typeMapperByNodeType = new HashMap<String, NodeTypeMapper>();
+    Map<Class<?>, NodeTypeMapper> typeMapperByClass = new HashMap<Class<?>, NodeTypeMapper>();
+    for (NodeTypeMapper typeMapper : builder.build()) {
       if (typeMapperByNodeType.containsKey(typeMapper.getTypeName())) {
         throw new IllegalStateException("Duplicate node type name " + typeMapper);
       }
@@ -115,11 +115,11 @@ public class Domain {
     return instrumentor;
   }
 
-  public TypeMapper getTypeMapper(String nodeTypeName) {
+  public NodeTypeMapper getTypeMapper(String nodeTypeName) {
     return typeMapperByNodeType.get(nodeTypeName);
   }
 
-  public TypeMapper getTypeMapper(Class<?> clazz) {
+  public NodeTypeMapper getTypeMapper(Class<?> clazz) {
     return typeMapperByClass.get(clazz);
   }
 

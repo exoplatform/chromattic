@@ -28,7 +28,8 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PrimaryNodeTypeMapping extends TypeMapping {
+public class PrimaryNodeTypeMapping extends NodeTypeMapping
+{
 
   /** . */
   private final String nodeTypeName;

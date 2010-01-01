@@ -24,7 +24,7 @@ import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.core.mapper.onetoone.mixin.JCRMixinParentPropertyMapper;
 import org.chromattic.core.mapping.MixinNodeTypeMapping;
 import org.chromattic.core.mapping.PrimaryNodeTypeMapping;
-import org.chromattic.core.mapping.TypeMapping;
+import org.chromattic.core.mapping.NodeTypeMapping;
 import org.chromattic.core.mapping.PropertyMapping;
 import org.chromattic.core.mapping.MethodMapping;
 import org.chromattic.core.mapping.CreateMapping;
@@ -92,17 +92,17 @@ public class TypeMapperBuilder {
   }
 
   /** . */
-  private final Set<TypeMapping> typeMappings;
+  private final Set<NodeTypeMapping> typeMappings;
 
   /** . */
   private final Instrumentor instrumentor;
 
-  public TypeMapperBuilder(Set<TypeMapping> typeMappings, Instrumentor instrumentor) {
+  public TypeMapperBuilder(Set<NodeTypeMapping> typeMappings, Instrumentor instrumentor) {
     this.typeMappings = typeMappings;
     this.instrumentor = instrumentor;
   }
 
-  public Collection<TypeMapper> build() {
+  public Collection<NodeTypeMapper> build() {
     try {
       return _build();
     }
@@ -111,14 +111,14 @@ public class TypeMapperBuilder {
     }
   }
 
-  private Collection<TypeMapper> _build() throws ClassNotFoundException {
+  private Collection<NodeTypeMapper> _build() throws ClassNotFoundException {
 
-    Map<String, TypeMapper> mappers = new HashMap<String, TypeMapper>();
+    Map<String, NodeTypeMapper> mappers = new HashMap<String, NodeTypeMapper>();
 
     SetMap<ClassTypeInfo, RelatedPropertyMapper> relatedProperties = new SetMap<ClassTypeInfo, RelatedPropertyMapper>();
     SetMap<ClassTypeInfo, MethodMapper.Create> relatedMethods = new SetMap<ClassTypeInfo, MethodMapper.Create>();
 
-    for (TypeMapping typeMapping : typeMappings) {
+    for (NodeTypeMapping typeMapping : typeMappings) {
 
       Set<MethodMapper> methodMappers = new HashSet<MethodMapper>();
       Set<PropertyMapper> propertyMappers = new HashSet<PropertyMapper>();
@@ -274,7 +274,7 @@ public class TypeMapperBuilder {
       }
 
       //
-      TypeMapper mapper;
+      NodeTypeMapper mapper;
       if (typeMapping instanceof PrimaryNodeTypeMapping) {
         PrimaryNodeTypeMapping nodeTypeMapping = (PrimaryNodeTypeMapping)typeMapping;
 
@@ -325,8 +325,8 @@ public class TypeMapperBuilder {
       Set<RelatedPropertyMapper> properties = relatedProperties.get(relatedType);
 
       //
-      Set<TypeMapper> relatedTypes = new HashSet<TypeMapper>();
-      for (TypeMapper type : mappers.values()) {
+      Set<NodeTypeMapper> relatedTypes = new HashSet<NodeTypeMapper>();
+      for (NodeTypeMapper type : mappers.values()) {
         Class relatedClass = Thread.currentThread().getContextClassLoader().loadClass(relatedType.getName());
         if (relatedClass.isAssignableFrom(type.getObjectClass())) {
           relatedTypes.add(type);
@@ -342,7 +342,7 @@ public class TypeMapperBuilder {
     //
     for (ClassTypeInfo relatedType : relatedMethods.keySet()) {
       Set<MethodMapper.Create> methods = relatedMethods.get(relatedType);
-      TypeMapper relatedMapper = mappers.get(relatedType.getName());
+      NodeTypeMapper relatedMapper = mappers.get(relatedType.getName());
       if (relatedMapper == null) {
         throw new IllegalStateException("Could not find mapper for " + relatedType.getName() + " referenced by " + methods);
       }
@@ -352,6 +352,6 @@ public class TypeMapperBuilder {
     }
 
     //
-    return new ArrayList<TypeMapper>(mappers.values());
+    return new ArrayList<NodeTypeMapper>(mappers.values());
   }
 }
