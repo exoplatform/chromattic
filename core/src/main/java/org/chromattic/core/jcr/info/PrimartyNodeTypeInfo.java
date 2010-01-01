@@ -30,12 +30,12 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeTypeInfo extends TypeInfo {
+public class PrimartyNodeTypeInfo extends TypeInfo {
 
   /** . */
   private Set<String> mixinNames;
 
-  public NodeTypeInfo(NodeType nodeType) {
+  public PrimartyNodeTypeInfo(NodeType nodeType) {
     super(nodeType);
 
     //
@@ -55,7 +55,7 @@ public class NodeTypeInfo extends TypeInfo {
     this.mixinNames = Collections.unmodifiableSet(mixinNames);
   }
 
-  public Set<String> getMixinNames() {
+   public Set<String> getMixinNames() {
     return mixinNames;
   }
 }
