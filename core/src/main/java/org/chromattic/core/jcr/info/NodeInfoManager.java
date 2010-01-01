@@ -40,7 +40,7 @@ public class NodeInfoManager {
   private final Object nodeTypeInfosLock = new Object();
 
   /** . */
-  private volatile Map<String, TypeInfo> nodeTypeInfos = new HashMap<String, TypeInfo>();
+  private volatile Map<String, NodeTypeInfo> nodeTypeInfos = new HashMap<String, NodeTypeInfo>();
 
   public boolean isReferenceable(Node node) throws RepositoryException {
 
@@ -52,7 +52,7 @@ public class NodeInfoManager {
     }
 
     //
-    PrimartyNodeTypeInfo ntInfo = (PrimartyNodeTypeInfo)getTypeInfo(node.getPrimaryNodeType());
+    PrimaryNodeTypeInfo ntInfo = (PrimaryNodeTypeInfo)getTypeInfo(node.getPrimaryNodeType());
 
     //
     return ntInfo.getMixinNames().contains("mix:referenceable");
@@ -72,7 +72,7 @@ public class NodeInfoManager {
       NodeInfo nodeInfo = primaryNodeInfos.get(primaryNodeTypeName);
       if (nodeInfo == null) {
         synchronized (primaryNodeInfosLock) {
-          PrimartyNodeTypeInfo primaryNodeTypeInfo = (PrimartyNodeTypeInfo)getTypeInfo(primaryNodeType);
+          PrimaryNodeTypeInfo primaryNodeTypeInfo = (PrimaryNodeTypeInfo)getTypeInfo(primaryNodeType);
           nodeInfo = new NodeInfo(primaryNodeTypeInfo);
           Map<String, NodeInfo> copy = new HashMap<String, NodeInfo>(primaryNodeInfos);
           copy.put(primaryNodeTypeName, nodeInfo);
@@ -85,17 +85,17 @@ public class NodeInfoManager {
     }
   }
 
-  private TypeInfo getTypeInfo(NodeType nodeType) {
+  private NodeTypeInfo getTypeInfo(NodeType nodeType) {
     String nodeTypeName = nodeType.getName();
-    TypeInfo nodeTypeInfo = nodeTypeInfos.get(nodeTypeName);
+    NodeTypeInfo nodeTypeInfo = nodeTypeInfos.get(nodeTypeName);
     if (nodeTypeInfo == null) {
       synchronized (nodeTypeInfosLock) {
         if (nodeType.isMixin()) {
           nodeTypeInfo = new MixinNodeTypeInfo(nodeType);
         } else {
-          nodeTypeInfo = new PrimartyNodeTypeInfo(nodeType);
+          nodeTypeInfo = new PrimaryNodeTypeInfo(nodeType);
         }
-        Map<String, TypeInfo> copy = new HashMap<String, TypeInfo>(nodeTypeInfos);
+        Map<String, NodeTypeInfo> copy = new HashMap<String, NodeTypeInfo>(nodeTypeInfos);
         copy.put(nodeTypeName, nodeTypeInfo);
         nodeTypeInfos = copy;
       }

@@ -19,23 +19,21 @@
 package org.chromattic.core.jcr.info;
 
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.PropertyDefinition;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PrimartyNodeTypeInfo extends TypeInfo {
+public class PrimaryNodeTypeInfo extends NodeTypeInfo
+{
 
   /** . */
   private Set<String> mixinNames;
 
-  public PrimartyNodeTypeInfo(NodeType nodeType) {
+  public PrimaryNodeTypeInfo(NodeType nodeType) {
     super(nodeType);
 
     //

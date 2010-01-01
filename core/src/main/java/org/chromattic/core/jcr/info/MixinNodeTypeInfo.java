@@ -24,7 +24,8 @@ import javax.jcr.nodetype.NodeType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinNodeTypeInfo extends TypeInfo {
+public class MixinNodeTypeInfo extends NodeTypeInfo
+{
 
   public MixinNodeTypeInfo(NodeType nodeType) {
     super(nodeType);

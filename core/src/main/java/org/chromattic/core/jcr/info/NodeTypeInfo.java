@@ -27,7 +27,8 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class TypeInfo {
+public class NodeTypeInfo
+{
 
   /** . */
   private final String name;
@@ -35,7 +36,7 @@ public class TypeInfo {
   /** . */
   private final Map<String, PropertyDefinitionInfo> propertyDefinitions;
 
-  public TypeInfo(NodeType nodeType) {
+  public NodeTypeInfo(NodeType nodeType) {
     Map<String, PropertyDefinitionInfo> propertyDefinitions = new HashMap<String, PropertyDefinitionInfo>();
     for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions()) {
       PropertyDefinitionInfo propertyDefinitionInfo = new PropertyDefinitionInfo(propertyDefinition);
@@ -47,7 +48,7 @@ public class TypeInfo {
     this.propertyDefinitions = propertyDefinitions;
   }
 
-  public String getName() {
+   public String getName() {
     return name;
   }
 

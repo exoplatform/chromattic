@@ -25,13 +25,13 @@ package org.chromattic.core.jcr.info;
 public class NodeInfo {
 
   /** . */
-  private final PrimartyNodeTypeInfo primaryNodeTypeInfo;
+  private final PrimaryNodeTypeInfo primaryNodeTypeInfo;
 
-  protected NodeInfo(PrimartyNodeTypeInfo primaryNodeTypeInfo) {
+  protected NodeInfo(PrimaryNodeTypeInfo primaryNodeTypeInfo) {
     this.primaryNodeTypeInfo = primaryNodeTypeInfo;
   }
 
-  public PrimartyNodeTypeInfo getPrimaryNodeTypeInfo() {
+  public PrimaryNodeTypeInfo getPrimaryNodeTypeInfo() {
     return primaryNodeTypeInfo;
   }
 
