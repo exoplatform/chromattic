@@ -22,8 +22,8 @@ package org.chromattic.core.mapper;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.core.mapper.onetoone.mixin.JCRMixinParentPropertyMapper;
-import org.chromattic.core.mapping.MixinTypeMapping;
-import org.chromattic.core.mapping.NodeTypeMapping;
+import org.chromattic.core.mapping.MixinNodeTypeMapping;
+import org.chromattic.core.mapping.PrimaryNodeTypeMapping;
 import org.chromattic.core.mapping.TypeMapping;
 import org.chromattic.core.mapping.PropertyMapping;
 import org.chromattic.core.mapping.MethodMapping;
@@ -66,7 +66,6 @@ import org.chromattic.core.bean.ListPropertyInfo;
 import org.chromattic.api.RelationshipType;
 import org.reflext.api.ClassTypeInfo;
 
-import java.util.List;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
@@ -166,10 +165,10 @@ public class TypeMapperBuilder {
                 }
               }
             } else if (pmhm.getType() == RelationshipType.MIXIN) {
-              if (typeMapping instanceof NodeTypeMapping) {
+              if (typeMapping instanceof PrimaryNodeTypeMapping) {
                 JCRMixinParentPropertyMapper mapper = new JCRMixinParentPropertyMapper((SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo());
                 propertyMappers.add(mapper);
-              } else if (typeMapping instanceof MixinTypeMapping) {
+              } else if (typeMapping instanceof MixinNodeTypeMapping) {
                 throw new UnsupportedOperationException("todo");
               } else {
                 throw new AssertionError();
@@ -276,8 +275,8 @@ public class TypeMapperBuilder {
 
       //
       TypeMapper mapper;
-      if (typeMapping instanceof NodeTypeMapping) {
-        NodeTypeMapping nodeTypeMapping = (NodeTypeMapping)typeMapping;
+      if (typeMapping instanceof PrimaryNodeTypeMapping) {
+        PrimaryNodeTypeMapping nodeTypeMapping = (PrimaryNodeTypeMapping)typeMapping;
 
         // Get the formatter
         ObjectFormatter formatter = null;
@@ -286,7 +285,7 @@ public class TypeMapperBuilder {
         }
 
         //
-        mapper = new NodeTypeMapper(
+        mapper = new PrimaryNodeTypeMapper(
           (Class<?>)typeMapping.getObjectClass().getType(),
           propertyMappers,
           methodMappers,
@@ -295,10 +294,10 @@ public class TypeMapperBuilder {
           formatter,
           nodeTypeMapping.getNodeTypeName());
       } else {
-        MixinTypeMapping mixinTypeMapping = (MixinTypeMapping)typeMapping;
+        MixinNodeTypeMapping mixinTypeMapping = (MixinNodeTypeMapping)typeMapping;
 
         //
-        mapper = new MixinTypeMapper(
+        mapper = new MixinNodeTypeMapper(
           (Class<?>)typeMapping.getObjectClass().getType(),
           propertyMappers,
           methodMappers,

@@ -19,6 +19,7 @@
 package org.chromattic.core.mapping;
 
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.format.ObjectFormatter;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Set;
@@ -27,34 +28,35 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinTypeMapping extends TypeMapping {
+public class PrimaryNodeTypeMapping extends TypeMapping {
 
   /** . */
-  private final String mixinTypeName;
+  private final String nodeTypeName;
 
-  public MixinTypeMapping(
+  public PrimaryNodeTypeMapping(
     ClassTypeInfo objectClass,
     Set<PropertyMapping> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
-    String mixinTypeName) {
+    String nodeTypeName,
+    Class<? extends ObjectFormatter> formatterClass) {
     super(
       objectClass,
       propertyMappings,
       methodMappings,
       onDuplicate,
-      null);
+      formatterClass);
 
     //
-    this.mixinTypeName = mixinTypeName;
+    this.nodeTypeName = nodeTypeName;
   }
 
-  public String getMixinTypeName() {
-    return mixinTypeName;
+   public String getNodeTypeName() {
+    return nodeTypeName;
   }
 
   @Override
   public String toString() {
-    return "MixinTypeMapping[objectClass=" + objectClass.getName() + ",mixinName=" + mixinTypeName + "]";
+    return "JavaTypeInfo[objectClass=" + objectClass.getName() + ",nodeTypeName=" + nodeTypeName + "]";
   }
 }

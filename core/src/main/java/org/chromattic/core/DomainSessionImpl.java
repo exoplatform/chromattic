@@ -25,7 +25,7 @@ import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
-import org.chromattic.core.mapper.NodeTypeMapper;
+import org.chromattic.core.mapper.PrimaryNodeTypeMapper;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
@@ -157,10 +157,10 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   private String _persist(Node srcNode, String name, EntityContext dstCtx) throws RepositoryException {
-    if (!(dstCtx.mapper instanceof NodeTypeMapper)) {
+    if (!(dstCtx.mapper instanceof PrimaryNodeTypeMapper)) {
       throw new IllegalArgumentException("Cannot persist an object mapper to a mixin type " + dstCtx.mapper);
     }
-    NodeTypeMapper mapper = (NodeTypeMapper)dstCtx.mapper;
+    PrimaryNodeTypeMapper mapper = (PrimaryNodeTypeMapper)dstCtx.mapper;
 
     //
     Object parent = findByNode(Object.class, srcNode);

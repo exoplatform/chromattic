@@ -110,12 +110,6 @@
 
       <dependency>
         <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.apt2</artifactId>
-        <version>1.0.0-beta11-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.chromattic</groupId>
         <artifactId>chromattic.cglib</artifactId>
         <version>1.0.0-beta12-SNAPSHOT</version>
       </dependency>
@@ -385,20 +379,6 @@
         </modules>
      </profile>
      
-    <profile>
-       <id>apt2</id>
-       <modules>
-          <module>api</module>
-          <module>spi</module>
-          <module>common</module>
-          <module>apt</module>
-          <module>apt2</module>
-          <module>cglib</module>
-          <module>exo</module>
-          <module>core</module>
-       </modules>
-    </profile>
-
     <profile>
       <!-- Ensure our build is following some maven best practices and the environment is following some constraints -->
       <!-- Controls can be inactivated by adding -P-enforce or -Dskip-enforce in the command line -->

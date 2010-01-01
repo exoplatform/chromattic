@@ -27,12 +27,12 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinTypeMapper extends TypeMapper {
+public class MixinNodeTypeMapper extends TypeMapper {
 
   /** . */
   private final String mixinTypeName;
 
-  public MixinTypeMapper(
+  public MixinNodeTypeMapper(
     Class<?> objectClass,
     Set<PropertyMapper> propertyMappers,
     Set<MethodMapper> methodMappers,
@@ -51,7 +51,7 @@ public class MixinTypeMapper extends TypeMapper {
     this.mixinTypeName = mixinTypeName;
   }
 
-  @Override
+   @Override
   public String getTypeName() {
     return mixinTypeName;
   }

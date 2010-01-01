@@ -16,11 +16,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapping;
+package org.chromattic.core.mapper;
 
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.format.ObjectFormatter;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.spi.instrument.Instrumentor;
 
 import java.util.Set;
 
@@ -28,27 +28,34 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeTypeMapping extends TypeMapping {
+public class PrimaryNodeTypeMapper extends TypeMapper {
 
   /** . */
   private final String nodeTypeName;
 
-  public NodeTypeMapping(
-    ClassTypeInfo objectClass,
-    Set<PropertyMapping> propertyMappings,
-    Set<MethodMapping> methodMappings,
+  public PrimaryNodeTypeMapper(
+    Class<?> objectClass,
+    Set<PropertyMapper> propertyMappers,
+    Set<MethodMapper> methodMappers,
     NameConflictResolution onDuplicate,
-    String nodeTypeName,
-    Class<? extends ObjectFormatter> formatterClass) {
+    Instrumentor instrumentor,
+    ObjectFormatter formatter,
+    String nodeTypeName) {
     super(
       objectClass,
-      propertyMappings,
-      methodMappings,
+      propertyMappers,
+      methodMappers,
       onDuplicate,
-      formatterClass);
+      formatter,
+      instrumentor);
 
     //
     this.nodeTypeName = nodeTypeName;
+  }
+
+   @Override
+  public String getTypeName() {
+    return nodeTypeName;
   }
 
   public String getNodeTypeName() {
@@ -57,6 +64,6 @@ public class NodeTypeMapping extends TypeMapping {
 
   @Override
   public String toString() {
-    return "JavaTypeInfo[objectClass=" + objectClass.getName() + ",nodeTypeName=" + nodeTypeName + "]";
+    return "NodeTypeMapper[class=" + objectClass + ",nodeTypeName=" + nodeTypeName + "]";
   }
 }
