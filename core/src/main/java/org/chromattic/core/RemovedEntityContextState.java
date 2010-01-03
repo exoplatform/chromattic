@@ -21,6 +21,8 @@ package org.chromattic.core;
 
 import org.chromattic.api.Status;
 import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.jcr.info.NodeTypeInfo;
+import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 
 import javax.jcr.Node;
 import java.util.List;
@@ -66,19 +68,23 @@ class RemovedEntityContextState extends EntityContextState {
     return Status.REMOVED;
   }
 
-  <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> svi) {
+  PrimaryTypeInfo getTypeInfo() {
     throw new IllegalStateException();
   }
 
-  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType) {
+  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi) {
     throw new IllegalStateException();
   }
 
-  <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> svi, V o) {
+  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, ListType listType) {
     throw new IllegalStateException();
   }
 
-  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType, List<V> objects) {
+  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, V o) {
+    throw new IllegalStateException();
+  }
+
+  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, ListType listType, List<V> objects) {
     throw new IllegalStateException();
   }
 

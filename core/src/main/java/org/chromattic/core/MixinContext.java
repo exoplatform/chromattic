@@ -17,25 +17,46 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.api.annotations;
+package org.chromattic.core;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.chromattic.core.mapper.MixinTypeMapper;
+
+import java.lang.reflect.Method;
 
 /**
- * The mixin annotation can be used to annote a class and declares that it represents a mixin.
- *
- * <p>When a class declares a mixin annotation without being bound to a node mapping, this class can be involved
- * in a one to one relationship with the {@link org.chromattic.api.RelationshipType#MIXIN} type. The mixin is
- * added to a node when a one to one relationship of type mixin is created.</p>
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface MixinMapping {
-  String[] name();
+public final class MixinContext extends ObjectContext {
+
+  /** The object instance. */
+  final Object object;
+
+  /** The related type. */
+  final MixinTypeMapper mapper;
+
+  /** The related entity if not null, otherwise it means that we are not attached to anything. */
+  EntityContext relatedEntity;
+
+  /** Whether or not the mixin is a runtime mixin. */
+  boolean runtime;
+
+  MixinContext(MixinTypeMapper mapper) {
+    this.mapper = mapper;
+    this.object = mapper.createObject(this);
+  }
+
+  @Override
+  public Object getObject() {
+    return object;
+  }
+
+  public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public String toString() {
+    return "MixinContext[mapper=" + mapper + ",related=" + relatedEntity + "]";
+  }
 }

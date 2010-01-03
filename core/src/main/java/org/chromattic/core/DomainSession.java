@@ -54,7 +54,6 @@ public abstract class DomainSession implements ChromatticSession {
     this.sessionWrapper = sessionWrapper;
   }
 
-
   protected abstract void _setName(EntityContext ctx, String name) throws RepositoryException;
 
   protected abstract String _persist(EntityContext ctx, String name) throws RepositoryException;
@@ -63,9 +62,9 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
 
-  protected abstract <O> O _findById(Class<O> clazz, String id) throws RepositoryException;
+  protected abstract <E> E _findById(Class<E> clazz, String id) throws RepositoryException;
 
-  protected abstract <O> O _findByNode(Class<O> clazz, Node node) throws RepositoryException;
+  protected abstract <E> E _findByNode(Class<E> clazz, Node node) throws RepositoryException;
 
   protected abstract void _save() throws RepositoryException;
 
@@ -85,13 +84,17 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract Object _getParent(EntityContext ctx) throws RepositoryException;
 
-  protected abstract <O> O _findByPath(EntityContext o, Class<O> clazz, String relPath) throws RepositoryException;
+  protected abstract <E> E _findByPath(EntityContext ctx, Class<E> clazz, String relPath) throws RepositoryException;
 
   protected abstract void _orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
 
   protected abstract Node _getRoot() throws RepositoryException;
 
   protected abstract void _move(EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
+
+  protected abstract void _addMixin(EntityContext ctx, MixinContext mixinCtx) throws RepositoryException;
+
+  protected abstract MixinContext _getMixin(EntityContext ctx, Class<?> mixinClass) throws RepositoryException;
 
   public final Domain getDomain() {
     return domain;
@@ -107,7 +110,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
 
     //
-    EntityContext ctx = unwrap(o);
+    EntityContext ctx = unwrapEntity(o);
     return ctx.getId();
   }
 
@@ -117,7 +120,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
 
     //
-    EntityContext ctx = unwrap(o);
+    EntityContext ctx = unwrapEntity(o);
     return getName(ctx);
   }
 
@@ -127,7 +130,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
 
     //
-    EntityContext ctx = unwrap(o);
+    EntityContext ctx = unwrapEntity(o);
     return ctx.getPath();
   }
 
@@ -146,9 +149,9 @@ public abstract class DomainSession implements ChromatticSession {
 
   public final <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
-      EntityContext parentCtx = unwrap(parent);
+      EntityContext parentCtx = unwrapEntity(parent);
       O child = create(clazz);
-      EntityContext childtx = unwrap(child);
+      EntityContext childtx = unwrapEntity(child);
       _persist(parentCtx, name, childtx);
       return child;
     }
@@ -165,8 +168,8 @@ public abstract class DomainSession implements ChromatticSession {
 
   public final String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
-      EntityContext parentCtx = unwrap(parent);
-      EntityContext childCtx = unwrap(child);
+      EntityContext parentCtx = unwrapEntity(parent);
+      EntityContext childCtx = unwrapEntity(child);
       return _persist(parentCtx, name, childCtx);
     }
     catch (RepositoryException e) {
@@ -175,8 +178,8 @@ public abstract class DomainSession implements ChromatticSession {
   }
 
   public final String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    EntityContext parentCtx = unwrap(parent);
-    EntityContext childCtx = unwrap(child);
+    EntityContext parentCtx = unwrapEntity(parent);
+    EntityContext childCtx = unwrapEntity(child);
     String name = childCtx.state.getName();
     if (name == null) {
       String msg = "Attempt to persist non named object " + childCtx;
@@ -192,7 +195,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   public final String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
-      EntityContext ctx = unwrap(o);
+      EntityContext ctx = unwrapEntity(o);
       String name = ctx.state.getName();
       if (name == null) {
         String msg = "Attempt to persist non named object " + ctx;
@@ -209,7 +212,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   public final String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
-      EntityContext ctx = unwrap(o);
+      EntityContext ctx = unwrapEntity(o);
       return _persist(ctx, relPath);
     }
     catch (RepositoryException e) {
@@ -246,7 +249,7 @@ public abstract class DomainSession implements ChromatticSession {
     if (relPath == null) {
       throw new NullPointerException();
     }
-    EntityContext ctx = unwrap(o);
+    EntityContext ctx = unwrapEntity(o);
     try {
       return _findByPath(ctx, clazz, relPath);
     }
@@ -283,7 +286,7 @@ public abstract class DomainSession implements ChromatticSession {
     if (o == null) {
       throw new NullPointerException();
     }
-    EntityContext ctx = unwrap(o);
+    EntityContext ctx = unwrapEntity(o);
     return ctx.getStatus();
   }
 
@@ -292,7 +295,7 @@ public abstract class DomainSession implements ChromatticSession {
       throw new NullPointerException();
     }
     try {
-      EntityContext context = unwrap(o);
+      EntityContext context = unwrapEntity(o);
       _remove(context);
     }
     catch (RepositoryException e) {
@@ -304,13 +307,31 @@ public abstract class DomainSession implements ChromatticSession {
     return domain.queryManager.createQueryBuilder(this);
   }
 
+  public MixinContext getMixin(EntityContext ctx, Class<?> mixinClass) throws ChromatticException {
+    try {
+      return _getMixin(ctx, mixinClass);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public void addMixin(EntityContext ctx, MixinContext mixinCtx) throws ChromatticException {
+    try {
+      _addMixin(ctx, mixinCtx);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
   public final Node getNode(Object o) {
     if (o == null) {
       throw new NullPointerException();
     }
 
     //
-    EntityContext ctx = unwrap(o);
+    EntityContext ctx = unwrapEntity(o);
     return ctx.state.getNode();
   }
 
@@ -420,11 +441,18 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public final EntityContext unwrap(Object o) {
+  public final EntityContext unwrapEntity(Object o) {
     if (o == null) {
       throw new NullPointerException("Cannot unwrap null object");
     }
     return (EntityContext)domain.getInstrumentor().getInvoker(o);
+  }
+
+  public final MixinContext unwrapMixin(Object o) {
+    if (o == null) {
+      throw new NullPointerException("Cannot unwrap null object");
+    }
+    return (MixinContext)domain.getInstrumentor().getInvoker(o);
   }
 
   public final String persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {

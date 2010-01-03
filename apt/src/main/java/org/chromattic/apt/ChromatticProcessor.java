@@ -19,6 +19,7 @@
 
 package org.chromattic.apt;
 
+import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.reflext.api.ClassTypeInfo;
@@ -41,7 +42,9 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
+import java.lang.annotation.Annotation;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
@@ -53,7 +56,7 @@ import java.io.PrintWriter;
  * @version $Revision$
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
-@SupportedAnnotationTypes("org.chromattic.api.annotations.NodeMapping")
+@SupportedAnnotationTypes({"org.chromattic.api.annotations.NodeMapping","org.chromattic.api.annotations.MixinType"})
 public class ChromatticProcessor extends AbstractProcessor {
 
   /** . */
@@ -62,14 +65,22 @@ public class ChromatticProcessor extends AbstractProcessor {
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
-    Set<? extends Element> elts = roundEnv.getElementsAnnotatedWith(NodeMapping.class);
+    //
+    process(roundEnv, NodeMapping.class);
 
+    //
+    process(roundEnv, MixinType.class);
+
+    //
+    return true;
+  }
+
+  private void process(RoundEnvironment roundEnv, Class<? extends Annotation> annotationClass) {
+    Set<? extends Element> elts = roundEnv.getElementsAnnotatedWith(annotationClass);
     for (Element elt : elts) {
       TypeElement typeElt = (TypeElement)elt;
-
       ClassTypeInfo cti = (ClassTypeInfo)domain.getType(typeElt);
-
-      System.out.println("Going to create = " + cti.getName());
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "About to process the type " + cti.getName());
       Filer filer = processingEnv.getFiler();
       try {
         JavaFileObject jfo = filer.createSourceFile(typeElt.getQualifiedName() + "_Chromattic", typeElt);
@@ -82,11 +93,7 @@ public class ChromatticProcessor extends AbstractProcessor {
       catch (IOException e) {
         throw new RuntimeException(e);
       }
-
     }
-
-    //
-    return true;
   }
 
   private void writeClass(RoundEnvironment roundEnv, StringBuilder out, ClassTypeInfo cti) {

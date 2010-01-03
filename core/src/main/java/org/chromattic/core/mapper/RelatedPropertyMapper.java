@@ -37,10 +37,6 @@ public abstract class RelatedPropertyMapper<P extends PropertyInfo> extends Prop
     super(info);
   }
 
-  public Set<NodeTypeMapper> getRelatedTypes() {
-    return relatedTypes;
-  }
-
   public abstract Class<?> getRelatedClass();
 
   @Override

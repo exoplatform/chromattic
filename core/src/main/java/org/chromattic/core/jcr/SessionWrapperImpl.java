@@ -197,6 +197,23 @@ public class SessionWrapperImpl implements SessionWrapper {
     node.remove();
   }
 
+  public boolean canAddMixin(Node node, String mixinTypeName) throws RepositoryException {
+    return node.canAddMixin(mixinTypeName);
+  }
+
+  public void addMixin(Node node, String mixinTypeName) throws RepositoryException {
+    node.addMixin(mixinTypeName);
+  }
+
+  public boolean haxMixin(Node node, String mixinTypeName) throws RepositoryException {
+    for (NodeType mixinNodeType : node.getMixinNodeTypes()) {
+      if (mixinNodeType.getName().equals(mixinTypeName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * Need to find a way to optimized this method as it forces us to visit the entire children hierarchy.
    *

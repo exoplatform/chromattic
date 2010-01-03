@@ -55,4 +55,12 @@ public class NodeTypeInfo
   public PropertyDefinitionInfo getPropertyDefinitionInfo(String name) {
     return propertyDefinitions.get(name);
   }
+
+  public PropertyDefinitionInfo findPropertyDefinition(String propertyName) {
+    PropertyDefinitionInfo propertyDefinitionInfo = getPropertyDefinitionInfo(propertyName);
+    if (propertyDefinitionInfo == null) {
+      return getPropertyDefinitionInfo("*");
+    }
+    return propertyDefinitionInfo;
+  }
 }

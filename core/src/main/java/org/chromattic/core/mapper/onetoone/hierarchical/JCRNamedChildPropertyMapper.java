@@ -47,7 +47,7 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper {
       context.remove();
     } else {
       DomainSession session = context.getSession();
-      EntityContext parentContext = session.unwrap(parent);
+      EntityContext parentContext = session.unwrapEntity(parent);
       parentContext.addChild(relatedName, context);
     }
   }

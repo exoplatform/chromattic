@@ -22,6 +22,7 @@ package org.chromattic.core.mapping;
 import org.chromattic.api.annotations.*;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.bean.*;
 import org.chromattic.core.mapping.jcr.JCRNodeAttributeMapping;
@@ -352,8 +353,8 @@ public class TypeMappingBuilder {
 
     //
     NodeMapping nodeMapping = javaClass.getDeclaredAnnotation(NodeMapping.class);
-    MixinMapping mixin = javaClass.getDeclaredAnnotation(MixinMapping.class);
-    String[] mixinNames = mixin != null ? mixin.name() : new String[0];
+    MixinType mixin = javaClass.getDeclaredAnnotation(MixinType.class);
+    String[] mixinNames = mixin != null ? mixin.names() : new String[0];
 
     //
     if (nodeMapping == null) {
@@ -368,7 +369,7 @@ public class TypeMappingBuilder {
       }
 
       //
-      return new MixinTypeMapping(
+      return new org.chromattic.core.mapping.MixinTypeMapping(
         javaClass,
         propertyMappings,
         methodMappings,

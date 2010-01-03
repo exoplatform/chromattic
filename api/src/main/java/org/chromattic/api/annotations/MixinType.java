@@ -25,21 +25,21 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
- * Defines the mapping between a node type and a java class.
+ * The mixin annotation can be used to annote a class and declares that it represents one or several mixins.
+ *
+ * <p>When a class declares a mixin annotation without being bound to a node mapping, this class can be involved
+ * in a one to one relationship with the {@link org.chromattic.api.RelationshipType#MIXIN} type. The mixin is
+ * added to a node when a one to one relationship of type mixin is created.</p>
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface NodeMapping {
+public @interface MixinType {
 
   /**
-   * The name of the primary node type to use.
-   *
-   * @return the primary node type name
+   * @return
    */
-  String name();
-  
-
+  String[] names();
 }

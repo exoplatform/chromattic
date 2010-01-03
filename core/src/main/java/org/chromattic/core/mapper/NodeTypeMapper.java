@@ -22,14 +22,12 @@ package org.chromattic.core.mapper;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Collections;
-import java.util.ArrayList;
 import java.lang.reflect.Method;
 
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.MethodInvoker;
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.bean.PropertyInfo;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.ProxyFactory;
@@ -40,10 +38,13 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class NodeTypeMapper implements MethodInvoker {
+public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodInvoker {
 
   /** . */
   protected final Class<?> objectClass;
+
+  /** . */
+  private final String nodeTypeName;
 
   /** . */
   final Set<MethodMapper> methodMappers;
@@ -69,7 +70,8 @@ public abstract class NodeTypeMapper implements MethodInvoker {
     Set<MethodMapper> methodMappers,
     NameConflictResolution onDuplicate,
     ObjectFormatter formatter,
-    Instrumentor instrumentor) {
+    Instrumentor instrumentor,
+    String typeName) {
 
     // Build the dispatcher map
     Map<Method, MethodInvoker> dispatchers = new HashMap<Method, MethodInvoker>();
@@ -96,6 +98,7 @@ public abstract class NodeTypeMapper implements MethodInvoker {
     this.onDuplicate = onDuplicate;
     this.propertyMappers = propertyMappers;
     this.factory = instrumentor.getProxyClass(objectClass);
+    this.nodeTypeName = typeName;
   }
 
    public Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable {
@@ -123,13 +126,15 @@ public abstract class NodeTypeMapper implements MethodInvoker {
     }
   }
 
-  public abstract String getTypeName();
+  public String getNodeTypeName() {
+    return nodeTypeName;
+  }
 
   public ObjectFormatter getFormatter() {
     return formatter;
   }
 
-  public Object createObject(EntityContext context) {
+  public Object createObject(C context) {
     return factory.createProxy(context);
   }
 
@@ -147,5 +152,10 @@ public abstract class NodeTypeMapper implements MethodInvoker {
 
   public NameConflictResolution getOnDuplicate() {
     return onDuplicate;
+  }
+
+  @Override
+  public String toString() {
+    return "NodeTypeMapper[class=" + objectClass + ",typeName=" + nodeTypeName + "]";
   }
 }

@@ -25,6 +25,7 @@ import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.core.mapper.MixinTypeMapper;
 import org.chromattic.core.mapper.PrimaryTypeMapper;
 import org.chromattic.core.mapper.NodeTypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
@@ -164,7 +165,7 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     Object parent = findByNode(Object.class, srcNode);
-    EntityContext parentCtx = parent != null ? unwrap(parent) : null;
+    EntityContext parentCtx = parent != null ? unwrapEntity(parent) : null;
 
     //
     name = encodeName(parentCtx, name);
@@ -213,6 +214,73 @@ public class DomainSessionImpl extends DomainSession {
     //
     log.trace("Added context {} for path {}", dstCtx, relatedId, dstNode.getPath());
     return relatedId;
+  }
+
+  @Override
+  protected void _addMixin(EntityContext entityCtx, MixinContext mixinCtx) throws RepositoryException {
+    if (entityCtx == null) {
+      throw new NullPointerException();
+    }
+    if (mixinCtx == null) {
+      throw new NullPointerException();
+    }
+
+    // Maybe they are already wired
+    if (mixinCtx.relatedEntity != null) {
+      if (mixinCtx.relatedEntity != entityCtx) {
+        throw new IllegalArgumentException();
+      }
+    } else {
+      MixinContext previousMixinCtx = entityCtx.mixins.get(mixinCtx.mapper);
+      if (previousMixinCtx != null) {
+        if (previousMixinCtx != mixinCtx) {
+          throw new IllegalStateException();
+        }
+      } else {
+
+        //
+        String mixinTypeName = mixinCtx.mapper.getNodeTypeName();
+        Node node = entityCtx.state.getNode();
+
+        //
+        if (!sessionWrapper.canAddMixin(node, mixinTypeName)) {
+          throw new IllegalArgumentException("Cannot add mixin " + mixinCtx + " to context " + entityCtx);
+        }
+
+        // Add mixin
+        sessionWrapper.addMixin(node, mixinTypeName);
+        
+        // Perform wiring
+        entityCtx.mixins.put(mixinCtx.mapper.getObjectClass(), mixinCtx);
+        mixinCtx.relatedEntity = entityCtx;
+      }
+    }
+  }
+
+  @Override
+  protected MixinContext _getMixin(EntityContext entityCtx, Class<?> mixinClass) throws RepositoryException {
+    if (entityCtx == null) {
+      throw new NullPointerException();
+    }
+    if (mixinClass == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    MixinContext mixinCtx = entityCtx.mixins.get(mixinClass);
+
+    //
+    if (mixinCtx == null) {
+      MixinTypeMapper mapper = (MixinTypeMapper)domain.getTypeMapper(mixinClass);
+      if (sessionWrapper.haxMixin(entityCtx.state.getNode(), mapper.getNodeTypeName())) {
+        mixinCtx = new MixinContext(mapper);
+        entityCtx.mixins.put(mixinClass, mixinCtx);
+        mixinCtx.relatedEntity = entityCtx;
+      }
+    }
+
+    //
+    return mixinCtx;
   }
 
   @Override
@@ -300,18 +368,27 @@ public class DomainSessionImpl extends DomainSession {
     TransientEntityContextState state = new TransientEntityContextState(this);
 
     //
-    EntityContext ctx = new EntityContext(typeMapper, state);
+    ObjectContext octx;
+    if (typeMapper instanceof PrimaryTypeMapper) {
+      EntityContext ctx = new EntityContext((PrimaryTypeMapper)typeMapper, state);
 
-    //
-    if (name != null) {
-      ctx.setName(name);
+      //
+      if (name != null) {
+        ctx.setName(name);
+      }
+
+      //
+      broadcaster.created(ctx.getObject());
+
+      //
+      octx = ctx;
+    } else {
+      if (name != null) {
+        throw new IllegalArgumentException("Cannot create a mixin type with a name");
+      }
+      octx = new MixinContext((MixinTypeMapper)typeMapper);
     }
-
-    //
-    broadcaster.created(ctx.getObject());
-
-    //
-    return clazz.cast(ctx.getObject());
+    return clazz.cast(octx.getObject());
   }
 
   protected <O> O _findById(Class<O> clazz, String id) throws RepositoryException {
@@ -541,15 +618,14 @@ public class DomainSessionImpl extends DomainSession {
   private void nodeRead(Node node) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();
-    NodeTypeMapper mapper = domain.getTypeMapper(nodeTypeName);
+    PrimaryTypeMapper mapper = (PrimaryTypeMapper)domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
       EntityContext ctx = contexts.get(node.getUUID());
       if (ctx == null) {
-        ctx = new EntityContext(mapper);
+        PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
+        ctx = new EntityContext(mapper, new PersistentEntityContextState(node, this));
         log.trace("Inserted context {} loaded from node path {}", ctx, node.getPath());
         contexts.put(node.getUUID(), ctx);
-        PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
-        ctx.state = persistentState;
         broadcaster.loaded(persistentState, ctx.getObject());
       }
       else {

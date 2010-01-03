@@ -31,12 +31,6 @@ import java.util.HashMap;
 public class NodeInfoManager {
 
   /** . */
-  private final Object primaryNodeInfosLock = new Object();
-
-  /** . */
-  private volatile Map<String, NodeInfo> primaryNodeInfos = new HashMap<String, NodeInfo>();
-
-  /** . */
   private final Object nodeTypeInfosLock = new Object();
 
   /** . */
@@ -58,31 +52,18 @@ public class NodeInfoManager {
     return ntInfo.getMixinNames().contains("mix:referenceable");
   }
 
-  public NodeInfo getNodeInfo(Node node) throws RepositoryException {
-
-    //
+  public NodeInfo getInfo(Node node) throws RepositoryException {
     NodeType primaryNodeType = node.getPrimaryNodeType();
-    String primaryNodeTypeName = primaryNodeType.getName();
-    NodeType[] mixinNodeTypes = node.getMixinNodeTypes();
+    PrimaryTypeInfo primaryTypeInfo = (PrimaryTypeInfo)getTypeInfo(primaryNodeType);
+    return new NodeInfo(this, node, primaryTypeInfo);
+  }
 
-    //
-    if (mixinNodeTypes.length == 0 || (mixinNodeTypes.length == 1 && mixinNodeTypes[0].getName().equals("mix:referenceable"))) {
+  public PrimaryTypeInfo getPrimaryTypeInfo(NodeType primaryType) throws RepositoryException {
+    return (PrimaryTypeInfo)getTypeInfo(primaryType);
+  }
 
-      //
-      NodeInfo nodeInfo = primaryNodeInfos.get(primaryNodeTypeName);
-      if (nodeInfo == null) {
-        synchronized (primaryNodeInfosLock) {
-          PrimaryTypeInfo primaryNodeTypeInfo = (PrimaryTypeInfo)getTypeInfo(primaryNodeType);
-          nodeInfo = new NodeInfo(primaryNodeTypeInfo);
-          Map<String, NodeInfo> copy = new HashMap<String, NodeInfo>(primaryNodeInfos);
-          copy.put(primaryNodeTypeName, nodeInfo);
-          primaryNodeInfos = copy;
-        }
-      }
-      return nodeInfo;
-    } else {
-      throw new UnsupportedOperationException("todo");
-    }
+  public MixinTypeInfo getMixinTypeInfo(NodeType mixinType) throws RepositoryException {
+    return (MixinTypeInfo)getTypeInfo(mixinType);
   }
 
   private NodeTypeInfo getTypeInfo(NodeType nodeType) {

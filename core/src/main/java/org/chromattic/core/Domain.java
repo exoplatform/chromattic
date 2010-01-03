@@ -83,10 +83,10 @@ public class Domain {
     Map<String, NodeTypeMapper> typeMapperByNodeType = new HashMap<String, NodeTypeMapper>();
     Map<Class<?>, NodeTypeMapper> typeMapperByClass = new HashMap<Class<?>, NodeTypeMapper>();
     for (NodeTypeMapper typeMapper : builder.build()) {
-      if (typeMapperByNodeType.containsKey(typeMapper.getTypeName())) {
+      if (typeMapperByNodeType.containsKey(typeMapper.getNodeTypeName())) {
         throw new IllegalStateException("Duplicate node type name " + typeMapper);
       }
-      typeMapperByNodeType.put(typeMapper.getTypeName(), typeMapper);
+      typeMapperByNodeType.put(typeMapper.getNodeTypeName(), typeMapper);
       typeMapperByClass.put(typeMapper.getObjectClass(), typeMapper);
     }
 

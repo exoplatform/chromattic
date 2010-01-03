@@ -26,13 +26,20 @@ import org.chromattic.api.NoSuchPropertyException;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
+import org.chromattic.core.jcr.info.NodeTypeInfo;
+import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 import org.chromattic.core.mapper.NodeTypeMapper;
 import org.chromattic.core.mapper.ValueMapper;
-import org.chromattic.core.jcr.info.NodeInfo;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
@@ -49,22 +56,22 @@ import java.io.IOException;
 class PersistentEntityContextState extends EntityContextState {
 
   /** . */
-  private final Node node;
-
-  /** . */
   private final DomainSession session;
 
   /** . */
   private final Map<String, Object> propertyCache;
 
   /** . */
-  private final NodeInfo nodeInfo;
+  private final Node node;
+
+  /** . */
+  private final PrimaryTypeInfo typeInfo;
 
   PersistentEntityContextState(Node node, DomainSession session) throws RepositoryException {
-    this.node = node;
     this.session = session;
     this.propertyCache = session.domain.stateCacheEnabled ? new HashMap<String, Object>() : null;
-    this.nodeInfo = session.domain.nodeInfoManager.getNodeInfo(node);
+    this.node = node;
+    this.typeInfo = session.domain.nodeInfoManager.getPrimaryTypeInfo(node.getPrimaryNodeType());
   }
 
   String getId() {
@@ -141,7 +148,12 @@ class PersistentEntityContextState extends EntityContextState {
     return Status.PERSISTENT;
   }
 
-  <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> svi) {
+  @Override
+  PrimaryTypeInfo getTypeInfo() {
+    return typeInfo;
+  }
+
+  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi) {
     try {
       V value = null;
 
@@ -224,7 +236,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType) {
+  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, ListType listType) {
     try {
       Value[] values;
       Property property = session.getSessionWrapper().getProperty(node, propertyName);
@@ -253,7 +265,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> svi, V propertyValue) {
+  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, V propertyValue) {
     try {
       if (propertyCache != null) {
         if (propertyValue instanceof InputStream && (propertyValue instanceof CloneableInputStream)) {
@@ -277,11 +289,12 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      PropertyDefinitionInfo def = nodeInfo.findPropertyDefinition(propertyName);
+      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
 
       //
       if (def == null) {
-        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() + "  with type " + node.getPrimaryNodeType().getName());
+        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
+          "  with type " + node.getPrimaryNodeType().getName());
       }
 
       //
@@ -325,7 +338,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType, List<V> objects) {
+  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, ListType listType, List<V> objects) {
     if (objects == null) {
       throw new NullPointerException();
     }
@@ -341,7 +354,7 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      PropertyDefinitionInfo def = nodeInfo.getPropertyDefinitionInfo(propertyName);
+      PropertyDefinitionInfo def = nodeTypeInfo.getPropertyDefinitionInfo(propertyName);
       if (def.isMultiple()) {
         node.setProperty(propertyName, values);
       } else {

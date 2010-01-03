@@ -20,6 +20,7 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.core.EntityContext;
 import org.chromattic.spi.instrument.Instrumentor;
 
 import java.util.Set;
@@ -28,11 +29,8 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PrimaryTypeMapper extends NodeTypeMapper
+public class PrimaryTypeMapper extends NodeTypeMapper<EntityContext>
 {
-
-  /** . */
-  private final String nodeTypeName;
 
   public PrimaryTypeMapper(
     Class<?> objectClass,
@@ -48,23 +46,7 @@ public class PrimaryTypeMapper extends NodeTypeMapper
       methodMappers,
       onDuplicate,
       formatter,
-      instrumentor);
-
-    //
-    this.nodeTypeName = nodeTypeName;
-  }
-
-   @Override
-  public String getTypeName() {
-    return nodeTypeName;
-  }
-
-  public String getNodeTypeName() {
-    return nodeTypeName;
-  }
-
-  @Override
-  public String toString() {
-    return "NodeTypeMapper[class=" + objectClass + ",nodeTypeName=" + nodeTypeName + "]";
+      instrumentor,
+      nodeTypeName);
   }
 }

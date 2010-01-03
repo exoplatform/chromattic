@@ -44,6 +44,20 @@ public class JCR {
     return (Iterator<Node>)iterator;
   }
 
+  public static boolean hasMixin(Node node, String mixinTypeName) throws RepositoryException {
+    if (node == null) {
+      throw new NullPointerException();
+    }
+    if (mixinTypeName == null) {
+      throw new NullPointerException();
+    }
+    for (NodeType nodeType : node.getMixinNodeTypes()) {
+      if (nodeType.getName().equals(mixinTypeName)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   public static PropertyDefinition getPropertyDefinition(NodeType nodeType, String propertyName) throws RepositoryException {
     for (PropertyDefinition def : nodeType.getPropertyDefinitions()) {

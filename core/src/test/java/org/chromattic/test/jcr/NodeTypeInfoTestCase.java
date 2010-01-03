@@ -59,7 +59,7 @@ public class NodeTypeInfoTestCase extends TestCase {
 
     Node a = session.getRootNode().addNode("a", "nt:unstructured");
 
-    NodeInfo info = mgr.getNodeInfo(a);
+    NodeInfo info = mgr.getInfo(a);
 
     PropertyDefinitionInfo pdi = info.findPropertyDefinition("jcr:primaryType");
 

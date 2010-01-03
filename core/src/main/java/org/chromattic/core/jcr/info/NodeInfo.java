@@ -18,6 +18,9 @@
  */
 package org.chromattic.core.jcr.info;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -25,10 +28,22 @@ package org.chromattic.core.jcr.info;
 public class NodeInfo {
 
   /** . */
+  private final NodeInfoManager manager;
+
+  /** . */
+  private final Node node;
+
+  /** . */
   private final PrimaryTypeInfo primaryNodeTypeInfo;
 
-  protected NodeInfo(PrimaryTypeInfo primaryNodeTypeInfo) {
+  protected NodeInfo(NodeInfoManager manager, Node node, PrimaryTypeInfo primaryNodeTypeInfo) {
+    this.manager = manager;
+    this.node = node;
     this.primaryNodeTypeInfo = primaryNodeTypeInfo;
+  }
+
+  public Node getNode() {
+    return node;
   }
 
   public PrimaryTypeInfo getPrimaryNodeTypeInfo() {
@@ -39,11 +54,15 @@ public class NodeInfo {
     return primaryNodeTypeInfo.getPropertyDefinitionInfo(name);
   }
 
-  public PropertyDefinitionInfo findPropertyDefinition(String propertyName) {
+  public PropertyDefinitionInfo findPropertyDefinition(String propertyName) throws RepositoryException {
     PropertyDefinitionInfo propertyDefinitionInfo = getPropertyDefinitionInfo(propertyName);
+
+    // Should we also try residual definition for mixins ??????
     if (propertyDefinitionInfo == null) {
       return getPropertyDefinitionInfo("*");
     }
+
+    //
     return propertyDefinitionInfo;
   }
 }

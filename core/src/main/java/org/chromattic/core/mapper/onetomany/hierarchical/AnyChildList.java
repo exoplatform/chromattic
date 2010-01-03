@@ -79,7 +79,7 @@ class AnyChildList<E> extends AbstractList<E> {
     DomainSession session = parentCtx.getSession();
 
     // Get the added context
-    EntityContext addedCtx = session.unwrap(addedElement);
+    EntityContext addedCtx = session.unwrapEntity(addedElement);
 
     //
     switch (addedCtx.getStatus()) {
@@ -88,7 +88,7 @@ class AnyChildList<E> extends AbstractList<E> {
         break;
       case PERSISTENT:
         Object insertedParent = addedCtx.getParent();
-        EntityContext addedParentCtx = session.unwrap(insertedParent);
+        EntityContext addedParentCtx = session.unwrapEntity(insertedParent);
 
         // It's a move
         if (addedParentCtx != parentCtx) {
@@ -103,7 +103,7 @@ class AnyChildList<E> extends AbstractList<E> {
     if (nextElement == null) {
       parentCtx.orderBefore(addedCtx, null);
     } else {
-      EntityContext nextCtx = session.unwrap(nextElement);
+      EntityContext nextCtx = session.unwrapEntity(nextElement);
       parentCtx.orderBefore(addedCtx, nextCtx);
     }
   }
@@ -124,10 +124,10 @@ class AnyChildList<E> extends AbstractList<E> {
     DomainSession session = parentCtx.getSession();
 
     // Unwrap the removed element
-    EntityContext removedCtx = session.unwrap(removedElement);
+    EntityContext removedCtx = session.unwrapEntity(removedElement);
 
     // Unwrap the added element
-    EntityContext addedCtx = session.unwrap(addedElement);
+    EntityContext addedCtx = session.unwrapEntity(addedElement);
 
     //
     switch (addedCtx.getStatus()) {
@@ -136,7 +136,7 @@ class AnyChildList<E> extends AbstractList<E> {
         break;
       case PERSISTENT:
         Object insertedParent = addedCtx.getParent();
-        EntityContext addedParentCtx = session.unwrap(insertedParent);
+        EntityContext addedParentCtx = session.unwrapEntity(insertedParent);
 
         // It's a move
         if (addedParentCtx != parentCtx) {
@@ -167,7 +167,7 @@ class AnyChildList<E> extends AbstractList<E> {
     DomainSession session = parentCtx.getSession();
 
     // Unwrap the removed element
-    EntityContext removedCtx = session.unwrap(removedElement);
+    EntityContext removedCtx = session.unwrapEntity(removedElement);
 
     // Remove the element
     session.remove(removedCtx);

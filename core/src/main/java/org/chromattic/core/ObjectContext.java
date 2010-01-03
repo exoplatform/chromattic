@@ -17,29 +17,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.api.annotations;
+package org.chromattic.core;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.chromattic.spi.instrument.MethodHandler;
 
 /**
- * Defines the mapping between a node type and a java class.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface NodeMapping {
+public abstract class ObjectContext implements MethodHandler {
 
-  /**
-   * The name of the primary node type to use.
-   *
-   * @return the primary node type name
-   */
-  String name();
-  
+  public abstract Object getObject();
 
 }

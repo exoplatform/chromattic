@@ -17,29 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.api.annotations;
+package org.chromattic.test.onetoone.mixin;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.chromattic.api.annotations.MixinType;
+import org.chromattic.api.annotations.Property;
 
 /**
- * Defines the mapping between a node type and a java class.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface NodeMapping {
+@MixinType(names = "otom_b")
+public abstract class B {
 
-  /**
-   * The name of the primary node type to use.
-   *
-   * @return the primary node type name
-   */
-  String name();
-  
+//  @OneToOne(type = RelationshipType.MIXIN)
+//  abstract A getA();
+
+//  abstract void setA(A a);
+
+  @Property(name = "foo")
+  public abstract void setFoo(String foo);
+
+  public abstract String getFoo();
 
 }

@@ -19,6 +19,7 @@
 package org.chromattic.core.mapper.onetoone.mixin;
 
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.MixinContext;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.mapper.RelatedPropertyMapper;
@@ -36,7 +37,7 @@ public class JCRMixinParentPropertyMapper extends RelatedPropertyMapper<SingleVa
     super(info);
 
     //
-    relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getTypeInfo().getName());
+    this.relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getTypeInfo().getName());
   }
 
   @Override
@@ -46,11 +47,25 @@ public class JCRMixinParentPropertyMapper extends RelatedPropertyMapper<SingleVa
 
   @Override
   public Object get(EntityContext context) throws Throwable {
-    throw new UnsupportedOperationException("todo");
+    MixinContext mixinCtx = context.getMixin(relatedClass);
+    return mixinCtx != null ? mixinCtx.getObject() : null;
   }
 
   @Override
   public void set(EntityContext context, Object value) throws Throwable {
-    throw new UnsupportedOperationException("todo");
+    if (value == null) {
+      throw new UnsupportedOperationException("todo mixin removal");
+    }
+
+    //
+    if (!relatedClass.isInstance(value)) {
+      throw new ClassCastException();
+    }
+
+    //
+    MixinContext mixinCtx = context.getSession().unwrapMixin(value);
+
+    //
+    context.addMixin(mixinCtx);
   }
 }

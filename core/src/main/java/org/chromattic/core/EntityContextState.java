@@ -21,6 +21,8 @@ package org.chromattic.core;
 
 import org.chromattic.api.Status;
 import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.jcr.info.NodeTypeInfo;
+import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 
 import javax.jcr.Node;
 import java.util.List;
@@ -45,12 +47,14 @@ abstract class EntityContextState {
 
   abstract Status getStatus();
 
-  abstract <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> svi);
+  abstract PrimaryTypeInfo getTypeInfo();
 
-  abstract <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType);
+  abstract <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi);
 
-  abstract <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> svi, V o);
+  abstract <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, ListType listType);
 
-  abstract <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> svi, ListType listType, List<V> objects);
+  abstract <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, V o);
+
+  abstract <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, ListType listType, List<V> objects);
 
 }

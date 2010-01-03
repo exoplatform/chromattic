@@ -21,6 +21,7 @@ package org.chromattic.core;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,42 +33,44 @@ import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.common.JCR;
 import org.chromattic.common.CloneableInputStream;
-import org.chromattic.core.mapper.NodeTypeMapper;
-import org.chromattic.spi.instrument.MethodHandler;
+import org.chromattic.core.jcr.info.PrimaryTypeInfo;
+import org.chromattic.core.mapper.PrimaryTypeMapper;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.jcr.LinkType;
+
+import javax.jcr.RepositoryException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EntityContext implements MethodHandler {
+public final class EntityContext extends ObjectContext{
 
-  /** . */
-  private final Logger log = Logger.getLogger(EntityContext.class);
+  /** The logger. */
+  private static final Logger log = Logger.getLogger(EntityContext.class);
 
-  /** . */
-  final NodeTypeMapper mapper;
+  /** The related type. */
+  final PrimaryTypeMapper mapper;
 
-  /** . */
+  /** The object instance. */
   final Object object;
 
-  /** . */
+  /** The property map. */
   final PropertyMap properties;
 
-  /** . */
+  /** The list of mixins. */
+  final Map<Class, MixinContext> mixins;
+
+  /** The related state. */
   EntityContextState state;
 
-  public EntityContext(NodeTypeMapper mapper) {
-    this(mapper, null);
-  }
-
-  public EntityContext(NodeTypeMapper mapper, TransientEntityContextState state) {
+  EntityContext(PrimaryTypeMapper mapper, EntityContextState state) throws RepositoryException {
     this.state = null;
     this.mapper = mapper;
     this.object = mapper.createObject(this);
     this.state = state;
     this.properties = new PropertyMap(this);
+    this.mixins = new HashMap<Class, MixinContext>();
   }
 
   public DomainSession getSession() {
@@ -80,6 +83,14 @@ public class EntityContext implements MethodHandler {
 
   public Object getObject() {
     return object;
+  }
+
+  public void addMixin(MixinContext mixinCtx) {
+    state.getSession().addMixin(this, mixinCtx);
+  }
+
+  public MixinContext getMixin(Class<?> mixinClass) {
+    return state.getSession().getMixin(this, mixinClass);
   }
 
   public String getAttribute(NodeAttributeType type) {
@@ -130,7 +141,7 @@ public class EntityContext implements MethodHandler {
     DomainSession session = state.getSession();
     EntityContext referencedCtx = null;
     if (referenced != null) {
-      referencedCtx = session.unwrap(referenced);
+      referencedCtx = session.unwrapEntity(referenced);
     }
 
     //
@@ -139,7 +150,7 @@ public class EntityContext implements MethodHandler {
 
   public boolean addReference(String name, Object referent, LinkType linkType) {
     DomainSession session = state.getSession();
-    EntityContext referentCtx = session.unwrap(referent);
+    EntityContext referentCtx = session.unwrapEntity(referent);
     return session.setReferenced(referentCtx, name, this, linkType);
   }
 
@@ -151,14 +162,20 @@ public class EntityContext implements MethodHandler {
     JCR.validateName(propertyName);
 
     //
-    return state.getPropertyValue(propertyName, type);
+    PrimaryTypeInfo typeInfo = state.getTypeInfo();
+
+    //
+    return state.getPropertyValue(typeInfo, propertyName, type);
   }
 
   public <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType listType) {
     JCR.validateName(propertyName);
 
     //
-    return state.getPropertyValues(propertyName, simpleType, listType);
+    PrimaryTypeInfo typeInfo = state.getTypeInfo();
+
+    //
+    return state.getPropertyValues(typeInfo, propertyName, simpleType, listType);
   }
 
   public <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V o) {
@@ -166,6 +183,9 @@ public class EntityContext implements MethodHandler {
 
     //
     EventBroadcaster broadcaster = state.getSession().broadcaster;
+
+    //
+    PrimaryTypeInfo typeInfo = state.getTypeInfo();
 
     //
     if (o instanceof InputStream && broadcaster.hasStateChangeListeners()) {
@@ -177,10 +197,10 @@ public class EntityContext implements MethodHandler {
         throw new ChromatticIOException("Could not read stream", e);
       }
       @SuppressWarnings("unchecked") V v = (V)in;
-      state.setPropertyValue(propertyName, type, v);
+      state.setPropertyValue(typeInfo, propertyName, type, v);
       broadcaster.propertyChanged(state.getId(), object, propertyName, in.clone());
     } else {
-      state.setPropertyValue(propertyName, type, o);
+      state.setPropertyValue(typeInfo, propertyName, type, o);
       broadcaster.propertyChanged(state.getId(), object, propertyName, o);
     }
   }
@@ -189,7 +209,10 @@ public class EntityContext implements MethodHandler {
     JCR.validateName(propertyName);
 
     //
-    state.setPropertyValues(propertyName, type, listType, objects);
+    PrimaryTypeInfo typeInfo = state.getTypeInfo();
+
+    //
+    state.setPropertyValues(typeInfo, propertyName, type, listType, objects);
   }
 
   public void removeChild(String name) {
@@ -212,7 +235,7 @@ public class EntityContext implements MethodHandler {
 
   public void addChild(Object child) {
     DomainSession session = state.getSession();
-    EntityContext childCtx = session.unwrap(child);
+    EntityContext childCtx = session.unwrapEntity(child);
     addChild(childCtx);
   }
 
@@ -226,7 +249,7 @@ public class EntityContext implements MethodHandler {
 
   public void addChild(String name, Object child) {
     DomainSession session = state.getSession();
-    EntityContext childCtx = session.unwrap(child);
+    EntityContext childCtx = session.unwrapEntity(child);
     addChild(name, childCtx);
   }
 
@@ -260,12 +283,12 @@ public class EntityContext implements MethodHandler {
     return formatter;
   }
 
-  @Override
-  public String toString() {
-    return "ObjectContext[state=" + state + ",mapper=" + mapper + "]";
-  }
-
   public Object invoke(Object o, Method method, Object[] args) throws Throwable {
     return mapper.invoke(this, method, args);
+  }
+
+  @Override
+  public String toString() {
+    return "EntityContext[state=" + state + ",mapper=" + mapper + "]";
   }
 }

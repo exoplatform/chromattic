@@ -19,6 +19,8 @@
 
 package org.chromattic.core.mapper;
 
+import org.chromattic.api.BuilderException;
+import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.core.mapper.onetoone.mixin.JCRMixinParentPropertyMapper;
@@ -113,6 +115,13 @@ public class TypeMapperBuilder {
 
   private Collection<NodeTypeMapper> _build() throws ClassNotFoundException {
 
+    //
+    Map<ClassTypeInfo, NodeTypeMapping> classToMapping = new HashMap<ClassTypeInfo, NodeTypeMapping>();
+    for (NodeTypeMapping typeMapping : typeMappings) {
+      classToMapping.put(typeMapping.getObjectClass(), typeMapping);
+    }
+
+    //
     Map<String, NodeTypeMapper> mappers = new HashMap<String, NodeTypeMapper>();
 
     SetMap<ClassTypeInfo, RelatedPropertyMapper> relatedProperties = new SetMap<ClassTypeInfo, RelatedPropertyMapper>();
@@ -128,6 +137,9 @@ public class TypeMapperBuilder {
         //
         if (pm.getInfo() instanceof SingleValuedPropertyInfo) {
           ValueMapping pmvm = pm.getValueMapping();
+
+          //
+          SingleValuedPropertyInfo<BeanValueInfo> propertyInfo = (SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo();
 
           //
           if (pmvm instanceof SimpleMapping) {
@@ -149,25 +161,30 @@ public class TypeMapperBuilder {
             //
             if (pmhm.getType() == RelationshipType.HIERARCHIC) {
               if (pmhm instanceof ManyToOneMapping) {
-                JCRChildNodePropertyMapper bilto = new JCRAnyChildCollectionPropertyMapper((SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo());
+                JCRChildNodePropertyMapper bilto = new JCRAnyChildCollectionPropertyMapper(propertyInfo);
                 relatedProperties.get(pmhm.getRelatedType()).add(bilto);
                 propertyMappers.add(bilto);
               } if (pmhm instanceof NamedOneToOneMapping) {
                 NamedOneToOneMapping ncpmpm = (NamedOneToOneMapping)pmhm;
                 if (ncpmpm.isOwner()) {
-                  JCRNamedChildParentPropertyMapper bilto = new JCRNamedChildParentPropertyMapper((SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo(), ncpmpm.getName());
+                  JCRNamedChildParentPropertyMapper bilto = new JCRNamedChildParentPropertyMapper(propertyInfo, ncpmpm.getName());
                   relatedProperties.get(pmhm.getRelatedType()).add(bilto);
                   propertyMappers.add(bilto);
                 } else {
-                  JCRChildNodePropertyMapper bilto = new JCRNamedChildPropertyMapper((SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo(), ncpmpm.getName());
+                  JCRChildNodePropertyMapper bilto = new JCRNamedChildPropertyMapper(propertyInfo, ncpmpm.getName());
                   relatedProperties.get(ncpmpm.getRelatedType()).add(bilto);
                   propertyMappers.add(bilto);
                 }
               }
             } else if (pmhm.getType() == RelationshipType.MIXIN) {
               if (typeMapping instanceof PrimaryTypeMapping) {
-                JCRMixinParentPropertyMapper mapper = new JCRMixinParentPropertyMapper((SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo());
-                propertyMappers.add(mapper);
+                NodeTypeMapping relatedMapping = classToMapping.get(propertyInfo.getValue().getTypeInfo());
+                if (relatedMapping instanceof MixinTypeMapping) {
+                  JCRMixinParentPropertyMapper mapper = new JCRMixinParentPropertyMapper(propertyInfo);
+                  propertyMappers.add(mapper);
+                } else {
+                  throw new BuilderException("Related class in mixin mapping must be annotated with @" + MixinType.class.getSimpleName());
+                }
               } else if (typeMapping instanceof MixinTypeMapping) {
                 throw new UnsupportedOperationException("todo");
               } else {
@@ -183,7 +200,7 @@ public class TypeMapperBuilder {
               LinkType linkType = relationshipToLinkMapping.get(nmtovm.getType());
               if (linkType != null) {
                 JCRNamedReferentPropertyMapper blah = new JCRNamedReferentPropertyMapper(
-                  (SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo(),
+                  propertyInfo,
                   nmtovm.getRelatedName(),
                   linkType
                   );

@@ -42,7 +42,7 @@ public class JCRAnyChildCollectionPropertyMapper extends JCRChildNodePropertyMap
       throw new UnsupportedOperationException("todo remove parent");
     } else {
       DomainSession session = context.getSession();
-      EntityContext parentContext = session.unwrap(parent);
+      EntityContext parentContext = session.unwrapEntity(parent);
       parentContext.addChild(context);
     }
   }
