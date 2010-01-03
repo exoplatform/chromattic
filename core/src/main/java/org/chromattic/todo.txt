@@ -1,3 +1,5 @@
+- prefix the queries with the root path of the chromattic builder
+- rename NodeMapping to TypeMapping ????
 - MIXIN / EMBEDDABLE!!!! allows augmentation of node types.
 - OneToMany with reference : move relationship
 - OneToOne with several named children
