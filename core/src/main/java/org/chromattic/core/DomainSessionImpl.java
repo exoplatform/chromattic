@@ -25,6 +25,7 @@ import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.core.jcr.info.MixinTypeInfo;
 import org.chromattic.core.mapper.MixinTypeMapper;
 import org.chromattic.core.mapper.PrimaryTypeMapper;
 import org.chromattic.core.mapper.NodeTypeMapper;
@@ -249,10 +250,15 @@ public class DomainSessionImpl extends DomainSession {
 
         // Add mixin
         sessionWrapper.addMixin(node, mixinTypeName);
-        
+
+        //
+        NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
+        MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
+
         // Perform wiring
         entityCtx.mixins.put(mixinCtx.mapper.getObjectClass(), mixinCtx);
         mixinCtx.relatedEntity = entityCtx;
+        mixinCtx.typeInfo = mixinTypeInfo;
       }
     }
   }
@@ -272,10 +278,16 @@ public class DomainSessionImpl extends DomainSession {
     //
     if (mixinCtx == null) {
       MixinTypeMapper mapper = (MixinTypeMapper)domain.getTypeMapper(mixinClass);
-      if (sessionWrapper.haxMixin(entityCtx.state.getNode(), mapper.getNodeTypeName())) {
-        mixinCtx = new MixinContext(mapper);
+      String mixinTypeName = mapper.getNodeTypeName();
+      if (sessionWrapper.haxMixin(entityCtx.state.getNode(), mixinTypeName)) {
+        NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
+        MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
+
+        //
+        mixinCtx = new MixinContext(mapper, this);
         entityCtx.mixins.put(mixinClass, mixinCtx);
         mixinCtx.relatedEntity = entityCtx;
+        mixinCtx.typeInfo = mixinTypeInfo;
       }
     }
 
@@ -386,7 +398,7 @@ public class DomainSessionImpl extends DomainSession {
       if (name != null) {
         throw new IllegalArgumentException("Cannot create a mixin type with a name");
       }
-      octx = new MixinContext((MixinTypeMapper)typeMapper);
+      octx = new MixinContext((MixinTypeMapper)typeMapper, this);
     }
     return clazz.cast(octx.getObject());
   }
@@ -411,11 +423,29 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  @Override
   protected <O> O _findByNode(Class<O> clazz, Node node) throws RepositoryException {
     if (clazz == null) {
       throw new NullPointerException();
     }
+
+    //
+    EntityContext ctx = _findByNode(node);
+
+    //
+    if (ctx == null) {
+      return null;
+    } else {
+      Object object = ctx.object;
+      if (clazz.isInstance(object)) {
+        return clazz.cast(object);
+      } else {
+        String msg = "Could not cast context " + ctx + " with class " + object.getClass().getName() + " to class " + clazz.getName();
+        throw new ClassCastException(msg);
+      }
+    }
+  }
+
+  private EntityContext _findByNode(Node node) throws RepositoryException {
     if (node == null) {
       throw new NullPointerException();
     }
@@ -432,30 +462,20 @@ public class DomainSessionImpl extends DomainSession {
     //
     if (ctx == null) {
       try {
-        log.trace("About to read node with path {} and class {}", node.getPath(), clazz.getName());
+        log.trace("About to read node with path {}", node.getPath());
         nodeRead(node);
-        log.trace("Loaded node with path {}", node.getPath(), clazz.getName());
+        log.trace("Loaded node with path {}", node.getPath());
         ctx = contexts.get(node.getUUID());
-        log.trace("Obtained context {} node for path {} and class {}", ctx, node.getPath(), clazz.getName());
+        log.trace("Obtained context {} node for path {}", ctx, node.getPath());
       }
       catch (ItemNotFoundException e) {
-        log.trace("Could not find node with path {}", node.getPath(), clazz.getName());
+        log.trace("Could not find node with path {}", node.getPath());
         return null;
       }
     }
 
     //
-    if (ctx == null) {
-      return null;
-    } else {
-      Object object = ctx.object;
-      if (clazz.isInstance(object)) {
-        return clazz.cast(object);
-      } else {
-        String msg = "Could not cast context " + ctx + " with class " + object.getClass().getName() + " to class " + clazz.getName();
-        throw new ClassCastException(msg);
-      }
-    }
+    return ctx;
   }
 
   protected void _save() throws RepositoryException {
@@ -604,7 +624,7 @@ public class DomainSessionImpl extends DomainSession {
     }
     Node node = ctx.state.getNode();
     Node parent = sessionWrapper.getParent(node);
-    return findByNode(Object.class, parent);
+    return _findByNode(Object.class, parent);
   }
 
   protected Node _getRoot() throws RepositoryException {

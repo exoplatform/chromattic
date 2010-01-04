@@ -24,8 +24,10 @@ import java.lang.reflect.Method;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface MethodInvoker {
+public interface MethodInvoker<O extends ObjectContext> {
 
-  Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable;
+//  Class<O> getType();
+
+  Object invoke(O ctx, Method method, Object[] args) throws Throwable;
 
 }

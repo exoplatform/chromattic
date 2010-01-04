@@ -19,6 +19,7 @@
 
 package org.chromattic.core.mapper;
 
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.bean.MultiValuedPropertyInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 
@@ -26,13 +27,13 @@ import org.chromattic.core.bean.BeanValueInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRNodeCollectionPropertyMapper extends RelatedPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo>> {
+public abstract class JCRNodeCollectionPropertyMapper<O extends ObjectContext> extends RelatedPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo>, O> {
 
   /** . */
   private final Class relatedClass;
 
-  public JCRNodeCollectionPropertyMapper(MultiValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
-    super(info);
+  public JCRNodeCollectionPropertyMapper(Class<O> contextType, MultiValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
+    super(contextType, info);
 
     //
     relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getElementValue().getTypeInfo().getName());

@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.DomainSession;
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
@@ -29,7 +30,7 @@ import org.chromattic.core.bean.BeanValueInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRAnyChildCollectionPropertyMapper extends JCRChildNodePropertyMapper {
+public class JCRAnyChildCollectionPropertyMapper<O extends ObjectContext> extends JCRChildNodePropertyMapper {
 
   public JCRAnyChildCollectionPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
     super(info);

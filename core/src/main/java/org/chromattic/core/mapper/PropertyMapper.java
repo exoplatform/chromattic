@@ -19,8 +19,8 @@
 
 package org.chromattic.core.mapper;
 
-import org.chromattic.core.EntityContext;
 import org.chromattic.core.MethodInvoker;
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.bean.PropertyInfo;
 import org.reflext.api.MethodInfo;
 
@@ -30,29 +30,39 @@ import java.lang.reflect.Method;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyMapper<P extends PropertyInfo> implements MethodInvoker {
+public abstract class PropertyMapper<P extends PropertyInfo, O extends ObjectContext> implements MethodInvoker<O> {
 
-  NodeTypeMapper mapper;
+  /** . */
+  NodeTypeMapper<O> mapper;
 
+  /** . */
+  protected final Class<O> contextType;
+
+  /** . */
   protected final P info;
 
-  public PropertyMapper(P info) {
+  public PropertyMapper(Class<O> contextType, P info) {
+    this.contextType = contextType;
     this.info = info;
+  }
+
+  public Class<O> getType() {
+    return contextType;
   }
 
   public P getInfo() {
     return info;
   }
 
-  public Object get(EntityContext context) throws Throwable {
+  public Object get(O context) throws Throwable {
     throw new UnsupportedOperationException();
   }
 
-  public void set(EntityContext context, Object value) throws Throwable {
+  public void set(O context, Object value) throws Throwable {
     throw new UnsupportedOperationException();
   }
 
-  public Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable {
+  public Object invoke(O ctx, Method method, Object[] args) throws Throwable {
     MethodInfo getter = info.getGetter();
     if (getter != null && method.equals(getter.getMethod())) {
       return get(ctx);

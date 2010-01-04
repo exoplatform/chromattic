@@ -19,23 +19,16 @@
 
 package org.chromattic.core;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.io.InputStream;
 
-import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.common.logging.Logger;
-import org.chromattic.common.JCR;
-import org.chromattic.common.CloneableInputStream;
-import org.chromattic.core.jcr.info.PrimaryTypeInfo;
+import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.mapper.PrimaryTypeMapper;
-import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.jcr.LinkType;
 
 import javax.jcr.RepositoryException;
@@ -83,6 +76,16 @@ public final class EntityContext extends ObjectContext{
 
   public Object getObject() {
     return object;
+  }
+
+  @Override
+  public EntityContext getEntity() {
+    return this;
+  }
+
+  public NodeTypeInfo getTypeInfo() {
+    EntityContextState state = getEntity().state;
+    return state.getTypeInfo();
   }
 
   public void addMixin(MixinContext mixinCtx) {
@@ -156,63 +159,6 @@ public final class EntityContext extends ObjectContext{
 
   public Map<String, Object> getPropertyMap() {
     return properties;
-  }
-
-  public <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type) {
-    JCR.validateName(propertyName);
-
-    //
-    PrimaryTypeInfo typeInfo = state.getTypeInfo();
-
-    //
-    return state.getPropertyValue(typeInfo, propertyName, type);
-  }
-
-  public <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType listType) {
-    JCR.validateName(propertyName);
-
-    //
-    PrimaryTypeInfo typeInfo = state.getTypeInfo();
-
-    //
-    return state.getPropertyValues(typeInfo, propertyName, simpleType, listType);
-  }
-
-  public <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V o) {
-    JCR.validateName(propertyName);
-
-    //
-    EventBroadcaster broadcaster = state.getSession().broadcaster;
-
-    //
-    PrimaryTypeInfo typeInfo = state.getTypeInfo();
-
-    //
-    if (o instanceof InputStream && broadcaster.hasStateChangeListeners()) {
-      CloneableInputStream in;
-      try {
-        in = new CloneableInputStream((InputStream)o);
-      }
-      catch (IOException e) {
-        throw new ChromatticIOException("Could not read stream", e);
-      }
-      @SuppressWarnings("unchecked") V v = (V)in;
-      state.setPropertyValue(typeInfo, propertyName, type, v);
-      broadcaster.propertyChanged(state.getId(), object, propertyName, in.clone());
-    } else {
-      state.setPropertyValue(typeInfo, propertyName, type, o);
-      broadcaster.propertyChanged(state.getId(), object, propertyName, o);
-    }
-  }
-
-  public <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType listType, List<V> objects) {
-    JCR.validateName(propertyName);
-
-    //
-    PrimaryTypeInfo typeInfo = state.getTypeInfo();
-
-    //
-    state.setPropertyValues(typeInfo, propertyName, type, listType, objects);
   }
 
   public void removeChild(String name) {

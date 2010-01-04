@@ -19,7 +19,10 @@
 
 package org.chromattic.test.onetoone.mixin;
 
+import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.MixinType;
+import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Property;
 
 /**
@@ -29,14 +32,20 @@ import org.chromattic.api.annotations.Property;
 @MixinType(names = "otom_b")
 public abstract class B {
 
-//  @OneToOne(type = RelationshipType.MIXIN)
-//  abstract A getA();
+  @OneToOne(type = RelationshipType.MIXIN)
+  abstract A getEntity();
 
-//  abstract void setA(A a);
+  abstract void setEntity(A a);
 
   @Property(name = "foo")
   public abstract void setFoo(String foo);
 
   public abstract String getFoo();
+
+  @OneToOne
+  @MappedBy("a")
+  public abstract A getA();
+
+  public abstract void setA(A a);
 
 }

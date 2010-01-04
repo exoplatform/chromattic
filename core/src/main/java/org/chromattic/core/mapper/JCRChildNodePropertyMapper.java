@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper;
 
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.MixinContext;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 
@@ -27,19 +28,34 @@ import org.chromattic.core.bean.SingleValuedPropertyInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper {
+public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper<EntityContext> {
 
   public JCRChildNodePropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
-    super(info);
+    super(EntityContext.class, info);
   }
 
   @Override
   public Object get(EntityContext context) throws Throwable {
     Object parent = context.getParent();
     Class<?> relatedClass =  getRelatedClass();
+
+    // If it fits the parent use it
     if (relatedClass.isInstance(parent)) {
       return parent;
     } else {
+
+      // A bit stupid to unwrap something we could get unwrapped
+      EntityContext parentCtx = context.getSession().unwrapEntity(parent);
+
+
+
+      MixinContext mixinCtx = parentCtx.getMixin(relatedClass);
+
+      if (mixinCtx != null) {
+        return mixinCtx.getObject();
+      }
+
+
       return null;
     }
   }

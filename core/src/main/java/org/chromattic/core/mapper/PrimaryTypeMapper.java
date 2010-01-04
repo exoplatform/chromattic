@@ -34,8 +34,8 @@ public class PrimaryTypeMapper extends NodeTypeMapper<EntityContext>
 
   public PrimaryTypeMapper(
     Class<?> objectClass,
-    Set<PropertyMapper> propertyMappers,
-    Set<MethodMapper> methodMappers,
+    Set<PropertyMapper<?, EntityContext>> propertyMappers,
+    Set<MethodMapper<EntityContext>> methodMappers,
     NameConflictResolution onDuplicate,
     Instrumentor instrumentor,
     ObjectFormatter formatter,

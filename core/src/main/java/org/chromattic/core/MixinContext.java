@@ -19,6 +19,8 @@
 
 package org.chromattic.core;
 
+import org.chromattic.core.jcr.info.MixinTypeInfo;
+import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.mapper.MixinTypeMapper;
 
 import java.lang.reflect.Method;
@@ -38,12 +40,28 @@ public final class MixinContext extends ObjectContext {
   /** The related entity if not null, otherwise it means that we are not attached to anything. */
   EntityContext relatedEntity;
 
-  /** Whether or not the mixin is a runtime mixin. */
-  boolean runtime;
+  /** . */
+  MixinTypeInfo typeInfo;
 
-  MixinContext(MixinTypeMapper mapper) {
+  /** . */
+  final DomainSession session;
+
+  MixinContext(MixinTypeMapper mapper, DomainSession session) {
     this.mapper = mapper;
     this.object = mapper.createObject(this);
+    this.session = session;
+  }
+
+  public DomainSession getSession() {
+    return session;
+  }
+
+  @Override
+  public NodeTypeInfo getTypeInfo() {
+    if (typeInfo == null) {
+      throw new IllegalStateException();
+    }
+    return typeInfo;
   }
 
   @Override
@@ -51,8 +69,13 @@ public final class MixinContext extends ObjectContext {
     return object;
   }
 
+  @Override
+  public EntityContext getEntity() {
+    return relatedEntity;
+  }
+
   public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-    throw new UnsupportedOperationException();
+    return mapper.invoke(this, method, args);
   }
 
   @Override

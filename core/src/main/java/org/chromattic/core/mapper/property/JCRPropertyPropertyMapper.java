@@ -19,6 +19,7 @@
 
 package org.chromattic.core.mapper.property;
 
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
@@ -28,35 +29,35 @@ import org.chromattic.core.bean.SimpleValueInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyPropertyMapper extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>> {
+public class JCRPropertyPropertyMapper<O extends ObjectContext> extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, O> {
 
   /** . */
   private final String jcrPropertyName;
 
-  public JCRPropertyPropertyMapper(SingleValuedPropertyInfo<SimpleValueInfo> info, String jcrPropertyName) {
-    super(info);
+  public JCRPropertyPropertyMapper(Class<O> contextType, SingleValuedPropertyInfo<SimpleValueInfo> info, String jcrPropertyName) {
+    super(contextType, info);
 
     //
     this.jcrPropertyName = jcrPropertyName;
   }
 
   @Override
-  public Object get(EntityContext context) throws Throwable {
+  public Object get(O context) throws Throwable {
     SimpleValueInfo<?> simpleValueInfo = info.getValue();
     return get(context, simpleValueInfo);
   }
 
-  private <V> V get(EntityContext context, SimpleValueInfo<V> d) throws Throwable {
+  private <V> V get(O context, SimpleValueInfo<V> d) throws Throwable {
     return context.getPropertyValue(jcrPropertyName, d);
   }
 
   @Override
-  public void set(EntityContext context, Object o) throws Throwable {
+  public void set(O context, Object o) throws Throwable {
     SimpleValueInfo<?> simpleValueInfo = info.getValue();
     set(context, simpleValueInfo, o);
   }
 
-  private <V> void set(EntityContext context, SimpleValueInfo<V> simpleValueInfo, Object o) throws Throwable {
+  private <V> void set(O context, SimpleValueInfo<V> simpleValueInfo, Object o) throws Throwable {
     Class<V> javaType = simpleValueInfo.getSimpleType().getObjectType();
     V v = javaType.cast(o);
     context.setPropertyValue(jcrPropertyName, simpleValueInfo, v);

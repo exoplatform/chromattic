@@ -832,6 +832,22 @@
         <valueConstraints/>
       </propertyDefinition>
     </propertyDefinitions>
+    <childNodeDefinitions>
+      <childNodeDefinition name="a" defaultPrimaryType="otom_a" autoCreated="false" mandatory="false"
+        onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>otom_a</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+      <!--
+      <childNodeDefinition name="b" defaultPrimaryType="otom_b" autoCreated="false" mandatory="false"
+        onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>otom_b</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+-->
+    </childNodeDefinitions>
   </nodeType>
 
 </nodeTypes>

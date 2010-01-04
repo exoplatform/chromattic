@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.lang.reflect.Method;
 
 import org.chromattic.api.format.ObjectFormatter;
-import org.chromattic.core.EntityContext;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.bean.PropertyInfo;
@@ -38,7 +37,7 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodInvoker {
+public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodInvoker<C> {
 
   /** . */
   protected final Class<?> objectClass;
@@ -47,16 +46,16 @@ public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodI
   private final String nodeTypeName;
 
   /** . */
-  final Set<MethodMapper> methodMappers;
+  final Set<MethodMapper<C>> methodMappers;
 
   /** . */
-  final Set<PropertyMapper> propertyMappers;
+  final Set<PropertyMapper<?, C>> propertyMappers;
 
   /** . */
   private final ProxyFactory factory;
 
   /** . */
-  private final Map<Method, MethodInvoker> dispatchers;
+  private final Map<Method, MethodInvoker<C>> dispatchers;
 
   /** The optional formatter for this object. */
   private final ObjectFormatter formatter;
@@ -66,16 +65,16 @@ public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodI
 
   public NodeTypeMapper(
     Class<?> objectClass,
-    Set<PropertyMapper> propertyMappers,
-    Set<MethodMapper> methodMappers,
+    Set<PropertyMapper<?, C>> propertyMappers,
+    Set<MethodMapper<C>> methodMappers,
     NameConflictResolution onDuplicate,
     ObjectFormatter formatter,
     Instrumentor instrumentor,
     String typeName) {
 
     // Build the dispatcher map
-    Map<Method, MethodInvoker> dispatchers = new HashMap<Method, MethodInvoker>();
-    for (PropertyMapper propertyMapper : propertyMappers) {
+    Map<Method, MethodInvoker<C>> dispatchers = new HashMap<Method, MethodInvoker<C>>();
+    for (PropertyMapper<?, C> propertyMapper : propertyMappers) {
       PropertyInfo info = propertyMapper.getInfo();
       MethodInfo getter = info.getGetter();
       if (getter != null) {
@@ -86,7 +85,7 @@ public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodI
         dispatchers.put((Method)setter.getMethod(), propertyMapper);
       }
     }
-    for (MethodMapper methodMapper : methodMappers) {
+    for (MethodMapper<C> methodMapper : methodMappers) {
       dispatchers.put(methodMapper.getMethod(), methodMapper);
     }
 
@@ -101,8 +100,8 @@ public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodI
     this.nodeTypeName = typeName;
   }
 
-   public Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable {
-    MethodInvoker invoker = dispatchers.get(method);
+   public Object invoke(C ctx, Method method, Object[] args) throws Throwable {
+    MethodInvoker<C> invoker = dispatchers.get(method);
     if (invoker != null) {
       return invoker.invoke(ctx, method, args);
     } else {
@@ -138,11 +137,11 @@ public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodI
     return factory.createProxy(context);
   }
 
-  public Set<MethodMapper> getMethodMappers() {
+  public Set<MethodMapper<C>> getMethodMappers() {
     return methodMappers;
   }
 
-  public Set<PropertyMapper> getPropertyMappers() {
+  public Set<PropertyMapper<?, C>> getPropertyMappers() {
     return propertyMappers;
   }
 

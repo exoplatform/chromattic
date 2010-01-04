@@ -20,8 +20,9 @@
 package org.chromattic.core.mapper.onetoone.hierarchical;
 
 import org.chromattic.common.logging.Logger;
-import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.ObjectContext;
+import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 
@@ -29,7 +30,7 @@ import org.chromattic.core.bean.SingleValuedPropertyInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRNamedChildParentPropertyMapper extends JCRNodePropertyMapper {
+public class JCRNamedChildParentPropertyMapper<O extends ObjectContext> extends JCRNodePropertyMapper<O> {
 
   /** . */
   private String nodeName;
@@ -37,8 +38,11 @@ public class JCRNamedChildParentPropertyMapper extends JCRNodePropertyMapper {
   /** . */
   private final Logger log = Logger.getLogger(JCRNamedChildParentPropertyMapper.class);
 
-  public JCRNamedChildParentPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info, String nodeName) throws ClassNotFoundException {
-    super(info);
+  public JCRNamedChildParentPropertyMapper(
+    Class<O> contextType,
+      SingleValuedPropertyInfo<BeanValueInfo> info,
+    String nodeName) throws ClassNotFoundException {
+    super(contextType, info);
 
     //
     this.nodeName = nodeName;
@@ -49,8 +53,8 @@ public class JCRNamedChildParentPropertyMapper extends JCRNodePropertyMapper {
   }
 
   @Override
-  public Object get(EntityContext ctx) throws Throwable {
-    Object o = ctx.getChild(nodeName);
+  public Object get(O ctx) throws Throwable {
+    Object o = ctx.getEntity().getChild(nodeName);
     if (o != null) {
       Class<?> relatedClass = getRelatedClass();
       if (relatedClass.isInstance(o)) {
@@ -64,11 +68,12 @@ public class JCRNamedChildParentPropertyMapper extends JCRNodePropertyMapper {
   }
 
   @Override
-  public void set(EntityContext context, Object child) throws Throwable {
+  public void set(O context, Object child) throws Throwable {
+    EntityContext entity = context.getEntity();
     if (child != null) {
-      context.addChild(nodeName, child);
+      entity.addChild(nodeName, child);
     } else {
-      context.removeChild(nodeName);
+      entity.removeChild(nodeName);
     }
   }
 }

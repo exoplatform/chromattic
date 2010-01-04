@@ -28,13 +28,13 @@ import org.chromattic.core.mapper.RelatedPropertyMapper;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRMixinParentPropertyMapper extends RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>> {
+public class JCRMixinParentPropertyMapper extends RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, EntityContext> {
 
   /** . */
   private final Class relatedClass;
 
   public JCRMixinParentPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
-    super(info);
+    super(EntityContext.class, info);
 
     //
     this.relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getTypeInfo().getName());

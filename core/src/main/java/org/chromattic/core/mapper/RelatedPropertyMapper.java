@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper;
 
 
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.bean.PropertyInfo;
 
 import java.util.Set;
@@ -28,13 +29,13 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class RelatedPropertyMapper<P extends PropertyInfo> extends PropertyMapper<P> {
+public abstract class RelatedPropertyMapper<P extends PropertyInfo, C extends ObjectContext> extends PropertyMapper<P, C> {
 
   /** . */
   protected Set<NodeTypeMapper> relatedTypes;
 
-  protected RelatedPropertyMapper(P info) {
-    super(info);
+  protected RelatedPropertyMapper(Class<C> contextType, P info) {
+    super(contextType, info);
   }
 
   public abstract Class<?> getRelatedClass();

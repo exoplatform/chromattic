@@ -19,7 +19,16 @@
 
 package org.chromattic.core;
 
+import org.chromattic.api.ChromatticIOException;
+import org.chromattic.common.CloneableInputStream;
+import org.chromattic.common.JCR;
+import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.spi.instrument.MethodHandler;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -28,5 +37,81 @@ import org.chromattic.spi.instrument.MethodHandler;
 public abstract class ObjectContext implements MethodHandler {
 
   public abstract Object getObject();
+
+  public abstract EntityContext getEntity();
+
+  public abstract NodeTypeInfo getTypeInfo();
+
+  public final <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type) {
+    JCR.validateName(propertyName);
+
+    //
+    EntityContextState state = getEntity().state;
+
+    //
+    NodeTypeInfo typeInfo = getTypeInfo();
+
+    //
+    return state.getPropertyValue(typeInfo, propertyName, type);
+  }
+
+  public final <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType listType) {
+    JCR.validateName(propertyName);
+
+    //
+    EntityContextState state = getEntity().state;
+
+    //
+    NodeTypeInfo typeInfo = getTypeInfo();
+
+    //
+    return state.getPropertyValues(typeInfo, propertyName, simpleType, listType);
+  }
+
+  public final <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V o) {
+    JCR.validateName(propertyName);
+
+    //
+    EntityContextState state = getEntity().state;
+
+    //
+    Object object = getObject();
+
+    //
+    EventBroadcaster broadcaster = state.getSession().broadcaster;
+
+    //
+    NodeTypeInfo typeInfo = getTypeInfo();
+
+    //
+    if (o instanceof InputStream && broadcaster.hasStateChangeListeners()) {
+      CloneableInputStream in;
+      try {
+        in = new CloneableInputStream((InputStream)o);
+      }
+      catch (IOException e) {
+        throw new ChromatticIOException("Could not read stream", e);
+      }
+      @SuppressWarnings("unchecked") V v = (V)in;
+      state.setPropertyValue(typeInfo, propertyName, type, v);
+      broadcaster.propertyChanged(state.getId(), object, propertyName, in.clone());
+    } else {
+      state.setPropertyValue(typeInfo, propertyName, type, o);
+      broadcaster.propertyChanged(state.getId(), object, propertyName, o);
+    }
+  }
+
+  public final <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType listType, List<V> objects) {
+    JCR.validateName(propertyName);
+
+    //
+    EntityContextState state = getEntity().state;
+
+    //
+    NodeTypeInfo typeInfo = getTypeInfo();
+
+    //
+    state.setPropertyValues(typeInfo, propertyName, type, listType, objects);
+  }
 
 }

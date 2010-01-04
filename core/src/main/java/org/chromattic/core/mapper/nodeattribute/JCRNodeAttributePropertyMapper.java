@@ -30,13 +30,13 @@ import org.chromattic.core.bean.SimpleValueInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRNodeAttributePropertyMapper extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>> {
+public class JCRNodeAttributePropertyMapper extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, EntityContext> {
 
   /** . */
   private final NodeAttributeType type;
 
   public JCRNodeAttributePropertyMapper(SingleValuedPropertyInfo<SimpleValueInfo> info, NodeAttributeType type) {
-    super(info);
+    super(EntityContext.class, info);
 
     //
     this.type = type;

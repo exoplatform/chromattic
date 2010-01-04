@@ -19,8 +19,8 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
-import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.MultiValuedPropertyInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 
@@ -28,20 +28,20 @@ import org.chromattic.core.bean.BeanValueInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRAnyChildParentPropertyMapper extends JCRNodeCollectionPropertyMapper {
+public class JCRAnyChildParentPropertyMapper<O extends ObjectContext> extends JCRNodeCollectionPropertyMapper<O> {
 
   /** . */
   private final AnyChildMultiValueMapper valueMapper;
 
-  public JCRAnyChildParentPropertyMapper(MultiValuedPropertyInfo<BeanValueInfo> info, AnyChildMultiValueMapper valueMapper) throws ClassNotFoundException {
-    super(info);
+  public JCRAnyChildParentPropertyMapper(Class<O> contextType, MultiValuedPropertyInfo<BeanValueInfo> info, AnyChildMultiValueMapper valueMapper) throws ClassNotFoundException {
+    super(contextType, info);
 
     //
     this.valueMapper = valueMapper;
   }
 
   @Override
-  public Object get(EntityContext context) throws Throwable {
-    return valueMapper.createValue(context, getRelatedClass());
+  public Object get(O context) throws Throwable {
+    return valueMapper.createValue(context.getEntity(), getRelatedClass());
   }
 }

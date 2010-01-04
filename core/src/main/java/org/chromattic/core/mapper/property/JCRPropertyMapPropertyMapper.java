@@ -19,8 +19,8 @@
 
 package org.chromattic.core.mapper.property;
 
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.MapPropertyInfo;
 import org.chromattic.core.bean.SimpleValueInfo;
 
@@ -28,14 +28,14 @@ import org.chromattic.core.bean.SimpleValueInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMapPropertyMapper extends PropertyMapper<MapPropertyInfo<SimpleValueInfo, SimpleValueInfo>> {
+public class JCRPropertyMapPropertyMapper<O extends ObjectContext> extends PropertyMapper<MapPropertyInfo<SimpleValueInfo, SimpleValueInfo>, O> {
 
-  public JCRPropertyMapPropertyMapper(MapPropertyInfo<SimpleValueInfo, SimpleValueInfo> info) {
-    super(info);
+  public JCRPropertyMapPropertyMapper(Class<O> contextType, MapPropertyInfo<SimpleValueInfo, SimpleValueInfo> info) {
+    super(contextType, info);
   }
 
   @Override
-  public Object get(EntityContext context) throws Throwable {
-    return context.getPropertyMap();
+  public Object get(O context) throws Throwable {
+    return context.getEntity().getPropertyMap();
   }
 }

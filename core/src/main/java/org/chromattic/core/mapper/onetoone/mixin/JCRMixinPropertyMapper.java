@@ -18,9 +18,45 @@
  */
 package org.chromattic.core.mapper.onetoone.mixin;
 
+import org.chromattic.core.EntityContext;
+import org.chromattic.core.MixinContext;
+import org.chromattic.core.bean.BeanValueInfo;
+import org.chromattic.core.bean.SingleValuedPropertyInfo;
+import org.chromattic.core.mapper.JCRNodePropertyMapper;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRMixinPropertyMapper {
+public class JCRMixinPropertyMapper extends JCRNodePropertyMapper<MixinContext> {
+
+
+  public JCRMixinPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
+    super(MixinContext.class, info);
+  }
+
+  @Override
+  public Object get(MixinContext context) throws Throwable {
+    EntityContext entityCtx = context.getEntity();
+    if (entityCtx != null) {
+      Object related = entityCtx.getObject();
+      Class<?> relatedClass = getRelatedClass();
+      return relatedClass.isInstance(related) ? related : null;
+    } else {
+      return null;
+    }
+  }
+
+  @Override
+  public void set(MixinContext context, Object value) throws Throwable {
+    if (value == null) {
+      throw new UnsupportedOperationException("todo mixin removal");
+    }
+
+    //
+    EntityContext entityCtx = context.getSession().unwrapEntity(value);
+
+    //
+    entityCtx.addMixin(context);
+  }
 }

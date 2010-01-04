@@ -33,8 +33,8 @@ public class MixinTypeMapper extends NodeTypeMapper<MixinContext>
 
   public MixinTypeMapper(
     Class<?> objectClass,
-    Set<PropertyMapper> propertyMappers,
-    Set<MethodMapper> methodMappers,
+    Set<PropertyMapper<?, MixinContext>> propertyMappers,
+    Set<MethodMapper<MixinContext>> methodMappers,
     NameConflictResolution onDuplicate,
     Instrumentor instrumentor,
     String mixinTypeName) {

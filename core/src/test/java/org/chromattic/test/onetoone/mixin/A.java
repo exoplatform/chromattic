@@ -22,6 +22,7 @@ package org.chromattic.test.onetoone.mixin;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.RelatedMappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -30,9 +31,15 @@ import org.chromattic.api.annotations.OneToOne;
 @NodeMapping(name = "otom_a")
 public abstract class A {
 
-  @OneToOne(type = RelationshipType.MIXIN)
-  public abstract B getB();
+  @OneToOne
+  @RelatedMappedBy("a")
+  public abstract B getParent();
 
-  public abstract void setB(B b);
+  public abstract void setParent(B b);
+
+  @OneToOne(type = RelationshipType.MIXIN)
+  public abstract B getMixin();
+
+  public abstract void setMixin(B b);
 
 }

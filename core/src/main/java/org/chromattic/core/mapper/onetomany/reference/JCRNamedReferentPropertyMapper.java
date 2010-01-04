@@ -19,6 +19,7 @@
 
 package org.chromattic.core.mapper.onetomany.reference;
 
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
@@ -29,7 +30,7 @@ import org.chromattic.core.bean.BeanValueInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
+public class JCRNamedReferentPropertyMapper<O extends ObjectContext> extends JCRNodePropertyMapper<O> {
 
   /** . */
   private final String propertyName;
@@ -38,10 +39,11 @@ public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
   private final LinkType linkType;
 
   public JCRNamedReferentPropertyMapper(
+    Class<O> contextType,
     SingleValuedPropertyInfo<BeanValueInfo> info,
     String propertyName,
     LinkType linkType) throws ClassNotFoundException {
-    super(info);
+    super(contextType, info);
 
     //
     this.propertyName = propertyName;
@@ -49,9 +51,9 @@ public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
   }
 
   @Override
-  public Object get(EntityContext context) throws Throwable {
+  public Object get(O context) throws Throwable {
     Class<?> relatedClass = getRelatedClass();
-    Object related = context.getReferenced(propertyName, linkType);
+    Object related = context.getEntity().getReferenced(propertyName, linkType);
     if (related == null) {
       return null;
     } else {
@@ -64,7 +66,7 @@ public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
   }
 
   @Override
-  public void set(EntityContext ctx, Object value) throws Throwable {
-    ctx.setReferenced(propertyName, value, linkType);
+  public void set(O ctx, Object value) throws Throwable {
+    ctx.getEntity().setReferenced(propertyName, value, linkType);
   }
 }

@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ListType;
+import org.chromattic.core.ObjectContext;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.MultiValuedPropertyInfo;
 import org.chromattic.core.bean.ArrayPropertyInfo;
@@ -33,7 +34,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo>> {
+public class JCRPropertyListPropertyMapper<O extends ObjectContext> extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo>, O> {
 
   /** . */
   private final String jcrPropertyName;
@@ -44,8 +45,8 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
   /** . */
   private final SimpleValueInfo<?> elementType;
 
-  public JCRPropertyListPropertyMapper(MultiValuedPropertyInfo<SimpleValueInfo> info, String jcrPropertyName) {
-    super(info);
+  public JCRPropertyListPropertyMapper(Class<O> contextType, MultiValuedPropertyInfo<SimpleValueInfo> info, String jcrPropertyName) {
+    super(contextType, info);
 
     //
     ListType listType;
@@ -64,21 +65,21 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
   }
 
   @Override
-  public Object get(EntityContext context) throws Throwable {
+  public Object get(O context) throws Throwable {
     return get(context, elementType);
   }
 
-  private <V> Object get(EntityContext context, SimpleValueInfo<V> elementType) throws Throwable {
+  private <V> Object get(O context, SimpleValueInfo<V> elementType) throws Throwable {
     List<V> list = context.getPropertyValues(jcrPropertyName, elementType, listType);
     return listType.unwrap(elementType.getSimpleType(), list);
   }
 
   @Override
-  public void set(EntityContext context, Object value) throws Throwable {
+  public void set(O context, Object value) throws Throwable {
     set(context, value, elementType);
   }
 
-  private <V> void set(EntityContext context, Object value, SimpleValueInfo<V> elementType) throws Throwable {
+  private <V> void set(O context, Object value, SimpleValueInfo<V> elementType) throws Throwable {
     List<V> list = listType.wrap(elementType.getSimpleType(), value);
     context.setPropertyValues(jcrPropertyName, elementType, listType, list);
   }

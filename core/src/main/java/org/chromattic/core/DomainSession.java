@@ -220,7 +220,6 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-
   public final <O> O findByNode(Class<O> clazz, Node node) throws UndeclaredRepositoryException {
     try {
       return _findByNode(clazz, node);

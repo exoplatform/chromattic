@@ -21,6 +21,7 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.MethodInvoker;
+import org.chromattic.core.ObjectContext;
 import org.reflext.api.ClassTypeInfo;
 
 import java.lang.reflect.Method;
@@ -29,7 +30,7 @@ import java.lang.reflect.Method;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MethodMapper implements MethodInvoker {
+public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
 
   /** . */
   NodeTypeMapper mapper;
@@ -41,7 +42,7 @@ public class MethodMapper implements MethodInvoker {
     this.method = method;
   }
 
-  public Object invoke(EntityContext context, Object[] args) throws Throwable {
+  public Object invoke(C context, Object[] args) throws Throwable {
     throw new UnsupportedOperationException();
   }
 
@@ -49,7 +50,7 @@ public class MethodMapper implements MethodInvoker {
     return method;
   }
 
-  public Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable {
+  public Object invoke(C ctx, Method method, Object[] args) throws Throwable {
     return invoke(ctx, args);
   }
 
@@ -58,17 +59,17 @@ public class MethodMapper implements MethodInvoker {
     return "MethodMapper[" + method.getDeclaringClass().getName() + "#" + method.getName() + "]";
   }
 
-  public static class Create extends MethodMapper {
+  public static class Create<C extends ObjectContext> extends MethodMapper<C> {
 
     /** . */
-    NodeTypeMapper type;
+    NodeTypeMapper<C> type;
 
     public Create(Method method) {
       super(method);
     }
 
     @Override
-    public Object invoke(EntityContext context, Object[] args) {
+    public Object invoke(C context, Object[] args) {
 
       //
       String name = null;
@@ -78,14 +79,14 @@ public class MethodMapper implements MethodInvoker {
 
       //
       if (name == null) {
-        return context.getSession().create(type.getObjectClass());
+        return context.getEntity().getSession().create(type.getObjectClass());
       } else {
-        return context.getSession().create(type.getObjectClass(), name);
+        return context.getEntity().getSession().create(type.getObjectClass(), name);
       }
     }
   }
 
-  public static class FindById extends MethodMapper {
+  public static class FindById<C extends ObjectContext> extends MethodMapper<C> {
 
     /** . */
     private final ClassTypeInfo type;
@@ -102,13 +103,13 @@ public class MethodMapper implements MethodInvoker {
     }
 
     @Override
-    public Object invoke(EntityContext context, Object[] args) throws Throwable {
+    public Object invoke(C context, Object[] args) throws Throwable {
 
       //
       String id = (String)args[0];
 
       //
-      Object o = context.getSession().findById(Object.class, id);
+      Object o = context.getEntity().getSession().findById(Object.class, id);
 
       //
       if (typeClass.isInstance(o)) {
@@ -120,7 +121,7 @@ public class MethodMapper implements MethodInvoker {
     }
   }
 
-  public static class Destroy extends MethodMapper {
+  public static class Destroy extends MethodMapper<EntityContext> {
 
     public Destroy(Method method) {
       super(method);
@@ -128,7 +129,7 @@ public class MethodMapper implements MethodInvoker {
 
     @Override
     public Object invoke(EntityContext context, Object[] args) throws Throwable {
-      context.remove();
+      context.getEntity().remove();
       return null;
     }
   }

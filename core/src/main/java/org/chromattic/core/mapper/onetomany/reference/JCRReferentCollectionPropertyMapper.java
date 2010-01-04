@@ -29,7 +29,7 @@ import org.chromattic.core.bean.BeanValueInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionPropertyMapper {
+public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionPropertyMapper<EntityContext> {
 
   /** . */
   final String propertyName;
@@ -41,7 +41,7 @@ public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionProper
     CollectionPropertyInfo<BeanValueInfo> info,
     String propertyName,
     LinkType linkType) throws ClassNotFoundException {
-    super(info);
+    super(EntityContext.class, info);
 
     //
     this.propertyName = propertyName;

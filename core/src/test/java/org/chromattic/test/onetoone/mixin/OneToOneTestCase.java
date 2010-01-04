@@ -36,33 +36,62 @@ public class OneToOneTestCase extends AbstractTestCase {
     addClass(B.class);
   }
 
-  public void testFoo() throws Exception {
+  public void testAddMixinToEntity() throws Exception {
     DomainSession session = login();
     A a = session.insert(A.class, "a");
     B b = session.create(B.class);
-    assertNull(a.getB());
-    a.setB(b);
-    assertSame(b, a.getB());
+    assertNull(a.getMixin());
+    assertNull(b.getEntity());
+    a.setMixin(b);
+    assertSame(b, a.getMixin());
+    assertSame(a, b.getEntity());
     Node node = session.getNode(a);
     assertTrue(JCR.hasMixin(node, "otom_b"));
     session.save();
     session.close();
     session = login();
     a = session.findByPath(A.class, "a");
-    b = a.getB();
+    b = a.getMixin();
     assertNotNull(b);
   }
 
-/*
+  public void testAddEntityToMixin() throws Exception {
+    DomainSession session = login();
+    A a = session.insert(A.class, "a");
+    B b = session.create(B.class);
+    assertNull(a.getMixin());
+    assertNull(b.getEntity());
+    b.setEntity(a);
+    assertSame(b, a.getMixin());
+    assertSame(a, b.getEntity());
+    Node node = session.getNode(a);
+    assertTrue(JCR.hasMixin(node, "otom_b"));
+    session.save();
+    session.close();
+    session = login();
+    a = session.findByPath(A.class, "a");
+    b = a.getMixin();
+    assertNotNull(b);
+  }
+
   public void testMixinProperty() throws Exception {
     DomainSession session = login();
     A a = session.insert(A.class, "a");
     B b = session.create(B.class);
-    a.setB(b);
+    a.setMixin(b);
     b.setFoo("bar");
     assertEquals("bar", b.getFoo());
   }
-*/
+
+  public void testMixinChild() throws Exception {
+    DomainSession session = login();
+    A a1 = session.insert(A.class, "a");
+    B b = session.create(B.class);
+    a1.setMixin(b);
+    A a2 = session.create(A.class);
+    b.setA(a2);
+    assertSame(b, a2.getParent());
+  }
 
 /*
   public void testChildAndParentAdd() throws Exception {
