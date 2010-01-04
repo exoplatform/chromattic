@@ -19,12 +19,12 @@
 
 package org.chromattic.test.onetoone.embedded;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "otoe_a")
+@PrimaryType(name = "otoe_a")
 public abstract class A {
 }

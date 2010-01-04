@@ -19,7 +19,7 @@
 
 package org.chromattic.test.property;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
 import java.util.Date;
@@ -28,7 +28,7 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tp_a")
+@PrimaryType(name = "tp_a")
 public abstract class TP_D {
 
   @Property(name = "string_property")

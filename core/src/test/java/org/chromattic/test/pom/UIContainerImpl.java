@@ -19,7 +19,7 @@
 
 package org.chromattic.test.pom;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.Create;
@@ -30,7 +30,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "exo:uicontainer")
+@PrimaryType(name = "exo:uicontainer")
 public abstract class UIContainerImpl extends UIComponentImpl {
 
   @OneToMany

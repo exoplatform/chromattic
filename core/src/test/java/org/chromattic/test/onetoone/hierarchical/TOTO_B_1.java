@@ -19,12 +19,12 @@
 
 package org.chromattic.test.onetoone.hierarchical;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "toto_b")
+@PrimaryType(name = "toto_b")
 public class TOTO_B_1 {
 }

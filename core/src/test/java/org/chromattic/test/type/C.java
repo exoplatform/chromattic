@@ -18,13 +18,13 @@
  */
 package org.chromattic.test.type;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tt_b")
+@PrimaryType(name = "tt_b")
 public class C implements B<String> {
 
   public String value;

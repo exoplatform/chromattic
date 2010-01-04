@@ -20,7 +20,7 @@
 package org.chromattic.test.onetomany.reference.polymorphism;
 
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.RelatedMappedBy;
 import org.chromattic.api.RelationshipType;
 
@@ -30,7 +30,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totmrp_a")
+@PrimaryType(name = "totmrp_a")
 public abstract class TOTMRP_A {
 
   @OneToMany(type = RelationshipType.REFERENCE)

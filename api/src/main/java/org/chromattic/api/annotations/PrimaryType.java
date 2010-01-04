@@ -32,7 +32,7 @@ import java.lang.annotation.ElementType;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface NodeMapping {
+public @interface PrimaryType {
 
   /**
    * The name of the primary node type to use.

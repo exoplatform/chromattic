@@ -20,7 +20,7 @@ package org.chromattic.ntdef;
 
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.common.IO;
 
@@ -34,7 +34,7 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "nt:file")
+@PrimaryType(name = "nt:file")
 public abstract class NTFile extends NTHierarchyNode {
   
   @OneToOne

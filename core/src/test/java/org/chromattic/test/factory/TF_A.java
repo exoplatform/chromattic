@@ -19,14 +19,14 @@
 
 package org.chromattic.test.factory;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Create;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tf_a")
+@PrimaryType(name = "tf_a")
 public abstract class TF_A {
 
   @Create

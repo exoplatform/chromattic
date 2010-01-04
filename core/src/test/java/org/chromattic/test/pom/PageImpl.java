@@ -22,10 +22,10 @@ package org.chromattic.test.pom;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.RelatedMappedBy;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.test.pom.portal.PortalSite;
@@ -36,7 +36,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "exo:page")
+@PrimaryType(name = "exo:page")
 public abstract class PageImpl {
 
   @Name

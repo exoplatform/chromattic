@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.type;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 import java.util.Collection;
 
@@ -26,7 +26,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tt_a")
+@PrimaryType(name = "tt_a")
 public interface A<X, Y extends Number> {
 
   Collection<?> getWildcard();

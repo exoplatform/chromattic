@@ -19,7 +19,7 @@
 
 package org.chromattic.test.pom.portal;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.RelationshipType;
@@ -30,7 +30,7 @@ import org.chromattic.test.pom.PageImpl;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "exo:portal")
+@PrimaryType(name = "exo:portal")
 public abstract class PortalSite extends SiteImpl<PortalSites> {
 
   @ManyToOne(type = RelationshipType.REFERENCE)

@@ -19,7 +19,7 @@
 
 package org.chromattic.test.find;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.FindById;
 import org.chromattic.api.annotations.Property;
 
@@ -27,7 +27,7 @@ import org.chromattic.api.annotations.Property;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tfi_a")
+@PrimaryType(name = "tfi_a")
 public abstract class TFI_A {
 
   @FindById

@@ -19,12 +19,12 @@
 
 package org.chromattic.test.onetomany.reference.polymorphism;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totmrp_d")
+@PrimaryType(name = "totmrp_d")
 public abstract class TOTMRP_D extends TOTMRP_B {
 }

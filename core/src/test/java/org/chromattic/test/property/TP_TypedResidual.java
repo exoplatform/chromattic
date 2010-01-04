@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.property;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
 
@@ -28,7 +28,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tp_e")
+@PrimaryType(name = "tp_e")
 public abstract class TP_TypedResidual {
 
   @Properties

@@ -19,7 +19,7 @@
 package org.chromattic.ntdef;
 
 import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToMany;
 
 import java.util.Iterator;
@@ -29,7 +29,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "nt:folder")
+@PrimaryType(name = "nt:folder")
 public abstract class NTFolder extends NTHierarchyNode implements Iterable<NTHierarchyNode> {
 
   @Create

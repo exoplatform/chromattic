@@ -19,7 +19,7 @@
 
 package org.chromattic.test.pom.portal;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.RelatedMappedBy;
 import org.chromattic.test.pom.Sites;
 import org.chromattic.test.pom.WorkspaceImpl;
@@ -28,7 +28,7 @@ import org.chromattic.test.pom.WorkspaceImpl;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "exo:portals")
+@PrimaryType(name = "exo:portals")
 public abstract class PortalSites extends Sites<PortalSite> {
 
   @RelatedMappedBy("portals")

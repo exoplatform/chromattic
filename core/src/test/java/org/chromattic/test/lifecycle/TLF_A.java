@@ -19,14 +19,14 @@
 
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Destroy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tlf_a")
+@PrimaryType(name = "tlf_a")
 public abstract class TLF_A {
 
   /** . */

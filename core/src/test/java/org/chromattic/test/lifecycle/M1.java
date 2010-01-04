@@ -19,14 +19,14 @@
 package org.chromattic.test.lifecycle;
 
 import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToOne;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "mandatory_1")
+@PrimaryType(name = "mandatory_1")
 public abstract class M1 {
 
   @OneToOne

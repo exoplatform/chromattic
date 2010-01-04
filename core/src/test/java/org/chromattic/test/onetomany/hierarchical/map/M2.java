@@ -20,13 +20,13 @@
 package org.chromattic.test.onetomany.hierarchical.map;
 
 import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "multichildren_b")
+@PrimaryType(name = "multichildren_b")
 public abstract class M2 {
 
   @Name

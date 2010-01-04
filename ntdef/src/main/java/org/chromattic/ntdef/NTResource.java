@@ -18,7 +18,7 @@
  */
 package org.chromattic.ntdef;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
 import java.io.InputStream;
@@ -28,7 +28,7 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "nt:resource")
+@PrimaryType(name = "nt:resource")
 public abstract class NTResource {
 
   @Property(name = "jcr:encoding")

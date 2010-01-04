@@ -19,7 +19,7 @@
 
 package org.chromattic.test.nodeattribute;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.Id;
@@ -29,7 +29,7 @@ import org.chromattic.api.annotations.WorkspaceName;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tna_a")
+@PrimaryType(name = "tna_a")
 public abstract class TNA_A {
 
   @Name

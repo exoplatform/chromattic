@@ -20,7 +20,7 @@
 package org.chromattic.apt;
 
 import org.chromattic.api.annotations.MixinType;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
@@ -56,7 +56,7 @@ import java.io.PrintWriter;
  * @version $Revision$
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
-@SupportedAnnotationTypes({"org.chromattic.api.annotations.NodeMapping","org.chromattic.api.annotations.MixinType"})
+@SupportedAnnotationTypes({"org.chromattic.api.annotations.PrimaryType","org.chromattic.api.annotations.MixinType"})
 public class ChromatticProcessor extends AbstractProcessor {
 
   /** . */
@@ -66,7 +66,7 @@ public class ChromatticProcessor extends AbstractProcessor {
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
     //
-    process(roundEnv, NodeMapping.class);
+    process(roundEnv, PrimaryType.class);
 
     //
     process(roundEnv, MixinType.class);

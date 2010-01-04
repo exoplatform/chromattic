@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.format;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.OneToMany;
 
@@ -28,7 +28,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "format_a")
+@PrimaryType(name = "format_a")
 public abstract class A {
   @Name
   public abstract String getName();

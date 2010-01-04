@@ -19,7 +19,7 @@
 
 package org.chromattic.test.pom;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Id;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.MappedBy;
@@ -31,7 +31,7 @@ import org.chromattic.test.pom.portal.PortalSites;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "exo:workspace")
+@PrimaryType(name = "exo:workspace")
 public abstract class WorkspaceImpl {
 
   @Id

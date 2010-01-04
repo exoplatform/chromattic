@@ -18,13 +18,13 @@
  */
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "mandatory_2")
+@PrimaryType(name = "mandatory_2")
 public class M2 {
 
   

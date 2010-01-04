@@ -19,12 +19,12 @@
 
 package org.chromattic.test.onetomany.hierarchical;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "parents_a")
+@PrimaryType(name = "parents_a")
 public abstract class A {
 }

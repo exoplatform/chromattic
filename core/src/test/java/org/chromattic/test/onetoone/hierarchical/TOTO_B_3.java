@@ -19,7 +19,7 @@
 
 package org.chromattic.test.onetoone.hierarchical;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.RelatedMappedBy;
 
@@ -27,7 +27,7 @@ import org.chromattic.api.annotations.RelatedMappedBy;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "toto_b")
+@PrimaryType(name = "toto_b")
 public abstract class TOTO_B_3 {
 
   @OneToOne

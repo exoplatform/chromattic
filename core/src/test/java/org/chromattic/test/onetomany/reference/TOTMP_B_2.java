@@ -19,7 +19,7 @@
 
 package org.chromattic.test.onetomany.reference;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.RelationshipType;
@@ -28,7 +28,7 @@ import org.chromattic.api.RelationshipType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totmp_b")
+@PrimaryType(name = "totmp_b")
 public abstract class TOTMP_B_2 {
 
   @ManyToOne(type = RelationshipType.PATH)

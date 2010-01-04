@@ -18,14 +18,14 @@
  */
 package org.chromattic.test.type.stringenum;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tts_a")
+@PrimaryType(name = "tts_a")
 public abstract class A {
 
   @Property(name = "currency")

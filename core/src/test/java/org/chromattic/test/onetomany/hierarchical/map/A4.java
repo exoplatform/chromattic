@@ -20,7 +20,7 @@ package org.chromattic.test.onetomany.hierarchical.map;
 
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.annotations.NamingPolicy;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToMany;
 
 import java.util.Map;
@@ -29,7 +29,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_a")
+@PrimaryType(name = "totm_a")
 @NamingPolicy(onDuplicate = NameConflictResolution.REPLACE)
 public abstract class A4 {
 

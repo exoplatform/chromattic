@@ -20,8 +20,7 @@
 package org.chromattic.core.mapper;
 
 import org.chromattic.api.BuilderException;
-import org.chromattic.api.annotations.MixinType;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.core.EmbeddedContext;
@@ -250,7 +249,7 @@ public class TypeMapperBuilder {
                 JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper(propertyInfo);
                 propertyMappersForM.add(mapper);
               } else {
-                throw new BuilderException("Related class in mixin mapping must be annotated with @" + NodeMapping.class.getSimpleName());
+                throw new BuilderException("Related class in mixin mapping must be annotated with @" + PrimaryType.class.getSimpleName());
               }
             } else {
               throw new AssertionError();

@@ -18,14 +18,14 @@
  */
 package org.chromattic.test.property;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tp_b")
+@PrimaryType(name = "tp_b")
 public abstract class TP_Undefined {
 
   @Property(name = "undefined_property")

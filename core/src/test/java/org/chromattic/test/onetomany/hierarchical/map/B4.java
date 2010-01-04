@@ -19,13 +19,13 @@
 package org.chromattic.test.onetomany.hierarchical.map;
 
 import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_b")
+@PrimaryType(name = "totm_b")
 public abstract class B4 {
 
   @ManyToOne

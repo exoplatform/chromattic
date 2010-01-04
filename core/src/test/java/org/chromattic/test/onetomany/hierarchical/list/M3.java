@@ -19,12 +19,12 @@
 
 package org.chromattic.test.onetomany.hierarchical.list;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "multichildren_c")
+@PrimaryType(name = "multichildren_c")
 public class M3 extends M2 {
 }

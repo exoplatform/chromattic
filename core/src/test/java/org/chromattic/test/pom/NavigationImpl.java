@@ -24,7 +24,7 @@ import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 import java.util.Collection;
 
@@ -32,7 +32,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "exo:navigation")
+@PrimaryType(name = "exo:navigation")
 public abstract class NavigationImpl {
 
   public abstract SiteImpl getSite();

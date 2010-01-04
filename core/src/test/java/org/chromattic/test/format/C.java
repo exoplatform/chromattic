@@ -19,7 +19,7 @@
 package org.chromattic.test.format;
 
 import org.chromattic.api.annotations.FormattedBy;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToMany;
 
 import java.util.Map;
@@ -28,7 +28,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "format_c")
+@PrimaryType(name = "format_c")
 @FormattedBy(BarPrefixerFormatter.class)
 public abstract class C {
 

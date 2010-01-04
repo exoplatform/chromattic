@@ -352,7 +352,7 @@ public class TypeMappingBuilder {
     }
 
     //
-    NodeMapping nodeMapping = javaClass.getDeclaredAnnotation(NodeMapping.class);
+    PrimaryType nodeMapping = javaClass.getDeclaredAnnotation(PrimaryType.class);
     MixinType mixin = javaClass.getDeclaredAnnotation(MixinType.class);
     String[] mixinNames = mixin != null ? mixin.names() : new String[0];
 

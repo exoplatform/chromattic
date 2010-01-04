@@ -18,12 +18,12 @@
  */
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "not_referenceable")
+@PrimaryType(name = "not_referenceable")
 public class NR {
 }

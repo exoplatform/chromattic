@@ -19,13 +19,13 @@
 
 package org.chromattic.test.inheritance;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tii_a")
+@PrimaryType(name = "tii_a")
 public abstract class AImpl extends A {
 
   public abstract String getString2();

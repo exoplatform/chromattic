@@ -18,14 +18,14 @@
  */
 package org.chromattic.test.methodinvocation.visibility;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tmi_a")
+@PrimaryType(name = "tmi_a")
 public abstract class A {
 
   @Property(name = "protectedproperty")

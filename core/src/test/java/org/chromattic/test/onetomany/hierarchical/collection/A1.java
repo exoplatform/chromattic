@@ -20,7 +20,7 @@
 package org.chromattic.test.onetomany.hierarchical.collection;
 
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 import java.util.Collection;
 
@@ -28,7 +28,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_a")
+@PrimaryType(name = "totm_a")
 public abstract class A1 {
 
   @OneToMany

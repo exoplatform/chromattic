@@ -20,7 +20,7 @@
 package org.chromattic.test.onetoone.embedded;
 
 import org.chromattic.api.RelationshipType;
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.RelatedMappedBy;
 
@@ -28,7 +28,7 @@ import org.chromattic.api.annotations.RelatedMappedBy;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "otoe_b")
+@PrimaryType(name = "otoe_b")
 public abstract class B {
 
   @OneToOne

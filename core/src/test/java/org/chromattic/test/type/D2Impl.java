@@ -18,13 +18,13 @@
  */
 package org.chromattic.test.type;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tt_c")
+@PrimaryType(name = "tt_c")
 public class D2Impl extends D1Impl implements D2 {
 
   public int value;
