@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper.onetoone.mixin;
+package org.chromattic.core.mapper.onetoone.embedded;
 
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.MixinContext;
@@ -28,12 +28,12 @@ import org.chromattic.core.mapper.RelatedPropertyMapper;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRMixinParentPropertyMapper extends RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, EntityContext> {
+public class JCREmbeddedParentPropertyMapper extends RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, EntityContext> {
 
   /** . */
   private final Class relatedClass;
 
-  public JCRMixinParentPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
+  public JCREmbeddedParentPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
     super(EntityContext.class, info);
 
     //

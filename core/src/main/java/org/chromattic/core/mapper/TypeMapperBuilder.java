@@ -27,8 +27,8 @@ import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.MixinContext;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.core.mapper.onetoone.mixin.JCRMixinParentPropertyMapper;
-import org.chromattic.core.mapper.onetoone.mixin.JCRMixinPropertyMapper;
+import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedParentPropertyMapper;
+import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedPropertyMapper;
 import org.chromattic.core.mapping.MixinTypeMapping;
 import org.chromattic.core.mapping.PrimaryTypeMapping;
 import org.chromattic.core.mapping.NodeTypeMapping;
@@ -244,14 +244,14 @@ public class TypeMapperBuilder {
             NodeTypeMapping relatedMapping = classToMapping.get(propertyInfo.getValue().getTypeInfo());
             if (typeMapping instanceof PrimaryTypeMapping) {
               if (relatedMapping instanceof MixinTypeMapping) {
-                JCRMixinParentPropertyMapper mapper = new JCRMixinParentPropertyMapper(propertyInfo);
+                JCREmbeddedParentPropertyMapper mapper = new JCREmbeddedParentPropertyMapper(propertyInfo);
                 propertyMappersForE.add(mapper);
               } else {
                 throw new BuilderException("Related class in mixin mapping must be annotated with @" + MixinType.class.getSimpleName());
               }
             } else if (typeMapping instanceof MixinTypeMapping) {
               if (relatedMapping instanceof PrimaryTypeMapping) {
-                JCRMixinPropertyMapper mapper = new JCRMixinPropertyMapper(propertyInfo);
+                JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper(propertyInfo);
                 propertyMappersForM.add(mapper);
               } else {
                 throw new BuilderException("Related class in mixin mapping must be annotated with @" + NodeMapping.class.getSimpleName());

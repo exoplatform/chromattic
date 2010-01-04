@@ -277,17 +277,20 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     if (mixinCtx == null) {
-      MixinTypeMapper mapper = (MixinTypeMapper)domain.getTypeMapper(mixinClass);
-      String mixinTypeName = mapper.getNodeTypeName();
-      if (sessionWrapper.haxMixin(entityCtx.state.getNode(), mixinTypeName)) {
-        NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
-        MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
+      NodeTypeMapper mapper = domain.getTypeMapper(mixinClass);
+      if (mapper instanceof MixinTypeMapper) {
+        MixinTypeMapper mixinMapper = (MixinTypeMapper)mapper;
+        String mixinTypeName = mapper.getNodeTypeName();
+        if (sessionWrapper.haxMixin(entityCtx.state.getNode(), mixinTypeName)) {
+          NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
+          MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
 
-        //
-        mixinCtx = new MixinContext(mapper, this);
-        entityCtx.mixins.put(mixinClass, mixinCtx);
-        mixinCtx.relatedEntity = entityCtx;
-        mixinCtx.typeInfo = mixinTypeInfo;
+          //
+          mixinCtx = new MixinContext(mixinMapper, this);
+          entityCtx.mixins.put(mixinClass, mixinCtx);
+          mixinCtx.relatedEntity = entityCtx;
+          mixinCtx.typeInfo = mixinTypeInfo;
+        }
       }
     }
 
