@@ -112,43 +112,4 @@ public class OneToOneTestCase extends AbstractTestCase {
     b.setB(a2);
     assertSame(b, a2.getParent());
   }
-
-/*
-  public void testChildAndParentAdd() throws Exception {
-    DomainSession session = login();
-    Node rootNode = session.getRoot();
-
-    //
-    Node aNode = rootNode.addNode("toto_a_a", "toto_a");
-    TOTO_A_3 a = session.findByNode(TOTO_A_3.class, aNode);
-    assertNotNull(a);
-    assertNull(a.getB());
-
-    //
-    Node bNode = aNode.addNode("b", "toto_b");
-    TOTO_B_3 b = session.findByNode(TOTO_B_3.class, bNode);
-    assertNotNull(b);
-    assertSame(a, b.getA());
-    assertSame(b, a.getB());
-  }
-
-  public void testChildAndParentLoad() throws Exception {
-    DomainSession session = login();
-    Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("toto_a_b", "toto_a");
-    String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "toto_b");
-    String bId = bNode.getUUID();
-    rootNode.save();
-
-    //
-    session = login();
-    TOTO_B_3 b = session.findById(TOTO_B_3.class, bId);
-    assertNotNull(b);
-    TOTO_A_3 a = b.getA();
-    assertNotNull(a);
-    assertSame(a, session.findById(TOTO_A_3.class, aId));
-    assertSame(b, a.getB());
-  }
-*/
 }
