@@ -32,13 +32,13 @@ import javax.jcr.Node;
 public class OneToOneTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(A.class);
+    addClass(B.class);
     addClass(C.class);
   }
 
   public void testAddMixinToEntity() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "a");
+    B a = session.insert(B.class, "b");
     C b = session.create(C.class);
     assertNull(a.getMixin());
     assertNull(b.getEntity());
@@ -50,14 +50,14 @@ public class OneToOneTestCase extends AbstractTestCase {
     session.save();
     session.close();
     session = login();
-    a = session.findByPath(A.class, "a");
+    a = session.findByPath(B.class, "b");
     b = a.getMixin();
     assertNotNull(b);
   }
 
   public void testAddEntityToMixin() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "a");
+    B a = session.insert(B.class, "b");
     C b = session.create(C.class);
     assertNull(a.getMixin());
     assertNull(b.getEntity());
@@ -69,14 +69,14 @@ public class OneToOneTestCase extends AbstractTestCase {
     session.save();
     session.close();
     session = login();
-    a = session.findByPath(A.class, "a");
+    a = session.findByPath(B.class, "b");
     b = a.getMixin();
     assertNotNull(b);
   }
 
   public void testMixinProperty() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "a");
+    B a = session.insert(B.class, "b");
     C b = session.create(C.class);
     a.setMixin(b);
     b.setFoo("bar");
@@ -85,11 +85,11 @@ public class OneToOneTestCase extends AbstractTestCase {
 
   public void testMixinChild() throws Exception {
     DomainSession session = login();
-    A a1 = session.insert(A.class, "a");
+    B a1 = session.insert(B.class, "b");
     C b = session.create(C.class);
     a1.setMixin(b);
-    A a2 = session.create(A.class);
-    b.setA(a2);
+    B a2 = session.create(B.class);
+    b.setB(a2);
     assertSame(b, a2.getParent());
   }
 

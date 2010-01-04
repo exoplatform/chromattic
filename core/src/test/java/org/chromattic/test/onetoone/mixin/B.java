@@ -29,7 +29,7 @@ import org.chromattic.api.annotations.RelatedMappedBy;
  * @version $Revision$
  */
 @NodeMapping(name = "otom_b")
-public abstract class A {
+public abstract class B {
 
   @OneToOne
   @RelatedMappedBy("b")

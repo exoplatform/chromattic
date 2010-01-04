@@ -33,9 +33,9 @@ import org.chromattic.api.annotations.Property;
 public abstract class C {
 
   @OneToOne(type = RelationshipType.EMBEDDED)
-  abstract A getEntity();
+  abstract B getEntity();
 
-  abstract void setEntity(A a);
+  abstract void setEntity(B b);
 
   @Property(name = "foo")
   public abstract void setFoo(String foo);
@@ -44,8 +44,8 @@ public abstract class C {
 
   @OneToOne
   @MappedBy("b")
-  public abstract A getA();
+  public abstract B getB();
 
-  public abstract void setA(A a);
+  public abstract void setB(B b);
 
 }
