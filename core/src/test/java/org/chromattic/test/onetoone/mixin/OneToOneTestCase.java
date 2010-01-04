@@ -33,13 +33,13 @@ public class OneToOneTestCase extends AbstractTestCase {
 
   protected void createDomain() {
     addClass(A.class);
-    addClass(B.class);
+    addClass(C.class);
   }
 
   public void testAddMixinToEntity() throws Exception {
     DomainSession session = login();
     A a = session.insert(A.class, "a");
-    B b = session.create(B.class);
+    C b = session.create(C.class);
     assertNull(a.getMixin());
     assertNull(b.getEntity());
     a.setMixin(b);
@@ -58,7 +58,7 @@ public class OneToOneTestCase extends AbstractTestCase {
   public void testAddEntityToMixin() throws Exception {
     DomainSession session = login();
     A a = session.insert(A.class, "a");
-    B b = session.create(B.class);
+    C b = session.create(C.class);
     assertNull(a.getMixin());
     assertNull(b.getEntity());
     b.setEntity(a);
@@ -77,7 +77,7 @@ public class OneToOneTestCase extends AbstractTestCase {
   public void testMixinProperty() throws Exception {
     DomainSession session = login();
     A a = session.insert(A.class, "a");
-    B b = session.create(B.class);
+    C b = session.create(C.class);
     a.setMixin(b);
     b.setFoo("bar");
     assertEquals("bar", b.getFoo());
@@ -86,7 +86,7 @@ public class OneToOneTestCase extends AbstractTestCase {
   public void testMixinChild() throws Exception {
     DomainSession session = login();
     A a1 = session.insert(A.class, "a");
-    B b = session.create(B.class);
+    C b = session.create(C.class);
     a1.setMixin(b);
     A a2 = session.create(A.class);
     b.setA(a2);

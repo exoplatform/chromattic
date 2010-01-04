@@ -30,7 +30,7 @@ import org.chromattic.api.annotations.Property;
  * @version $Revision$
  */
 @MixinType(names = "otom_c")
-public abstract class B {
+public abstract class C {
 
   @OneToOne(type = RelationshipType.EMBEDDED)
   abstract A getEntity();

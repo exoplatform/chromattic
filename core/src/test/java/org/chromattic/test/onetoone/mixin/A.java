@@ -33,13 +33,13 @@ public abstract class A {
 
   @OneToOne
   @RelatedMappedBy("b")
-  public abstract B getParent();
+  public abstract C getParent();
 
-  public abstract void setParent(B b);
+  public abstract void setParent(C b);
 
   @OneToOne(type = RelationshipType.EMBEDDED)
-  public abstract B getMixin();
+  public abstract C getMixin();
 
-  public abstract void setMixin(B b);
+  public abstract void setMixin(C b);
 
 }
