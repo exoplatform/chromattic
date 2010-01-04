@@ -18,8 +18,8 @@
  */
 package org.chromattic.core.mapper.onetoone.embedded;
 
+import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
-import org.chromattic.core.MixinContext;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.mapper.RelatedPropertyMapper;
@@ -47,7 +47,7 @@ public class JCREmbeddedParentPropertyMapper extends RelatedPropertyMapper<Singl
 
   @Override
   public Object get(EntityContext context) throws Throwable {
-    MixinContext mixinCtx = context.getMixin(relatedClass);
+    EmbeddedContext mixinCtx = context.getEmbedded(relatedClass);
     return mixinCtx != null ? mixinCtx.getObject() : null;
   }
 
@@ -63,7 +63,7 @@ public class JCREmbeddedParentPropertyMapper extends RelatedPropertyMapper<Singl
     }
 
     //
-    MixinContext mixinCtx = context.getSession().unwrapMixin(value);
+    EmbeddedContext mixinCtx = context.getSession().unwrapMixin(value);
 
     //
     context.addMixin(mixinCtx);

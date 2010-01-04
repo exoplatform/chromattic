@@ -28,8 +28,8 @@ import org.chromattic.api.Status;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
-import org.chromattic.core.mapper.PrimaryTypeMapper;
 import org.chromattic.core.jcr.LinkType;
+import org.chromattic.core.mapper.ObjectMapper;
 
 import javax.jcr.RepositoryException;
 
@@ -37,13 +37,13 @@ import javax.jcr.RepositoryException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public final class EntityContext extends ObjectContext{
+public final class EntityContext extends ObjectContext {
 
   /** The logger. */
   private static final Logger log = Logger.getLogger(EntityContext.class);
 
   /** The related type. */
-  final PrimaryTypeMapper mapper;
+  final ObjectMapper<EntityContext> mapper;
 
   /** The object instance. */
   final Object object;
@@ -52,18 +52,18 @@ public final class EntityContext extends ObjectContext{
   final PropertyMap properties;
 
   /** The list of mixins. */
-  final Map<Class, MixinContext> mixins;
+  final Map<ObjectMapper<EmbeddedContext>, EmbeddedContext> embeddeds;
 
   /** The related state. */
   EntityContextState state;
 
-  EntityContext(PrimaryTypeMapper mapper, EntityContextState state) throws RepositoryException {
+  EntityContext(ObjectMapper<EntityContext> mapper, EntityContextState state) throws RepositoryException {
     this.state = null;
     this.mapper = mapper;
     this.object = mapper.createObject(this);
     this.state = state;
     this.properties = new PropertyMap(this);
-    this.mixins = new HashMap<Class, MixinContext>();
+    this.embeddeds = new HashMap<ObjectMapper<EmbeddedContext>, EmbeddedContext>();
   }
 
   public DomainSession getSession() {
@@ -88,12 +88,12 @@ public final class EntityContext extends ObjectContext{
     return state.getTypeInfo();
   }
 
-  public void addMixin(MixinContext mixinCtx) {
+  public void addMixin(EmbeddedContext mixinCtx) {
     state.getSession().addMixin(this, mixinCtx);
   }
 
-  public MixinContext getMixin(Class<?> mixinClass) {
-    return state.getSession().getMixin(this, mixinClass);
+  public EmbeddedContext getEmbedded(Class<?> embeddedClass) {
+    return state.getSession().getEmbedded(this, embeddedClass);
   }
 
   public String getAttribute(NodeAttributeType type) {
@@ -210,7 +210,6 @@ public final class EntityContext extends ObjectContext{
   public Object getParent() {
     return state.getSession().getParent(this);
   }
-
 
   /**
    * Finds a suitable formatter scoped for this entity context. The returned value might

@@ -26,9 +26,8 @@ import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.jcr.info.MixinTypeInfo;
-import org.chromattic.core.mapper.MixinTypeMapper;
-import org.chromattic.core.mapper.PrimaryTypeMapper;
-import org.chromattic.core.mapper.NodeTypeMapper;
+import org.chromattic.core.mapper.NodeTypeKind;
+import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
 
@@ -159,10 +158,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   private String _persist(Node srcNode, String name, EntityContext dstCtx) throws RepositoryException {
-    if (!(dstCtx.mapper instanceof PrimaryTypeMapper)) {
-      throw new IllegalArgumentException("Cannot persist an object mapper to a mixin type " + dstCtx.mapper);
-    }
-    PrimaryTypeMapper mapper = (PrimaryTypeMapper)dstCtx.mapper;
+    ObjectMapper mapper = dstCtx.mapper;
 
     //
     Object parent = findByNode(Object.class, srcNode);
@@ -174,7 +170,7 @@ public class DomainSessionImpl extends DomainSession {
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
     NodeType parentNodeType = srcNode.getPrimaryNodeType();
-    NodeTypeMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
+    ObjectMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
     if (parentTypeMapper != null) {
       onDuplicate = parentTypeMapper.getOnDuplicate();
     }
@@ -218,7 +214,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected void _addMixin(EntityContext entityCtx, MixinContext mixinCtx) throws RepositoryException {
+  protected void _addMixin(EntityContext entityCtx, EmbeddedContext mixinCtx) throws RepositoryException {
     if (entityCtx == null) {
       throw new NullPointerException();
     }
@@ -232,7 +228,7 @@ public class DomainSessionImpl extends DomainSession {
         throw new IllegalArgumentException();
       }
     } else {
-      MixinContext previousMixinCtx = entityCtx.mixins.get(mixinCtx.mapper);
+      EmbeddedContext previousMixinCtx = entityCtx.embeddeds.get(mixinCtx.mapper);
       if (previousMixinCtx != null) {
         if (previousMixinCtx != mixinCtx) {
           throw new IllegalStateException();
@@ -256,7 +252,7 @@ public class DomainSessionImpl extends DomainSession {
         MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
 
         // Perform wiring
-        entityCtx.mixins.put(mixinCtx.mapper.getObjectClass(), mixinCtx);
+        entityCtx.embeddeds.put(mixinCtx.mapper, mixinCtx);
         mixinCtx.relatedEntity = entityCtx;
         mixinCtx.typeInfo = mixinTypeInfo;
       }
@@ -264,38 +260,35 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected MixinContext _getMixin(EntityContext entityCtx, Class<?> mixinClass) throws RepositoryException {
+  protected EmbeddedContext _getEmbedded(EntityContext entityCtx, Class<?> embeddedClass) throws RepositoryException {
     if (entityCtx == null) {
       throw new NullPointerException();
     }
-    if (mixinClass == null) {
+    if (embeddedClass == null) {
       throw new NullPointerException();
     }
 
-    //
-    MixinContext mixinCtx = entityCtx.mixins.get(mixinClass);
+    // That's a necessary evil
+    ObjectMapper<EmbeddedContext> mapper = (ObjectMapper<EmbeddedContext>)domain.getTypeMapper(embeddedClass);
 
     //
-    if (mixinCtx == null) {
-      NodeTypeMapper mapper = domain.getTypeMapper(mixinClass);
-      if (mapper instanceof MixinTypeMapper) {
-        MixinTypeMapper mixinMapper = (MixinTypeMapper)mapper;
-        String mixinTypeName = mapper.getNodeTypeName();
-        if (sessionWrapper.haxMixin(entityCtx.state.getNode(), mixinTypeName)) {
-          NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
-          MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
+    EmbeddedContext embeddedCtx = entityCtx.embeddeds.get(mapper);
+    if (embeddedCtx == null) {
+      String mixinTypeName = mapper.getNodeTypeName();
+      if (sessionWrapper.haxMixin(entityCtx.state.getNode(), mixinTypeName)) {
+        NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
+        MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
 
-          //
-          mixinCtx = new MixinContext(mixinMapper, this);
-          entityCtx.mixins.put(mixinClass, mixinCtx);
-          mixinCtx.relatedEntity = entityCtx;
-          mixinCtx.typeInfo = mixinTypeInfo;
-        }
+        //
+        embeddedCtx = new EmbeddedContext(mapper, this);
+        entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
+        embeddedCtx.relatedEntity = entityCtx;
+        embeddedCtx.typeInfo = mixinTypeInfo;
       }
     }
 
     //
-    return mixinCtx;
+    return embeddedCtx;
   }
 
   @Override
@@ -329,7 +322,7 @@ public class DomainSessionImpl extends DomainSession {
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
     NodeType parentNodeType = dstNode.getPrimaryNodeType();
-    NodeTypeMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
+    ObjectMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
     if (parentTypeMapper != null) {
       onDuplicate = parentTypeMapper.getOnDuplicate();
     }
@@ -379,13 +372,13 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    NodeTypeMapper typeMapper = domain.getTypeMapper(clazz);
+    ObjectMapper<?> typeMapper = domain.getTypeMapper(clazz);
     TransientEntityContextState state = new TransientEntityContextState(this);
 
     //
     ObjectContext octx;
-    if (typeMapper instanceof PrimaryTypeMapper) {
-      EntityContext ctx = new EntityContext((PrimaryTypeMapper)typeMapper, state);
+    if (typeMapper.getKind() == NodeTypeKind.PRIMARY) {
+      EntityContext ctx = new EntityContext((ObjectMapper<EntityContext>)typeMapper, state);
 
       //
       if (name != null) {
@@ -401,7 +394,7 @@ public class DomainSessionImpl extends DomainSession {
       if (name != null) {
         throw new IllegalArgumentException("Cannot create a mixin type with a name");
       }
-      octx = new MixinContext((MixinTypeMapper)typeMapper, this);
+      octx = new EmbeddedContext((ObjectMapper<EmbeddedContext>)typeMapper, this);
     }
     return clazz.cast(octx.getObject());
   }
@@ -641,12 +634,12 @@ public class DomainSessionImpl extends DomainSession {
   private void nodeRead(Node node) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();
-    PrimaryTypeMapper mapper = (PrimaryTypeMapper)domain.getTypeMapper(nodeTypeName);
+    ObjectMapper mapper = domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
       EntityContext ctx = contexts.get(node.getUUID());
       if (ctx == null) {
         PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
-        ctx = new EntityContext(mapper, new PersistentEntityContextState(node, this));
+        ctx = new EntityContext((ObjectMapper<EntityContext>)mapper, new PersistentEntityContextState(node, this));
         log.trace("Inserted context {} loaded from node path {}", ctx, node.getPath());
         contexts.put(node.getUUID(), ctx);
         broadcaster.loaded(persistentState, ctx.getObject());
@@ -663,7 +656,7 @@ public class DomainSessionImpl extends DomainSession {
   private void nodeAdded(Node node, EntityContext ctx) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();
-    NodeTypeMapper mapper = domain.getTypeMapper(nodeTypeName);
+    ObjectMapper mapper = domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
       if (contexts.containsKey(node.getUUID())) {
         String msg = "Attempt to replace an existing context " + ctx + " with path " + node.getPath();

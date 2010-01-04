@@ -28,7 +28,7 @@ import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
-import org.chromattic.core.mapper.NodeTypeMapper;
+import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.mapper.ValueMapper;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
@@ -100,7 +100,7 @@ class PersistentEntityContextState extends EntityContextState {
       ObjectFormatter formatter = null;
       Node parentNode = node.getParent();
       String nodeTypeName = parentNode.getPrimaryNodeType().getName();
-      NodeTypeMapper parentMapper = session.domain.getTypeMapper(nodeTypeName);
+      ObjectMapper parentMapper = session.domain.getTypeMapper(nodeTypeName);
       if (parentMapper != null) {
         formatter = parentMapper.getFormatter();
       }

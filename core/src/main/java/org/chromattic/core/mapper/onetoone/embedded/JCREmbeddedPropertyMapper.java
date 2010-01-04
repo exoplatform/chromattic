@@ -18,8 +18,8 @@
  */
 package org.chromattic.core.mapper.onetoone.embedded;
 
+import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
-import org.chromattic.core.MixinContext;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
@@ -28,15 +28,15 @@ import org.chromattic.core.mapper.JCRNodePropertyMapper;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCREmbeddedPropertyMapper extends JCRNodePropertyMapper<MixinContext> {
+public class JCREmbeddedPropertyMapper extends JCRNodePropertyMapper<EmbeddedContext> {
 
 
   public JCREmbeddedPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
-    super(MixinContext.class, info);
+    super(EmbeddedContext.class, info);
   }
 
   @Override
-  public Object get(MixinContext context) throws Throwable {
+  public Object get(EmbeddedContext context) throws Throwable {
     EntityContext entityCtx = context.getEntity();
     if (entityCtx != null) {
       Object related = entityCtx.getObject();
@@ -48,7 +48,7 @@ public class JCREmbeddedPropertyMapper extends JCRNodePropertyMapper<MixinContex
   }
 
   @Override
-  public void set(MixinContext context, Object value) throws Throwable {
+  public void set(EmbeddedContext context, Object value) throws Throwable {
     if (value == null) {
       throw new UnsupportedOperationException("todo mixin removal");
     }

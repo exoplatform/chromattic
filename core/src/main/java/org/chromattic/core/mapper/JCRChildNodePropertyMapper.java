@@ -20,7 +20,7 @@
 package org.chromattic.core.mapper;
 
 import org.chromattic.core.EntityContext;
-import org.chromattic.core.MixinContext;
+import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 
@@ -49,7 +49,7 @@ public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper<E
 
 
 
-      MixinContext mixinCtx = parentCtx.getMixin(relatedClass);
+      EmbeddedContext mixinCtx = parentCtx.getEmbedded(relatedClass);
 
       if (mixinCtx != null) {
         return mixinCtx.getObject();

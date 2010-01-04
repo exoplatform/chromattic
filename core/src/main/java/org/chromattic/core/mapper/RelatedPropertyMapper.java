@@ -32,7 +32,7 @@ import java.util.Set;
 public abstract class RelatedPropertyMapper<P extends PropertyInfo, C extends ObjectContext> extends PropertyMapper<P, C> {
 
   /** . */
-  protected Set<NodeTypeMapper> relatedTypes;
+  protected Set<ObjectMapper> relatedTypes;
 
   protected RelatedPropertyMapper(Class<C> contextType, P info) {
     super(contextType, info);

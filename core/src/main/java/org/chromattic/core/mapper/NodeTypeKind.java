@@ -16,35 +16,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.chromattic.core.mapper;
-
-import org.chromattic.api.NameConflictResolution;
-import org.chromattic.core.MixinContext;
-import org.chromattic.spi.instrument.Instrumentor;
-
-import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinTypeMapper extends NodeTypeMapper<MixinContext>
-{
+public enum NodeTypeKind {
 
-  public MixinTypeMapper(
-    Class<?> objectClass,
-    Set<PropertyMapper<?, MixinContext>> propertyMappers,
-    Set<MethodMapper<MixinContext>> methodMappers,
-    NameConflictResolution onDuplicate,
-    Instrumentor instrumentor,
-    String mixinTypeName) {
-    super(
-      objectClass,
-      propertyMappers,
-      methodMappers,
-      onDuplicate,
-      null,
-      instrumentor,
-      mixinTypeName);
-  }
+  PRIMARY,
+
+  MIXIN
+
 }

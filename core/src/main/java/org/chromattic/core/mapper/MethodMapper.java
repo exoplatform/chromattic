@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
 public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
 
   /** . */
-  NodeTypeMapper mapper;
+  ObjectMapper mapper;
 
   /** . */
   private final Method method;
@@ -62,7 +62,7 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
   public static class Create<C extends ObjectContext> extends MethodMapper<C> {
 
     /** . */
-    NodeTypeMapper<C> type;
+    ObjectMapper<C> type;
 
     public Create(Method method) {
       super(method);

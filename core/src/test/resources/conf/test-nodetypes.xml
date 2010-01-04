@@ -822,7 +822,14 @@
     </supertypes>
   </nodeType>
 
-  <nodeType name="otom_b" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+  <nodeType name="otom_b" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+  </nodeType>
+
+  <nodeType name="otom_c" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>
@@ -833,10 +840,10 @@
       </propertyDefinition>
     </propertyDefinitions>
     <childNodeDefinitions>
-      <childNodeDefinition name="a" defaultPrimaryType="otom_a" autoCreated="false" mandatory="false"
+      <childNodeDefinition name="b" defaultPrimaryType="otom_b" autoCreated="false" mandatory="false"
         onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
-          <requiredPrimaryType>otom_a</requiredPrimaryType>
+          <requiredPrimaryType>otom_b</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
       <!--

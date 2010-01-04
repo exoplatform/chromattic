@@ -37,7 +37,7 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodInvoker<C> {
+public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
 
   /** . */
   protected final Class<?> objectClass;
@@ -63,14 +63,18 @@ public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodI
   /** . */
   private final NameConflictResolution onDuplicate;
 
-  public NodeTypeMapper(
+  /** . */
+  private final NodeTypeKind kind;
+
+  public ObjectMapper(
     Class<?> objectClass,
     Set<PropertyMapper<?, C>> propertyMappers,
     Set<MethodMapper<C>> methodMappers,
     NameConflictResolution onDuplicate,
     ObjectFormatter formatter,
     Instrumentor instrumentor,
-    String typeName) {
+    String typeName,
+    NodeTypeKind kind) {
 
     // Build the dispatcher map
     Map<Method, MethodInvoker<C>> dispatchers = new HashMap<Method, MethodInvoker<C>>();
@@ -98,9 +102,10 @@ public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodI
     this.propertyMappers = propertyMappers;
     this.factory = instrumentor.getProxyClass(objectClass);
     this.nodeTypeName = typeName;
+    this.kind = kind;
   }
 
-   public Object invoke(C ctx, Method method, Object[] args) throws Throwable {
+  public Object invoke(C ctx, Method method, Object[] args) throws Throwable {
     MethodInvoker<C> invoker = dispatchers.get(method);
     if (invoker != null) {
       return invoker.invoke(ctx, method, args);
@@ -123,6 +128,10 @@ public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodI
       msg.append(")");
       throw new AssertionError(msg);
     }
+  }
+
+  public NodeTypeKind getKind() {
+    return kind;
   }
 
   public String getNodeTypeName() {
@@ -155,6 +164,6 @@ public abstract class NodeTypeMapper<C extends ObjectContext> implements MethodI
 
   @Override
   public String toString() {
-    return "NodeTypeMapper[class=" + objectClass + ",typeName=" + nodeTypeName + "]";
+    return "EntityMapper[class=" + objectClass + ",typeName=" + nodeTypeName + "]";
   }
 }

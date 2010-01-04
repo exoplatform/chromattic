@@ -19,7 +19,7 @@
 
 package org.chromattic.core;
 
-import org.chromattic.core.mapper.NodeTypeMapper;
+import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.mapping.NodeTypeMapping;
 import org.chromattic.core.mapper.TypeMapperBuilder;
 import org.chromattic.core.jcr.info.NodeInfoManager;
@@ -38,10 +38,10 @@ import java.util.HashMap;
 public class Domain {
 
   /** . */
-  private final Map<String, NodeTypeMapper> typeMapperByNodeType;
+  private final Map<String, ObjectMapper> typeMapperByNodeType;
 
   /** . */
-  private final Map<Class<?>, NodeTypeMapper> typeMapperByClass;
+  private final Map<Class<?>, ObjectMapper> typeMapperByClass;
 
   /** . */
   private final Instrumentor instrumentor;
@@ -80,9 +80,9 @@ public class Domain {
     TypeMapperBuilder builder = new TypeMapperBuilder(typeMappings, instrumentor);
 
     //
-    Map<String, NodeTypeMapper> typeMapperByNodeType = new HashMap<String, NodeTypeMapper>();
-    Map<Class<?>, NodeTypeMapper> typeMapperByClass = new HashMap<Class<?>, NodeTypeMapper>();
-    for (NodeTypeMapper typeMapper : builder.build()) {
+    Map<String, ObjectMapper> typeMapperByNodeType = new HashMap<String, ObjectMapper>();
+    Map<Class<?>, ObjectMapper> typeMapperByClass = new HashMap<Class<?>, ObjectMapper>();
+    for (ObjectMapper typeMapper : builder.build()) {
       if (typeMapperByNodeType.containsKey(typeMapper.getNodeTypeName())) {
         throw new IllegalStateException("Duplicate node type name " + typeMapper);
       }
@@ -115,11 +115,11 @@ public class Domain {
     return instrumentor;
   }
 
-  public NodeTypeMapper getTypeMapper(String nodeTypeName) {
+  public ObjectMapper getTypeMapper(String nodeTypeName) {
     return typeMapperByNodeType.get(nodeTypeName);
   }
 
-  public NodeTypeMapper getTypeMapper(Class<?> clazz) {
+  public ObjectMapper getTypeMapper(Class<?> clazz) {
     return typeMapperByClass.get(clazz);
   }
 

@@ -92,9 +92,9 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract void _move(EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
 
-  protected abstract void _addMixin(EntityContext ctx, MixinContext mixinCtx) throws RepositoryException;
+  protected abstract void _addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws RepositoryException;
 
-  protected abstract MixinContext _getMixin(EntityContext ctx, Class<?> mixinClass) throws RepositoryException;
+  protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> mixinClass) throws RepositoryException;
 
   public final Domain getDomain() {
     return domain;
@@ -306,16 +306,16 @@ public abstract class DomainSession implements ChromatticSession {
     return domain.queryManager.createQueryBuilder(this);
   }
 
-  public MixinContext getMixin(EntityContext ctx, Class<?> mixinClass) throws ChromatticException {
+  public EmbeddedContext getEmbedded(EntityContext ctx, Class<?> mixinClass) throws ChromatticException {
     try {
-      return _getMixin(ctx, mixinClass);
+      return _getEmbedded(ctx, mixinClass);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
   }
 
-  public void addMixin(EntityContext ctx, MixinContext mixinCtx) throws ChromatticException {
+  public void addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws ChromatticException {
     try {
       _addMixin(ctx, mixinCtx);
     }
@@ -447,11 +447,11 @@ public abstract class DomainSession implements ChromatticSession {
     return (EntityContext)domain.getInstrumentor().getInvoker(o);
   }
 
-  public final MixinContext unwrapMixin(Object o) {
+  public final EmbeddedContext unwrapMixin(Object o) {
     if (o == null) {
       throw new NullPointerException("Cannot unwrap null object");
     }
-    return (MixinContext)domain.getInstrumentor().getInvoker(o);
+    return (EmbeddedContext)domain.getInstrumentor().getInvoker(o);
   }
 
   public final String persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {

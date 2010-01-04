@@ -24,8 +24,8 @@ import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.common.ObjectInstantiator;
+import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
-import org.chromattic.core.MixinContext;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedParentPropertyMapper;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedPropertyMapper;
@@ -122,7 +122,7 @@ public class TypeMapperBuilder {
   private SetMap<ClassTypeInfo, RelatedPropertyMapper> relatedProperties = new SetMap<ClassTypeInfo, RelatedPropertyMapper>();
   private SetMap<ClassTypeInfo, MethodMapper.Create> relatedMethods = new SetMap<ClassTypeInfo, MethodMapper.Create>();
 
-  public Collection<NodeTypeMapper> build() {
+  public Collection<ObjectMapper> build() {
     try {
       return _build();
     }
@@ -131,15 +131,15 @@ public class TypeMapperBuilder {
     }
   }
 
-  private Collection<NodeTypeMapper> _build() throws ClassNotFoundException {
+  private Collection<ObjectMapper> _build() throws ClassNotFoundException {
 
     //
-    Map<String, NodeTypeMapper> mappers = new HashMap<String, NodeTypeMapper>();
+    Map<String, ObjectMapper> mappers = new HashMap<String, ObjectMapper>();
 
 
     for (NodeTypeMapping typeMapping : typeMappings) {
-      Class<? extends ObjectContext> contextType = typeMapping instanceof PrimaryTypeMapping ? EntityContext.class : MixinContext.class;
-      NodeTypeMapper<?> mapper = createMapper(contextType, typeMapping);
+      Class<? extends ObjectContext> contextType = typeMapping instanceof PrimaryTypeMapping ? EntityContext.class : EmbeddedContext.class;
+      ObjectMapper<?> mapper = createMapper(contextType, typeMapping);
       mappers.put(typeMapping.getObjectClass().getName(), mapper);
     }
 
@@ -150,8 +150,8 @@ public class TypeMapperBuilder {
       Set<RelatedPropertyMapper> properties = relatedProperties.get(relatedType);
 
       //
-      Set<NodeTypeMapper> relatedTypes = new HashSet<NodeTypeMapper>();
-      for (NodeTypeMapper type : mappers.values()) {
+      Set<ObjectMapper> relatedTypes = new HashSet<ObjectMapper>();
+      for (ObjectMapper type : mappers.values()) {
         Class relatedClass = Thread.currentThread().getContextClassLoader().loadClass(relatedType.getName());
         if (relatedClass.isAssignableFrom(type.getObjectClass())) {
           relatedTypes.add(type);
@@ -167,7 +167,7 @@ public class TypeMapperBuilder {
     //
     for (ClassTypeInfo relatedType : relatedMethods.keySet()) {
       Set<MethodMapper.Create> methods = relatedMethods.get(relatedType);
-      NodeTypeMapper relatedMapper = mappers.get(relatedType.getName());
+      ObjectMapper relatedMapper = mappers.get(relatedType.getName());
       if (relatedMapper == null) {
         throw new IllegalStateException("Could not find mapper for " + relatedType.getName() + " referenced by " + methods);
       }
@@ -177,10 +177,10 @@ public class TypeMapperBuilder {
     }
 
     //
-    return new ArrayList<NodeTypeMapper>(mappers.values());
+    return new ArrayList<ObjectMapper>(mappers.values());
   }
 
-  private <C extends ObjectContext> NodeTypeMapper createMapper(Class<C> contextType, NodeTypeMapping typeMapping) throws ClassNotFoundException {
+  private <C extends ObjectContext> ObjectMapper createMapper(Class<C> contextType, NodeTypeMapping typeMapping) throws ClassNotFoundException {
 
     //
     Set<MethodMapper<C>> methodMappers = new HashSet<MethodMapper<C>>();
@@ -189,7 +189,7 @@ public class TypeMapperBuilder {
     //
     Set<PropertyMapper<?, C>> propertyMappers = new HashSet<PropertyMapper<?, C>>();
     Set<PropertyMapper<?, EntityContext>> propertyMappersForE = new HashSet<PropertyMapper<?, EntityContext>>();
-    Set<PropertyMapper<?, MixinContext>> propertyMappersForM = new HashSet<PropertyMapper<?, MixinContext>>();
+    Set<PropertyMapper<?, EmbeddedContext>> propertyMappersForM = new HashSet<PropertyMapper<?, EmbeddedContext>>();
 
     for (PropertyMapping<?> pm : typeMapping.getPropertyMappings()) {
 
@@ -361,7 +361,7 @@ public class TypeMapperBuilder {
     }
 
     //
-    NodeTypeMapper<C> mapper;
+    ObjectMapper<C> mapper;
     if (typeMapping instanceof PrimaryTypeMapping) {
       PrimaryTypeMapping nodeTypeMapping = (PrimaryTypeMapping)typeMapping;
 
@@ -393,14 +393,15 @@ public class TypeMapperBuilder {
       }
 
       //
-      mapper = (NodeTypeMapper<C>)new PrimaryTypeMapper(
+      mapper = (ObjectMapper<C>)new ObjectMapper<EntityContext>(
         (Class<?>)typeMapping.getObjectClass().getType(),
         tmp,
         tmp2,
         typeMapping.getOnDuplicate(),
-        instrumentor,
         formatter,
-        nodeTypeMapping.getNodeTypeName());
+        instrumentor,
+        nodeTypeMapping.getNodeTypeName(),
+        NodeTypeKind.PRIMARY);
     } else {
       MixinTypeMapping mixinTypeMapping = (MixinTypeMapping)typeMapping;
 
@@ -415,29 +416,31 @@ public class TypeMapperBuilder {
       }
 
       // propertyMappers
-      Set<PropertyMapper<?, MixinContext>> tmp = new HashSet<PropertyMapper<?, MixinContext>>(propertyMappersForM);
+      Set<PropertyMapper<?, EmbeddedContext>> tmp = new HashSet<PropertyMapper<?, EmbeddedContext>>(propertyMappersForM);
 
       // methodMappers
-      Set<MethodMapper<MixinContext>> tmp2 = new HashSet<MethodMapper<MixinContext>>();
+      Set<MethodMapper<EmbeddedContext>> tmp2 = new HashSet<MethodMapper<EmbeddedContext>>();
 
       //
       for (PropertyMapper<?, C> pm : propertyMappers) {
-        tmp.add((PropertyMapper<?, MixinContext>)pm);
+        tmp.add((PropertyMapper<?, EmbeddedContext>)pm);
       }
 
       //
       for (MethodMapper<C> pm : methodMappers) {
-        tmp2.add((MethodMapper<MixinContext>)pm);
+        tmp2.add((MethodMapper<EmbeddedContext>)pm);
       }
 
       //
-      mapper = (NodeTypeMapper<C>)new MixinTypeMapper(
+      mapper = (ObjectMapper<C>)new ObjectMapper<EmbeddedContext>(
         (Class<?>)typeMapping.getObjectClass().getType(),
         tmp,
         tmp2,
         typeMapping.getOnDuplicate(),
+        null,
         instrumentor,
-        mixinTypeMapping.getMixinTypeName());
+        mixinTypeMapping.getMixinTypeName(),
+        NodeTypeKind.MIXIN);
     }
 
     // Finish wiring

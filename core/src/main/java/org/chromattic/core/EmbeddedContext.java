@@ -19,9 +19,8 @@
 
 package org.chromattic.core;
 
-import org.chromattic.core.jcr.info.MixinTypeInfo;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
-import org.chromattic.core.mapper.MixinTypeMapper;
+import org.chromattic.core.mapper.ObjectMapper;
 
 import java.lang.reflect.Method;
 
@@ -29,24 +28,24 @@ import java.lang.reflect.Method;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public final class MixinContext extends ObjectContext {
+public final class EmbeddedContext extends ObjectContext {
 
   /** The object instance. */
   final Object object;
 
   /** The related type. */
-  final MixinTypeMapper mapper;
+  final ObjectMapper<EmbeddedContext> mapper;
 
   /** The related entity if not null, otherwise it means that we are not attached to anything. */
   EntityContext relatedEntity;
 
-  /** . */
-  MixinTypeInfo typeInfo;
+  /** The related type info. */
+  NodeTypeInfo typeInfo;
 
   /** . */
   final DomainSession session;
 
-  MixinContext(MixinTypeMapper mapper, DomainSession session) {
+  EmbeddedContext(ObjectMapper<EmbeddedContext> mapper, DomainSession session) {
     this.mapper = mapper;
     this.object = mapper.createObject(this);
     this.session = session;
@@ -80,6 +79,6 @@ public final class MixinContext extends ObjectContext {
 
   @Override
   public String toString() {
-    return "MixinContext[mapper=" + mapper + ",related=" + relatedEntity + "]";
+    return "EmbeddedContext[mapper=" + mapper + ",related=" + relatedEntity + "]";
   }
 }

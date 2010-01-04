@@ -29,7 +29,7 @@ import org.chromattic.api.annotations.Property;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@MixinType(names = "otom_b")
+@MixinType(names = "otom_c")
 public abstract class B {
 
   @OneToOne(type = RelationshipType.EMBEDDED)
@@ -43,7 +43,7 @@ public abstract class B {
   public abstract String getFoo();
 
   @OneToOne
-  @MappedBy("a")
+  @MappedBy("b")
   public abstract A getA();
 
   public abstract void setA(A a);

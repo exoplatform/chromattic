@@ -28,11 +28,11 @@ import org.chromattic.api.annotations.RelatedMappedBy;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "otom_a")
+@NodeMapping(name = "otom_b")
 public abstract class A {
 
   @OneToOne
-  @RelatedMappedBy("a")
+  @RelatedMappedBy("b")
   public abstract B getParent();
 
   public abstract void setParent(B b);

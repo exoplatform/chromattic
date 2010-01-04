@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
 public abstract class PropertyMapper<P extends PropertyInfo, O extends ObjectContext> implements MethodInvoker<O> {
 
   /** . */
-  NodeTypeMapper<O> mapper;
+  ObjectMapper<O> mapper;
 
   /** . */
   protected final Class<O> contextType;
