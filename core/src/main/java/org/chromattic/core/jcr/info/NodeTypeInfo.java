@@ -48,7 +48,7 @@ public class NodeTypeInfo
     this.propertyDefinitions = propertyDefinitions;
   }
 
-   public String getName() {
+  public String getName() {
     return name;
   }
 

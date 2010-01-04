@@ -20,7 +20,9 @@ package org.chromattic.core.jcr.info;
 
 import javax.jcr.nodetype.NodeType;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,7 +35,13 @@ public class PrimaryTypeInfo extends NodeTypeInfo
   /** . */
   private Set<String> mixinNames;
 
-  public PrimaryTypeInfo(NodeType nodeType) {
+  /** . */
+  private final Set<NodeTypeInfo> superTypes;
+
+  /** . */
+  private final Map<String, NodeTypeInfo> superTypesMap;
+
+  public PrimaryTypeInfo(NodeType nodeType, Set<NodeTypeInfo> superTypes) {
     super(nodeType);
 
     //
@@ -50,10 +58,30 @@ public class PrimaryTypeInfo extends NodeTypeInfo
     }
 
     //
+    Map<String, NodeTypeInfo> superTypesMap = new HashMap<String, NodeTypeInfo>();
+    for (NodeTypeInfo superType : superTypes) {
+      superTypesMap.put(superType.getName(), superType);
+    }
+
+    //
     this.mixinNames = Collections.unmodifiableSet(mixinNames);
+    this.superTypes = superTypes;
+    this.superTypesMap = Collections.unmodifiableMap(superTypesMap);
   }
 
-   public Set<String> getMixinNames() {
+  public Set<String> getSuperTypeNames() {
+    return superTypesMap.keySet();
+  }
+
+  public NodeTypeInfo getSuperType(String name) {
+    return superTypesMap.get(name);
+  }
+
+  public Set<NodeTypeInfo> getSuperTypes() {
+    return superTypes;
+  }
+
+  public Set<String> getMixinNames() {
     return mixinNames;
   }
 }

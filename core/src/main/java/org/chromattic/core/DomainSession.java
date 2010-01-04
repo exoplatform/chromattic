@@ -94,7 +94,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract void _addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws RepositoryException;
 
-  protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> mixinClass) throws RepositoryException;
+  protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> embeddedClass) throws RepositoryException;
 
   public final Domain getDomain() {
     return domain;
@@ -306,9 +306,9 @@ public abstract class DomainSession implements ChromatticSession {
     return domain.queryManager.createQueryBuilder(this);
   }
 
-  public EmbeddedContext getEmbedded(EntityContext ctx, Class<?> mixinClass) throws ChromatticException {
+  public EmbeddedContext getEmbedded(EntityContext ctx, Class<?> embeddedClass) throws ChromatticException {
     try {
-      return _getEmbedded(ctx, mixinClass);
+      return _getEmbedded(ctx, embeddedClass);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

@@ -19,32 +19,12 @@
 
 package org.chromattic.test.onetoone.mixin;
 
-import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.NodeMapping;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.RelatedMappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "otom_b")
-public abstract class B {
-
-  @OneToOne
-  @RelatedMappedBy("b")
-  public abstract C getParent();
-
-  public abstract void setParent(C b);
-
-  @OneToOne(type = RelationshipType.EMBEDDED)
-  public abstract C getMixin();
-
-  public abstract void setMixin(C b);
-
-  @OneToOne(type = RelationshipType.EMBEDDED)
-  public abstract A getSuper();
-
-  public abstract void setSuper(A a);
-
+@NodeMapping(name = "otom_a")
+public abstract class A {
 }

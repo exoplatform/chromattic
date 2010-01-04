@@ -21,8 +21,11 @@ package org.chromattic.core.jcr.info;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -70,12 +73,21 @@ public class NodeInfoManager {
     String nodeTypeName = nodeType.getName();
     NodeTypeInfo nodeTypeInfo = nodeTypeInfos.get(nodeTypeName);
     if (nodeTypeInfo == null) {
-      synchronized (nodeTypeInfosLock) {
-        if (nodeType.isMixin()) {
-          nodeTypeInfo = new MixinTypeInfo(nodeType);
-        } else {
-          nodeTypeInfo = new PrimaryTypeInfo(nodeType);
+
+      // Compute
+      if (nodeType.isMixin()) {
+        nodeTypeInfo = new MixinTypeInfo(nodeType);
+      } else {
+        Set<NodeTypeInfo> superTypes = new HashSet<NodeTypeInfo>();
+        for (NodeType superType : nodeType.getSupertypes()) {
+          NodeTypeInfo superTIs = getTypeInfo(superType);
+          superTypes.add(superTIs);
         }
+        nodeTypeInfo = new PrimaryTypeInfo(nodeType, Collections.unmodifiableSet(superTypes));
+      }
+
+      // Add
+      synchronized (nodeTypeInfosLock) {
         Map<String, NodeTypeInfo> copy = new HashMap<String, NodeTypeInfo>(nodeTypeInfos);
         copy.put(nodeTypeName, nodeTypeInfo);
         nodeTypeInfos = copy;

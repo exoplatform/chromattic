@@ -26,6 +26,7 @@ import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.jcr.info.MixinTypeInfo;
+import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 import org.chromattic.core.mapper.NodeTypeKind;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.jcr.SessionWrapper;
@@ -273,17 +274,31 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     EmbeddedContext embeddedCtx = entityCtx.embeddeds.get(mapper);
-    if (embeddedCtx == null) {
-      String mixinTypeName = mapper.getNodeTypeName();
-      if (sessionWrapper.haxMixin(entityCtx.state.getNode(), mixinTypeName)) {
-        NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
-        MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
 
-        //
-        embeddedCtx = new EmbeddedContext(mapper, this);
-        entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
-        embeddedCtx.relatedEntity = entityCtx;
-        embeddedCtx.typeInfo = mixinTypeInfo;
+    //
+    if (embeddedCtx == null) {
+      Node node = entityCtx.state.getNode();
+      if (mapper.getKind() == NodeTypeKind.MIXIN) {
+        String mixinTypeName = mapper.getNodeTypeName();
+        if (sessionWrapper.haxMixin(node, mixinTypeName)) {
+          NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
+          MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
+
+          //
+          embeddedCtx = new EmbeddedContext(mapper, this);
+          entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
+          embeddedCtx.relatedEntity = entityCtx;
+          embeddedCtx.typeInfo = mixinTypeInfo;
+        }
+      } else {
+        PrimaryTypeInfo typeInfo = entityCtx.state.getTypeInfo();
+        PrimaryTypeInfo superTI = (PrimaryTypeInfo)typeInfo.getSuperType(mapper.getNodeTypeName());
+        if (superTI != null) {
+          embeddedCtx = new EmbeddedContext(mapper, this);
+          entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
+          embeddedCtx.relatedEntity = entityCtx;
+          embeddedCtx.typeInfo = superTI;
+        }
       }
     }
 

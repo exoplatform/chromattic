@@ -32,46 +32,66 @@ import javax.jcr.Node;
 public class OneToOneTestCase extends AbstractTestCase {
 
   protected void createDomain() {
+    addClass(A.class);
     addClass(B.class);
     addClass(C.class);
   }
 
   public void testAddMixinToEntity() throws Exception {
     DomainSession session = login();
-    B a = session.insert(B.class, "b");
-    C b = session.create(C.class);
-    assertNull(a.getMixin());
-    assertNull(b.getEntity());
-    a.setMixin(b);
-    assertSame(b, a.getMixin());
-    assertSame(a, b.getEntity());
-    Node node = session.getNode(a);
+    B b = session.insert(B.class, "b");
+    C c = session.create(C.class);
+    assertNull(b.getMixin());
+    assertNull(c.getEntity());
+    b.setMixin(c);
+    assertSame(c, b.getMixin());
+    assertSame(b, c.getEntity());
+    Node node = session.getNode(b);
     assertTrue(JCR.hasMixin(node, "otom_c"));
     session.save();
     session.close();
     session = login();
-    a = session.findByPath(B.class, "b");
-    b = a.getMixin();
-    assertNotNull(b);
+    b = session.findByPath(B.class, "b");
+    c = b.getMixin();
+    assertNotNull(c);
   }
 
   public void testAddEntityToMixin() throws Exception {
     DomainSession session = login();
-    B a = session.insert(B.class, "b");
-    C b = session.create(C.class);
-    assertNull(a.getMixin());
-    assertNull(b.getEntity());
-    b.setEntity(a);
-    assertSame(b, a.getMixin());
-    assertSame(a, b.getEntity());
-    Node node = session.getNode(a);
+    B b = session.insert(B.class, "b");
+    C c = session.create(C.class);
+    assertNull(b.getMixin());
+    assertNull(c.getEntity());
+    c.setEntity(b);
+    assertSame(c, b.getMixin());
+    assertSame(b, c.getEntity());
+    Node node = session.getNode(b);
     assertTrue(JCR.hasMixin(node, "otom_c"));
     session.save();
     session.close();
     session = login();
-    a = session.findByPath(B.class, "b");
-    b = a.getMixin();
-    assertNotNull(b);
+    b = session.findByPath(B.class, "b");
+    c = b.getMixin();
+    assertNotNull(c);
+  }
+
+  public void testGetSuper() throws Exception {
+    DomainSession session = login();
+    B b = session.insert(B.class, "b");
+    A a = b.getSuper();
+    assertNotNull(a);
+  }
+
+  public void testSetSuper() throws Exception {
+    DomainSession session = login();
+    B b1 = session.insert(B.class, "b1");
+    B b2 = session.insert(B.class, "b2");
+    try {
+      b2.setSuper(b1.getSuper());
+      fail();
+    }
+    catch (IllegalArgumentException expected) {
+    }
   }
 
   public void testMixinProperty() throws Exception {

@@ -824,8 +824,7 @@
 
   <nodeType name="otom_b" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
-      <supertype>nt:base</supertype>
-      <supertype>mix:referenceable</supertype>
+      <supertype>otom_a</supertype>
     </supertypes>
   </nodeType>
 

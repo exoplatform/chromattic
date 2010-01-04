@@ -1,4 +1,5 @@
 - prefix the queries with the root path of the chromattic builder
+- unwrap unit test : for now it's a CC / it should somehow test and throw another exception
 - rename NodeMapping to TypeMapping ????
 - MIXIN / EMBEDDABLE!!!! allows augmentation of node types.
 - OneToMany with reference : move relationship

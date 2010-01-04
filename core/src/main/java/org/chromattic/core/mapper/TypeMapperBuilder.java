@@ -243,12 +243,8 @@ public class TypeMapperBuilder {
           } else if (pmhm.getType() == RelationshipType.EMBEDDED) {
             NodeTypeMapping relatedMapping = classToMapping.get(propertyInfo.getValue().getTypeInfo());
             if (typeMapping instanceof PrimaryTypeMapping) {
-              if (relatedMapping instanceof MixinTypeMapping) {
-                JCREmbeddedParentPropertyMapper mapper = new JCREmbeddedParentPropertyMapper(propertyInfo);
-                propertyMappersForE.add(mapper);
-              } else {
-                throw new BuilderException("Related class in mixin mapping must be annotated with @" + MixinType.class.getSimpleName());
-              }
+              JCREmbeddedParentPropertyMapper mapper = new JCREmbeddedParentPropertyMapper(propertyInfo);
+              propertyMappersForE.add(mapper);
             } else if (typeMapping instanceof MixinTypeMapping) {
               if (relatedMapping instanceof PrimaryTypeMapping) {
                 JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper(propertyInfo);
