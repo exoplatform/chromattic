@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetoone.mixin;
+package org.chromattic.test.onetoone.embedded;
 
 import org.chromattic.common.JCR;
 import org.chromattic.core.DomainSession;
@@ -47,7 +47,7 @@ public class OneToOneTestCase extends AbstractTestCase {
     assertSame(c, b.getMixin());
     assertSame(b, c.getEntity());
     Node node = session.getNode(b);
-    assertTrue(JCR.hasMixin(node, "otom_c"));
+    assertTrue(JCR.hasMixin(node, "otoe_c"));
     session.save();
     session.close();
     session = login();
@@ -66,7 +66,7 @@ public class OneToOneTestCase extends AbstractTestCase {
     assertSame(c, b.getMixin());
     assertSame(b, c.getEntity());
     Node node = session.getNode(b);
-    assertTrue(JCR.hasMixin(node, "otom_c"));
+    assertTrue(JCR.hasMixin(node, "otoe_c"));
     session.save();
     session.close();
     session = login();

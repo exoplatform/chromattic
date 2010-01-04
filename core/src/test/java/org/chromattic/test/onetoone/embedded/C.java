@@ -17,14 +17,35 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetoone.mixin;
+package org.chromattic.test.onetoone.embedded;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.MixinType;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "otom_a")
-public abstract class A {
+@MixinType(names = "otoe_c")
+public abstract class C {
+
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  abstract B getEntity();
+
+  abstract void setEntity(B b);
+
+  @Property(name = "foo")
+  public abstract void setFoo(String foo);
+
+  public abstract String getFoo();
+
+  @OneToOne
+  @MappedBy("b")
+  public abstract B getB();
+
+  public abstract void setB(B b);
+
 }

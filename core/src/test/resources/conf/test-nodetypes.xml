@@ -815,20 +815,20 @@
     </childNodeDefinitions>
   </nodeType>
 
-  <nodeType name="otom_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+  <nodeType name="otoe_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>
     </supertypes>
   </nodeType>
 
-  <nodeType name="otom_b" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+  <nodeType name="otoe_b" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
-      <supertype>otom_a</supertype>
+      <supertype>otoe_a</supertype>
     </supertypes>
   </nodeType>
 
-  <nodeType name="otom_c" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+  <nodeType name="otoe_c" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>
@@ -839,10 +839,10 @@
       </propertyDefinition>
     </propertyDefinitions>
     <childNodeDefinitions>
-      <childNodeDefinition name="b" defaultPrimaryType="otom_b" autoCreated="false" mandatory="false"
+      <childNodeDefinition name="b" defaultPrimaryType="otoe_b" autoCreated="false" mandatory="false"
         onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
-          <requiredPrimaryType>otom_b</requiredPrimaryType>
+          <requiredPrimaryType>otoe_b</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
       <!--
