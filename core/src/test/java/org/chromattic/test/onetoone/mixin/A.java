@@ -37,7 +37,7 @@ public abstract class A {
 
   public abstract void setParent(B b);
 
-  @OneToOne(type = RelationshipType.MIXIN)
+  @OneToOne(type = RelationshipType.EMBEDDED)
   public abstract B getMixin();
 
   public abstract void setMixin(B b);

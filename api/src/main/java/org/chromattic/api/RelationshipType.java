@@ -48,9 +48,8 @@ public enum RelationshipType {
   PATH,
 
   /**
-   * A mixin relationship use the mixin of a node type that are added / removed during the node type life cycle.
-   * It is only valid for one to one relationships.
+   * An embedded relationship.
    */
-  MIXIN
+  EMBEDDED
 
 }

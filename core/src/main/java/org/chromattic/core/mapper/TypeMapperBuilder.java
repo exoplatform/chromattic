@@ -240,7 +240,7 @@ public class TypeMapperBuilder {
                 propertyMappersForE.add(bilto);
               }
             }
-          } else if (pmhm.getType() == RelationshipType.MIXIN) {
+          } else if (pmhm.getType() == RelationshipType.EMBEDDED) {
             NodeTypeMapping relatedMapping = classToMapping.get(propertyInfo.getValue().getTypeInfo());
             if (typeMapping instanceof PrimaryTypeMapping) {
               if (relatedMapping instanceof MixinTypeMapping) {

@@ -28,7 +28,7 @@ import java.lang.annotation.ElementType;
  * The mixin annotation can be used to annote a class and declares that it represents one or several mixins.
  *
  * <p>When a class declares a mixin annotation without being bound to a node mapping, this class can be involved
- * in a one to one relationship with the {@link org.chromattic.api.RelationshipType#MIXIN} type. The mixin is
+ * in a one to one relationship with the {@link org.chromattic.api.RelationshipType#EMBEDDED} type. The mixin is
  * added to a node when a one to one relationship of type mixin is created.</p>
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

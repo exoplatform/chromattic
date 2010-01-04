@@ -186,8 +186,8 @@ public class TypeMappingBuilder {
             }
             oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
             propertyMappings.add(oneToOneMapping);
-          } else if (type == RelationshipType.MIXIN) {
-            OneToOneMapping embeddedMapping = new OneToOneMapping(typeInfo, RelationshipType.MIXIN);
+          } else if (type == RelationshipType.EMBEDDED) {
+            OneToOneMapping embeddedMapping = new OneToOneMapping(typeInfo, RelationshipType.EMBEDDED);
             PropertyMapping<OneToOneMapping> a = new PropertyMapping<OneToOneMapping>(propertyInfo, embeddedMapping);
             propertyMappings.add(a);
           } else {
