@@ -24,8 +24,9 @@ import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.Path;
 import org.reflext.api.*;
-import org.reflext.api.introspection.HierarchyScope;
+import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.MethodIntrospector;
+import org.reflext.api.visit.HierarchyScope;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;

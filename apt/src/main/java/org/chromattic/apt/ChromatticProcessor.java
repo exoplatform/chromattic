@@ -28,7 +28,7 @@ import org.reflext.api.TypeInfo;
 import org.reflext.api.VoidTypeInfo;
 import org.reflext.api.ClassKind;
 import org.reflext.api.introspection.MethodIntrospector;
-import org.reflext.api.introspection.HierarchyScope;
+import org.reflext.api.visit.HierarchyScope;
 import org.reflext.core.TypeDomain;
 import org.reflext.apt.JavaxLangTypeModel;
 import org.reflext.apt.JavaxLangMethodModel;

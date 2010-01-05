@@ -19,8 +19,8 @@
 
 package org.chromattic.core.bean;
 
-import org.reflext.api.AnnotationIntrospector;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.introspection.AnnotationIntrospector;
 
 import java.util.Map;
 import java.util.Set;

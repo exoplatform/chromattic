@@ -20,8 +20,8 @@
 package org.chromattic.core.bean;
 
 import org.reflext.api.MethodInfo;
-import org.reflext.api.AnnotationIntrospector;
 import org.chromattic.core.bean.AccessMode;
+import org.reflext.api.introspection.AnnotationIntrospector;
 
 import java.lang.annotation.Annotation;
 

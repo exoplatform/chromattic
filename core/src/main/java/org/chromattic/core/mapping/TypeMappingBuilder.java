@@ -38,12 +38,12 @@ import org.chromattic.core.mapping.value.NamedOneToManyMapping;
 import org.chromattic.core.mapping.value.PropertyMapMapping;
 import org.chromattic.core.NodeAttributeType;
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.AnnotationIntrospector;
 import org.reflext.api.MethodInfo;
 import org.reflext.api.VoidTypeInfo;
 import org.reflext.api.TypeInfo;
+import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.MethodIntrospector;
-import org.reflext.api.introspection.HierarchyScope;
+import org.reflext.api.visit.HierarchyScope;
 
 import java.util.Set;
 import java.util.HashSet;
