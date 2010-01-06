@@ -34,4 +34,7 @@ public abstract class B {
 
   @ManyToOne
   public abstract B getBParent();
+
+  @ManyToOne
+  public abstract C getCParent();
 }

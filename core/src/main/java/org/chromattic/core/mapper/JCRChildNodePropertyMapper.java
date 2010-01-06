@@ -47,11 +47,12 @@ public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper<E
       // A bit stupid to unwrap something we could get unwrapped
       EntityContext parentCtx = context.getSession().unwrapEntity(parent);
 
-      //
-      EmbeddedContext mixinCtx = parentCtx.getEmbedded(relatedClass);
+      // Here we are trying to see if the parent has something embedded we could return
+      // that is would be of the provided related class
+      EmbeddedContext embeddedCtx = parentCtx.getEmbedded(relatedClass);
 
-      if (mixinCtx != null) {
-        return mixinCtx.getObject();
+      if (embeddedCtx != null) {
+        return embeddedCtx.getObject();
       }
 
 

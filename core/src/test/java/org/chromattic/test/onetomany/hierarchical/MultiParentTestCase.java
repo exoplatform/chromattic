@@ -51,9 +51,11 @@ public class MultiParentTestCase extends AbstractTestCase {
     A a = session.findById(A.class, aId);
     B b = session.findById(B.class, bId);
     B c = session.findById(B.class, cId);
-    assertSame(b, c.getBParent());
     assertNull(c.getAParent());
+    assertSame(b, c.getBParent());
+    assertNull(c.getCParent());
     assertSame(a, b.getAParent());
     assertNull(b.getBParent());
+    assertNull(b.getCParent());
   }
 }

@@ -273,31 +273,34 @@ public class DomainSessionImpl extends DomainSession {
     ObjectMapper<EmbeddedContext> mapper = (ObjectMapper<EmbeddedContext>)domain.getTypeMapper(embeddedClass);
 
     //
-    EmbeddedContext embeddedCtx = entityCtx.embeddeds.get(mapper);
+    EmbeddedContext embeddedCtx = null;
+    if (mapper != null) {
+      embeddedCtx = entityCtx.embeddeds.get(mapper);
 
-    //
-    if (embeddedCtx == null) {
-      Node node = entityCtx.state.getNode();
-      if (mapper.getKind() == NodeTypeKind.MIXIN) {
-        String mixinTypeName = mapper.getNodeTypeName();
-        if (sessionWrapper.haxMixin(node, mixinTypeName)) {
-          NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
-          MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
+      //
+      if (embeddedCtx == null) {
+        Node node = entityCtx.state.getNode();
+        if (mapper.getKind() == NodeTypeKind.MIXIN) {
+          String mixinTypeName = mapper.getNodeTypeName();
+          if (sessionWrapper.haxMixin(node, mixinTypeName)) {
+            NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
+            MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
 
-          //
-          embeddedCtx = new EmbeddedContext(mapper, this);
-          entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
-          embeddedCtx.relatedEntity = entityCtx;
-          embeddedCtx.typeInfo = mixinTypeInfo;
-        }
-      } else {
-        PrimaryTypeInfo typeInfo = entityCtx.state.getTypeInfo();
-        PrimaryTypeInfo superTI = (PrimaryTypeInfo)typeInfo.getSuperType(mapper.getNodeTypeName());
-        if (superTI != null) {
-          embeddedCtx = new EmbeddedContext(mapper, this);
-          entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
-          embeddedCtx.relatedEntity = entityCtx;
-          embeddedCtx.typeInfo = superTI;
+            //
+            embeddedCtx = new EmbeddedContext(mapper, this);
+            entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
+            embeddedCtx.relatedEntity = entityCtx;
+            embeddedCtx.typeInfo = mixinTypeInfo;
+          }
+        } else {
+          PrimaryTypeInfo typeInfo = entityCtx.state.getTypeInfo();
+          PrimaryTypeInfo superTI = (PrimaryTypeInfo)typeInfo.getSuperType(mapper.getNodeTypeName());
+          if (superTI != null) {
+            embeddedCtx = new EmbeddedContext(mapper, this);
+            entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
+            embeddedCtx.relatedEntity = entityCtx;
+            embeddedCtx.typeInfo = superTI;
+          }
         }
       }
     }
