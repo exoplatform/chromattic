@@ -151,6 +151,9 @@ public class Domain {
     if (ownerNode == null) {
       throw new NullPointerException();
     }
+    if (nameKind == NameKind.PROPERTY) {
+      return internal;
+    }
 
     //
     ObjectFormatter formatter = null;
@@ -169,7 +172,8 @@ public class Domain {
       if (nameKind == NameKind.OBJECT) {
         external = formatter.decodeNodeName(null, internal);
       } else {
-        external = formatter.decodePropertyName(null, internal);
+        // external = formatter.decodePropertyName(null, internal);
+        throw new UnsupportedOperationException();
       }
     }
     catch (Exception e) {
@@ -198,6 +202,9 @@ public class Domain {
     if (external == null) {
       throw new NullPointerException("No null name accepted");
     }
+    if (nameKind == NameKind.PROPERTY) {
+      return external;
+    }
 
     //
     ObjectFormatter formatter = null;
@@ -214,7 +221,8 @@ public class Domain {
       if (nameKind == NameKind.OBJECT) {
         internal = formatter.encodeNodeName(null, external);
       } else {
-        internal = formatter.encodePropertyName(null, external);
+        // internal = formatter.encodePropertyName(null, external);
+        throw new UnsupportedOperationException();
       }
     }
     catch (Exception e) {

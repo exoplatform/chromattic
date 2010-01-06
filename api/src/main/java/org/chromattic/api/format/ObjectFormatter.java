@@ -54,7 +54,7 @@ public interface ObjectFormatter {
    * @param internalName the jcr property name
    * @return the entity property name
    */
-  String decodePropertyName(FormatterContext context, String internalName);
+  // String decodePropertyName(FormatterContext context, String internalName);
 
   /**
    * Converts an entity property name to a jcr property name.
@@ -65,6 +65,6 @@ public interface ObjectFormatter {
    * @throws IllegalArgumentException if the name cannot be converted due to its nature
    * @throws NullPointerException if the name would convert to a value meaning nullity
    */
-  String encodePropertyName(FormatterContext context, String externalName) throws IllegalArgumentException, NullPointerException;
+  // String encodePropertyName(FormatterContext context, String externalName) throws IllegalArgumentException, NullPointerException;
 
 }

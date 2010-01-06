@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.chromattic.api.Status;
-import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.LinkType;

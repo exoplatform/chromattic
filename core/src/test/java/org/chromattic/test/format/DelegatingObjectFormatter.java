@@ -40,11 +40,13 @@ public class DelegatingObjectFormatter implements ObjectFormatter {
   }
 
   public String decodePropertyName(FormatterContext context, String internalName) {
-    return getDelegate().decodePropertyName(context, internalName);
+    // return getDelegate().decodePropertyName(context, internalName);
+    throw new UnsupportedOperationException();
   }
 
   public String encodePropertyName(FormatterContext context, String externalName) {
-    return getDelegate().encodePropertyName(context, externalName);
+    // return getDelegate().encodePropertyName(context, externalName);
+    throw new UnsupportedOperationException();
   }
 
   private static ObjectFormatter getDelegate() {
