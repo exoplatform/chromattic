@@ -19,9 +19,8 @@
 
 package org.chromattic.core;
 
+import org.chromattic.common.AbstractFilterIterator;
 import org.chromattic.common.JCR;
-import org.chromattic.common.TypeAdapter;
-import org.chromattic.common.AdaptingIterator;
 import org.chromattic.api.UndeclaredRepositoryException;
 
 import javax.jcr.Property;
@@ -85,25 +84,36 @@ class PropertyMap extends AbstractMap<String, Object> {
       try {
         Iterator<Property> i = JCR.adapt(ctx.state.getNode().getProperties());
 
-        TypeAdapter<Entry<String, Object>, Property> adapter = new TypeAdapter<Map.Entry<String, Object>, Property>() {
-          public Map.Entry<String, Object> adapt(Property property) {
+        //
+        return new AbstractFilterIterator<Entry<String, Object>, Property>(i) {
+          @Override
+          protected Entry<String, Object> adapt(Property internal) {
             try {
+
+              //
               Object o;
-              switch (property.getType()) {
+              switch (internal.getType()) {
                 case PropertyType.STRING:
                 case PropertyType.NAME:
-                  o = property.getString();
+                  o = internal.getString();
                   break;
                 case PropertyType.LONG:
-                  o = (int)property.getLong();
+                  o = (int)internal.getLong();
                   break;
                 case PropertyType.BOOLEAN:
-                  o = property.getBoolean();
+                  o = internal.getBoolean();
                   break;
                 default:
-                  throw new UnsupportedOperationException("Should implement handling of property type " + property.getType());
+                  return null;
               }
-              final String key = property.getName();
+
+              //
+              final String key = ctx.getSession().domain.decodeName(ctx, internal.getName(), NameKind.PROPERTY);
+              if (key == null) {
+                return null;
+              }
+
+              //
               final Object value = o;
               return new Entry<String, Object>() {
                 public String getKey() {
@@ -113,7 +123,7 @@ class PropertyMap extends AbstractMap<String, Object> {
                   return value;
                 }
                 public Object setValue(Object value) {
-                  return null;
+                  throw new UnsupportedOperationException();
                 }
               };
             }
@@ -122,9 +132,6 @@ class PropertyMap extends AbstractMap<String, Object> {
             }
           }
         };
-
-        //
-        return new AdaptingIterator<Map.Entry<String, Object>, Property>(i, adapter);
       }
       catch (RepositoryException e) {
         throw new UndeclaredRepositoryException(e);
@@ -132,13 +139,13 @@ class PropertyMap extends AbstractMap<String, Object> {
     }
 
     public int size() {
-      try {
-        return (int)ctx.state.getNode().getProperties().getSize();
+      int count = 0;
+      Iterator<Map.Entry<String, Object>> iterator = iterator();
+      while (iterator.hasNext()) {
+        iterator.next();
+        count++;
       }
-      catch (RepositoryException e) {
-        throw new UndeclaredRepositoryException(e);
-      }
+      return count;
     }
   }
-
 }

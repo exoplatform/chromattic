@@ -83,13 +83,13 @@ public class EventBroadcaster implements EventListener {
     }
   }
 
-  public void loaded(PersistentEntityContextState state, Object o) {
+  public void loaded(EntityContext ctx, Object o) {
     if (lifeCycleListeners == null) {
       return;
     }
-    String id = state.getId();
-    String path = state.getPath();
-    String name = state.getName();
+    String id = ctx.getId();
+    String path = ctx.getPath();
+    String name = ctx.getName();
     for (EventListener listener : lifeCycleListeners) {
       try {
         ((LifeCycleListener)listener).loaded(id, path, name, o);
@@ -99,13 +99,13 @@ public class EventBroadcaster implements EventListener {
     }
   }
 
-  public void added(PersistentEntityContextState state, Object o) {
+  public void added(EntityContext ctx, Object o) {
     if (lifeCycleListeners == null) {
       return;
     }
-    String id = state.getId();
-    String path = state.getPath();
-    String name = state.getName();
+    String id = ctx.getId();
+    String path = ctx.getPath();
+    String name = ctx.getName();
     for (EventListener listener : lifeCycleListeners) {
       try {
         ((LifeCycleListener)listener).added(id, path, name, o);

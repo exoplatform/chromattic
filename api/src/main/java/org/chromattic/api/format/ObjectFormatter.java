@@ -41,11 +41,14 @@ public interface ObjectFormatter {
    * @param context the context
    * @param externalName the entity name
    * @return the jcr node name
+   * @throws IllegalArgumentException if the name cannot be converted due to its nature
+   * @throws NullPointerException if the name would convert to a value meaning nullity
    */
-  String encodeNodeName(FormatterContext context, String externalName);
+  String encodeNodeName(FormatterContext context, String externalName) throws IllegalArgumentException, NullPointerException;
 
   /**
-   * Converts a jcr property name to an entity property name.
+   * Converts a jcr property name to an entity property name. If the property cannot be decoded
+   * then null must be returned.
    *
    * @param context the context
    * @param internalName the jcr property name
@@ -59,7 +62,9 @@ public interface ObjectFormatter {
    * @param context the context
    * @param externalName the entity property name
    * @return the jcr property name
+   * @throws IllegalArgumentException if the name cannot be converted due to its nature
+   * @throws NullPointerException if the name would convert to a value meaning nullity
    */
-  String encodePropertyName(FormatterContext context, String externalName);
+  String encodePropertyName(FormatterContext context, String externalName) throws IllegalArgumentException, NullPointerException;
 
 }

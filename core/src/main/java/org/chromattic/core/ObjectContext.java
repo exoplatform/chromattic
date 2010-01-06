@@ -43,36 +43,38 @@ public abstract class ObjectContext implements MethodHandler {
   public abstract NodeTypeInfo getTypeInfo();
 
   public final <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type) {
+    EntityContext ctx = getEntity();
+    EntityContextState state = ctx.state;
+
+    //
+    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
     JCR.validateName(propertyName);
 
     //
-    EntityContextState state = getEntity().state;
-
-    //
     NodeTypeInfo typeInfo = getTypeInfo();
-
-    //
     return state.getPropertyValue(typeInfo, propertyName, type);
   }
 
   public final <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType listType) {
+    EntityContext ctx = getEntity();
+    EntityContextState state = ctx.state;
+
+    //
+    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
     JCR.validateName(propertyName);
 
     //
-    EntityContextState state = getEntity().state;
-
-    //
     NodeTypeInfo typeInfo = getTypeInfo();
-
-    //
     return state.getPropertyValues(typeInfo, propertyName, simpleType, listType);
   }
 
   public final <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V o) {
-    JCR.validateName(propertyName);
+    EntityContext ctx = getEntity();
+    EntityContextState state = ctx.state;
 
     //
-    EntityContextState state = getEntity().state;
+    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
+    JCR.validateName(propertyName);
 
     //
     Object object = getObject();
@@ -102,10 +104,12 @@ public abstract class ObjectContext implements MethodHandler {
   }
 
   public final <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType listType, List<V> objects) {
-    JCR.validateName(propertyName);
+    EntityContext ctx = getEntity();
+    EntityContextState state = ctx.state;
 
     //
-    EntityContextState state = getEntity().state;
+    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
+    JCR.validateName(propertyName);
 
     //
     NodeTypeInfo typeInfo = getTypeInfo();
@@ -113,5 +117,4 @@ public abstract class ObjectContext implements MethodHandler {
     //
     state.setPropertyValues(typeInfo, propertyName, type, listType, objects);
   }
-
 }

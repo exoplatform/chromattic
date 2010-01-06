@@ -19,8 +19,6 @@
 
 package org.chromattic.core;
 
-import org.chromattic.api.format.ObjectFormatter;
-import org.chromattic.common.JCR;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
@@ -37,7 +35,6 @@ import javax.jcr.Node;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.nodetype.NodeType;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
 
 /**
@@ -70,6 +67,23 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     ctx.state.setName(name);
+  }
+
+  @Override
+  protected String _getName(EntityContext ctx) throws RepositoryException {
+    if (ctx == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    switch (ctx.getStatus()) {
+      default:
+        return ctx.state.getName();
+      case PERSISTENT:
+        Node node = ctx.state.getNode();
+        Node parentNode = node.getParent();
+        return domain.decodeName(parentNode, node.getName(), NameKind.OBJECT);
+    }
   }
 
   protected <O> O _findByPath(EntityContext ctx, Class<O> clazz, String relPath) throws RepositoryException {
@@ -166,7 +180,7 @@ public class DomainSessionImpl extends DomainSession {
     EntityContext parentCtx = parent != null ? unwrapEntity(parent) : null;
 
     //
-    name = encodeName(parentCtx, name);
+    name = domain.encodeName(parentCtx, name, NameKind.OBJECT);
 
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
@@ -604,7 +618,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected void _removeChild(EntityContext ctx, String name) throws RepositoryException {
-    name = encodeName(ctx, name);
+    name = domain.encodeName(ctx, name, NameKind.OBJECT);
     Node node = ctx.state.getNode();
     Node childNode = sessionWrapper.getNode(node, name);
     if (childNode != null) {
@@ -613,7 +627,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected Object _getChild(EntityContext ctx, String name) throws RepositoryException {
-    name = encodeName(ctx, name);
+    name = domain.encodeName(ctx, name, NameKind.OBJECT);
     Node node = ctx.state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
     Node child = sessionWrapper.getChild(node, name);
@@ -656,11 +670,10 @@ public class DomainSessionImpl extends DomainSession {
     if (mapper != null) {
       EntityContext ctx = contexts.get(node.getUUID());
       if (ctx == null) {
-        PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
         ctx = new EntityContext((ObjectMapper<EntityContext>)mapper, new PersistentEntityContextState(node, this));
         log.trace("Inserted context {} loaded from node path {}", ctx, node.getPath());
         contexts.put(node.getUUID(), ctx);
-        broadcaster.loaded(persistentState, ctx.getObject());
+        broadcaster.loaded(ctx, ctx.getObject());
       }
       else {
         log.trace("Context {} is already present for path ", ctx, node.getPath());
@@ -683,48 +696,12 @@ public class DomainSessionImpl extends DomainSession {
       }
       log.trace("Inserted context {} for path {}", ctx, node.getPath());
       contexts.put(node.getUUID(), ctx);
-      PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
-      ctx.state = persistentState;
-      broadcaster.added(persistentState, ctx.getObject());
+      ctx.state = new PersistentEntityContextState(node, this);
+      broadcaster.added(ctx, ctx.getObject());
     }
     else {
       log.trace("Could not find mapper for node type {}", nodeTypeName);
     }
-  }
-
-  private String encodeName(EntityContext ctx, String external) {
-    if (external == null) {
-      throw new NullPointerException("No null name accepted");
-    }
-
-    //
-    ObjectFormatter formatter = null;
-    if (ctx != null) {
-      formatter = ctx.mapper.getFormatter();
-    }
-    if (formatter == null) {
-      formatter = domain.objectFormatter;
-    }
-
-    //
-    String internal;
-    try {
-      internal = formatter.encodeNodeName(null, external);
-    }
-    catch (Exception e) {
-      if (e instanceof NullPointerException) {
-        throw (NullPointerException)e;
-      }
-      if (e instanceof IllegalArgumentException) {
-        throw (IllegalArgumentException)e;
-      }
-      throw new UndeclaredThrowableException(e);
-    }
-    if (internal == null) {
-      throw new IllegalArgumentException("Name " + external + " was converted to null");
-    }
-    JCR.validateName(internal);
-    return internal;
   }
 
   public void close() {

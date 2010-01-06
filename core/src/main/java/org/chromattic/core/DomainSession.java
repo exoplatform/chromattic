@@ -96,6 +96,8 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> embeddedClass) throws RepositoryException;
 
+  protected abstract String _getName(EntityContext ctx) throws RepositoryException;
+
   public final Domain getDomain() {
     return domain;
   }
@@ -121,7 +123,23 @@ public abstract class DomainSession implements ChromatticSession {
 
     //
     EntityContext ctx = unwrapEntity(o);
+
+    //
     return getName(ctx);
+  }
+
+  public final String getName(EntityContext ctx) throws UndeclaredRepositoryException {
+    if (ctx == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    try {
+      return _getName(ctx);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
   }
 
   public final String getPath(Object o) throws UndeclaredRepositoryException {
@@ -180,7 +198,7 @@ public abstract class DomainSession implements ChromatticSession {
   public final String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext parentCtx = unwrapEntity(parent);
     EntityContext childCtx = unwrapEntity(child);
-    String name = childCtx.state.getName();
+    String name = childCtx.getName();
     if (name == null) {
       String msg = "Attempt to persist non named object " + childCtx;
       throw new IllegalArgumentException(msg);
@@ -196,7 +214,7 @@ public abstract class DomainSession implements ChromatticSession {
   public final String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
       EntityContext ctx = unwrapEntity(o);
-      String name = ctx.state.getName();
+      String name = ctx.getName();
       if (name == null) {
         String msg = "Attempt to persist non named object " + ctx;
         throw new IllegalArgumentException(msg);
@@ -332,13 +350,6 @@ public abstract class DomainSession implements ChromatticSession {
     //
     EntityContext ctx = unwrapEntity(o);
     return ctx.state.getNode();
-  }
-
-  public final String getName(EntityContext ctx) throws UndeclaredRepositoryException {
-    if (ctx == null) {
-      throw new NullPointerException();
-    }
-    return ctx.getName();
   }
 
   public final void setName(EntityContext ctx, String name) throws UndeclaredRepositoryException {

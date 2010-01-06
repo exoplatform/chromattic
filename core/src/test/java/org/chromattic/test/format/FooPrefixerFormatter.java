@@ -27,14 +27,28 @@ import org.chromattic.api.format.FormatterContext;
 public class FooPrefixerFormatter extends AbstractObjectFormatter {
 
   public String decodeNodeName(FormatterContext context, String internalName) {
-    if (internalName.startsWith("foo_")) {
-      return internalName.substring(4);
-    } else {
+    String externalName = decodeName(internalName);
+    if (externalName == null) {
       throw new IllegalStateException();
     }
+    return externalName;
   }
 
   public String encodeNodeName(FormatterContext context, String externalName) {
+    return encodeName(externalName);
+  }
+
+  @Override
+  public String decodePropertyName(FormatterContext context, String internalName) {
+    return decodeName(internalName);
+  }
+
+  @Override
+  public String encodePropertyName(FormatterContext context, String externalName) {
+    return encodeName(externalName);
+  }
+
+  private String encodeName(String externalName) {
     if (externalName.length() == 1) {
       return "foo_" + externalName;
     } else {
@@ -42,4 +56,11 @@ public class FooPrefixerFormatter extends AbstractObjectFormatter {
     }
   }
 
+  private String decodeName(String internalName) {
+    if (internalName.startsWith("foo_")) {
+      return internalName.substring(4);
+    } else {
+      return null;
+    }
+  }
 }

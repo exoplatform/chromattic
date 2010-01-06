@@ -100,7 +100,7 @@ public final class EntityContext extends ObjectContext {
     DomainSession session = state.getSession();
     switch (type) {
       case NAME:
-        return state.getName();
+        return session.getName(this);
       case ID:
         return state.getId();
       case PATH:
@@ -175,7 +175,7 @@ public final class EntityContext extends ObjectContext {
   }
 
   public void addChild(EntityContext childCtx) {
-    String name = childCtx.state.getName();
+    String name = childCtx.getName();
     addChild(name, childCtx);
   }
 
@@ -209,23 +209,6 @@ public final class EntityContext extends ObjectContext {
 
   public Object getParent() {
     return state.getSession().getParent(this);
-  }
-
-  /**
-   * Finds a suitable formatter scoped for this entity context. The returned value might
-   * change over method calls (i.e it would not be a good idea to cache it for a long time).
-   *
-   * @return the object formatter
-   */
-  private ObjectFormatter getFormatter()
-  {
-    // Find a formatter
-    ObjectFormatter formatter = mapper.getFormatter();
-    if (formatter == null)
-    {
-      formatter = getSession().domain.objectFormatter;
-    }
-    return formatter;
   }
 
   public Object invoke(Object o, Method method, Object[] args) throws Throwable {

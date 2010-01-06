@@ -19,6 +19,7 @@
 
 package org.chromattic.core;
 
+import org.chromattic.common.JCR;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.mapping.NodeTypeMapping;
 import org.chromattic.core.mapper.TypeMapperBuilder;
@@ -27,6 +28,9 @@ import org.chromattic.core.query.QueryManager;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.api.format.ObjectFormatter;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
@@ -125,5 +129,107 @@ public class Domain {
 
   public QueryManager getQueryManager() {
     return queryManager;
+  }
+
+  String decodeName(EntityContext ctx, String internal, NameKind nameKind) throws RepositoryException {
+    if (ctx == null) {
+      throw new NullPointerException();
+    }
+    return decodeName(ctx.state.getNode(), internal, nameKind);
+  }
+
+  /**
+   * Decodes an internal name that is owned by the specified node.
+   *
+   * @param ownerNode the owner node
+   * @param internal the internal name
+   * @param nameKind the kind of name
+   * @return the external name or null
+   * @throws RepositoryException any repository exception
+   */
+  String decodeName(Node ownerNode, String internal, NameKind nameKind) throws RepositoryException {
+    if (ownerNode == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    ObjectFormatter formatter = null;
+    String nodeTypeName = ownerNode.getPrimaryNodeType().getName();
+    ObjectMapper parentMapper = getTypeMapper(nodeTypeName);
+    if (parentMapper != null) {
+      formatter = parentMapper.getFormatter();
+    }
+    if (formatter == null) {
+      formatter = objectFormatter;
+    }
+
+    //
+    String external;
+    try {
+      if (nameKind == NameKind.OBJECT) {
+        external = formatter.decodeNodeName(null, internal);
+      } else {
+        external = formatter.decodePropertyName(null, internal);
+      }
+    }
+    catch (Exception e) {
+      if (e instanceof IllegalStateException) {
+        throw (IllegalStateException)e;
+      }
+      throw new UndeclaredThrowableException(e);
+    }
+    if (external == null) {
+      if (nameKind == NameKind.OBJECT) {
+        throw new IllegalStateException();
+      }
+    }
+    return external;
+  }
+
+  /**
+   * Encodes the name for the specified context.
+   *
+   * @param ownerCtx the context
+   * @param external the external name
+   * @param nameKind the name kind
+   * @return the encoded name
+   */
+  String encodeName(EntityContext ownerCtx, String external, NameKind nameKind) {
+    if (external == null) {
+      throw new NullPointerException("No null name accepted");
+    }
+
+    //
+    ObjectFormatter formatter = null;
+    if (ownerCtx != null) {
+      formatter = ownerCtx.mapper.getFormatter();
+    }
+    if (formatter == null) {
+      formatter = objectFormatter;
+    }
+
+    //
+    String internal;
+    try {
+      if (nameKind == NameKind.OBJECT) {
+        internal = formatter.encodeNodeName(null, external);
+      } else {
+        internal = formatter.encodePropertyName(null, external);
+      }
+    }
+    catch (Exception e) {
+      if (e instanceof NullPointerException) {
+        throw (NullPointerException)e;
+      }
+      if (e instanceof IllegalArgumentException) {
+        throw (IllegalArgumentException)e;
+      }
+      throw new UndeclaredThrowableException(e);
+    }
+    if (internal == null) {
+      throw new IllegalArgumentException("Name " + external + " was converted to null");
+    }
+    JCR.validateName(internal);
+    return internal;
   }
 }

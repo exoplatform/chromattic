@@ -23,12 +23,10 @@ import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.NoSuchPropertyException;
-import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
-import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.mapper.ValueMapper;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
@@ -41,7 +39,6 @@ import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import javax.jcr.nodetype.PropertyDefinition;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -97,35 +94,7 @@ class PersistentEntityContextState extends EntityContextState {
 
   String getName() {
     try {
-      ObjectFormatter formatter = null;
-      Node parentNode = node.getParent();
-      String nodeTypeName = parentNode.getPrimaryNodeType().getName();
-      ObjectMapper parentMapper = session.domain.getTypeMapper(nodeTypeName);
-      if (parentMapper != null) {
-        formatter = parentMapper.getFormatter();
-      }
-      if (formatter == null) {
-        formatter = session.domain.objectFormatter;
-      }
-
-      //
-      String internalName = node.getName();
-
-      //
-      String external;
-      try {
-        external = formatter.decodeNodeName(null, internalName);
-      }
-      catch (Exception e) {
-        if (e instanceof IllegalStateException) {
-          throw (IllegalStateException)e;
-        }
-        throw new UndeclaredThrowableException(e);
-      }
-      if (external == null) {
-        throw new IllegalStateException("Null name returned by decoder");
-      }
-      return external;
+      return node.getName();
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
