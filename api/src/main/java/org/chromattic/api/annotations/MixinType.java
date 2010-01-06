@@ -41,5 +41,5 @@ public @interface MixinType {
   /**
    * @return
    */
-  String[] names();
+  String name();
 }

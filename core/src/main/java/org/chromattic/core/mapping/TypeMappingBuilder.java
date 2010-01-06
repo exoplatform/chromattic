@@ -352,31 +352,29 @@ public class TypeMappingBuilder {
     }
 
     //
-    PrimaryType nodeMapping = javaClass.getDeclaredAnnotation(PrimaryType.class);
-    MixinType mixin = javaClass.getDeclaredAnnotation(MixinType.class);
-    String[] mixinNames = mixin != null ? mixin.names() : new String[0];
+    PrimaryType primaryType = javaClass.getDeclaredAnnotation(PrimaryType.class);
 
     //
-    if (nodeMapping == null) {
-      if  (mixin == null) {
+    if (primaryType == null) {
+      MixinType mixinType = javaClass.getDeclaredAnnotation(MixinType.class);
+
+      //
+      if (mixinType == null) {
         throw new IllegalStateException("Class " + javaClass + " is not annotated ");
-      }
-      if (mixinNames.length == 0) {
-        throw new IllegalStateException("Class " + javaClass + " is annotated with @Mixin but does not contain any name");
-      }
-      if (mixinNames.length > 1) {
-        throw new IllegalStateException("Class " + javaClass + " is annotated with @Mixin but contains more than one name");
       }
 
       //
-      return new org.chromattic.core.mapping.MixinTypeMapping(
+      String mixinName = mixinType != null ? mixinType.name() : null;
+
+      //
+      return new MixinTypeMapping(
         javaClass,
         propertyMappings,
         methodMappings,
         onDuplicate,
-        mixinNames[0]);
+        mixinName);
     } else {
-      String nodeTypeName = nodeMapping.name();
+      String nodeTypeName = primaryType.name();
 
       //
       FormattedBy formattedBy = info.getAnnotation(FormattedBy.class);
