@@ -37,7 +37,7 @@ public interface ChromatticSession {
    * @param clazz the object class
    * @return the instance
    * @throws NullPointerException if the specified clazz is null
-   * @throws IllegalArgumentException if the specified class does not have a declared mapping
+   * @throws IllegalArgumentException if the specified class is not a chromattic class
    * @throws ChromatticException any chromattic exception
    */
   <O> O create(Class<O> clazz) throws NullPointerException, IllegalArgumentException, ChromatticException;
@@ -52,7 +52,7 @@ public interface ChromatticSession {
    * @param <O> the object class parameter
    * @return the transient object
    * @throws NullPointerException if the clazz argument is null
-   * @throws IllegalArgumentException if the name format is not valid
+   * @throws IllegalArgumentException if the name format is not valid or the class is not a chromattic class
    * @throws ChromatticException any chromattic exception
    */
   <O> O create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
@@ -65,7 +65,7 @@ public interface ChromatticSession {
    * @param <O> the object class parameter
    * @return the persistent object
    * @throws NullPointerException if any argument is null
-   * @throws IllegalArgumentException if any argument is not valid
+   * @throws IllegalArgumentException if the name is not valid or the class is not a chromattic class
    * @throws ChromatticException any chromattic exception
    */
   <O> O insert(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
@@ -79,7 +79,8 @@ public interface ChromatticSession {
    * @param <O> the object class parameter
    * @return the persistent object
    * @throws NullPointerException if any argument is null
-   * @throws IllegalArgumentException if any argument is not valid
+   * @throws IllegalArgumentException if the name is not valid or the class is not a chromattic class or the parent is
+   * not a persistent object
    * @throws ChromatticException any chromattic exception
    */
   <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
@@ -91,7 +92,7 @@ public interface ChromatticSession {
    * @param name the object relative path to the root
    * @return the object id
    * @throws NullPointerException if any argument is null
-   * @throws IllegalArgumentException if any argument is not valid
+   * @throws IllegalArgumentException if the name is not valid or the object is not a chromattic transient object
    * @throws ChromatticException any chromattic exception
    */
   String persist(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
@@ -103,7 +104,7 @@ public interface ChromatticSession {
    * @param child the object to persist
    * @return the object id
    * @throws NullPointerException if any argument is not valid
-   * @throws IllegalArgumentException if any argument is not valid
+   * @throws IllegalArgumentException if the parent is not a persistent object or the object is not a chromattic transient object
    * @throws ChromatticException any chromattic exception
    */
   String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException;
@@ -114,7 +115,7 @@ public interface ChromatticSession {
    * @param o the object to persist
    * @return the object id
    * @throws NullPointerException if any argument is not valid
-   * @throws IllegalArgumentException if any argument is not valid
+   * @throws IllegalArgumentException if the object is not a chromattic transient object
    * @throws ChromatticException any chromattic exception
    */
   String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
@@ -127,7 +128,8 @@ public interface ChromatticSession {
    * @param name the object relative name to the parent
    * @return the object id
    * @throws NullPointerException if the parent or object argument is null
-   * @throws IllegalArgumentException if any argument is not valid
+   * @throws IllegalArgumentException if the parent is not a persistent object or the name is not valid or the object
+   * is not a chromattic transient object
    * @throws ChromatticException any chromattic exception
    */
   String persist(Object parent, Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;

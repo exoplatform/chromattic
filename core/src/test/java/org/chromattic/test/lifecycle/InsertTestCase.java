@@ -19,6 +19,7 @@
 
 package org.chromattic.test.lifecycle;
 
+import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.Status;
@@ -93,6 +94,42 @@ public class InsertTestCase extends AbstractTestCase {
     try {
       session.insert(a, TLF_A.class, ".");
       fail();
+    }
+    catch (IllegalArgumentException ignore) {
+    }
+  }
+
+  public void testNonChromatticParent() throws Exception {
+    DomainSession session = login();
+    assertThrowsIAE(session, new Object(), Object.class, "a");
+  }
+
+  public void testNonPersistentParent() throws Exception {
+    DomainSession session = login();
+    TLF_A a = session.create(TLF_A.class);
+    assertThrowsIAE(session, a, Object.class, "a");
+  }
+
+  public void testNonChromatticObject() throws Exception {
+    DomainSession session = login();
+    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    assertThrowsIAE(session, Object.class, "a");
+    assertThrowsIAE(session, a, Object.class, "a");
+  }
+
+  private void assertThrowsIAE(ChromatticSession session, Class<?> objectClass, String name) {
+    try {
+      session.insert(objectClass, name);
+      fail("Was expecting an exception");
+    }
+    catch (IllegalArgumentException ignore) {
+    }
+  }
+
+  private void assertThrowsIAE(ChromatticSession session, Object parent, Class<?> objectClass, String name) {
+    try {
+      session.insert(parent, objectClass, name);
+      fail("Was expecting an exception");
     }
     catch (IllegalArgumentException ignore) {
     }

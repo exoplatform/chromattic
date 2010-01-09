@@ -192,4 +192,72 @@ public class PersistTestCase extends AbstractTestCase {
     assertEquals(null, session.getName(b));
     assertEquals(Status.TRANSIENT, session.getStatus(b));
   }
+
+  public void testNonChromatticParent() throws Exception {
+    ChromatticSession session = login();
+    TLF_A a = session.create(TLF_A.class);
+    assertThrowsIAE(session, new Object(), a);
+    assertThrowsIAE(session, new Object(), a, "a");
+  }
+
+  public void testTransientParent() throws Exception {
+    ChromatticSession session = login();
+    TLF_A a = session.create(TLF_A.class);
+    TLF_A b = session.create(TLF_A.class);
+    assertThrowsIAE(session, a, b);
+    assertThrowsIAE(session, a, b, "a");
+  }
+
+  public void testPersistentObject() throws Exception {
+    ChromatticSession session = login();
+    TLF_A a = session.insert(TLF_A.class, "a");
+    TLF_A b = session.insert(TLF_A.class, "b");
+    assertThrowsIAE(session, a, b);
+    assertThrowsIAE(session, a, b, "a");
+  }
+
+  public void testNonChromatticObject() throws Exception {
+    ChromatticSession session = login();
+    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    assertThrowsIAE(session, new Object());
+    assertThrowsIAE(session, new Object(), "a");
+    assertThrowsIAE(session, a, new Object());
+    assertThrowsIAE(session, a, new Object(), "a");
+  }
+
+  private void assertThrowsIAE(ChromatticSession session, Object object) {
+    try {
+      session.persist(object);
+      fail("Was expecting an exception");
+    }
+    catch (IllegalArgumentException ignore) {
+    }
+  }
+
+  private void assertThrowsIAE(ChromatticSession session, Object object, String name) {
+    try {
+      session.persist(object, name);
+      fail("Was expecting an exception");
+    }
+    catch (IllegalArgumentException ignore) {
+    }
+  }
+
+  private void assertThrowsIAE(ChromatticSession session, Object parent, Object object) {
+    try {
+      session.persist(parent, object);
+      fail("Was expecting an exception");
+    }
+    catch (IllegalArgumentException ignore) {
+    }
+  }
+
+  private void assertThrowsIAE(ChromatticSession session, Object parent, Object object, String name) {
+    try {
+      session.persist(parent, object, name);
+      fail("Was expecting an exception");
+    }
+    catch (IllegalArgumentException ignore) {
+    }
+  }
 }

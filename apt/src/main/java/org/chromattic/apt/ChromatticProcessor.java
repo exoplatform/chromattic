@@ -100,6 +100,7 @@ public class ChromatticProcessor extends AbstractProcessor {
     String simpleClassName = cti.getSimpleName() + "_Chromattic";
     out.append("package ").append(cti.getPackageName()).append(";\n");
     out.append("import ").append(Invoker.class.getName()).append(";\n");
+    out.append("import ").append(Instrumented.class.getName()).append(";\n");
 
     //
     StringBuffer sb = new StringBuffer("public class ");
@@ -109,9 +110,13 @@ public class ChromatticProcessor extends AbstractProcessor {
       sb.append(Object.class.getName());
       sb.append(" implements ");
       sb.append(cti.getSimpleName());
+      sb.append(",");
+      sb.append(Instrumented.class.getSimpleName());
     }
     else {
       sb.append(cti.getSimpleName());
+      sb.append(" implements ");
+      sb.append(Instrumented.class.getSimpleName());
     }
     sb.append(" {\n");
 

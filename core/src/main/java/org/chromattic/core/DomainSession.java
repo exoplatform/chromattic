@@ -27,6 +27,7 @@ import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.jcr.SessionWrapper;
+import org.chromattic.spi.instrument.MethodHandler;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
@@ -451,18 +452,46 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public final EntityContext unwrapEntity(Object o) {
-    if (o == null) {
-      throw new NullPointerException("Cannot unwrap null object");
-    }
-    return (EntityContext)domain.getInstrumentor().getInvoker(o);
+  /**
+   * Unwraps the object to an entity context
+   *
+   * @param o the object to unwrap
+   * @return the related entity context
+   * @throws NullPointerException if the object is null
+   * @throws IllegalArgumentException if the object is not a proxy
+   */
+  public final EntityContext unwrapEntity(Object o) throws NullPointerException, IllegalArgumentException {
+    return unwrap(o, EntityContext.class);
   }
 
+  /**
+   * Unwraps the object to an embedded context
+   *
+   * @param o the object to unwrap
+   * @return the related embedded context
+   * @throws NullPointerException if the object is null
+   * @throws IllegalArgumentException if the object is not a proxy
+   */
   public final EmbeddedContext unwrapMixin(Object o) {
+    return unwrap(o, EmbeddedContext.class);
+  }
+
+  private <T> T unwrap(Object o, Class<T> expectedClass) {
     if (o == null) {
       throw new NullPointerException("Cannot unwrap null object");
     }
-    return (EmbeddedContext)domain.getInstrumentor().getInvoker(o);
+    if (expectedClass == null) {
+      throw new NullPointerException();
+    }
+    MethodHandler handler = domain.getInstrumentor().getInvoker(o);
+    if (handler == null) {
+      throw new IllegalArgumentException("The object with class " + o.getClass().getName() + " is not instrumented");
+    }
+    if (expectedClass.isInstance(handler)) {
+      return expectedClass.cast(handler);
+    } else {
+      throw new AssertionError("The proxy " + o + " handler is not of the expected type");
+    }
   }
 
   public final String persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {

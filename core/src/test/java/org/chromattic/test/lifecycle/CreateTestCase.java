@@ -19,6 +19,7 @@
 
 package org.chromattic.test.lifecycle;
 
+import org.chromattic.core.DomainSession;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
@@ -58,5 +59,21 @@ public class CreateTestCase extends AbstractTestCase {
     TLF_A a = session.create(TLF_A.class);
     assertEquals(Status.TRANSIENT, session.getStatus(a));
     assertEquals(null, session.getName(a));
+  }
+
+  public void testNonChromatticClass() throws Exception {
+    DomainSession session = login();
+    try {
+      session.create(Object.class);
+      fail("Was expecting an exception");
+    }
+    catch (IllegalArgumentException e) {
+    }
+    try {
+      session.create(Object.class, "a");
+      fail("Was expecting an exception");
+    }
+    catch (IllegalArgumentException e) {
+    }
   }
 }

@@ -17,23 +17,13 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.spi.instrument;
+package org.chromattic.apt;
 
 /**
+ * A marker interface for instrumented proxies.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface Instrumentor {
-
-  <O> ProxyFactory<O> getProxyClass(Class<O> clazz);
-
-  /**
-   * Returns the method handler for the specified proxy or null if the object argument is not
-   * instrumented.
-   *
-   * @param proxy the instrumented proxy
-   * @return the method handler
-   */
-  MethodHandler getInvoker(Object proxy);
-
+public interface Instrumented {
 }

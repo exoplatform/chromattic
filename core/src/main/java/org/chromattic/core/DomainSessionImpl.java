@@ -136,7 +136,6 @@ public class DomainSessionImpl extends DomainSession {
    * @return the id of the inserted context
    * @throws NullPointerException
    * @throws IllegalArgumentException
-   * @throws IllegalStateException
    * @throws RepositoryException
    */
   protected String _persist(EntityContext srcCtx, String name, EntityContext dstCtx) throws
@@ -152,7 +151,7 @@ public class DomainSessionImpl extends DomainSession {
     if (dstCtx.getStatus() != Status.TRANSIENT) {
       String msg = "Attempt to insert non transient context " + dstCtx + " as child of " + srcCtx;
       log.error(msg);
-      throw new IllegalStateException(msg);
+      throw new IllegalArgumentException(msg);
     }
     if (name == null) {
       String msg = "Attempt to insert context " + dstCtx + " with no relative path to " + srcCtx;
@@ -162,7 +161,7 @@ public class DomainSessionImpl extends DomainSession {
     if (srcCtx.getStatus() != Status.PERSISTENT) {
       String msg = "Attempt to insert context " + dstCtx + " as child of non persistent context " + srcCtx;
       log.error(msg);
-      throw new IllegalStateException(msg);
+      throw new IllegalArgumentException(msg);
     }
 
     //
@@ -405,6 +404,11 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     ObjectMapper<?> typeMapper = domain.getTypeMapper(clazz);
+    if (typeMapper == null) {
+      throw new IllegalArgumentException("The type " + clazz.getName() + " is not mapped");
+    }
+
+    //
     TransientEntityContextState state = new TransientEntityContextState(this);
 
     //
