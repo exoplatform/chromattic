@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.hierarchical.collection;
+package org.chromattic.test.onetomany.hierarchical.list;
 
 import org.chromattic.test.onetomany.hierarchical.AbstractOneToTestCase;
 
@@ -25,7 +25,7 @@ import org.chromattic.test.onetomany.hierarchical.AbstractOneToTestCase;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToMany3TestCase extends AbstractOneToTestCase<A3, B3> {
+public class OneToMany1TestCase extends AbstractOneToTestCase<A3, B3> {
 
   public void setOne(B3 many, A3 one) {
     many.setParent(one);
