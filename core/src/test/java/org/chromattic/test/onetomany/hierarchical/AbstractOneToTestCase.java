@@ -47,19 +47,12 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
 
   public abstract O getOne(M many);
 
-  public final void testAdd() throws Exception {
+  public final void testAddChild() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getRoot();
-
-    //
-    Node aNode = rootNode.addNode("totm_a_a", "totm_a");
-    O a = session.findByNode(oneSide, aNode);
-    assertNotNull(a);
-
-    //
-    Node bNode = aNode.addNode("b", "totm_b");
-    M b = session.findByNode(manySide, bNode);
-    assertEquals(a, getOne(b));
+    O o = session.insert(oneSide, "a");
+    M m = session.create(manySide, "b");
+    setOne(m, o);
+    assertSame(o, getOne(m));
   }
 
   public final void testLoad() throws Exception {
@@ -86,6 +79,18 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
       getOne(b);
     }
     catch (IllegalStateException expected) {
+    }
+  }
+
+  public final void testMoveToNonPersistentParent() throws Exception {
+    DomainSession session = login();
+    O o = session.create(oneSide, "a");
+    M m = session.insert(manySide, "b");
+    try {
+      setOne(m, o);
+      fail();
+    }
+    catch (IllegalArgumentException ignore) {
     }
   }
 

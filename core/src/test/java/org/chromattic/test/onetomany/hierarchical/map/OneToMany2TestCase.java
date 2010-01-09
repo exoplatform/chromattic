@@ -37,4 +37,9 @@ public class OneToMany2TestCase extends AbstractToManyTestCase<A3, B3> {
   public void add(A3 totm_a_3, B3 totm_b_3) {
     totm_a_3.getChildren().put(totm_b_3.getName(), totm_b_3);
   }
+
+  @Override
+  public boolean supportsAddToCollection() {
+    return false;
+  }
 }

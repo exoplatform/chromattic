@@ -342,7 +342,7 @@ public class DomainSessionImpl extends DomainSession {
     if (dstCtx.getStatus() != Status.PERSISTENT) {
       String msg = "Attempt to move child " + srcCtx + " to a non persistent context " + dstCtx;
       log.error(msg);
-      throw new IllegalStateException(msg);
+      throw new IllegalArgumentException(msg);
     }
 
     //

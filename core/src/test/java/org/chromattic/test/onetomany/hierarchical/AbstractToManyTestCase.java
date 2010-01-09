@@ -51,34 +51,13 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
 
   public abstract void add(O o, M m);
 
-  public void testAdd1() throws Exception {
+  public abstract boolean supportsAddToCollection();
 
+  public void testAdd() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getRoot();
 
     //
-    Node aNode = rootNode.addNode("totm_a_a", "totm_a");
-    O a = session.findByNode(oneSide, aNode);
-    assertNotNull(a);
-    Collection<M> children = getMany(a);
-    assertNotNull(children);
-    assertEquals(0, children.size());
-
-    //
-    Node bNode = aNode.addNode("b", "totm_b");
-    assertEquals(1, children.size());
-    M b = session.findByNode(manySide, bNode);
-    assertTrue(children.contains(b));
-  }
-
-  public void testAdd2() throws Exception {
-
-    DomainSession session = login();
-    Node rootNode = session.getRoot();
-
-    //
-    Node aNode = rootNode.addNode("totm_a_a", "totm_a");
-    O a = session.findByNode(oneSide, aNode);
+    O a = session.insert(oneSide, "a");
     assertNotNull(a);
     Collection<M> children = getMany(a);
     assertNotNull(children);
@@ -89,8 +68,6 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     add(a, b);
     assertEquals(1, children.size());
     assertTrue(children.contains(b));
-
-    // Need to check underlying nodes
   }
 
   public void testLoad() throws Exception {
@@ -113,23 +90,79 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
   }
 
   public void testRemove() throws Exception {
-
     ChromatticSession session = login();
 
+    //
     O a = session.insert(oneSide, "totm_a_c");
     String aId = session.getId(a);
     M b = session.create(manySide, "totm_b_c");
     add(a, b);
     session.save();
 
+    //
     session = login();
 
+    //
     a = session.findById(oneSide, aId);
     b = getMany(a).iterator().next();
     assertNotNull(a);
     session.remove(a);
     assertEquals(Status.REMOVED, session.getStatus(a));
     assertEquals(Status.REMOVED, session.getStatus(b));
+  }
+
+  public void testMove() throws Exception {
+    DomainSession session = login();
+    O o1 = session.insert(oneSide, "o1");
+    String o1Id = session.getId(o1);
+    O o2 = session.insert(oneSide, "o2");
+    String o2Id = session.getId(o2);
+    M m = session.insert(o1, manySide, "m");
+    String mId = session.getId(m);
+    Collection<M> ms1 = getMany(o1);
+    Collection<M> ms2 = getMany(o2);
+    add(o2, m);
+    assertEquals(Collections.<Object>emptySet(), new HashSet<Object>(ms1));
+    assertEquals(Collections.singleton(m), new HashSet<Object>(ms2));
+    session.save();
+
+    //
+    o1 = session.findById(oneSide, o1Id);
+    o2 = session.findById(oneSide, o2Id);
+    ms1 = getMany(o1);
+    ms2 = getMany(o2);
+    m = session.findById(manySide, mId);
+    assertEquals(Collections.<Object>emptySet(), new HashSet<Object>(ms1));
+    assertEquals(Collections.singleton(m), new HashSet<Object>(ms2));
+  }
+
+  public void testTypeSafety() throws Exception {
+    if (supportsAddToCollection()) {
+      DomainSession session = login();
+      O o1 = session.insert(oneSide, "o1");
+      O o2 = session.insert(oneSide, "o2");
+      Collection m = getMany(o1);
+      try {
+        m.add(o2);
+        fail();
+      }
+      catch (ClassCastException e) {
+      }
+    }
+  }
+
+  public void testAddNull() throws Exception {
+    if (supportsAddToCollection()) {
+      DomainSession session = login();
+      O o1 = session.insert(oneSide, "o1");
+      Collection<M> m = getMany(o1);
+      try {
+        m.add(null);
+        fail();
+      }
+      catch (NullPointerException e) {
+      }
+    }
   }
 
   public void testTransientCollectionClear() throws Exception {
@@ -204,30 +237,5 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     }
     catch (IllegalStateException ignore) {
     }
-  }
-
-  public void testMove() throws Exception {
-    DomainSession session = login();
-    O o1 = session.insert(oneSide, "o1");
-    String o1Id = session.getId(o1);
-    O o2 = session.insert(oneSide, "o2");
-    String o2Id = session.getId(o2);
-    M m = session.insert(o1, manySide, "m");
-    String mId = session.getId(m);
-    Collection<M> ms1 = getMany(o1);
-    Collection<M> ms2 = getMany(o2);
-    add(o2, m);
-    assertEquals(Collections.<Object>emptySet(), new HashSet<Object>(ms1));
-    assertEquals(Collections.singleton(m), new HashSet<Object>(ms2));
-    session.save();
-
-    //
-    o1 = session.findById(oneSide, o1Id);
-    o2 = session.findById(oneSide, o2Id);
-    ms1 = getMany(o1);
-    ms2 = getMany(o2);
-    m = session.findById(manySide, mId);
-    assertEquals(Collections.<Object>emptySet(), new HashSet<Object>(ms1));
-    assertEquals(Collections.singleton(m), new HashSet<Object>(ms2));
   }
 }

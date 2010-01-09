@@ -37,4 +37,9 @@ public class ToManyTestCase extends AbstractToManyTestCase<A1, B1> {
   public void add(A1 totm_a_1, B1 totm_b_1) {
     totm_a_1.getChildren().add(totm_b_1);
   }
+
+  @Override
+  public boolean supportsAddToCollection() {
+    return true;
+  }
 }
