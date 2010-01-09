@@ -57,35 +57,35 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     DomainSession session = login();
 
     //
-    O a = session.insert(oneSide, "a");
-    assertNotNull(a);
-    Collection<M> children = getMany(a);
-    assertNotNull(children);
-    assertEquals(0, children.size());
+    O o = session.insert(oneSide, "o");
+    assertNotNull(o);
+    Collection<M> ms = getMany(o);
+    assertNotNull(ms);
+    assertEquals(0, ms.size());
 
     //
-    M b = session.create(manySide, "totm_b_a");
-    add(a, b);
-    assertEquals(1, children.size());
-    assertTrue(children.contains(b));
+    M m = session.create(manySide, "m");
+    add(o, m);
+    assertEquals(1, ms.size());
+    assertTrue(ms.contains(m));
   }
 
   public void testLoad() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("totm_a_b", "totm_a");
-    String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "totm_b");
-    String bId = bNode.getUUID();
+    Node oNode = rootNode.addNode("o", "totm_a");
+    String oId = oNode.getUUID();
+    Node mNode = oNode.addNode("m", "totm_b");
+    String mId = mNode.getUUID();
     rootNode.save();
 
     //
     session = login();
-    O a = session.findById(oneSide, aId);
-    assertNotNull(a);
-    Collection<M> children = getMany(a);
+    O o = session.findById(oneSide, oId);
+    assertNotNull(o);
+    Collection<M> children = getMany(o);
     assertNotNull(children);
-    M b = session.findById(manySide, bId);
+    M b = session.findById(manySide, mId);
     assertTrue(children.contains(b));
   }
 
@@ -93,22 +93,22 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    O a = session.insert(oneSide, "totm_a_c");
-    String aId = session.getId(a);
-    M b = session.create(manySide, "totm_b_c");
-    add(a, b);
+    O o = session.insert(oneSide, "o");
+    String oId = session.getId(o);
+    M m = session.create(manySide, "m");
+    add(o, m);
     session.save();
 
     //
     session = login();
 
     //
-    a = session.findById(oneSide, aId);
-    b = getMany(a).iterator().next();
-    assertNotNull(a);
-    session.remove(a);
-    assertEquals(Status.REMOVED, session.getStatus(a));
-    assertEquals(Status.REMOVED, session.getStatus(b));
+    o = session.findById(oneSide, oId);
+    m = getMany(o).iterator().next();
+    assertNotNull(o);
+    session.remove(o);
+    assertEquals(Status.REMOVED, session.getStatus(o));
+    assertEquals(Status.REMOVED, session.getStatus(m));
   }
 
   public void testMove() throws Exception {
@@ -203,22 +203,22 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
 
   private void testCollectionClear(boolean save) throws Exception {
     ChromatticSession session = login();
-    O one = session.insert(oneSide, "totm_d");
-    M many = session.create(manySide, "totm_e");
-    Collection<M> c = getMany(one);
-    add(one, many);
+    O o = session.insert(oneSide, "o");
+    M m = session.create(manySide, "m");
+    Collection<M> c = getMany(o);
+    add(o, m);
     if (save) session.save();
     c.clear();
-    assertEquals(Status.REMOVED, session.getStatus(many));
+    assertEquals(Status.REMOVED, session.getStatus(m));
     assertTrue(c.isEmpty());
   }
 
   private void testTransientCollectionIterator(boolean save) throws Exception {
     ChromatticSession session = login();
-    O one = session.insert(oneSide, "totm_d");
-    M many = session.create(manySide, "totm_e");
-    Collection<M> c = getMany(one);
-    add(one, many);
+    O o = session.insert(oneSide, "p");
+    M m = session.create(manySide, "m");
+    Collection<M> c = getMany(o);
+    add(o, m);
     if (save) session.save();
     Iterator<M> i = c.iterator();
     try {
@@ -227,9 +227,9 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     }
     catch (IllegalStateException ignore) {
     }
-    assertSame(many, i.next());
+    assertSame(m, i.next());
     i.remove();
-    assertEquals(Status.REMOVED, session.getStatus(many));
+    assertEquals(Status.REMOVED, session.getStatus(m));
     assertTrue(c.isEmpty());
     try {
       i.remove();

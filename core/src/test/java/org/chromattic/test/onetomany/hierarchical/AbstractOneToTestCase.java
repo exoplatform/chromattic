@@ -49,43 +49,50 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
 
   public final void testAddChild() throws Exception {
     DomainSession session = login();
-    O o = session.insert(oneSide, "a");
-    M m = session.create(manySide, "b");
+    O o = session.insert(oneSide, "o");
+    M m = session.create(manySide, "m");
     setOne(m, o);
     assertSame(o, getOne(m));
   }
 
-  public final void testLoad() throws Exception {
+  public final void testAddRemovedChild() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("totm_a_b", "totm_a");
-    String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "totm_b");
-    String bId = bNode.getUUID();
-    rootNode.save();
+    O o1 = session.insert(oneSide, "o1");
+    M m = session.create(manySide, "m");
+    setOne(m, o1);
 
     //
-    session = login();
-    O a = session.findById(oneSide, aId);
-    assertNotNull(a);
-    M b = session.findById(manySide, bId);
-    assertEquals(a, getOne(b));
-  }
-
-  public final void testTransientGetParent() throws Exception {
-    ChromatticSession session = login();
-    M b = session.create(manySide, "totm_b_c");
+    session.remove(m);
+    O o2 = session.insert(oneSide, "o2");
     try {
-      getOne(b);
+      setOne(m, o2);
+      fail();
     }
     catch (IllegalStateException expected) {
     }
   }
 
+  public final void testLoad() throws Exception {
+    DomainSession session = login();
+    Node rootNode = session.getRoot();
+    Node oNode = rootNode.addNode("o", "totm_a");
+    String oId = oNode.getUUID();
+    Node mNode = oNode.addNode("m", "totm_b");
+    String mId = mNode.getUUID();
+    rootNode.save();
+
+    //
+    session = login();
+    O o = session.findById(oneSide, oId);
+    assertNotNull(o);
+    M m = session.findById(manySide, mId);
+    assertEquals(o, getOne(m));
+  }
+
   public final void testMoveToNonPersistentParent() throws Exception {
     DomainSession session = login();
-    O o = session.create(oneSide, "a");
-    M m = session.insert(manySide, "b");
+    O o = session.create(oneSide, "o");
+    M m = session.insert(manySide, "m");
     try {
       setOne(m, o);
       fail();
@@ -94,20 +101,47 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
     }
   }
 
-  public final void testRemovedGetParent() throws Exception {
+  public final void testMoveToRemovedParent() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("totm_a_b", "totm_a");
-    String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "totm_b");
-    String bId = bNode.getUUID();
-    rootNode.save();
+    O o1 = session.insert(oneSide, "o1");
+    M m = session.create(manySide, "m");
+    setOne(m, o1);
 
-    session = login();
-    M b = session.findById(manySide, bId);
-    session.remove(b);
+    //
+    O o2 = session.insert(oneSide, "o2");
+    session.remove(o2);
+    try {
+      setOne(m, o2);
+      fail();
+    }
+    catch (IllegalStateException expected) {
+    }
+  }
+
+  public final void testTransientGetOneThrowsIAE() throws Exception {
+    ChromatticSession session = login();
+    M b = session.create(manySide, "m");
     try {
       getOne(b);
+    }
+    catch (IllegalStateException expected) {
+    }
+  }
+
+  public final void testRemovedGetOneThrowsIAE() throws Exception {
+    DomainSession session = login();
+    O o = session.insert(oneSide, "o");
+    M m = session.create(manySide, "m");
+    setOne(m, o);
+    String bId = session.getId(m);
+    session.save();
+
+    //
+    session = login();
+    m = session.findById(manySide, bId);
+    session.remove(m);
+    try {
+      getOne(m);
     }
     catch (IllegalStateException expected) {
     }
