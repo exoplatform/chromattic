@@ -19,6 +19,7 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.core.EntityContext;
 
 import java.util.AbstractMap;
@@ -78,7 +79,8 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
         parentCtx.getSession().remove(child);
       }
     } else if (relatedClass.isInstance(value)) {
-      parentCtx.addChild(key, value);
+      EntityContext childCtx = parentCtx.getSession().unwrapEntity(value);
+      parentCtx.addChild(key, childCtx);
     } else {
       throw new ClassCastException("Cannot put " + value + " with in map containing values of type " + relatedClass);
     }

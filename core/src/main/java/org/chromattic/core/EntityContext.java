@@ -139,20 +139,13 @@ public final class EntityContext extends ObjectContext {
     return state.getSession().getReferenced(this, name, linkType);
   }
 
-  public void setReferenced(String name, Object referenced, LinkType linkType) {
+  public void setReferenced(String name, EntityContext referencedCtx, LinkType linkType) {
     ChromatticSessionImpl session = state.getSession();
-    EntityContext referencedCtx = null;
-    if (referenced != null) {
-      referencedCtx = session.unwrapEntity(referenced);
-    }
-
-    //
     session.setReferenced(this, name, referencedCtx, linkType);
   }
 
-  public boolean addReference(String name, Object referent, LinkType linkType) {
+  public boolean addReference(String name, EntityContext referentCtx, LinkType linkType) {
     ChromatticSessionImpl session = state.getSession();
-    EntityContext referentCtx = session.unwrapEntity(referent);
     return session.setReferenced(referentCtx, name, this, linkType);
   }
 
@@ -182,24 +175,12 @@ public final class EntityContext extends ObjectContext {
     }
   }
 
-  public void addChild(Object child) {
-    ChromatticSessionImpl session = state.getSession();
-    EntityContext childCtx = session.unwrapEntity(child);
-    addChild(childCtx);
-  }
-
   public void addChild(String name, EntityContext childCtx) {
     if (childCtx.getStatus() == Status.PERSISTENT) {
       state.getSession().move(childCtx, this);
     } else {
       state.getSession().persist(this, childCtx, name);
     }
-  }
-
-  public void addChild(String name, Object child) {
-    ChromatticSessionImpl session = state.getSession();
-    EntityContext childCtx = session.unwrapEntity(child);
-    addChild(name, childCtx);
   }
 
   public Object getChild(String name) {

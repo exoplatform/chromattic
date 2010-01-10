@@ -71,7 +71,8 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext> extends 
   public void set(O context, Object child) throws Throwable {
     EntityContext entity = context.getEntity();
     if (child != null) {
-      entity.addChild(nodeName, child);
+      EntityContext entityCtx = entity.getSession().unwrapEntity(child);
+      entity.addChild(nodeName, entityCtx);
     } else {
       entity.removeChild(nodeName);
     }

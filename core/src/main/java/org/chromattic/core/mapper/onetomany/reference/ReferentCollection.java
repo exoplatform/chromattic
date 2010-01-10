@@ -43,7 +43,8 @@ public class ReferentCollection extends AbstractCollection<Object> {
 
   @Override
   public boolean add(Object o) {
-    return context.addReference(mapper.propertyName, o, mapper.linkType);
+    EntityContext referentCtx = context.getSession().unwrapEntity(o);
+    return context.addReference(mapper.propertyName, referentCtx, mapper.linkType);
   }
 
   public Iterator<Object> iterator() {

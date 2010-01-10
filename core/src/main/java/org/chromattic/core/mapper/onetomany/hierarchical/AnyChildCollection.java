@@ -19,6 +19,7 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.core.EntityContext;
 
 import java.util.AbstractCollection;
@@ -51,7 +52,10 @@ class AnyChildCollection<E> extends AbstractCollection<E> {
     }
 
     //
-    parentCtx.addChild(child);
+    EntityContext childCtx = parentCtx.getSession().unwrapEntity(child);
+
+    //
+    parentCtx.addChild(childCtx);
 
     //
     return true;
