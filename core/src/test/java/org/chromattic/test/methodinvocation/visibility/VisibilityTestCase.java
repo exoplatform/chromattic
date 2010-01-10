@@ -19,7 +19,7 @@
 
 package org.chromattic.test.methodinvocation.visibility;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 /**
@@ -33,7 +33,7 @@ public class VisibilityTestCase extends AbstractTestCase {
   }
 
   public void testProtectedProperty() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.insert(A.class, "a");
     assertNull(a.getProtectedProperty());
     a.setProtectedProperty("foo");
@@ -41,7 +41,7 @@ public class VisibilityTestCase extends AbstractTestCase {
   }
 
   public void testPackageProtectedProperty() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.insert(A.class, "a");
     assertNull(a.getPackageProtectedProperty());
     a.setPackageProtectedProperty("bar");

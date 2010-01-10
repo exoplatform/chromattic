@@ -19,8 +19,8 @@
 
 package org.chromattic.test.onetoone.hierarchical;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.Node;
@@ -37,7 +37,7 @@ public class ToOneTestCase extends AbstractTestCase {
   }
 
   public void testChildToParentAdd() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
 
     //
@@ -53,7 +53,7 @@ public class ToOneTestCase extends AbstractTestCase {
   }
 
   public void testChildToParentLoad() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("toto_a_b", "toto_a");
     String aId = aNode.getUUID();

@@ -20,7 +20,7 @@
 package org.chromattic.test.onetoone.hierarchical;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
@@ -40,7 +40,7 @@ public class OneToTestCase extends AbstractTestCase {
   }
 
   public void testJCR() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     Node rootNode = session.getRoot();

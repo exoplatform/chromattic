@@ -53,7 +53,7 @@ import java.io.IOException;
 class PersistentEntityContextState extends EntityContextState {
 
   /** . */
-  private final DomainSession session;
+  private final ChromatticSessionImpl session;
 
   /** . */
   private final Map<String, Object> propertyCache;
@@ -64,7 +64,7 @@ class PersistentEntityContextState extends EntityContextState {
   /** . */
   private final PrimaryTypeInfo typeInfo;
 
-  PersistentEntityContextState(Node node, DomainSession session) throws RepositoryException {
+  PersistentEntityContextState(Node node, ChromatticSessionImpl session) throws RepositoryException {
     this.session = session;
     this.propertyCache = session.domain.stateCacheEnabled ? new HashMap<String, Object>() : null;
     this.node = node;
@@ -109,7 +109,7 @@ class PersistentEntityContextState extends EntityContextState {
     return node;
   }
 
-  DomainSession getSession() {
+  ChromatticSessionImpl getSession() {
     return session;
   }
 

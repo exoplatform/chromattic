@@ -20,7 +20,7 @@
 package org.chromattic.test.onetoone.embedded;
 
 import org.chromattic.common.JCR;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
@@ -38,7 +38,7 @@ public class OneToOneTestCase extends AbstractTestCase {
   }
 
   public void testAddMixinToEntity() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
     C c = session.create(C.class);
     assertNull(b.getMixin());
@@ -57,7 +57,7 @@ public class OneToOneTestCase extends AbstractTestCase {
   }
 
   public void testAddEntityToMixin() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
     C c = session.create(C.class);
     assertNull(b.getMixin());
@@ -76,14 +76,14 @@ public class OneToOneTestCase extends AbstractTestCase {
   }
 
   public void testGetSuper() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
     A a = b.getSuper();
     assertNotNull(a);
   }
 
   public void testSetSuper() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     B b1 = session.insert(B.class, "b1");
     B b2 = session.insert(B.class, "b2");
     try {
@@ -95,7 +95,7 @@ public class OneToOneTestCase extends AbstractTestCase {
   }
 
   public void testMixinProperty() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     B a = session.insert(B.class, "b");
     C b = session.create(C.class);
     a.setMixin(b);
@@ -104,7 +104,7 @@ public class OneToOneTestCase extends AbstractTestCase {
   }
 
   public void testMixinChild() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     B a1 = session.insert(B.class, "b");
     C b = session.create(C.class);
     a1.setMixin(b);

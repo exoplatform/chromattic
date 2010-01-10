@@ -19,7 +19,7 @@
 package org.chromattic.test.format.scope;
 
 import org.chromattic.api.ChromatticBuilder;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.format.A;
 import org.chromattic.test.format.B;
@@ -44,7 +44,7 @@ public class FormatterScopeTestCase extends AbstractTestCase {
 
   public void testClassOverride() throws Exception {
 
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.insert(A.class, "a");
     C c = session.insert(C.class, "c");
 

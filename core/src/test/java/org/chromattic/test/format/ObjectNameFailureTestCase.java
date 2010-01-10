@@ -19,10 +19,10 @@
 
 package org.chromattic.test.format;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.format.FormatterContext;
-import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -41,7 +41,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testEncoderThrowsIAE() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String encodeNodeName(FormatterContext context, String externalName) {
@@ -57,7 +57,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testEncodeThrowsNPE() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String encodeNodeName(FormatterContext context, String externalName) {
@@ -73,7 +73,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testEncodeThrowsError() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String encodeNodeName(FormatterContext context, String externalName) {
@@ -89,7 +89,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testEncodeReturnsNull() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String encodeNodeName(FormatterContext context, String externalName) {
@@ -105,7 +105,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testEncodeThrowsRE() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String encodeNodeName(FormatterContext context, String externalName) {
@@ -122,7 +122,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testEncodeReturnsIllegal() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String encodeNodeName(FormatterContext context, String externalName) {
@@ -138,7 +138,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testDecodeReturnsNullName() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String decodeNodeName(FormatterContext context, String internalName) {
@@ -156,7 +156,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testDecodeThrowsRE() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String decodeNodeName(FormatterContext context, String internalName) {
@@ -175,7 +175,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testDecodeThrowsError() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String decodeNodeName(FormatterContext context, String internalName) {
@@ -193,7 +193,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
   }
 
   public void testDecodeThrowsISE() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     DelegatingObjectFormatter.delegate = new AbstractObjectFormatter() {
       @Override
       public String decodeNodeName(FormatterContext context, String internalName) {

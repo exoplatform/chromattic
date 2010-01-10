@@ -20,7 +20,7 @@
 package org.chromattic.test.factory;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
@@ -37,7 +37,7 @@ public class FactoryTestCase extends AbstractTestCase {
   }
 
   public void testCreate() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     Node aNode = session.getRoot().addNode("tf_a_a", "tf_a");
@@ -49,7 +49,7 @@ public class FactoryTestCase extends AbstractTestCase {
   }
 
   public void testLifeCycle() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     TF_B.constructed = 0;

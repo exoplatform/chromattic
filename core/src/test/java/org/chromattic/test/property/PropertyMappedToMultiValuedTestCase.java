@@ -22,7 +22,7 @@ package org.chromattic.test.property;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.MultiValue;
 import org.chromattic.test.support.EventQueue;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 
 import javax.jcr.Node;
 import javax.jcr.ValueFactory;
@@ -56,7 +56,7 @@ public class PropertyMappedToMultiValuedTestCase extends AbstractTestCase {
     super.setUp();
 
     //
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     eNode = rootNode.addNode("tp_a_a", "tp_c");
     factory = session.getJCRSession().getValueFactory();

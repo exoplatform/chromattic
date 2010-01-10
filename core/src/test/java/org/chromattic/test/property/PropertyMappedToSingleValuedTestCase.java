@@ -22,7 +22,7 @@ package org.chromattic.test.property;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.MultiValue;
 import org.chromattic.test.support.EventQueue;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.api.NoSuchPropertyException;
 
 import javax.jcr.Node;
@@ -59,7 +59,7 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
     super.setUp();
 
     //
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     aNode = rootNode.addNode("tp_a_a", "tp_a");
     a = session.findByNode(TP_A.class, aNode);

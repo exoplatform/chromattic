@@ -19,8 +19,8 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.core.EntityContext;
-import org.chromattic.core.DomainSession;
 
 import java.util.Iterator;
 import java.util.AbstractList;
@@ -76,7 +76,7 @@ class AnyChildList<E> extends AbstractList<E> {
     }
 
     // Get the session
-    DomainSession session = parentCtx.getSession();
+    ChromatticSessionImpl session = parentCtx.getSession();
 
     // Get the added context
     EntityContext addedCtx = session.unwrapEntity(addedElement);
@@ -121,7 +121,7 @@ class AnyChildList<E> extends AbstractList<E> {
     E removedElement = get(index);
 
     // Get the session
-    DomainSession session = parentCtx.getSession();
+    ChromatticSessionImpl session = parentCtx.getSession();
 
     // Unwrap the removed element
     EntityContext removedCtx = session.unwrapEntity(removedElement);
@@ -164,7 +164,7 @@ class AnyChildList<E> extends AbstractList<E> {
     E removedElement = get(index);
 
     // Get the session
-    DomainSession session = parentCtx.getSession();
+    ChromatticSessionImpl session = parentCtx.getSession();
 
     // Unwrap the removed element
     EntityContext removedCtx = session.unwrapEntity(removedElement);

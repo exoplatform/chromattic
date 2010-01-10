@@ -41,7 +41,7 @@ import java.util.*;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DomainSessionImpl extends DomainSession {
+public class DomainSessionImpl extends ChromatticSessionImpl {
 
   /** . */
   final Domain domain;
@@ -50,7 +50,7 @@ public class DomainSessionImpl extends DomainSession {
   private Map<String, EntityContext> contexts;
 
   /** . */
-  private final Logger log = Logger.getLogger(DomainSession.class);
+  private final Logger log = Logger.getLogger(ChromatticSessionImpl.class);
 
   public DomainSessionImpl(Domain domain, SessionWrapper sessionWrapper) {
     super(domain, sessionWrapper);

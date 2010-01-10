@@ -43,7 +43,7 @@ abstract class EntityContextState {
 
   abstract Node getNode();
 
-  abstract DomainSession getSession();
+  abstract ChromatticSessionImpl getSession();
 
   abstract Status getStatus();
 

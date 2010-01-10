@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.type.stringenum;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
@@ -35,7 +35,7 @@ public class StringEnumTestCase extends AbstractTestCase {
   }
 
   public void testMapping() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.insert(A.class, "a");
     assertEquals(null, a.getCurrency());
     a.setCurrency(Currency.EURO);
@@ -47,7 +47,7 @@ public class StringEnumTestCase extends AbstractTestCase {
   }
 
   public void testIllegalValue() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.insert(A.class, "a");
     Node node = session.getNode(a);
     node.setProperty("currency", "bilto");

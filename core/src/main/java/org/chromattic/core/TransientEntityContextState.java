@@ -37,9 +37,9 @@ class TransientEntityContextState extends EntityContextState {
   private String name;
 
   /** . */
-  private final DomainSession session;
+  private final ChromatticSessionImpl session;
 
-  TransientEntityContextState(DomainSession session) {
+  TransientEntityContextState(ChromatticSessionImpl session) {
     this.session = session;
   }
 
@@ -63,7 +63,7 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  DomainSession getSession() {
+  ChromatticSessionImpl getSession() {
     return session;
   }
 

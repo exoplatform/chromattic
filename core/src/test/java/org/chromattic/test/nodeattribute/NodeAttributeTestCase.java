@@ -19,8 +19,8 @@
 
 package org.chromattic.test.nodeattribute;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.Node;
@@ -36,7 +36,7 @@ public class NodeAttributeTestCase extends AbstractTestCase {
   }
 
   public void testInvalidName() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     TNA_A a = session.create(TNA_A.class);
     a.setName(".");
     try {
@@ -48,7 +48,7 @@ public class NodeAttributeTestCase extends AbstractTestCase {
   }
 
   public void testPersistent() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("tna_a_a", "tna_a");
     String aName = aNode.getName();
@@ -121,7 +121,7 @@ public class NodeAttributeTestCase extends AbstractTestCase {
   }
 
   public void testRemoved() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("tna_a_a", "tna_a");
     String aId = aNode.getUUID();

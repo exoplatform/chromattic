@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.property.defaultvalue;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
@@ -34,7 +34,7 @@ public class DefaultValueTestCase extends AbstractTestCase {
   }
 
   public void testPrimitiveInt2() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.insert(A.class, "a");
     Node aNode = session.getRoot().getNode("a");
 

@@ -35,12 +35,12 @@ final class ChildCollectionIterator<T> extends AbstractFilterIterator<T, Node> {
   private final Class<T> relatedClass;
 
   /** . */
-  private final DomainSession session;
+  private final ChromatticSessionImpl session;
 
   /** The last iterated object. */
   private Object current;
 
-  public ChildCollectionIterator(DomainSession session, Iterator<Node> iterator, Class<T> relatedClass) throws RepositoryException {
+  public ChildCollectionIterator(ChromatticSessionImpl session, Iterator<Node> iterator, Class<T> relatedClass) throws RepositoryException {
     super(iterator);
 
     //

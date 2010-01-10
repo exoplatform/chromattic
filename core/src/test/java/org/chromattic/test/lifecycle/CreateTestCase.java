@@ -19,7 +19,7 @@
 
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
@@ -62,7 +62,7 @@ public class CreateTestCase extends AbstractTestCase {
   }
 
   public void testNonChromatticClass() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     try {
       session.create(Object.class);
       fail("Was expecting an exception");

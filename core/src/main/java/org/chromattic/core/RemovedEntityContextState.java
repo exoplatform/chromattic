@@ -60,7 +60,7 @@ class RemovedEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  DomainSession getSession() {
+  ChromatticSessionImpl getSession() {
     throw new IllegalStateException();
   }
 

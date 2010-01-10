@@ -19,7 +19,7 @@
 package org.chromattic.test.property;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
@@ -46,7 +46,7 @@ public class TypedResidualPropertyTestCase extends AbstractTestCase {
     super.setUp();
 
     //
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     node = rootNode.addNode("tp_typedresidual", "tp_e");
     o = session.findByNode(TP_TypedResidual.class, node);

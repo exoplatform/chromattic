@@ -19,7 +19,7 @@
 
 package org.chromattic.test.onetomany.reference;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.Node;
@@ -38,7 +38,7 @@ public abstract class AbstractOneToManyTestCase<O, M> extends AbstractLinkTestCa
   protected abstract Collection<M> getMany(O one);
 
   public void testAddPersistent() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode1 = rootNode.addNode("totmr_a_1", oneNT);
     Node aNode2 = rootNode.addNode("totmr_a_2", oneNT);

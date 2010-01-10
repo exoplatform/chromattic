@@ -18,12 +18,11 @@
  */
 package org.chromattic.test.format.transform.object;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticBuilder;
-import org.chromattic.core.DomainSession;
 import org.chromattic.test.format.A;
 import org.chromattic.test.format.B;
-import org.chromattic.test.format.DelegatingObjectFormatter;
 import org.chromattic.test.format.FooPrefixerFormatter;
 
 import javax.jcr.Node;
@@ -43,7 +42,7 @@ public class ObjectNameTransformTestCase extends AbstractTestCase {
   }
 
   public void testCreate() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.create(A.class, "a");
     session.persist(a);
     Node aNode = session.getNode(a);
@@ -51,7 +50,7 @@ public class ObjectNameTransformTestCase extends AbstractTestCase {
   }
 
   public void testSetNameAndPersist() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.create(A.class);
     a.setName("a");
     session.persist(a);
@@ -60,7 +59,7 @@ public class ObjectNameTransformTestCase extends AbstractTestCase {
   }
 
   public void testSetNameAndPersistAsChild() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.insert(A.class, "a");
     B b = session.create(B.class);
     b.setName("b");
@@ -70,21 +69,21 @@ public class ObjectNameTransformTestCase extends AbstractTestCase {
   }
 
   public void testGetName() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node aNode = session.getRoot().addNode("foo_a", "format_a");
     A a = session.findByNode(A.class, aNode);
     assertEquals("a", a.getName());
   }
 
   public void testSessionGetName() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node aNode = session.getRoot().addNode("foo_a", "format_a");
     A a = session.findByNode(A.class, aNode);
     assertEquals("a", session.getName(a));
   }
 
   public void testOneToManyPut() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node aNode = session.getRoot().addNode("foo_a", "format_a");
     A a = session.findByNode(A.class, aNode);
     B b = session.create(B.class);
@@ -94,7 +93,7 @@ public class ObjectNameTransformTestCase extends AbstractTestCase {
   }
 
   public void testOneToManyGet() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node aNode = session.getRoot().addNode("foo_a", "format_a");
     A a = session.findByNode(A.class, aNode);
     Node bNode = aNode.addNode("foo_b", "format_b");
@@ -103,7 +102,7 @@ public class ObjectNameTransformTestCase extends AbstractTestCase {
   }
 
   public void testOneToManyKeySet() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node aNode = session.getRoot().addNode("foo_a", "format_a");
     A a = session.findByNode(A.class, aNode);
     Node bNode = aNode.addNode("foo_b", "format_b");

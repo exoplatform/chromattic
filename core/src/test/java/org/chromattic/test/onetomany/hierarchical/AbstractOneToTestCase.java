@@ -21,7 +21,7 @@ package org.chromattic.test.onetomany.hierarchical;
 
 import org.chromattic.common.TypeLiteral;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.Node;
@@ -48,7 +48,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
   public abstract O getOne(M many);
 
   public final void testAddChild() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     O o = session.insert(oneSide, "o");
     M m = session.create(manySide, "m");
     setOne(m, o);
@@ -56,7 +56,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
   }
 
   public final void testAddRemovedChild() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     O o1 = session.insert(oneSide, "o1");
     M m = session.create(manySide, "m");
     setOne(m, o1);
@@ -73,7 +73,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
   }
 
   public final void testLoad() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node oNode = rootNode.addNode("o", "totm_a");
     String oId = oNode.getUUID();
@@ -90,7 +90,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
   }
 
   public final void testMoveToNonPersistentParent() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     O o = session.create(oneSide, "o");
     M m = session.insert(manySide, "m");
     try {
@@ -102,7 +102,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
   }
 
   public final void testMoveToRemovedParent() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     O o1 = session.insert(oneSide, "o1");
     M m = session.create(manySide, "m");
     setOne(m, o1);
@@ -129,7 +129,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
   }
 
   public final void testRemovedGetOneThrowsIAE() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     O o = session.insert(oneSide, "o");
     M m = session.create(manySide, "m");
     setOne(m, o);
@@ -148,7 +148,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
   }
 
   public final void testMove() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     O o1 = session.insert(oneSide, "o1");
     O o2 = session.insert(oneSide, "o2");
     String o2Id = session.getId(o2);

@@ -21,7 +21,7 @@ package org.chromattic.test.property;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.MultiValue;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 
 import javax.jcr.Node;
 import javax.jcr.ValueFactory;
@@ -51,7 +51,7 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
     super.setUp();
 
     //
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     dNode = rootNode.addNode("tp_d_a", "tp_a");
     d = session.findByNode(TP_D.class, dNode);

@@ -20,7 +20,7 @@
 package org.chromattic.test.inheritance;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -54,7 +54,7 @@ public abstract class AbstractPropertyInheritanceTestCase<T> extends AbstractTes
   protected abstract void setStrings2(T b, String... s);
 
   public void testITFDeclareSingleValuedProperty() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     T b = session.insert(getType(), "tii_a");
     setString1(b, "string_value");
     assertEquals("string_value", getString1(b));
@@ -66,7 +66,7 @@ public abstract class AbstractPropertyInheritanceTestCase<T> extends AbstractTes
   }
 
   public void testClassOverridesSingleValuedProperty() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     T b = session.insert(getType(), "tii_a");
     setString2(b, "string_value");
     assertEquals("string_value", getString2(b));
@@ -78,7 +78,7 @@ public abstract class AbstractPropertyInheritanceTestCase<T> extends AbstractTes
   }
 
   public void testITFDeclareMultiValuedProperty() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     T b = session.insert(getType(), "tii_a");
     setStrings1(b, "string_value1","string_value2");
     assertEquals(2, getStrings1(b).length);
@@ -94,7 +94,7 @@ public abstract class AbstractPropertyInheritanceTestCase<T> extends AbstractTes
   }
 
   public void testClassOverridesMultiValuedProperty() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     T b = session.insert(getType(), "tii_a");
     setStrings2(b, "string_value1","string_value2");
     assertEquals(2, getStrings2(b).length);

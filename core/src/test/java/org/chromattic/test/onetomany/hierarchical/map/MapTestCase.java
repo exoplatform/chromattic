@@ -21,7 +21,7 @@ package org.chromattic.test.onetomany.hierarchical.map;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.Status;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
@@ -39,7 +39,7 @@ public class MapTestCase extends AbstractTestCase {
   }
 
   public void testLoad() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totm_a_b", "totm_a");
     String aId = aNode.getUUID();

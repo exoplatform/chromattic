@@ -20,10 +20,9 @@
 package org.chromattic.test.lifecycle;
 
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.Status;
-import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
 
@@ -38,7 +37,7 @@ public class InsertTestCase extends AbstractTestCase {
   }
 
   public void testFromRoot() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     TLF_A a = session.insert(TLF_A.class, "tlf_a");
@@ -66,7 +65,7 @@ public class InsertTestCase extends AbstractTestCase {
   }
 
   public void testFromRelative() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     TLF_A a = session.insert(TLF_A.class, "tlf_a");
@@ -100,18 +99,18 @@ public class InsertTestCase extends AbstractTestCase {
   }
 
   public void testNonChromatticParent() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     assertThrowsIAE(session, new Object(), Object.class, "a");
   }
 
   public void testNonPersistentParent() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     TLF_A a = session.create(TLF_A.class);
     assertThrowsIAE(session, a, Object.class, "a");
   }
 
   public void testNonChromatticObject() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     TLF_A a = session.insert(TLF_A.class, "tlf_a");
     assertThrowsIAE(session, Object.class, "a");
     assertThrowsIAE(session, a, Object.class, "a");

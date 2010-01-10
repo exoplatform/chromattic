@@ -19,11 +19,10 @@
 
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.ChromatticException;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
-import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
 
@@ -38,7 +37,7 @@ public class PersistTestCase extends AbstractTestCase {
   }
 
   public void testFromRoot() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     TLF_A a = session.insert(TLF_A.class, "tlf_a");
@@ -69,7 +68,7 @@ public class PersistTestCase extends AbstractTestCase {
   }
 
   public void testFromParent() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     TLF_A a = session.insert(TLF_A.class, "tlf_a");
@@ -107,7 +106,7 @@ public class PersistTestCase extends AbstractTestCase {
   }
 
   public void testWithParentWithImplicitName() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     TLF_A a = session.insert(TLF_A.class, "tlf_a");
@@ -133,7 +132,7 @@ public class PersistTestCase extends AbstractTestCase {
   }
 
   public void testWithImplicitName() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     TLF_A a = session.create(TLF_A.class, "tlf_a");

@@ -38,7 +38,7 @@ import java.util.Iterator;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class DomainSession implements ChromatticSession {
+public abstract class ChromatticSessionImpl implements ChromatticSession {
 
   /** . */
   protected final EventBroadcaster broadcaster;
@@ -49,7 +49,7 @@ public abstract class DomainSession implements ChromatticSession {
   /** . */
   protected final SessionWrapper sessionWrapper;
 
-  protected DomainSession(Domain domain, SessionWrapper sessionWrapper) {
+  protected ChromatticSessionImpl(Domain domain, SessionWrapper sessionWrapper) {
     this.domain = domain;
     this.broadcaster = new EventBroadcaster();
     this.sessionWrapper = sessionWrapper;

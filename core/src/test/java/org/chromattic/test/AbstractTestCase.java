@@ -19,7 +19,7 @@
 
 package org.chromattic.test;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.Chromattic;
 import org.chromattic.cglib.CGLibInstrumentor;
@@ -129,7 +129,7 @@ public abstract class AbstractTestCase extends TestCase {
     chromattic = builder.build();
 
     // Need to create virtual root node
-    DomainSession sess = login();
+    ChromatticSessionImpl sess = login();
     Session jcrSession = sess.getJCRSession();
     Node n0 = jcrSession.getRootNode();
     Node n1 = !n0.hasNode(p1) ? n0.addNode(p1) : n0.getNode(p1);
@@ -200,9 +200,9 @@ public abstract class AbstractTestCase extends TestCase {
     result.removeListener(listener);
   }
 
-  public final DomainSession login() {
+  public final ChromatticSessionImpl login() {
     SimpleCredentials credentials = new SimpleCredentials("exo", "exo".toCharArray());
-    return (DomainSession)chromattic.openSession(credentials);
+    return (ChromatticSessionImpl)chromattic.openSession(credentials);
   }
 
   protected final ChromatticBuilder getBuilder() {

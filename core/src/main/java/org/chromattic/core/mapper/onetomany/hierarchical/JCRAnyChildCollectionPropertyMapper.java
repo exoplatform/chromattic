@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
 import org.chromattic.core.EntityContext;
@@ -42,7 +42,7 @@ public class JCRAnyChildCollectionPropertyMapper<O extends ObjectContext> extend
       // context.remove();
       throw new UnsupportedOperationException("todo remove parent");
     } else {
-      DomainSession session = context.getSession();
+      ChromatticSessionImpl session = context.getSession();
       EntityContext parentContext = session.unwrapEntity(parent);
       parentContext.addChild(context);
     }

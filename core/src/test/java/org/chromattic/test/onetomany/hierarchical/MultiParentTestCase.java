@@ -19,7 +19,7 @@
 
 package org.chromattic.test.onetomany.hierarchical;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
@@ -36,7 +36,7 @@ public class MultiParentTestCase extends AbstractTestCase {
   }
 
   public void testLoad() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("parents_a", "parents_a");
     String aId = aNode.getUUID();

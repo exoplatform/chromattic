@@ -19,11 +19,10 @@
 
 package org.chromattic.test.onetomany.reference;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.util.Collection;
 
 /**
@@ -35,7 +34,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O
   protected abstract Collection<M> getMany(O one);
 
   public void testLoad() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totmr_a", oneNT);
     Node bNode = rootNode.addNode("totmr_b", manyNT);
@@ -60,7 +59,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O
   }
 
   public void testPersistent() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totmr_a", oneNT);
     Node bNode = rootNode.addNode("totmr_b", manyNT);
@@ -83,7 +82,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O
   }
 
   public void testMove() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode1 = rootNode.addNode("totmr_a_1", oneNT);
     Node aNode2 = rootNode.addNode("totmr_a_2", oneNT);
@@ -115,7 +114,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O
   }
 
   public void testTransient() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totmr_a", oneNT);
 

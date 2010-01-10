@@ -20,7 +20,7 @@
 package org.chromattic.test.methodinvocation;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 
 import java.io.IOException;
 
@@ -35,7 +35,7 @@ public class MethodInvocationTestCase extends AbstractTestCase {
   }
 
   public void testInvocation() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     C a = session.insert(C.class, "tmi_a_a");
 
     //
@@ -75,7 +75,7 @@ public class MethodInvocationTestCase extends AbstractTestCase {
   }
 
   public void testInterfaceMethod() {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A a = session.insert(C.class, "tmi_a_a");
 
     //

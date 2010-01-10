@@ -20,15 +20,10 @@
 package org.chromattic.test.format.transform.property;
 
 import org.chromattic.api.ChromatticBuilder;
-import org.chromattic.common.Collections;
-import org.chromattic.core.DomainSession;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.format.FooPrefixerFormatter;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

@@ -19,8 +19,8 @@
 package org.chromattic.test.onetomany.hierarchical;
 
 import org.chromattic.common.TypeLiteral;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 
@@ -54,7 +54,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
   public abstract boolean supportsAddToCollection();
 
   public void testAdd() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     O o = session.insert(oneSide, "o");
@@ -72,7 +72,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
 
   public void testAddRemovedChild() {
     if (supportsAddToCollection()) {
-      DomainSession session = login();
+      ChromatticSessionImpl session = login();
 
       //
       M m = session.create(manySide, "m");
@@ -94,7 +94,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
   }
 
   public void addToRemovedParent() {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
 
     //
     M m = session.create(manySide, "m");
@@ -111,7 +111,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
   }
 
   public void testLoad() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     Node oNode = rootNode.addNode("o", "totm_a");
     String oId = oNode.getUUID();
@@ -152,7 +152,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
   }
 
   public void testMove() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     O o1 = session.insert(oneSide, "o1");
     String o1Id = session.getId(o1);
     O o2 = session.insert(oneSide, "o2");
@@ -178,7 +178,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
 
   public void testTypeSafety() throws Exception {
     if (supportsAddToCollection()) {
-      DomainSession session = login();
+      ChromatticSessionImpl session = login();
       O o1 = session.insert(oneSide, "o1");
       O o2 = session.insert(oneSide, "o2");
       Collection m = getMany(o1);
@@ -193,7 +193,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
 
   public void testAddNull() throws Exception {
     if (supportsAddToCollection()) {
-      DomainSession session = login();
+      ChromatticSessionImpl session = login();
       O o1 = session.insert(oneSide, "o1");
       Collection<M> m = getMany(o1);
       try {

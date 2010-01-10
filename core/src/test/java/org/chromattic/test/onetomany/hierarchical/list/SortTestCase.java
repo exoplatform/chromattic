@@ -18,13 +18,10 @@
  */
 package org.chromattic.test.onetomany.hierarchical.list;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -38,7 +35,7 @@ public class SortTestCase extends AbstractTestCase {
   }
 
   public void testAddSingleton() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A1 a = session.insert(A1.class, "a");
     List<B1> bs = a.getChildren();
     B1 b1 = session.create(B1.class, "1");

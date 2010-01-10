@@ -19,8 +19,8 @@
 
 package org.chromattic.test.type;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -39,7 +39,7 @@ public class TypeTestCase extends AbstractTestCase {
   }
 
   public void testC() {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     C c = session.create(C.class);
     assertNotNull(c);
     assertNull(c.value);
@@ -48,7 +48,7 @@ public class TypeTestCase extends AbstractTestCase {
   }
 
   public void testD() {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     D2Impl d = session.create(D2Impl.class);
     assertNotNull(d);
     assertEquals(0, d.value);

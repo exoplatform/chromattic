@@ -19,8 +19,8 @@
 
 package org.chromattic.test.classkind;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,7 +33,7 @@ public class ClassKindTestCase extends AbstractTestCase {
   }
 
   public void testFoo() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     TCK_A a =  session.insert(TCK_A.class, "tck_a");
     assertNotNull(a);
     assertTrue(session.getRoot().hasNode("tck_a"));

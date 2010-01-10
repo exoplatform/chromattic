@@ -18,9 +18,9 @@
  */
 package org.chromattic.test.find.query;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.TFI_A;
-import org.chromattic.core.DomainSession;
 
 import java.util.Iterator;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class QueryTestCase extends AbstractTestCase {
   private int count = 0;
 
   public void testQuery() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     if (session.getRoot().hasNode("tfi_a")) {
       session.getRoot().getNode("tfi_a").remove(); // because of session save
     }

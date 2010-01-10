@@ -65,7 +65,7 @@ public final class EntityContext extends ObjectContext {
     this.embeddeds = new HashMap<ObjectMapper<EmbeddedContext>, EmbeddedContext>();
   }
 
-  public DomainSession getSession() {
+  public ChromatticSessionImpl getSession() {
     return state.getSession();
   }
 
@@ -96,7 +96,7 @@ public final class EntityContext extends ObjectContext {
   }
 
   public String getAttribute(NodeAttributeType type) {
-    DomainSession session = state.getSession();
+    ChromatticSessionImpl session = state.getSession();
     switch (type) {
       case NAME:
         return session.getName(this);
@@ -140,7 +140,7 @@ public final class EntityContext extends ObjectContext {
   }
 
   public void setReferenced(String name, Object referenced, LinkType linkType) {
-    DomainSession session = state.getSession();
+    ChromatticSessionImpl session = state.getSession();
     EntityContext referencedCtx = null;
     if (referenced != null) {
       referencedCtx = session.unwrapEntity(referenced);
@@ -151,7 +151,7 @@ public final class EntityContext extends ObjectContext {
   }
 
   public boolean addReference(String name, Object referent, LinkType linkType) {
-    DomainSession session = state.getSession();
+    ChromatticSessionImpl session = state.getSession();
     EntityContext referentCtx = session.unwrapEntity(referent);
     return session.setReferenced(referentCtx, name, this, linkType);
   }
@@ -183,7 +183,7 @@ public final class EntityContext extends ObjectContext {
   }
 
   public void addChild(Object child) {
-    DomainSession session = state.getSession();
+    ChromatticSessionImpl session = state.getSession();
     EntityContext childCtx = session.unwrapEntity(child);
     addChild(childCtx);
   }
@@ -197,7 +197,7 @@ public final class EntityContext extends ObjectContext {
   }
 
   public void addChild(String name, Object child) {
-    DomainSession session = state.getSession();
+    ChromatticSessionImpl session = state.getSession();
     EntityContext childCtx = session.unwrapEntity(child);
     addChild(name, childCtx);
   }

@@ -19,10 +19,10 @@
 
 package org.chromattic.test.lifecycle;
 
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.EventQueue;
 import org.chromattic.test.support.LifeCycleEventType;
-import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 
@@ -48,7 +48,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
   }
 
   public void testLoad() throws RepositoryException {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     String id = rootNode.addNode("tlf_a_a", "tlf_a").getUUID();
     rootNode.save();

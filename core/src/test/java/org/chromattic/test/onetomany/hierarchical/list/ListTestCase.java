@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.onetomany.hierarchical.list;
 
-import org.chromattic.core.DomainSession;
+import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
@@ -38,7 +38,7 @@ public class ListTestCase extends AbstractTestCase {
   }
 
   public void testAddSingleton() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A3 a = session.insert(A3.class, "aaa");
     List<B3> bs = a.getChildren();
     B3 b = session.create(B3.class, "1");
@@ -52,7 +52,7 @@ public class ListTestCase extends AbstractTestCase {
   }
 
   public void testAddLast() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A3 a = session.insert(A3.class, "aaa");
     List<B3> bs = a.getChildren();
     B3 b1 = session.create(B3.class, "1");
@@ -69,7 +69,7 @@ public class ListTestCase extends AbstractTestCase {
   }
 
   public void testAddFirst() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A3 a = session.insert(A3.class, "aaa");
     List<B3> bs = a.getChildren();
     B3 b1 = session.create(B3.class, "1");
@@ -86,7 +86,7 @@ public class ListTestCase extends AbstractTestCase {
   }
 
   public void testAddMiddle() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A3 a = session.insert(A3.class, "aaa");
     List<B3> bs = a.getChildren();
     B3 b1 = session.create(B3.class, "1");
@@ -106,7 +106,7 @@ public class ListTestCase extends AbstractTestCase {
   }
 
   public void testIterator() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A3 a = session.insert(A3.class, "aaa");
     List<B3> bs = a.getChildren();
     B3 b1 = session.create(B3.class, "1");
@@ -133,7 +133,7 @@ public class ListTestCase extends AbstractTestCase {
   }
 
   public void testSet() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A3 a = session.insert(A3.class, "aaa");
     List<B3> bs = a.getChildren();
     B3 b1 = session.create(B3.class, "1");
@@ -149,7 +149,7 @@ public class ListTestCase extends AbstractTestCase {
   }
 
   public void testSetWithExisting() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A3 a = session.insert(A3.class, "aaa");
     List<B3> bs = a.getChildren();
     B3 b1 = session.create(B3.class, "1");
@@ -171,7 +171,7 @@ public class ListTestCase extends AbstractTestCase {
   }
 
   public void _testMoveFirst() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A3 a = session.insert(A3.class, "aaa");
     List<B3> bs = a.getChildren();
     B3 b1 = session.create(B3.class, "1");
@@ -194,7 +194,7 @@ public class ListTestCase extends AbstractTestCase {
   }
 
   public void testMoveLast() throws Exception {
-    DomainSession session = login();
+    ChromatticSessionImpl session = login();
     A3 a = session.insert(A3.class, "aaa");
     List<B3> bs = a.getChildren();
     B3 b1 = session.create(B3.class, "1");
