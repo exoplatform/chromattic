@@ -19,7 +19,7 @@
 
 package org.chromattic.test.onetomany.reference;
 
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.Node;

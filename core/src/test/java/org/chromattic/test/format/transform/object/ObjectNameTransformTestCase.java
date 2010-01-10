@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.format.transform.object;
 
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.test.format.A;

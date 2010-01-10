@@ -21,7 +21,7 @@ package org.chromattic.core.query;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.common.AbstractFilterIterator;
 import org.chromattic.common.JCR;
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -39,9 +39,9 @@ public class QueryResultImpl<O> extends AbstractFilterIterator<O, Node> implemen
   private final NodeIterator iterator;
 
   /** . */
-  private final ChromatticSessionImpl session;
+  private final DomainSession session;
 
-  QueryResultImpl(ChromatticSessionImpl session, NodeIterator iterator, Class<O> clazz) throws NullPointerException {
+  QueryResultImpl(DomainSession session, NodeIterator iterator, Class<O> clazz) throws NullPointerException {
     super(JCR.adapt(iterator));
 
     //

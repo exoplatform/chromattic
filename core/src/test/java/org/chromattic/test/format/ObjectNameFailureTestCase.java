@@ -19,7 +19,7 @@
 
 package org.chromattic.test.format;
 
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.format.FormatterContext;

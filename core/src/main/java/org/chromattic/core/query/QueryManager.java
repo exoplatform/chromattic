@@ -23,7 +23,7 @@ import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryLanguage;
 import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.DomainSession;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -48,11 +48,11 @@ public class QueryManager {
   /** . */
   private EnumMap<QueryLanguage, Map<QueryKey, Query<?>>> globalQueryCache;
 
-  public QueryBuilder<?> createQueryBuilder(ChromatticSessionImpl session) throws ChromatticException {
+  public QueryBuilder<?> createQueryBuilder(DomainSession session) throws ChromatticException {
     return new QueryBuilderImpl(session);
   }
 
-  public <O> Query<O> getObjectQuery(ChromatticSessionImpl session, Class<O> objectClass, String statement) {
+  public <O> Query<O> getObjectQuery(DomainSession session, Class<O> objectClass, String statement) {
     try {
       // For now we support on SQL
       QueryLanguage language = QueryLanguage.SQL;

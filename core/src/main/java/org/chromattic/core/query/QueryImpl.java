@@ -21,7 +21,7 @@ package org.chromattic.core.query;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Query;
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.DomainSession;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -40,9 +40,9 @@ public class QueryImpl<O> implements Query<O> {
   private final Class<O> clazz;
 
   /** . */
-  private final ChromatticSessionImpl session;
+  private final DomainSession session;
 
-  QueryImpl(ChromatticSessionImpl session, Class<O> clazz, javax.jcr.query.Query jcrQuery) throws RepositoryException {
+  QueryImpl(DomainSession session, Class<O> clazz, javax.jcr.query.Query jcrQuery) throws RepositoryException {
     this.session = session;
     this.clazz = clazz;
     this.jcrQuery = jcrQuery;

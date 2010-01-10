@@ -19,7 +19,7 @@
 
 package org.chromattic.core.builder;
 
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.core.DomainSessionImpl;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.SessionWrapperImpl;

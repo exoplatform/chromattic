@@ -19,8 +19,8 @@
 
 package org.chromattic.test.methodinvocation;
 
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.ChromatticSessionImpl;
 
 import java.io.IOException;
 

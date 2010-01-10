@@ -19,7 +19,6 @@
 
 package org.chromattic.core.mapper.onetoone.hierarchical;
 
-import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.core.DomainSession;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
 import org.chromattic.core.EntityContext;

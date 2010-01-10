@@ -21,7 +21,7 @@ package org.chromattic.test.onetomany.hierarchical.map;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.Status;
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;

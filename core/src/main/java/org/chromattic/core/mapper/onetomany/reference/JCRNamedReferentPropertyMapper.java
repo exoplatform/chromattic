@@ -19,7 +19,6 @@
 
 package org.chromattic.core.mapper.onetomany.reference;
 
-import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.core.DomainSession;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;

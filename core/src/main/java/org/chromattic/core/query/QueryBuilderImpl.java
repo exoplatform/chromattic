@@ -20,10 +20,11 @@ package org.chromattic.core.query;
 
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
+import org.chromattic.core.DomainSession;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.core.mapper.NodeTypeKind;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.Domain;
-import org.chromattic.core.ChromatticSessionImpl;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -41,9 +42,9 @@ public class QueryBuilderImpl implements QueryBuilder {
   private ObjectMapper mapper;
 
   /** . */
-  private ChromatticSessionImpl session;
+  private DomainSession session;
 
-  QueryBuilderImpl(ChromatticSessionImpl session) {
+  QueryBuilderImpl(DomainSession session) {
     this.fromClass = null;
     this.where = null;
     this.session = session;

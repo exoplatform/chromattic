@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.onetomany.hierarchical.list;
 
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;

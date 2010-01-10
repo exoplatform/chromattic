@@ -19,7 +19,7 @@
 
 package org.chromattic.test.property;
 
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.MultiValue;
 

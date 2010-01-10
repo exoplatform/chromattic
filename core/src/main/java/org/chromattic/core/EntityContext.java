@@ -30,6 +30,7 @@ import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.ObjectMapper;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
@@ -63,6 +64,10 @@ public final class EntityContext extends ObjectContext {
     this.state = state;
     this.properties = new PropertyMap(this);
     this.embeddeds = new HashMap<ObjectMapper<EmbeddedContext>, EmbeddedContext>();
+  }
+
+  public Node getNode() {
+    return state.getNode();
   }
 
   public DomainSession getSession() {

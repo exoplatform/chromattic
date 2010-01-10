@@ -19,7 +19,6 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.core.EntityContext;
 
 import java.util.AbstractCollection;

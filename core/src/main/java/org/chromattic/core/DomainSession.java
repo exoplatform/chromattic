@@ -21,12 +21,15 @@ package org.chromattic.core;
 
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.api.event.EventListener;
+import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import java.util.Iterator;
 
 /**
@@ -44,7 +47,7 @@ public abstract class DomainSession {
   /** . */
   protected final SessionWrapper sessionWrapper;
 
-  protected DomainSession(Domain domain, SessionWrapper sessionWrapper) {
+  public DomainSession(Domain domain, SessionWrapper sessionWrapper) {
     this.domain = domain;
     this.broadcaster = new EventBroadcaster();
     this.sessionWrapper = sessionWrapper;
@@ -95,6 +98,22 @@ public abstract class DomainSession {
   protected abstract String _getName(EntityContext ctx) throws RepositoryException;
 
   protected abstract void _close() throws RepositoryException;
+
+  public Domain getDomain() {
+    return domain;
+  }
+
+  public Session getJCRSession() {
+    return sessionWrapper.getSession();
+  }
+
+  public QueryBuilder<?> createQueryBuilder() throws ChromatticException {
+    return domain.queryManager.createQueryBuilder(this);
+  }
+
+  public void addEventListener(EventListener listener) {
+    broadcaster.addLifeCycleListener(listener);
+  }
 
   public void close() {
     try {

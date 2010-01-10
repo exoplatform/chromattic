@@ -19,8 +19,8 @@
 
 package org.chromattic.test.onetoone.hierarchical;
 
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;

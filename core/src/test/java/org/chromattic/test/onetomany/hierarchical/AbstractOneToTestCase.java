@@ -20,8 +20,8 @@
 package org.chromattic.test.onetomany.hierarchical;
 
 import org.chromattic.common.TypeLiteral;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.ChromatticSessionImpl;
 import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.Node;

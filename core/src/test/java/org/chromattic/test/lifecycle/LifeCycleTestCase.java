@@ -19,7 +19,7 @@
 
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.EventQueue;
 import org.chromattic.test.support.LifeCycleEventType;

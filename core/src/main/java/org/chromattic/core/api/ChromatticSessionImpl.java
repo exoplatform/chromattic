@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core;
+package org.chromattic.core.api;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
@@ -25,6 +25,9 @@ import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.QueryBuilder;
+import org.chromattic.core.Domain;
+import org.chromattic.core.DomainSession;
+import org.chromattic.core.EntityContext;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -43,11 +46,11 @@ public class ChromatticSessionImpl implements ChromatticSession {
   }
 
   public final Domain getDomain() {
-    return domainSession.domain;
+    return domainSession.getDomain();
   }
 
   public final Session getJCRSession() {
-    return domainSession.sessionWrapper.getSession();
+    return domainSession.getJCRSession();
   }
 
   public final String getId(Object o) throws UndeclaredRepositoryException {
@@ -195,11 +198,11 @@ public class ChromatticSessionImpl implements ChromatticSession {
   }
 
   public QueryBuilder<?> createQueryBuilder() throws ChromatticException {
-    return domainSession.domain.queryManager.createQueryBuilder(this);
+    return domainSession.createQueryBuilder();
   }
 
   public void addEventListener(EventListener listener) {
-    domainSession.broadcaster.addLifeCycleListener(listener);
+    domainSession.addEventListener(listener);
   }
 
   //
@@ -215,6 +218,6 @@ public class ChromatticSessionImpl implements ChromatticSession {
 
     //
     EntityContext ctx = domainSession.unwrapEntity(o);
-    return ctx.state.getNode();
+    return ctx.getNode();
   }
 }

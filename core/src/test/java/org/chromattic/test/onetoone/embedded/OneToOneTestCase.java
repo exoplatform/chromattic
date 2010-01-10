@@ -20,7 +20,7 @@
 package org.chromattic.test.onetoone.embedded;
 
 import org.chromattic.common.JCR;
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;

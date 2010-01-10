@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.find.query;
 
-import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.TFI_A;
 

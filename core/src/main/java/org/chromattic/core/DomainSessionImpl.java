@@ -23,6 +23,7 @@ import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.core.jcr.info.MixinTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 import org.chromattic.core.mapper.NodeTypeKind;
