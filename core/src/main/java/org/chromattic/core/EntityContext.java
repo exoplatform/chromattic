@@ -196,7 +196,7 @@ public final class EntityContext extends ObjectContext {
     return state.getSession().getChildren(this, filterClass);
   }
 
-  public Object getParent() {
+  public EntityContext getParent() {
     return state.getSession().getParent(this);
   }
 

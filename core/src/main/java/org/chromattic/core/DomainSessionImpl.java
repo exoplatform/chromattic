@@ -105,7 +105,7 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected String _persist(EntityContext ctx, String name) throws RepositoryException {
+  protected EntityContext _persist(EntityContext ctx, String name) throws RepositoryException {
     if (ctx == null) {
       throw new NullPointerException("No null object context accepted");
     }
@@ -134,12 +134,12 @@ public class DomainSessionImpl extends DomainSession {
    * @param srcCtx the source context
    * @param name the destination path relative to the source context
    * @param dstCtx the destination context
-   * @return the id of the inserted context
+   * @return the entity context
    * @throws NullPointerException
    * @throws IllegalArgumentException
    * @throws RepositoryException
    */
-  protected String _persist(EntityContext srcCtx, String name, EntityContext dstCtx) throws
+  protected EntityContext _persist(EntityContext srcCtx, String name, EntityContext dstCtx) throws
     NullPointerException,
     IllegalArgumentException,
     IllegalStateException,
@@ -172,7 +172,7 @@ public class DomainSessionImpl extends DomainSession {
     return _persist(parentNode, name, dstCtx);
   }
 
-  private String _persist(Node srcNode, String name, EntityContext dstCtx) throws RepositoryException {
+  private EntityContext _persist(Node srcNode, String name, EntityContext dstCtx) throws RepositoryException {
     ObjectMapper mapper = dstCtx.mapper;
 
     //
@@ -221,11 +221,10 @@ public class DomainSessionImpl extends DomainSession {
     nodeAdded(dstNode, dstCtx);
 
     //
-    String relatedId = dstCtx.getId();
+    log.trace("Added context {} for path {}", dstCtx, dstCtx.getId(), dstNode.getPath());
 
     //
-    log.trace("Added context {} for path {}", dstCtx, relatedId, dstNode.getPath());
-    return relatedId;
+    return dstCtx;
   }
 
   @Override
@@ -651,13 +650,13 @@ public class DomainSessionImpl extends DomainSession {
     return new ChildCollectionIterator<T>(this, iterator, filterClass);
   }
 
-  protected Object _getParent(EntityContext ctx) throws RepositoryException {
+  protected EntityContext _getParent(EntityContext ctx) throws RepositoryException {
     if (ctx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException();
     }
     Node node = ctx.state.getNode();
     Node parent = sessionWrapper.getParent(node);
-    return _findByNode(Object.class, parent);
+    return _findByNode(parent);
   }
 
   protected Node _getRoot() throws RepositoryException {

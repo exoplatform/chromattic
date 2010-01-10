@@ -55,9 +55,9 @@ public abstract class DomainSession {
 
   protected abstract void _setName(EntityContext ctx, String name) throws RepositoryException;
 
-  protected abstract String _persist(EntityContext ctx, String name) throws RepositoryException;
+  protected abstract EntityContext _persist(EntityContext ctx, String name) throws RepositoryException;
 
-  protected abstract String _persist(EntityContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
+  protected abstract EntityContext _persist(EntityContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
 
   protected abstract <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
 
@@ -81,7 +81,7 @@ public abstract class DomainSession {
 
   protected abstract <T> Iterator<T> _getChildren(EntityContext ctx, Class<T> filterClass) throws RepositoryException;
 
-  protected abstract Object _getParent(EntityContext ctx) throws RepositoryException;
+  protected abstract EntityContext _getParent(EntityContext ctx) throws RepositoryException;
 
   protected abstract <E> E _findByPath(EntityContext ctx, Class<E> clazz, String relPath) throws RepositoryException;
 
@@ -169,7 +169,7 @@ public abstract class DomainSession {
     }
   }
 
-  public String persist(EntityContext ctx, String name) throws UndeclaredRepositoryException {
+  public EntityContext persist(EntityContext ctx, String name) throws UndeclaredRepositoryException {
     try {
       return _persist(ctx, name);
     }
@@ -286,7 +286,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final Object getParent(EntityContext ctx) throws UndeclaredRepositoryException {
+  public final EntityContext getParent(EntityContext ctx) throws UndeclaredRepositoryException {
     try {
       return _getParent(ctx);
     }
@@ -346,7 +346,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final String persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {
+  public final EntityContext persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {
     try {
       return _persist(parentCtx, name, childCtx);
     }

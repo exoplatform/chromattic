@@ -36,27 +36,28 @@ public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper<E
 
   @Override
   public Object get(EntityContext context) throws Throwable {
-    Object parent = context.getParent();
-    Class<?> relatedClass =  getRelatedClass();
+    EntityContext parentCtx = context.getParent();
 
-    // If it fits the parent use it
-    if (relatedClass.isInstance(parent)) {
-      return parent;
-    } else {
+    //
+    if (parentCtx != null) {
+      Object parent = parentCtx.getObject();
+      Class<?> relatedClass =  getRelatedClass();
 
-      // A bit stupid to unwrap something we could get unwrapped
-      EntityContext parentCtx = context.getSession().unwrapEntity(parent);
+      // If it fits the parent use it
+      if (relatedClass.isInstance(parent)) {
+        return parent;
+      } else {
+        // Here we are trying to see if the parent has something embedded we could return
+        // that is would be of the provided related class
+        EmbeddedContext embeddedCtx = parentCtx.getEmbedded(relatedClass);
 
-      // Here we are trying to see if the parent has something embedded we could return
-      // that is would be of the provided related class
-      EmbeddedContext embeddedCtx = parentCtx.getEmbedded(relatedClass);
-
-      if (embeddedCtx != null) {
-        return embeddedCtx.getObject();
+        if (embeddedCtx != null) {
+          return embeddedCtx.getObject();
+        }
       }
-
-
-      return null;
     }
+
+    //
+    return null;
   }
 }

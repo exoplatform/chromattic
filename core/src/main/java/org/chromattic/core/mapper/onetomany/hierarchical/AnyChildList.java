@@ -87,8 +87,7 @@ class AnyChildList<E> extends AbstractList<E> {
         parentCtx.addChild(addedCtx);
         break;
       case PERSISTENT:
-        Object insertedParent = addedCtx.getParent();
-        EntityContext addedParentCtx = session.unwrapEntity(insertedParent);
+        EntityContext addedParentCtx = addedCtx.getParent();
 
         // It's a move
         if (addedParentCtx != parentCtx) {
@@ -135,8 +134,7 @@ class AnyChildList<E> extends AbstractList<E> {
         parentCtx.addChild(addedCtx);
         break;
       case PERSISTENT:
-        Object insertedParent = addedCtx.getParent();
-        EntityContext addedParentCtx = session.unwrapEntity(insertedParent);
+        EntityContext addedParentCtx = addedCtx.getParent();
 
         // It's a move
         if (addedParentCtx != parentCtx) {

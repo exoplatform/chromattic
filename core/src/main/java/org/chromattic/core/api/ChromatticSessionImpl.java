@@ -110,7 +110,7 @@ public class ChromatticSessionImpl implements ChromatticSession {
   public final String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext parentCtx = domainSession.unwrapEntity(parent);
     EntityContext childCtx = domainSession.unwrapEntity(child);
-    return domainSession.persist(parentCtx, childCtx, name);
+    return domainSession.persist(parentCtx, childCtx, name).getId();
   }
 
   public final String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
@@ -121,7 +121,7 @@ public class ChromatticSessionImpl implements ChromatticSession {
       String msg = "Attempt to persist non named object " + childCtx;
       throw new IllegalArgumentException(msg);
     }
-    return domainSession.persist(parentCtx, childCtx, name);
+    return domainSession.persist(parentCtx, childCtx, name).getId();
   }
 
   public final String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
@@ -133,12 +133,12 @@ public class ChromatticSessionImpl implements ChromatticSession {
     }
 
     //
-    return domainSession.persist(ctx, name);
+    return domainSession.persist(ctx, name).getId();
   }
 
   public final String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext ctx = domainSession.unwrapEntity(o);
-    return domainSession.persist(ctx, relPath);
+    return domainSession.persist(ctx, relPath).getId();
   }
 
   public final <O> O findByNode(Class<O> clazz, Node node) throws UndeclaredRepositoryException {
