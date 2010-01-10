@@ -54,10 +54,11 @@ public class JCRNamedReferentPropertyMapper<O extends ObjectContext> extends JCR
   @Override
   public Object get(O context) throws Throwable {
     Class<?> relatedClass = getRelatedClass();
-    Object related = context.getEntity().getReferenced(propertyName, linkType);
-    if (related == null) {
+    EntityContext relatedCtx = context.getEntity().getReferenced(propertyName, linkType);
+    if (relatedCtx == null) {
       return null;
     } else {
+      Object related = relatedCtx.getObject();
       if (relatedClass.isInstance(related)) {
         return related;
       } else {

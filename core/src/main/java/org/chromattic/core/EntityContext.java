@@ -140,7 +140,7 @@ public final class EntityContext extends ObjectContext {
     state.getSession().setName(this, name);
   }
 
-  public Object getReferenced(String name, LinkType linkType) {
+  public EntityContext getReferenced(String name, LinkType linkType) {
     return state.getSession().getReferenced(this, name, linkType);
   }
 

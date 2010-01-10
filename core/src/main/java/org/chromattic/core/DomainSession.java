@@ -69,7 +69,7 @@ public abstract class DomainSession {
 
   protected abstract void _remove(EntityContext context) throws RepositoryException;
 
-  protected abstract Object _getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws RepositoryException;
+  protected abstract EntityContext _getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws RepositoryException;
 
   protected abstract boolean _setReferenced(EntityContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws RepositoryException;
 
@@ -241,7 +241,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final Object getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws UndeclaredRepositoryException {
+  public final EntityContext getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws UndeclaredRepositoryException {
     try {
       return _getReferenced(referentCtx, name, linkType);
     }

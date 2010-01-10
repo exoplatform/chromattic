@@ -576,14 +576,14 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected Object _getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws RepositoryException {
+  protected EntityContext _getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws RepositoryException {
     if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException();
     }
     Node referent = referentCtx.state.getNode();
     Node referenced = sessionWrapper.getReferenced(referent, name, linkType);
     if (referenced != null) {
-      return _findByNode(Object.class, referenced);
+      return _findByNode(referenced);
     } else {
       return null;
     }
