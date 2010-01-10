@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.builder;
+package org.chromattic.core.api;
 
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.core.bean.SimpleTypeKind;

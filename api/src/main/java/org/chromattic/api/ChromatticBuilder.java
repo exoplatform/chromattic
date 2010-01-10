@@ -127,7 +127,7 @@ public abstract class ChromatticBuilder {
   }
 
   public static ChromatticBuilder create() {
-    String builderClassName = "org.chromattic.core.builder.ChromatticBuilderImpl";
+    String builderClassName = "org.chromattic.core.api.ChromatticBuilderImpl";
     try {
       Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(builderClassName);
       if (ChromatticBuilder.class.isAssignableFrom(clazz)) {
