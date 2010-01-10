@@ -70,6 +70,46 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     assertTrue(ms.contains(m));
   }
 
+  public void testAddRemovedChild() {
+    if (supportsAddToCollection()) {
+      DomainSession session = login();
+
+      //
+      M m = session.create(manySide, "m");
+      O o1 = session.insert(oneSide, "o1");
+      O o2 = session.insert(oneSide, "o2");
+
+      //
+      add(o1, m);
+      session.remove(m);
+      try {
+        add(o2, m);
+        fail();
+      }
+      catch (IllegalArgumentException ignore) {
+      }
+    } else {
+      // todo: we cannot get name from removed child as this would throw an ISE, need to investigate
+    }
+  }
+
+  public void addToRemovedParent() {
+    DomainSession session = login();
+
+    //
+    M m = session.create(manySide, "m");
+    O o = session.insert(oneSide, "o");
+
+    //
+    session.remove(o);
+    try {
+      add(o, m);
+      fail();
+    }
+    catch (IllegalStateException ignore) {
+    }
+  }
+
   public void testLoad() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getRoot();
@@ -89,7 +129,7 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     assertTrue(children.contains(b));
   }
 
-  public void testRemove() throws Exception {
+  public void testRemoveChild() throws Exception {
     ChromatticSession session = login();
 
     //

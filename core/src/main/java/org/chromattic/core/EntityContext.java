@@ -174,8 +174,12 @@ public final class EntityContext extends ObjectContext {
   }
 
   public void addChild(EntityContext childCtx) {
-    String name = childCtx.getName();
-    addChild(name, childCtx);
+    if (childCtx.getStatus() == Status.TRANSIENT || childCtx.getStatus() == Status.PERSISTENT) {
+      String name = childCtx.getName();
+      addChild(name, childCtx);
+    } else {
+      throw new IllegalArgumentException("The child does not have the good state to be added " + childCtx);
+    }
   }
 
   public void addChild(Object child) {
