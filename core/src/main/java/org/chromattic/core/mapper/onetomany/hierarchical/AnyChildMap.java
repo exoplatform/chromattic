@@ -52,9 +52,12 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
   public E get(Object key) {
     if (key instanceof String) {
       String name = (String)key;
-      Object child = parentCtx.getChild(name);
-      if (relatedClass.isInstance(child)) {
-        return relatedClass.cast(child);
+      EntityContext childCtx = parentCtx.getChild(name);
+      if (childCtx != null) {
+        Object child = childCtx.getObject();
+        if (relatedClass.isInstance(child)) {
+          return relatedClass.cast(child);
+        }
       }
     }
     return null;
@@ -71,27 +74,30 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
 
   @Override
   public E put(String key, E value) {
-    Object child = parentCtx.getChild(key);
+    EntityContext childCtx = parentCtx.getChild(key);
 
     //
     if (value == null) {
-      if (child != null) {
-        parentCtx.getSession().remove(child);
+      if (childCtx != null) {
+        parentCtx.getSession().remove(childCtx);
       }
     } else if (relatedClass.isInstance(value)) {
-      EntityContext childCtx = parentCtx.getSession().unwrapEntity(value);
-      parentCtx.addChild(key, childCtx);
+      EntityContext valueCtx = parentCtx.getSession().unwrapEntity(value);
+      parentCtx.addChild(key, valueCtx);
     } else {
       throw new ClassCastException("Cannot put " + value + " with in map containing values of type " + relatedClass);
     }
 
     //
-    if (relatedClass.isInstance(child)) {
-      return relatedClass.cast(child);
-    } else {
-      // julien todo : unit test that
-      return null;
+    if (childCtx != null) {
+      Object child = childCtx.getObject();
+      if (relatedClass.isInstance(child)) {
+        return relatedClass.cast(child);
+      }
     }
+
+    // julien todo : unit test that
+    return null;
   }
 
   public Set<Entry<String, E>> entrySet() {

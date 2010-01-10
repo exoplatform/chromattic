@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper.onetomany.reference;
 
 import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.DomainSession;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.core.EntityContext;
@@ -68,7 +69,7 @@ public class JCRNamedReferentPropertyMapper<O extends ObjectContext> extends JCR
 
   @Override
   public void set(O ctx, Object value) throws Throwable {
-    ChromatticSessionImpl session = ctx.getEntity().getSession();
+    DomainSession session = ctx.getEntity().getSession();
     EntityContext referencedCtx = null;
     if (value != null) {
       referencedCtx = session.unwrapEntity(value);

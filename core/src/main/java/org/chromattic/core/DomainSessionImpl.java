@@ -41,7 +41,7 @@ import java.util.*;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DomainSessionImpl extends ChromatticSessionImpl {
+public class DomainSessionImpl extends DomainSession {
 
   /** . */
   final Domain domain;
@@ -91,13 +91,13 @@ public class DomainSessionImpl extends ChromatticSessionImpl {
     if (ctx != null) {
       origin = ctx.state.getNode();
     } else {
-      origin = getRoot();
+      origin = _getRoot();
       nodeRead(origin);
     }
     try {
       Node node = origin.getNode(relPath);
       nodeRead(node);
-      return findByNode(clazz, node);
+      return _findByNode(clazz, node);
     }
     catch (PathNotFoundException e) {
       return null;
@@ -124,7 +124,7 @@ public class DomainSessionImpl extends ChromatticSessionImpl {
     log.trace("Adding node for context {} and node type {}", ctx, ctx.mapper);
 
     //
-    return _persist(getRoot(), name, ctx);
+    return _persist(_getRoot(), name, ctx);
   }
 
   /**
@@ -175,7 +175,7 @@ public class DomainSessionImpl extends ChromatticSessionImpl {
     ObjectMapper mapper = dstCtx.mapper;
 
     //
-    Object parent = findByNode(Object.class, srcNode);
+    Object parent = _findByNode(Object.class, srcNode);
     EntityContext parentCtx = parent != null ? unwrapEntity(parent) : null;
 
     //
@@ -583,7 +583,7 @@ public class DomainSessionImpl extends ChromatticSessionImpl {
     Node referent = referentCtx.state.getNode();
     Node referenced = sessionWrapper.getReferenced(referent, name, linkType);
     if (referenced != null) {
-      return findByNode(Object.class, referenced);
+      return _findByNode(Object.class, referenced);
     } else {
       return null;
     }
@@ -630,14 +630,14 @@ public class DomainSessionImpl extends ChromatticSessionImpl {
     }
   }
 
-  protected Object _getChild(EntityContext ctx, String name) throws RepositoryException {
+  protected EntityContext _getChild(EntityContext ctx, String name) throws RepositoryException {
     name = domain.encodeName(ctx, name, NameKind.OBJECT);
     Node node = ctx.state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
     Node child = sessionWrapper.getChild(node, name);
     if (child != null) {
       log.trace("Loaded named child {} of context {} with path {}", name, this, child.getPath());
-      return findByNode(Object.class, child);
+      return _findByNode(child);
     } else {
       log.trace("No child named {} to load for context {}", name, this);
       return null;
@@ -708,7 +708,7 @@ public class DomainSessionImpl extends ChromatticSessionImpl {
     }
   }
 
-  public void close() {
+  public void _close() {
     sessionWrapper.close();
   }
 }

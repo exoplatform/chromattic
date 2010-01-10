@@ -78,11 +78,7 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
       }
 
       //
-      if (name == null) {
-        return context.getEntity().getSession().create(type.getObjectClass());
-      } else {
-        return context.getEntity().getSession().create(type.getObjectClass(), name);
-      }
+      return context.getEntity().getSession().create(type.getObjectClass(), name);
     }
   }
 

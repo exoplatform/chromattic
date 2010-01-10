@@ -46,6 +46,20 @@ public class FactoryTestCase extends AbstractTestCase {
     TF_B b = a.create();
     assertEquals(1, TF_B.constructed);
     assertNotNull(b);
+    assertEquals(null, session.getName(b));
+  }
+
+  public void testCreateWithName() throws RepositoryException {
+    ChromatticSessionImpl session = login();
+
+    //
+    Node aNode = session.getRoot().addNode("tf_a_a", "tf_a");
+    TF_A a = session.findByNode(TF_A.class, aNode);
+    TF_B.constructed = 0;
+    TF_B b = a.create("b");
+    assertEquals(1, TF_B.constructed);
+    assertNotNull(b);
+    assertEquals("b", session.getName(b));
   }
 
   public void testLifeCycle() throws RepositoryException {

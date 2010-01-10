@@ -54,8 +54,9 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext> extends 
 
   @Override
   public Object get(O ctx) throws Throwable {
-    Object o = ctx.getEntity().getChild(nodeName);
-    if (o != null) {
+    EntityContext childCtx = ctx.getEntity().getChild(nodeName);
+    if (childCtx != null) {
+      Object o = childCtx.getObject();
       Class<?> relatedClass = getRelatedClass();
       if (relatedClass.isInstance(o)) {
         return o;

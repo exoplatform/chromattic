@@ -35,12 +35,12 @@ final class ChildCollectionIterator<T> extends AbstractFilterIterator<T, Node> {
   private final Class<T> relatedClass;
 
   /** . */
-  private final ChromatticSessionImpl session;
+  private final DomainSession session;
 
   /** The last iterated object. */
   private Object current;
 
-  public ChildCollectionIterator(ChromatticSessionImpl session, Iterator<Node> iterator, Class<T> relatedClass) throws RepositoryException {
+  public ChildCollectionIterator(DomainSession session, Iterator<Node> iterator, Class<T> relatedClass) throws RepositoryException {
     super(iterator);
 
     //
@@ -61,7 +61,7 @@ final class ChildCollectionIterator<T> extends AbstractFilterIterator<T, Node> {
   @Override
   public void remove() {
     if (current != null) {
-      Object tmp = current;
+      EntityContext tmp = session.unwrapEntity(current); 
       current = null;
       session.remove(tmp);
     } else {

@@ -43,15 +43,15 @@ public final class EmbeddedContext extends ObjectContext {
   NodeTypeInfo typeInfo;
 
   /** . */
-  final ChromatticSessionImpl session;
+  final DomainSession session;
 
-  EmbeddedContext(ObjectMapper<EmbeddedContext> mapper, ChromatticSessionImpl session) {
+  EmbeddedContext(ObjectMapper<EmbeddedContext> mapper, DomainSession session) {
     this.mapper = mapper;
     this.object = mapper.createObject(this);
     this.session = session;
   }
 
-  public ChromatticSessionImpl getSession() {
+  public DomainSession getSession() {
     return session;
   }
 

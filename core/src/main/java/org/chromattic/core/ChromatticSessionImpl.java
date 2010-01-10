@@ -25,86 +25,29 @@ import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.QueryBuilder;
-import org.chromattic.core.jcr.LinkType;
-import org.chromattic.core.jcr.SessionWrapper;
-import org.chromattic.spi.instrument.MethodHandler;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
-import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ChromatticSessionImpl implements ChromatticSession {
+public class ChromatticSessionImpl implements ChromatticSession {
 
   /** . */
-  protected final EventBroadcaster broadcaster;
+  final DomainSession domainSession;
 
-  /** . */
-  final Domain domain;
-
-  /** . */
-  protected final SessionWrapper sessionWrapper;
-
-  protected ChromatticSessionImpl(Domain domain, SessionWrapper sessionWrapper) {
-    this.domain = domain;
-    this.broadcaster = new EventBroadcaster();
-    this.sessionWrapper = sessionWrapper;
+  public ChromatticSessionImpl(DomainSession domainSession) {
+    this.domainSession = domainSession;
   }
 
-  protected abstract void _setName(EntityContext ctx, String name) throws RepositoryException;
-
-  protected abstract String _persist(EntityContext ctx, String name) throws RepositoryException;
-
-  protected abstract String _persist(EntityContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
-
-  protected abstract <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
-
-  protected abstract <E> E _findById(Class<E> clazz, String id) throws RepositoryException;
-
-  protected abstract <E> E _findByNode(Class<E> clazz, Node node) throws RepositoryException;
-
-  protected abstract void _save() throws RepositoryException;
-
-  protected abstract void _remove(EntityContext context) throws RepositoryException;
-
-  protected abstract Object _getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws RepositoryException;
-
-  protected abstract boolean _setReferenced(EntityContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws RepositoryException;
-
-  protected abstract <T> Iterator<T> _getReferents(EntityContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException;
-
-  protected abstract void _removeChild(EntityContext ctx, String name) throws RepositoryException;
-
-  protected abstract Object _getChild(EntityContext ctx, String name) throws RepositoryException;
-
-  protected abstract <T> Iterator<T> _getChildren(EntityContext ctx, Class<T> filterClass) throws RepositoryException;
-
-  protected abstract Object _getParent(EntityContext ctx) throws RepositoryException;
-
-  protected abstract <E> E _findByPath(EntityContext ctx, Class<E> clazz, String relPath) throws RepositoryException;
-
-  protected abstract void _orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
-
-  protected abstract Node _getRoot() throws RepositoryException;
-
-  protected abstract void _move(EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
-
-  protected abstract void _addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws RepositoryException;
-
-  protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> embeddedClass) throws RepositoryException;
-
-  protected abstract String _getName(EntityContext ctx) throws RepositoryException;
-
   public final Domain getDomain() {
-    return domain;
+    return domainSession.domain;
   }
 
   public final Session getJCRSession() {
-    return sessionWrapper.getSession();
+    return domainSession.sessionWrapper.getSession();
   }
 
   public final String getId(Object o) throws UndeclaredRepositoryException {
@@ -113,7 +56,7 @@ public abstract class ChromatticSessionImpl implements ChromatticSession {
     }
 
     //
-    EntityContext ctx = unwrapEntity(o);
+    EntityContext ctx = domainSession.unwrapEntity(o);
     return ctx.getId();
   }
 
@@ -123,24 +66,10 @@ public abstract class ChromatticSessionImpl implements ChromatticSession {
     }
 
     //
-    EntityContext ctx = unwrapEntity(o);
+    EntityContext ctx = domainSession.unwrapEntity(o);
 
     //
-    return getName(ctx);
-  }
-
-  public final String getName(EntityContext ctx) throws UndeclaredRepositoryException {
-    if (ctx == null) {
-      throw new NullPointerException();
-    }
-
-    //
-    try {
-      return _getName(ctx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    return domainSession.getName(ctx);
   }
 
   public final String getPath(Object o) throws UndeclaredRepositoryException {
@@ -149,7 +78,7 @@ public abstract class ChromatticSessionImpl implements ChromatticSession {
     }
 
     //
-    EntityContext ctx = unwrapEntity(o);
+    EntityContext ctx = domainSession.unwrapEntity(o);
     return ctx.getPath();
   }
 
@@ -158,25 +87,15 @@ public abstract class ChromatticSessionImpl implements ChromatticSession {
   }
 
   public final <O> O create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException {
-    try {
-      return _create(clazz, name);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    return domainSession.create(clazz, name);
   }
 
   public final <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    try {
-      EntityContext parentCtx = unwrapEntity(parent);
-      O child = create(clazz);
-      EntityContext childtx = unwrapEntity(child);
-      _persist(parentCtx, name, childtx);
-      return child;
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    EntityContext parentCtx = domainSession.unwrapEntity(parent);
+    O child = create(clazz);
+    EntityContext childtx = domainSession.unwrapEntity(child);
+    domainSession.persist(parentCtx, childtx, name);
+    return child;
   }
 
   public final <O> O insert(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
@@ -186,75 +105,45 @@ public abstract class ChromatticSessionImpl implements ChromatticSession {
   }
 
   public final String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    try {
-      EntityContext parentCtx = unwrapEntity(parent);
-      EntityContext childCtx = unwrapEntity(child);
-      return _persist(parentCtx, name, childCtx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException();
-    }
+    EntityContext parentCtx = domainSession.unwrapEntity(parent);
+    EntityContext childCtx = domainSession.unwrapEntity(child);
+    return domainSession.persist(parentCtx, childCtx, name);
   }
 
   public final String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    EntityContext parentCtx = unwrapEntity(parent);
-    EntityContext childCtx = unwrapEntity(child);
+    EntityContext parentCtx = domainSession.unwrapEntity(parent);
+    EntityContext childCtx = domainSession.unwrapEntity(child);
     String name = childCtx.getName();
     if (name == null) {
       String msg = "Attempt to persist non named object " + childCtx;
       throw new IllegalArgumentException(msg);
     }
-    try {
-      return _persist(parentCtx, name, childCtx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    return domainSession.persist(parentCtx, childCtx, name);
   }
 
   public final String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    try {
-      EntityContext ctx = unwrapEntity(o);
-      String name = ctx.getName();
-      if (name == null) {
-        String msg = "Attempt to persist non named object " + ctx;
-        throw new IllegalArgumentException(msg);
-      }
+    EntityContext ctx = domainSession.unwrapEntity(o);
+    String name = ctx.getName();
+    if (name == null) {
+      String msg = "Attempt to persist non named object " + ctx;
+      throw new IllegalArgumentException(msg);
+    }
 
-      //
-      return _persist(ctx, name);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    //
+    return domainSession.persist(ctx, name);
   }
 
   public final String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    try {
-      EntityContext ctx = unwrapEntity(o);
-      return _persist(ctx, relPath);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    EntityContext ctx = domainSession.unwrapEntity(o);
+    return domainSession.persist(ctx, relPath);
   }
 
   public final <O> O findByNode(Class<O> clazz, Node node) throws UndeclaredRepositoryException {
-    try {
-      return _findByNode(clazz, node);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    return domainSession.findByNode(clazz, node);
   }
 
   public final <O> O findById(Class<O> clazz, String id) throws UndeclaredRepositoryException {
-    try {
-      return _findById(clazz, id);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    return domainSession.findById(clazz, id);
   }
 
   public final <O> O findByPath(Object o, Class<O> clazz, String relPath) throws ChromatticException {
@@ -267,13 +156,8 @@ public abstract class ChromatticSessionImpl implements ChromatticSession {
     if (relPath == null) {
       throw new NullPointerException();
     }
-    EntityContext ctx = unwrapEntity(o);
-    try {
-      return _findByPath(ctx, clazz, relPath);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    EntityContext ctx = domainSession.unwrapEntity(o);
+    return domainSession.findByPath(ctx, clazz, relPath);
   }
 
   public final <O> O findByPath(Class<O> clazz, String relPath) throws ChromatticException {
@@ -283,28 +167,18 @@ public abstract class ChromatticSessionImpl implements ChromatticSession {
     if (relPath == null) {
       throw new NullPointerException();
     }
-    try {
-      return _findByPath(null, clazz, relPath);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    return domainSession.findByPath(null, clazz, relPath);
   }
 
   public final void save() throws UndeclaredRepositoryException {
-    try {
-      _save();
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    domainSession.save();
   }
 
   public final Status getStatus(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
     }
-    EntityContext ctx = unwrapEntity(o);
+    EntityContext ctx = domainSession.unwrapEntity(o);
     return ctx.getStatus();
   }
 
@@ -312,211 +186,35 @@ public abstract class ChromatticSessionImpl implements ChromatticSession {
     if (o == null) {
       throw new NullPointerException();
     }
-    try {
-      EntityContext context = unwrapEntity(o);
-      _remove(context);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+    EntityContext context = domainSession.unwrapEntity(o);
+    domainSession.remove(context);
+  }
+
+  public void close() {
+    domainSession.close();
   }
 
   public QueryBuilder<?> createQueryBuilder() throws ChromatticException {
-    return domain.queryManager.createQueryBuilder(this);
+    return domainSession.domain.queryManager.createQueryBuilder(this);
   }
 
-  public EmbeddedContext getEmbedded(EntityContext ctx, Class<?> embeddedClass) throws ChromatticException {
-    try {
-      return _getEmbedded(ctx, embeddedClass);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+  public void addEventListener(EventListener listener) {
+    domainSession.broadcaster.addLifeCycleListener(listener);
   }
 
-  public void addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws ChromatticException {
-    try {
-      _addMixin(ctx, mixinCtx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+  //
+
+  public Node getRoot() {
+    return domainSession.getRoot();
   }
 
-  public final Node getNode(Object o) {
+  public Node getNode(Object o) {
     if (o == null) {
       throw new NullPointerException();
     }
 
     //
-    EntityContext ctx = unwrapEntity(o);
+    EntityContext ctx = domainSession.unwrapEntity(o);
     return ctx.state.getNode();
-  }
-
-  public final void setName(EntityContext ctx, String name) throws UndeclaredRepositoryException {
-    try {
-      _setName(ctx, name);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final void orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) {
-    try {
-      _orderBefore(parentCtx, srcCtx, dstCtx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public void move(EntityContext srcCtx, EntityContext dstCtx) throws UndeclaredRepositoryException {
-    try {
-      _move(srcCtx, dstCtx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final void remove(EntityContext context) throws UndeclaredRepositoryException {
-    try {
-      _remove(context);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final Object getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws UndeclaredRepositoryException {
-    try {
-      return _getReferenced(referentCtx, name, linkType);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final boolean setReferenced(EntityContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws UndeclaredRepositoryException {
-    try {
-      return _setReferenced(referentCtx, name, referencedCtx, linkType);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final void removeChild(EntityContext ctx, String name) throws UndeclaredRepositoryException {
-    try {
-      _removeChild(ctx, name);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final Object getChild(EntityContext ctx, String name) throws UndeclaredRepositoryException {
-    try {
-      return _getChild(ctx, name);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final <T> Iterator<T> getChildren(EntityContext ctx, Class<T> filterClass) throws UndeclaredRepositoryException {
-    try {
-      return _getChildren(ctx, filterClass);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final Object getParent(EntityContext ctx) throws UndeclaredRepositoryException {
-    try {
-      return _getParent(ctx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final <T> Iterator<T> getReferents(EntityContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws UndeclaredRepositoryException {
-    try {
-      return _getReferents(referencedCtx, name, filterClass, linkType);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  /**
-   * Unwraps the object to an entity context
-   *
-   * @param o the object to unwrap
-   * @return the related entity context
-   * @throws NullPointerException if the object is null
-   * @throws IllegalArgumentException if the object is not a proxy
-   */
-  public final EntityContext unwrapEntity(Object o) throws NullPointerException, IllegalArgumentException {
-    return unwrap(o, EntityContext.class);
-  }
-
-  /**
-   * Unwraps the object to an embedded context
-   *
-   * @param o the object to unwrap
-   * @return the related embedded context
-   * @throws NullPointerException if the object is null
-   * @throws IllegalArgumentException if the object is not a proxy
-   */
-  public final EmbeddedContext unwrapMixin(Object o) {
-    return unwrap(o, EmbeddedContext.class);
-  }
-
-  private <T> T unwrap(Object o, Class<T> expectedClass) {
-    if (o == null) {
-      throw new NullPointerException("Cannot unwrap null object");
-    }
-    if (expectedClass == null) {
-      throw new NullPointerException();
-    }
-    MethodHandler handler = domain.getInstrumentor().getInvoker(o);
-    if (handler == null) {
-      throw new IllegalArgumentException("The object with class " + o.getClass().getName() + " is not instrumented");
-    }
-    if (expectedClass.isInstance(handler)) {
-      return expectedClass.cast(handler);
-    } else {
-      throw new AssertionError("The proxy " + o + " handler is not of the expected type");
-    }
-  }
-
-  public final String persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {
-    try {
-      return _persist(parentCtx, name, childCtx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final Node getRoot() {
-    try {
-      return _getRoot();
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public SessionWrapper getSessionWrapper() {
-    return sessionWrapper;
-  }
-
-  public void addEventListener(EventListener listener) {
-    broadcaster.addLifeCycleListener(listener);
   }
 }

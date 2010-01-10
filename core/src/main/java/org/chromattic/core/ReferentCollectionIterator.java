@@ -35,13 +35,13 @@ final class ReferentCollectionIterator<T> extends AbstractFilterIterator<T, Node
   private final Class<T> relatedClass;
 
   /** . */
-  private final ChromatticSessionImpl session;
+  private final DomainSession session;
 
   /** . */
   private final String propertyName;
 
   public ReferentCollectionIterator(
-    ChromatticSessionImpl session,
+    DomainSession session,
     Iterator<Node> iterator,
     Class<T> relatedClass,
     String propertyName) throws RepositoryException {

@@ -65,7 +65,7 @@ public final class EntityContext extends ObjectContext {
     this.embeddeds = new HashMap<ObjectMapper<EmbeddedContext>, EmbeddedContext>();
   }
 
-  public ChromatticSessionImpl getSession() {
+  public DomainSession getSession() {
     return state.getSession();
   }
 
@@ -96,7 +96,7 @@ public final class EntityContext extends ObjectContext {
   }
 
   public String getAttribute(NodeAttributeType type) {
-    ChromatticSessionImpl session = state.getSession();
+    DomainSession session = state.getSession();
     switch (type) {
       case NAME:
         return session.getName(this);
@@ -105,7 +105,7 @@ public final class EntityContext extends ObjectContext {
       case PATH:
         return state.getPath();
       case WORKSPACE_NAME:
-        return session.getJCRSession().getWorkspace().getName();
+        return session.sessionWrapper.getSession().getWorkspace().getName();
       default:
         throw new AssertionError();
     }
@@ -140,12 +140,12 @@ public final class EntityContext extends ObjectContext {
   }
 
   public void setReferenced(String name, EntityContext referencedCtx, LinkType linkType) {
-    ChromatticSessionImpl session = state.getSession();
+    DomainSession session = state.getSession();
     session.setReferenced(this, name, referencedCtx, linkType);
   }
 
   public boolean addReference(String name, EntityContext referentCtx, LinkType linkType) {
-    ChromatticSessionImpl session = state.getSession();
+    DomainSession session = state.getSession();
     return session.setReferenced(referentCtx, name, this, linkType);
   }
 
@@ -183,7 +183,7 @@ public final class EntityContext extends ObjectContext {
     }
   }
 
-  public Object getChild(String name) {
+  public EntityContext getChild(String name) {
     return state.getSession().getChild(this, name);
   }
 

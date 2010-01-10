@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper.onetoone.hierarchical;
 
 import org.chromattic.core.ChromatticSessionImpl;
+import org.chromattic.core.DomainSession;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
@@ -46,7 +47,7 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper {
     if (parent == null) {
       context.remove();
     } else {
-      ChromatticSessionImpl session = context.getSession();
+      DomainSession session = context.getSession();
       EntityContext parentContext = session.unwrapEntity(parent);
       parentContext.addChild(relatedName, context);
     }

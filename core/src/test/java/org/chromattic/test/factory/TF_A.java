@@ -32,4 +32,7 @@ public abstract class TF_A {
   @Create
   public abstract TF_B create();
 
+  @Create
+  public abstract TF_B create(String name);
+
 }

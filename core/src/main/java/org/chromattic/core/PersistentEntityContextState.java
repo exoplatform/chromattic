@@ -53,7 +53,7 @@ import java.io.IOException;
 class PersistentEntityContextState extends EntityContextState {
 
   /** . */
-  private final ChromatticSessionImpl session;
+  private final DomainSession session;
 
   /** . */
   private final Map<String, Object> propertyCache;
@@ -64,7 +64,7 @@ class PersistentEntityContextState extends EntityContextState {
   /** . */
   private final PrimaryTypeInfo typeInfo;
 
-  PersistentEntityContextState(Node node, ChromatticSessionImpl session) throws RepositoryException {
+  PersistentEntityContextState(Node node, DomainSession session) throws RepositoryException {
     this.session = session;
     this.propertyCache = session.domain.stateCacheEnabled ? new HashMap<String, Object>() : null;
     this.node = node;
@@ -109,7 +109,7 @@ class PersistentEntityContextState extends EntityContextState {
     return node;
   }
 
-  ChromatticSessionImpl getSession() {
+  DomainSession getSession() {
     return session;
   }
 
@@ -250,7 +250,7 @@ class PersistentEntityContextState extends EntityContextState {
       //
       Value jcrValue;
       if (propertyValue != null) {
-        ValueFactory valueFactory = session.getJCRSession().getValueFactory();
+        ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
         SimpleType<V> st = svi != null ? svi.getSimpleType() : null;
         jcrValue = ValueMapper.instance.get(valueFactory, propertyValue, st);
       } else {
@@ -312,7 +312,7 @@ class PersistentEntityContextState extends EntityContextState {
       throw new NullPointerException();
     }
     try {
-      ValueFactory valueFactory = session.getJCRSession().getValueFactory();
+      ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
       SimpleType<V> st = svi != null ? svi.getSimpleType() : null;
       Value[] values;
       int size = objects.size();
