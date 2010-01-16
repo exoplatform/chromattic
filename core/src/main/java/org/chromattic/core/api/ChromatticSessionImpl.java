@@ -149,8 +149,8 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.findById(clazz, id);
   }
 
-  public final <O> O findByPath(Object o, Class<O> clazz, String relPath) throws ChromatticException {
-    if (o == null) {
+  public final <O> O findByPath(Object origin, Class<O> clazz, String relPath) throws ChromatticException {
+    if (origin == null) {
       throw new NullPointerException();
     }
     if (clazz == null) {
@@ -159,7 +159,7 @@ public class ChromatticSessionImpl implements ChromatticSession {
     if (relPath == null) {
       throw new NullPointerException();
     }
-    EntityContext ctx = domainSession.unwrapEntity(o);
+    EntityContext ctx = domainSession.unwrapEntity(origin);
     return domainSession.findByPath(ctx, clazz, relPath);
   }
 

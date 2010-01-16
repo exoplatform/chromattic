@@ -19,6 +19,7 @@
 
 package org.chromattic.core.api;
 
+import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.core.bean.BeanInfoFactory;
@@ -119,7 +120,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     }
   }
 
-  protected Chromattic boot() throws Exception {
+  protected Chromattic boot() throws BuilderException {
 
     // Configure from options
     for (Option.Instance<?> optionInstance : options.values()) {

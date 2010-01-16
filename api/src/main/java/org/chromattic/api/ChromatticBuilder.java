@@ -197,7 +197,7 @@ public abstract class ChromatticBuilder {
     return boot();
   }
 
-  protected abstract Chromattic boot() throws Exception;
+  protected abstract Chromattic boot() throws BuilderException;
 
   /**
    * A configuration option.
