@@ -134,13 +134,59 @@ public interface ChromatticSession {
    */
   String persist(Object parent, Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
-  <O> O findByPath(Object o, Class<O> clazz, String relPath) throws ChromatticException;
+  /**
+   * Finds an object with a path relative to a specified origin object. If the object is not found then the method returns null.
+   *
+   * @param origin the origin object
+   * @param clazz the expected class
+   * @param relPath the path relative to the origin
+   * @param <O> the object type
+   * @return the object
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if the origin object is not a chromattic object
+   * @throws ClassCastException if the object cannot be cast to the specified class
+   * @throws ChromatticException any chromattic exception
+   */
+  <O> O findByPath(Object origin, Class<O> clazz, String relPath) throws NullPointerException, IllegalArgumentException, ClassCastException, ChromatticException;
 
-  <O> O findByPath(Class<O> clazz, String relPath) throws ChromatticException;
+  /**
+   * Finds an object with a path relative to a chromattic root object. If the object is not found then the method returns null.
+   *
+   * @param clazz the expected class
+   * @param relPath the path relative to the chromattic root
+   * @param <O> the object type
+   * @return the object
+   * @throws NullPointerException if any argument is null
+   * @throws ClassCastException if the object cannot be cast to the specified class
+   * @throws ChromatticException any chromattic exception
+   */
+  <O> O findByPath(Class<O> clazz, String relPath) throws NullPointerException, ClassCastException, ChromatticException;
 
-  <O> O findByNode(Class<O> clazz, Node node) throws ChromatticException;
+  /**
+   * Finds an object mapped to the provided node.
+   *
+   * @param clazz the expected class
+   * @param node the node
+   * @param <O> the object type
+   * @return the object
+   * @throws NullPointerException if any argument is null
+   * @throws ClassCastException if the mapped object cannot be cast to the specified class
+   * @throws ChromatticException any chromattic exception
+   */
+  <O> O findByNode(Class<O> clazz, Node node) throws NullPointerException, ClassCastException, ChromatticException;
 
-  <O> O findById(Class<O> clazz, String id) throws ChromatticException;
+  /**
+   * Finds an object from its identifier or return null if no such object can be found.
+   *
+   * @param clazz the expected class
+   * @param id the id
+   * @param <O> the object type
+   * @return the object
+   * @throws NullPointerException if any argument is null
+   * @throws ClassCastException if the mapped object cannot be cast to the specified class
+   * @throws ChromatticException any chromattic exception
+   */
+  <O> O findById(Class<O> clazz, String id) throws NullPointerException, ClassCastException, ChromatticException;
 
   QueryBuilder<?> createQueryBuilder() throws ChromatticException;
 
