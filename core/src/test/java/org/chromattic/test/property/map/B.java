@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property;
+package org.chromattic.test.property.map;
 
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
@@ -29,15 +29,16 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_a")
-public abstract class TP_B {
+@PrimaryType(name = "tp_c")
+public abstract class B {
 
   @Properties
   public abstract Map<String, Object> getProperties();
 
-  @Property(name = "string_property")
-  public abstract String getString();
+  // non mapped property throws exception!!!!
+  @Property(name = "string_array_property")
+  public abstract String[] getString();
 
-  public abstract void setString(String s);
+  public abstract void setString(String[] s);
 
 }

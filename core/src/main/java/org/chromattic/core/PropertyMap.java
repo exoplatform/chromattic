@@ -88,44 +88,38 @@ class PropertyMap extends AbstractMap<String, Object> {
         return new AbstractFilterIterator<Entry<String, Object>, Property>(i) {
           @Override
           protected Entry<String, Object> adapt(Property internal) {
+
             try {
 
+              // todo : that does not respect the encoding of property names but
+              // that is not much important for now as it is an unsupported feature
+
+              // todo : support for default values is not done because
+              // we pass null as the SimpleValueInfo type parameter
+
               //
-              Object o;
+              final String key = internal.getName();
+
+              //
               switch (internal.getType()) {
                 case PropertyType.STRING:
                 case PropertyType.NAME:
-                  o = internal.getString();
-                  break;
                 case PropertyType.LONG:
-                  o = (int)internal.getLong();
-                  break;
                 case PropertyType.BOOLEAN:
-                  o = internal.getBoolean();
-                  break;
+                  return new Entry<String, Object>() {
+                    public String getKey() {
+                      return key;
+                    }
+                    public Object getValue() {
+                      return ctx.getPropertyValue(key, null);
+                    }
+                    public Object setValue(Object value) {
+                      throw new UnsupportedOperationException();
+                    }
+                  };
                 default:
                   return null;
               }
-
-              //
-              final String key = ctx.getSession().domain.decodeName(ctx, internal.getName(), NameKind.PROPERTY);
-              if (key == null) {
-                return null;
-              }
-
-              //
-              final Object value = o;
-              return new Entry<String, Object>() {
-                public String getKey() {
-                  return key;
-                }
-                public Object getValue() {
-                  return value;
-                }
-                public Object setValue(Object value) {
-                  throw new UnsupportedOperationException();
-                }
-              };
             }
             catch (RepositoryException e) {
               throw new UndeclaredRepositoryException(e);

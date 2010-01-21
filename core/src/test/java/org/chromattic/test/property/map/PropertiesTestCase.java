@@ -17,11 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property;
+package org.chromattic.test.property.map;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,14 +32,18 @@ import java.util.Map;
 public class PropertiesTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TP_B.class);
+    addClass(A.class);
+    addClass(B.class);
   }
 
   /** . */
   private ChromatticSession session;
 
   /** . */
-  private TP_B b;
+  private A b;
+
+  /** . */
+  private B c;
 
   @Override
   protected void setUp() throws Exception {
@@ -46,7 +51,8 @@ public class PropertiesTestCase extends AbstractTestCase {
 
     //
     session = login();
-    b = session.insert(TP_B.class, "ozoijeif");
+    b = session.insert(A.class, "a");
+    c = session.insert(B.class, "b");
   }
 
   @Override
@@ -119,5 +125,17 @@ public class PropertiesTestCase extends AbstractTestCase {
     }
     catch (IllegalArgumentException ignore) {
     }
+  }
+
+  public void testGetMultivaluedValue() throws Exception
+  {
+    c.setString(new String[]{"a","b"});
+    Map<String, Object> copy = new HashMap<String, Object>();
+    for (Map.Entry<String, Object> entry : c.getProperties().entrySet()) {
+      copy.put(entry.getKey(), entry.getValue());
+    }
+    assertTrue(copy.containsKey("string_array_property"));
+    assertEquals("a", copy.get("string_array_property"));
+
   }
 }
