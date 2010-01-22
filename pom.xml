@@ -75,7 +75,8 @@
     <maven.compiler.source>1.5</maven.compiler.source>
 
     <!-- maven-surefire-plugin -->
-    <argLine>${env.MAVEN_OPTS}</argLine>
+    <!--<argLine>${env.MAVEN_OPTS}</argLine>-->
+    <argLine>-Xshare:auto -Xms128m -Xmx256m -XX:MaxPermSize=256M</argLine>
 
     <!-- maven-release-plugin -->
     <useReleaseProfile>false</useReleaseProfile>

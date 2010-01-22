@@ -16,7 +16,6 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-
 <repository-service default-repository="db1">
   <repositories>
     <repository name="db1" system-workspace="ws" default-workspace="ws">
@@ -40,6 +39,10 @@
               <value-storage id="ws" class="org.exoplatform.services.jcr.impl.storage.value.fs.TreeFileValueStorage">
                 <properties>
                   <property name="path" value="target/temp/values/ws" />
+                  <property name="digest-algo" value="MD5" />
+                  <property name="vcas-type" value="org.exoplatform.services.jcr.impl.storage.value.cas.JDBCValueContentAddressStorageImpl" />
+                  <property name="jdbc-source-name" value="jdbcjcr" />
+                  <property name="jdbc-dialect" value="hsqldb" />
                 </properties>
                 <filters>
                   <filter property-type="Binary" />
@@ -52,30 +55,25 @@
               <property name="root-nodetype" value="nt:unstructured"/>
             </properties>
           </initializer>
-          <cache enabled="true" class="org.exoplatform.services.jcr.impl.dataflow.persistent.LinkedWorkspaceStorageCacheImpl">
+          <cache enabled="true" class="org.exoplatform.services.jcr.impl.dataflow.persistent.jbosscache.JBossCacheWorkspaceStorageCache">
             <properties>
-              <property name="max-size" value="2k" />
-              <property name="live-time" value="20m" />
+              <property name="jbosscache-configuration" value="conf/standalone/jbosscache-config.xml" />
             </properties>
           </cache>
           <query-handler class="org.exoplatform.services.jcr.impl.core.query.lucene.SearchIndex">
             <properties>
               <property name="index-dir" value="target/temp/index/db1/ws" />
-              <property name="synonymprovider-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.PropertiesSynonymProvider" />
-              <property name="synonymprovider-config-path" value="synonyms.properties" />
-              <property name="support-highlighting" value="true" />
-              <property name="indexing-configuration-path" value="indexing-configuration.xml" />
-              <property name="query-class" value="org.exoplatform.services.jcr.impl.core.query.QueryImpl" />
-              <property name="spellchecker-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.spell.LuceneSpellChecker$FiveSecondsRefreshInterval"/>
-            </properties>
-          </query-handler>
-          <lock-manager>
-            <time-out>15m</time-out>
-            <persister class="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister">
-              <properties>
-                <property name="path" value="target/temp/lock" />
+              <!--
+              <property name="changesfilter-class" value="org.exoplatform.services.jcr.impl.core.query.jbosscache.JbossCacheIndexChangesFilter" />
+              <property name="changesfilter-config-path" value="conf/standalone/jbosscache-config.xml" />
+              -->
               </properties>
-            </persister>
+            </query-handler>
+          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManager">
+            <properties>
+              <property name="time-out" value="15m" />
+              <property name="jbosscache-configuration" value="conf/standalone/jbosscache-lockconfig.xml" />
+            </properties>
           </lock-manager>
         </workspace>
       </workspaces>
