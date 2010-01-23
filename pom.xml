@@ -104,13 +104,6 @@
 
       <dependency>
         <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.apt</artifactId>
-        <version>1.0.0-beta15-SNAPSHOT</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.chromattic</groupId>
         <artifactId>chromattic.cglib</artifactId>
         <version>1.0.0-beta15-SNAPSHOT</version>
       </dependency>
