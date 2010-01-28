@@ -156,10 +156,28 @@ public abstract class ChromatticBuilder {
   protected final Map<String, Option.Instance<?>> options = new HashMap<String, Option.Instance<?>>();
 
   public Option.Instance<?> getOption(String name) {
+    if (name == null)
+    {
+      throw new NullPointerException();
+    }
     return options.get(name);
   }
 
-  public <T> void setOption(Option<T> option, T value) {
+  public <D> Option.Instance<D> getOption(Option<D> option) {
+    if (option == null)
+    {
+      throw new NullPointerException();
+    }
+    @SuppressWarnings("unchecked") // Cast OK
+    Option.Instance<D> instance = (Option.Instance<D>)options.get(option.getName());
+    return instance;
+  }
+
+  public <D> void setOption(Option<D> option, String value) {
+    setOption(option, option.getType().parse(value), true);
+  }
+
+  public <D> void setOption(Option<D> option, D value) {
     setOption(option, value, true);
   }
 
