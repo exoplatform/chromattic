@@ -36,7 +36,7 @@ public class FormatterScopeTestCase extends AbstractTestCase {
 
 
   protected void createDomain() {
-    getBuilder().setOption(ChromatticBuilder.OBJECT_FORMATTER_CLASSNAME, FooPrefixerFormatter.class.getName());
+    getBuilder().setOptionValue(ChromatticBuilder.OBJECT_FORMATTER_CLASSNAME, FooPrefixerFormatter.class.getName());
     addClass(A.class);
     addClass(B.class);
     addClass(C.class);

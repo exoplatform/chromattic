@@ -155,7 +155,18 @@ public abstract class ChromatticBuilder {
   /** . */
   protected final Map<String, Option.Instance<?>> options = new HashMap<String, Option.Instance<?>>();
 
-  public Option.Instance<?> getOption(String name) {
+  protected final <T> void setOptionInstance(Option.Instance<T> optionInstance, boolean overwrite) {
+    setOptionValue(optionInstance.getOption(), optionInstance.getValue(), overwrite);
+  }
+
+  /**
+   * Returns a configured option instance.
+   *
+   * @param name the option name
+   * @return the corresponding option instance or null
+   * @throws NullPointerException if the name is null
+   */
+  public Option.Instance<?> getOptionInstance(String name) throws NullPointerException {
     if (name == null)
     {
       throw new NullPointerException();
@@ -163,7 +174,15 @@ public abstract class ChromatticBuilder {
     return options.get(name);
   }
 
-  public <D> Option.Instance<D> getOption(Option<D> option) {
+  /**
+   * Returns a configured option instance.
+   *
+   * @param option the option to return
+   * @param <D> the option data type
+   * @return the option instance or null
+   * @throws NullPointerException if the option is null
+   */
+  public <D> Option.Instance<D> getOptionInstance(Option<D> option) throws NullPointerException {
     if (option == null)
     {
       throw new NullPointerException();
@@ -173,21 +192,60 @@ public abstract class ChromatticBuilder {
     return instance;
   }
 
-  public <D> void setOption(Option<D> option, String value) {
-    setOption(option, option.getType().parse(value), true);
+  /**
+   * Set the option value as a string.
+   *
+   * @param option the option to set
+   * @param value the option value
+   * @param <D> the option data type
+   * @throws NullPointerException if any argument is null
+   */
+  public <D> void setOptionStringValue(Option<D> option, String value) throws NullPointerException {
+    if (option == null) {
+      throw new NullPointerException("Cannot set null option");
+    }
+    if (value == null) {
+      throw new NullPointerException("Cannot set null value");
+    }
+    setOptionValue(option, option.getType().parse(value), true);
   }
 
-  public <D> void setOption(Option<D> option, D value) {
-    setOption(option, value, true);
+  /**
+   * Set the option value.
+   *
+   * @param option the option to set
+   * @param value the option value
+   * @param <D> the option data type
+   * @throws NullPointerException if any argument is null
+   */
+  public <D> void setOptionValue(Option<D> option, D value) throws NullPointerException {
+    if (option == null) {
+      throw new NullPointerException("No null option");
+    }
+    if (value == null) {
+      throw new NullPointerException("No null value");
+    }
+    setOptionValue(option, value, true);
   }
 
-  public <T> void setOption(Option.Instance<T> optionInstance, boolean overwrite) {
-    setOption(optionInstance.getOption(), optionInstance.getValue(), overwrite);
-  }
-
-  public <T> void setOption(Option<T> option, T value, boolean overwrite) {
+  /**
+   * Set the option value.
+   *
+   * @param option the option to set
+   * @param value the option value
+   * @param overwrite true if the option must be overwritten
+   * @param <D> the option data type
+   * @throws NullPointerException if any argument is null
+   */
+  public <D> void setOptionValue(Option<D> option, D value, boolean overwrite) throws NullPointerException {
+    if (option == null) {
+      throw new NullPointerException("No null option");
+    }
+    if (value == null) {
+      throw new NullPointerException("No null value");
+    }
     if (overwrite || options.get(option.getName()) == null) {
-      Option.Instance<T> instance = new Option.Instance<T>(option, value);
+      Option.Instance<D> instance = new Option.Instance<D>(option, value);
       options.put(option.getName(), instance);
     }
   }
@@ -217,7 +275,7 @@ public abstract class ChromatticBuilder {
 
   protected abstract Chromattic boot() throws BuilderException;
 
-  /**
+    /**
    * A configuration option.
    *
    * @param <D> the option data type

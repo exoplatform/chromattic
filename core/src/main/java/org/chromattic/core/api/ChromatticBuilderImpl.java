@@ -80,18 +80,18 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       String value = System.getProperty(option.getName());
       Option.Instance<?> instance = option.getInstance(value);
       if (instance != null) {
-        setOption(instance, false);
+        setOptionInstance(instance, false);
       }
     }
 
     // Configuration default options
-    setOption(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl", false);
-    setOption(SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle", false);
-    setOption(OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName(), false);
-    setOption(CACHE_STATE_ENABLED, false, false);
-    setOption(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, false, false);
-    setOption(JCR_OPTIMIZE_HAS_NODE_ENABLED, false, false);
-    setOption(ROOT_NODE_PATH, "/", false);
+    setOptionValue(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl", false);
+    setOptionValue(SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle", false);
+    setOptionValue(OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName(), false);
+    setOptionValue(CACHE_STATE_ENABLED, false, false);
+    setOptionValue(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, false, false);
+    setOptionValue(JCR_OPTIMIZE_HAS_NODE_ENABLED, false, false);
+    setOptionValue(ROOT_NODE_PATH, "/", false);
   }
 
   private <T> T create(Option.Instance<String> optionInstance, Class<T> expectedClass) {

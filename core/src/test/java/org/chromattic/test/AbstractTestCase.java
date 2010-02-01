@@ -116,11 +116,11 @@ public abstract class AbstractTestCase extends TestCase {
     builder = ChromatticBuilder.create();
 
     //
-    builder.setOption(ChromatticBuilder.CACHE_STATE_ENABLED, config.stateCacheEnabled);
-    builder.setOption(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
-    builder.setOption(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, config.optimizeHasPropertyEnabled);
-    builder.setOption(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, config.optimizeHasNodeEnabled);
-    builder.setOption(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
+    builder.setOptionValue(ChromatticBuilder.CACHE_STATE_ENABLED, config.stateCacheEnabled);
+    builder.setOptionValue(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
+    builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, config.optimizeHasPropertyEnabled);
+    builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, config.optimizeHasNodeEnabled);
+    builder.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
 
     //
     createDomain();

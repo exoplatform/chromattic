@@ -35,7 +35,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 public class ObjectNameFailureTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    getBuilder().setOption(ChromatticBuilder.OBJECT_FORMATTER_CLASSNAME, DelegatingObjectFormatter.class.getName());
+    getBuilder().setOptionValue(ChromatticBuilder.OBJECT_FORMATTER_CLASSNAME, DelegatingObjectFormatter.class.getName());
     addClass(A.class);
     addClass(B.class);
   }
