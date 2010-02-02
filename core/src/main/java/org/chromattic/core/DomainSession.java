@@ -107,8 +107,8 @@ public abstract class DomainSession {
     return sessionWrapper.getSession();
   }
 
-  public QueryBuilder<?> createQueryBuilder() throws ChromatticException {
-    return domain.queryManager.createQueryBuilder(this);
+  public <O> QueryBuilder<O> createQueryBuilder(Class<O> fromClass) throws ChromatticException {
+    return domain.queryManager.createQueryBuilder(this, fromClass);
   }
 
   public void addEventListener(EventListener listener) {

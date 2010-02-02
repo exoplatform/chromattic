@@ -191,10 +191,14 @@ public interface ChromatticSession {
   /**
    * Create a query builder.
    *
+   * @param fromClass the node type of the from clause
+   * @param <O> the object type parameter
    * @return a query builder
+   * @throws NullPointerException if the argument is null
+   * @throws IllegalArgumentException if the from class cannot be mapped to a node type
    * @throws ChromatticException any chromattic exception
    */
-  QueryBuilder<?> createQueryBuilder() throws ChromatticException;
+  <O> QueryBuilder<O> createQueryBuilder(Class<O> fromClass) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
    * Removes a specified entity.

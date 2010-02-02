@@ -197,8 +197,8 @@ public class ChromatticSessionImpl implements ChromatticSession {
     domainSession.close();
   }
 
-  public QueryBuilder<?> createQueryBuilder() throws ChromatticException {
-    return domainSession.createQueryBuilder();
+  public <O> QueryBuilder<O> createQueryBuilder(Class<O> fromClass) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    return domainSession.createQueryBuilder(fromClass);
   }
 
   public void addEventListener(EventListener listener) {

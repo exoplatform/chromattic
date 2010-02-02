@@ -30,10 +30,10 @@ import org.chromattic.core.Domain;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class QueryBuilderImpl implements QueryBuilder {
+public class QueryBuilderImpl<O> implements QueryBuilder<O> {
 
   /** . */
-  private Class<?> fromClass;
+  private Class<O> fromClass;
 
   /** . */
   private String where;
@@ -44,18 +44,12 @@ public class QueryBuilderImpl implements QueryBuilder {
   /** . */
   private DomainSession session;
 
-  QueryBuilderImpl(DomainSession session) {
-    this.fromClass = null;
-    this.where = null;
-    this.session = session;
-  }
-
-  public QueryBuilder from(Class fromClass) {
-    if (fromClass == null) {
-      throw new NullPointerException();
+  QueryBuilderImpl(DomainSession session, Class<O> fromClass) throws NullPointerException, IllegalArgumentException {
+    if (session == null) {
+      throw new NullPointerException("No null domain session accepted");
     }
-    if (this.fromClass != null) {
-      throw new IllegalStateException();
+    if (fromClass == null) {
+      throw new NullPointerException("No null from class accepted");
     }
 
     //
@@ -69,12 +63,13 @@ public class QueryBuilderImpl implements QueryBuilder {
     }
 
     //
-    this.mapper = mapper;
     this.fromClass = fromClass;
-    return this;
+    this.mapper = mapper;
+    this.where = null;
+    this.session = session;
   }
 
-  public QueryBuilder where(String whereStatement) {
+  public QueryBuilder<O> where(String whereStatement) {
     if (whereStatement == null) {
       throw new NullPointerException();
     }
@@ -82,11 +77,11 @@ public class QueryBuilderImpl implements QueryBuilder {
     return this;
   }
 
-  public QueryBuilder orderBy(String orderBy) throws NullPointerException {
+  public QueryBuilder<O> orderBy(String orderBy) throws NullPointerException {
     throw new UnsupportedOperationException("todo");
   }
 
-  public Query get() {
+  public Query<O> get() {
     if (fromClass == null) {
       throw new IllegalStateException();
     }
@@ -100,6 +95,6 @@ public class QueryBuilderImpl implements QueryBuilder {
     }
 
     //
-    return session.getDomain().getQueryManager().getObjectQuery(session, mapper.getObjectClass(), sb.toString());
+    return session.getDomain().getQueryManager().getObjectQuery(session, fromClass, sb.toString());
   }
 }

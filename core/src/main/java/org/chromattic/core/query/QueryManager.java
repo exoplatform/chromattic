@@ -48,8 +48,8 @@ public class QueryManager {
   /** . */
   private EnumMap<QueryLanguage, Map<QueryKey, Query<?>>> globalQueryCache;
 
-  public QueryBuilder<?> createQueryBuilder(DomainSession session) throws ChromatticException {
-    return new QueryBuilderImpl(session);
+  public <O> QueryBuilder<O> createQueryBuilder(DomainSession session, Class<O> fromClass) throws ChromatticException {
+    return new QueryBuilderImpl(session, fromClass);
   }
 
   public <O> Query<O> getObjectQuery(DomainSession session, Class<O> objectClass, String statement) {
