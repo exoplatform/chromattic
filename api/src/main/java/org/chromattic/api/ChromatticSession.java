@@ -188,17 +188,67 @@ public interface ChromatticSession {
    */
   <O> O findById(Class<O> clazz, String id) throws NullPointerException, ClassCastException, ChromatticException;
 
+  /**
+   * Create a query builder.
+   *
+   * @return a query builder
+   * @throws ChromatticException any chromattic exception
+   */
   QueryBuilder<?> createQueryBuilder() throws ChromatticException;
 
-  void remove(Object o) throws ChromatticException;
+  /**
+   * Removes a specified entity.
+   *
+   * @param o the entity to remove
+   * @throws ChromatticException any chromattic exception
+   * @throws NullPointerException if the specified object is null
+   * @throws IllegalArgumentException if the specified object is not a chromattic object
+   */
+  void remove(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
-  Status getStatus(Object o) throws ChromatticException;
+  /**
+   * Returns the status of a specified entity.
+   *
+   * @param o the entity to get the status
+   * @return the entity status
+   * @throws ChromatticException any chromattic exception
+   * @throws NullPointerException if the specified object is null
+   * @throws IllegalArgumentException if the specified object is not a chromattic object
+   */
+  Status getStatus(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
-  String getId(Object o) throws ChromatticException;
+  /**
+   * Returns the id of a specified entity.
+   *
+   * @param o the entity to get the id
+   * @return the entity id
+   * @throws ChromatticException any chromattic exception
+   * @throws NullPointerException if the specified object is null
+   * @throws IllegalArgumentException if the specified object is not a chromattic object
+   */
+  String getId(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
-  String getName(Object o) throws ChromatticException;
+  /**
+   * Returns the name of a specified entity.
+   *
+   * @param o the entity to get the name
+   * @return the entity status
+   * @throws ChromatticException any chromattic exception
+   * @throws NullPointerException if the specified object is null
+   * @throws IllegalArgumentException if the specified object is not a chromattic object
+   */
+  String getName(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
-  String getPath(Object o) throws ChromatticException;
+  /**
+   * Returns the path of a specified entity.
+   *
+   * @param o the entity to get the path
+   * @return the entity path
+   * @throws ChromatticException any chromattic exception
+   * @throws NullPointerException if the specified object is null
+   * @throws IllegalArgumentException if the specified object is not a chromattic object
+   */
+  String getPath(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   void addEventListener(EventListener listener);
 
