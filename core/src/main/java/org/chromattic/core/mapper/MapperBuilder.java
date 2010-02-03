@@ -85,7 +85,7 @@ import java.lang.reflect.Method;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class TypeMapperBuilder {
+public class MapperBuilder {
 
   /** . */
   private final static EnumMap<RelationshipType, LinkType> relationshipToLinkMapping;
@@ -106,7 +106,7 @@ public class TypeMapperBuilder {
   /** . */
   private final Map<ClassTypeInfo, NodeTypeMapping> classToMapping;
 
-  public TypeMapperBuilder(Set<NodeTypeMapping> typeMappings, Instrumentor instrumentor) {
+  public MapperBuilder(Set<NodeTypeMapping> typeMappings, Instrumentor instrumentor) {
     Map<ClassTypeInfo, NodeTypeMapping> classToMapping = new HashMap<ClassTypeInfo, NodeTypeMapping>();
     for (NodeTypeMapping typeMapping : typeMappings) {
       classToMapping.put(typeMapping.getObjectClass(), typeMapping);

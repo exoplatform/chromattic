@@ -22,7 +22,7 @@ package org.chromattic.core;
 import org.chromattic.common.JCR;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.mapping.NodeTypeMapping;
-import org.chromattic.core.mapper.TypeMapperBuilder;
+import org.chromattic.core.mapper.MapperBuilder;
 import org.chromattic.core.jcr.info.NodeInfoManager;
 import org.chromattic.core.query.QueryManager;
 import org.chromattic.spi.instrument.Instrumentor;
@@ -81,7 +81,7 @@ public class Domain {
     String rootNodePath) {
 
     //
-    TypeMapperBuilder builder = new TypeMapperBuilder(typeMappings, instrumentor);
+    MapperBuilder builder = new MapperBuilder(typeMappings, instrumentor);
 
     //
     Map<String, ObjectMapper> typeMapperByNodeType = new HashMap<String, ObjectMapper>();
