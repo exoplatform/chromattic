@@ -53,19 +53,24 @@ public class ChromatticImpl implements Chromattic {
   public ChromatticSession openSession() {
     try {
       Session session = sessionLifeCycle.login();
-      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-      return new ChromatticSessionImpl(new DomainSessionImpl(domain, wrapper));
+      return build(session);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
   }
 
+  private ChromatticSession build(Session session) {
+    SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
+    ChromatticSessionImpl chromatticSession = new ChromatticSessionImpl(new DomainSessionImpl(domain, wrapper));
+    chromatticSession.getRoot();
+    return chromatticSession;
+  }
+
   public ChromatticSession openSession(String workspace) {
     try {
       Session session = sessionLifeCycle.login(workspace);
-      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-      return new ChromatticSessionImpl(new DomainSessionImpl(domain, wrapper));
+      return build(session);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -75,8 +80,7 @@ public class ChromatticImpl implements Chromattic {
   public ChromatticSession openSession(Credentials credentials, String workspace) {
     try {
       Session session = sessionLifeCycle.login(credentials, workspace);
-      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-      return new ChromatticSessionImpl(new DomainSessionImpl(domain, wrapper));
+      return build(session);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -86,8 +90,7 @@ public class ChromatticImpl implements Chromattic {
   public ChromatticSession openSession(Credentials credentials) {
     try {
       Session session = sessionLifeCycle.login(credentials);
-      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-      return new ChromatticSessionImpl(new DomainSessionImpl(domain, wrapper));
+      return build(session);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

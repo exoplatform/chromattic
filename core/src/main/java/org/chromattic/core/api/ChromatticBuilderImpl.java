@@ -30,7 +30,6 @@ import org.chromattic.core.mapping.NodeTypeMapping;
 import org.chromattic.core.mapping.TypeMappingBuilder;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
-import org.chromattic.api.format.DefaultObjectFormatter;
 import org.chromattic.api.format.ObjectFormatter;
 import org.reflext.api.*;
 import org.reflext.jlr.JavaLangReflectTypeModel;
@@ -50,82 +49,17 @@ import java.lang.reflect.Type;
  */
 public class ChromatticBuilderImpl extends ChromatticBuilder {
 
-  /** . */
-  private Instrumentor instrumentor;
-
-  /** . */
-  private SessionLifeCycle sessionProvider;
-
-  /** . */
-  private ObjectFormatter objectFormatter;
-
-  /** . */
-  private boolean stateCacheEnabled;
-
-  /** . */
-  private String rootNodePath;
-
-  /** . */
-  private Boolean optimizeJCREnabled;
-
-  /** . */
-  private boolean optimizeJCRHasPropertyEnabled;
-
-  /** . */
-  private boolean optimizeJCRHasNodeEnabled;
 
   public ChromatticBuilderImpl() {
-    // Configure system options
-    for (Option<?> option : getSystemOptions()) {
-      String value = System.getProperty(option.getName());
-      Option.Instance<?> instance = option.getInstance(value);
-      if (instance != null) {
-        setOptionInstance(instance, false);
-      }
-    }
-
-    // Configuration default options
-    setOptionValue(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl", false);
-    setOptionValue(SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle", false);
-    setOptionValue(OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName(), false);
-    setOptionValue(CACHE_STATE_ENABLED, false, false);
-    setOptionValue(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, false, false);
-    setOptionValue(JCR_OPTIMIZE_HAS_NODE_ENABLED, false, false);
-    setOptionValue(ROOT_NODE_PATH, "/", false);
   }
 
   private <T> T create(Option.Instance<String> optionInstance, Class<T> expectedClass) {
-    Option<String> option = optionInstance.getOption();
     String s = optionInstance.getValue();
     return ObjectInstantiator.newInstance(s, expectedClass);
   }
 
-  protected <T> void configure(Option.Instance<T> optionInstance) {
-    if (optionInstance.getOption() == INSTRUMENTOR_CLASSNAME) {
-      instrumentor = create((Option.Instance<String>)optionInstance, Instrumentor.class);
-    } else if (optionInstance.getOption() == SESSION_LIFECYCLE_CLASSNAME) {
-      sessionProvider = create((Option.Instance<String>)optionInstance, SessionLifeCycle.class);
-    } else if (optionInstance.getOption() == OBJECT_FORMATTER_CLASSNAME) {
-      objectFormatter = create((Option.Instance<String>)optionInstance, ObjectFormatter.class);
-    } else if (optionInstance.getOption() == CACHE_STATE_ENABLED) {
-      stateCacheEnabled = ((Option.Instance<Boolean>)optionInstance).getValue();
-    } else if (optionInstance.getOption() == ROOT_NODE_PATH) {
-      rootNodePath = ((Option.Instance<String>)optionInstance).getValue();
-    } else if (optionInstance.getOption() == JCR_OPTIMIZE_ENABLED) {
-      optimizeJCREnabled = ((Option.Instance<Boolean>)optionInstance).getValue();
-    } else if (optionInstance.getOption() == JCR_OPTIMIZE_HAS_PROPERTY_ENABLED) {
-      optimizeJCRHasPropertyEnabled = ((Option.Instance<Boolean>)optionInstance).getValue();
-    } else if (optionInstance.getOption() == JCR_OPTIMIZE_HAS_NODE_ENABLED) {
-      optimizeJCRHasNodeEnabled = ((Option.Instance<Boolean>)optionInstance).getValue();
-    }
-  }
-
-  protected Chromattic boot() throws BuilderException {
-
-    // Configure from options
-    for (Option.Instance<?> optionInstance : options.values()) {
-      configure(optionInstance);
-    }
+  @Override
+  protected Chromattic boot(Options options, Set<Class> classes) throws BuilderException {
 
     // For now empty custom types
     Map<String, SimpleTypeKind<?, ?>> types = new HashMap<String, SimpleTypeKind<?,?>>();
@@ -150,18 +84,58 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       mappings.add(mapping);
     }
 
+    Boolean optimizeJCREnabled = options.getValue(JCR_OPTIMIZE_ENABLED);
+
     //
-    boolean hasPropertyOptimized = optimizeJCRHasPropertyEnabled;
-    boolean hasNodeOptimized = optimizeJCRHasNodeEnabled;
+    final boolean hasPropertyOptimized;
     if (optimizeJCREnabled != null) {
       hasPropertyOptimized = optimizeJCREnabled;
-      hasNodeOptimized = optimizeJCREnabled;
+    } else {
+      hasPropertyOptimized = options.getValue(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED);
     }
 
-    // Build domain
-    Domain domain = new Domain(mappings, instrumentor, objectFormatter, stateCacheEnabled, hasPropertyOptimized, hasNodeOptimized, rootNodePath);
+    //
+    final boolean hasNodeOptimized;
+    if (optimizeJCREnabled != null) {
+      hasNodeOptimized = optimizeJCREnabled;
+    } else {
+      hasNodeOptimized = options.getValue(JCR_OPTIMIZE_HAS_NODE_ENABLED);
+    }
 
     //
-    return new ChromatticImpl(domain, sessionProvider);
+    boolean stateCacheEnabled = options.getValue(CACHE_STATE_ENABLED);
+
+    //
+    String rootNodePath = options.getValue(ROOT_NODE_PATH);
+    if (!rootNodePath.startsWith("/")) {
+      throw new BuilderException("Root node path must start with a '/' character");
+    }
+
+    //
+    boolean createRootNode = options.getValue(CREATE_ROOT_NODE);
+
+    //
+    Instrumentor instrumentor = create(options.getInstance(INSTRUMENTOR_CLASSNAME), Instrumentor.class);
+
+    //
+    ObjectFormatter objectFormatter = create(options.getInstance(OBJECT_FORMATTER_CLASSNAME), ObjectFormatter.class);
+
+    //
+    SessionLifeCycle sessionLifeCycle = create(options.getInstance(SESSION_LIFECYCLE_CLASSNAME), SessionLifeCycle.class);
+    
+
+    // Build domain
+    Domain domain = new Domain(
+      mappings,
+      instrumentor,
+      objectFormatter,
+      stateCacheEnabled,
+      hasPropertyOptimized,
+      hasNodeOptimized,
+      rootNodePath,
+      createRootNode);
+
+    //
+    return new ChromatticImpl(domain, sessionLifeCycle);
   }
 }

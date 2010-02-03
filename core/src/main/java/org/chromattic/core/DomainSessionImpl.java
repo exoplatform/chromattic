@@ -19,6 +19,7 @@
 
 package org.chromattic.core;
 
+import org.chromattic.api.ChromatticException;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
@@ -31,10 +32,7 @@ import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Node;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PathNotFoundException;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import java.util.*;
 
@@ -660,10 +658,29 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected Node _getRoot() throws RepositoryException {
-    if ("/".equals(domain.rootNodePath)) {
-      return sessionWrapper.getSession().getRootNode();
+    Session session = sessionWrapper.getSession();
+    String path = domain.rootNodePath;
+
+    //
+    if ("/".equals(path)) {
+      return session.getRootNode();
+    } else if (session.itemExists(path)) {
+      Item item = session.getItem(path);
+      if (item instanceof Node) {
+        return (Node)item;
+      } else {
+        throw new IllegalStateException("The chromattic root node path (" + path + ") points to an existing property");
+      }
     } else {
-      return (Node)sessionWrapper.getSession().getItem(domain.rootNodePath);
+      Node current = session.getRootNode();
+      for (String name : domain.rootNodePath.substring(1).split("/")) {
+        if (current.hasNode(name)) {
+          current = current.getNode(name);
+        } else {
+          current = current.addNode(name);
+        }
+      }
+      return current;
     }
   }
 

@@ -19,6 +19,8 @@
 
 package org.chromattic.api;
 
+import org.chromattic.api.format.DefaultObjectFormatter;
+
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,6 +35,15 @@ import java.util.Arrays;
  * @version $Revision$
  */
 public abstract class ChromatticBuilder {
+
+  /**
+   * A special option that will lookup system properties when set to true to configure options by default.
+   */
+  public static final Option<Boolean> USE_SYSTEM_PROPERTIES =
+    new Option<Boolean>(
+      Option.Type.BOOLEAN,
+      "org.chromattic.api.Option.use_system_properties",
+      "use system properties");
 
   /**
    * The instrumentor class name for Chromattic's objects. The specified class must implement the
@@ -108,8 +119,18 @@ public abstract class ChromatticBuilder {
   public static final Option<String> ROOT_NODE_PATH =
     new Option<String>(
       Option.Type.STRING,
-      "org.chromattic.api.Option.root_node_path",
-      "root node path");
+      "org.chromattic.api.Option.root_node.path",
+      "the root node path value");
+
+  /**
+   * A boolean option that creates the root node designated by the {@link #ROOT_NODE_PATH} option
+   * when it does not exist.
+   */
+  public static final Option<Boolean> CREATE_ROOT_NODE =
+    new Option<Boolean>(
+      Option.Type.BOOLEAN,
+      "org.chromattic.api.Option.root_node.create",
+      "creates the chromattic root node when it does not exist");
 
 
   /**
@@ -126,6 +147,11 @@ public abstract class ChromatticBuilder {
     return systemOptions;
   }
 
+  /**
+   * Create and return an instance of the builder.
+   *
+   * @return the chromattic builder instance
+   */
   public static ChromatticBuilder create() {
     String builderClassName = "org.chromattic.core.api.ChromatticBuilderImpl";
     try {
@@ -150,14 +176,10 @@ public abstract class ChromatticBuilder {
   }
 
   /** . */
-  protected final Set<Class<?>> classes = new HashSet<Class<?>>();
+  private final Set<Class<?>> classes = new HashSet<Class<?>>();
 
   /** . */
-  protected final Map<String, Option.Instance<?>> options = new HashMap<String, Option.Instance<?>>();
-
-  protected final <T> void setOptionInstance(Option.Instance<T> optionInstance, boolean overwrite) {
-    setOptionValue(optionInstance.getOption(), optionInstance.getValue(), overwrite);
-  }
+  private final Options options = new Options();
 
   /**
    * Returns a configured option instance.
@@ -167,11 +189,7 @@ public abstract class ChromatticBuilder {
    * @throws NullPointerException if the name is null
    */
   public Option.Instance<?> getOptionInstance(String name) throws NullPointerException {
-    if (name == null)
-    {
-      throw new NullPointerException();
-    }
-    return options.get(name);
+    return options.getInstance(name);
   }
 
   /**
@@ -183,13 +201,7 @@ public abstract class ChromatticBuilder {
    * @throws NullPointerException if the option is null
    */
   public <D> Option.Instance<D> getOptionInstance(Option<D> option) throws NullPointerException {
-    if (option == null)
-    {
-      throw new NullPointerException();
-    }
-    @SuppressWarnings("unchecked") // Cast OK
-    Option.Instance<D> instance = (Option.Instance<D>)options.get(option.getName());
-    return instance;
+    return options.getInstance(option);
   }
 
   /**
@@ -201,13 +213,7 @@ public abstract class ChromatticBuilder {
    * @throws NullPointerException if any argument is null
    */
   public <D> void setOptionStringValue(Option<D> option, String value) throws NullPointerException {
-    if (option == null) {
-      throw new NullPointerException("Cannot set null option");
-    }
-    if (value == null) {
-      throw new NullPointerException("Cannot set null value");
-    }
-    setOptionValue(option, option.getType().parse(value), true);
+    options.setStringValue(option, value, true);
   }
 
   /**
@@ -219,35 +225,19 @@ public abstract class ChromatticBuilder {
    * @throws NullPointerException if any argument is null
    */
   public <D> void setOptionValue(Option<D> option, D value) throws NullPointerException {
-    if (option == null) {
-      throw new NullPointerException("No null option");
-    }
-    if (value == null) {
-      throw new NullPointerException("No null value");
-    }
-    setOptionValue(option, value, true);
+    options.setValue(option, value, true);
   }
 
   /**
-   * Set the option value.
+   * Returns the option value.
    *
-   * @param option the option to set
-   * @param value the option value
-   * @param overwrite true if the option must be overwritten
+   * @param option the option
    * @param <D> the option data type
-   * @throws NullPointerException if any argument is null
+   * @return the option value
+   * @throws NullPointerException if the option parameter is null
    */
-  public <D> void setOptionValue(Option<D> option, D value, boolean overwrite) throws NullPointerException {
-    if (option == null) {
-      throw new NullPointerException("No null option");
-    }
-    if (value == null) {
-      throw new NullPointerException("No null value");
-    }
-    if (overwrite || options.get(option.getName()) == null) {
-      Option.Instance<D> instance = new Option.Instance<D>(option, value);
-      options.put(option.getName(), instance);
-    }
+  public <D> D getOptionValue(Option<D> option) throws NullPointerException {
+    return options.getValue(option);
   }
 
   /**
@@ -270,10 +260,35 @@ public abstract class ChromatticBuilder {
    * @throws Exception any exception
    */
   public Chromattic build() throws Exception {
-    return boot();
+
+    // Copy options
+    Options options = new Options(this.options);
+
+    // Configure system properties options
+    if (!Boolean.FALSE.equals(options.getValue(USE_SYSTEM_PROPERTIES))) {
+      for (Option<?> option : getSystemOptions()) {
+        String value = System.getProperty(option.getName());
+        if (value != null) {
+          options.setStringValue(option, value, false);
+        }
+      }
+    }
+
+    // Configuration default options
+    options.setValue(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl", false);
+    options.setValue(SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle", false);
+    options.setValue(OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName(), false);
+    options.setValue(CACHE_STATE_ENABLED, false, false);
+    options.setValue(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, false, false);
+    options.setValue(JCR_OPTIMIZE_HAS_NODE_ENABLED, false, false);
+    options.setValue(ROOT_NODE_PATH, "/", false);
+    options.setValue(CREATE_ROOT_NODE, false, false);
+
+    //
+    return boot(options, new HashSet<Class>(classes));
   }
 
-  protected abstract Chromattic boot() throws BuilderException;
+  protected abstract Chromattic boot(Options options, Set<Class> classes) throws BuilderException;
 
     /**
    * A configuration option.
@@ -306,18 +321,24 @@ public abstract class ChromatticBuilder {
       /** . */
       private final Class<D> javaType;
 
+
       private Type(Class<D> javaType) {
         this.javaType = javaType;
       }
 
       public final D parse(String value) {
         if (value == null) {
-          return null;
-        } else {
-          return doParse(value);
+          throw new NullPointerException("Cannot parse null value");
         }
+        return doParse(value);
       }
 
+      /**
+       * Performs the effective parse, when called the value will never be null.
+       *
+       * @param value the value to parse
+       * @return the parsed value
+       */
       protected abstract D doParse(String value);
 
     }
@@ -405,5 +426,67 @@ public abstract class ChromatticBuilder {
     }
   }
 
-  protected abstract <T> void configure(Option.Instance<T> option);
+  protected static class Options {
+
+    /** . */
+    protected final Map<String, Option.Instance<?>> entries = new HashMap<String, Option.Instance<?>>();
+
+    private Options() {
+    }
+
+    /**
+     * Copy constructor for internal usage.
+     *
+     * @param that the options to copy
+     */
+    private Options(Options that) {
+      entries.putAll(that.entries);
+    }
+
+    public Option.Instance<?> getInstance(String name) throws NullPointerException {
+      if (name == null)
+      {
+        throw new NullPointerException();
+      }
+      return entries.get(name);
+    }
+
+    public <D> Option.Instance<D> getInstance(Option<D> option) throws NullPointerException {
+      if (option == null)
+      {
+        throw new NullPointerException();
+      }
+      @SuppressWarnings("unchecked") // Cast OK
+      Option.Instance<D> instance = (Option.Instance<D>)entries.get(option.getName());
+      return instance;
+    }
+
+    public <D> void setStringValue(Option<D> option, String value, boolean overwrite) throws NullPointerException {
+      if (option == null) {
+        throw new NullPointerException("Cannot set null option");
+      }
+      if (value == null) {
+        throw new NullPointerException("Cannot set null value");
+      }
+      setValue(option, option.getType().parse(value), overwrite);
+    }
+
+    public <D> D getValue(Option<D> option) throws NullPointerException {
+      Option.Instance<D> instance = getInstance(option);
+      return instance != null ? instance.value : null;
+    }
+
+    public <D> void setValue(Option<D> option, D value, boolean overwrite) throws NullPointerException {
+      if (option == null) {
+        throw new NullPointerException("No null option");
+      }
+      if (value == null) {
+        throw new NullPointerException("No null value");
+      }
+      if (overwrite || entries.get(option.getName()) == null) {
+        Option.Instance<D> instance = new Option.Instance<D>(option, value);
+        entries.put(option.getName(), instance);
+      }
+    }
+  }
 }

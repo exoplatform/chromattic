@@ -24,8 +24,6 @@ import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.Chromattic;
 import org.chromattic.cglib.CGLibInstrumentor;
 
-import javax.jcr.Session;
-import javax.jcr.Node;
 import javax.jcr.SimpleCredentials;
 
 import junit.framework.TestCase;
@@ -130,15 +128,8 @@ public abstract class AbstractTestCase extends TestCase {
 
     // Need to create virtual root node
     ChromatticSessionImpl sess = login();
-    Session jcrSession = sess.getJCRSession();
-    Node n0 = jcrSession.getRootNode();
-    Node n1 = !n0.hasNode(p1) ? n0.addNode(p1) : n0.getNode(p1);
-    Node n2 = !n1.hasNode(p2) ? n1.addNode(p2) : n1.getNode(p2);
-    Node n3 = !n2.hasNode(p3) ? n2.addNode(p3) : n2.getNode(p3);
-    Node n4 = !n3.hasNode(p4) ? n3.addNode(p4) : n3.getNode(p4);
-    Node n5 = !n4.hasNode(p5) ? n4.addNode(p5) : n4.getNode(p5);
-    Node n6 = !n5.hasNode(p6) ? n5.addNode(p6) : n5.getNode(p6);
-    jcrSession.save();
+    sess.getRoot();
+    sess.save();
   }
 
   @Override

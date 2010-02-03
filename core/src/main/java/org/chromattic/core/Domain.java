@@ -66,6 +66,9 @@ public class Domain {
   final String rootNodePath;
 
   /** . */
+  final boolean createRootNode;
+
+  /** . */
   final NodeInfoManager nodeInfoManager;
 
   /** . */
@@ -78,7 +81,8 @@ public class Domain {
     boolean stateCacheEnabled,
     boolean hasPropertyOptimized,
     boolean hasNodeOptimized,
-    String rootNodePath) {
+    String rootNodePath,
+    boolean createRootNode) {
 
     //
     MapperBuilder builder = new MapperBuilder(typeMappings, instrumentor);
@@ -105,6 +109,7 @@ public class Domain {
     this.rootNodePath = rootNodePath;
     this.nodeInfoManager = new NodeInfoManager();
     this.queryManager = new QueryManager();
+    this.createRootNode = createRootNode;
   }
 
   public boolean isHasPropertyOptimized() {
