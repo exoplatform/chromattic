@@ -19,7 +19,7 @@
 
 package org.chromattic.core;
 
-import org.chromattic.common.AbstractFilterIterator;
+import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.common.JCR;
 import org.chromattic.api.UndeclaredRepositoryException;
 

@@ -19,7 +19,7 @@
 package org.chromattic.core.query;
 
 import org.chromattic.api.query.QueryResult;
-import org.chromattic.common.AbstractFilterIterator;
+import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.common.JCR;
 import org.chromattic.core.DomainSession;
 

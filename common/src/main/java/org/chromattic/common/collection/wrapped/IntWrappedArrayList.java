@@ -16,35 +16,34 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
-package org.chromattic.common.collection;
+package org.chromattic.common.collection.wrapped;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class DoubleWrappedArrayList extends PrimitiveWrappedArrayList<Double, double[]> {
+class IntWrappedArrayList extends PrimitiveWrappedArrayList<Integer, int[]> {
 
-  public DoubleWrappedArrayList(int size) {
-    this(new double[size]);
+  public IntWrappedArrayList(int size) {
+    this(new int[size]);
   }
 
-  public DoubleWrappedArrayList(double[] array) {
+  public IntWrappedArrayList(int[] array) {
     super(array);
   }
 
   @Override
-  protected Double get(double[] array, int index) {
+  protected Integer get(int[] array, int index) {
     return array[index];
   }
 
   @Override
-  protected int size(double[] array) {
+  protected int size(int[] array) {
     return array.length;
   }
 
   @Override
-  protected void set(double[] array, int index, Double element) {
+  protected void set(int[] array, int index, Integer element) {
     array[index] = element;
   }
 }

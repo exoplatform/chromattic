@@ -19,10 +19,9 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.common.AbstractFilterIterator;
+import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.core.EntityContext;
 
-import java.util.Iterator;
 import java.util.Map;
 
 /**

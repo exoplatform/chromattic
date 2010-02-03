@@ -17,36 +17,41 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.common;
-
-import junit.framework.TestCase;
+package org.chromattic.common.collection;
 
 import java.util.Iterator;
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-
-import org.chromattic.common.CompoundIterator;
 
 /**
+ * A convenient subclass for delegating the filtering function.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class CompoundIteratorTestCase extends TestCase {
+public class FilterIterator<E, I> extends AbstractFilterIterator<E, I> {
 
-  public void testIterators() {
-    Iterator<Integer> iterator = new CompoundIterator<Integer>(Arrays.asList(0).iterator(), Arrays.asList(1, 2).iterator());
-    assertTrue(iterator.hasNext());
-    assertEquals((Integer)0, iterator.next());
-    assertTrue(iterator.hasNext());
-    assertEquals((Integer)1, iterator.next());
-    assertTrue(iterator.hasNext());
-    assertEquals((Integer)2, iterator.next());
-    assertFalse(iterator.hasNext());
-    try {
-      iterator.next();
-      fail();
+  /** . */
+  private final IteratorFilter<E, I> filter;
+
+  /**
+   * Creates a new filter iterator.
+   *
+   * @param iterator the iterator
+   * @param filter the filter
+   * @throws NullPointerException if any argument is null
+   */
+  public FilterIterator(Iterator<I> iterator, IteratorFilter<E, I> filter) throws NullPointerException {
+    super(iterator);
+
+    //
+    if (filter == null) {
+      throw new NullPointerException();
     }
-    catch (NoSuchElementException e) {
-    }
+
+    //
+    this.filter = filter;
+  }
+
+  protected E adapt(I internal) {
+    return filter.adapt(internal);
   }
 }

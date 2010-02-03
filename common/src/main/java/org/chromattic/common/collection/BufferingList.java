@@ -18,13 +18,31 @@
  */
 package org.chromattic.common.collection;
 
+import java.util.AbstractSequentialList;
+import java.util.ListIterator;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-abstract class PrimitiveWrappedArrayList<E, A> extends WrappedArrayList<E, A> {
+public class BufferingList<E> extends AbstractSequentialList<E> {
 
-  protected PrimitiveWrappedArrayList(A array) {
-    super(array);
+  /** . */
+  private final ListModel<E> model;
+
+  public BufferingList(ListModel<E> model) {
+    this.model = model;
+  }
+
+  public ListIterator<E> listIterator(int index) {
+    BufferingListIterator<E> iterator = new BufferingListIterator<E>(model);
+    while (index-- > 0) {
+      iterator.next();
+    }
+    return iterator;
+  }
+
+  public int size() {
+    return model.size();
   }
 }

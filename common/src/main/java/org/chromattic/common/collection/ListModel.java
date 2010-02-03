@@ -18,32 +18,22 @@
  */
 package org.chromattic.common.collection;
 
+import java.util.Iterator;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class IntWrappedArrayList extends PrimitiveWrappedArrayList<Integer, int[]> {
+public interface ListModel<E> {
 
-  public IntWrappedArrayList(int size) {
-    this(new int[size]);
-  }
+  Iterator<E> iterator();
 
-  public IntWrappedArrayList(int[] array) {
-    super(array);
-  }
+  void set(int index, E removedElement, E addedElement);
 
-  @Override
-  protected Integer get(int[] array, int index) {
-    return array[index];
-  }
+  void add(ElementInsertion<E> insertion);
 
-  @Override
-  protected int size(int[] array) {
-    return array.length;
-  }
+  void remove(int index, E removedElement);
 
-  @Override
-  protected void set(int[] array, int index, Integer element) {
-    array[index] = element;
-  }
+  int size();
+
 }

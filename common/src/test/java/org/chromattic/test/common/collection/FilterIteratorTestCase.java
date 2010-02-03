@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.common;
+package org.chromattic.test.common.collection;
 
 import junit.framework.TestCase;
 
@@ -30,9 +30,9 @@ import java.util.NoSuchElementException;
 import java.util.LinkedList;
 import java.util.ConcurrentModificationException;
 
-import org.chromattic.common.FilterIterator;
-import org.chromattic.common.AbstractFilterIterator;
-import org.chromattic.common.IteratorFilter;
+import org.chromattic.common.collection.FilterIterator;
+import org.chromattic.common.collection.AbstractFilterIterator;
+import org.chromattic.common.collection.IteratorFilter;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

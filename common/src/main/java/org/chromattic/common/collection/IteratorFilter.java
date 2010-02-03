@@ -20,31 +20,20 @@
 package org.chromattic.common.collection;
 
 /**
+ * A filter for element.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class BooleanWrappedArrayList extends PrimitiveWrappedArrayList<Boolean, boolean[]> {
+public interface IteratorFilter<E, I> {
 
-  public BooleanWrappedArrayList(int size) {
-    this(new boolean[size]);
-  }
+  /**
+   * Adapts the internal element as an external element. Returning a null external element means that
+   * the element must be skipped and not considered by the iterator.
+   *
+   * @param internal the internal element
+   * @return the external element
+   */
+  E adapt(I internal);
 
-  public BooleanWrappedArrayList(boolean[] array) {
-    super(array);
-  }
-
-  @Override
-  protected Boolean get(boolean[] array, int index) {
-    return array[index];
-  }
-
-  @Override
-  protected int size(boolean[] array) {
-    return array.length;
-  }
-
-  @Override
-  protected void set(boolean[] array, int index, Boolean element) {
-    array[index] = element;
-  }
 }

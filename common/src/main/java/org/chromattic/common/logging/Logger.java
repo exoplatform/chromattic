@@ -19,7 +19,7 @@
 
 package org.chromattic.common.logging;
 
-import org.chromattic.common.Collections;
+import org.chromattic.common.collection.Collections;
 
 import java.util.concurrent.ConcurrentHashMap;
 

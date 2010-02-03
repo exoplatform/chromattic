@@ -28,7 +28,7 @@ import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.SessionWrapperImpl;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.spi.jcr.SessionLifeCycle;
-import org.chromattic.common.Collections;
+import org.chromattic.common.collection.Collections;
 
 import java.util.Set;
 import java.util.List;

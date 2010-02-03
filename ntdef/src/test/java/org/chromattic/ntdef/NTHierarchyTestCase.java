@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.common.Collections;
+import org.chromattic.common.collection.Collections;
 
 import java.util.Date;
 import java.util.HashMap;

@@ -17,34 +17,36 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.common.collection;
+package org.chromattic.test.common.collection;
+
+import junit.framework.TestCase;
+
+import java.util.Iterator;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+
+import org.chromattic.common.collection.CompoundIterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class LongWrappedArrayList extends PrimitiveWrappedArrayList<Long, long[]> {
+public class CompoundIteratorTestCase extends TestCase {
 
-  public LongWrappedArrayList(int size) {
-    this(new long[size]);
-  }
-
-  public LongWrappedArrayList(long[] array) {
-    super(array);
-  }
-
-  @Override
-  protected Long get(long[] array, int index) {
-    return array[index];
-  }
-
-  @Override
-  protected int size(long[] array) {
-    return array.length;
-  }
-
-  @Override
-  protected void set(long[] array, int index, Long element) {
-    array[index] = element;
+  public void testIterators() {
+    Iterator<Integer> iterator = new CompoundIterator<Integer>(Arrays.asList(0).iterator(), Arrays.asList(1, 2).iterator());
+    assertTrue(iterator.hasNext());
+    assertEquals((Integer)0, iterator.next());
+    assertTrue(iterator.hasNext());
+    assertEquals((Integer)1, iterator.next());
+    assertTrue(iterator.hasNext());
+    assertEquals((Integer)2, iterator.next());
+    assertFalse(iterator.hasNext());
+    try {
+      iterator.next();
+      fail();
+    }
+    catch (NoSuchElementException e) {
+    }
   }
 }

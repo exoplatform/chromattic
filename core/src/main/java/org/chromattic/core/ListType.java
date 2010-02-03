@@ -18,7 +18,7 @@
  */
 package org.chromattic.core;
 
-import org.chromattic.common.collection.WrappedArrayList;
+import org.chromattic.common.collection.wrapped.WrappedArrayList;
 import org.chromattic.core.bean.SimpleType;
 
 import java.util.ArrayList;

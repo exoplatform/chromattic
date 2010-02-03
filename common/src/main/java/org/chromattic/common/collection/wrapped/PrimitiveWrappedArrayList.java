@@ -16,24 +16,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.common;
-
-import java.util.Iterator;
+package org.chromattic.common.collection.wrapped;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface ListModel<E> {
+abstract class PrimitiveWrappedArrayList<E, A> extends WrappedArrayList<E, A> {
 
-  Iterator<E> iterator();
-
-  void set(int index, E removedElement, E addedElement);
-
-  void add(ElementInsertion<E> insertion);
-
-  void remove(int index, E removedElement);
-
-  int size();
-
+  protected PrimitiveWrappedArrayList(A array) {
+    super(array);
+  }
 }

@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.common;
+package org.chromattic.test.common.collection;
 
 import junit.framework.TestCase;
 
@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
-import org.chromattic.common.ListModel;
-import org.chromattic.common.ElementInsertion;
-import org.chromattic.common.BufferingList;
+import org.chromattic.common.collection.ElementInsertion;
+import org.chromattic.common.collection.ListModel;
+import org.chromattic.common.collection.BufferingList;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

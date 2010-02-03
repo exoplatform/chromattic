@@ -18,7 +18,7 @@
  */
 package org.chromattic.test.spi.exo;
 
-import org.chromattic.common.Collections;
+import org.chromattic.common.collection.Collections;
 import org.chromattic.common.JCR;
 import org.chromattic.exo.RepositoryBootstrap;
 

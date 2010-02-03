@@ -16,33 +16,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.common;
 
-import java.util.AbstractSequentialList;
-import java.util.ListIterator;
+package org.chromattic.common.collection.wrapped;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class BufferingList<E> extends AbstractSequentialList<E> {
+class DoubleWrappedArrayList extends PrimitiveWrappedArrayList<Double, double[]> {
 
-  /** . */
-  private final ListModel<E> model;
-
-  public BufferingList(ListModel<E> model) {
-    this.model = model;
+  public DoubleWrappedArrayList(int size) {
+    this(new double[size]);
   }
 
-  public ListIterator<E> listIterator(int index) {
-    BufferingListIterator<E> iterator = new BufferingListIterator<E>(model);
-    while (index-- > 0) {
-      iterator.next();
-    }
-    return iterator;
+  public DoubleWrappedArrayList(double[] array) {
+    super(array);
   }
 
-  public int size() {
-    return model.size();
+  @Override
+  protected Double get(double[] array, int index) {
+    return array[index];
+  }
+
+  @Override
+  protected int size(double[] array) {
+    return array.length;
+  }
+
+  @Override
+  protected void set(double[] array, int index, Double element) {
+    array[index] = element;
   }
 }

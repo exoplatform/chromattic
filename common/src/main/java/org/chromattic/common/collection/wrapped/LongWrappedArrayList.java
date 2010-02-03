@@ -17,23 +17,34 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.common;
+package org.chromattic.common.collection.wrapped;
 
 /**
- * A filter for element.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface IteratorFilter<E, I> {
+class LongWrappedArrayList extends PrimitiveWrappedArrayList<Long, long[]> {
 
-  /**
-   * Adapts the internal element as an external element. Returning a null external element means that
-   * the element must be skipped and not considered by the iterator.
-   *
-   * @param internal the internal element
-   * @return the external element
-   */
-  E adapt(I internal);
+  public LongWrappedArrayList(int size) {
+    this(new long[size]);
+  }
 
+  public LongWrappedArrayList(long[] array) {
+    super(array);
+  }
+
+  @Override
+  protected Long get(long[] array, int index) {
+    return array[index];
+  }
+
+  @Override
+  protected int size(long[] array) {
+    return array.length;
+  }
+
+  @Override
+  protected void set(long[] array, int index, Long element) {
+    array[index] = element;
+  }
 }

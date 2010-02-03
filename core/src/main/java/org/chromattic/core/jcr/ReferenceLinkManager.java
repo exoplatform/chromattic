@@ -19,7 +19,7 @@
 
 package org.chromattic.core.jcr;
 
-import org.chromattic.common.AbstractFilterIterator;
+import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.api.UndeclaredRepositoryException;
 
 import javax.jcr.Session;

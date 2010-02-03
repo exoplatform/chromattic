@@ -21,14 +21,13 @@ package org.chromattic.test.spi.exo;
 
 import junit.framework.TestCase;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Node;
 
+import org.chromattic.common.collection.Collections;
 import org.chromattic.exo.RepositoryBootstrap;
-import org.chromattic.common.Collections;
 import org.chromattic.core.jcr.AbstractLinkManager;
 
 import java.util.Iterator;

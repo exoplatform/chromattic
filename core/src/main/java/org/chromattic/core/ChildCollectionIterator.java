@@ -19,7 +19,7 @@
 
 package org.chromattic.core;
 
-import org.chromattic.common.AbstractFilterIterator;
+import org.chromattic.common.collection.AbstractFilterIterator;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;

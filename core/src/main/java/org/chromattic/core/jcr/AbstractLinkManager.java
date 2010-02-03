@@ -19,8 +19,8 @@
 
 package org.chromattic.core.jcr;
 
-import org.chromattic.common.CompoundIterator;
-import org.chromattic.common.AbstractFilterIterator;
+import org.chromattic.common.collection.AbstractFilterIterator;
+import org.chromattic.common.collection.CompoundIterator;
 
 import javax.jcr.Node;
 import javax.jcr.Session;

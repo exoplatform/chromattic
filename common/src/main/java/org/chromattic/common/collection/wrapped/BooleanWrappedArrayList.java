@@ -16,36 +16,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.common.collection;
 
-import java.lang.reflect.Array;
+package org.chromattic.common.collection.wrapped;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class GenericWrappedArrayList<E> extends WrappedArrayList<E, E[]> {
+class BooleanWrappedArrayList extends PrimitiveWrappedArrayList<Boolean, boolean[]> {
 
-  public GenericWrappedArrayList(Class<E> elementType, int size) {
-    this((E[])Array.newInstance(elementType, size));
+  public BooleanWrappedArrayList(int size) {
+    this(new boolean[size]);
   }
 
-  public GenericWrappedArrayList(E[] array) {
+  public BooleanWrappedArrayList(boolean[] array) {
     super(array);
   }
 
   @Override
-  protected E get(E[] array, int index) {
+  protected Boolean get(boolean[] array, int index) {
     return array[index];
   }
 
   @Override
-  protected int size(E[] array) {
+  protected int size(boolean[] array) {
     return array.length;
   }
 
   @Override
-  protected void set(E[] array, int index, E element) {
+  protected void set(boolean[] array, int index, Boolean element) {
     array[index] = element;
   }
 }

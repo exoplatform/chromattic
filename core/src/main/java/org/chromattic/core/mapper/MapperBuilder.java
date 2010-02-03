@@ -48,7 +48,7 @@ import org.chromattic.core.mapping.value.RelationshipMapping;
 import org.chromattic.core.mapping.value.OneToManyMapping;
 import org.chromattic.core.mapping.value.NamedOneToManyMapping;
 import org.chromattic.core.mapping.value.PropertyMapMapping;
-import org.chromattic.common.SetMap;
+import org.chromattic.common.collection.SetMap;
 import org.chromattic.core.mapper.onetomany.reference.JCRReferentCollectionPropertyMapper;
 import org.chromattic.core.mapper.onetomany.reference.JCRNamedReferentPropertyMapper;
 import org.chromattic.core.mapper.onetomany.hierarchical.JCRAnyChildCollectionPropertyMapper;

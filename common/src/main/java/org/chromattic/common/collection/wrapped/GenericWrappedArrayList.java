@@ -16,42 +16,36 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.common.collection.wrapped;
 
-package org.chromattic.common;
-
-import java.util.Iterator;
+import java.lang.reflect.Array;
 
 /**
- * A convenient subclass for delegating the filtering function.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class FilterIterator<E, I> extends AbstractFilterIterator<E, I> {
+class GenericWrappedArrayList<E> extends WrappedArrayList<E, E[]> {
 
-  /** . */
-  private final IteratorFilter<E, I> filter;
-
-  /**
-   * Creates a new filter iterator.
-   *
-   * @param iterator the iterator
-   * @param filter the filter
-   * @throws NullPointerException if any argument is null
-   */
-  public FilterIterator(Iterator<I> iterator, IteratorFilter<E, I> filter) throws NullPointerException {
-    super(iterator);
-
-    //
-    if (filter == null) {
-      throw new NullPointerException();
-    }
-
-    //
-    this.filter = filter;
+  public GenericWrappedArrayList(Class<E> elementType, int size) {
+    this((E[])Array.newInstance(elementType, size));
   }
 
-  protected E adapt(I internal) {
-    return filter.adapt(internal);
+  public GenericWrappedArrayList(E[] array) {
+    super(array);
+  }
+
+  @Override
+  protected E get(E[] array, int index) {
+    return array[index];
+  }
+
+  @Override
+  protected int size(E[] array) {
+    return array.length;
+  }
+
+  @Override
+  protected void set(E[] array, int index, E element) {
+    array[index] = element;
   }
 }

@@ -19,7 +19,7 @@
 package org.chromattic.test.common.collection.delta;
 
 import junit.framework.TestCase;
-import org.chromattic.common.Collections;
+import org.chromattic.common.collection.Collections;
 import org.chromattic.common.collection.delta.DeltaList;
 
 import java.util.List;
