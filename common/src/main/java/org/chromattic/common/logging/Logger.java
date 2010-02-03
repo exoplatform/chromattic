@@ -24,6 +24,8 @@ import org.chromattic.common.collection.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * A wrapper for SLF4J.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
