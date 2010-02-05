@@ -1,3 +1,4 @@
+- @Property(cascaded=true|false)
 - Self-bounded type resolution
 - detyped embedded access from session : <E> E session.getEmbedded(Object o, Class<E> embeddedClass)
 - prefix the queries with the root path of the chromattic builder
