@@ -19,6 +19,7 @@
 
 package org.chromattic.test.onetoone.embedded;
 
+import org.chromattic.api.ChromatticSession;
 import org.chromattic.common.JCR;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
@@ -29,7 +30,7 @@ import javax.jcr.Node;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToOneTestCase extends AbstractTestCase {
+public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
 
   protected void createDomain() {
     addClass(A.class);
@@ -37,13 +38,18 @@ public class OneToOneTestCase extends AbstractTestCase {
     addClass(C.class);
   }
 
+  protected abstract <E> void setEmbedded(ChromatticSession session, B b, Class<E> embeddedType, E e);
+
+  protected abstract <E> E getEmbedded(ChromatticSession session, B b, Class<E> embeddedType);
+
   public void testAddMixinToEntity() throws Exception {
     ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
     C c = session.create(C.class);
     assertNull(b.getMixin());
     assertNull(c.getEntity());
-    b.setMixin(c);
+    setEmbedded(session, b, C.class, c);
+//    b.setMixin(c);
     assertSame(c, b.getMixin());
     assertSame(b, c.getEntity());
     Node node = session.getNode(b);
@@ -52,7 +58,8 @@ public class OneToOneTestCase extends AbstractTestCase {
     session.close();
     session = login();
     b = session.findByPath(B.class, "b");
-    c = b.getMixin();
+    c = getEmbedded(session, b, C.class);
+//    c = b.getMixin();
     assertNotNull(c);
   }
 
@@ -60,7 +67,8 @@ public class OneToOneTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
     C c = session.create(C.class);
-    assertNull(b.getMixin());
+//    assertNull(b.getMixin());
+    assertNull(getEmbedded(session, b, C.class));
     assertNull(c.getEntity());
     c.setEntity(b);
     assertSame(c, b.getMixin());
@@ -71,14 +79,16 @@ public class OneToOneTestCase extends AbstractTestCase {
     session.close();
     session = login();
     b = session.findByPath(B.class, "b");
-    c = b.getMixin();
+//    c = b.getMixin();
+    c = getEmbedded(session, b, C.class);
     assertNotNull(c);
   }
 
   public void testGetSuper() throws Exception {
     ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
-    A a = b.getSuper();
+//    A a = b.getSuper();
+    A a = getEmbedded(session, b, A.class);
     assertNotNull(a);
   }
 
@@ -86,8 +96,11 @@ public class OneToOneTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
     B b1 = session.insert(B.class, "b1");
     B b2 = session.insert(B.class, "b2");
+//    A s = b1.getSuper();
+    A s = getEmbedded(session, b1, A.class);
     try {
-      b2.setSuper(b1.getSuper());
+//      b2.setSuper(s);
+      setEmbedded(session, b2, A.class, s);
       fail();
     }
     catch (IllegalArgumentException expected) {
@@ -96,20 +109,22 @@ public class OneToOneTestCase extends AbstractTestCase {
 
   public void testMixinProperty() throws Exception {
     ChromatticSessionImpl session = login();
-    B a = session.insert(B.class, "b");
-    C b = session.create(C.class);
-    a.setMixin(b);
-    b.setFoo("bar");
-    assertEquals("bar", b.getFoo());
+    B b = session.insert(B.class, "b");
+    C c = session.create(C.class);
+//    b.setMixin(c);
+    setEmbedded(session, b, C.class, c);
+    c.setFoo("bar");
+    assertEquals("bar", c.getFoo());
   }
 
   public void testMixinChild() throws Exception {
     ChromatticSessionImpl session = login();
-    B a1 = session.insert(B.class, "b");
-    C b = session.create(C.class);
-    a1.setMixin(b);
-    B a2 = session.create(B.class);
-    b.setB(a2);
-    assertSame(b, a2.getParent());
+    B b1 = session.insert(B.class, "b");
+    C c = session.create(C.class);
+//    b.setMixin(c);
+    setEmbedded(session, b1, C.class, c);
+    B b2 = session.create(B.class);
+    c.setB(b2);
+    assertSame(c, b2.getParent());
   }
 }

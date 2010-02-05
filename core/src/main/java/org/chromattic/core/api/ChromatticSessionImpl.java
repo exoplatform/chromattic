@@ -200,7 +200,11 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     }
     EntityContext ctx = domainSession.unwrapEntity(o);
     EmbeddedContext embeddedCtx = ctx.getEmbedded(embeddedType);
-    return embeddedType.cast(embeddedCtx);
+    if (embeddedCtx != null) {
+      return embeddedType.cast(embeddedCtx.getObject());
+    } else {
+      return null;
+    }
   }
 
   public <E> void setEmbedded(Object o, Class<E> embeddedType, E embedded) {

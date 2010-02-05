@@ -254,6 +254,32 @@ public interface ChromatticSession {
    */
   String getPath(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
+  /**
+   * Returns a specified embedded object.
+   *
+   * @param o the object to get the embedded from
+   * @param embeddedType the embedded type class
+   * @param <E> the embedded type
+   * @return the related embedded
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if the specified object is not a chromattic object
+   * @throws ChromatticException any chromattic exception
+   */
+  <E> E getEmbedded(Object o, Class<E> embeddedType) throws NullPointerException, IllegalArgumentException, ChromatticException;
+
+  /**
+   * Attach the specified embedded object on the specified object when the embedded argument.
+   *
+   * @param o the object
+   * @param embeddedType the embedded type class
+   * @param embedded the embedded
+   * @param <E> the embedded type
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if the object or the embedded are not chromattic objects
+   * @throws ChromatticException any chromattic exception
+   */
+  <E> void setEmbedded(Object o, Class<E> embeddedType, E embedded) throws NullPointerException, IllegalArgumentException, ChromatticException;
+
   void addEventListener(EventListener listener);
 
   void save() throws ChromatticException;
