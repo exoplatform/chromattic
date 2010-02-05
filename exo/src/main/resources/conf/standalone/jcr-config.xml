@@ -39,10 +39,6 @@
               <value-storage id="ws" class="org.exoplatform.services.jcr.impl.storage.value.fs.TreeFileValueStorage">
                 <properties>
                   <property name="path" value="target/temp/values/ws" />
-                  <property name="digest-algo" value="MD5" />
-                  <property name="vcas-type" value="org.exoplatform.services.jcr.impl.storage.value.cas.JDBCValueContentAddressStorageImpl" />
-                  <property name="jdbc-source-name" value="jdbcjcr" />
-                  <property name="jdbc-dialect" value="hsqldb" />
                 </properties>
                 <filters>
                   <filter property-type="Binary" />
@@ -63,17 +59,13 @@
           <query-handler class="org.exoplatform.services.jcr.impl.core.query.lucene.SearchIndex">
             <properties>
               <property name="index-dir" value="target/temp/index/db1/ws" />
-              <!--
-              <property name="changesfilter-class" value="org.exoplatform.services.jcr.impl.core.query.jbosscache.JbossCacheIndexChangesFilter" />
-              <property name="changesfilter-config-path" value="conf/standalone/jbosscache-config.xml" />
-              -->
-              </properties>
-            </query-handler>
+            </properties>
+          </query-handler>
           <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManager">
             <properties>
               <property name="time-out" value="15m" />
               <property name="jbosscache-configuration" value="conf/standalone/jbosscache-lockconfig.xml" />
-            </properties>
+             </properties>
           </lock-manager>
         </workspace>
       </workspaces>

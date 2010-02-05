@@ -97,7 +97,7 @@ public class PropertyBehaviorTestCase extends TestCase {
     ref.remove();
     assertFalse(ref.isNew());
     assertTrue(ref.isModified());
-    assertEquals(ref, a.getReferences());
+    assertFalse(a.getReferences().hasNext());
 
     //
     session.save();
@@ -129,7 +129,7 @@ public class PropertyBehaviorTestCase extends TestCase {
     b.setProperty("ref", a);
     assertFalse(ref.isNew());
     assertTrue(ref.isModified());
-    assertEquals(ref, a.getReferences());
+    assertFalse(a.getReferences().hasNext());
 
     //
     session.save();
@@ -173,7 +173,8 @@ public class PropertyBehaviorTestCase extends TestCase {
   }
 
   private void assertEquals(Property p, PropertyIterator i) throws RepositoryException {
-    assertTrue(i.hasNext());
+    assertTrue("Was expecting at least one property with name " + p.getName(), i.hasNext());
     assertEquals(p.getName(), i.nextProperty().getName());
+    assertFalse("Was not expecting more properties than " + p.getName(), i.hasNext());
   }
 }
