@@ -36,21 +36,16 @@ public class QueryTestCase extends AbstractTestCase {
     addClass(TFI_A.class);
   }
 
-  /** . */
-  private int count = 0;
-
   public void testQuery() throws Exception {
     ChromatticSessionImpl session = login();
-    if (session.getRoot().hasNode("tfi_a")) {
-      session.getRoot().getNode("tfi_a").remove(); // because of session save
-    }
 
-    String value = "" + Math.round(Math.random() * 1000000);
+    //
+    String value = "BILTO";
 
+    //
     TFI_A a = session.insert(TFI_A.class, "tfi_a");
     a.setFoo(value);
     session.save();
-    count++;
 
     //
     Collection<TFI_A> r1 = new ArrayList<TFI_A>();
@@ -59,7 +54,7 @@ public class QueryTestCase extends AbstractTestCase {
       TFI_A b = it1.next();
       r1.add(b);
     }
-    assertEquals(count, r1.size());
+    assertEquals(1, r1.size());
     assertTrue(r1.contains(a));
 
     //

@@ -33,6 +33,9 @@ import org.chromattic.core.Domain;
 public class QueryBuilderImpl<O> implements QueryBuilder<O> {
 
   /** . */
+  private final String rootNodePath;
+
+  /** . */
   private Class<O> fromClass;
 
   /** . */
@@ -44,12 +47,15 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
   /** . */
   private DomainSession session;
 
-  QueryBuilderImpl(DomainSession session, Class<O> fromClass) throws NullPointerException, IllegalArgumentException {
+  QueryBuilderImpl(DomainSession session, Class<O> fromClass, String rootNodePath) throws NullPointerException, IllegalArgumentException {
     if (session == null) {
       throw new NullPointerException("No null domain session accepted");
     }
     if (fromClass == null) {
       throw new NullPointerException("No null from class accepted");
+    }
+    if (rootNodePath == null) {
+      throw new NullPointerException("No null root node path accepted");
     }
 
     //
@@ -67,6 +73,7 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
     this.mapper = mapper;
     this.where = null;
     this.session = session;
+    this.rootNodePath = rootNodePath;
   }
 
   public QueryBuilder<O> where(String whereStatement) {
@@ -87,10 +94,11 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
     }
 
     //
-    StringBuffer sb = new StringBuffer("SELECT * FROM ");
+    StringBuilder sb = new StringBuilder("SELECT * FROM ");
     sb.append(mapper.getNodeTypeName());
+    sb.append(" WHERE jcr:path LIKE '").append(rootNodePath).append("/%'");
     if (where != null) {
-      sb.append(" WHERE ");
+      sb.append(" AND ");
       sb.append(where);
     }
 

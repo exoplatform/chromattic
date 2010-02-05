@@ -48,8 +48,15 @@ public class QueryManager {
   /** . */
   private EnumMap<QueryLanguage, Map<QueryKey, Query<?>>> globalQueryCache;
 
+  /** . */
+  private final String rootNodePath;
+
+  public QueryManager(String rootNodePath) {
+    this.rootNodePath = rootNodePath;
+  }
+
   public <O> QueryBuilder<O> createQueryBuilder(DomainSession session, Class<O> fromClass) throws ChromatticException {
-    return new QueryBuilderImpl(session, fromClass);
+    return new QueryBuilderImpl<O>(session, fromClass, rootNodePath);
   }
 
   public <O> Query<O> getObjectQuery(DomainSession session, Class<O> objectClass, String statement) {

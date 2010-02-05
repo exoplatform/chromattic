@@ -27,6 +27,7 @@ import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.core.Domain;
 import org.chromattic.core.DomainSession;
+import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
 
 import javax.jcr.Node;
@@ -36,7 +37,7 @@ import javax.jcr.Session;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ChromatticSessionImpl implements ChromatticSession {
+public final class ChromatticSessionImpl implements ChromatticSession {
 
   /** . */
   final DomainSession domainSession;
@@ -49,11 +50,11 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.getDomain();
   }
 
-  public final Session getJCRSession() {
+  public Session getJCRSession() {
     return domainSession.getJCRSession();
   }
 
-  public final String getId(Object o) throws UndeclaredRepositoryException {
+  public String getId(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
     }
@@ -63,7 +64,7 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return ctx.getId();
   }
 
-  public final String getName(Object o) throws UndeclaredRepositoryException {
+  public String getName(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
     }
@@ -75,7 +76,7 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.getName(ctx);
   }
 
-  public final String getPath(Object o) throws UndeclaredRepositoryException {
+  public String getPath(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
     }
@@ -85,15 +86,15 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return ctx.getPath();
   }
 
-  public final <O> O create(Class<O> clazz) throws NullPointerException, IllegalArgumentException {
+  public <O> O create(Class<O> clazz) throws NullPointerException, IllegalArgumentException {
     return create(clazz, null);
   }
 
-  public final <O> O create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException {
+  public <O> O create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException {
     return domainSession.create(clazz, name);
   }
 
-  public final <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext parentCtx = domainSession.unwrapEntity(parent);
     O child = create(clazz);
     EntityContext childtx = domainSession.unwrapEntity(child);
@@ -101,19 +102,19 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return child;
   }
 
-  public final <O> O insert(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
+  public <O> O insert(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
     O child = create(clazz);
     persist(child, name);
     return child;
   }
 
-  public final String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext parentCtx = domainSession.unwrapEntity(parent);
     EntityContext childCtx = domainSession.unwrapEntity(child);
     return domainSession.persist(parentCtx, childCtx, name).getId();
   }
 
-  public final String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext parentCtx = domainSession.unwrapEntity(parent);
     EntityContext childCtx = domainSession.unwrapEntity(child);
     String name = childCtx.getName();
@@ -124,7 +125,7 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.persist(parentCtx, childCtx, name).getId();
   }
 
-  public final String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext ctx = domainSession.unwrapEntity(o);
     String name = ctx.getName();
     if (name == null) {
@@ -136,20 +137,20 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.persist(ctx, name).getId();
   }
 
-  public final String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext ctx = domainSession.unwrapEntity(o);
     return domainSession.persist(ctx, relPath).getId();
   }
 
-  public final <O> O findByNode(Class<O> clazz, Node node) throws UndeclaredRepositoryException {
+  public <O> O findByNode(Class<O> clazz, Node node) throws UndeclaredRepositoryException {
     return domainSession.findByNode(clazz, node);
   }
 
-  public final <O> O findById(Class<O> clazz, String id) throws UndeclaredRepositoryException {
+  public <O> O findById(Class<O> clazz, String id) throws UndeclaredRepositoryException {
     return domainSession.findById(clazz, id);
   }
 
-  public final <O> O findByPath(Object origin, Class<O> clazz, String relPath) throws ChromatticException {
+  public <O> O findByPath(Object origin, Class<O> clazz, String relPath) throws ChromatticException {
     if (origin == null) {
       throw new NullPointerException();
     }
@@ -163,7 +164,7 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.findByPath(ctx, clazz, relPath);
   }
 
-  public final <O> O findByPath(Class<O> clazz, String relPath) throws ChromatticException {
+  public <O> O findByPath(Class<O> clazz, String relPath) throws ChromatticException {
     if (clazz == null) {
       throw new NullPointerException();
     }
@@ -173,11 +174,11 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.findByPath(null, clazz, relPath);
   }
 
-  public final void save() throws UndeclaredRepositoryException {
+  public void save() throws UndeclaredRepositoryException {
     domainSession.save();
   }
 
-  public final Status getStatus(Object o) throws UndeclaredRepositoryException {
+  public Status getStatus(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
     }
@@ -185,12 +186,36 @@ public class ChromatticSessionImpl implements ChromatticSession {
     return ctx.getStatus();
   }
 
-  public final void remove(Object o) throws UndeclaredRepositoryException {
+  public void remove(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
     }
     EntityContext context = domainSession.unwrapEntity(o);
     domainSession.remove(context);
+  }
+
+  public <E> E getEmbedded(Object o, Class<E> embeddedType) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    if (o == null) {
+      throw new NullPointerException();
+    }
+    EntityContext ctx = domainSession.unwrapEntity(o);
+    EmbeddedContext embeddedCtx = ctx.getEmbedded(embeddedType);
+    return embeddedType.cast(embeddedCtx);
+  }
+
+  public <E> void setEmbedded(Object o, Class<E> embeddedType, E embedded) {
+    if (o == null) {
+      throw new NullPointerException();
+    }
+    if (embeddedType == null) {
+      throw new NullPointerException();
+    }
+    if (embedded == null) {
+      throw new NullPointerException();
+    }
+    EntityContext ctx = domainSession.unwrapEntity(o);
+    EmbeddedContext embeddedCtx = domainSession.unwrapMixin(embedded);
+    ctx.addMixin(embeddedCtx);
   }
 
   public void close() {

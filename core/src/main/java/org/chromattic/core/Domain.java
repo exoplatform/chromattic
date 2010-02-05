@@ -108,7 +108,7 @@ public class Domain {
     this.hasNodeOptimized = hasNodeOptimized;
     this.rootNodePath = rootNodePath;
     this.nodeInfoManager = new NodeInfoManager();
-    this.queryManager = new QueryManager();
+    this.queryManager = new QueryManager(rootNodePath);
     this.createRootNode = createRootNode;
   }
 
