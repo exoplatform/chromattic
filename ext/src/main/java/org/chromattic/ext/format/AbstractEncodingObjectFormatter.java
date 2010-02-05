@@ -21,7 +21,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.                   *
  *****************************************************************************/
 
-package org.chromattic.api.format;
+package org.chromattic.ext.format;
+
+import org.chromattic.api.format.FormatterContext;
+import org.chromattic.api.format.ObjectFormatter;
 
 /**
  * Encode a JCR Node name to be valid. Can be prefixed.

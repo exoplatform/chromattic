@@ -21,60 +21,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.                   *
  *****************************************************************************/
 
-package org.chromattic.api.format;
+package org.chromattic.ext.format;
 
-import junit.framework.TestCase;
+import org.chromattic.ext.format.AbstractEncodingObjectFormatter;
 
 /**
  * @author <a href="mailto:theute@redhat.com">Thomas Heute</a>
  * @version $Revision$
- */
-public class NullPrefixedEncodingObjectFormatterTestCase extends TestCase
+ */public class NullPrefixEncodingObjectFormatter extends AbstractEncodingObjectFormatter
 {
-   
-   /** . */
-   private final ObjectFormatter formatter = new NullPrefixEncodingObjectFormatter();
 
-   private void assertString(String expected, String s)
+   @Override
+   public String getPrefix()
    {
-      assertEquals(expected, formatter.encodeNodeName(null, s));
-      assertEquals(s, formatter.decodeNodeName(null, expected));
+      return null;
    }
 
-   private void assertCannotDecode(String s)
-   {
-      try
-      {
-         formatter.decodeNodeName(null, s);
-         fail();
-      }
-      catch (IllegalStateException ignore)
-      {
-      }
-   }
-
-   public void testStrings()
-   {
-      assertString("", "");
-      assertString("a", "a");
-      assertString("%00", "{");
-      assertString("%01", "}");
-      assertString("%02", ".");
-      assertString("%03", "/");
-      assertString("%04", ":");
-      assertString("%05", "[");
-      assertString("%06", "]");
-      assertString("%07", "|");
-      assertString("%08", "*");
-      assertString("%09", "%");
-      assertString("a%03b", "a/b");
-   }
-
-   public void testDecodeFailure()
-   {
-      assertCannotDecode("%0");
-      assertCannotDecode("%0" + (char)('0' - 1));
-      assertCannotDecode("%0" + (char)('9' + 1));
-      assertCannotDecode("%1");
-   }
 }

@@ -21,9 +21,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.                   *
  *****************************************************************************/
 
-package org.chromattic.api.format;
+package org.chromattic.ext.format;
 
 import junit.framework.TestCase;
+import org.chromattic.api.format.ObjectFormatter;
 
 /**
  * @author <a href="mailto:theute@redhat.com">Thomas Heute</a>

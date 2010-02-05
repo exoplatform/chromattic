@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.ntdef;
+package org.chromattic.ext.ntdef;
 
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.PrimaryType;

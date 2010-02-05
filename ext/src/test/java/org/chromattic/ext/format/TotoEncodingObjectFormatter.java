@@ -21,18 +21,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.                   *
  *****************************************************************************/
 
-package org.chromattic.api.format;
+package org.chromattic.ext.format;
+
+import org.chromattic.ext.format.AbstractEncodingObjectFormatter;
 
 /**
  * @author <a href="mailto:theute@redhat.com">Thomas Heute</a>
  * @version $Revision$
- */public class NullPrefixEncodingObjectFormatter extends AbstractEncodingObjectFormatter
+ */public class TotoEncodingObjectFormatter extends AbstractEncodingObjectFormatter
 {
 
    @Override
    public String getPrefix()
    {
-      return null;
+      return "toto:";
    }
 
 }
