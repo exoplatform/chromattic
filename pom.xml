@@ -134,7 +134,7 @@
 
       <dependency>
         <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.ntdef</artifactId>
+        <artifactId>chromattic.ext</artifactId>
         <version>1.0.0-beta16-SNAPSHOT</version>
       </dependency>
 
@@ -365,7 +365,7 @@
            <module>cglib</module>
            <module>exo</module>
            <module>core</module>
-           <module>ntdef</module>
+           <module>ext</module>
         </modules>
      </profile>
      
@@ -382,7 +382,7 @@
            <module>cglib</module>
            <module>exo</module>
            <module>core</module>
-           <module>ntdef</module>
+           <module>ext</module>
         </modules>
      </profile>
      

@@ -27,10 +27,10 @@
     <version>1.0.0-beta16-SNAPSHOT</version>
   </parent>
 
-  <artifactId>chromattic.ntdef</artifactId>
+  <artifactId>chromattic.ext</artifactId>
 
-  <name>Chromattic Framework Node Type Definitions</name>
-  <description>Chromattic Framework Node Type Definitions</description>
+  <name>Chromattic Framework Extensions</name>
+  <description>Chromattic Framework Extensions</description>
 
   <repositories>
     <repository>
