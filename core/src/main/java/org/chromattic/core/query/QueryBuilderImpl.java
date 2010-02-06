@@ -21,10 +21,12 @@ package org.chromattic.core.query;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.core.DomainSession;
-import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.core.mapper.NodeTypeKind;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.Domain;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -88,6 +90,9 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
     throw new UnsupportedOperationException("todo");
   }
 
+  /** . */
+  private static final Pattern JCR_PATH = Pattern.compile("jcr:path[\\s]+[^\\s]+[\\s]+'[^']*'");
+
   public Query<O> get() {
     if (fromClass == null) {
       throw new IllegalStateException();
@@ -95,11 +100,23 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
 
     //
     StringBuilder sb = new StringBuilder("SELECT * FROM ");
+
+    //
     sb.append(mapper.getNodeTypeName());
-    sb.append(" WHERE jcr:path LIKE '").append(rootNodePath).append("/%'");
+
+    //
     if (where != null) {
-      sb.append(" AND ");
-      sb.append(where);
+      Matcher matcher = JCR_PATH.matcher(where);
+      if (!matcher.find()) {
+        sb.append(" WHERE jcr:path LIKE '").append(rootNodePath).append("/%'");
+        sb.append(" AND ");
+        sb.append(where);
+      } else {
+        sb.append(" WHERE ");
+        sb.append(where);
+      }
+    } else {
+      sb.append(" WHERE jcr:path LIKE '").append(rootNodePath).append("/%'");
     }
 
     //
