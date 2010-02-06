@@ -19,7 +19,7 @@
 
 package org.chromattic.core;
 
-import org.chromattic.common.JCR;
+import org.chromattic.common.jcr.Path;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.mapping.NodeTypeMapping;
 import org.chromattic.core.mapper.MapperBuilder;
@@ -242,7 +242,7 @@ public class Domain {
     if (internal == null) {
       throw new IllegalArgumentException("Name " + external + " was converted to null");
     }
-    JCR.validateName(internal);
+    Path.validateName(internal);
     return internal;
   }
 }

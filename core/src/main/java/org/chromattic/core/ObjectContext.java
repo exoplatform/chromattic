@@ -21,7 +21,7 @@ package org.chromattic.core;
 
 import org.chromattic.api.ChromatticIOException;
 import org.chromattic.common.CloneableInputStream;
-import org.chromattic.common.JCR;
+import org.chromattic.common.jcr.Path;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.spi.instrument.MethodHandler;
@@ -48,7 +48,7 @@ public abstract class ObjectContext implements MethodHandler {
 
     //
     propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
-    JCR.validateName(propertyName);
+    Path.validateName(propertyName);
 
     //
     NodeTypeInfo typeInfo = getTypeInfo();
@@ -61,7 +61,7 @@ public abstract class ObjectContext implements MethodHandler {
 
     //
     propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
-    JCR.validateName(propertyName);
+    Path.validateName(propertyName);
 
     //
     NodeTypeInfo typeInfo = getTypeInfo();
@@ -74,7 +74,7 @@ public abstract class ObjectContext implements MethodHandler {
 
     //
     propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
-    JCR.validateName(propertyName);
+    Path.validateName(propertyName);
 
     //
     Object object = getObject();
@@ -109,7 +109,7 @@ public abstract class ObjectContext implements MethodHandler {
 
     //
     propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
-    JCR.validateName(propertyName);
+    Path.validateName(propertyName);
 
     //
     NodeTypeInfo typeInfo = getTypeInfo();

@@ -17,54 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.common;
-
-import junit.framework.TestCase;
-import org.chromattic.common.JCR;
+package org.chromattic.common.jcr;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NameValidationTestCase extends TestCase {
+public class PathException extends Exception {
 
-  public void testNPE() {
-    try {
-      JCR.validateName(null);
-      fail();
-    }
-    catch (NullPointerException ignore) {
-    }
+  public PathException() {
   }
 
-  public void testIAE() {
-    assertIAE("");
-    assertIAE(".");
-    assertIAE("..");
-    assertIAE("{");
-    assertIAE("{a");
-    assertIAE("/");
-    assertIAE("[");
-    assertIAE("]");
-    assertIAE("*");
-    assertIAE("|");
-    assertIAE("::");
+  public PathException(String message) {
+    super(message);
   }
 
-  public void testValid() {
-    JCR.validateName(":");
-    JCR.validateName(":a");
-    JCR.validateName("{a}a");
-    JCR.validateName("a:a");
-    JCR.validateName("a:");
+  public PathException(String message, Throwable cause) {
+    super(message, cause);
   }
 
-  private void assertIAE(String name) {
-    try {
-      JCR.validateName(name);
-      fail();
-    }
-    catch (IllegalArgumentException ignore) {
-    }
+  public PathException(Throwable cause) {
+    super(cause);
   }
 }
