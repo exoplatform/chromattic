@@ -90,8 +90,8 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
     throw new UnsupportedOperationException("todo");
   }
 
-  /** . */
-  private static final Pattern JCR_PATH = Pattern.compile("jcr:path[\\s]+[^\\s]+[\\s]+'[^']*'");
+  /** This is not the way I like to do things, but well for now it'll be fine. */
+  private static final Pattern JCR_LIKE_PATH = Pattern.compile("jcr:path[\\s]*[^\\s]+[\\s]*'[^']*'");
 
   public Query<O> get() {
     if (fromClass == null) {
@@ -106,7 +106,7 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
 
     //
     if (where != null) {
-      Matcher matcher = JCR_PATH.matcher(where);
+      Matcher matcher = JCR_LIKE_PATH.matcher(where);
       if (!matcher.find()) {
         sb.append(" WHERE jcr:path LIKE '").append(rootNodePath).append("/%'");
         sb.append(" AND ");

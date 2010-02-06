@@ -45,6 +45,7 @@ public class QueryTestCase extends AbstractTestCase {
     assertEquals(Arrays.asList(a), Collections.list(session.createQueryBuilder(TFI_A.class).where("jcr:path LIKE '" + session.getPath(a) + "'").get().objects()));
     assertEquals(Arrays.asList(a), Collections.list(session.createQueryBuilder(TFI_A.class).where("jcr:path  LIKE '" + session.getPath(a) + "'").get().objects()));
     assertEquals(Arrays.asList(a), Collections.list(session.createQueryBuilder(TFI_A.class).where("jcr:path LIKE  '" + session.getPath(a) + "'").get().objects()));
+    assertEquals(Arrays.asList(a), Collections.list(session.createQueryBuilder(TFI_A.class).where("jcr:path='" + session.getPath(a) + "'").get().objects()));
     assertEquals(Arrays.asList(a), Collections.list(session.createQueryBuilder(TFI_A.class).where("jcr:path = '" + session.getPath(a) + "'").get().objects()));
   }
 
