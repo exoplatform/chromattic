@@ -19,51 +19,147 @@
 
 package org.chromattic.common.jcr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class Path {
 
-  public static void parsePath(PathVisitor visitor, String path) throws PathException {
-    if (path.length() > 0) {
-      char c = path.charAt(0);
-      if (c == '/') {
-        parseRelativePath(visitor, path, 1, path.length());
-      } else if (c == '[') {
-        throw new UnsupportedOperationException("todo");
-      } else {
-        parseRelativePath(visitor, path, 0, path.length());
-      }
-    } else {
-      parseRelativePath(visitor, path, 0, path.length());
-    }
+  public static void parseAbsolutePath(String path, PathVisitor visitor) throws PathException {
+    Parser.parseAbsolutePath(visitor, path, 0, path.length());
+  }
+
+  public static void parsePath(String path, PathVisitor visitor) throws PathException {
+    Parser.parsePath(visitor, path, 0, path.length());
   }
 
   public static void parseRelativePath(PathVisitor visitor, String s) throws PathException {
-    parseRelativePath(visitor, s, 0, s.length());
+    Parser.parseRelativePath(visitor, s, 0, s.length());
   }
 
-  private static void parseRelativePath(PathVisitor visitor, String s, int start, int end) throws PathException {
-    if (start == end) {
-      parsePathSegment(visitor, s, start, end);
-    } else {
-      int pos = indexOf(s, '/', start, end);
-      if (pos == end - 1) {
-        parseRelativePath(visitor, s, start, end - 1);
-      } else if (pos == -1) {
-        parsePathSegment(visitor, s, start, end);
-      } else if (pos == start) {
-        throw new PathException("Cannot parse absolute path" + s.substring(start, end));
+  public static void parsePathSegment(String s, PathVisitor visitor) throws PathException {
+    Parser.parsePathSegment(visitor, s, 0, s.length());
+  }
+
+  private static class Normalizer implements PathVisitor {
+
+    /** . */
+    private final StringBuilder builder = new StringBuilder("/");
+
+    public void onPathSegment(String s, int start, int end, Integer number) throws PathException {
+      if (builder.length() > 1) {
+        builder.append('/');
+      }
+      builder.append(s, start, end);
+      if (number != null) {
+        builder.append('[');
+        builder.append(number);
+        builder.append(']');
+      }
+    }
+
+    public void onPrefixPathSegment(String s, int prefixStart, int prefixEnd, int start, int end, Integer number) throws PathException {
+      if (builder.length() > 1) {
+        builder.append('/');
+      }
+      builder.append(s, prefixStart, prefixEnd);
+      builder.append(':');
+      builder.append(s, start, end);
+      if (number != null) {
+        builder.append('[');
+        builder.append(number);
+        builder.append(']');
+      }
+      builder.append('/');
+    }
+
+    public void onURIPathSegment(String s, int uriStart, int uriEnd, int start, int end, Integer number) throws PathException {
+      if (builder.length() > 1) {
+        builder.append('/');
+      }
+      builder.append('{');
+      builder.append(s, uriStart, uriEnd);
+      builder.append('}');
+      builder.append(s, start, end);
+      if (number != null) {
+        builder.append('[');
+        builder.append(number);
+        builder.append(']');
+      }
+      builder.append('/');
+    }
+
+    public void onSelf() throws PathException {
+      // Do nothing
+    }
+
+    public void onParent() throws PathException {
+      if (builder.length() == 1) {
+        throw new PathException("Invalid absolute path");
+      }
+      int pos = builder.lastIndexOf("/");
+      if (pos == 0) {
+        builder.setLength(1);
       } else {
-        parseRelativePath(visitor, s, start, pos);
-        parsePathSegment(visitor, s, pos + 1, end);
+        builder.setLength(pos);
       }
     }
   }
 
-  public static void parsePathSegment(PathVisitor visitor, String s) throws PathException {
-    parsePathSegment(visitor, s, 0, s.length());
+  public static String normalizeAbsolutePath(String absolutePath) throws PathException {
+    Normalizer normalizer = new Normalizer();
+    parseAbsolutePath(absolutePath, normalizer);
+    return normalizer.builder.toString();
+  }
+
+  private static class Splitter implements PathVisitor {
+
+    /** . */
+    private final List<String> pathSegments = new ArrayList<String>();
+
+    public void onPathSegment(String s, int start, int end, Integer number) throws PathException {
+      String pathSegment = s.substring(start, end);
+      if (number != null) {
+        pathSegment += "[" + number + "]";
+      }
+      pathSegments.add(pathSegment);
+    }
+
+    public void onPrefixPathSegment(String s, int prefixStart, int prefixEnd, int start, int end, Integer number) throws PathException {
+      String pathSegment = s.substring(prefixStart, prefixEnd) + ":" + s.substring(start, end);
+      if (number != null) {
+        pathSegment += "[" + number + "]";
+      }
+      pathSegments.add(pathSegment);
+    }
+
+    public void onURIPathSegment(String s, int uriStart, int uriEnd, int start, int end, Integer number) throws PathException {
+      String pathSegment = "{" + s.substring(uriStart, uriEnd) + "}" + s.substring(start, end);
+      if (number != null) {
+        pathSegment += "[" + number + "]";
+      }
+      pathSegments.add(pathSegment);
+    }
+
+    public void onSelf() throws PathException {
+      // Do nothing
+    }
+
+    public void onParent() throws PathException {
+      if (pathSegments.isEmpty()) {
+        throw new PathException("Invalid absolute path");
+      }
+      pathSegments.remove(pathSegments.size() - 1);
+    }
+  }
+
+  public static List<String> splitAbsolutePath(String absolutePath) throws PathException {
+    Splitter splitter = new Splitter();
+    parseAbsolutePath(absolutePath, splitter);
+    return splitter.pathSegments;
   }
 
   /** . */
@@ -85,136 +181,12 @@ public class Path {
 
   public static void validateName(String name) {
     try {
-      parsePathSegment(NAME_VALIDATOR, name);
+      parsePathSegment(name, NAME_VALIDATOR);
     }
     catch (PathException e) {
       IllegalArgumentException iae = new IllegalArgumentException("Invalid name");
       iae.initCause(e);
       throw iae;
     }
-  }
-
-  private static void parsePathSegment(PathVisitor visitor, String s, int start, int end) throws PathException {
-    int length = end - start;
-    if (length == 1) {
-      if (s.charAt(start) == '.') {
-        visitor.onSelf();
-        return;
-      }
-    } else if (length == 2) {
-      if (s.charAt(start) == '.' && s.charAt(start + 1) == '.') {
-        visitor.onParent();
-        return;
-      }
-    }
-    int pos = indexOf(s, '[', start, end);
-    if (pos != -1) {
-      if (pos == end -1) {
-        throw new PathException("Malformed expression " + s.substring(start, end));
-      }
-      if (s.charAt(end - 1) != ']') {
-        throw new PathException("Missing ending ] in expression " + s.substring(start, end));
-      }
-      String number = s.substring(pos + 1, end - 1);
-      Integer numberValue;
-      try {
-        numberValue = Integer.parseInt(number);
-        if (numberValue < 0) {
-          throw new PathException("No negative index allowed in expression " + s.substring(start, end));
-        }
-      }
-      catch (NumberFormatException e) {
-        throw new PathException("Invalid index in expression " + s.substring(start, end));
-      }
-      parseName(visitor, s, start, pos, numberValue);
-    } else {
-      parseName(visitor, s, start, end, null);
-    }
-  }
-
-  private static void parseName(PathVisitor visitor, String s, int start, int end, Integer number) throws PathException {
-    /*
-    PathSegment ::= ExpandedName [Index] | QualifiedName [Index] | SelfOrParent
-    Index ::= '[' Number ']'
-    Number ::= An integer > 0
-    ExpandedName ::= '{' Namespace '}' LocalName
-    Namespace ::= EmptyString | Uri
-    Uri ::= A URI, as defined in Section 3 in http://tools.ietf.org/html/rfc3986#section-3
-    QualifiedName ::= [ Prefix ':' ] LocalName
-    Prefix ::= Any string that matches the NCName production in  http://www.w3.org/TR/REC-xml-names
-    LocalName ::= ValidString Ð SelfOrParent
-    ValidString ::= XmlChar Ð InvalidChar
-    InvalidChar ::= '/' | ':' | '[' | ']' | '|' | '*'
-    XmlChar ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-    XmlChar ::= Any character that matches the Char production at http://www.w3.org/TR/xml/#NT-Char
-    SelfOrParent ::= '.' | '..'
-    */
-
-    //
-    int length = end - start;
-    if (length > 0 &&s.charAt(start) == '{') {
-      int curlyBraceIndex = indexOf(s, '}', start + 1, end);
-      if (curlyBraceIndex == -1) {
-        throw new PathException("Uri not closed in name value " + s.substring(start, end));
-      }
-      // Should validate URI ...
-      validateLocalName(s, curlyBraceIndex + 1, end);
-      visitor.onURIPathSegment(s, start + 1, curlyBraceIndex, curlyBraceIndex + 1, end, number);
-    } else {
-      // Maybe there is an optional prefix
-      int colonIndex = indexOf(s, ':', start, end);
-      if (colonIndex != -1) {
-        String prefix = s.substring(start, colonIndex);
-        // Should validate prefix
-        validateLocalName(s, colonIndex + 1, end);
-        visitor.onPrefixPathSegment(s, start, colonIndex, colonIndex + 1, end, number);
-      } else {
-        validateLocalName(s, start, end);
-        visitor.onPathSegment(s, start, end, number);
-      }
-    }
-  }
-
-  private static void validateLocalName(String s, int start, int end) throws PathException {
-    int length = end - start;
-
-    // Now validate as a name
-    if (length - start == 1) {
-      if (s.charAt(start) == '.') {
-        throw new PathException("'.' is not a valid name");
-      }
-    } else if (length - start == 2) {
-      if (s.charAt(start) == '.' && s.charAt(start + 1) == '.') {
-        throw new PathException("'..' is not a valid name");
-      }
-    }
-
-    // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-    while (start < end) {
-      char c = s.charAt(start);
-      if (c == 0x9
-        || c == 0xA
-        ||  c == 0xD
-        || (c >= 0x20 && c <= 0xD7FF)
-        || (c >= 0xE000 && c <= 0xFFFD)
-        || (c >= 0x10000 && c <= 0x10FFFF)) {
-        if (c == '/' || c == ':' || c == '[' || c == ']' || c == '|' || c == '*') {
-          throw new PathException("Illegal path value " + s.substring(start, end) + "  (char " + c + " at position " + start + " not accepted)");
-        }
-        start++;
-        continue;
-      }
-      throw new PathException("Illegal path value " + s.substring(start, end) + "  (char " + c + " at position " + start + " not accepted)");
-    }
-  }
-
-  private static int indexOf(String s, char c, int start, int end) {
-    while (start < end) {
-      if (s.charAt(start) == c) {
-        return start;
-      }
-      start++;
-    }
-    return -1;
   }
 }

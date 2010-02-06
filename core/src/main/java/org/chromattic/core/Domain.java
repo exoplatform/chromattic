@@ -19,7 +19,9 @@
 
 package org.chromattic.core;
 
+import org.chromattic.api.BuilderException;
 import org.chromattic.common.jcr.Path;
+import org.chromattic.common.jcr.PathException;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.mapping.NodeTypeMapping;
 import org.chromattic.core.mapper.MapperBuilder;
@@ -31,9 +33,7 @@ import org.chromattic.api.format.ObjectFormatter;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -64,6 +64,9 @@ public class Domain {
 
   /** . */
   final String rootNodePath;
+
+  /** . */
+  final List<String> rootNodePathSegments;
 
   /** . */
   final boolean createRootNode;
@@ -99,6 +102,15 @@ public class Domain {
     }
 
     //
+    final List<String> rootNodePathSegments;
+    try {
+      rootNodePathSegments = Path.splitAbsolutePath(Path.normalizeAbsolutePath(rootNodePath));
+    }
+    catch (PathException e) {
+      throw new BuilderException("Root node path must be valid");
+    }
+
+    //
     this.typeMapperByClass = typeMapperByClass;
     this.typeMapperByNodeType = typeMapperByNodeType;
     this.instrumentor = instrumentor;
@@ -107,6 +119,7 @@ public class Domain {
     this.hasPropertyOptimized = hasPropertyOptimized;
     this.hasNodeOptimized = hasNodeOptimized;
     this.rootNodePath = rootNodePath;
+    this.rootNodePathSegments = rootNodePathSegments;
     this.nodeInfoManager = new NodeInfoManager();
     this.queryManager = new QueryManager(rootNodePath);
     this.createRootNode = createRootNode;

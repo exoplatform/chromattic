@@ -19,8 +19,10 @@
 
 package org.chromattic.test.common.jcr;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
-import org.chromattic.common.JCR;
+import org.chromattic.common.jcr.Path;
+import org.chromattic.common.jcr.PathException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -32,9 +34,14 @@ public class PathVisitorTestCase extends TestCase {
   private final TestVisitor visitor = new TestVisitor();
 
   public void testParseAbsolutePath() {
-    visitor.assertPath("/", "_");
+    visitor.assertPath("/");
     visitor.assertPath("/a", "_a");
     visitor.assertPath("/a:b/{c}d", "_a:b", "_{c}d");
+
+    visitor.assertAbsolutePathFailure("a");
+    visitor.assertAbsolutePathFailure(".");
+    visitor.assertAbsolutePathFailure("..");
+    visitor.assertAbsolutePathFailure("a/");
   }
 
   public void testParseRelativePath() {
@@ -101,5 +108,38 @@ public class PathVisitorTestCase extends TestCase {
     visitor.assertPathSegment("{a}a", "_{a}a");
     visitor.assertPathSegment("a:a", "_a:a");
     visitor.assertPathSegment("a:", "_a:");
+  }
+
+  public void testNormalizePath() {
+    assertNormalizablePath("/", "/");
+    assertNormalizablePath("/a", "/a");
+    assertNormalizablePath("/a/", "/a");
+    assertNormalizablePath("/a/.", "/a");
+    assertNormalizablePath("/a/./", "/a");
+    assertNormalizablePath("/a/..", "/");
+    assertNormalizablePath("/a/../", "/");
+    assertNormalizablePath("/a/b/..", "/a");
+    assertNormalizablePath("/a/b/../", "/a");
+  }
+
+  private void assertNormalizablePath(String path, String expectedNormalizedPath) {
+    try {
+      String normalizedPath = Path.normalizeAbsolutePath(path);
+      assertEquals(expectedNormalizedPath, normalizedPath);
+    }
+    catch (PathException e) {
+      AssertionFailedError afe = new AssertionFailedError();
+      afe.initCause(e);
+      throw afe;
+    }
+  }
+
+  private void assertInvalidNormalizablePath(String path) {
+    try {
+      Path.normalizeAbsolutePath(path);
+      fail();
+    }
+    catch (PathException ignore) {
+    }
   }
 }

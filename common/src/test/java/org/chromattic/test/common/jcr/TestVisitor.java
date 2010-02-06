@@ -70,15 +70,6 @@ public class TestVisitor implements PathVisitor {
     atoms.add("..");
   }
 
-  public void assertPathSegmentFailure(String pathSegment) {
-    try {
-      Path.parsePathSegment(this, pathSegment);
-      Assert.fail("Was expecting path segment " + pathSegment + " to fail");
-    }
-    catch (PathException ignore) {
-    }
-  }
-
   public void assertPathSegment(String pathSegment, String... expectedAtoms) {
     atoms.clear();
     try {
@@ -92,10 +83,35 @@ public class TestVisitor implements PathVisitor {
     Assert.assertEquals(Arrays.asList(expectedAtoms), atoms);
   }
 
-  public void assertRelativePathFailure(String pathSegment) {
+  public void assertPathSegmentFailure(String pathSegment) {
     try {
-      Path.parseRelativePath(this, pathSegment);
+      Path.parsePathSegment(pathSegment, this);
       Assert.fail("Was expecting path segment " + pathSegment + " to fail");
+    }
+    catch (PathException ignore) {
+    }
+  }
+
+  public void assertAbsolurePath(String absolutePath, String... expectedAtoms) {
+    atoms.clear();
+    try {
+      Path.parseAbsolutePath(absolutePath, this);
+    }
+    catch (PathException e) {
+      AssertionFailedError afe = new AssertionFailedError();
+      afe.initCause(e);
+      throw afe;
+    }
+    Assert.assertEquals(Arrays.asList(expectedAtoms), atoms);
+
+    //
+    assertPath(absolutePath, expectedAtoms);
+  }
+
+  public void assertAbsolutePathFailure(String absolutePath) {
+    try {
+      Path.parseAbsolutePath(absolutePath, this);
+      Assert.fail("Was expecting absolute path " + absolutePath + " to fail");
     }
     catch (PathException ignore) {
     }
@@ -112,12 +128,24 @@ public class TestVisitor implements PathVisitor {
       throw afe;
     }
     Assert.assertEquals(Arrays.asList(expectedAtoms), atoms);
+
+    //
+    assertPath(path, expectedAtoms);
+  }
+
+  public void assertRelativePathFailure(String relativePath) {
+    try {
+      Path.parseRelativePath(this, relativePath);
+      Assert.fail("Was expecting relative path " + relativePath + " to fail");
+    }
+    catch (PathException ignore) {
+    }
   }
 
   public void assertPath(String path, String... expectedAtoms) {
     atoms.clear();
     try {
-      Path.parsePath(this, path);
+      Path.parsePath(path, this);
     }
     catch (PathException e) {
       AssertionFailedError afe = new AssertionFailedError();
@@ -125,5 +153,14 @@ public class TestVisitor implements PathVisitor {
       throw afe;
     }
     Assert.assertEquals(Arrays.asList(expectedAtoms), atoms);
+  }
+
+  public void assertPathFailure(String path) {
+    try {
+      Path.parseRelativePath(this, path);
+      Assert.fail("Was expecting path segment " + path + " to fail");
+    }
+    catch (PathException ignore) {
+    }
   }
 }

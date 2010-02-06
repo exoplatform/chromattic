@@ -659,29 +659,19 @@ public class DomainSessionImpl extends DomainSession {
 
   protected Node _getRoot() throws RepositoryException {
     Session session = sessionWrapper.getSession();
-    String path = domain.rootNodePath;
-
-    //
-    if ("/".equals(path)) {
-      return session.getRootNode();
-    } else if (session.itemExists(path)) {
-      Item item = session.getItem(path);
-      if (item instanceof Node) {
-        return (Node)item;
-      } else {
-        throw new IllegalStateException("The chromattic root node path (" + path + ") points to an existing property");
-      }
-    } else {
-      Node current = session.getRootNode();
-      for (String name : domain.rootNodePath.substring(1).split("/")) {
-        if (current.hasNode(name)) {
-          current = current.getNode(name);
+    List<String> pathSegments = domain.rootNodePathSegments;
+    Node current = session.getRootNode();
+    if (!pathSegments.isEmpty()) {
+      for (int i = 0;i < pathSegments.size();i++) {
+        String pathSegment = pathSegments.get(i);
+        if (current.hasNode(pathSegment)) {
+          current = current.getNode(pathSegment);
         } else {
-          current = current.addNode(name);
+          current = current.addNode(pathSegment);
         }
       }
-      return current;
     }
+    return current;
   }
 
   private void nodeRead(Node node) throws RepositoryException {

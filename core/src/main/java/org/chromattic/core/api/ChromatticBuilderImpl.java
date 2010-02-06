@@ -21,6 +21,8 @@ package org.chromattic.core.api;
 
 import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
+import org.chromattic.common.jcr.Path;
+import org.chromattic.common.jcr.PathException;
 import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.core.bean.BeanInfoFactory;
 import org.chromattic.spi.instrument.Instrumentor;
@@ -36,10 +38,7 @@ import org.reflext.jlr.JavaLangReflectTypeModel;
 import org.reflext.jlr.JavaLangReflectMethodModel;
 import org.reflext.core.TypeDomain;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
@@ -106,9 +105,12 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     boolean stateCacheEnabled = options.getValue(CACHE_STATE_ENABLED);
 
     //
-    String rootNodePath = options.getValue(ROOT_NODE_PATH);
-    if (!rootNodePath.startsWith("/")) {
-      throw new BuilderException("Root node path must start with a '/' character");
+    String rootNodePath;
+    try {
+      rootNodePath = Path.normalizeAbsolutePath(options.getValue(ROOT_NODE_PATH));
+    }
+    catch (PathException e) {
+      throw new BuilderException("Root node path must be valid");
     }
 
     //
