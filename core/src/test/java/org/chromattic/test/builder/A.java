@@ -17,27 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.api;
+package org.chromattic.test.builder;
+
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
- * Indicates that a required property does not exist and is preventing a chromattic operation to be executed.
-
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NoSuchPropertyException extends ChromatticException {
-  public NoSuchPropertyException() {
-  }
-
-  public NoSuchPropertyException(String message) {
-    super(message);
-  }
-
-  public NoSuchPropertyException(String message, Throwable cause) {
-    super(message, cause);
-  }
-
-  public NoSuchPropertyException(Throwable cause) {
-    super(cause);
-  }
+@PrimaryType(name = "nt:base")
+public class A {
 }

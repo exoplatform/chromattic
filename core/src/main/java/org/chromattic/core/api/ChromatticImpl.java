@@ -62,9 +62,7 @@ public class ChromatticImpl implements Chromattic {
 
   private ChromatticSession build(Session session) {
     SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-    ChromatticSessionImpl chromatticSession = new ChromatticSessionImpl(new DomainSessionImpl(domain, wrapper));
-    chromatticSession.getRoot();
-    return chromatticSession;
+    return new ChromatticSessionImpl(new DomainSessionImpl(domain, wrapper));
   }
 
   public ChromatticSession openSession(String workspace) {

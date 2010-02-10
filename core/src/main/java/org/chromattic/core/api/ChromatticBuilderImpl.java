@@ -114,7 +114,18 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     }
 
     //
+    int rootCreateMode;
     boolean createRootNode = options.getValue(CREATE_ROOT_NODE);
+    if (createRootNode) {
+      boolean lazyCreateMode = options.getValue(LAZY_CREATE_ROOT_NODE);
+      if (lazyCreateMode) {
+        rootCreateMode = Domain.LAZY_CREATE_MODE;
+      } else {
+        rootCreateMode = Domain.CREATE_MODE;
+      }
+    } else {
+      rootCreateMode = Domain.NO_CREATE;
+    }
 
     //
     Instrumentor instrumentor = create(options.getInstance(INSTRUMENTOR_CLASSNAME), Instrumentor.class);
@@ -125,7 +136,6 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     //
     SessionLifeCycle sessionLifeCycle = create(options.getInstance(SESSION_LIFECYCLE_CLASSNAME), SessionLifeCycle.class);
     
-
     // Build domain
     Domain domain = new Domain(
       mappings,
@@ -135,7 +145,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       hasPropertyOptimized,
       hasNodeOptimized,
       rootNodePath,
-      createRootNode);
+      rootCreateMode);
 
     //
     return new ChromatticImpl(domain, sessionLifeCycle);

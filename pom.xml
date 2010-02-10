@@ -76,7 +76,7 @@
 
     <!-- maven-surefire-plugin -->
     <!--<argLine>${env.MAVEN_OPTS}</argLine>-->
-    <argLine>-Xshare:auto -Xms128m -Xmx256m -XX:MaxPermSize=256M</argLine>
+    <argLine>-Xshare:auto -Xms128m -Xmx512m -XX:MaxPermSize=256M</argLine>
 
     <!-- maven-release-plugin -->
     <useReleaseProfile>false</useReleaseProfile>
@@ -340,6 +340,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <!-- export DYLD_LIBRARY_PATH=/Users/julien/java/jprofiler5/bin/macos -->
+          <!--<argLine>-agentlib:jprofilerti=port=8849 -Xbootclasspath/a:/Users/julien/java/jprofiler5/bin/agent.jar</argLine>-->
           <systemProperties>
             <property>
               <name>com.arjuna.ats.arjuna.objectstore.objectStoreDir</name>

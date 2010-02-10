@@ -19,7 +19,7 @@
 
 package org.chromattic.core;
 
-import org.chromattic.api.ChromatticException;
+import org.chromattic.api.NoSuchNodeException;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
@@ -189,6 +189,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     // Check insertion capability
+    // julien : that should likely instead use JCR failure for better performance
     Node previousNode = sessionWrapper.getNode(srcNode, name);
     if (previousNode != null) {
       log.trace("Found existing child with same name {}", name);
@@ -661,14 +662,32 @@ public class DomainSessionImpl extends DomainSession {
     Session session = sessionWrapper.getSession();
     List<String> pathSegments = domain.rootNodePathSegments;
     Node current = session.getRootNode();
+    boolean created = false;
     if (!pathSegments.isEmpty()) {
+      // We use that kind of loop to avoid object creation
       for (int i = 0;i < pathSegments.size();i++) {
         String pathSegment = pathSegments.get(i);
         if (current.hasNode(pathSegment)) {
           current = current.getNode(pathSegment);
         } else {
-          current = current.addNode(pathSegment);
+          if (domain.rootCreateMode == Domain.NO_CREATE) {
+            throw new NoSuchNodeException("No existing root node " + domain.rootNodePath);
+          } else {
+            current = current.addNode(pathSegment);
+            created = true;
+          }
         }
+      }
+    }
+    if (created) {
+      if (domain.rootCreateMode == Domain.CREATE_MODE) {
+        // Find first persistent ancestor
+        Node toSave = current;
+        while (toSave.isNew()) {
+          toSave = toSave.getParent();
+        }
+        // And save it
+        toSave.save();
       }
     }
     return current;

@@ -81,6 +81,9 @@ public abstract class AbstractTestCase extends TestCase {
   private String testName;
 
   /** . */
+  private String rootNodePath;
+
+  /** . */
   private final TestListener listener = new TestListener() {
     public void addError(Test test, Throwable throwable) {
     }
@@ -108,28 +111,41 @@ public abstract class AbstractTestCase extends TestCase {
       config.instrumentorClassName :
       config.instrumentorClassName.substring(config.instrumentorClassName.lastIndexOf('.') + 1);
     String p6 = testName;
-    String rootNodePath = "/" + p1 + "/" + p2 + "/" + p3 + "/" + p4  + "/" + p5 + "/" + p6;
+
+    //
+    rootNodePath = "/" + p1 + "/" + p2 + "/" + p3 + "/" + p4  + "/" + p5 + "/" + p6;
 
     //
     builder = ChromatticBuilder.create();
 
     //
+    createDomain();
+
+    //
+    boolean pingRootNode = pingRootNode();
+
+    //
+    builder.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
     builder.setOptionValue(ChromatticBuilder.CACHE_STATE_ENABLED, config.stateCacheEnabled);
     builder.setOptionValue(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
     builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, config.optimizeHasPropertyEnabled);
     builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, config.optimizeHasNodeEnabled);
-    builder.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
 
     //
-    createDomain();
+    if (pingRootNode) {
+      builder.setOptionValue(ChromatticBuilder.CREATE_ROOT_NODE, true);
+      builder.setOptionValue(ChromatticBuilder.LAZY_CREATE_ROOT_NODE, false);
+    }
 
     //
     chromattic = builder.build();
 
-    // Need to create virtual root node
-    ChromatticSessionImpl sess = login();
-    sess.getRoot();
-    sess.save();
+    // NCreate virtual root node if required
+    if (pingRootNode) {
+      ChromatticSessionImpl sess = login();
+      sess.getRoot();
+      sess.save();
+    }
   }
 
   @Override
@@ -164,6 +180,9 @@ public abstract class AbstractTestCase extends TestCase {
     if (MODE_ALL.equals(testMode)) {
       if (aptEnabled) {
         configs.add(new Config(APT_INSTRUMENTOR, false, false, false));
+//        configs.add(new Config(APT_INSTRUMENTOR, true, false, false));
+//        configs.add(new Config(APT_INSTRUMENTOR, false, true, false));
+//        configs.add(new Config(APT_INSTRUMENTOR, false, false, true));
       }
       configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, false));
       configs.add(new Config(CGLIB_INSTRUMENTOR, true, false, false));
@@ -196,12 +215,30 @@ public abstract class AbstractTestCase extends TestCase {
     return (ChromatticSessionImpl)chromattic.openSession(credentials);
   }
 
+  protected final <D> void setOptionValue(ChromatticBuilder.Option<D> option, D value) throws NullPointerException {
+    builder.setOptionValue(option, value);
+  }
+
   protected final ChromatticBuilder getBuilder() {
     return builder;
   }
 
+  protected final String getRootNodePath() {
+    return rootNodePath;
+  }
+
   protected final void addClass(Class<?> clazz) {
     builder.add(clazz);
+  }
+
+  /**
+   * Returns true if the root node should be created during the test bootstrap. This method can be overriden
+   * by unit test to change the behavior.
+   *
+   * @return the root node ping
+   */
+  protected boolean pingRootNode() {
+    return true;
   }
 
   protected abstract void createDomain();
@@ -241,6 +278,12 @@ public abstract class AbstractTestCase extends TestCase {
 
     public boolean isStateCacheDisabled() {
       return !stateCacheEnabled;
+    }
+
+    @Override
+    public String toString() {
+      return "Config[instrumentorClassName=" + instrumentorClassName + ",stateCacheEnaled=" + stateCacheEnabled + "" +
+        ",optimizeHasNodeEnabled=" + optimizeHasNodeEnabled + ",optimizeHasPropertyEnabled=" + optimizeHasPropertyEnabled + "]";
     }
   }
 }

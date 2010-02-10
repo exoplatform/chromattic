@@ -20,24 +20,25 @@
 package org.chromattic.api;
 
 /**
- * Indicates that a required property does not exist and is preventing a chromattic operation to be executed.
-
+ * Indicates that a required node does not exist and is preventing a chromattic operation to be executed.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NoSuchPropertyException extends ChromatticException {
-  public NoSuchPropertyException() {
+public class NoSuchNodeException extends ChromatticException {
+
+  public NoSuchNodeException() {
   }
 
-  public NoSuchPropertyException(String message) {
+  public NoSuchNodeException(String message) {
     super(message);
   }
 
-  public NoSuchPropertyException(String message, Throwable cause) {
+  public NoSuchNodeException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public NoSuchPropertyException(Throwable cause) {
+  public NoSuchNodeException(Throwable cause) {
     super(cause);
   }
 }

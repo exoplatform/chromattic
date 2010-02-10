@@ -132,6 +132,14 @@ public abstract class ChromatticBuilder {
       "org.chromattic.api.Option.root_node.create",
       "creates the chromattic root node when it does not exist");
 
+  /**
+   * A boolean option that indicates that the root node should be lazyly created when it is required.
+   */
+  public static final Option<Boolean> LAZY_CREATE_ROOT_NODE =
+    new Option<Boolean>(
+      Option.Type.BOOLEAN,
+      "org.chromattic.api.Option.root_node.lazy_create",
+      "when root node is created it is done in a lazy manner");
 
   /**
    * Options configurable via system properties.
@@ -283,6 +291,7 @@ public abstract class ChromatticBuilder {
     options.setValue(JCR_OPTIMIZE_HAS_NODE_ENABLED, false, false);
     options.setValue(ROOT_NODE_PATH, "/", false);
     options.setValue(CREATE_ROOT_NODE, false, false);
+    options.setValue(LAZY_CREATE_ROOT_NODE, false, false);
 
     //
     return boot(options, new HashSet<Class>(classes));

@@ -34,12 +34,25 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
+import org.chromattic.common.collection.Collections;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class Domain {
+
+  /** . */
+  public static int LAZY_CREATE_MODE = 0;
+
+  /** . */
+  public static int CREATE_MODE = 1;
+
+  /** . */
+  public static int NO_CREATE = 2;
+
+  /** . */
+  private static final Set<Integer> CREATE_MODES = Collections.set(LAZY_CREATE_MODE, CREATE_MODE, NO_CREATE);
 
   /** . */
   private final Map<String, ObjectMapper> typeMapperByNodeType;
@@ -69,7 +82,7 @@ public class Domain {
   final List<String> rootNodePathSegments;
 
   /** . */
-  final boolean createRootNode;
+  final int rootCreateMode;
 
   /** . */
   final NodeInfoManager nodeInfoManager;
@@ -85,10 +98,15 @@ public class Domain {
     boolean hasPropertyOptimized,
     boolean hasNodeOptimized,
     String rootNodePath,
-    boolean createRootNode) {
+    int rootCreateMode) {
 
     //
     MapperBuilder builder = new MapperBuilder(typeMappings, instrumentor);
+
+    //
+    if (!CREATE_MODES.contains(rootCreateMode)) {
+      throw new IllegalArgumentException("Invalid create mode " + rootCreateMode);
+    }
 
     //
     Map<String, ObjectMapper> typeMapperByNodeType = new HashMap<String, ObjectMapper>();
@@ -122,7 +140,7 @@ public class Domain {
     this.rootNodePathSegments = rootNodePathSegments;
     this.nodeInfoManager = new NodeInfoManager();
     this.queryManager = new QueryManager(rootNodePath);
-    this.createRootNode = createRootNode;
+    this.rootCreateMode = rootCreateMode;
   }
 
   public boolean isHasPropertyOptimized() {
