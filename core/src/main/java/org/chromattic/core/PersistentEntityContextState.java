@@ -124,19 +124,20 @@ class PersistentEntityContextState extends EntityContextState {
 
   <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi) {
     try {
+      //
+      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
+      if (def == null) {
+        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
+          "  with type " + node.getPrimaryNodeType().getName());
+      }
+
+      //
       V value = null;
 
       //
       if (propertyCache != null) {
         // That must be ok
         value = (V)propertyCache.get(propertyName);
-      }
-
-      //
-      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
-      if (def == null) {
-        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
-          "  with type " + node.getPrimaryNodeType().getName());
       }
 
       //
@@ -248,6 +249,16 @@ class PersistentEntityContextState extends EntityContextState {
 
   <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, V propertyValue) {
     try {
+      //
+      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
+
+      //
+      if (def == null) {
+        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
+          "  with type " + node.getPrimaryNodeType().getName());
+      }
+
+      //
       if (propertyCache != null) {
         if (propertyValue instanceof InputStream && (propertyValue instanceof CloneableInputStream)) {
           try {
@@ -267,15 +278,6 @@ class PersistentEntityContextState extends EntityContextState {
         jcrValue = ValueMapper.instance.get(valueFactory, propertyValue, st);
       } else {
         jcrValue = null;
-      }
-
-      //
-      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
-
-      //
-      if (def == null) {
-        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
-          "  with type " + node.getPrimaryNodeType().getName());
       }
 
       //
