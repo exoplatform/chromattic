@@ -119,16 +119,4 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
     InputStream s2 = new ByteArrayInputStream(new byte[]{3, 4, 5});
     new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "bytes_property", "getBytes", "setBytes", PropertyType.BINARY, new MultiValue.List(s1, s2), events).run();
   }
-
-  public void testMissing() throws Exception {
-    a.getMissing();
-
-    //
-    try {
-      a.setMissing("foo");
-      fail();
-    }
-    catch (NoSuchPropertyException ignore) {
-    }
-  }
 }

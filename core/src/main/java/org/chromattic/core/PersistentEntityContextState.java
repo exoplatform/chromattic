@@ -133,11 +133,17 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
+      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
+      if (def == null) {
+        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
+          "  with type " + node.getPrimaryNodeType().getName());
+      }
+
+      //
       if (value == null) {
         Value jcrValue;
         Property property = session.getSessionWrapper().getProperty(node, propertyName);
         if (property != null) {
-          PropertyDefinition def = property.getDefinition();
           if (def.isMultiple()) {
             Value[] values = property.getValues();
             if (values.length == 0) {
@@ -207,10 +213,16 @@ class PersistentEntityContextState extends EntityContextState {
 
   <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, ListType listType) {
     try {
+      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
+      if (def == null) {
+        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
+          "  with type " + node.getPrimaryNodeType().getName());
+      }
+
+      //
       Value[] values;
       Property property = session.getSessionWrapper().getProperty(node, propertyName);
       if (property != null) {
-        PropertyDefinition def = property.getDefinition();
         if (def.isMultiple()) {
           values = property.getValues();
         } else {
@@ -311,7 +323,14 @@ class PersistentEntityContextState extends EntityContextState {
     if (objects == null) {
       throw new NullPointerException();
     }
+
     try {
+      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
+      if (def == null) {
+        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
+          "  with type " + node.getPrimaryNodeType().getName());
+      }
+
       ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
       SimpleType<V> st = svi != null ? svi.getSimpleType() : null;
       Value[] values;
@@ -323,7 +342,6 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      PropertyDefinitionInfo def = nodeTypeInfo.getPropertyDefinitionInfo(propertyName);
       if (def.isMultiple()) {
         node.setProperty(propertyName, values);
       } else {

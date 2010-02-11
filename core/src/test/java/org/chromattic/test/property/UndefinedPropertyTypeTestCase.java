@@ -18,11 +18,13 @@
  */
 package org.chromattic.test.property;
 
+import org.chromattic.api.NoSuchPropertyException;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.api.ChromatticSessionImpl;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
+import java.util.Collections;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -43,23 +45,55 @@ public class UndefinedPropertyTypeTestCase extends AbstractTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-
-    //
-    ChromatticSessionImpl session = login();
-    Node rootNode = session.getRoot();
-    node = rootNode.addNode("tp_undefined", "tp_b");
-    o = session.findByNode(TP_Undefined.class, node);
   }
 
-  public void testString() throws Exception {
-    assertNull(o.getString());
-    o.setString("foo");
-    assertEquals("foo", o.getString());
-    assertEquals(PropertyType.STRING, node.getProperty("undefined_property").getType());
-    assertEquals("foo", node.getProperty("undefined_property").getString());
+  public void testUndefinedType() throws Exception {
+    ChromatticSessionImpl session = login();
+    Node rootNode = session.getRoot();
+    Node node = rootNode.addNode("tp_undefined", "tp_b");
+    TP_Undefined o = session.findByNode(TP_Undefined.class, node);
+    assertNull(o.getUndefinedType());
+    o.setUndefinedType("foo");
+    assertEquals("foo", o.getUndefinedType());
+    assertEquals(PropertyType.STRING, node.getProperty("undefined_type").getType());
+    assertEquals("foo", node.getProperty("undefined_type").getString());
     if (getConfig().isStateCacheDisabled()) {
-      node.setProperty("undefined_property", (String)null);
-      assertEquals(null, o.getString());
+      node.setProperty("undefined_type", (String)null);
+      assertEquals(null, o.getUndefinedType());
+    }
+  }
+
+  public void testUndefinedProperty() throws Exception {
+    ChromatticSessionImpl session = login();
+    TP_Undefined undef = session.insert(TP_Undefined.class, "a");
+    try {
+      undef.getUndefinedProperty();
+      fail();
+    }
+    catch (NoSuchPropertyException expected) {
+    }
+    try {
+      undef.setUndefinedProperty("foo");
+      fail();
+    }
+    catch (NoSuchPropertyException ignore) {
+    }
+  }
+
+  public void testUndefinedMultivaluedProperty() throws Exception {
+    ChromatticSessionImpl session = login();
+    TP_Undefined undef = session.insert(TP_Undefined.class, "a");
+    try {
+      undef.getUndefinedMultivaluedProperty();
+      fail();
+    }
+    catch (NoSuchPropertyException expected) {
+    }
+    try {
+      undef.setUndefinedMultivaluedProperty(Collections.singletonList("foo"));
+      fail();
+    }
+    catch (NoSuchPropertyException ignore) {
     }
   }
 }
