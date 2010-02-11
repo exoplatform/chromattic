@@ -36,12 +36,6 @@ public class UndefinedPropertyTypeTestCase extends AbstractTestCase {
     addClass(TP_Undefined.class);
   }
 
-  /** . */
-  private TP_Undefined o;
-
-  /** . */
-  private Node node;
-
   @Override
   protected void setUp() throws Exception {
     super.setUp();

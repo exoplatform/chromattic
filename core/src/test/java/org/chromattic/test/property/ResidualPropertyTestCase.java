@@ -29,10 +29,11 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class TypedResidualPropertyTestCase extends AbstractTestCase {
+public class ResidualPropertyTestCase extends AbstractTestCase {
 
   protected void createDomain() {
     addClass(TP_TypedResidual.class);
+    addClass(TP_UndefinedResidual.class);
   }
 
   /** . */
@@ -103,5 +104,38 @@ public class TypedResidualPropertyTestCase extends AbstractTestCase {
     catch (ClassCastException ignore) {
     }
     assertFalse(node.hasProperty("integer_property"));
+  }
+
+  public void testUndefinedResidualPropertyForString() throws Exception {
+    ChromatticSessionImpl session = login();
+    Node rootNode = session.getRoot();
+    Node node = rootNode.addNode("tp_undefinedresidual", "tp_d");
+    TP_UndefinedResidual o = session.findByNode(TP_UndefinedResidual.class, node);
+    assertNull(o.getString());
+    o.setString("foo");
+    assertEquals("foo", o.getString());
+    assertEquals(PropertyType.STRING, node.getProperty("string_property").getType());
+    assertEquals("foo", node.getProperty("string_property").getString());
+    if (getConfig().isStateCacheDisabled()) {
+      node.setProperty("string_property", (String)null);
+      assertEquals(null, o.getString());
+    }
+  }
+
+  public void testUndefinedResidualPropertyForMap() throws Exception {
+    ChromatticSessionImpl session = login();
+    Node rootNode = session.getRoot();
+    Node node = rootNode.addNode("tp_undefinedresidual", "tp_d");
+    TP_UndefinedResidual o = session.findByNode(TP_UndefinedResidual.class, node);
+    assertNull(o.getString());
+    Map<String, Object> map = o.getProperties();
+    map.put("string_property", "foo");
+    assertEquals("foo", map.get("string_property"));
+    assertEquals(PropertyType.STRING, node.getProperty("string_property").getType());
+    assertEquals("foo", node.getProperty("string_property").getString());
+    if (getConfig().isStateCacheDisabled()) {
+      node.setProperty("string_property", (String)null);
+      assertEquals(null, map.get("string_property"));
+    }
   }
 }
