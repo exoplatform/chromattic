@@ -20,16 +20,14 @@
   <repositories>
     <repository name="db1" system-workspace="ws" default-workspace="ws">
       <security-domain>exo-domain</security-domain>
-      <!-- access-control>optional</access-control -->
-      <!-- access-control>disable</access-control -->
       <session-max-age>1h</session-max-age>
       <authentication-policy>org.exoplatform.services.jcr.impl.core.access.JAASAuthenticator</authentication-policy>
       <workspaces>
         <workspace name="ws">
-          <container class="org.exoplatform.services.jcr.impl.storage.jdbc.JDBCWorkspaceDataContainer">
+          <container class="org.exoplatform.services.jcr.impl.storage.jdbc.optimisation.CQJDBCWorkspaceDataContainer">
             <properties>
               <property name="source-name" value="jdbcjcr" />
-              <property name="dialect" value="hsqldb" />
+              <property name="dialect" value="auto" />
               <property name="multi-db" value="false" />
               <property name="update-storage" value="false" />
               <property name="max-buffer-size" value="200k" />
@@ -61,7 +59,7 @@
               <property name="index-dir" value="target/temp/index/db1/ws" />
             </properties>
           </query-handler>
-          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManager">
+          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManagerImpl">
             <properties>
               <property name="time-out" value="15m" />
               <property name="jbosscache-configuration" value="conf/standalone/jbosscache-lockconfig.xml" />

@@ -105,20 +105,6 @@
   <component>
     <key>org.exoplatform.services.jcr.RepositoryService</key>
     <type>org.exoplatform.services.jcr.impl.RepositoryServiceImpl</type>
-    <component-plugins>
-      <component-plugin>
-        <name>add.namespaces</name>
-        <set-method>addPlugin</set-method>
-        <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
-        <init-params>
-          <properties-param>
-            <name>namespaces</name>
-            <property name="rma" value="http://www.rma.com/jcr/"/>
-            <property name="metadata" value="http://www.exoplatform.com/jcr/metadata/1.1/"/>
-          </properties-param>
-        </init-params>
-      </component-plugin>
-    </component-plugins>
   </component>
 
   <component>
