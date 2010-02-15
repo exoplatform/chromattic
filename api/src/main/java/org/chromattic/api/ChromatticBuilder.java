@@ -265,9 +265,9 @@ public abstract class ChromatticBuilder {
    * Builds the runtime and return a configured {@link org.chromattic.api.Chromattic} instance.
    *
    * @return the chromattic instance
-   * @throws Exception any exception
+   * @throws BuilderException any builder exception
    */
-  public Chromattic build() throws Exception {
+  public Chromattic build() throws BuilderException {
 
     // Copy options
     Options options = new Options(this.options);
