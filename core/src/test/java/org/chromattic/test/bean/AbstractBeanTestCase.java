@@ -70,7 +70,7 @@ public abstract class AbstractBeanTestCase extends TestCase {
   }
 
   protected <A extends Annotation> void assertAnnotation(
-    PropertyInfo property,
+    PropertyInfo<?> property,
     Class<? extends A> annotationClass,
     Map<String, Object> expectedAnnotation) {
     A ann1 = property.getAnnotation(annotationClass);

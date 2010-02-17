@@ -19,6 +19,7 @@
 package org.chromattic.core.mapping;
 
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.core.mapping.value.ValueMapping;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Set;
@@ -30,12 +31,9 @@ import java.util.Set;
 public class MixinTypeMapping extends NodeTypeMapping
 {
 
-  /** . */
-  private final String mixinTypeName;
-
   public MixinTypeMapping(
     ClassTypeInfo objectClass,
-    Set<PropertyMapping> propertyMappings,
+    Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
     String mixinTypeName) {
@@ -44,18 +42,12 @@ public class MixinTypeMapping extends NodeTypeMapping
       propertyMappings,
       methodMappings,
       onDuplicate,
+      mixinTypeName,
       null);
-
-    //
-    this.mixinTypeName = mixinTypeName;
-  }
-
-   public String getMixinTypeName() {
-    return mixinTypeName;
   }
 
   @Override
   public String toString() {
-    return "MixinTypeMapping[objectClass=" + objectClass.getName() + ",mixinName=" + mixinTypeName + "]";
+    return "MixinTypeMapping[objectClass=" + objectClass.getName() + ",mixinName=" + getTypeName() + "]";
   }
 }

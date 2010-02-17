@@ -36,7 +36,7 @@ public abstract class JCRNodeCollectionPropertyMapper<O extends ObjectContext> e
     super(contextType, info);
 
     //
-    relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getElementValue().getTypeInfo().getName());
+    relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getTypeInfo().getName());
   }
 
   public Class<?> getRelatedClass() {

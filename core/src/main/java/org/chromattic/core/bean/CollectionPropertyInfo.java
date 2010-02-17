@@ -25,9 +25,9 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class CollectionPropertyInfo<E extends ValueInfo> extends MultiValuedPropertyInfo<E> {
+public class CollectionPropertyInfo<V extends ValueInfo> extends MultiValuedPropertyInfo<V> {
 
-  public CollectionPropertyInfo(String name, E elementValue, MethodInfo getter, MethodInfo setter) {
+  public CollectionPropertyInfo(String name, V elementValue, MethodInfo getter, MethodInfo setter) {
     super(name, elementValue, getter, setter);
   }
 }

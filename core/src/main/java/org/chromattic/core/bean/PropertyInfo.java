@@ -30,7 +30,7 @@ import java.lang.annotation.Annotation;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyInfo {
+public abstract class PropertyInfo<V extends ValueInfo> {
 
   /** . */
   private final String name;
@@ -41,14 +41,22 @@ public abstract class PropertyInfo {
   /** . */
   private final MethodInfo setter;
 
-  public PropertyInfo(String name, MethodInfo getter, MethodInfo setter) {
+  /** . */
+  private final V value;
+
+  public PropertyInfo(String name, V value, MethodInfo getter, MethodInfo setter) {
     this.name = name;
+    this.value = value;
     this.getter = getter;
     this.setter = setter;
   }
 
   public String getName() {
     return name;
+  }
+
+  public V getValue() {
+    return value;
   }
 
   public AccessMode getAccessMode() {

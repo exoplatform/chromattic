@@ -25,19 +25,9 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SingleValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo {
-
-  /** . */
-  private final V value;
+public class SingleValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo<V> {
 
   public SingleValuedPropertyInfo(String name, V value, MethodInfo getter, MethodInfo setter) {
-    super(name, getter, setter);
-
-    //
-    this.value = value;
-  }
-
-  public V getValue() {
-    return value;
+    super(name, value, getter, setter);
   }
 }

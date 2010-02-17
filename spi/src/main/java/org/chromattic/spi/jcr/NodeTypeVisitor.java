@@ -17,27 +17,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.bean;
-
-import org.reflext.api.MethodInfo;
+package org.chromattic.spi.jcr;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MapPropertyInfo<K extends ValueInfo, V extends ValueInfo> extends MultiValuedPropertyInfo<V> {
+public interface NodeTypeVisitor {
 
-  /** . */
-  private final K keyValue;
+  void startType(String name, boolean primary);
 
-  public MapPropertyInfo(String name, V elementValue, K keyValue, MethodInfo getter, MethodInfo setter) {
-    super(name, elementValue, getter, setter);
+  void addProperty(String propertyName, boolean multiple, int propertyType);
 
-    //
-    this.keyValue = keyValue;
-  }
+  void addChildNodeDefinition(String childName, String nodeTypeName);
 
-  public K getKeyValue() {
-    return keyValue;
-  }
+  void endType();
+
 }

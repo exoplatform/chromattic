@@ -20,6 +20,7 @@
 package org.chromattic.core.mapping;
 
 import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.core.mapping.value.ValueMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.chromattic.api.NameConflictResolution;
 
@@ -37,10 +38,13 @@ public abstract class NodeTypeMapping
 {
 
   /** . */
+  private final String typeName;
+
+  /** . */
   protected final ClassTypeInfo objectClass;
 
   /** . */
-  private final Set<PropertyMapping> propertyMappings;
+  private final Set<PropertyMapping<? extends ValueMapping>> propertyMappings;
 
   /** . */
   private final Set<MethodMapping> methodMappings;
@@ -53,20 +57,26 @@ public abstract class NodeTypeMapping
 
   public NodeTypeMapping(
     ClassTypeInfo objectClass,
-    Set<PropertyMapping> propertyMappings,
+    Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
+    String typeName,
     Class<? extends ObjectFormatter> formatterClass) {
 
     //
     this.objectClass = objectClass;
-    this.propertyMappings = Collections.unmodifiableSet(new HashSet<PropertyMapping>(propertyMappings));
+    this.propertyMappings = Collections.unmodifiableSet(new HashSet<PropertyMapping<? extends ValueMapping>>(propertyMappings));
     this.methodMappings = Collections.unmodifiableSet(new HashSet<MethodMapping>(methodMappings));
     this.onDuplicate = onDuplicate;
     this.formatterClass = formatterClass;
+    this.typeName = typeName;
   }
 
-   public ClassTypeInfo getObjectClass() {
+  public String getTypeName() {
+    return typeName;
+  }
+
+  public ClassTypeInfo getObjectClass() {
     return objectClass;
   }
 
@@ -74,7 +84,7 @@ public abstract class NodeTypeMapping
     return formatterClass;
   }
 
-  public Set<PropertyMapping> getPropertyMappings() {
+  public Set<PropertyMapping<? extends ValueMapping>> getPropertyMappings() {
     return propertyMappings;
   }
 

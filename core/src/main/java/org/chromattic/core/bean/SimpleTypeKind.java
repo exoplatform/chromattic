@@ -29,7 +29,7 @@ import java.util.Date;
  */
 public abstract class SimpleTypeKind<E, I> {
 
-  private static <E> Class<?> externalType(Class<?> typeKind) {
+  private static Class<?> externalType(Class<?> typeKind) {
     Type gst = typeKind.getGenericSuperclass();
     if (gst instanceof ParameterizedType) {
       ParameterizedType pt = (ParameterizedType)gst;
@@ -58,18 +58,61 @@ public abstract class SimpleTypeKind<E, I> {
     }
   }
 
-  private final Class<E> externalType;
-
-  private SimpleTypeKind() {
-    externalType = (Class<E>)externalType(getClass());
+  private static Class<?> internalType(Class<?> typeKind) {
+    Type gst = typeKind.getGenericSuperclass();
+    if (gst instanceof ParameterizedType) {
+      ParameterizedType pt = (ParameterizedType)gst;
+      Type rpt = pt.getRawType();
+      if (rpt instanceof Class) {
+        Class rptc = (Class)rpt;
+        if (rptc.getSuperclass().equals(SimpleTypeKind.class)) {
+          Type[] typeArgs = pt.getActualTypeArguments();
+          if (typeArgs.length == 1) {
+            if (typeArgs[0] instanceof Class) {
+              return (Class<?>)typeArgs[0];
+            } else {
+              throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+            }
+          } else {
+            throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+          }
+        } else {
+          throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+        }
+      } else {
+        throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+      }
+    } else {
+      throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+    }
   }
 
-  protected SimpleTypeKind(Class<E> externalType) {
-    if (externalType == null) {
+  /** . */
+  private final Class<I> internalType;
+
+  /** . */
+  private final Class<E> externalType;
+
+  private SimpleTypeKind(Class<I> internalType) {
+    if (internalType == null) {
       throw new NullPointerException();
     }
 
     //
+    this.internalType = internalType;
+    this.externalType = (Class<E>)externalType(getClass());
+  }
+
+  private SimpleTypeKind(Class<E> externalType, Class<I> internalType) {
+    if (externalType == null) {
+      throw new NullPointerException();
+    }
+    if (internalType == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    this.internalType = internalType;
     this.externalType = externalType;
   }
 
@@ -83,57 +126,74 @@ public abstract class SimpleTypeKind<E, I> {
 
   public abstract static class STRING<E> extends SimpleTypeKind<E, String> {
     protected STRING(Class<E> externalType) {
-      super(externalType);
+      super(externalType, String.class);
     }
     protected STRING() {
+      super(String.class);
     }
   }
 
   public abstract static class PATH<E> extends SimpleTypeKind<E, String> {
     protected PATH(Class<E> externalType) {
-      super(externalType);
+      super(externalType, String.class);
     }
     protected PATH() {
+      super(String.class);
     }
   }
 
   public abstract static class BOOLEAN<E> extends SimpleTypeKind<E, Boolean> {
     protected BOOLEAN(Class<E> externalType) {
-      super(externalType);
+      super(externalType, Boolean.class);
     }
     protected BOOLEAN() {
+      super(Boolean.class);
     }
   }
 
   public abstract static class LONG<E> extends SimpleTypeKind<E, Long> {
     protected LONG(Class<E> externalType) {
-      super(externalType);
+      super(externalType, Long.class);
     }
     protected LONG() {
+      super(Long.class);
     }
   }
 
   public abstract static class DATE<E> extends SimpleTypeKind<E, Date> {
     protected DATE(Class<E> externalType) {
-      super(externalType);
+      super(externalType, Date.class);
     }
     protected DATE() {
+      super(Date.class);
     }
   }
 
   public abstract static class DOUBLE<E> extends SimpleTypeKind<E, Double> {
     protected DOUBLE(Class<E> externalType) {
-      super(externalType);
+      super(externalType, Double.class);
     }
     protected DOUBLE() {
+      super(Double.class);
     }
   }
 
   public abstract static class STREAM<E> extends SimpleTypeKind<E, InputStream> {
     protected STREAM(Class<E> externalType) {
-      super(externalType);
+      super(externalType, InputStream.class);
     }
     protected STREAM() {
+      super(InputStream.class);
     }
+  }
+
+  @Override
+  public String toString() {
+    // Find the class name before the SimpleTypeKind
+    Class<?> current = getClass();
+    while (current.getSuperclass() != SimpleTypeKind.class) {
+      current = current.getSuperclass();
+    }
+    return getClass().getSimpleName() + "SimpleTypeKind[kind=" + current.getSimpleName() + ",externalType=" + externalType.getName() + ",internalType=" + internalType.getName() + "]";
   }
 }

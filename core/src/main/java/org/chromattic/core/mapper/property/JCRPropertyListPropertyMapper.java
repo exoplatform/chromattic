@@ -61,7 +61,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext> extends Prop
     //
     this.listType = listType;
     this.jcrPropertyName = jcrPropertyName;
-    this.elementType = info.getElementValue();
+    this.elementType = info.getValue();
   }
 
   @Override

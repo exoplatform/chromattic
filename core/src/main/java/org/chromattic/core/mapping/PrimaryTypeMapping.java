@@ -20,6 +20,7 @@ package org.chromattic.core.mapping;
 
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.core.mapping.value.ValueMapping;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Set;
@@ -31,12 +32,9 @@ import java.util.Set;
 public class PrimaryTypeMapping extends NodeTypeMapping
 {
 
-  /** . */
-  private final String nodeTypeName;
-
   public PrimaryTypeMapping(
     ClassTypeInfo objectClass,
-    Set<PropertyMapping> propertyMappings,
+    Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
     String nodeTypeName,
@@ -46,18 +44,12 @@ public class PrimaryTypeMapping extends NodeTypeMapping
       propertyMappings,
       methodMappings,
       onDuplicate,
+      nodeTypeName,
       formatterClass);
-
-    //
-    this.nodeTypeName = nodeTypeName;
-  }
-
-   public String getNodeTypeName() {
-    return nodeTypeName;
   }
 
   @Override
   public String toString() {
-    return "JavaTypeInfo[objectClass=" + objectClass.getName() + ",nodeTypeName=" + nodeTypeName + "]";
+    return "JavaTypeInfo[objectClass=" + objectClass.getName() + ",nodeTypeName=" + getTypeName() + "]";
   }
 }

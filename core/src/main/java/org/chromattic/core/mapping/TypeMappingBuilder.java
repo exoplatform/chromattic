@@ -27,15 +27,7 @@ import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.bean.*;
 import org.chromattic.core.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.core.mapping.jcr.JCRPropertyMapping;
-import org.chromattic.core.mapping.value.OneToOneMapping;
-import org.chromattic.core.mapping.value.SimpleMapping;
-import org.chromattic.core.mapping.value.NamedOneToOneMapping;
-import org.chromattic.core.mapping.value.NamedManyToOneMapping;
-import org.chromattic.core.mapping.value.RelationshipMapping;
-import org.chromattic.core.mapping.value.ManyToOneMapping;
-import org.chromattic.core.mapping.value.OneToManyMapping;
-import org.chromattic.core.mapping.value.NamedOneToManyMapping;
-import org.chromattic.core.mapping.value.PropertyMapMapping;
+import org.chromattic.core.mapping.value.*;
 import org.chromattic.core.NodeAttributeType;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
@@ -67,12 +59,12 @@ public class TypeMappingBuilder {
   }
 
   private NodeTypeMapping _build(ClassTypeInfo javaClass) {
-    Set<PropertyMapping> propertyMappings = new HashSet<PropertyMapping>();
+    Set<PropertyMapping<? extends ValueMapping>> propertyMappings = new HashSet<PropertyMapping<? extends ValueMapping>>();
     Set<MethodMapping> methodMappings = new HashSet<MethodMapping>();
     BeanInfo info = beanInfoBuilder.build(javaClass);
 
     // Property
-    for (PropertyInfo propertyInfo : info.getProperties(Property.class)) {
+    for (PropertyInfo<?> propertyInfo : info.getProperties(Property.class)) {
       Property propertyAnnotation = propertyInfo.getAnnotation(Property.class);
 
       //
@@ -82,7 +74,7 @@ public class TypeMappingBuilder {
         value = svp.getValue();
       } else if (propertyInfo instanceof MultiValuedPropertyInfo) {
         MultiValuedPropertyInfo mvp = (MultiValuedPropertyInfo)propertyInfo;
-        value = mvp.getElementValue();
+        value = mvp.getValue();
       } else {
         throw new IllegalStateException();
       }
@@ -99,7 +91,7 @@ public class TypeMappingBuilder {
     }
 
     // Property map
-    for (PropertyInfo propertyInfo : info.getProperties(Properties.class)) {
+    for (PropertyInfo<?> propertyInfo : info.getProperties(Properties.class)) {
       Properties propertyAnnotation = propertyInfo.getAnnotation(Properties.class);
       if (propertyInfo instanceof MapPropertyInfo) {
         MapPropertyInfo mapPropertyInfo = (MapPropertyInfo)propertyInfo;
@@ -113,7 +105,7 @@ public class TypeMappingBuilder {
     }
 
     // Node attributes
-    for (PropertyInfo propertyInfo : info.getProperties()) {
+    for (PropertyInfo<?> propertyInfo : info.getProperties()) {
       NodeAttributeType nat = null;
       if (propertyInfo.getAnnotation(Name.class) != null) {
         nat = NodeAttributeType.NAME;
@@ -157,7 +149,7 @@ public class TypeMappingBuilder {
     }
 
     // One to one
-    for (PropertyInfo propertyInfo : info.getProperties(OneToOne.class)) {
+    for (PropertyInfo<?> propertyInfo : info.getProperties(OneToOne.class)) {
 
       if (propertyInfo instanceof SingleValuedPropertyInfo) {
         SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
@@ -202,7 +194,7 @@ public class TypeMappingBuilder {
     }
 
     // One to many
-    for (PropertyInfo propertyInfo : info.getProperties(OneToMany.class)) {
+    for (PropertyInfo<?> propertyInfo : info.getProperties(OneToMany.class)) {
       OneToMany oneToManyAnn = propertyInfo.getAnnotation(OneToMany.class);
       if (propertyInfo instanceof MultiValuedPropertyInfo) {
         MultiValuedPropertyInfo multiValuedProperty = (MultiValuedPropertyInfo)propertyInfo;
@@ -220,7 +212,7 @@ public class TypeMappingBuilder {
         }
 
         //
-        ValueInfo beanElementType = multiValuedProperty.getElementValue();
+        ValueInfo beanElementType = multiValuedProperty.getValue();
         if (beanElementType instanceof BeanValueInfo) {
           BeanValueInfo bvi = (BeanValueInfo)beanElementType;
 
@@ -249,7 +241,7 @@ public class TypeMappingBuilder {
     }
 
     // Many to one
-    for (PropertyInfo propertyInfo : info.getProperties(ManyToOne.class)) {
+    for (PropertyInfo<?> propertyInfo : info.getProperties(ManyToOne.class)) {
       if (propertyInfo instanceof SingleValuedPropertyInfo) {
         SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
         ValueInfo vi = svpi.getValue();

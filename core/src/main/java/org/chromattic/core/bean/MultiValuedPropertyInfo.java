@@ -25,19 +25,9 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class MultiValuedPropertyInfo<E extends ValueInfo> extends PropertyInfo {
+public abstract class MultiValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo<V> {
 
-  /** . */
-  private final E elementValue;
-
-  public MultiValuedPropertyInfo(String name, E elementValue, MethodInfo getter, MethodInfo setter) {
-    super(name, getter, setter);
-
-    //
-    this.elementValue = elementValue;
-  }
-
-  public E getElementValue() {
-    return elementValue;
+  public MultiValuedPropertyInfo(String name, V elementValue, MethodInfo getter, MethodInfo setter) {
+    super(name, elementValue, getter, setter);
   }
 }

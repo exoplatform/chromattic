@@ -395,7 +395,7 @@ public class MapperBuilder {
         typeMapping.getOnDuplicate(),
         formatter,
         instrumentor,
-        nodeTypeMapping.getNodeTypeName(),
+        nodeTypeMapping.getTypeName(),
         NodeTypeKind.PRIMARY);
     } else {
       MixinTypeMapping mixinTypeMapping = (MixinTypeMapping)typeMapping;
@@ -434,7 +434,7 @@ public class MapperBuilder {
         typeMapping.getOnDuplicate(),
         null,
         instrumentor,
-        mixinTypeMapping.getMixinTypeName(),
+        mixinTypeMapping.getTypeName(),
         NodeTypeKind.MIXIN);
     }
 

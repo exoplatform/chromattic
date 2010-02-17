@@ -20,6 +20,7 @@
 package org.chromattic.core.mapping;
 
 import org.chromattic.core.bean.PropertyInfo;
+import org.chromattic.core.bean.ValueInfo;
 import org.chromattic.core.mapping.value.ValueMapping;
 
 /**
@@ -29,12 +30,12 @@ import org.chromattic.core.mapping.value.ValueMapping;
 public class PropertyMapping<V extends ValueMapping> {
 
   /** . */
-  private final PropertyInfo info;
+  private final PropertyInfo<? extends ValueInfo> info;
 
   /** . */
   private final V valueMapping;
 
-  PropertyMapping(PropertyInfo info, V valueMapping) {
+  PropertyMapping(PropertyInfo<? extends ValueInfo> info, V valueMapping) {
     this.info = info;
     this.valueMapping = valueMapping;
   }
@@ -43,7 +44,7 @@ public class PropertyMapping<V extends ValueMapping> {
     return info.getName();
   }
 
-  public PropertyInfo getInfo() {
+  public PropertyInfo<? extends ValueInfo> getInfo() {
     return info;
   }
 
