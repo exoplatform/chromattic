@@ -1,3 +1,4 @@
+- map Enum on LONG in addition of STRING
 - @Property(cascaded=true|false)
 - Self-bounded type resolution
 - detyped embedded access from session : <E> E session.getEmbedded(Object o, Class<E> embeddedClass)
