@@ -123,6 +123,7 @@ public abstract class AbstractTypeMappingVisitor {
               if (valueInfo instanceof SimpleValueInfo) {
                 SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
                 SimpleType simpleType = simpleValueInfo.getSimpleType();
+/*
                 SimpleTypeKind simpleTypeKind = simpleType.getKind();
                 if (simpleTypeKind instanceof SimpleTypeKind.STRING) {
                   // ok
@@ -131,6 +132,8 @@ public abstract class AbstractTypeMappingVisitor {
                 } else {
                   throw new AssertionError(mapping.getObjectClass().toString() + " wrong simple kind "+ simpleTypeKind);
                 }
+*/
+                throw new AssertionError("fixme");
               } else {
                 throw new AssertionError();
               }

@@ -310,7 +310,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Boolean>(typeInfo, SimpleType.BOOLEAN, defaultBoolean);
+          return new SimpleValueInfo<Boolean>(typeInfo, SimpleType.PRIMITIVE_BOOLEAN, defaultBoolean);
         }
         case INT: {
           List<Integer> defaultInteger = null;
@@ -321,7 +321,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Integer>(typeInfo, SimpleType.INT, defaultInteger);
+          return new SimpleValueInfo<Integer>(typeInfo, SimpleType.PRIMITIVE_INTEGER, defaultInteger);
         }
         case LONG: {
           List<Long> defaultLong = null;
@@ -332,7 +332,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Long>(typeInfo, SimpleType.LONG, defaultLong);
+          return new SimpleValueInfo<Long>(typeInfo, SimpleType.PRIMITIVE_LONG, defaultLong);
         }
         case FLOAT: {
           List<Float> defaultFloat = null;
@@ -343,7 +343,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Float>(typeInfo, SimpleType.FLOAT, defaultFloat);
+          return new SimpleValueInfo<Float>(typeInfo, SimpleType.PRIMITIVE_FLOAT, defaultFloat);
         }
         case DOUBLE: {
           List<Double> defaultDouble = null;
@@ -354,7 +354,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Double>(typeInfo, SimpleType.DOUBLE, defaultDouble);
+          return new SimpleValueInfo<Double>(typeInfo, SimpleType.PRIMITIVE_DOUBLE, defaultDouble);
         }
         default:
           throw new AssertionError();
@@ -365,29 +365,21 @@ public class BeanInfoFactory {
       }
 
       //
-      SimpleTypeKind<?, ?> stk = null;
       switch (typeInfo.getKind()) {
         case CLASS:
-        case INTERFACE:
-          stk = types.get(typeInfo.getName());
-          break;
         case ENUM:
-          stk = new StringEnumTypeKind((Class)typeInfo.getType());
           break;
-      }
-
-      if (stk == null) {
-        throw new AssertionError();
+        default:
+          throw new AssertionError();
       }
 
       //
-      return foo(typeInfo, stk);
+      return foo(typeInfo, (Class<?>)typeInfo.getType());
     }
   }
 
-  private <E> SimpleValueInfo<E> foo(ClassTypeInfo typeInfo, SimpleTypeKind<E, ?> stk) {
-    Class<E> a = stk.getExternalType();
-    SimpleType<E> st = new SimpleType<E>(stk, a);
+  private <E> SimpleValueInfo<E> foo(ClassTypeInfo typeInfo, Class<?> type) {
+    SimpleType<E> st = (SimpleType<E>)SimpleType.create(type);
     return new SimpleValueInfo<E>(typeInfo, st, null);
   }
 

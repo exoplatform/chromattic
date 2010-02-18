@@ -52,9 +52,10 @@ public class NodeTypeBuilder extends AbstractTypeMappingVisitor {
   @Override
   protected void propertyMapping(JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
 
+/*
     int propertyType;
     SimpleValueInfo simpleValueInfo = propertyInfo.getValue();
-    SimpleTypeKind stk = simpleValueInfo.getSimpleType().getKind();
+    SimpleType stk = simpleValueInfo.getSimpleType();
     if (stk instanceof SimpleTypeKind.STRING) {
       propertyType = PropertyType.STRING;
     } else if (stk instanceof SimpleTypeKind.LONG) {
@@ -75,6 +76,8 @@ public class NodeTypeBuilder extends AbstractTypeMappingVisitor {
 
     //
     builder.addProperty(propertyMapping.getName(), propertyInfo instanceof MultiValuedPropertyInfo, propertyType);
+*/
+    throw new AssertionError("investigate");
   }
 
   @Override

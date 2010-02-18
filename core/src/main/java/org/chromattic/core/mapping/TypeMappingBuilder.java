@@ -128,11 +128,11 @@ public class TypeMappingBuilder {
             JCRNodeAttributeMapping memberMapping = new JCRNodeAttributeMapping(nat);
             SimpleType simpleType = svi.getSimpleType();
             if (nat == NodeAttributeType.PATH) {
-              if (simpleType.getKind() != BaseSimpleTypes.PATH) {
+              if (simpleType != SimpleType.PATH) {
                 throw new IllegalStateException("Type " + simpleType + " is not accepted for path attribute mapping");
               }
             } else {
-              if (simpleType.getKind() != BaseSimpleTypes.STRING) {
+              if (simpleType != SimpleType.STRING) {
                 throw new IllegalStateException("Type " + simpleType + " is not accepted for attribute mapping");
               }
             }
@@ -206,7 +206,7 @@ public class TypeMappingBuilder {
             throw new IllegalStateException("Wrong key value type " + mapProperty.getKeyValue());
           }
           SimpleValueInfo<?> svi = (SimpleValueInfo)mapProperty.getKeyValue();
-          if (svi.getSimpleType().getKind() != BaseSimpleTypes.STRING) {
+          if (svi.getSimpleType() != SimpleType.STRING) {
             throw new IllegalStateException();
           }
         }

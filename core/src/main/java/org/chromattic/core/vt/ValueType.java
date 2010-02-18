@@ -19,7 +19,6 @@
 
 package org.chromattic.core.vt;
 
-import org.chromattic.core.bean.BaseSimpleTypes;
 import org.chromattic.core.bean.SimpleType;
 
 import javax.jcr.*;
@@ -67,14 +66,14 @@ public abstract class ValueType<V> {
       }
     }
 
-    private final BaseValueType STRING = new BaseValueType.STRING.TO_STRING(null, new SimpleType<String>(BaseSimpleTypes.STRING, String.class));
-    private final BaseValueType INT = new BaseValueType.LONG.TO_INT(null, new SimpleType<Integer>(BaseSimpleTypes.INT, Integer.class));
-    private final BaseValueType LONG = new BaseValueType.LONG.TO_LONG(null, new SimpleType<Long>(BaseSimpleTypes.LONG, Long.class));
-    private final BaseValueType DATE = new BaseValueType.DATE.TO_DATE(null, new SimpleType<Date>(BaseSimpleTypes.DATE, Date.class));
-    private final BaseValueType DOUBLE = new BaseValueType.DOUBLE.TO_DOUBLE(null, new SimpleType<Double>(BaseSimpleTypes.DOUBLE, Double.class));
-    private final BaseValueType FLOAT = new BaseValueType.DOUBLE.TO_FLOAT(null, new SimpleType<Float>(BaseSimpleTypes.FLOAT, Float.class));
-    private final BaseValueType STREAM = new BaseValueType.STREAM.TO_STREAM(null, new SimpleType<InputStream>(BaseSimpleTypes.STREAM, InputStream.class));
-    private final BaseValueType BOOLEAN = new BaseValueType.BOOLEAN.TO_BOOLEAN(null, new SimpleType<Boolean>(BaseSimpleTypes.BOOLEAN, Boolean.class));
+    private final BaseValueType STRING = new BaseValueType.STRING.TO_STRING(null, SimpleType.STRING);
+    private final BaseValueType INT = new BaseValueType.LONG.TO_INT(null, SimpleType.INTEGER);
+    private final BaseValueType LONG = new BaseValueType.LONG.TO_LONG(null, SimpleType.LONG);
+    private final BaseValueType DATE = new BaseValueType.DATE.TO_DATE(null, SimpleType.DATE);
+    private final BaseValueType DOUBLE = new BaseValueType.DOUBLE.TO_DOUBLE(null, SimpleType.DOUBLE);
+    private final BaseValueType FLOAT = new BaseValueType.DOUBLE.TO_FLOAT(null, SimpleType.FLOAT);
+    private final BaseValueType STREAM = new BaseValueType.STREAM.TO_STREAM(null, SimpleType.STREAM);
+    private final BaseValueType BOOLEAN = new BaseValueType.BOOLEAN.TO_BOOLEAN(null, SimpleType.BOOLEAN);
 
     @Override
     public Value get(ValueFactory valueFactory, Object o) throws ValueFormatException {
