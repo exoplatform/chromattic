@@ -20,7 +20,6 @@
 package org.chromattic.core.vt;
 
 import org.chromattic.core.bean.SimpleValueInfo;
-import org.chromattic.core.vt.ValueMapper;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
