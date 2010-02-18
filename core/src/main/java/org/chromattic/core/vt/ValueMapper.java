@@ -36,7 +36,7 @@ import java.io.InputStream;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ValueMapper {
+class ValueMapper {
 
   /** . */
   public static final ValueMapper instance = new ValueMapper();
@@ -44,85 +44,64 @@ public class ValueMapper {
   private ValueMapper() {
   }
 
-  public final <E> E get(Value value, SimpleType<E> wantedType) throws RepositoryException {
+  <E> E get(Value value, SimpleType<E> wantedType) throws RepositoryException {
     int propertyType = value.getType();
-    if (wantedType != null) {
-      SimpleTypeKind<E, ?> typeKind = wantedType.getKind();
-      if (typeKind instanceof SimpleTypeKind.STREAM) {
-        SimpleTypeKind.STREAM<?> streamKind = (SimpleTypeKind.STREAM<?>)typeKind;
-        if (propertyType == PropertyType.BINARY) {
-          return (E)streamKind.toExternal(value.getStream());
-        } else {
-          throw new ClassCastException();
-        }
-      } else if (typeKind instanceof SimpleTypeKind.STRING) {
-        SimpleTypeKind.STRING stringKind = (SimpleTypeKind.STRING)typeKind;
-        if (propertyType == PropertyType.STRING || propertyType == PropertyType.NAME || propertyType == PropertyType.PATH) {
-          return (E)stringKind.toExternal(value.getString());
-        } else {
-          throw new ClassCastException();
-        }
-      } else if (typeKind instanceof SimpleTypeKind.PATH) {
-        SimpleTypeKind.PATH pathKind = (SimpleTypeKind.PATH)typeKind;
-        if (propertyType == PropertyType.PATH) {
-          return (E)pathKind.toExternal(value.getString());
-        } else {
-          throw new ClassCastException();
-        }
-      } else if (typeKind instanceof SimpleTypeKind.LONG) {
-        SimpleTypeKind.LONG longKind = (SimpleTypeKind.LONG)typeKind;
-        if (propertyType == PropertyType.LONG) {
-          return (E)longKind.toExternal(value.getLong());
-        } else {
-          throw new ClassCastException();
-        }
-      } else if (typeKind instanceof SimpleTypeKind.DOUBLE) {
-        SimpleTypeKind.DOUBLE doubleKind = (SimpleTypeKind.DOUBLE)typeKind;
-        if (propertyType == PropertyType.DOUBLE) {
-          return (E)doubleKind.toExternal(value.getDouble());
-        } else {
-          throw new ClassCastException();
-        }
-      } else if (typeKind instanceof SimpleTypeKind.BOOLEAN) {
-        SimpleTypeKind.BOOLEAN booleanKind = (SimpleTypeKind.BOOLEAN)typeKind;
-        if (propertyType == PropertyType.BOOLEAN) {
-          return (E)booleanKind.toExternal(value.getBoolean());
-        } else {
-          throw new ClassCastException();
-        }
-      } else if (typeKind instanceof SimpleTypeKind.DATE) {
-        SimpleTypeKind.DATE dateKind = (SimpleTypeKind.DATE)typeKind;
-        if (propertyType == PropertyType.DATE) {
-          return (E)dateKind.toExternal(value.getDate().getTime());
-        } else {
-          throw new ClassCastException();
-        }
+    SimpleTypeKind<E, ?> typeKind = wantedType.getKind();
+    if (typeKind instanceof SimpleTypeKind.STREAM) {
+      SimpleTypeKind.STREAM<?> streamKind = (SimpleTypeKind.STREAM<?>)typeKind;
+      if (propertyType == PropertyType.BINARY) {
+        return (E)streamKind.toExternal(value.getStream());
       } else {
-        throw new AssertionError("Property type " + propertyType + " not handled");
+        throw new ClassCastException();
+      }
+    } else if (typeKind instanceof SimpleTypeKind.STRING) {
+      SimpleTypeKind.STRING stringKind = (SimpleTypeKind.STRING)typeKind;
+      if (propertyType == PropertyType.STRING || propertyType == PropertyType.NAME || propertyType == PropertyType.PATH) {
+        return (E)stringKind.toExternal(value.getString());
+      } else {
+        throw new ClassCastException();
+      }
+    } else if (typeKind instanceof SimpleTypeKind.PATH) {
+      SimpleTypeKind.PATH pathKind = (SimpleTypeKind.PATH)typeKind;
+      if (propertyType == PropertyType.PATH) {
+        return (E)pathKind.toExternal(value.getString());
+      } else {
+        throw new ClassCastException();
+      }
+    } else if (typeKind instanceof SimpleTypeKind.LONG) {
+      SimpleTypeKind.LONG longKind = (SimpleTypeKind.LONG)typeKind;
+      if (propertyType == PropertyType.LONG) {
+        return (E)longKind.toExternal(value.getLong());
+      } else {
+        throw new ClassCastException();
+      }
+    } else if (typeKind instanceof SimpleTypeKind.DOUBLE) {
+      SimpleTypeKind.DOUBLE doubleKind = (SimpleTypeKind.DOUBLE)typeKind;
+      if (propertyType == PropertyType.DOUBLE) {
+        return (E)doubleKind.toExternal(value.getDouble());
+      } else {
+        throw new ClassCastException();
+      }
+    } else if (typeKind instanceof SimpleTypeKind.BOOLEAN) {
+      SimpleTypeKind.BOOLEAN booleanKind = (SimpleTypeKind.BOOLEAN)typeKind;
+      if (propertyType == PropertyType.BOOLEAN) {
+        return (E)booleanKind.toExternal(value.getBoolean());
+      } else {
+        throw new ClassCastException();
+      }
+    } else if (typeKind instanceof SimpleTypeKind.DATE) {
+      SimpleTypeKind.DATE dateKind = (SimpleTypeKind.DATE)typeKind;
+      if (propertyType == PropertyType.DATE) {
+        return (E)dateKind.toExternal(value.getDate().getTime());
+      } else {
+        throw new ClassCastException();
       }
     } else {
-      switch (propertyType) {
-        case PropertyType.BOOLEAN:
-          return (E)Boolean.valueOf(value.getBoolean());
-        case PropertyType.LONG:
-          return (E)Integer.valueOf((int)value.getLong());
-        case PropertyType.DOUBLE:
-          return (E)Double.valueOf(value.getDouble());
-        case PropertyType.NAME:
-        case PropertyType.PATH:
-        case PropertyType.STRING:
-          return (E)value.getString();
-        case PropertyType.BINARY:
-          return (E)value.getStream();
-        case PropertyType.DATE:
-          return (E)value.getDate().getTime();
-        default:
-          throw new AssertionError("Property type " + propertyType + " not handled");
-      }
+      throw new AssertionError("Property type " + propertyType + " not handled");
     }
   }
 
-  public final <E> Value get(ValueFactory valueFactory, E o, SimpleType<E> type) throws ValueFormatException {
+  <E> Value get(ValueFactory valueFactory, E o, SimpleType<E> type) throws ValueFormatException {
     SimpleTypeKind<E, ?> typeKind;
     if (type == null) {
       if (o instanceof String) {

@@ -19,10 +19,7 @@
 
 package org.chromattic.core.vt;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.ValueFormatException;
+import javax.jcr.*;
 import java.util.List;
 
 /**
@@ -30,6 +27,56 @@ import java.util.List;
  * @version $Revision$
  */
 public abstract class ValueType<V> {
+  
+  public static final ValueType<Object> DEFAULT = new ValueType<Object>() {
+    @Override
+    public List<Object> getDefaultValue() {
+      return null;
+    }
+
+    @Override
+    public boolean isPrimitive() {
+      return false;
+    }
+
+    @Override
+    public Object get(Value value) throws RepositoryException {
+      int propertyType = value.getType();
+      switch (propertyType) {
+        case PropertyType.BOOLEAN:
+          return Boolean.valueOf(value.getBoolean());
+        case PropertyType.LONG:
+          return Integer.valueOf((int)value.getLong());
+        case PropertyType.DOUBLE:
+          return Double.valueOf(value.getDouble());
+        case PropertyType.NAME:
+        case PropertyType.PATH:
+        case PropertyType.STRING:
+          return value.getString();
+        case PropertyType.BINARY:
+          return value.getStream();
+        case PropertyType.DATE:
+          return value.getDate().getTime();
+        default:
+          throw new AssertionError("Property type " + propertyType + " not handled");
+      }
+    }
+
+    @Override
+    public Value get(ValueFactory valueFactory, Object o) throws ValueFormatException {
+      return ValueMapper.instance.get(valueFactory, o, null);
+    }
+
+    @Override
+    public Class<Object> getObjectType() {
+      return Object.class;
+    }
+
+    @Override
+    public Class<?> getRealType() {
+      return Object.class;
+    }
+  };
 
   public abstract List<V> getDefaultValue();
 

@@ -23,12 +23,10 @@ import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.NoSuchPropertyException;
-import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
-import org.chromattic.core.vt.ValueMapper;
 import org.chromattic.core.vt.ValueType;
 
 import javax.jcr.Node;
@@ -160,12 +158,7 @@ class PersistentEntityContextState extends EntityContextState {
 
         //
         if (jcrValue != null) {
-          if (vt != null) {
-            value = vt.get(jcrValue);
-          } else {
-            SimpleType<V> tmp = null;
-            value = ValueMapper.instance.get(jcrValue, tmp);
-          }
+          value = vt.get(jcrValue);
 
           //
           if (propertyCache != null) {
@@ -277,11 +270,7 @@ class PersistentEntityContextState extends EntityContextState {
       Value jcrValue;
       if (propertyValue != null) {
         ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
-        if (vt != null) {
-          jcrValue = vt.get(valueFactory, propertyValue);
-        } else {
-          jcrValue = ValueMapper.instance.get(valueFactory, propertyValue, null);
-        }
+        jcrValue = vt.get(valueFactory, propertyValue);
       } else {
         jcrValue = null;
       }
