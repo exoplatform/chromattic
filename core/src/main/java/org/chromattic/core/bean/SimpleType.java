@@ -28,7 +28,6 @@ import java.util.Map;
  * A simple type as exposed to the programming model. A simple type is defined by:
  *
  * <ul>
- *   <li>The simple type kind which is the underlying data semantic</li>
  *   <li>The object type which is java type for object representing the type</li>
  *   <li>The real type which is the java type as wanted by the model meta data</li>
  *   <li>The primitiveness of the type</li>
@@ -43,7 +42,7 @@ import java.util.Map;
 public class SimpleType<E> {
 
   /** . */
-  public static SimpleType<String> PATH = new SimpleType<String>(String.class);
+  public final static SimpleType<String> PATH = new SimpleType<String>(String.class);
 
   /** . */
   public static final SimpleType<Integer> PRIMITIVE_INTEGER = new SimpleType<Integer>(int.class);
