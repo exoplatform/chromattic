@@ -36,7 +36,7 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractTypeMappingVisitor {
+public class BaseTypeMappingVisitor {
 
   /** . */
   private final Set<ClassTypeInfo> types;
@@ -47,9 +47,9 @@ public abstract class AbstractTypeMappingVisitor {
   /** . */
   private final Map<String, NodeTypeMapping> mappings;
 
-  public AbstractTypeMappingVisitor() {
+  public BaseTypeMappingVisitor() {
     types = new HashSet<ClassTypeInfo>();
-    builder = new TypeMappingBuilder(new BeanInfoFactory());
+    builder = new TypeMappingBuilder(new BeanInfoFactory(), false);
     mappings = new HashMap<String, NodeTypeMapping>();
   }
 
@@ -65,27 +65,27 @@ public abstract class AbstractTypeMappingVisitor {
     return mappings.get(type.getName());
   }
 
-  protected abstract void startMapping(NodeTypeMapping mapping);
+  protected void startMapping(NodeTypeMapping mapping) {}
 
-  protected abstract void propertyMapping(JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo);
+  protected void propertyMapping(JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {}
 
-  protected abstract void propertyMapMapping();
+  protected void propertyMapMapping() {}
 
-  protected abstract void oneToManyByReference(String relatedName);
+  protected void oneToManyByReference(String relatedName) {}
 
-  protected abstract void oneToManyByPath(String relatedName);
+  protected void oneToManyByPath(String relatedName) {}
 
-  protected abstract void oneToManyHierarchic(ClassTypeInfo relatedType);
+  protected void oneToManyHierarchic(ClassTypeInfo relatedType) {}
 
-  protected abstract void manyToOneByReference(String name, ClassTypeInfo relatedType);
+  protected void manyToOneByReference(String name, ClassTypeInfo relatedType) {}
 
-  protected abstract void manyToOneByPath(String name, ClassTypeInfo relatedType);
+  protected void manyToOneByPath(String name, ClassTypeInfo relatedType) {}
 
-  protected abstract void manyToOneHierarchic(ClassTypeInfo relatedType);
+  protected void manyToOneHierarchic(ClassTypeInfo relatedType) {}
 
-  protected abstract void oneToOneHierarchic(String name, ClassTypeInfo relatedType);
+  protected void oneToOneHierarchic(String name, ClassTypeInfo relatedType) {}
 
-  protected abstract void endMapping();
+  protected void endMapping() {}
 
   public void generate() {
 
@@ -123,17 +123,13 @@ public abstract class AbstractTypeMappingVisitor {
               if (valueInfo instanceof SimpleValueInfo) {
                 SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
                 SimpleType simpleType = simpleValueInfo.getSimpleType();
-/*
-                SimpleTypeKind simpleTypeKind = simpleType.getKind();
-                if (simpleTypeKind instanceof SimpleTypeKind.STRING) {
-                  // ok
-                } else if (simpleTypeKind instanceof SimpleTypeKind.PATH) {
-                  // ok
+                if (simpleType == SimpleType.STRING) {
+                  // OK
+                } else if (simpleType == SimpleType.PATH) {
+                  // OK
                 } else {
-                  throw new AssertionError(mapping.getObjectClass().toString() + " wrong simple kind "+ simpleTypeKind);
+                  throw new AssertionError(mapping.getObjectClass().toString() + " wrong simple type "+ simpleType);
                 }
-*/
-                throw new AssertionError("fixme");
               } else {
                 throw new AssertionError();
               }

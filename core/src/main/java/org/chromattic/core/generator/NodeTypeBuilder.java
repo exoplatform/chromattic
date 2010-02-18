@@ -33,7 +33,7 @@ import javax.jcr.PropertyType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeTypeBuilder extends AbstractTypeMappingVisitor {
+public class NodeTypeBuilder extends BaseTypeMappingVisitor {
 
   /** . */
   private final NodeTypeVisitor builder;

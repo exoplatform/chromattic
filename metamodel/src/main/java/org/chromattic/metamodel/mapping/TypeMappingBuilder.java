@@ -49,8 +49,12 @@ public class TypeMappingBuilder {
   /** . */
   private final BeanInfoFactory beanInfoBuilder;
 
-  public TypeMappingBuilder(BeanInfoFactory beanInfoBuilder) {
+  /** . */
+  private final boolean processFormatter;
+
+  public TypeMappingBuilder(BeanInfoFactory beanInfoBuilder, boolean processFormatter) {
     this.beanInfoBuilder = beanInfoBuilder;
+    this.processFormatter = processFormatter;
   }
 
   public NodeTypeMapping build(ClassTypeInfo javaClass) {
@@ -368,8 +372,11 @@ public class TypeMappingBuilder {
       String nodeTypeName = primaryType.name();
 
       //
-      FormattedBy formattedBy = info.getAnnotation(FormattedBy.class);
-      Class<? extends ObjectFormatter> formatter = formattedBy != null ? formattedBy.value() : null;
+      Class<? extends ObjectFormatter> formatter = null;
+      if (processFormatter) {
+        FormattedBy formattedBy = info.getAnnotation(FormattedBy.class);
+        formatter = formattedBy != null ? formattedBy.value() : null;
+      }
 
       //
       return new PrimaryTypeMapping(

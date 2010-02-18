@@ -21,6 +21,7 @@ package org.chromattic.apt;
 
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
@@ -76,11 +77,15 @@ public class ChromatticProcessor extends AbstractProcessor {
   }
 
   private void process(RoundEnvironment roundEnv, Class<? extends Annotation> annotationClass) {
+
+    BaseTypeMappingVisitor visitor = new BaseTypeMappingVisitor();  
+
     Set<? extends Element> elts = roundEnv.getElementsAnnotatedWith(annotationClass);
     for (Element elt : elts) {
       TypeElement typeElt = (TypeElement)elt;
       ClassTypeInfo cti = (ClassTypeInfo)domain.getType(typeElt);
       processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "About to process the type " + cti.getName());
+      visitor.addType(cti);
       Filer filer = processingEnv.getFiler();
       try {
         JavaFileObject jfo = filer.createSourceFile(typeElt.getQualifiedName() + "_Chromattic", typeElt);
@@ -94,6 +99,9 @@ public class ChromatticProcessor extends AbstractProcessor {
         throw new RuntimeException(e);
       }
     }
+
+    // Validate model
+    visitor.generate();
   }
 
   private void writeClass(RoundEnvironment roundEnv, StringBuilder out, ClassTypeInfo cti) {
