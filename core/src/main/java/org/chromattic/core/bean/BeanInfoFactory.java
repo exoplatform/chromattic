@@ -20,7 +20,6 @@
 package org.chromattic.core.bean;
 
 import org.chromattic.api.BuilderException;
-import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.Path;
 import org.reflext.api.*;
@@ -39,15 +38,10 @@ import java.util.*;
 public class BeanInfoFactory {
 
   /** . */
-  private static final ObjectSimpleType<String> PATH = new ObjectSimpleType<String>(BaseSimpleTypes.PATH, String.class);
+  private static Map<String, SimpleTypeKind<?, ?>> types;
 
-  /** . */
-  private Map<String, SimpleTypeKind<?, ?>> types;
-
-  public BeanInfoFactory(Map<String, SimpleTypeKind<?, ?>> types) {
-
-    // Clone and add base types
-    types = new HashMap<String, SimpleTypeKind<?,?>>(types);
+  static {
+    types = new HashMap<String, SimpleTypeKind<?,?>>();
     types.put(String.class.getName(), BaseSimpleTypes.STRING);
     types.put(Date.class.getName(), BaseSimpleTypes.DATE);
     types.put(InputStream.class.getName(), BaseSimpleTypes.STREAM);
@@ -56,13 +50,9 @@ public class BeanInfoFactory {
     types.put(Long.class.getName(), BaseSimpleTypes.LONG);
     types.put(Float.class.getName(), BaseSimpleTypes.FLOAT);
     types.put(Double.class.getName(), BaseSimpleTypes.DOUBLE);
-
-    //
-    this.types = types;
   }
 
   public BeanInfoFactory() {
-    this(new HashMap<String, SimpleTypeKind<?,?>>());
   }
 
   public BeanInfo build(ClassTypeInfo typeInfo) {
@@ -320,7 +310,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Boolean>(typeInfo, PrimitiveSimpleType.BOOLEAN, defaultBoolean);
+          return new SimpleValueInfo<Boolean>(typeInfo, SimpleType.BOOLEAN, defaultBoolean);
         }
         case INT: {
           List<Integer> defaultInteger = null;
@@ -331,7 +321,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Integer>(typeInfo, PrimitiveSimpleType.INT, defaultInteger);
+          return new SimpleValueInfo<Integer>(typeInfo, SimpleType.INT, defaultInteger);
         }
         case LONG: {
           List<Long> defaultLong = null;
@@ -342,7 +332,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Long>(typeInfo, PrimitiveSimpleType.LONG, defaultLong);
+          return new SimpleValueInfo<Long>(typeInfo, SimpleType.LONG, defaultLong);
         }
         case FLOAT: {
           List<Float> defaultFloat = null;
@@ -353,7 +343,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Float>(typeInfo, PrimitiveSimpleType.FLOAT, defaultFloat);
+          return new SimpleValueInfo<Float>(typeInfo, SimpleType.FLOAT, defaultFloat);
         }
         case DOUBLE: {
           List<Double> defaultDouble = null;
@@ -364,7 +354,7 @@ public class BeanInfoFactory {
               throw new BuilderException();
             }
           }
-          return new SimpleValueInfo<Double>(typeInfo, PrimitiveSimpleType.DOUBLE, defaultDouble);
+          return new SimpleValueInfo<Double>(typeInfo, SimpleType.DOUBLE, defaultDouble);
         }
         default:
           throw new AssertionError();
@@ -379,17 +369,10 @@ public class BeanInfoFactory {
       switch (typeInfo.getKind()) {
         case CLASS:
         case INTERFACE:
-          for (SimpleTypeKind<?, ?> entry : types.values()) {
-            if (entry.getExternalType().getName().equals(typeInfo.getName())) {
-              stk = entry;
-              break;
-            }
-          }
+          stk = types.get(typeInfo.getName());
           break;
         case ENUM:
           stk = new StringEnumTypeKind((Class)typeInfo.getType());
-          break;
-        case ANNOTATION:
           break;
       }
 
@@ -404,7 +387,7 @@ public class BeanInfoFactory {
 
   private <E> SimpleValueInfo<E> foo(ClassTypeInfo typeInfo, SimpleTypeKind<E, ?> stk) {
     Class<E> a = stk.getExternalType();
-    SimpleType<E> st = new ObjectSimpleType<E>(stk, a);
+    SimpleType<E> st = new SimpleType<E>(stk, a);
     return new SimpleValueInfo<E>(typeInfo, st, null);
   }
 
@@ -413,7 +396,7 @@ public class BeanInfoFactory {
       throw new NullPointerException();
     }
     if (typeInfo.getName().equals(String.class.getName())) {
-      return new SimpleValueInfo<String>(typeInfo, PATH, null);
+      return new SimpleValueInfo<String>(typeInfo, SimpleType.PATH, null);
     } else {
       throw new IllegalArgumentException("Simple value of type path must have a type of " + String.class.getName());
     }

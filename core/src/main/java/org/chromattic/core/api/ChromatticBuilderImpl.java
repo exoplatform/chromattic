@@ -23,7 +23,6 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
-import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.core.bean.BeanInfoFactory;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.jcr.SessionLifeCycle;
@@ -60,16 +59,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   @Override
   protected Chromattic boot(Options options, Set<Class> classes) throws BuilderException {
 
-    // For now empty custom types
-    Map<String, SimpleTypeKind<?, ?>> types = new HashMap<String, SimpleTypeKind<?,?>>();
-//    for (Class<? extends SimpleTypeKind<?, ?>> customType : this.customTypeClasses.values()) {
-//
-//      Constructor<? extends SimpleTypeKind<?, ?>> ctor = customType.getConstructor();
-//      SimpleTypeKind<?, ?> type = ctor.newInstance();
-//      Class<?> key = type.getExternalType();
-//      types.put(key.getName(), type);
-//    }
-    BeanInfoFactory beanInfoBuilder = new BeanInfoFactory(types);
+    BeanInfoFactory beanInfoBuilder = new BeanInfoFactory();
 
     //
     TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());

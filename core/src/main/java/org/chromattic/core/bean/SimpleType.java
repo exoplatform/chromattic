@@ -19,8 +19,6 @@
 
 package org.chromattic.core.bean;
 
-import org.chromattic.core.bean.SimpleTypeKind;
-
 /**
  * A simple type as exposed to the programming model. A simple type is defined by:
  *
@@ -37,7 +35,25 @@ import org.chromattic.core.bean.SimpleTypeKind;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class SimpleType<E> {
+public class SimpleType<E> {
+
+  /** . */
+  public static SimpleType<String> PATH = new SimpleType<String>(BaseSimpleTypes.PATH, String.class);
+
+  /** . */
+  public static final SimpleType<Integer> INT = new SimpleType<Integer>(BaseSimpleTypes.INT, int.class);
+
+  /** . */
+  public static final SimpleType<Boolean> BOOLEAN = new SimpleType<Boolean>(BaseSimpleTypes.BOOLEAN, boolean.class);
+
+  /** . */
+  public static final SimpleType<Long> LONG = new SimpleType<Long>(BaseSimpleTypes.LONG, long.class);
+
+  /** . */
+  public static final SimpleType<Double> DOUBLE = new SimpleType<Double>(BaseSimpleTypes.DOUBLE, double.class);
+
+  /** . */
+  public static final SimpleType<Float> FLOAT = new SimpleType<Float>(BaseSimpleTypes.FLOAT, float.class);
 
   /** . */
   private final SimpleTypeKind<E, ?> kind;
@@ -48,13 +64,41 @@ public abstract class SimpleType<E> {
   /** . */
   private final Class<?> realType;
 
-  SimpleType(SimpleTypeKind<E, ?> kind, Class<E> objectType, Class<?> realType) {
+  public SimpleType(SimpleTypeKind<E, ?> kind, Class<?> realType) {
+
+    //
+    Class<?> objectType;
+    if (realType.isPrimitive()) {
+      if (realType == int.class) {
+        objectType = Integer.class;
+      } else if (realType == boolean.class) {
+        objectType = Boolean.class;
+      } else if (realType == long.class) {
+        objectType = Long.class;
+      } else if (realType == float.class) {
+        objectType = Float.class;
+      } else if (realType == double.class) {
+        objectType = Double.class;
+      } else {
+        throw new UnsupportedOperationException();
+      }
+    } else {
+      objectType = realType;
+    }
+
+    // Do some check
+    if (!objectType.equals(kind.getExternalType())) {
+      throw new AssertionError();
+    }
+
     this.kind = kind;
-    this.objectType = objectType;
+    this.objectType = (Class<E>)objectType;
     this.realType = realType;
   }
 
-  public abstract boolean isPrimitive();
+  public boolean isPrimitive() {
+    return realType.isPrimitive();
+  }
 
   public SimpleTypeKind<E, ?> getKind() {
     return kind;
