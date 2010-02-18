@@ -37,21 +37,6 @@ import java.util.*;
  */
 public class BeanInfoFactory {
 
-  /** . */
-  private static Map<String, SimpleTypeKind<?, ?>> types;
-
-  static {
-    types = new HashMap<String, SimpleTypeKind<?,?>>();
-    types.put(String.class.getName(), BaseSimpleTypes.STRING);
-    types.put(Date.class.getName(), BaseSimpleTypes.DATE);
-    types.put(InputStream.class.getName(), BaseSimpleTypes.STREAM);
-    types.put(Boolean.class.getName(), BaseSimpleTypes.BOOLEAN);
-    types.put(Integer.class.getName(), BaseSimpleTypes.INT);
-    types.put(Long.class.getName(), BaseSimpleTypes.LONG);
-    types.put(Float.class.getName(), BaseSimpleTypes.FLOAT);
-    types.put(Double.class.getName(), BaseSimpleTypes.DOUBLE);
-  }
-
   public BeanInfoFactory() {
   }
 
