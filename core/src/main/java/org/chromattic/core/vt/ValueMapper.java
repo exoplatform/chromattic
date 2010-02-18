@@ -20,8 +20,6 @@
 package org.chromattic.core.vt;
 
 import org.chromattic.core.bean.SimpleTypeKind;
-import org.chromattic.core.bean.BaseSimpleTypes;
-import org.chromattic.core.bean.SimpleType;
 
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
@@ -44,9 +42,8 @@ class ValueMapper {
   private ValueMapper() {
   }
 
-  <E> E get(Value value, SimpleType<E> wantedType) throws RepositoryException {
+  <E> E get(Value value, SimpleTypeKind<E, ?> typeKind) throws RepositoryException {
     int propertyType = value.getType();
-    SimpleTypeKind<E, ?> typeKind = wantedType.getKind();
     if (typeKind instanceof SimpleTypeKind.STREAM) {
       SimpleTypeKind.STREAM<?> streamKind = (SimpleTypeKind.STREAM<?>)typeKind;
       if (propertyType == PropertyType.BINARY) {
@@ -101,33 +98,7 @@ class ValueMapper {
     }
   }
 
-  <E> Value get(ValueFactory valueFactory, E o, SimpleType<E> type) throws ValueFormatException {
-    SimpleTypeKind<E, ?> typeKind;
-    if (type == null) {
-      if (o instanceof String) {
-        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.STRING;
-      } else if (o instanceof Integer) {
-        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.INT;
-      } else if (o instanceof Long) {
-        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.LONG;
-      } else if (o instanceof Date) {
-        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.DATE;
-      } else if (o instanceof Double) {
-        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.DOUBLE;
-      } else if (o instanceof Float) {
-        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.FLOAT;
-      } else if (o instanceof InputStream) {
-        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.STREAM;
-      } else if (o instanceof Boolean) {
-        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.BOOLEAN;
-      } else {
-        throw new UnsupportedOperationException("Type " + o.getClass().getName() + " is not accepted");
-      }
-    } else {
-      typeKind = type.getKind();
-    }
-
-    //
+  <E> Value get(ValueFactory valueFactory, E o, SimpleTypeKind<? extends E, ?> typeKind) throws ValueFormatException {
     if (typeKind instanceof SimpleTypeKind.STRING) {
       SimpleTypeKind.STRING<E> stringKind = (SimpleTypeKind.STRING<E>)typeKind;
       String s = stringKind.toInternal(o);
@@ -159,7 +130,7 @@ class ValueMapper {
       Boolean b = booleanKind.toInternal(o);
       return valueFactory.createValue(b);
     } else {
-      throw new UnsupportedOperationException("Simple type " + type + " not accepted");
+      throw new UnsupportedOperationException("Simple type kind " + typeKind + " not accepted");
     }
   }
 }

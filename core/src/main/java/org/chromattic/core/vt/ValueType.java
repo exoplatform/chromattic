@@ -19,7 +19,12 @@
 
 package org.chromattic.core.vt;
 
+import org.chromattic.core.bean.BaseSimpleTypes;
+import org.chromattic.core.bean.SimpleTypeKind;
+
 import javax.jcr.*;
+import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,7 +69,29 @@ public abstract class ValueType<V> {
 
     @Override
     public Value get(ValueFactory valueFactory, Object o) throws ValueFormatException {
-      return ValueMapper.instance.get(valueFactory, o, null);
+
+      SimpleTypeKind<?, ?> typeKind;
+      if (o instanceof String) {
+        typeKind = BaseSimpleTypes.STRING;
+      } else if (o instanceof Integer) {
+        typeKind = BaseSimpleTypes.INT;
+      } else if (o instanceof Long) {
+        typeKind = BaseSimpleTypes.LONG;
+      } else if (o instanceof Date) {
+        typeKind = BaseSimpleTypes.DATE;
+      } else if (o instanceof Double) {
+        typeKind = BaseSimpleTypes.DOUBLE;
+      } else if (o instanceof Float) {
+        typeKind = BaseSimpleTypes.FLOAT;
+      } else if (o instanceof InputStream) {
+        typeKind = BaseSimpleTypes.STREAM;
+      } else if (o instanceof Boolean) {
+        typeKind = BaseSimpleTypes.BOOLEAN;
+      } else {
+        throw new UnsupportedOperationException("Type " + o.getClass().getName() + " is not accepted");
+      }
+
+      return ValueMapper.instance.get(valueFactory, o, typeKind);
     }
 
     @Override

@@ -48,12 +48,12 @@ public class ValueTypeFactory {
 
       @Override
       public V get(Value value) throws RepositoryException {
-        return ValueMapper.instance.get(value, sv.getSimpleType());
+        return ValueMapper.instance.get(value, sv.getSimpleType().getKind());
       }
 
       @Override
       public Value get(ValueFactory valueFactory, V o) throws ValueFormatException {
-        return ValueMapper.instance.get(valueFactory, o, sv.getSimpleType());
+        return ValueMapper.instance.get(valueFactory, o, sv.getSimpleType().getKind());
       }
 
       @Override
