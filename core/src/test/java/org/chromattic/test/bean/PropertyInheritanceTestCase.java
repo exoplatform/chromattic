@@ -19,10 +19,10 @@
 
 package org.chromattic.test.bean;
 
-import org.chromattic.core.bean.BeanInfoFactory;
+import org.chromattic.metamodel.bean.BeanInfoFactory;
 import org.reflext.api.ClassTypeInfo;
-import org.chromattic.core.bean.BeanInfo;
-import org.chromattic.core.bean.AccessMode;
+import org.chromattic.metamodel.bean.BeanInfo;
+import org.chromattic.metamodel.bean.AccessMode;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

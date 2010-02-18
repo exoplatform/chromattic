@@ -19,7 +19,8 @@
 
 package org.chromattic.core.vt;
 
-import org.chromattic.core.bean.*;
+import org.chromattic.metamodel.bean.SimpleType;
+import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.reflext.api.ClassTypeInfo;
 
 import java.io.InputStream;

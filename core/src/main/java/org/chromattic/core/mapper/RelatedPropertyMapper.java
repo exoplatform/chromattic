@@ -21,7 +21,7 @@ package org.chromattic.core.mapper;
 
 
 import org.chromattic.core.ObjectContext;
-import org.chromattic.core.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
 
 import java.util.Set;
 

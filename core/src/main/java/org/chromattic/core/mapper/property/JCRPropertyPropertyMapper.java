@@ -21,9 +21,8 @@ package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.EntityContext;
-import org.chromattic.core.bean.SingleValuedPropertyInfo;
-import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.core.vt.ValueType;
 import org.chromattic.core.vt.ValueTypeFactory;
 

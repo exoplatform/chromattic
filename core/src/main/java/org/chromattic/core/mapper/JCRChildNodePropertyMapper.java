@@ -21,8 +21,8 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.EmbeddedContext;
-import org.chromattic.core.bean.BeanValueInfo;
-import org.chromattic.core.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

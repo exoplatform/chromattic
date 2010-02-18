@@ -21,8 +21,8 @@ package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.bean.MapPropertyInfo;
-import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.metamodel.bean.MapPropertyInfo;
+import org.chromattic.metamodel.bean.SimpleValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

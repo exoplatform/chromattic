@@ -22,8 +22,8 @@ package org.chromattic.core.mapper.onetomany.reference;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
-import org.chromattic.core.bean.CollectionPropertyInfo;
-import org.chromattic.core.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.CollectionPropertyInfo;
+import org.chromattic.metamodel.bean.BeanValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

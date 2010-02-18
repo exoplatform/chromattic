@@ -20,7 +20,7 @@
 package org.chromattic.core;
 
 import org.chromattic.api.Status;
-import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 import org.chromattic.core.vt.ValueType;

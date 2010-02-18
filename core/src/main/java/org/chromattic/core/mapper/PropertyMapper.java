@@ -21,7 +21,7 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.core.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
 import org.reflext.api.MethodInfo;
 
 import java.lang.reflect.Method;

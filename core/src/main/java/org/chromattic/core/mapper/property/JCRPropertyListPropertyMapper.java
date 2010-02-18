@@ -21,12 +21,11 @@ package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ListType;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.core.bean.SimpleValueInfo;
-import org.chromattic.core.bean.MultiValuedPropertyInfo;
-import org.chromattic.core.bean.ArrayPropertyInfo;
-import org.chromattic.core.bean.ListPropertyInfo;
+import org.chromattic.metamodel.bean.SimpleValueInfo;
+import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.ArrayPropertyInfo;
+import org.chromattic.metamodel.bean.ListPropertyInfo;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.EntityContext;
 import org.chromattic.core.vt.ValueType;
 import org.chromattic.core.vt.ValueTypeFactory;
 

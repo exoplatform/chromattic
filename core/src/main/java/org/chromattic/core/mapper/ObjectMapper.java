@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.core.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.ProxyFactory;
 import org.chromattic.api.NameConflictResolution;

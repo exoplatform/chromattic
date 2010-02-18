@@ -36,6 +36,11 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.metamodel</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
     </dependency>
 

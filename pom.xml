@@ -116,6 +116,12 @@
 
       <dependency>
         <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.metamodel</artifactId>
+        <version>1.0.0-cr2-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.chromattic</groupId>
         <artifactId>chromattic.core</artifactId>
         <version>1.0.0-cr2-SNAPSHOT</version>
       </dependency>
@@ -364,6 +370,7 @@
            <module>api</module>
            <module>spi</module>
            <module>common</module>
+           <module>metamodel</module>
            <module>cglib</module>
            <module>exo</module>
            <module>core</module>
@@ -380,6 +387,7 @@
            <module>api</module>
            <module>spi</module>
            <module>common</module>
+           <module>metamodel</module>
            <module>apt</module>
            <module>cglib</module>
            <module>exo</module>

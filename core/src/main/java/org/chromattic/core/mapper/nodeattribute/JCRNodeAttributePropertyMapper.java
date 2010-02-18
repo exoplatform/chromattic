@@ -20,11 +20,11 @@
 package org.chromattic.core.mapper.nodeattribute;
 
 import org.chromattic.api.Status;
-import org.chromattic.core.NodeAttributeType;
+import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.EntityContext;
-import org.chromattic.core.bean.SingleValuedPropertyInfo;
-import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.SimpleValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

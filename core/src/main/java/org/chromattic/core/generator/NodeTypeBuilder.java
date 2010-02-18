@@ -20,9 +20,10 @@
 package org.chromattic.core.generator;
 
 import org.chromattic.common.collection.SetMap;
-import org.chromattic.core.bean.*;
-import org.chromattic.core.mapping.*;
-import org.chromattic.core.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.metamodel.mapping.*;
+import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.spi.jcr.NodeTypeVisitor;
 import org.reflext.api.ClassTypeInfo;
 

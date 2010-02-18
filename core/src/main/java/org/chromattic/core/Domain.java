@@ -23,7 +23,7 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
 import org.chromattic.core.mapper.ObjectMapper;
-import org.chromattic.core.mapping.NodeTypeMapping;
+import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.core.mapper.MapperBuilder;
 import org.chromattic.core.jcr.info.NodeInfoManager;
 import org.chromattic.core.query.QueryManager;
