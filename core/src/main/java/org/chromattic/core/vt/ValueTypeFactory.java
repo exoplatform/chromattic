@@ -19,12 +19,10 @@
 
 package org.chromattic.core.vt;
 
-import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.bean.*;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.ValueFormatException;
+import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,39 +32,38 @@ import java.util.List;
 public class ValueTypeFactory {
 
   public static <V> ValueType<V> create(final SimpleValueInfo<V> sv) {
-
-    return new ValueType<V>() {
-      @Override
-      public List<V> getDefaultValue() {
-        return sv.getDefaultValue();
-      }
-
-      @Override
-      public boolean isPrimitive() {
-        return sv.getSimpleType().isPrimitive();
-      }
-
-      @Override
-      public V get(Value value) throws RepositoryException {
-        return ValueMapper.instance.get(value, sv.getSimpleType().getKind());
-      }
-
-      @Override
-      public Value get(ValueFactory valueFactory, V o) throws ValueFormatException {
-        return ValueMapper.instance.get(valueFactory, o, sv.getSimpleType().getKind());
-      }
-
-      @Override
-      public Class<V> getObjectType() {
-        return sv.getSimpleType().getObjectType();
-      }
-
-      @Override
-      public Class<?> getRealType() {
-        return sv.getSimpleType().getRealType();
-      }
-    };
+    return create(sv, sv.getSimpleType().getKind());
 
   }
 
+  private static <E, I> ValueType<E> create(SimpleValueInfo<E> sv, SimpleTypeKind<E, I> kind) {
+    ValueType vt;
+    if (kind == BaseSimpleTypes.STRING) {
+      vt = new BaseValueType.STRING.TO_STRING((List<String>)sv.getDefaultValue(), (SimpleType<String>)sv.getSimpleType());
+    } else if (kind == BaseSimpleTypes.PATH) {
+      vt = new BaseValueType.PATH.TO_STRING((List<String>)sv.getDefaultValue(), (SimpleType<String>)sv.getSimpleType());
+    } else if (kind == BaseSimpleTypes.INT) {
+      vt = new BaseValueType.LONG.TO_INT((List<Integer>)sv.getDefaultValue(), (SimpleType<Integer>)sv.getSimpleType());
+    } else if (kind == BaseSimpleTypes.BOOLEAN) {
+      vt = new BaseValueType.BOOLEAN.TO_BOOLEAN((List<Boolean>)sv.getDefaultValue(), (SimpleType<Boolean>)sv.getSimpleType());
+    } else if (kind == BaseSimpleTypes.LONG) {
+      vt = new BaseValueType.LONG.TO_LONG((List<Long>)sv.getDefaultValue(), (SimpleType<Long>)sv.getSimpleType());
+    } else if (kind == BaseSimpleTypes.DATE) {
+      vt = new BaseValueType.DATE.TO_DATE((List<Date>)sv.getDefaultValue(), (SimpleType<Date>)sv.getSimpleType());
+    } else if (kind == BaseSimpleTypes.DOUBLE) {
+      vt = new BaseValueType.DOUBLE.TO_DOUBLE((List<Double>)sv.getDefaultValue(), (SimpleType<Double>)sv.getSimpleType()); 
+    } else if (kind == BaseSimpleTypes.FLOAT) {
+      vt = new BaseValueType.DOUBLE.TO_FLOAT((List<Float>)sv.getDefaultValue(), (SimpleType<Float>)sv.getSimpleType());
+    } else if (kind == BaseSimpleTypes.STREAM) {
+      vt = new BaseValueType.STREAM.TO_STREAM((List<InputStream>)sv.getDefaultValue(), (SimpleType<InputStream>)sv.getSimpleType());
+    } else if (kind instanceof StringEnumTypeKind) {
+      StringEnumTypeKind setk = (StringEnumTypeKind)kind;
+      vt = new StringEnumValueType(sv.getDefaultValue(), sv.getSimpleType(), setk.getExternalType());
+    } else {
+      throw new AssertionError();
+    }
+
+    //
+    return (ValueType<E>)vt;
+  }
 }

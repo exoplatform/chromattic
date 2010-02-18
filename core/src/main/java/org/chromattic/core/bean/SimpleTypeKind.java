@@ -91,10 +91,6 @@ public abstract class SimpleTypeKind<E, I> {
     return externalType;
   }
 
-  public abstract E toExternal(I internal);
-
-  public abstract I toInternal(E external);
-
   public abstract static class STRING<E> extends SimpleTypeKind<E, String> {
     protected STRING(Class<E> externalType) {
       super(externalType, String.class);

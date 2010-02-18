@@ -16,21 +16,39 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.bean;
+
+package org.chromattic.core.vt;
+
+import org.chromattic.core.bean.SimpleType;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class StringEnumTypeKind<E extends Enum<E>> extends SimpleTypeKind.STRING<E> {
+public class StringEnumValueType<E extends Enum<E>> extends BaseValueType.STRING<E> {
 
-  public StringEnumTypeKind(Class<E> externalType) {
-    super(externalType);
+  /** . */
+  private final Class<E> externalType;
 
-    //
-    if (!externalType.isEnum()) {
-      throw new IllegalArgumentException("Provided class must be an enum");
+  public StringEnumValueType(List<E> defaultValues, SimpleType<E> eSimpleType, Class<E> externalType) {
+    super(defaultValues, eSimpleType);
+    this.externalType = externalType;
+  }
+
+  @Override
+  public E toExternal(String internal) {
+    try {
+      return Enum.valueOf(externalType, internal);
+    }
+    catch (IllegalArgumentException e) {
+      throw new IllegalStateException("Enum value cannot be determined from the stored value", e);
     }
   }
 
+  @Override
+  public String toInternal(E external) {
+    return external.name();
+  }
 }

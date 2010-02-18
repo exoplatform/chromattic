@@ -20,7 +20,7 @@
 package org.chromattic.core.vt;
 
 import org.chromattic.core.bean.BaseSimpleTypes;
-import org.chromattic.core.bean.SimpleTypeKind;
+import org.chromattic.core.bean.SimpleType;
 
 import javax.jcr.*;
 import java.io.InputStream;
@@ -67,31 +67,40 @@ public abstract class ValueType<V> {
       }
     }
 
+    private final BaseValueType STRING = new BaseValueType.STRING.TO_STRING(null, new SimpleType<String>(BaseSimpleTypes.STRING, String.class));
+    private final BaseValueType INT = new BaseValueType.LONG.TO_INT(null, new SimpleType<Integer>(BaseSimpleTypes.INT, Integer.class));
+    private final BaseValueType LONG = new BaseValueType.LONG.TO_LONG(null, new SimpleType<Long>(BaseSimpleTypes.LONG, Long.class));
+    private final BaseValueType DATE = new BaseValueType.DATE.TO_DATE(null, new SimpleType<Date>(BaseSimpleTypes.DATE, Date.class));
+    private final BaseValueType DOUBLE = new BaseValueType.DOUBLE.TO_DOUBLE(null, new SimpleType<Double>(BaseSimpleTypes.DOUBLE, Double.class));
+    private final BaseValueType FLOAT = new BaseValueType.DOUBLE.TO_FLOAT(null, new SimpleType<Float>(BaseSimpleTypes.FLOAT, Float.class));
+    private final BaseValueType STREAM = new BaseValueType.STREAM.TO_STREAM(null, new SimpleType<InputStream>(BaseSimpleTypes.STREAM, InputStream.class));
+    private final BaseValueType BOOLEAN = new BaseValueType.BOOLEAN.TO_BOOLEAN(null, new SimpleType<Boolean>(BaseSimpleTypes.BOOLEAN, Boolean.class));
+
     @Override
     public Value get(ValueFactory valueFactory, Object o) throws ValueFormatException {
 
-      SimpleTypeKind<?, ?> typeKind;
+      ValueType typeKind;
       if (o instanceof String) {
-        typeKind = BaseSimpleTypes.STRING;
+        typeKind = STRING;
       } else if (o instanceof Integer) {
-        typeKind = BaseSimpleTypes.INT;
+        typeKind = INT;
       } else if (o instanceof Long) {
-        typeKind = BaseSimpleTypes.LONG;
+        typeKind = LONG;
       } else if (o instanceof Date) {
-        typeKind = BaseSimpleTypes.DATE;
+        typeKind = DATE;
       } else if (o instanceof Double) {
-        typeKind = BaseSimpleTypes.DOUBLE;
+        typeKind = DOUBLE;
       } else if (o instanceof Float) {
-        typeKind = BaseSimpleTypes.FLOAT;
+        typeKind = FLOAT;
       } else if (o instanceof InputStream) {
-        typeKind = BaseSimpleTypes.STREAM;
+        typeKind = STREAM;
       } else if (o instanceof Boolean) {
-        typeKind = BaseSimpleTypes.BOOLEAN;
+        typeKind = BOOLEAN;
       } else {
         throw new UnsupportedOperationException("Type " + o.getClass().getName() + " is not accepted");
       }
 
-      return ValueMapper.instance.get(valueFactory, o, typeKind);
+      return typeKind.get(valueFactory, o);
     }
 
     @Override
