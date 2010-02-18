@@ -359,12 +359,12 @@ public class BeanInfoFactory {
       }
 
       //
-      return foo(typeInfo, (Class<?>)typeInfo.getType());
+      return foo(typeInfo);
     }
   }
 
-  private <E> SimpleValueInfo<E> foo(ClassTypeInfo typeInfo, Class<?> type) {
-    SimpleType<E> st = (SimpleType<E>)SimpleType.create(type);
+  private <E> SimpleValueInfo<E> foo(ClassTypeInfo typeInfo) {
+    SimpleType<E> st = (SimpleType<E>)SimpleType.create(typeInfo);
     return new SimpleValueInfo<E>(typeInfo, st, null);
   }
 

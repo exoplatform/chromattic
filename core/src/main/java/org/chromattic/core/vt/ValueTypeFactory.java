@@ -20,6 +20,7 @@
 package org.chromattic.core.vt;
 
 import org.chromattic.core.bean.*;
+import org.reflext.api.ClassTypeInfo;
 
 import java.io.InputStream;
 import java.util.Date;
@@ -37,28 +38,35 @@ public class ValueTypeFactory {
 
   private static <E> ValueType<E> create(SimpleValueInfo<E> sv, SimpleType<E> type) {
     ValueType vt;
-    if (type == SimpleType.STRING) {
-      vt = new BaseValueType.STRING.TO_STRING((List<String>)sv.getDefaultValue(), String.class);
-    } else if (type == SimpleType.PATH) {
-      vt = new BaseValueType.PATH.TO_STRING((List<String>)sv.getDefaultValue(), String.class);
-    } else if (type == SimpleType.INTEGER || type == SimpleType.PRIMITIVE_INTEGER) {
-      vt = new BaseValueType.LONG.TO_INT((List<Integer>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
-    } else if (type == SimpleType.BOOLEAN || type == SimpleType.PRIMITIVE_BOOLEAN) {
-      vt = new BaseValueType.BOOLEAN.TO_BOOLEAN((List<Boolean>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
-    } else if (type == SimpleType.LONG || type == SimpleType.PRIMITIVE_LONG) {
-      vt = new BaseValueType.LONG.TO_LONG((List<Long>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
-    } else if (type == SimpleType.DATE) {
-      vt = new BaseValueType.DATE.TO_DATE((List<Date>)sv.getDefaultValue(), Date.class);
-    } else if (type == SimpleType.DOUBLE || type == SimpleType.PRIMITIVE_DOUBLE) {
-      vt = new BaseValueType.DOUBLE.TO_DOUBLE((List<Double>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
-    } else if (type == SimpleType.FLOAT || type == SimpleType.PRIMITIVE_FLOAT) {
-      vt = new BaseValueType.DOUBLE.TO_FLOAT((List<Float>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
-    } else if (type == SimpleType.STREAM) {
-      vt = new BaseValueType.STREAM.TO_STREAM((List<InputStream>)sv.getDefaultValue(), InputStream.class);
+    if (type instanceof SimpleType.Base) {
+      SimpleType.Base base = (SimpleType.Base)type;
+      if (type == SimpleType.STRING) {
+        vt = new BaseValueType.STRING.TO_STRING((List<String>)sv.getDefaultValue(), String.class);
+      } else if (type == SimpleType.PATH) {
+        vt = new BaseValueType.PATH.TO_STRING((List<String>)sv.getDefaultValue(), String.class);
+      } else if (type == SimpleType.INTEGER || type == SimpleType.PRIMITIVE_INTEGER) {
+        vt = new BaseValueType.LONG.TO_INT((List<Integer>)sv.getDefaultValue(), base.getRealType());
+      } else if (type == SimpleType.BOOLEAN || type == SimpleType.PRIMITIVE_BOOLEAN) {
+        vt = new BaseValueType.BOOLEAN.TO_BOOLEAN((List<Boolean>)sv.getDefaultValue(), base.getRealType());
+      } else if (type == SimpleType.LONG || type == SimpleType.PRIMITIVE_LONG) {
+        vt = new BaseValueType.LONG.TO_LONG((List<Long>)sv.getDefaultValue(), base.getRealType());
+      } else if (type == SimpleType.DATE) {
+        vt = new BaseValueType.DATE.TO_DATE((List<Date>)sv.getDefaultValue(), Date.class);
+      } else if (type == SimpleType.DOUBLE || type == SimpleType.PRIMITIVE_DOUBLE) {
+        vt = new BaseValueType.DOUBLE.TO_DOUBLE((List<Double>)sv.getDefaultValue(), base.getRealType());
+      } else if (type == SimpleType.FLOAT || type == SimpleType.PRIMITIVE_FLOAT) {
+        vt = new BaseValueType.DOUBLE.TO_FLOAT((List<Float>)sv.getDefaultValue(), base.getRealType());
+      } else if (type == SimpleType.STREAM) {
+        vt = new BaseValueType.STREAM.TO_STREAM((List<InputStream>)sv.getDefaultValue(), InputStream.class);
+      } else {
+        throw new AssertionError();
+      }
     } else {
-      Class<?> realType = type.getRealType();
+      SimpleType.Enumerated enumerated = (SimpleType.Enumerated)type;
+      ClassTypeInfo cti = enumerated.getTypeInfo();
+      Class<?> realType = (Class<?>)cti.getType();
       if (realType.isEnum()) {
-        vt = new StringEnumValueType(sv.getDefaultValue(), sv.getSimpleType().getRealType());
+        vt = new StringEnumValueType(sv.getDefaultValue(), realType);
       } else {
         throw new UnsupportedOperationException("investigate later " + type);
       }
