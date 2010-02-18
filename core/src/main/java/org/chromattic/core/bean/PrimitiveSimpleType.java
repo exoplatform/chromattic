@@ -18,8 +18,6 @@
  */
 package org.chromattic.core.bean;
 
-import org.chromattic.core.bean.SimpleTypeKind;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -41,8 +39,8 @@ public class PrimitiveSimpleType<E> extends SimpleType<E> {
   /** . */
   public static final SimpleType<Float> FLOAT = new PrimitiveSimpleType<Float>(BaseSimpleTypes.FLOAT, Float.class, float.class);
 
-  public PrimitiveSimpleType(SimpleTypeKind<E, ?> kind, Class<E> javaType, Class<?> listElementType) {
-    super(kind, javaType, listElementType);
+  public PrimitiveSimpleType(SimpleTypeKind<E, ?> kind, Class<E> javaType, Class<?> realType) {
+    super(kind, javaType, realType);
   }
 
   @Override
