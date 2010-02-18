@@ -18,6 +18,7 @@
  */
 package org.chromattic.test.property;
 
+import junit.framework.AssertionFailedError;
 import org.chromattic.test.support.MultiValue;
 import org.chromattic.test.support.EventQueue;
 
@@ -46,14 +47,16 @@ public class SingleValuedMappedToSingleValuedTest extends AbstractSingleValuedTe
 
   protected void run() throws Exception {
     try {
-      assertNull(getter.invoke(o));
+      assertEquals(null, getter.invoke(o));
       assertFalse(primitive);
     }
     catch (InvocationTargetException e) {
       if (e.getCause() instanceof IllegalStateException) {
         assertTrue(primitive);
       } else {
-        fail();
+        AssertionFailedError afe = new AssertionFailedError();
+        afe.initCause(e);
+        throw afe;
       }
     }
     events.assertEmpty();

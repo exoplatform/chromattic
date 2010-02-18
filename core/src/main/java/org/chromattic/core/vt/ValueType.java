@@ -19,8 +19,6 @@
 
 package org.chromattic.core.vt;
 
-import org.chromattic.core.bean.SimpleType;
-
 import javax.jcr.*;
 import java.io.InputStream;
 import java.util.Date;
@@ -66,14 +64,14 @@ public abstract class ValueType<V> {
       }
     }
 
-    private final BaseValueType STRING = new BaseValueType.STRING.TO_STRING(null, SimpleType.STRING);
-    private final BaseValueType INT = new BaseValueType.LONG.TO_INT(null, SimpleType.INTEGER);
-    private final BaseValueType LONG = new BaseValueType.LONG.TO_LONG(null, SimpleType.LONG);
-    private final BaseValueType DATE = new BaseValueType.DATE.TO_DATE(null, SimpleType.DATE);
-    private final BaseValueType DOUBLE = new BaseValueType.DOUBLE.TO_DOUBLE(null, SimpleType.DOUBLE);
-    private final BaseValueType FLOAT = new BaseValueType.DOUBLE.TO_FLOAT(null, SimpleType.FLOAT);
-    private final BaseValueType STREAM = new BaseValueType.STREAM.TO_STREAM(null, SimpleType.STREAM);
-    private final BaseValueType BOOLEAN = new BaseValueType.BOOLEAN.TO_BOOLEAN(null, SimpleType.BOOLEAN);
+    private final BaseValueType STRING = new BaseValueType.STRING.TO_STRING(null, String.class);
+    private final BaseValueType INT = new BaseValueType.LONG.TO_INT(null, Integer.class);
+    private final BaseValueType LONG = new BaseValueType.LONG.TO_LONG(null, Long.class);
+    private final BaseValueType DATE = new BaseValueType.DATE.TO_DATE(null, Date.class);
+    private final BaseValueType DOUBLE = new BaseValueType.DOUBLE.TO_DOUBLE(null, Double.class);
+    private final BaseValueType FLOAT = new BaseValueType.DOUBLE.TO_FLOAT(null, Float.class);
+    private final BaseValueType STREAM = new BaseValueType.STREAM.TO_STREAM(null, InputStream.class);
+    private final BaseValueType BOOLEAN = new BaseValueType.BOOLEAN.TO_BOOLEAN(null, Boolean.class);
 
     @Override
     public Value get(ValueFactory valueFactory, Object o) throws ValueFormatException {

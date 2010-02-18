@@ -19,8 +19,6 @@
 
 package org.chromattic.core.vt;
 
-import org.chromattic.core.bean.SimpleType;
-
 import javax.jcr.*;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -37,11 +35,15 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
   private final List<E> defaultValues;
 
   /** . */
-  private final SimpleType<E> type;
+  private final Class<E> objectType;
 
-  protected BaseValueType(List<E> defaultValues, SimpleType<E> type) {
+  /** . */
+  private final Class<?> realType;
+
+  protected BaseValueType(List<E> defaultValues, Class<E> objectType, Class<?> realType) {
     this.defaultValues = defaultValues;
-    this.type = type;
+    this.objectType = objectType;
+    this.realType = realType;
   }
 
   @Override
@@ -51,7 +53,7 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
 
   @Override
   public boolean isPrimitive() {
-    return type.isPrimitive();
+    return realType.isPrimitive();
   }
 
   public abstract E toExternal(I internal);
@@ -60,19 +62,19 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
 
   @Override
   public Class<E> getObjectType() {
-    return type.getObjectType();
+    return objectType;
   }
 
   @Override
   public Class<?> getRealType() {
-    return type.getRealType();
+    return realType;
   }
 
   public abstract static class STRING<V> extends BaseValueType<V, String> {
 
     public static class TO_STRING extends STRING<String> {
-      public TO_STRING(List<String> defaultValues, SimpleType<String> type) {
-        super(defaultValues, type);
+      public TO_STRING(List<String> defaultValues, Class<?> realType) {
+        super(defaultValues, String.class, realType);
       }
       @Override
       public String toExternal(String internal) {
@@ -84,8 +86,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
       }
     }
 
-    public STRING(List<V> defaultValues, SimpleType<V> type) {
-      super(defaultValues, type);
+    public STRING(List<V> defaultValues, Class<V> objectType, Class<?> realType) {
+      super(defaultValues, objectType, realType);
     }
 
     @Override
@@ -109,8 +111,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
   public abstract static class STREAM<V> extends BaseValueType<V, InputStream> {
 
     public static class TO_STREAM extends STREAM<InputStream> {
-      public TO_STREAM(List<InputStream> defaultValues, SimpleType<InputStream> type) {
-        super(defaultValues, type);
+      public TO_STREAM(List<InputStream> defaultValues, Class<?> realType) {
+        super(defaultValues, InputStream.class, realType);
       }
       @Override
       public InputStream toExternal(InputStream internal) {
@@ -122,8 +124,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
       }
     }
 
-    public STREAM(List<V> defaultValues, SimpleType<V> type) {
-      super(defaultValues, type);
+    public STREAM(List<V> defaultValues, Class<V> objectType, Class<?> realType) {
+      super(defaultValues, objectType, realType);
     }
 
     @Override
@@ -147,8 +149,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
   public abstract static class PATH<V> extends BaseValueType<V, String> {
 
     public static class TO_STRING extends PATH<String> {
-      public TO_STRING(List<String> defaultValues, SimpleType<String> type) {
-        super(defaultValues, type);
+      public TO_STRING(List<String> defaultValues, Class<?> realType) {
+        super(defaultValues, String.class, realType);
       }
       @Override
       public String toExternal(String internal) {
@@ -160,8 +162,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
       }
     }
 
-    public PATH(List<V> defaultValues, SimpleType<V> type) {
-      super(defaultValues, type);
+    public PATH(List<V> defaultValues, Class<V> objectType, Class<?> realType) {
+      super(defaultValues, objectType, realType);
     }
 
     @Override
@@ -185,8 +187,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
   public abstract static class LONG<V> extends BaseValueType<V, Long> {
 
     public static class TO_INT extends LONG<Integer> {
-      public TO_INT(List<Integer> defaultValues, SimpleType<Integer> type) {
-        super(defaultValues, type);
+      public TO_INT(List<Integer> defaultValues, Class<?> realType) {
+        super(defaultValues, Integer.class, realType);
       }
       @Override
       public Integer toExternal(Long internal) {
@@ -199,8 +201,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
     }
 
     public static class TO_LONG extends LONG<Long> {
-      public TO_LONG(List<Long> defaultValues, SimpleType<Long> type) {
-        super(defaultValues, type);
+      public TO_LONG(List<Long> defaultValues, Class<?> realType) {
+        super(defaultValues, Long.class, realType);
       }
       @Override
       public Long toExternal(Long internal) {
@@ -212,8 +214,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
       }
     }
 
-    public LONG(List<V> defaultValues, SimpleType<V> type) {
-      super(defaultValues, type);
+    public LONG(List<V> defaultValues, Class<V> objectType, Class<?> realType) {
+      super(defaultValues, objectType, realType);
     }
 
     @Override
@@ -237,8 +239,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
   public abstract static class DOUBLE<V> extends BaseValueType<V, Double> {
 
     public static class TO_DOUBLE extends DOUBLE<Double> {
-      public TO_DOUBLE(List<Double> defaultValues, SimpleType<Double> type) {
-        super(defaultValues, type);
+      public TO_DOUBLE(List<Double> defaultValues, Class<?> realType) {
+        super(defaultValues, Double.class, realType);
       }
       @Override
       public Double toExternal(Double internal) {
@@ -251,8 +253,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
     }
 
     public static class TO_FLOAT extends DOUBLE<Float> {
-      public TO_FLOAT(List<Float> defaultValues, SimpleType<Float> type) {
-        super(defaultValues, type);
+      public TO_FLOAT(List<Float> defaultValues, Class<?> realType) {
+        super(defaultValues, Float.class, realType);
       }
       @Override
       public Float toExternal(Double internal) {
@@ -264,8 +266,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
       }
     }
 
-    public DOUBLE(List<V> defaultValues, SimpleType<V> type) {
-      super(defaultValues, type);
+    public DOUBLE(List<V> defaultValues, Class<V> objectType, Class<?> realType) {
+      super(defaultValues, objectType, realType);
     }
 
     @Override
@@ -289,8 +291,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
   public abstract static class BOOLEAN<V> extends BaseValueType<V, Boolean> {
 
     public static class TO_BOOLEAN extends BOOLEAN<Boolean> {
-      public TO_BOOLEAN(List<Boolean> defaultValues, SimpleType<Boolean> type) {
-        super(defaultValues, type);
+      public TO_BOOLEAN(List<Boolean> defaultValues, Class<?> realType) {
+        super(defaultValues, Boolean.class, realType);
       }
       @Override
       public Boolean toExternal(Boolean internal) {
@@ -302,8 +304,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
       }
     }
 
-    public BOOLEAN(List<V> defaultValues, SimpleType<V> type) {
-      super(defaultValues, type);
+    public BOOLEAN(List<V> defaultValues, Class<V> objectType, Class<?> realType) {
+      super(defaultValues, objectType, realType);
     }
 
     @Override
@@ -327,8 +329,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
   public abstract static class DATE<V> extends BaseValueType<V, Date> {
 
     public static class TO_DATE extends DATE<Date> {
-      public TO_DATE(List<Date> defaultValues, SimpleType<Date> type) {
-        super(defaultValues, type);
+      public TO_DATE(List<Date> defaultValues, Class<?> realType) {
+        super(defaultValues, Date.class, realType);
       }
       @Override
       public Date toExternal(Date internal) {
@@ -340,8 +342,8 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
       }
     }
 
-    public DATE(List<V> defaultValues, SimpleType<V> type) {
-      super(defaultValues, type);
+    public DATE(List<V> defaultValues, Class<V> objectType, Class<?> realType) {
+      super(defaultValues, objectType, realType);
     }
 
     @Override

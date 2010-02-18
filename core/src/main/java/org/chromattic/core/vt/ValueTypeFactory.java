@@ -38,27 +38,27 @@ public class ValueTypeFactory {
   private static <E> ValueType<E> create(SimpleValueInfo<E> sv, SimpleType<E> type) {
     ValueType vt;
     if (type == SimpleType.STRING) {
-      vt = new BaseValueType.STRING.TO_STRING((List<String>)sv.getDefaultValue(), (SimpleType<String>)sv.getSimpleType());
+      vt = new BaseValueType.STRING.TO_STRING((List<String>)sv.getDefaultValue(), String.class);
     } else if (type == SimpleType.PATH) {
-      vt = new BaseValueType.PATH.TO_STRING((List<String>)sv.getDefaultValue(), (SimpleType<String>)sv.getSimpleType());
+      vt = new BaseValueType.PATH.TO_STRING((List<String>)sv.getDefaultValue(), String.class);
     } else if (type == SimpleType.INTEGER || type == SimpleType.PRIMITIVE_INTEGER) {
-      vt = new BaseValueType.LONG.TO_INT((List<Integer>)sv.getDefaultValue(), (SimpleType<Integer>)sv.getSimpleType());
+      vt = new BaseValueType.LONG.TO_INT((List<Integer>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
     } else if (type == SimpleType.BOOLEAN || type == SimpleType.PRIMITIVE_BOOLEAN) {
-      vt = new BaseValueType.BOOLEAN.TO_BOOLEAN((List<Boolean>)sv.getDefaultValue(), (SimpleType<Boolean>)sv.getSimpleType());
+      vt = new BaseValueType.BOOLEAN.TO_BOOLEAN((List<Boolean>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
     } else if (type == SimpleType.LONG || type == SimpleType.PRIMITIVE_LONG) {
-      vt = new BaseValueType.LONG.TO_LONG((List<Long>)sv.getDefaultValue(), (SimpleType<Long>)sv.getSimpleType());
+      vt = new BaseValueType.LONG.TO_LONG((List<Long>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
     } else if (type == SimpleType.DATE) {
-      vt = new BaseValueType.DATE.TO_DATE((List<Date>)sv.getDefaultValue(), (SimpleType<Date>)sv.getSimpleType());
+      vt = new BaseValueType.DATE.TO_DATE((List<Date>)sv.getDefaultValue(), Date.class);
     } else if (type == SimpleType.DOUBLE || type == SimpleType.PRIMITIVE_DOUBLE) {
-      vt = new BaseValueType.DOUBLE.TO_DOUBLE((List<Double>)sv.getDefaultValue(), (SimpleType<Double>)sv.getSimpleType()); 
+      vt = new BaseValueType.DOUBLE.TO_DOUBLE((List<Double>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
     } else if (type == SimpleType.FLOAT || type == SimpleType.PRIMITIVE_FLOAT) {
-      vt = new BaseValueType.DOUBLE.TO_FLOAT((List<Float>)sv.getDefaultValue(), (SimpleType<Float>)sv.getSimpleType());
+      vt = new BaseValueType.DOUBLE.TO_FLOAT((List<Float>)sv.getDefaultValue(), sv.getSimpleType().getRealType());
     } else if (type == SimpleType.STREAM) {
-      vt = new BaseValueType.STREAM.TO_STREAM((List<InputStream>)sv.getDefaultValue(), (SimpleType<InputStream>)sv.getSimpleType());
+      vt = new BaseValueType.STREAM.TO_STREAM((List<InputStream>)sv.getDefaultValue(), InputStream.class);
     } else {
       Class<?> realType = type.getRealType();
       if (realType.isEnum()) {
-        vt = new StringEnumValueType(sv.getDefaultValue(), sv.getSimpleType(), type.getObjectType());
+        vt = new StringEnumValueType(sv.getDefaultValue(), sv.getSimpleType().getRealType());
       } else {
         throw new UnsupportedOperationException("investigate later " + type);
       }

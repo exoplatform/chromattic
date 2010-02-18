@@ -19,8 +19,6 @@
 
 package org.chromattic.core.vt;
 
-import org.chromattic.core.bean.SimpleType;
-
 import java.util.List;
 
 /**
@@ -32,8 +30,10 @@ public class StringEnumValueType<E extends Enum<E>> extends BaseValueType.STRING
   /** . */
   private final Class<E> externalType;
 
-  public StringEnumValueType(List<E> defaultValues, SimpleType<E> eSimpleType, Class<E> externalType) {
-    super(defaultValues, eSimpleType);
+  public StringEnumValueType(List<E> defaultValues, Class<E> externalType) {
+    super(defaultValues, externalType, externalType);
+
+    //
     this.externalType = externalType;
   }
 
