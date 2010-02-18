@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.mapper;
+package org.chromattic.core.vt;
 
 import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.core.bean.BaseSimpleTypes;

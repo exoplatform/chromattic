@@ -24,14 +24,12 @@ import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.NoSuchPropertyException;
 import org.chromattic.core.bean.SimpleType;
-import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
-import org.chromattic.core.mapper.ValueMapper;
+import org.chromattic.core.vt.ValueMapper;
 import org.chromattic.core.vt.ValueType;
-import org.chromattic.core.vt.ValueTypeFactory;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
