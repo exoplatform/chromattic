@@ -23,13 +23,15 @@ import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.NoSuchPropertyException;
-import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
+import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
-import org.chromattic.core.mapper.ValueMapper;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
+import org.chromattic.core.mapper.ValueMapper;
+import org.chromattic.core.vt.ValueType;
+import org.chromattic.core.vt.ValueTypeFactory;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -38,7 +40,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import javax.jcr.nodetype.PropertyDefinition;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -122,7 +123,7 @@ class PersistentEntityContextState extends EntityContextState {
     return typeInfo;
   }
 
-  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi) {
+  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt) {
     try {
       //
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
@@ -161,8 +162,12 @@ class PersistentEntityContextState extends EntityContextState {
 
         //
         if (jcrValue != null) {
-          SimpleType<V> st = svi != null ? svi.getSimpleType() : null;
-          value = ValueMapper.instance.get(jcrValue, st);
+          if (vt != null) {
+            value = vt.get(jcrValue);
+          } else {
+            SimpleType<V> tmp = null;
+            value = ValueMapper.instance.get(jcrValue, tmp);
+          }
 
           //
           if (propertyCache != null) {
@@ -180,9 +185,9 @@ class PersistentEntityContextState extends EntityContextState {
 
       //
       if (value == null) {
-        if (svi != null) {
+        if (vt != null) {
           // Let's try default value
-          List<V> defaultValue = svi.getDefaultValue();
+          List<V> defaultValue = vt.getDefaultValue();
 
           //
           if (defaultValue != null && defaultValue.size() > 0) {
@@ -190,8 +195,8 @@ class PersistentEntityContextState extends EntityContextState {
           }
 
           //
-          if (value == null && svi.getSimpleType().isPrimitive()) {
-            throw new IllegalStateException("Cannot convert null to primitive type " + svi.getSimpleType());
+          if (value == null && vt.isPrimitive()) {
+            throw new IllegalStateException("Cannot convert null to primitive type " + vt);
           }
         }
       } else {
@@ -212,7 +217,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, ListType listType) {
+  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, ListType listType) {
     try {
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
       if (def == null) {
@@ -234,10 +239,10 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      List<V> list = listType.create(svi.getSimpleType(), values.length);
+      List<V> list = listType.create(vt, values.length);
       for (int i = 0;i < values.length;i++) {
         Value value = values[i];
-        V v = ValueMapper.instance.get(value, svi.getSimpleType());
+        V v = vt.get(value);
         list.set(i, v);
       }
       return list;
@@ -247,7 +252,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, V propertyValue) {
+  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, V propertyValue) {
     try {
       //
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
@@ -274,8 +279,11 @@ class PersistentEntityContextState extends EntityContextState {
       Value jcrValue;
       if (propertyValue != null) {
         ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
-        SimpleType<V> st = svi != null ? svi.getSimpleType() : null;
-        jcrValue = ValueMapper.instance.get(valueFactory, propertyValue, st);
+        if (vt != null) {
+          jcrValue = vt.get(valueFactory, propertyValue);
+        } else {
+          jcrValue = ValueMapper.instance.get(valueFactory, propertyValue, null);
+        }
       } else {
         jcrValue = null;
       }
@@ -321,7 +329,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, SimpleValueInfo<V> svi, ListType listType, List<V> objects) {
+  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, ListType listType, List<V> objects) {
     if (objects == null) {
       throw new NullPointerException();
     }
@@ -334,13 +342,12 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
-      SimpleType<V> st = svi != null ? svi.getSimpleType() : null;
       Value[] values;
       int size = objects.size();
       values = new Value[size];
       for (int i = 0;i < size;i++) {
         V element = objects.get(i);
-        values[i] = ValueMapper.instance.get(valueFactory, element, st);
+        values[i] = vt.get(valueFactory, element);
       }
 
       //

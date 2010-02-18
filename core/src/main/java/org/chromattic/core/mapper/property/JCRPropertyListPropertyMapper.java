@@ -27,6 +27,8 @@ import org.chromattic.core.bean.ArrayPropertyInfo;
 import org.chromattic.core.bean.ListPropertyInfo;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.vt.ValueType;
+import org.chromattic.core.vt.ValueTypeFactory;
 
 import java.util.List;
 
@@ -70,8 +72,9 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext> extends Prop
   }
 
   private <V> Object get(O context, SimpleValueInfo<V> elementType) throws Throwable {
-    List<V> list = context.getPropertyValues(jcrPropertyName, elementType, listType);
-    return listType.unwrap(elementType.getSimpleType(), list);
+    ValueType<V> vt = ValueTypeFactory.create(elementType);
+    List<V> list = context.getPropertyValues(jcrPropertyName, vt, listType);
+    return listType.unwrap(vt, list);
   }
 
   @Override
@@ -80,7 +83,8 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext> extends Prop
   }
 
   private <V> void set(O context, Object value, SimpleValueInfo<V> elementType) throws Throwable {
-    List<V> list = listType.wrap(elementType.getSimpleType(), value);
-    context.setPropertyValues(jcrPropertyName, elementType, listType, list);
+    ValueType<V> vt = ValueTypeFactory.create(elementType);
+    List<V> list = listType.wrap(vt, value);
+    context.setPropertyValues(jcrPropertyName, vt, listType, list);
   }
 }

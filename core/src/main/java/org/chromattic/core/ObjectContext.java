@@ -22,8 +22,8 @@ package org.chromattic.core;
 import org.chromattic.api.ChromatticIOException;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.jcr.Path;
-import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
+import org.chromattic.core.vt.ValueType;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import java.io.IOException;
@@ -42,7 +42,7 @@ public abstract class ObjectContext implements MethodHandler {
 
   public abstract NodeTypeInfo getTypeInfo();
 
-  public final <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type) {
+  public final <V> V getPropertyValue(String propertyName, ValueType<V> type) {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -55,7 +55,7 @@ public abstract class ObjectContext implements MethodHandler {
     return state.getPropertyValue(typeInfo, propertyName, type);
   }
 
-  public final <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType listType) {
+  public final <V> List<V> getPropertyValues(String propertyName, ValueType<V> simpleType, ListType listType) {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -68,7 +68,7 @@ public abstract class ObjectContext implements MethodHandler {
     return state.getPropertyValues(typeInfo, propertyName, simpleType, listType);
   }
 
-  public final <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V o) {
+  public final <V> void setPropertyValue(String propertyName, ValueType<V> type, V o) {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -103,7 +103,7 @@ public abstract class ObjectContext implements MethodHandler {
     }
   }
 
-  public final <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType listType, List<V> objects) {
+  public final <V> void setPropertyValues(String propertyName, ValueType<V> type, ListType listType, List<V> objects) {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
