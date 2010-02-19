@@ -78,7 +78,7 @@ public class ChromatticProcessor extends AbstractProcessor {
 
   private void process(RoundEnvironment roundEnv, Class<? extends Annotation> annotationClass) {
 
-    BaseTypeMappingVisitor visitor = new BaseTypeMappingVisitor();  
+    BaseTypeMappingVisitor visitor = new BaseTypeMappingVisitor();
 
     Set<? extends Element> elts = roundEnv.getElementsAnnotatedWith(annotationClass);
     for (Element elt : elts) {
@@ -102,6 +102,7 @@ public class ChromatticProcessor extends AbstractProcessor {
 
     // Validate model
     visitor.generate();
+
   }
 
   private void writeClass(RoundEnvironment roundEnv, StringBuilder out, ClassTypeInfo cti) {

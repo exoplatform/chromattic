@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.spi.jcr;
+package org.chromattic.metamodel.typegen;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

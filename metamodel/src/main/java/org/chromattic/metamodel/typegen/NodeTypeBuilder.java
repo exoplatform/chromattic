@@ -17,14 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.generator;
+package org.chromattic.metamodel.typegen;
 
 import org.chromattic.common.collection.SetMap;
+import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.SimpleType;
 import org.chromattic.metamodel.mapping.*;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
-import org.chromattic.spi.jcr.NodeTypeVisitor;
 import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
@@ -53,32 +54,35 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   @Override
   protected void propertyMapping(JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
 
-/*
     int propertyType;
     SimpleValueInfo simpleValueInfo = propertyInfo.getValue();
     SimpleType stk = simpleValueInfo.getSimpleType();
-    if (stk instanceof SimpleTypeKind.STRING) {
+    if (stk == SimpleType.STRING) {
       propertyType = PropertyType.STRING;
-    } else if (stk instanceof SimpleTypeKind.LONG) {
+    } else if (stk == SimpleType.LONG || stk ==SimpleType.PRIMITIVE_LONG) {
       propertyType = PropertyType.LONG;
-    } else if (stk instanceof SimpleTypeKind.PATH) {
+    } else if (stk == SimpleType.PATH) {
       propertyType = PropertyType.PATH;
-    } else if (stk instanceof SimpleTypeKind.DATE) {
+    } else if (stk == SimpleType.DATE) {
       propertyType = PropertyType.DATE;
-    } else if (stk instanceof SimpleTypeKind.BOOLEAN) {
+    } else if (stk == SimpleType.BOOLEAN || stk ==SimpleType.PRIMITIVE_BOOLEAN) {
       propertyType = PropertyType.BOOLEAN;
-    } else if (stk instanceof SimpleTypeKind.DOUBLE) {
+    } else if (stk == SimpleType.INTEGER || stk ==SimpleType.PRIMITIVE_INTEGER) {
+      propertyType = PropertyType.LONG;
+    } else if (stk == SimpleType.FLOAT || stk ==SimpleType.PRIMITIVE_FLOAT) {
       propertyType = PropertyType.DOUBLE;
-    } else if (stk instanceof SimpleTypeKind.STREAM) {
+    } else if (stk == SimpleType.DOUBLE || stk ==SimpleType.PRIMITIVE_DOUBLE) {
+      propertyType = PropertyType.DOUBLE;
+    } else if (stk == SimpleType.STREAM) {
       propertyType = PropertyType.BINARY;
+    } else if (stk instanceof SimpleType.Enumerated) {
+      propertyType = PropertyType.STRING;
     } else {
       throw new AssertionError();
     }
 
     //
     builder.addProperty(propertyMapping.getName(), propertyInfo instanceof MultiValuedPropertyInfo, propertyType);
-*/
-    throw new AssertionError("investigate");
   }
 
   @Override
