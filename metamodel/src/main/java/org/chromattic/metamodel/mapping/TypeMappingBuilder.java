@@ -362,7 +362,7 @@ public class TypeMappingBuilder {
       String mixinName = mixinType != null ? mixinType.name() : null;
 
       //
-      return new MixinTypeMapping(
+      return NodeTypeMapping.createMixinType(
         javaClass,
         propertyMappings,
         methodMappings,
@@ -379,7 +379,7 @@ public class TypeMappingBuilder {
       }
 
       //
-      return new PrimaryTypeMapping(
+      return NodeTypeMapping.createPrimaryType(
         javaClass,
         propertyMappings,
         methodMappings,

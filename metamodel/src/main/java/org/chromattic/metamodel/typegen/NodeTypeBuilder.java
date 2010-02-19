@@ -52,7 +52,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   @Override
   protected void startMapping(NodeTypeMapping mapping) {
     childNodeDefinitions = new SetMap<String, ClassTypeInfo>();
-    builder.startType(mapping.getTypeName(), mapping instanceof PrimaryTypeMapping);
+    builder.startType(mapping.getTypeName(), mapping.getKind() == NodeTypeKind.PRIMARY);
   }
 
   @Override

@@ -16,40 +16,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.chromattic.metamodel.mapping;
-
-import org.chromattic.api.NameConflictResolution;
-import org.chromattic.api.format.ObjectFormatter;
-import org.chromattic.metamodel.mapping.value.ValueMapping;
-import org.reflext.api.ClassTypeInfo;
-
-import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PrimaryTypeMapping extends NodeTypeMapping
-{
+public enum NodeTypeKind {
 
-  public PrimaryTypeMapping(
-    ClassTypeInfo objectClass,
-    Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
-    Set<MethodMapping> methodMappings,
-    NameConflictResolution onDuplicate,
-    String nodeTypeName,
-    Class<? extends ObjectFormatter> formatterClass) {
-    super(
-      objectClass,
-      propertyMappings,
-      methodMappings,
-      onDuplicate,
-      nodeTypeName,
-      formatterClass);
-  }
+  PRIMARY, MIXIN
 
-  @Override
-  public String toString() {
-    return "JavaTypeInfo[objectClass=" + objectClass.getName() + ",nodeTypeName=" + getTypeName() + "]";
-  }
 }

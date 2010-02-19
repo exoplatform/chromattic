@@ -27,10 +27,10 @@ import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.core.jcr.info.MixinTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
-import org.chromattic.core.mapper.NodeTypeKind;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
+import org.chromattic.metamodel.mapping.NodeTypeKind;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;

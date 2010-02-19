@@ -34,8 +34,41 @@ import java.util.HashSet;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class NodeTypeMapping
+public class NodeTypeMapping
 {
+
+  public static NodeTypeMapping createMixinType(
+    ClassTypeInfo objectClass,
+    Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
+    Set<MethodMapping> methodMappings,
+    NameConflictResolution onDuplicate,
+    String mixinTypeName) {
+    return new NodeTypeMapping(
+      objectClass,
+      propertyMappings,
+      methodMappings,
+      onDuplicate,
+      mixinTypeName,
+      null,
+      NodeTypeKind.MIXIN);
+  }
+
+  public static NodeTypeMapping createPrimaryType(
+    ClassTypeInfo objectClass,
+    Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
+    Set<MethodMapping> methodMappings,
+    NameConflictResolution onDuplicate,
+    String nodeTypeName,
+    Class<? extends ObjectFormatter> formatterClass) {
+    return new NodeTypeMapping(
+      objectClass,
+      propertyMappings,
+      methodMappings,
+      onDuplicate,
+      nodeTypeName,
+      formatterClass,
+      NodeTypeKind.PRIMARY);
+  }
 
   /** . */
   private final String typeName;
@@ -55,13 +88,19 @@ public abstract class NodeTypeMapping
   /** . */
   private Class<? extends ObjectFormatter> formatterClass;
 
+  /** . */
+  private final NodeTypeKind kind;
+
   public NodeTypeMapping(
     ClassTypeInfo objectClass,
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
     String typeName,
-    Class<? extends ObjectFormatter> formatterClass) {
+    Class<? extends ObjectFormatter> formatterClass,
+    NodeTypeKind kind) {
+
+    //
 
     //
     this.objectClass = objectClass;
@@ -70,6 +109,19 @@ public abstract class NodeTypeMapping
     this.onDuplicate = onDuplicate;
     this.formatterClass = formatterClass;
     this.typeName = typeName;
+    this.kind = kind;
+  }
+
+  public boolean isPrimary() {
+    return kind == NodeTypeKind.PRIMARY;
+  }
+
+  public boolean isMixin() {
+    return kind == NodeTypeKind.MIXIN;
+  }
+
+  public NodeTypeKind getKind() {
+    return kind;
   }
 
   public String getTypeName() {

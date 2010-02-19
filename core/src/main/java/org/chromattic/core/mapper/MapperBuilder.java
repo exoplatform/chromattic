@@ -28,8 +28,6 @@ import org.chromattic.core.EntityContext;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedParentPropertyMapper;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedPropertyMapper;
-import org.chromattic.metamodel.mapping.MixinTypeMapping;
-import org.chromattic.metamodel.mapping.PrimaryTypeMapping;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.metamodel.mapping.MethodMapping;
@@ -137,7 +135,7 @@ public class MapperBuilder {
 
 
     for (NodeTypeMapping typeMapping : typeMappings) {
-      Class<? extends ObjectContext> contextType = typeMapping instanceof PrimaryTypeMapping ? EntityContext.class : EmbeddedContext.class;
+      Class<? extends ObjectContext> contextType = typeMapping.isPrimary() ? EntityContext.class : EmbeddedContext.class;
       ObjectMapper<?> mapper = createMapper(contextType, typeMapping);
       mappers.put(typeMapping.getObjectClass().getName(), mapper);
     }
@@ -241,11 +239,11 @@ public class MapperBuilder {
             }
           } else if (pmhm.getType() == RelationshipType.EMBEDDED) {
             NodeTypeMapping relatedMapping = classToMapping.get(propertyInfo.getValue().getTypeInfo());
-            if (typeMapping instanceof PrimaryTypeMapping) {
+            if (typeMapping.isPrimary()) {
               JCREmbeddedParentPropertyMapper mapper = new JCREmbeddedParentPropertyMapper(propertyInfo);
               propertyMappersForE.add(mapper);
-            } else if (typeMapping instanceof MixinTypeMapping) {
-              if (relatedMapping instanceof PrimaryTypeMapping) {
+            } else if (typeMapping.isMixin()) {
+              if (relatedMapping.isPrimary()) {
                 JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper(propertyInfo);
                 propertyMappersForM.add(mapper);
               } else {
@@ -357,13 +355,11 @@ public class MapperBuilder {
 
     //
     ObjectMapper<C> mapper;
-    if (typeMapping instanceof PrimaryTypeMapping) {
-      PrimaryTypeMapping nodeTypeMapping = (PrimaryTypeMapping)typeMapping;
-
+    if (typeMapping.isPrimary()) {
       // Get the formatter
       ObjectFormatter formatter = null;
-      if (nodeTypeMapping.getFormatterClass() != null) {
-        formatter = ObjectInstantiator.newInstance(nodeTypeMapping.getFormatterClass());
+      if (typeMapping.getFormatterClass() != null) {
+        formatter = ObjectInstantiator.newInstance(typeMapping.getFormatterClass());
       }
 
       // propertyMappers
@@ -395,12 +391,9 @@ public class MapperBuilder {
         typeMapping.getOnDuplicate(),
         formatter,
         instrumentor,
-        nodeTypeMapping.getTypeName(),
-        NodeTypeKind.PRIMARY);
+        typeMapping.getTypeName(),
+        typeMapping.getKind());
     } else {
-      MixinTypeMapping mixinTypeMapping = (MixinTypeMapping)typeMapping;
-
-      //
       if (propertyMappersForE.size() > 0) {
         throw new AssertionError();
       }
@@ -434,8 +427,8 @@ public class MapperBuilder {
         typeMapping.getOnDuplicate(),
         null,
         instrumentor,
-        mixinTypeMapping.getTypeName(),
-        NodeTypeKind.MIXIN);
+        typeMapping.getTypeName(),
+        typeMapping.getKind());
     }
 
     // Finish wiring
