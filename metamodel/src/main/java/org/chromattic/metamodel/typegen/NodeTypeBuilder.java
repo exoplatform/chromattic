@@ -122,8 +122,10 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected void oneToOneHierarchic(String name, ClassTypeInfo relatedType) {
-    childNodeDefinitions.get(name).add(relatedType);
+  protected void oneToOneHierarchic(String name, ClassTypeInfo relatedType, boolean owner) {
+    if (owner) {
+      childNodeDefinitions.get(name).add(relatedType);
+    }
   }
 
   @Override

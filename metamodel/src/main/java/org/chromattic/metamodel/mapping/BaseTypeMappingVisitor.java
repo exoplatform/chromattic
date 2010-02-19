@@ -85,7 +85,7 @@ public class BaseTypeMappingVisitor {
 
   protected void manyToOneHierarchic(ClassTypeInfo relatedType) {}
 
-  protected void oneToOneHierarchic(String name, ClassTypeInfo relatedType) {}
+  protected void oneToOneHierarchic(String name, ClassTypeInfo relatedType, boolean owner) {}
 
   protected void endMapping() {}
 
@@ -200,10 +200,7 @@ public class BaseTypeMappingVisitor {
               String name = namedOneToOneMapping.getName();
               switch (type) {
                 case HIERARCHIC:
-                  oneToOneHierarchic(name, relationshipMapping.getRelatedType());
-                  break;
-                case EMBEDDED:
-                  // Nothing to do
+                  oneToOneHierarchic(name, relationshipMapping.getRelatedType(), namedOneToOneMapping.isOwner());
                   break;
                 default:
                   throw new AssertionError();
