@@ -65,6 +65,8 @@ public class BaseTypeMappingVisitor {
     return mappings.get(type.getName());
   }
 
+  protected void start() {}
+
   protected void startMapping(NodeTypeMapping mapping) {}
 
   protected void propertyMapping(JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {}
@@ -87,7 +89,11 @@ public class BaseTypeMappingVisitor {
 
   protected void endMapping() {}
 
+  protected void end() {}
+
   public void generate() {
+
+    start();
 
     for (NodeTypeMapping mapping : mappings.values()) {
 
@@ -225,5 +231,7 @@ public class BaseTypeMappingVisitor {
       //
       endMapping();
     }
+
+    end();
   }
 }

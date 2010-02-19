@@ -19,7 +19,17 @@
 
 package org.chromattic.metamodel.typegen;
 
+import org.chromattic.common.xml.ContentWriter;
+import org.chromattic.common.xml.ElementWriter;
+import org.xml.sax.ContentHandler;
+
 import javax.jcr.PropertyType;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import java.io.Writer;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -27,56 +37,91 @@ import javax.jcr.PropertyType;
  */
 public class XMLNodeTypeVisitor implements NodeTypeVisitor {
 
-  final StringBuilder nodetypes = new StringBuilder();
+  static final int NODETYPE_OPEN = 0;
 
-  static final int PROPERTIES_OPEN = 0;
+  static final int PROPERTIES_OPEN = 1;
 
-  static final int CHILDREN_OPEN = 1;
+  static final int CHILDREN_OPEN = 2;
 
   int status;
 
-  public XMLNodeTypeVisitor() {
-    nodetypes.append("<nodeTypes xmlns:nt=\"http://www.jcp.org/jcr/nt/1.0\" xmlns:mix=\"http://www.jcp.org/jcr/mix/1.0\" xmlns:jcr=\"http://www.jcp.org/jcr/1.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1\">\n");
+  private ElementWriter currentWriter;
+
+  private final ContentWriter writer;
+
+  public XMLNodeTypeVisitor(Writer writer) throws TransformerConfigurationException {
+    SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+    TransformerHandler handler = factory.newTransformerHandler();
+    handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
+    handler.getTransformer().setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
+    handler.setResult(new StreamResult(writer));
+
+    //
+    this.writer = new ContentWriter(handler);
+  }
+
+  public XMLNodeTypeVisitor(ContentHandler handler) {
+    this.writer = new ContentWriter(handler);
+  }
+
+  public void start() {
+    currentWriter = writer.element("nodeTypes");
   }
 
   public void startType(String name, boolean primary) {
-    nodetypes.append("<nodeType name=\"").append(name).append(" isMixin=").append(!primary).append("\" hasOrderableChildNodes=\"false\" primaryItemName=\"\">\n");
-    nodetypes.append("<propertyDefinitions>\n");
-    status = PROPERTIES_OPEN;
+    currentWriter.element("nodeType").
+      withAttribute("name", name).
+      withAttribute("isMixin", Boolean.toString(!primary)).
+      withAttribute("hasOrderableChildNodes", Boolean.FALSE.toString()).
+      withAttribute("primaryItemName", "todo");
+    status = NODETYPE_OPEN;
   }
 
   public void addProperty(String propertyName, boolean multiple, int propertyType) {
-    nodetypes.append("<propertyDefinition name=\"").append(propertyName).append("\" requiredType=\"").
-      append(PropertyType.nameFromValue(propertyType)).append("\" autoCreated=\"false\" mandatory=\"false\" onParentVersion=\"COPY\" protected=\"false\" multiple=\"true\">\n").
-      append("<valueConstraints/>\n").append("</propertyDefinition>\n");
+    if (status == NODETYPE_OPEN) {
+      currentWriter = currentWriter.element("propertyDefinitions");
+      status = PROPERTIES_OPEN;
+    }
+    currentWriter.element("propertyDefinition").
+      withAttribute("name", propertyName).
+      withAttribute("propertyType", PropertyType.nameFromValue(propertyType)).
+      withAttribute("autoCreated", Boolean.FALSE.toString()).
+      withAttribute("mandatory", Boolean.FALSE.toString()).
+      withAttribute("onParentVersion", "COPY").
+      withAttribute("protected", Boolean.FALSE.toString()).
+      withAttribute("multiple", Boolean.toString(multiple)).
+      element("valueConstraints");
   }
 
   public void addChildNodeDefinition(String childName, String nodeTypeName) {
-    if (status == PROPERTIES_OPEN) {
+    if (status == NODETYPE_OPEN) {
+      currentWriter = currentWriter.element("childNodeDefinitions");
       status = CHILDREN_OPEN;
-      nodetypes.append("</propertyDefinitions>\n");
-      nodetypes.append("<childNodeDefinitions>\n");
+    } else if (status == PROPERTIES_OPEN) {
+      currentWriter = currentWriter.getParent().element("childNodeDefinitions");
+      status = CHILDREN_OPEN;
     }
-    nodetypes.append("<childNodeDefinition name=\"").append(childName).append("\" defaultPrimaryType=\"nt:unstructured\" autoCreated=\"false\" mandatory=\"false\" onParentVersion=\"VERSION\" protected=\"false\" sameNameSiblings=\"false\">\n");
-    nodetypes.append("<requiredPrimaryTypes>\n");
-    nodetypes.append("<requiredPrimaryType>").append(nodeTypeName).append("</requiredPrimaryType>\n");
-    nodetypes.append("</requiredPrimaryTypes>\n");
-    nodetypes.append("</childNodeDefinition>\n");
+    currentWriter.element("childNodeDefinition").
+      withAttribute("name", childName).
+      withAttribute("defaultPrimaryType", "nt:unstructured").
+      withAttribute("autoCreated", "false").
+      withAttribute("mandatory", "false").
+      withAttribute("onParentVersion", "COPY").
+      withAttribute("protected", "false").
+      withAttribute("sameNameSiblings", "false").
+      element("requiredPrimaryTypes").
+      element("requiredPrimaryType").
+      content(nodeTypeName);
   }
 
   public void endType() {
-    if (status == PROPERTIES_OPEN) {
-      nodetypes.append("</propertyDefinitions>\n");
+    if (status != NODETYPE_OPEN) {
+      currentWriter = (ElementWriter)currentWriter.getParent();
     }
-    else if (status == CHILDREN_OPEN) {
-      nodetypes.append("</childNodeDefinitions>\n");
-    }
-    nodetypes.append("</nodeType>\n");
   }
 
-  @Override
-  public String toString() {
-    nodetypes.append("</nodeTypes>");
-    return nodetypes.toString();
+  public void end() {
+    writer.perform();
   }
 }

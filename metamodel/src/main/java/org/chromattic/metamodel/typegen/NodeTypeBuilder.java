@@ -45,6 +45,10 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
     this.builder = builder;
   }
 
+  public void start() {
+    builder.start();
+  }
+
   @Override
   protected void startMapping(NodeTypeMapping mapping) {
     childNodeDefinitions = new SetMap<String, ClassTypeInfo>();
@@ -159,5 +163,9 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
 
     //
     builder.endType();
+  }
+
+  public void end() {
+    builder.end();
   }
 }

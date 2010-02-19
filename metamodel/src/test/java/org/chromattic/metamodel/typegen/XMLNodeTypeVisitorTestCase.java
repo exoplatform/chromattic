@@ -19,22 +19,38 @@
 
 package org.chromattic.metamodel.typegen;
 
+import junit.framework.TestCase;
+import org.reflext.api.ClassTypeInfo;
+import org.reflext.core.TypeDomain;
+import org.reflext.jlr.JavaLangReflectMethodModel;
+import org.reflext.jlr.JavaLangReflectTypeModel;
+
+import java.io.StringWriter;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface NodeTypeVisitor {
+public class XMLNodeTypeVisitorTestCase extends TestCase {
 
-  void start();
 
-  void startType(String name, boolean primary);
+  public void testFoo() throws Exception {
 
-  void addProperty(String propertyName, boolean multiple, int propertyType);
+    TypeDomain domain = new TypeDomain(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
+    ClassTypeInfo a = (ClassTypeInfo)domain.getType(A.class);
+    ClassTypeInfo b = (ClassTypeInfo)domain.getType(B.class);
 
-  void addChildNodeDefinition(String childName, String nodeTypeName);
+    StringWriter writer = new StringWriter();
+    
+    XMLNodeTypeVisitor visitor = new XMLNodeTypeVisitor(writer);
+    NodeTypeBuilder builder = new NodeTypeBuilder(visitor);
+    builder.addType(a);
+    builder.addType(b);
 
-  void endType();
+    builder.generate();
 
-  void end();
+    System.out.println("writer = " + writer);
 
+
+  }
 }

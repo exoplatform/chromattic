@@ -19,22 +19,23 @@
 
 package org.chromattic.metamodel.typegen;
 
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.Property;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface NodeTypeVisitor {
+@PrimaryType(name = "b")
+public abstract class B {
 
-  void start();
+  @Property(name = "bar")
+  public abstract int getBar();
 
-  void startType(String name, boolean primary);
-
-  void addProperty(String propertyName, boolean multiple, int propertyType);
-
-  void addChildNodeDefinition(String childName, String nodeTypeName);
-
-  void endType();
-
-  void end();
+  @MappedBy("a")
+  @OneToOne
+  public abstract A getChild();
 
 }

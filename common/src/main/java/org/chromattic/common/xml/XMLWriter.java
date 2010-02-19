@@ -17,24 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.typegen;
+package org.chromattic.common.xml;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface NodeTypeVisitor {
+public abstract class XMLWriter {
 
-  void start();
-
-  void startType(String name, boolean primary);
-
-  void addProperty(String propertyName, boolean multiple, int propertyType);
-
-  void addChildNodeDefinition(String childName, String nodeTypeName);
-
-  void endType();
-
-  void end();
+  public abstract ElementWriter element(String qName);
 
 }
