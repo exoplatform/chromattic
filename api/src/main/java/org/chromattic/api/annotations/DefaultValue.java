@@ -29,7 +29,10 @@ import java.lang.annotation.Target;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface DefaultValue {
+public final class DefaultValue {
+
+  private DefaultValue() {
+  }
 
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
