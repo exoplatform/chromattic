@@ -19,35 +19,17 @@
 
 package org.chromattic.metamodel.mapping.value;
 
+import org.chromattic.api.RelationshipType;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.reflext.api.ClassTypeInfo;
-import org.chromattic.api.RelationshipType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneMapping> {
+public abstract class AbstractManyToOneMapping<O extends AbstractOneToManyMapping<M, O>, M extends AbstractManyToOneMapping<O, M>> extends RelationshipMapping<O, M> {
 
-  /** . */
-  private final String name;
-
-  /** . */
-  private final boolean owning;
-
-  public NamedOneToOneMapping(NodeTypeMapping owner, ClassTypeInfo relatedType, String name, RelationshipType type, boolean owning) {
-    super(owner, relatedType, type);
-
-    //
-    this.name = name;
-    this.owning = owning;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public boolean isOwning() {
-    return owning;
+  public AbstractManyToOneMapping(NodeTypeMapping owner, ClassTypeInfo relatedType, RelationshipType type) {
+    super(owner, relatedType, Multiplicity.MANY, Multiplicity.ONE, type);
   }
 }

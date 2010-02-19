@@ -37,15 +37,7 @@ import org.chromattic.metamodel.mapping.FindByIdMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
-import org.chromattic.metamodel.mapping.value.ValueMapping;
-import org.chromattic.metamodel.mapping.value.SimpleMapping;
-import org.chromattic.metamodel.mapping.value.NamedOneToOneMapping;
-import org.chromattic.metamodel.mapping.value.ManyToOneMapping;
-import org.chromattic.metamodel.mapping.value.NamedManyToOneMapping;
-import org.chromattic.metamodel.mapping.value.RelationshipMapping;
-import org.chromattic.metamodel.mapping.value.OneToManyMapping;
-import org.chromattic.metamodel.mapping.value.NamedOneToManyMapping;
-import org.chromattic.metamodel.mapping.value.PropertyMapMapping;
+import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.common.collection.SetMap;
 import org.chromattic.core.mapper.onetomany.reference.JCRReferentCollectionPropertyMapper;
 import org.chromattic.core.mapper.onetomany.reference.JCRNamedReferentPropertyMapper;
@@ -217,7 +209,7 @@ public class MapperBuilder {
             }
           }
         } else if (pmvm instanceof RelationshipMapping) {
-          RelationshipMapping pmhm = (RelationshipMapping)pmvm;
+          RelationshipMapping pmhm = (RelationshipMapping<?, ?>)pmvm;
 
           //
           if (pmhm.getType() == RelationshipType.HIERARCHIC) {
@@ -227,7 +219,7 @@ public class MapperBuilder {
               propertyMappersForE.add(bilto);
             } if (pmhm instanceof NamedOneToOneMapping) {
               NamedOneToOneMapping ncpmpm = (NamedOneToOneMapping)pmhm;
-              if (ncpmpm.isOwner()) {
+              if (ncpmpm.isOwning()) {
                 JCRNamedChildParentPropertyMapper<C> bilto = new JCRNamedChildParentPropertyMapper<C>(contextType, propertyInfo, ncpmpm.getName());
                 relatedProperties.get(pmhm.getRelatedType()).add(bilto);
                 propertyMappers.add(bilto);
@@ -256,7 +248,7 @@ public class MapperBuilder {
         }
 
         //
-        if (pmvm instanceof ManyToOneMapping) {
+        if (pmvm instanceof AbstractManyToOneMapping) {
           if (pmvm instanceof NamedManyToOneMapping) {
             NamedManyToOneMapping nmtovm = (NamedManyToOneMapping)pmvm;
             LinkType linkType = relationshipToLinkMapping.get(nmtovm.getType());
@@ -280,7 +272,7 @@ public class MapperBuilder {
           RelationshipMapping pmhm = (RelationshipMapping)pmvm;
 
           //
-          if (pmhm instanceof OneToManyMapping) {
+          if (pmhm instanceof AbstractOneToManyMapping) {
 
             //
             if (pmhm instanceof NamedOneToManyMapping) {

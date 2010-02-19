@@ -49,7 +49,7 @@ public class BaseTypeMappingVisitor {
 
   public BaseTypeMappingVisitor() {
     types = new HashSet<ClassTypeInfo>();
-    builder = new TypeMappingBuilder(new BeanInfoFactory(), false);
+    builder = new TypeMappingBuilder(false);
     mappings = new HashMap<String, NodeTypeMapping>();
   }
 
@@ -146,9 +146,10 @@ public class BaseTypeMappingVisitor {
             throw new AssertionError(mapping.getObjectClass());
           }
         } else if (valueMapping instanceof RelationshipMapping) {
-          RelationshipMapping relationshipMapping = (RelationshipMapping)valueMapping;
-          RelationshipType type = ((RelationshipMapping)valueMapping).getType();
-          if (valueMapping instanceof OneToManyMapping) {
+          RelationshipMapping<?, ?> relationshipMapping = (RelationshipMapping<?, ?>)valueMapping;
+          ClassTypeInfo relatedType = relationshipMapping.getRelatedType();
+          RelationshipType type = relationshipMapping.getType();
+          if (valueMapping instanceof AbstractOneToManyMapping<?, ?>) {
             if (valueMapping instanceof NamedOneToManyMapping) {
               NamedOneToManyMapping namedOneToManyMapping = (NamedOneToManyMapping)valueMapping;
               switch (type) {
@@ -170,8 +171,7 @@ public class BaseTypeMappingVisitor {
                   throw new AssertionError();
               }
             }
-          } else if (valueMapping instanceof ManyToOneMapping) {
-            ClassTypeInfo relatedType = ((ManyToOneMapping)valueMapping).getRelatedType();
+          } else if (valueMapping instanceof AbstractManyToOneMapping<?, ?>) {
             if (valueMapping instanceof NamedManyToOneMapping) {
               NamedManyToOneMapping namedManyToOneMapping = (NamedManyToOneMapping)valueMapping;
               String name = namedManyToOneMapping.getRelatedName();
@@ -194,13 +194,13 @@ public class BaseTypeMappingVisitor {
                   throw new AssertionError();
               }
             }
-          } else if (valueMapping instanceof OneToOneMapping) {
+          } else if (valueMapping instanceof AbstractOneToOneMapping<?>) {
             if (valueMapping instanceof NamedOneToOneMapping) {
               NamedOneToOneMapping namedOneToOneMapping = (NamedOneToOneMapping)valueMapping;
               String name = namedOneToOneMapping.getName();
               switch (type) {
                 case HIERARCHIC:
-                  oneToOneHierarchic(name, relationshipMapping.getRelatedType(), namedOneToOneMapping.isOwner());
+                  oneToOneHierarchic(name, relationshipMapping.getRelatedType(), namedOneToOneMapping.isOwning());
                   break;
                 default:
                   throw new AssertionError();

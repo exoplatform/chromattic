@@ -20,15 +20,16 @@
 package org.chromattic.metamodel.mapping.value;
 
 import org.chromattic.api.RelationshipType;
+import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.reflext.api.ClassTypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToManyMapping extends RelationshipMapping {
+public class OneToManyMapping extends AbstractOneToManyMapping<ManyToOneMapping, OneToManyMapping> {
 
-  public OneToManyMapping(ClassTypeInfo relatedType, RelationshipType type) {
-    super(relatedType, Multiplicity.ONE, Multiplicity.MANY, type);
+  public OneToManyMapping(NodeTypeMapping owner, ClassTypeInfo relatedType, RelationshipType type) {
+    super(owner, relatedType, type);
   }
 }

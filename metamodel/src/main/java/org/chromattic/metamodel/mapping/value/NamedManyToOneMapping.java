@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.mapping.value;
 
+import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.chromattic.api.RelationshipType;
 
@@ -26,13 +27,13 @@ import org.chromattic.api.RelationshipType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NamedManyToOneMapping extends ManyToOneMapping {
+public class NamedManyToOneMapping extends AbstractManyToOneMapping<NamedOneToManyMapping, NamedManyToOneMapping> {
 
   /** . */
   private final String relatedName;
 
-  public NamedManyToOneMapping(ClassTypeInfo relatedType, String relatedName, RelationshipType relationshipType) {
-    super(relatedType, relationshipType);
+  public NamedManyToOneMapping(NodeTypeMapping owner, ClassTypeInfo relatedType, String relatedName, RelationshipType relationshipType) {
+    super(owner, relatedType, relationshipType);
 
     //
     this.relatedName = relatedName;

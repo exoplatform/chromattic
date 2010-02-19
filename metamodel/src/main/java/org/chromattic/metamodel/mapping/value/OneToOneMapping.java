@@ -20,15 +20,41 @@
 package org.chromattic.metamodel.mapping.value;
 
 import org.chromattic.api.RelationshipType;
+import org.chromattic.metamodel.mapping.NodeTypeMapping;
+import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.reflext.api.ClassTypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToOneMapping extends RelationshipMapping {
+public class OneToOneMapping extends AbstractOneToOneMapping<OneToOneMapping> {
 
-  public OneToOneMapping(ClassTypeInfo relatedType, RelationshipType type) {
-    super(relatedType, Multiplicity.ONE, Multiplicity.ONE, type);
+  public OneToOneMapping(NodeTypeMapping owner, ClassTypeInfo relatedType, RelationshipType type) {
+    super(owner, relatedType, type);
+  }
+
+  @Override
+  protected OneToOneMapping findRelatedRelationship(NodeTypeMapping relatedMapping) {
+    for (PropertyMapping<?> propertyMapping : relatedMapping.getPropertyMappings()) {
+
+      ValueMapping valueMapping = propertyMapping.getValueMapping();
+
+      if (valueMapping instanceof OneToOneMapping) {
+
+        OneToOneMapping otoMapping = (OneToOneMapping)valueMapping;
+
+/*
+        if (otoMapping.getOwner().equals(getOwner())) {
+          return otoMapping;
+        }
+*/
+
+      }
+
+    }
+
+    //
+    return null;
   }
 }

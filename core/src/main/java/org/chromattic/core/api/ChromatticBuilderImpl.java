@@ -65,7 +65,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
 
     //
-    TypeMappingBuilder mappingBuilder = new TypeMappingBuilder(beanInfoBuilder, true);
+    TypeMappingBuilder mappingBuilder = new TypeMappingBuilder(true);
     Set<NodeTypeMapping> mappings = new HashSet<NodeTypeMapping>();
     for (Class clazz : classes) {
       ClassTypeInfo typeInfo = (ClassTypeInfo)typeDomain.getType(clazz);

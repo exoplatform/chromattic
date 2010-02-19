@@ -38,12 +38,14 @@ public class NodeTypeMapping
 {
 
   public static NodeTypeMapping createMixinType(
+    TypeMappingDomain domain,
     ClassTypeInfo objectClass,
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
     String mixinTypeName) {
     return new NodeTypeMapping(
+      domain,
       objectClass,
       propertyMappings,
       methodMappings,
@@ -54,6 +56,7 @@ public class NodeTypeMapping
   }
 
   public static NodeTypeMapping createPrimaryType(
+    TypeMappingDomain domain,
     ClassTypeInfo objectClass,
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
@@ -61,6 +64,7 @@ public class NodeTypeMapping
     String nodeTypeName,
     Class<? extends ObjectFormatter> formatterClass) {
     return new NodeTypeMapping(
+      domain,
       objectClass,
       propertyMappings,
       methodMappings,
@@ -69,6 +73,9 @@ public class NodeTypeMapping
       formatterClass,
       NodeTypeKind.PRIMARY);
   }
+
+  /** . */
+  private final TypeMappingDomain domain;
 
   /** . */
   private final String typeName;
@@ -92,6 +99,7 @@ public class NodeTypeMapping
   private final NodeTypeKind kind;
 
   public NodeTypeMapping(
+    TypeMappingDomain domain,
     ClassTypeInfo objectClass,
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
@@ -103,13 +111,18 @@ public class NodeTypeMapping
     //
 
     //
+    this.domain = domain;
     this.objectClass = objectClass;
-    this.propertyMappings = Collections.unmodifiableSet(new HashSet<PropertyMapping<? extends ValueMapping>>(propertyMappings));
-    this.methodMappings = Collections.unmodifiableSet(new HashSet<MethodMapping>(methodMappings));
+    this.propertyMappings = Collections.unmodifiableSet(propertyMappings);
+    this.methodMappings = Collections.unmodifiableSet(methodMappings);
     this.onDuplicate = onDuplicate;
     this.formatterClass = formatterClass;
     this.typeName = typeName;
     this.kind = kind;
+  }
+
+  public TypeMappingDomain getDomain() {
+    return domain;
   }
 
   public boolean isPrimary() {
