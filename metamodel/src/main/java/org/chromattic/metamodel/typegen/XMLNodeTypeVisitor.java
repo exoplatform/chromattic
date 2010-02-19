@@ -55,6 +55,10 @@ public class XMLNodeTypeVisitor implements NodeTypeVisitor {
     handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
     handler.getTransformer().setOutputProperty(OutputKeys.ENCODING, "UTF-8");
     handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
+
+    // This is proprietary, so it's a best effort
+    handler.getTransformer().setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+    
     handler.setResult(new StreamResult(writer));
 
     //
