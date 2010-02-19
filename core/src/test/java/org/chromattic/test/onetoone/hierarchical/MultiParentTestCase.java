@@ -17,19 +17,33 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.mapper;
+package org.chromattic.test.onetoone.hierarchical;
 
-import org.chromattic.core.EntityContext;
-import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.api.ChromatticSession;
+import org.chromattic.test.AbstractTestCase;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper<EntityContext> {
+public class MultiParentTestCase extends AbstractTestCase {
 
-  public JCRChildNodePropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
-    super(EntityContext.class, info);
+  @Override
+  protected void createDomain() {
+    addClass(C2.class);
+    addClass(C3.class);
+    addClass(C4.class);
+  }
+
+  public void testFoo() throws Exception {
+
+    ChromatticSession session = login();
+
+    C2 c2 = session.insert(C2.class, "c2");
+    C4 c4 = session.create(C4.class);
+    c4.setParent1(c2);
+    assertSame(c2, c4.getParent1());
+    assertSame(null, c4.getParent2());
+
   }
 }

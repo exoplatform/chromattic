@@ -17,19 +17,13 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.mapper;
-
-import org.chromattic.core.EntityContext;
-import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+package org.chromattic.test.onetoone.hierarchical;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper<EntityContext> {
+public class C1 {
 
-  public JCRChildNodePropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
-    super(EntityContext.class, info);
-  }
+  
 }

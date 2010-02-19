@@ -93,6 +93,33 @@ public final class EntityContext extends ObjectContext {
     return state.getTypeInfo();
   }
 
+  /**
+   * Adapts the current object held by this context to the specified type.
+   * If the current object is an instance of the specified class then this
+   * object is returned otherwise an attempt to find an embedded object of
+   * the specified type is performed.
+   *
+   * @param adaptedClass the class to adapt to
+   * @param <T> the parameter type of the adapted class
+   * @return the adapted object or null
+   */
+  public <T> T adapt(Class<T> adaptedClass) {
+    // If it fits the current object we use it
+    if (adaptedClass.isInstance(object)) {
+      return adaptedClass.cast(object);
+    } else {
+      // Here we are trying to see if the parent has something embedded we could return
+      // that is would be of the provided related class
+      EmbeddedContext embeddedCtx = getEmbedded(adaptedClass);
+      if (embeddedCtx != null) {
+        return adaptedClass.cast(embeddedCtx.getObject());
+      }
+    }
+
+    //
+    return null;
+  }
+
   public void addMixin(EmbeddedContext mixinCtx) {
     state.getSession().addMixin(this, mixinCtx);
   }

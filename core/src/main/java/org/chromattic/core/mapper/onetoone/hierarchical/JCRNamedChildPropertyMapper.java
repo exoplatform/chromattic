@@ -42,6 +42,25 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper {
   }
 
   @Override
+  public Object get(EntityContext context) throws Throwable {
+    EntityContext parentCtx = context.getParent();
+
+    //
+    if (parentCtx != null) {
+      EntityContext parentChildWithRelatedNameCtx = parentCtx.getChild(relatedName);
+
+      // Find out if we are mapped on this parent by the related name
+      if (parentChildWithRelatedNameCtx == context) {
+        Class<?> relatedClass =  getRelatedClass();
+        return parentCtx.adapt(relatedClass);
+      }
+    }
+
+    //
+    return null;
+  }
+
+  @Override
   public void set(EntityContext context, Object parent) throws Throwable {
     if (parent == null) {
       context.remove();

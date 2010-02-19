@@ -37,6 +37,16 @@ public class JCRAnyChildCollectionPropertyMapper<O extends ObjectContext> extend
   }
 
   @Override
+  public Object get(EntityContext context) throws Throwable {
+    EntityContext parentCtx = context.getParent();
+    if (parentCtx != null) {
+      Class<?> relatedClass =  getRelatedClass();
+      return parentCtx.adapt(relatedClass);
+    }
+    return null;
+  }
+
+  @Override
   public void set(EntityContext context, Object parent) throws Throwable {
     if (parent == null) {
       // context.remove();

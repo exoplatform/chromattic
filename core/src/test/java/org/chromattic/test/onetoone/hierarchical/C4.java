@@ -17,19 +17,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.mapper;
+package org.chromattic.test.onetoone.hierarchical;
 
-import org.chromattic.core.EntityContext;
-import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.RelatedMappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper<EntityContext> {
+@PrimaryType(name = "toto_c4")
+public abstract class C4 {
 
-  public JCRChildNodePropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
-    super(EntityContext.class, info);
-  }
+  @OneToOne
+  @RelatedMappedBy("c2")
+  public abstract C1 getParent1();
+
+  public abstract void setParent1(C1 c1);
+
+  @OneToOne
+  @RelatedMappedBy("c3")
+  public abstract C1 getParent2();
+
+  public abstract void setParent2(C1 c1);
+
 }
