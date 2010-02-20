@@ -177,4 +177,9 @@ public class NodeTypeMapping
     }
     return false;
   }
+
+  @Override
+  public String toString() {
+    return "NodeTypeMapping[type=" + objectClass + "]";
+  }
 }
