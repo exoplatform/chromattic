@@ -64,6 +64,11 @@
 
     <dependency>
       <groupId>org.reflext</groupId>
+      <artifactId>reflext.spi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
       <artifactId>reflext.core</artifactId>
       <scope>test</scope>
     </dependency>

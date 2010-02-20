@@ -20,6 +20,7 @@ package org.chromattic.ext.ntdef;
 
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
 import java.util.Date;
@@ -28,6 +29,7 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@PrimaryType(name = "nt:hierarchyNode")
 public abstract class NTHierarchyNode {
 
   @Name

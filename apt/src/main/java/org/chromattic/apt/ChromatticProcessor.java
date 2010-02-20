@@ -46,6 +46,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
@@ -65,27 +66,22 @@ public class ChromatticProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-
-    //
-    process(roundEnv, PrimaryType.class);
-
-    //
-    process(roundEnv, MixinType.class);
-
-    //
+    Set<Element> elts = new HashSet<Element>();
+    elts.addAll(roundEnv.getElementsAnnotatedWith(PrimaryType.class));
+    elts.addAll(roundEnv.getElementsAnnotatedWith(MixinType.class));
+    process(roundEnv, elts);
     return true;
   }
 
-  private void process(RoundEnvironment roundEnv, Class<? extends Annotation> annotationClass) {
+  private void process(RoundEnvironment roundEnv, Set<Element> elts) {
 
-    BaseTypeMappingVisitor visitor = new BaseTypeMappingVisitor();
+//    BaseTypeMappingVisitor visitor = new BaseTypeMappingVisitor();
 
-    Set<? extends Element> elts = roundEnv.getElementsAnnotatedWith(annotationClass);
     for (Element elt : elts) {
       TypeElement typeElt = (TypeElement)elt;
       ClassTypeInfo cti = (ClassTypeInfo)domain.getType(typeElt);
       processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "About to process the type " + cti.getName());
-      visitor.addType(cti);
+//      visitor.addType(cti);
       Filer filer = processingEnv.getFiler();
       try {
         JavaFileObject jfo = filer.createSourceFile(typeElt.getQualifiedName() + "_Chromattic", typeElt);
@@ -101,7 +97,7 @@ public class ChromatticProcessor extends AbstractProcessor {
     }
 
     // Validate model
-    visitor.generate();
+//    visitor.generate();
 
   }
 

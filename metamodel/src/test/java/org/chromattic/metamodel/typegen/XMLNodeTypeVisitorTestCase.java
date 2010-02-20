@@ -37,6 +37,7 @@ public class XMLNodeTypeVisitorTestCase extends TestCase {
   public void testFoo() throws Exception {
 
     TypeDomain domain = new TypeDomain(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
+    ClassTypeInfo o = (ClassTypeInfo)domain.getType(Object.class);
     ClassTypeInfo a = (ClassTypeInfo)domain.getType(A.class);
     ClassTypeInfo b = (ClassTypeInfo)domain.getType(B.class);
 
@@ -44,6 +45,7 @@ public class XMLNodeTypeVisitorTestCase extends TestCase {
     
     XMLNodeTypeVisitor visitor = new XMLNodeTypeVisitor(writer);
     NodeTypeBuilder builder = new NodeTypeBuilder(visitor);
+    builder.addType(o);
     builder.addType(a);
     builder.addType(b);
 

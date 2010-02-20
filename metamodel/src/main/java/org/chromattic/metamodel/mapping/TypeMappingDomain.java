@@ -73,6 +73,7 @@ public class TypeMappingDomain {
   }
 
   public void add(ClassTypeInfo javaClass) {
+
     types.add(javaClass);
     resolved = false;
   }
@@ -84,6 +85,20 @@ public class TypeMappingDomain {
 
   public void resolve() {
     if (!resolved) {
+      ClassTypeInfo rootType = null;
+      for (ClassTypeInfo cti : types) {
+        if (cti.getName().equals(Object.class.getName())) {
+          rootType = cti;
+          break;
+        }
+      }
+
+      //
+      if (rootType == null) {
+        throw new MetaModelException("The type domain must contain the java.lang.Object type");
+      }
+
+      //
       Map<String, NodeTypeMapping> addedMappings = new HashMap<String, NodeTypeMapping>();
       for (ClassTypeInfo cti : types) {
         try {
@@ -98,12 +113,30 @@ public class TypeMappingDomain {
           throw new InvalidMappingException(cti, e);
          }
       }
+
+      // Remove root type as we don't want it to appear as first class  
+      addedMappings.remove(rootType.getName());
+
+      //
       this.mappings.clear();
       this.mappings.putAll(addedMappings);
     }
   }
 
   private NodeTypeMapping resolve(ClassTypeInfo javaClass, Map<String, NodeTypeMapping> addedMappings) {
+    if (javaClass.getName().equals(Object.class.getName())) {
+      NodeTypeMapping objectMapping = new NodeTypeMapping(
+        this,
+        javaClass,
+        Collections.<PropertyMapping<? extends ValueMapping>>emptySet(),
+        Collections.<MethodMapping>emptySet(),
+        NameConflictResolution.FAIL,
+        "nt:base",
+        null,
+        NodeTypeKind.PRIMARY);
+      addedMappings.put(javaClass.getName(), objectMapping);
+      return objectMapping;
+    }
 
     NodeTypeMapping nodeTypeMapping = addedMappings.get(javaClass.getName());
     if (nodeTypeMapping != null) {
@@ -198,13 +231,11 @@ public class TypeMappingDomain {
 
     // Property map
     for (PropertyInfo<?> propertyInfo : info.getProperties(Properties.class)) {
-      Properties propertyAnnotation = propertyInfo.getAnnotation(Properties.class);
       if (propertyInfo instanceof MapPropertyInfo) {
         MapPropertyInfo mapPropertyInfo = (MapPropertyInfo)propertyInfo;
         PropertyMapMapping simpleMapping = new PropertyMapMapping();
         PropertyMapping<PropertyMapMapping> propertyMapping = new PropertyMapping<PropertyMapMapping>(mapPropertyInfo, simpleMapping);
         propertyMappings.add(propertyMapping);
-
       } else {
         throw new IllegalStateException();
       }

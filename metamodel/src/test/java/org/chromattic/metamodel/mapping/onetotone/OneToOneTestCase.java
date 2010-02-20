@@ -37,10 +37,12 @@ public class OneToOneTestCase extends TestCase {
   public void testFoo() {
 
     TypeDomain domain = new TypeDomain(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
+    ClassTypeInfo o = (ClassTypeInfo)domain.getType(Object.class);
     ClassTypeInfo a = (ClassTypeInfo)domain.getType(A.class);
     ClassTypeInfo b = (ClassTypeInfo)domain.getType(B.class);
 
     TypeMappingBuilder builder = new TypeMappingBuilder(false);
+    builder.add(o);
     builder.add(a);
     builder.add(b);
     builder.build();
