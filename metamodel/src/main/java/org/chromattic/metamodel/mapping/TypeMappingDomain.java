@@ -24,6 +24,7 @@ import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.*;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.metamodel.MetaModelException;
 import org.chromattic.metamodel.bean.*;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
@@ -51,19 +52,65 @@ public class TypeMappingDomain {
   private final Map<String, NodeTypeMapping> mappings;
 
   /** . */
+  private final Set<ClassTypeInfo> types;
+
+  /** . */
   private final BeanInfoFactory beanInfoBuilder;
+
+  /** . */
+  private boolean resolved;
 
   public TypeMappingDomain(boolean processFormatter) {
     this.mappings = new HashMap<String, NodeTypeMapping>();
     this.beanInfoBuilder = new BeanInfoFactory();
     this.processFormatter = processFormatter;
+    this.types = new HashSet<ClassTypeInfo>();
+    this.resolved = false;
   }
 
   public NodeTypeMapping get(ClassTypeInfo type) {
     return mappings.get(type.getName());
   }
 
-  public NodeTypeMapping add(ClassTypeInfo javaClass) {
+  public void add(ClassTypeInfo javaClass) {
+    types.add(javaClass);
+    resolved = false;
+  }
+
+  public Collection<NodeTypeMapping> build() {
+    resolve();
+    return mappings.values();
+  }
+
+  public void resolve() {
+    if (!resolved) {
+      Map<String, NodeTypeMapping> addedMappings = new HashMap<String, NodeTypeMapping>();
+      for (ClassTypeInfo cti : types) {
+        try {
+          resolve(cti, addedMappings);
+        }
+        catch (Exception e) {
+          if (e instanceof InvalidMappingException) {
+            InvalidMappingException ime = (InvalidMappingException)e;
+          if (ime.getType().equals(cti)) {
+            throw ime;
+          }          }
+          throw new InvalidMappingException(cti, e);
+         }
+      }
+      this.mappings.clear();
+      this.mappings.putAll(addedMappings);
+    }
+  }
+
+  private NodeTypeMapping resolve(ClassTypeInfo javaClass, Map<String, NodeTypeMapping> addedMappings) {
+
+    NodeTypeMapping nodeTypeMapping = addedMappings.get(javaClass.getName());
+    if (nodeTypeMapping != null) {
+      return nodeTypeMapping;
+    }
+
+    //
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings = new HashSet<PropertyMapping<? extends ValueMapping>>();
     Set<MethodMapping> methodMappings = new HashSet<MethodMapping>();
     BeanInfo info = beanInfoBuilder.build(javaClass);
@@ -79,13 +126,12 @@ public class TypeMappingDomain {
     PrimaryType primaryType = javaClass.getDeclaredAnnotation(PrimaryType.class);
 
     //
-    NodeTypeMapping nodeTypeMapping;
     if (primaryType == null) {
       MixinType mixinType = javaClass.getDeclaredAnnotation(MixinType.class);
 
       //
       if (mixinType == null) {
-        throw new IllegalStateException("Class " + javaClass + " is not annotated ");
+        throw new InvalidMappingException(javaClass, "Class is not annotated");
       }
 
       //
@@ -119,6 +165,9 @@ public class TypeMappingDomain {
         nodeTypeName,
         formatter);
     }
+
+    // Add it to added map
+    addedMappings.put(javaClass.getName(), nodeTypeMapping);
 
     // Property
     for (PropertyInfo<?> propertyInfo : info.getProperties(Property.class)) {
@@ -224,11 +273,13 @@ public class TypeMappingDomain {
             RelationshipMapping hierarchyMapping;
             MappedBy mappedBy = propertyInfo.getAnnotation(MappedBy.class);
             if (mappedBy != null) {
-              hierarchyMapping = new NamedOneToOneMapping(nodeTypeMapping,typeInfo, mappedBy.value(), RelationshipType.HIERARCHIC, true);
+              NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
+              hierarchyMapping = new NamedOneToOneMapping(nodeTypeMapping, relatedMapping, mappedBy.value(), RelationshipType.HIERARCHIC, true);
             } else {
               RelatedMappedBy relatedMappedBy = propertyInfo.getAnnotation(RelatedMappedBy.class);
               if (relatedMappedBy != null) {
-                hierarchyMapping = new NamedOneToOneMapping(nodeTypeMapping,typeInfo, relatedMappedBy.value(), RelationshipType.HIERARCHIC, false);
+                NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
+                hierarchyMapping = new NamedOneToOneMapping(nodeTypeMapping, relatedMapping, relatedMappedBy.value(), RelationshipType.HIERARCHIC, false);
               } else {
                 throw new IllegalStateException("No related by mapping found for property " + propertyInfo + " when introspecting " + info);
               }
@@ -236,7 +287,8 @@ public class TypeMappingDomain {
             oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
             propertyMappings.add(oneToOneMapping);
           } else if (type == RelationshipType.EMBEDDED) {
-            OneToOneMapping embeddedMapping = new OneToOneMapping(nodeTypeMapping,typeInfo, RelationshipType.EMBEDDED);
+            NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
+            OneToOneMapping embeddedMapping = new OneToOneMapping(nodeTypeMapping, relatedMapping, RelationshipType.EMBEDDED);
             PropertyMapping<OneToOneMapping> a = new PropertyMapping<OneToOneMapping>(propertyInfo, embeddedMapping);
             propertyMappings.add(a);
           } else {
@@ -280,7 +332,8 @@ public class TypeMappingDomain {
             if (mappedBy != null) {
               throw new IllegalStateException();
             }
-            OneToManyMapping mapping = new OneToManyMapping(nodeTypeMapping, bvi.getTypeInfo(), RelationshipType.HIERARCHIC);
+            NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
+            OneToManyMapping mapping = new OneToManyMapping(nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
             PropertyMapping<OneToManyMapping> oneToManyMapping = new PropertyMapping<OneToManyMapping>(propertyInfo, mapping);
             propertyMappings.add(oneToManyMapping);
           } else {
@@ -288,7 +341,8 @@ public class TypeMappingDomain {
             if (mappedBy == null) {
               throw new IllegalStateException();
             }
-            NamedOneToManyMapping mapping = new NamedOneToManyMapping(nodeTypeMapping, bvi.getTypeInfo(), mappedBy.value(), type);
+            NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
+            NamedOneToManyMapping mapping = new NamedOneToManyMapping(nodeTypeMapping, relatedMapping, mappedBy.value(), type);
             PropertyMapping<NamedOneToManyMapping> oneToManyMapping = new PropertyMapping<NamedOneToManyMapping>(propertyInfo, mapping);
             propertyMappings.add(oneToManyMapping);
           }
@@ -310,7 +364,8 @@ public class TypeMappingDomain {
 
           //
           if (type == RelationshipType.HIERARCHIC) {
-            RelationshipMapping hierarchyMapping = new ManyToOneMapping(nodeTypeMapping, bvi.getTypeInfo(), RelationshipType.HIERARCHIC);
+            NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
+            RelationshipMapping hierarchyMapping = new ManyToOneMapping(nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
             PropertyMapping<RelationshipMapping> manyToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
             propertyMappings.add(manyToOneMapping);
           } else {
@@ -318,7 +373,8 @@ public class TypeMappingDomain {
             if (mappedBy == null) {
               throw new IllegalStateException();
             }
-            NamedManyToOneMapping referenceMapping = new NamedManyToOneMapping(nodeTypeMapping, bvi.getTypeInfo(), mappedBy.value(), type);
+            NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
+            NamedManyToOneMapping referenceMapping = new NamedManyToOneMapping(nodeTypeMapping, relatedMapping, mappedBy.value(), type);
             PropertyMapping<NamedManyToOneMapping> manyToOneMapping = new PropertyMapping<NamedManyToOneMapping>(propertyInfo, referenceMapping);
             propertyMappings.add(manyToOneMapping);
           }

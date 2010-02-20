@@ -17,19 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping.value;
+package org.chromattic.test.pom;
 
 import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToOneMapping extends AbstractOneToOneMapping<OneToOneMapping> {
+@PrimaryType(name = "exo:templatized")
+public abstract class Templatized {
 
-  public OneToOneMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
-    super(owner, relatedType, type);
-  }
+  @ManyToOne(type = RelationshipType.REFERENCE)
+  @MappedBy("template")
+  public abstract PageImpl getTemplate();
+
+  public abstract void setTemplate(PageImpl template);
+
 }

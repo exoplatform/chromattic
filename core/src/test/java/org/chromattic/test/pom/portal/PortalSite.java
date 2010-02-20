@@ -19,12 +19,14 @@
 
 package org.chromattic.test.pom.portal;
 
+import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.test.pom.SiteImpl;
 import org.chromattic.test.pom.PageImpl;
+import org.chromattic.test.pom.Templatized;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,10 +35,7 @@ import org.chromattic.test.pom.PageImpl;
 @PrimaryType(name = "exo:portal")
 public abstract class PortalSite extends SiteImpl<PortalSites> {
 
-  @ManyToOne(type = RelationshipType.REFERENCE)
-  @MappedBy("template")
-  public abstract PageImpl getTemplate();
-
-  public abstract void setTemplate(PageImpl template);
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  public abstract Templatized getTemplatized();
 
 }

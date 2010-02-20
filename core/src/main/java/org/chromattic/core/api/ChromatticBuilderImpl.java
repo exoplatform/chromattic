@@ -23,7 +23,6 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
-import org.chromattic.metamodel.bean.BeanInfoFactory;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
@@ -59,9 +58,6 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   @Override
   protected Chromattic boot(Options options, Set<Class> classes) throws BuilderException {
 
-    BeanInfoFactory beanInfoBuilder = new BeanInfoFactory();
-
-    //
     TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
 
     //
@@ -69,10 +65,11 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     Set<NodeTypeMapping> mappings = new HashSet<NodeTypeMapping>();
     for (Class clazz : classes) {
       ClassTypeInfo typeInfo = (ClassTypeInfo)typeDomain.getType(clazz);
-      NodeTypeMapping mapping = mappingBuilder.build(typeInfo);
-      mappings.add(mapping);
+      mappingBuilder.add(typeInfo);
     }
+    mappings.addAll(mappingBuilder.build());
 
+    //
     Boolean optimizeJCREnabled = options.getValue(JCR_OPTIMIZE_ENABLED);
 
     //

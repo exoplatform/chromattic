@@ -27,11 +27,6 @@ import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.metamodel.bean.*;
 import org.reflext.api.ClassTypeInfo;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -39,30 +34,18 @@ import java.util.Set;
 public class BaseTypeMappingVisitor {
 
   /** . */
-  private final Set<ClassTypeInfo> types;
-
-  /** . */
   private final TypeMappingBuilder builder;
 
-  /** . */
-  private final Map<String, NodeTypeMapping> mappings;
-
   public BaseTypeMappingVisitor() {
-    types = new HashSet<ClassTypeInfo>();
     builder = new TypeMappingBuilder(false);
-    mappings = new HashMap<String, NodeTypeMapping>();
-  }
-
-  public void addTypeMapping(NodeTypeMapping mapping) {
-    mappings.put(mapping.getObjectClass().getName(), mapping);
   }
 
   public void addType(ClassTypeInfo cti) {
-    addTypeMapping(builder.build(cti));
+    builder.add(cti);
   }
 
   protected NodeTypeMapping getMapping(ClassTypeInfo type) {
-    return mappings.get(type.getName());
+    return builder.get(type);
   }
 
   protected void start() {}
@@ -95,7 +78,7 @@ public class BaseTypeMappingVisitor {
 
     start();
 
-    for (NodeTypeMapping mapping : mappings.values()) {
+    for (NodeTypeMapping mapping : builder.build()) {
 
       startMapping(mapping);
 
@@ -147,7 +130,7 @@ public class BaseTypeMappingVisitor {
           }
         } else if (valueMapping instanceof RelationshipMapping) {
           RelationshipMapping<?, ?> relationshipMapping = (RelationshipMapping<?, ?>)valueMapping;
-          ClassTypeInfo relatedType = relationshipMapping.getRelatedType();
+          ClassTypeInfo relatedType = relationshipMapping.getRelatedType().getObjectClass();
           RelationshipType type = relationshipMapping.getType();
           if (valueMapping instanceof AbstractOneToManyMapping<?, ?>) {
             if (valueMapping instanceof NamedOneToManyMapping) {
@@ -165,7 +148,7 @@ public class BaseTypeMappingVisitor {
             } else {
               switch (type) {
                 case HIERARCHIC:
-                  oneToManyHierarchic(relationshipMapping.getRelatedType());
+                  oneToManyHierarchic(relationshipMapping.getRelatedType().getObjectClass());
                   break;
                 default:
                   throw new AssertionError();
@@ -200,7 +183,7 @@ public class BaseTypeMappingVisitor {
               String name = namedOneToOneMapping.getName();
               switch (type) {
                 case HIERARCHIC:
-                  oneToOneHierarchic(name, relationshipMapping.getRelatedType(), namedOneToOneMapping.isOwning());
+                  oneToOneHierarchic(name, relationshipMapping.getRelatedType().getObjectClass(), namedOneToOneMapping.isOwning());
                   break;
                 default:
                   throw new AssertionError();

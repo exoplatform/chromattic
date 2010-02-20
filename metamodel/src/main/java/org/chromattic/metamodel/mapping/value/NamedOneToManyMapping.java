@@ -32,7 +32,7 @@ public class NamedOneToManyMapping extends AbstractOneToManyMapping<NamedManyToO
   /** . */
   private final String name;
 
-  public NamedOneToManyMapping(NodeTypeMapping owner, ClassTypeInfo relatedType, String name, RelationshipType type) {
+  public NamedOneToManyMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, String name, RelationshipType type) {
     super(owner, relatedType, type);
 
     //

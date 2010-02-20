@@ -95,6 +95,8 @@ public abstract class DomainSession {
 
   protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> embeddedClass) throws RepositoryException;
 
+  protected abstract EntityContext _getEntity(Node node) throws RepositoryException;
+
   protected abstract String _getName(EntityContext ctx) throws RepositoryException;
 
   protected abstract void _close() throws RepositoryException;
@@ -262,6 +264,15 @@ public abstract class DomainSession {
   public final void removeChild(EntityContext ctx, String name) throws UndeclaredRepositoryException {
     try {
       _removeChild(ctx, name);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public final EntityContext getEntity(Node node) throws UndeclaredRepositoryException {
+    try {
+      return _getEntity(node);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

@@ -41,8 +41,11 @@ public class OneToOneTestCase extends TestCase {
     ClassTypeInfo b = (ClassTypeInfo)domain.getType(B.class);
 
     TypeMappingBuilder builder = new TypeMappingBuilder(false);
-    NodeTypeMapping antm = builder.build(a);
-    NodeTypeMapping bntm = builder.build(b);
+    builder.add(a);
+    builder.add(b);
+    builder.build();
+    NodeTypeMapping antm = builder.get(a);
+    NodeTypeMapping bntm = builder.get(b);
 
     NamedOneToOneMapping aa = (NamedOneToOneMapping)antm.getPropertyMappings().iterator().next().getValueMapping();
     NamedOneToOneMapping bb = (NamedOneToOneMapping)bntm.getPropertyMappings().iterator().next().getValueMapping();

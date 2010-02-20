@@ -56,10 +56,11 @@ final class ReferentCollectionIterator<T> extends AbstractFilterIterator<T, Node
   Node previous;
 
   protected T adapt(Node node) {
-    Object o = session.findByNode(Object.class, node);
-    if (relatedClass.isInstance(o)) {
+    EntityContext ctx = session.getEntity(node);
+    T t = ctx.adapt(relatedClass);
+    if (t != null) {
       previous = node;
-      return relatedClass.cast(o);
+      return t;
     } else {
       return null;
     }

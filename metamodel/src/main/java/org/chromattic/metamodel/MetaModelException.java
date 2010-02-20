@@ -17,19 +17,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping.value;
+package org.chromattic.metamodel;
 
-import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.api.ChromatticException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToOneMapping extends AbstractOneToOneMapping<OneToOneMapping> {
+public class MetaModelException extends ChromatticException {
 
-  public OneToOneMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
-    super(owner, relatedType, type);
+  public MetaModelException() {
+  }
+
+  public MetaModelException(String message) {
+    super(message);
+  }
+
+  public MetaModelException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public MetaModelException(Throwable cause) {
+    super(cause);
   }
 }

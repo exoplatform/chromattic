@@ -19,15 +19,13 @@
 
 package org.chromattic.test.pom;
 
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@PrimaryType(name = "exo:siteimpl")
 public abstract class SiteImpl<T extends Sites> {
 
   @Name

@@ -36,7 +36,7 @@ public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneM
   /** . */
   private final boolean owning;
 
-  public NamedOneToOneMapping(NodeTypeMapping owner, ClassTypeInfo relatedType, String name, RelationshipType type, boolean owning) {
+  public NamedOneToOneMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, String name, RelationshipType type, boolean owning) {
     super(owner, relatedType, type);
 
     //
@@ -53,19 +53,12 @@ public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneM
   }
 
   @Override
-  protected NamedOneToOneMapping findRelatedRelationship(NodeTypeMapping relatedMapping) {
-    for (PropertyMapping<?> propertyMapping : relatedMapping.getPropertyMappings()) {
+  public NamedOneToOneMapping getRelatedRelationship() {
+    for (PropertyMapping<?> propertyMapping : getRelatedType().getPropertyMappings()) {
       ValueMapping valueMapping = propertyMapping.getValueMapping();
       if (valueMapping instanceof NamedOneToOneMapping) {
         NamedOneToOneMapping otoMapping = (NamedOneToOneMapping)valueMapping;
-
-
-//        boolean sameOwner = getOwner().equals(otoMapping.getOwner());
-
-        ClassTypeInfo cti = otoMapping.getRelatedType();
-        boolean sameOwner = cti.equals(getOwner().getObjectClass());
-
-
+        boolean sameOwner = otoMapping.getRelatedType().equals(getOwner());
         boolean sameType = getType() == otoMapping.getType();
         boolean sameName = name.equals(otoMapping.name);
         if (sameOwner && sameType && sameName) {

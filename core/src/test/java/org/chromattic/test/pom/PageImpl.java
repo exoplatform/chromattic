@@ -39,6 +39,9 @@ import java.util.Collection;
 @PrimaryType(name = "exo:page")
 public abstract class PageImpl {
 
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  public abstract Templatized getTemplatized();
+
   @Name
   public abstract String getName();
 
@@ -58,7 +61,7 @@ public abstract class PageImpl {
 
   @OneToMany(type = RelationshipType.REFERENCE)
   @RelatedMappedBy("template")
-  public abstract Collection<Object> getTemplatizedObjects();
+  public abstract Collection<Templatized> getTemplatizedObjects();
 
   @OneToMany
   public abstract Collection<PageImpl> getChildren();

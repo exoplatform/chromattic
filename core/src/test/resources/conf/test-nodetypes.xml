@@ -52,7 +52,7 @@
     </supertypes>
   </nodeType>
 
-  <nodeType name="exo:templatized" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+  <nodeType name="exo:templatized" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <propertyDefinitions>
       <propertyDefinition name="template" requiredType="Reference" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints/>

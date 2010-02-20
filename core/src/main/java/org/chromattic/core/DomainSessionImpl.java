@@ -460,7 +460,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    EntityContext ctx = _findByNode(node);
+    EntityContext ctx = _getEntity(node);
 
     //
     if (ctx == null) {
@@ -476,7 +476,7 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  private EntityContext _findByNode(Node node) throws RepositoryException {
+  protected EntityContext _getEntity(Node node) throws RepositoryException {
     if (node == null) {
       throw new NullPointerException();
     }
@@ -582,7 +582,7 @@ public class DomainSessionImpl extends DomainSession {
     Node referent = referentCtx.state.getNode();
     Node referenced = sessionWrapper.getReferenced(referent, name, linkType);
     if (referenced != null) {
-      return _findByNode(referenced);
+      return _getEntity(referenced);
     } else {
       return null;
     }
@@ -636,7 +636,7 @@ public class DomainSessionImpl extends DomainSession {
     Node child = sessionWrapper.getChild(node, name);
     if (child != null) {
       log.trace("Loaded named child {} of context {} with path {}", name, this, child.getPath());
-      return _findByNode(child);
+      return _getEntity(child);
     } else {
       log.trace("No child named {} to load for context {}", name, this);
       return null;
@@ -655,7 +655,7 @@ public class DomainSessionImpl extends DomainSession {
     }
     Node node = ctx.state.getNode();
     Node parent = sessionWrapper.getParent(node);
-    return _findByNode(parent);
+    return _getEntity(parent);
   }
 
   protected Node _getRoot() throws RepositoryException {

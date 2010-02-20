@@ -30,7 +30,7 @@ import org.reflext.api.ClassTypeInfo;
  */
 public abstract class AbstractOneToOneMapping<T extends AbstractOneToOneMapping<T>> extends RelationshipMapping<T, T> {
 
-  public AbstractOneToOneMapping(NodeTypeMapping owner, ClassTypeInfo relatedType, RelationshipType type) {
+  public AbstractOneToOneMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
     super(owner, relatedType, Multiplicity.ONE, Multiplicity.ONE, type);
   }
 

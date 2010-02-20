@@ -215,17 +215,17 @@ public class MapperBuilder {
           if (pmhm.getType() == RelationshipType.HIERARCHIC) {
             if (pmhm instanceof ManyToOneMapping) {
               JCRChildNodePropertyMapper bilto = new JCRAnyChildCollectionPropertyMapper(propertyInfo);
-              relatedProperties.get(pmhm.getRelatedType()).add(bilto);
+              relatedProperties.get(pmhm.getRelatedType().getObjectClass()).add(bilto);
               propertyMappersForE.add(bilto);
             } if (pmhm instanceof NamedOneToOneMapping) {
               NamedOneToOneMapping ncpmpm = (NamedOneToOneMapping)pmhm;
               if (ncpmpm.isOwning()) {
                 JCRNamedChildParentPropertyMapper<C> bilto = new JCRNamedChildParentPropertyMapper<C>(contextType, propertyInfo, ncpmpm.getName());
-                relatedProperties.get(pmhm.getRelatedType()).add(bilto);
+                relatedProperties.get(pmhm.getRelatedType().getObjectClass()).add(bilto);
                 propertyMappers.add(bilto);
               } else {
                 JCRChildNodePropertyMapper bilto = new JCRNamedChildPropertyMapper(propertyInfo, ncpmpm.getName());
-                relatedProperties.get(ncpmpm.getRelatedType()).add(bilto);
+                relatedProperties.get(ncpmpm.getRelatedType().getObjectClass()).add(bilto);
                 propertyMappersForE.add(bilto);
               }
             }
@@ -260,7 +260,7 @@ public class MapperBuilder {
                 linkType
                 );
               propertyMappers.add(blah);
-              relatedProperties.get(nmtovm.getRelatedType()).add(blah);
+              relatedProperties.get(nmtovm.getRelatedType().getObjectClass()).add(blah);
             }
           }
         }
@@ -283,7 +283,7 @@ public class MapperBuilder {
                   (CollectionPropertyInfo<BeanValueInfo>)pm.getInfo(),
                   fff.getName(),
                   linkType);
-                relatedProperties.get(pmhm.getRelatedType()).add(bilto);
+                relatedProperties.get(pmhm.getRelatedType().getObjectClass()).add(bilto);
                 propertyMappersForE.add(bilto);
               }
             } else {
@@ -303,7 +303,7 @@ public class MapperBuilder {
                   throw new IllegalStateException();
                 }
                 JCRAnyChildParentPropertyMapper<C> bilto = new JCRAnyChildParentPropertyMapper<C>(contextType, mpi, valueMapper);
-                relatedProperties.get(pmhm.getRelatedType()).add(bilto);
+                relatedProperties.get(pmhm.getRelatedType().getObjectClass()).add(bilto);
                 propertyMappers.add(bilto);
               }
             }

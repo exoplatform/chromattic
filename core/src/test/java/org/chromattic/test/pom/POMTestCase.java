@@ -93,7 +93,7 @@ public class POMTestCase extends AbstractTestCase {
     page.setTemplate(template);
 
     if (site instanceof PortalSite) {
-      ((PortalSite)site).setTemplate(template);
+      ((PortalSite)site).getTemplatized().setTemplate(template);
     }
 //    session.save();
 

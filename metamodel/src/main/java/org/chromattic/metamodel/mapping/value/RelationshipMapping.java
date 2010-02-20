@@ -21,7 +21,6 @@ package org.chromattic.metamodel.mapping.value;
 
 import org.chromattic.api.RelationshipType;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.reflext.api.ClassTypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,7 +32,7 @@ public abstract class RelationshipMapping<T extends RelationshipMapping<U, T>, U
   private NodeTypeMapping owner;
 
   /** . */
-  private ClassTypeInfo relatedType;
+  private NodeTypeMapping relatedType;
 
   /** . */
   private final Multiplicity multiplicity;
@@ -44,7 +43,7 @@ public abstract class RelationshipMapping<T extends RelationshipMapping<U, T>, U
   /** . */
   private final RelationshipType type;
 
-  public RelationshipMapping(NodeTypeMapping owner, ClassTypeInfo relatedType, Multiplicity multiplicity, Multiplicity relatedMultiplicity, RelationshipType type) {
+  public RelationshipMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, Multiplicity multiplicity, Multiplicity relatedMultiplicity, RelationshipType type) {
     this.owner = owner;
     this.relatedType = relatedType;
     this.multiplicity = multiplicity;
@@ -57,18 +56,6 @@ public abstract class RelationshipMapping<T extends RelationshipMapping<U, T>, U
   }
 
   public U getRelatedRelationship() {
-
-    NodeTypeMapping relatedMapping = owner.getDomain().get(relatedType);
-
-    if (relatedMapping == null) {
-      return null;
-    }
-
-    //
-    return findRelatedRelationship(relatedMapping);
-  }
-
-  protected U findRelatedRelationship(NodeTypeMapping relatedMapping) {
     throw new UnsupportedOperationException();
   }
 
@@ -76,7 +63,7 @@ public abstract class RelationshipMapping<T extends RelationshipMapping<U, T>, U
     return type;
   }
 
-  public ClassTypeInfo getRelatedType() {
+  public NodeTypeMapping getRelatedType() {
     return relatedType;
   }
 

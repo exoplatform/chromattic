@@ -19,32 +19,53 @@
 
 package org.chromattic.metamodel.mapping;
 
+import org.chromattic.metamodel.MetaModelException;
 import org.reflext.api.ClassTypeInfo;
-
-import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class TypeMappingBuilder {
+public class InvalidMappingException extends MetaModelException {
 
-  /** . */
-  private final TypeMappingDomain domain;
+  private final ClassTypeInfo type;
 
-  public TypeMappingBuilder(boolean processFormatter) {
-    this.domain = new TypeMappingDomain(processFormatter);
+  public InvalidMappingException(ClassTypeInfo type) {
+    this.type = type;
   }
 
-  public void add(ClassTypeInfo javaClass) {
-    domain.add(javaClass);
+  public InvalidMappingException(ClassTypeInfo type, String message) {
+    super(message);
+
+    //
+    this.type = type;
   }
 
-  public NodeTypeMapping get(ClassTypeInfo javaClass) {
-    return domain.get(javaClass);
+  public InvalidMappingException(ClassTypeInfo type, String message, Throwable cause) {
+    super(message, cause);
+
+    //
+    this.type = type;
   }
 
-  public Collection<NodeTypeMapping> build() {
-    return domain.build();
+  public InvalidMappingException(ClassTypeInfo type, Throwable cause) {
+    super(cause);
+
+    //
+    this.type = type;
+  }
+
+  @Override
+  public String getMessage() {
+    String superMsg = super.getMessage();
+    if (superMsg != null) {
+      return "Cannot build type " + type.getName() + ":" + superMsg;
+    } else {
+      return "Cannot build type " + type.getName();
+    }
+  }
+
+  public ClassTypeInfo getType() {
+    return type;
   }
 }
