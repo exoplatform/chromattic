@@ -51,14 +51,14 @@ public class FormatterScopeTestCase extends AbstractTestCase {
     //
     B b1 = session.create(B.class);
     a.getChildren().put("b", b1);
-    assertEquals("foo_b", b1.getName());
+    assertEquals("b", b1.getName());
     Node b1Node = session.getNode(b1);
     assertEquals("foo_b", b1Node.getName());
 
     //
     B b2 = session.create(B.class);
     c.getChildren().put("b", b2);
-    assertEquals("bar_b", b2.getName());
+    assertEquals("b", b2.getName());
     Node b2Node = session.getNode(b2);
     assertEquals("bar_b", b2Node.getName());
   }

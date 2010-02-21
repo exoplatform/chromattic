@@ -20,7 +20,6 @@
 package org.chromattic.core.mapper.nodeattribute;
 
 import org.chromattic.api.Status;
-import org.chromattic.core.FORMATTING_MODE;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.EntityContext;

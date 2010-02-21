@@ -81,20 +81,7 @@ public class DomainSessionImpl extends DomainSession {
       case PERSISTENT:
         Node node = ctx.state.getNode();
         Node parentNode = node.getParent();
-        String name = node.getName();
-        // we do not use the entity context of the parent and instead the node in order
-        // to not load the parent context as it may result in a load event and then create
-        // a concurrent modification exception
-        // java.util.ConcurrentModificationException
-        //         at java.util.HashMap$HashIterator.nextEntry(HashMap.java:793)
-        //         at java.util.HashMap$EntryIterator.next(HashMap.java:834)
-        //         at java.util.HashMap$EntryIterator.next(HashMap.java:832)
-        //         at org.chromattic.core.DomainSessionImpl.remove(DomainSessionImpl.java:554)
-        //         at org.chromattic.core.DomainSessionImpl._remove(DomainSessionImpl.java:527)
-        //         at org.chromattic.core.DomainSession.remove(DomainSession.java:239)
-        //         at org.chromattic.core.api.ChromatticSessionImpl.remove(ChromatticSessionImpl.java:194)
-        //         at org.chromattic.test.lifecycle.DestroyTestCase.testDestroyTransitiveLoadedDescendantWithAbsentParent(DestroyTestCase.java:104)
-        return domain.decodeName(parentNode, name, FORMATTING_MODE.VALIDATE_OBJECT_NAME);
+        return domain.decodeName(parentNode, node.getName(), NameKind.OBJECT);
     }
   }
 
@@ -191,7 +178,7 @@ public class DomainSessionImpl extends DomainSession {
     EntityContext parentCtx = parent != null ? unwrapEntity(parent) : null;
 
     //
-    name = domain.encodeName(parentCtx, name, FORMATTING_MODE.VALIDATE_OBJECT_NAME);
+    name = domain.encodeName(parentCtx, name, NameKind.OBJECT);
 
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
@@ -634,7 +621,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected void _removeChild(EntityContext ctx, String name) throws RepositoryException {
-    name = ctx.encodeName(name, FORMATTING_MODE.VALIDATE_OBJECT_NAME);
+    name = domain.encodeName(ctx, name, NameKind.OBJECT);
     Node node = ctx.state.getNode();
     Node childNode = sessionWrapper.getNode(node, name);
     if (childNode != null) {
@@ -643,7 +630,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected EntityContext _getChild(EntityContext ctx, String name) throws RepositoryException {
-    name = ctx.encodeName(name, FORMATTING_MODE.VALIDATE_OBJECT_NAME);
+    name = domain.encodeName(ctx, name, NameKind.OBJECT);
     Node node = ctx.state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
     Node child = sessionWrapper.getChild(node, name);
