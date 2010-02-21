@@ -41,6 +41,11 @@ public @interface Property {
    */
   String name();
 
+  /**
+   * Returns the default property value.
+   *
+   * @return the default property value
+   */
   String[] defaultValue() default {};
 
 }
