@@ -24,18 +24,16 @@ import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.*;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.format.ObjectFormatter;
-import org.chromattic.metamodel.MetaModelException;
 import org.chromattic.metamodel.bean.*;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.mapping.value.*;
-import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.MethodInfo;
-import org.reflext.api.TypeInfo;
-import org.reflext.api.VoidTypeInfo;
+import org.reflext.api.*;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
+import org.reflext.api.visit.HierarchyVisitor;
+import org.reflext.api.visit.HierarchyVisitorStrategy;
 
 import java.util.*;
 
@@ -83,24 +81,39 @@ public class TypeMappingDomain {
     return mappings.values();
   }
 
+  private static class ObjectTypeLookup implements HierarchyVisitor<ObjectTypeLookup> {
+
+    /** . */
+    private ClassTypeInfo objectType;
+
+    public boolean enter(ClassTypeInfo type) {
+      if (type.getName().equals(Object.class.getName())) {
+        objectType = type;
+      }
+      return true;
+    }
+    public void leave(ClassTypeInfo type) {
+    }
+  }
+
   public void resolve() {
     if (!resolved) {
-      ClassTypeInfo rootType = null;
-      for (ClassTypeInfo cti : types) {
-        if (cti.getName().equals(Object.class.getName())) {
-          rootType = cti;
-          break;
-        }
-      }
 
-      //
-      if (rootType == null) {
-        throw new MetaModelException("The type domain must contain the java.lang.Object type");
-      }
+      boolean rootDone = false;
 
       //
       Map<String, NodeTypeMapping> addedMappings = new HashMap<String, NodeTypeMapping>();
       for (ClassTypeInfo cti : types) {
+
+        // Process root the first time
+        if (!rootDone) {
+          HierarchyVisitorStrategy<ObjectTypeLookup> visitorStrategy = HierarchyScope.ANCESTORS.get();
+          ObjectTypeLookup lookup = new ObjectTypeLookup();
+          cti.accept(visitorStrategy, lookup);
+          resolve(lookup.objectType, addedMappings);
+          rootDone = true;
+        }
+
         try {
           resolve(cti, addedMappings);
         }
@@ -115,7 +128,7 @@ public class TypeMappingDomain {
       }
 
       // Remove root type as we don't want it to appear as first class  
-      addedMappings.remove(rootType.getName());
+      addedMappings.remove(Object.class.getName());
 
       //
       this.mappings.clear();

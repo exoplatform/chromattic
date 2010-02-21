@@ -57,11 +57,6 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
   @Override
   protected Chromattic boot(Options options, Set<Class> classes) throws BuilderException {
-
-    // We need it
-    classes.add(Object.class);
-
-    //
     TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
 
     //

@@ -60,6 +60,8 @@ import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.BeanValueInfo;
 import org.chromattic.metamodel.bean.ListPropertyInfo;
 import org.chromattic.api.RelationshipType;
+import org.chromattic.spi.instrument.MethodHandler;
+import org.chromattic.spi.instrument.ProxyFactory;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Set;
@@ -86,6 +88,27 @@ public class MapperBuilder {
     tmp.put(RelationshipType.PATH, LinkType.PATH);
     relationshipToLinkMapping = tmp;
   }
+
+  /** . */
+  private static final ProxyFactory<?> NULL_PROXY_FACTORY = new ProxyFactory<Object>() {
+    public Object createProxy(MethodHandler invoker) {
+      throw new UnsupportedOperationException();
+    }
+  };
+
+  /** . */
+  private static final Instrumentor NULL_INSTRUMENTOR = new Instrumentor() {
+
+    // This is OK as the class is *stateless*
+    @SuppressWarnings("unchecked")
+    public <O> ProxyFactory<O> getProxyClass(Class<O> clazz) {
+      return (ProxyFactory<O>)NULL_PROXY_FACTORY;
+    }
+
+    public MethodHandler getInvoker(Object proxy) {
+      throw new UnsupportedOperationException();
+    }
+  };
 
   /** . */
   private final Set<NodeTypeMapping> typeMappings;
@@ -345,6 +368,13 @@ public class MapperBuilder {
       }
     }
 
+    Instrumentor objectInstrumentor;
+    if (typeMapping.getType().getName().equals(Object.class.getName())) {
+      objectInstrumentor = NULL_INSTRUMENTOR;
+    } else {
+      objectInstrumentor = instrumentor;
+    }
+
     //
     ObjectMapper<C> mapper;
     if (typeMapping.isPrimary()) {
@@ -382,7 +412,7 @@ public class MapperBuilder {
         tmp2,
         typeMapping.getOnDuplicate(),
         formatter,
-        instrumentor,
+        objectInstrumentor,
         typeMapping.getTypeName(),
         typeMapping.getKind());
     } else {
@@ -418,7 +448,7 @@ public class MapperBuilder {
         tmp2,
         typeMapping.getOnDuplicate(),
         null,
-        instrumentor,
+        objectInstrumentor,
         typeMapping.getTypeName(),
         typeMapping.getKind());
     }

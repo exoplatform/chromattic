@@ -75,13 +75,13 @@ public class ChromatticProcessor extends AbstractProcessor {
 
   private void process(RoundEnvironment roundEnv, Set<Element> elts) {
 
-//    BaseTypeMappingVisitor visitor = new BaseTypeMappingVisitor();
+    BaseTypeMappingVisitor visitor = new BaseTypeMappingVisitor();
 
     for (Element elt : elts) {
       TypeElement typeElt = (TypeElement)elt;
       ClassTypeInfo cti = (ClassTypeInfo)domain.getType(typeElt);
       processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "About to process the type " + cti.getName());
-//      visitor.addType(cti);
+      visitor.addType(cti);
       Filer filer = processingEnv.getFiler();
       try {
         JavaFileObject jfo = filer.createSourceFile(typeElt.getQualifiedName() + "_Chromattic", typeElt);
@@ -97,8 +97,7 @@ public class ChromatticProcessor extends AbstractProcessor {
     }
 
     // Validate model
-//    visitor.generate();
-
+    visitor.generate();
   }
 
   private void writeClass(RoundEnvironment roundEnv, StringBuilder out, ClassTypeInfo cti) {
