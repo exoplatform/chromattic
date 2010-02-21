@@ -32,8 +32,6 @@ import org.reflext.api.*;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
-import org.reflext.api.visit.HierarchyVisitor;
-import org.reflext.api.visit.HierarchyVisitorStrategy;
 
 import java.util.*;
 
@@ -81,50 +79,28 @@ public class TypeMappingDomain {
     return mappings.values();
   }
 
-  private static class ObjectTypeLookup implements HierarchyVisitor<ObjectTypeLookup> {
-
-    /** . */
-    private ClassTypeInfo objectType;
-
-    public boolean enter(ClassTypeInfo type) {
-      if (type.getName().equals(Object.class.getName())) {
-        objectType = type;
-      }
-      return true;
-    }
-    public void leave(ClassTypeInfo type) {
-    }
-  }
-
   public void resolve() {
     if (!resolved) {
-
-      boolean rootDone = false;
+      Map<String, NodeTypeMapping> addedMappings = new HashMap<String, NodeTypeMapping>();
 
       //
-      Map<String, NodeTypeMapping> addedMappings = new HashMap<String, NodeTypeMapping>();
+      resolve(JLOTypeInfo.get(), addedMappings);
+
+      //
       for (ClassTypeInfo cti : types) {
-
-        // Process root the first time
-        if (!rootDone) {
-          HierarchyVisitorStrategy<ObjectTypeLookup> visitorStrategy = HierarchyScope.ANCESTORS.get();
-          ObjectTypeLookup lookup = new ObjectTypeLookup();
-          cti.accept(visitorStrategy, lookup);
-          resolve(lookup.objectType, addedMappings);
-          rootDone = true;
+        if (!cti.getName().equals(Object.class.getName())) {
+          try {
+            resolve(cti, addedMappings);
+          }
+          catch (Exception e) {
+            if (e instanceof InvalidMappingException) {
+              InvalidMappingException ime = (InvalidMappingException)e;
+            if (ime.getType().equals(cti)) {
+              throw ime;
+            }          }
+            throw new InvalidMappingException(cti, e);
+           }
         }
-
-        try {
-          resolve(cti, addedMappings);
-        }
-        catch (Exception e) {
-          if (e instanceof InvalidMappingException) {
-            InvalidMappingException ime = (InvalidMappingException)e;
-          if (ime.getType().equals(cti)) {
-            throw ime;
-          }          }
-          throw new InvalidMappingException(cti, e);
-         }
       }
 
       // Remove root type as we don't want it to appear as first class  

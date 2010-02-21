@@ -34,10 +34,10 @@ import org.reflext.api.ClassTypeInfo;
 public class BaseTypeMappingVisitor {
 
   /** . */
-  private final TypeMappingBuilder builder;
+  private final TypeMappingDomain builder;
 
   public BaseTypeMappingVisitor() {
-    builder = new TypeMappingBuilder(false);
+    builder = new TypeMappingDomain(false);
   }
 
   public void addType(ClassTypeInfo cti) {

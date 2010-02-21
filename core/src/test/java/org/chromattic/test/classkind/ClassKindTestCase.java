@@ -30,6 +30,7 @@ public class ClassKindTestCase extends AbstractTestCase {
 
   protected void createDomain() {
     addClass(TCK_A.class);
+    addClass(Object.class);
   }
 
   public void testFoo() throws Exception {

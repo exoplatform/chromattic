@@ -23,11 +23,11 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
+import org.chromattic.metamodel.mapping.TypeMappingDomain;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.chromattic.metamodel.mapping.TypeMappingBuilder;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.format.ObjectFormatter;
@@ -60,7 +60,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
 
     //
-    TypeMappingBuilder mappingBuilder = new TypeMappingBuilder(true);
+    TypeMappingDomain mappingBuilder = new TypeMappingDomain(true);
     Set<NodeTypeMapping> mappings = new HashSet<NodeTypeMapping>();
     for (Class clazz : classes) {
       ClassTypeInfo typeInfo = (ClassTypeInfo)typeDomain.getType(clazz);

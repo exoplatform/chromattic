@@ -21,7 +21,7 @@ package org.chromattic.metamodel.mapping.onetotone;
 
 import junit.framework.TestCase;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.chromattic.metamodel.mapping.TypeMappingBuilder;
+import org.chromattic.metamodel.mapping.TypeMappingDomain;
 import org.chromattic.metamodel.mapping.value.NamedOneToOneMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.core.TypeDomain;
@@ -41,7 +41,7 @@ public class OneToOneTestCase extends TestCase {
     ClassTypeInfo a = (ClassTypeInfo)domain.getType(A.class);
     ClassTypeInfo b = (ClassTypeInfo)domain.getType(B.class);
 
-    TypeMappingBuilder builder = new TypeMappingBuilder(false);
+    TypeMappingDomain builder = new TypeMappingDomain(false);
     builder.add(o);
     builder.add(a);
     builder.add(b);
