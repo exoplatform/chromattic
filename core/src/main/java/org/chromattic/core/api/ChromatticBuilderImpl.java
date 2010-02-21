@@ -61,6 +61,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     // We need it
     classes.add(Object.class);
 
+    //
     TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
 
     //

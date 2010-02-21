@@ -32,7 +32,7 @@ public abstract class RelationshipMapping<T extends RelationshipMapping<U, T>, U
   private NodeTypeMapping owner;
 
   /** . */
-  private NodeTypeMapping relatedType;
+  private NodeTypeMapping relatedMapping;
 
   /** . */
   private final Multiplicity multiplicity;
@@ -43,9 +43,9 @@ public abstract class RelationshipMapping<T extends RelationshipMapping<U, T>, U
   /** . */
   private final RelationshipType type;
 
-  public RelationshipMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, Multiplicity multiplicity, Multiplicity relatedMultiplicity, RelationshipType type) {
+  public RelationshipMapping(NodeTypeMapping owner, NodeTypeMapping relatedMapping, Multiplicity multiplicity, Multiplicity relatedMultiplicity, RelationshipType type) {
     this.owner = owner;
-    this.relatedType = relatedType;
+    this.relatedMapping = relatedMapping;
     this.multiplicity = multiplicity;
     this.relatedMultiplicity = relatedMultiplicity;
     this.type = type;
@@ -63,8 +63,8 @@ public abstract class RelationshipMapping<T extends RelationshipMapping<U, T>, U
     return type;
   }
 
-  public NodeTypeMapping getRelatedType() {
-    return relatedType;
+  public NodeTypeMapping getRelatedMapping() {
+    return relatedMapping;
   }
 
   public Multiplicity getMultiplicity() {

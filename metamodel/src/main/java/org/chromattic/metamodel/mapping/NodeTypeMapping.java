@@ -26,7 +26,6 @@ import org.chromattic.api.NameConflictResolution;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.HashSet;
 
 /**
  * The meta data for the mapping of a java class to a node type and set of mixins. Note that
@@ -81,7 +80,7 @@ public class NodeTypeMapping
   private final String typeName;
 
   /** . */
-  protected final ClassTypeInfo objectClass;
+  protected final ClassTypeInfo type;
 
   /** . */
   private final Set<PropertyMapping<? extends ValueMapping>> propertyMappings;
@@ -100,7 +99,7 @@ public class NodeTypeMapping
 
   public NodeTypeMapping(
     TypeMappingDomain domain,
-    ClassTypeInfo objectClass,
+    ClassTypeInfo type,
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
@@ -112,7 +111,7 @@ public class NodeTypeMapping
 
     //
     this.domain = domain;
-    this.objectClass = objectClass;
+    this.type = type;
     this.propertyMappings = Collections.unmodifiableSet(propertyMappings);
     this.methodMappings = Collections.unmodifiableSet(methodMappings);
     this.onDuplicate = onDuplicate;
@@ -141,8 +140,8 @@ public class NodeTypeMapping
     return typeName;
   }
 
-  public ClassTypeInfo getObjectClass() {
-    return objectClass;
+  public ClassTypeInfo getType() {
+    return type;
   }
 
   public Class<? extends ObjectFormatter> getFormatterClass() {
@@ -163,7 +162,7 @@ public class NodeTypeMapping
 
   @Override
   public int hashCode() {
-    return objectClass.hashCode();
+    return type.hashCode();
   }
 
   @Override
@@ -173,13 +172,13 @@ public class NodeTypeMapping
     }
     if (obj instanceof NodeTypeMapping) {
       NodeTypeMapping that = (NodeTypeMapping)obj;
-      return objectClass.equals(that.objectClass);
+      return type.equals(that.type);
     }
     return false;
   }
 
   @Override
   public String toString() {
-    return "NodeTypeMapping[type=" + objectClass + "]";
+    return "NodeTypeMapping[type=" + type + "]";
   }
 }

@@ -21,7 +21,6 @@ package org.chromattic.metamodel.mapping.value;
 
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
-import org.reflext.api.ClassTypeInfo;
 import org.chromattic.api.RelationshipType;
 
 /**
@@ -54,11 +53,11 @@ public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneM
 
   @Override
   public NamedOneToOneMapping getRelatedRelationship() {
-    for (PropertyMapping<?> propertyMapping : getRelatedType().getPropertyMappings()) {
+    for (PropertyMapping<?> propertyMapping : getRelatedMapping().getPropertyMappings()) {
       ValueMapping valueMapping = propertyMapping.getValueMapping();
       if (valueMapping instanceof NamedOneToOneMapping) {
         NamedOneToOneMapping otoMapping = (NamedOneToOneMapping)valueMapping;
-        boolean sameOwner = otoMapping.getRelatedType().equals(getOwner());
+        boolean sameOwner = otoMapping.getRelatedMapping().equals(getOwner());
         boolean sameType = getType() == otoMapping.getType();
         boolean sameName = name.equals(otoMapping.name);
         if (sameOwner && sameType && sameName) {

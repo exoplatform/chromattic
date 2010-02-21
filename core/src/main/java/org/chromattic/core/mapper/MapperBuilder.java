@@ -99,7 +99,7 @@ public class MapperBuilder {
   public MapperBuilder(Set<NodeTypeMapping> typeMappings, Instrumentor instrumentor) {
     Map<ClassTypeInfo, NodeTypeMapping> classToMapping = new HashMap<ClassTypeInfo, NodeTypeMapping>();
     for (NodeTypeMapping typeMapping : typeMappings) {
-      classToMapping.put(typeMapping.getObjectClass(), typeMapping);
+      classToMapping.put(typeMapping.getType(), typeMapping);
     }
 
     //
@@ -129,7 +129,7 @@ public class MapperBuilder {
     for (NodeTypeMapping typeMapping : typeMappings) {
       Class<? extends ObjectContext> contextType = typeMapping.isPrimary() ? EntityContext.class : EmbeddedContext.class;
       ObjectMapper<?> mapper = createMapper(contextType, typeMapping);
-      mappers.put(typeMapping.getObjectClass().getName(), mapper);
+      mappers.put(typeMapping.getType().getName(), mapper);
     }
 
     // Resolve related types
@@ -215,17 +215,17 @@ public class MapperBuilder {
           if (pmhm.getType() == RelationshipType.HIERARCHIC) {
             if (pmhm instanceof ManyToOneMapping) {
               JCRChildNodePropertyMapper bilto = new JCRAnyChildCollectionPropertyMapper(propertyInfo);
-              relatedProperties.get(pmhm.getRelatedType().getObjectClass()).add(bilto);
+              relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
               propertyMappersForE.add(bilto);
             } if (pmhm instanceof NamedOneToOneMapping) {
               NamedOneToOneMapping ncpmpm = (NamedOneToOneMapping)pmhm;
               if (ncpmpm.isOwning()) {
                 JCRNamedChildParentPropertyMapper<C> bilto = new JCRNamedChildParentPropertyMapper<C>(contextType, propertyInfo, ncpmpm.getName());
-                relatedProperties.get(pmhm.getRelatedType().getObjectClass()).add(bilto);
+                relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
                 propertyMappers.add(bilto);
               } else {
                 JCRChildNodePropertyMapper bilto = new JCRNamedChildPropertyMapper(propertyInfo, ncpmpm.getName());
-                relatedProperties.get(ncpmpm.getRelatedType().getObjectClass()).add(bilto);
+                relatedProperties.get(ncpmpm.getRelatedMapping().getType()).add(bilto);
                 propertyMappersForE.add(bilto);
               }
             }
@@ -260,7 +260,7 @@ public class MapperBuilder {
                 linkType
                 );
               propertyMappers.add(blah);
-              relatedProperties.get(nmtovm.getRelatedType().getObjectClass()).add(blah);
+              relatedProperties.get(nmtovm.getRelatedMapping().getType()).add(blah);
             }
           }
         }
@@ -283,7 +283,7 @@ public class MapperBuilder {
                   (CollectionPropertyInfo<BeanValueInfo>)pm.getInfo(),
                   fff.getName(),
                   linkType);
-                relatedProperties.get(pmhm.getRelatedType().getObjectClass()).add(bilto);
+                relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
                 propertyMappersForE.add(bilto);
               }
             } else {
@@ -303,7 +303,7 @@ public class MapperBuilder {
                   throw new IllegalStateException();
                 }
                 JCRAnyChildParentPropertyMapper<C> bilto = new JCRAnyChildParentPropertyMapper<C>(contextType, mpi, valueMapper);
-                relatedProperties.get(pmhm.getRelatedType().getObjectClass()).add(bilto);
+                relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
                 propertyMappers.add(bilto);
               }
             }
@@ -377,7 +377,7 @@ public class MapperBuilder {
 
       //
       mapper = (ObjectMapper<C>)new ObjectMapper<EntityContext>(
-        (Class<?>)typeMapping.getObjectClass().getType(),
+        (Class<?>)typeMapping.getType().getType(),
         tmp,
         tmp2,
         typeMapping.getOnDuplicate(),
@@ -413,7 +413,7 @@ public class MapperBuilder {
 
       //
       mapper = (ObjectMapper<C>)new ObjectMapper<EmbeddedContext>(
-        (Class<?>)typeMapping.getObjectClass().getType(),
+        (Class<?>)typeMapping.getType().getType(),
         tmp,
         tmp2,
         typeMapping.getOnDuplicate(),

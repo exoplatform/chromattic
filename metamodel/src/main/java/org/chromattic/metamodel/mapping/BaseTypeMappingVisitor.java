@@ -117,7 +117,7 @@ public class BaseTypeMappingVisitor {
                 } else if (simpleType == SimpleType.PATH) {
                   // OK
                 } else {
-                  throw new AssertionError(mapping.getObjectClass().toString() + " wrong simple type "+ simpleType);
+                  throw new AssertionError(mapping.getType().toString() + " wrong simple type "+ simpleType);
                 }
               } else {
                 throw new AssertionError();
@@ -126,11 +126,11 @@ public class BaseTypeMappingVisitor {
               throw new AssertionError();
             }
           } else {
-            throw new AssertionError(mapping.getObjectClass());
+            throw new AssertionError(mapping.getType());
           }
         } else if (valueMapping instanceof RelationshipMapping) {
           RelationshipMapping<?, ?> relationshipMapping = (RelationshipMapping<?, ?>)valueMapping;
-          ClassTypeInfo relatedType = relationshipMapping.getRelatedType().getObjectClass();
+          ClassTypeInfo relatedType = relationshipMapping.getRelatedMapping().getType();
           RelationshipType type = relationshipMapping.getType();
           if (valueMapping instanceof AbstractOneToManyMapping<?, ?>) {
             if (valueMapping instanceof NamedOneToManyMapping) {
@@ -148,7 +148,7 @@ public class BaseTypeMappingVisitor {
             } else {
               switch (type) {
                 case HIERARCHIC:
-                  oneToManyHierarchic(relationshipMapping.getRelatedType().getObjectClass());
+                  oneToManyHierarchic(relationshipMapping.getRelatedMapping().getType());
                   break;
                 default:
                   throw new AssertionError();
@@ -183,7 +183,7 @@ public class BaseTypeMappingVisitor {
               String name = namedOneToOneMapping.getName();
               switch (type) {
                 case HIERARCHIC:
-                  oneToOneHierarchic(name, relationshipMapping.getRelatedType().getObjectClass(), namedOneToOneMapping.isOwning());
+                  oneToOneHierarchic(name, relationshipMapping.getRelatedMapping().getType(), namedOneToOneMapping.isOwning());
                   break;
                 default:
                   throw new AssertionError();
