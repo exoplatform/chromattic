@@ -47,7 +47,7 @@ public abstract class ObjectContext implements MethodHandler {
     EntityContextState state = ctx.state;
 
     //
-    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
+    propertyName = ctx.encodeName(propertyName, FORMATTING_MODE.VALIDATE_PROPERTY_NAME);
     Path.validateName(propertyName);
 
     //
@@ -60,7 +60,7 @@ public abstract class ObjectContext implements MethodHandler {
     EntityContextState state = ctx.state;
 
     //
-    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
+    propertyName = ctx.encodeName(propertyName, FORMATTING_MODE.VALIDATE_PROPERTY_NAME);
     Path.validateName(propertyName);
 
     //
@@ -73,7 +73,7 @@ public abstract class ObjectContext implements MethodHandler {
     EntityContextState state = ctx.state;
 
     //
-    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
+    propertyName = ctx.encodeName(propertyName, FORMATTING_MODE.VALIDATE_PROPERTY_NAME);
     Path.validateName(propertyName);
 
     //
@@ -108,7 +108,7 @@ public abstract class ObjectContext implements MethodHandler {
     EntityContextState state = ctx.state;
 
     //
-    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
+    propertyName = ctx.encodeName(propertyName, FORMATTING_MODE.VALIDATE_PROPERTY_NAME);
     Path.validateName(propertyName);
 
     //

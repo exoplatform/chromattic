@@ -33,28 +33,28 @@ import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 public class JCRNamedChildParentPropertyMapper<O extends ObjectContext> extends JCRNodePropertyMapper<O> {
 
   /** . */
-  private String nodeName;
+  private String relatedName;
 
   /** . */
   private final Logger log = Logger.getLogger(JCRNamedChildParentPropertyMapper.class);
 
   public JCRNamedChildParentPropertyMapper(
-    Class<O> contextType,
+      Class<O> contextType,
       SingleValuedPropertyInfo<BeanValueInfo> info,
-    String nodeName) throws ClassNotFoundException {
+      String relatedName) throws ClassNotFoundException {
     super(contextType, info);
 
     //
-    this.nodeName = nodeName;
+    this.relatedName = relatedName;
   }
 
-  public String getNodeName() {
-    return nodeName;
+  public String getRelatedName() {
+    return relatedName;
   }
 
   @Override
   public Object get(O ctx) throws Throwable {
-    EntityContext childCtx = ctx.getEntity().getChild(nodeName);
+    EntityContext childCtx = ctx.getEntity().getChild(relatedName);
     if (childCtx != null) {
       Object o = childCtx.getObject();
       Class<?> relatedClass = getRelatedClass();
@@ -73,9 +73,9 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext> extends 
     EntityContext entity = context.getEntity();
     if (child != null) {
       EntityContext entityCtx = entity.getSession().unwrapEntity(child);
-      entity.addChild(nodeName, entityCtx);
+      entity.addChild(relatedName, entityCtx);
     } else {
-      entity.removeChild(nodeName);
+      entity.removeChild(relatedName);
     }
   }
 }

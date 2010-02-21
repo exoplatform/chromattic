@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.FORMATTING_MODE;
 
 import java.util.AbstractMap;
 import java.util.Set;
@@ -51,6 +52,7 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
   public E get(Object key) {
     if (key instanceof String) {
       String name = (String)key;
+      name = parentCtx.encodeName(name, FORMATTING_MODE.CONVERT_OBJECT_NAME);
       EntityContext childCtx = parentCtx.getChild(name);
       if (childCtx != null) {
         Object child = childCtx.getObject();
@@ -73,6 +75,10 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
 
   @Override
   public E put(String key, E value) {
+
+    key = parentCtx.encodeName(key, FORMATTING_MODE.CONVERT_OBJECT_NAME);
+
+    //
     EntityContext childCtx = parentCtx.getChild(key);
 
     //

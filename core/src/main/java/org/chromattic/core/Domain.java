@@ -30,11 +30,12 @@ import org.chromattic.core.query.QueryManager;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.api.format.ObjectFormatter;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
 import org.chromattic.common.collection.Collections;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -143,6 +144,10 @@ public class Domain {
     this.rootCreateMode = rootCreateMode;
   }
 
+  public ObjectFormatter getObjectFormatter() {
+    return objectFormatter;
+  }
+
   public boolean isHasPropertyOptimized() {
     return hasPropertyOptimized;
   }
@@ -167,98 +172,45 @@ public class Domain {
     return queryManager;
   }
 
-  String decodeName(EntityContext ctx, String internal, NameKind nameKind) throws RepositoryException {
-    if (ctx == null) {
-      throw new NullPointerException();
-    }
-    return decodeName(ctx.state.getNode(), internal, nameKind);
-  }
-
-  /**
-   * Decodes an internal name that is owned by the specified node.
-   *
-   * @param ownerNode the owner node
-   * @param internal the internal name
-   * @param nameKind the kind of name
-   * @return the external name or null
-   * @throws RepositoryException any repository exception
-   */
-  String decodeName(Node ownerNode, String internal, NameKind nameKind) throws RepositoryException {
-    if (ownerNode == null) {
-      throw new NullPointerException();
-    }
-    if (nameKind == NameKind.PROPERTY) {
-      return internal;
-    }
-
-    //
-    ObjectFormatter formatter = null;
-    String nodeTypeName = ownerNode.getPrimaryNodeType().getName();
-    ObjectMapper parentMapper = getTypeMapper(nodeTypeName);
-    if (parentMapper != null) {
-      formatter = parentMapper.getFormatter();
-    }
-    if (formatter == null) {
-      formatter = objectFormatter;
-    }
-
-    //
-    String external;
-    try {
-      if (nameKind == NameKind.OBJECT) {
-        external = formatter.decodeNodeName(null, internal);
-      } else {
-        // external = formatter.decodePropertyName(null, internal);
-        throw new UnsupportedOperationException();
-      }
-    }
-    catch (Exception e) {
-      if (e instanceof IllegalStateException) {
-        throw (IllegalStateException)e;
-      }
-      throw new UndeclaredThrowableException(e);
-    }
-    if (external == null) {
-      if (nameKind == NameKind.OBJECT) {
-        throw new IllegalStateException();
-      }
-    }
-    return external;
-  }
-
   /**
    * Encodes the name for the specified context.
    *
-   * @param ownerCtx the context
+   * @param owner the entity context
    * @param external the external name
    * @param nameKind the name kind
    * @return the encoded name
    */
-  String encodeName(EntityContext ownerCtx, String external, NameKind nameKind) {
+  public String encodeName(EntityContext owner, String external, FORMATTING_MODE nameKind) {
     if (external == null) {
       throw new NullPointerException("No null name accepted");
     }
-    if (nameKind == NameKind.PROPERTY) {
+    if (nameKind == FORMATTING_MODE.VALIDATE_PROPERTY_NAME) {
       return external;
     }
 
     //
     ObjectFormatter formatter = null;
-    if (ownerCtx != null) {
-      formatter = ownerCtx.mapper.getFormatter();
+    if (owner != null) {
+      formatter = owner.mapper.getFormatter();
     }
+
+    //
     if (formatter == null) {
       formatter = objectFormatter;
     }
 
     //
-    String internal;
+    String internal = null;
     try {
-      if (nameKind == NameKind.OBJECT) {
-        internal = formatter.encodeNodeName(null, external);
-      } else {
-        // internal = formatter.encodePropertyName(null, external);
-        throw new UnsupportedOperationException();
+      switch (nameKind) {
+        case VALIDATE_OBJECT_NAME:
+          internal = external;
+          break;
+        case VALIDATE_PROPERTY_NAME:
+          throw new UnsupportedOperationException();
+        case CONVERT_OBJECT_NAME:
+          internal = formatter.encodeNodeName(null, external);
+          break;
       }
     }
     catch (Exception e) {
@@ -275,5 +227,84 @@ public class Domain {
     }
     Path.validateName(internal);
     return internal;
+  }
+
+  /**
+   * Decodes an internal name that is owned by the specified context.
+   *
+   * @param owner the entity context
+   * @param internal the internal name
+   * @param nameKind the kind of name
+   * @return the external name or null
+   * @throws RepositoryException any repository exception
+   */
+  public String decodeName(EntityContext owner, String internal, FORMATTING_MODE nameKind) throws RepositoryException {
+    ObjectMapper mapper = null;
+    if (owner != null) {
+      mapper = owner.mapper;
+    }
+    return decodeName(mapper, internal, nameKind);
+  }
+
+  /**
+   * Decodes an internal name that is owned by the specified context.
+   *
+   * @param owner the node owner
+   * @param internal the internal name
+   * @param nameKind the kind of name
+   * @return the external name or null
+   * @throws RepositoryException any repository exception
+   */
+  public String decodeName(Node owner, String internal, FORMATTING_MODE nameKind) throws RepositoryException {
+    if (owner == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    String nodeTypeName = owner.getPrimaryNodeType().getName();
+    ObjectMapper parentMapper = getTypeMapper(nodeTypeName);
+    return decodeName(parentMapper, internal, nameKind);
+  }
+
+  private String decodeName(ObjectMapper owner, String internal, FORMATTING_MODE nameKind) throws RepositoryException {
+    if (nameKind == FORMATTING_MODE.VALIDATE_PROPERTY_NAME) {
+      return internal;
+    }
+
+    //
+    ObjectFormatter formatter = null;
+    if (owner != null) {
+      formatter = owner.getFormatter();
+    }
+    if (formatter == null) {
+      formatter = objectFormatter;
+    }
+
+    //
+    String external = null;
+    try {
+      switch (nameKind) {
+        case VALIDATE_OBJECT_NAME:
+          external = internal;
+          break;
+        case VALIDATE_PROPERTY_NAME:
+          throw new UnsupportedOperationException();
+        case CONVERT_OBJECT_NAME:
+          external = formatter.decodeNodeName(null, internal);
+          break;
+      }
+    }
+    catch (Exception e) {
+      if (e instanceof IllegalStateException) {
+        throw (IllegalStateException)e;
+      }
+      throw new UndeclaredThrowableException(e);
+    }
+    if (external == null) {
+      if (nameKind == FORMATTING_MODE.CONVERT_OBJECT_NAME) {
+        throw new IllegalStateException();
+      }
+    }
+    return external;
   }
 }

@@ -21,6 +21,7 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.FORMATTING_MODE;
 
 import java.util.Map;
 
@@ -42,10 +43,8 @@ public class AnyChildEntryIterator<E> extends AbstractFilterIterator<Map.Entry<S
 
   protected Map.Entry<String, E> adapt(final E internal) {
     final EntityContext internalCtx = map.parentCtx.getSession().unwrapEntity(internal);
+    final String name = map.parentCtx.decodeName(map.parentCtx.getSession().getName(internalCtx), FORMATTING_MODE.CONVERT_OBJECT_NAME);
     return new Map.Entry<String, E>() {
-
-      /** . */
-      private final String name = map.parentCtx.getSession().getName(internalCtx);
 
       public String getKey() {
         return name;

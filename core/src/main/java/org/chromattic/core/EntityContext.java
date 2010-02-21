@@ -20,6 +20,7 @@
 package org.chromattic.core;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -65,6 +66,33 @@ public final class EntityContext extends ObjectContext {
     this.state = state;
     this.properties = new PropertyMap(this);
     this.embeddeds = new HashMap<ObjectMapper<EmbeddedContext>, EmbeddedContext>();
+  }
+
+  /**
+   * Encodes the name for the specified context.
+   *
+   * @param external the external name
+   * @param nameKind the name kind
+   * @return the encoded name
+   */
+  public String encodeName(String external, FORMATTING_MODE nameKind) {
+    return state.getSession().getDomain().encodeName(this, external, nameKind);
+  }
+
+  /**
+   * Decodes an internal name that is owned by the current context.
+   *
+   * @param internal the internal name
+   * @param nameKind the kind of name
+   * @return the external name or null
+   */
+  public String decodeName(String internal, FORMATTING_MODE nameKind) {
+    try {
+      return state.getSession().getDomain().decodeName(this, internal, nameKind);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredThrowableException(e);
+    }
   }
 
   public Node getNode() {

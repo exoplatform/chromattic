@@ -23,8 +23,8 @@ package org.chromattic.core;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public enum NameKind {
+public enum FORMATTING_MODE {
 
-  OBJECT, PROPERTY
+  CONVERT_OBJECT_NAME, VALIDATE_OBJECT_NAME, VALIDATE_PROPERTY_NAME
 
 }
