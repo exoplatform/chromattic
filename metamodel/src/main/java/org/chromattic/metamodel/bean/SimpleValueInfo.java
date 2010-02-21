@@ -20,9 +20,6 @@
 package org.chromattic.metamodel.bean;
 
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.SimpleTypeInfo;
-
-import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,28 +30,15 @@ public class SimpleValueInfo<V> extends ValueInfo {
   /** . */
   private final SimpleType<V> simpleType;
 
-  /** . */
-  private List<V> defaultValue;
-
-  SimpleValueInfo(ClassTypeInfo typeInfo, SimpleType<V> simpleType, List<V> defaultValue) {
+  SimpleValueInfo(ClassTypeInfo typeInfo, SimpleType<V> simpleType) {
     super(typeInfo);
-
-    // Make a safe clone to prevent modifications and make the object immutable
-    if (defaultValue != null) {
-      defaultValue = Collections.unmodifiableList(new ArrayList<V>(defaultValue));
-    }
 
     //
     this.simpleType = simpleType;
-    this.defaultValue = defaultValue;
   }
 
   public SimpleType<V> getSimpleType() {
     return simpleType;
-  }
-
-  public List<V> getDefaultValue() {
-    return defaultValue;
   }
 
   @Override

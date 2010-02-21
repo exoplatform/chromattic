@@ -25,11 +25,11 @@ import org.xml.sax.ContentHandler;
 
 import javax.jcr.PropertyType;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import java.io.Writer;
+import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -49,20 +49,25 @@ public class XMLNodeTypeVisitor implements NodeTypeVisitor {
 
   private final ContentWriter writer;
 
-  public XMLNodeTypeVisitor(Writer writer) throws TransformerConfigurationException {
-    SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
-    TransformerHandler handler = factory.newTransformerHandler();
-    handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
-    handler.getTransformer().setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-    handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
+  public XMLNodeTypeVisitor(Writer writer) {
+    try {
+      SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+      TransformerHandler handler = factory.newTransformerHandler();
+      handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
+      handler.getTransformer().setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+      handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
 
-    // This is proprietary, so it's a best effort
-    handler.getTransformer().setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-    
-    handler.setResult(new StreamResult(writer));
+      // This is proprietary, so it's a best effort
+      handler.getTransformer().setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
-    //
-    this.writer = new ContentWriter(handler);
+      handler.setResult(new StreamResult(writer));
+
+      //
+      this.writer = new ContentWriter(handler);
+    }
+    catch (Exception e) {
+      throw new UndeclaredThrowableException(e);
+    }
   }
 
   public XMLNodeTypeVisitor(ContentHandler handler) {

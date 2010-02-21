@@ -112,6 +112,19 @@ public class TypeMappingDomain {
     }
   }
 
+  private static <V> JCRPropertyMapping<V> createProperty(String name, SimpleType<V> type, String[] defaultValue) {
+    List<V> defaultValueList = null;
+    if (defaultValue.length > 0) {
+      defaultValueList = new ArrayList<V>(defaultValue.length);
+      for (String value : defaultValue) {
+        V v = type.toExternal(value);
+        defaultValueList.add(v);
+      }
+      defaultValueList = Collections.unmodifiableList(defaultValueList);
+    }
+    return new JCRPropertyMapping<V>(name, defaultValueList);
+  }
+
   private NodeTypeMapping resolve(ClassTypeInfo javaClass, Map<String, NodeTypeMapping> addedMappings) {
     if (javaClass.getName().equals(Object.class.getName())) {
       NodeTypeMapping objectMapping = new NodeTypeMapping(
@@ -208,14 +221,20 @@ public class TypeMappingDomain {
       }
 
       //
+      SimpleValueInfo simpleValue;
       if (value instanceof SimpleValueInfo) {
-        JCRPropertyMapping memberMapping = new JCRPropertyMapping(propertyAnnotation.name());
-        SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(memberMapping);
-        PropertyMapping<SimpleMapping<JCRPropertyMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRPropertyMapping>>(propertyInfo, simpleMapping);
-        propertyMappings.add(propertyMapping);
+        simpleValue = (SimpleValueInfo)value;
       } else {
-        throw new IllegalStateException("Cannot map property type " + value);
+        throw new InvalidMappingException(javaClass, "Cannot map property type " + value);
       }
+
+      //
+      String[] defaultValues = propertyAnnotation.defaultValue();
+      SimpleType simpleType = simpleValue.getSimpleType();
+      JCRPropertyMapping memberMapping = createProperty(propertyAnnotation.name(), simpleType, defaultValues);
+      SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(memberMapping);
+      PropertyMapping<SimpleMapping<JCRPropertyMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRPropertyMapping>>(propertyInfo, simpleMapping);
+      propertyMappings.add(propertyMapping);
     }
 
     // Property map

@@ -129,7 +129,6 @@ public abstract class BaseValueType<E, I> extends ValueType<E> {
     }
 
     @Override
-    
     public V get(Value value) throws RepositoryException {
       int propertyType = value.getType();
       if (propertyType == PropertyType.BINARY) {

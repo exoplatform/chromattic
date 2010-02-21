@@ -56,19 +56,19 @@ public class BaseTypeMappingVisitor {
 
   protected void propertyMapMapping() {}
 
-  protected void oneToManyByReference(String relatedName) {}
+  protected void oneToManyByReference(String relatedName, NodeTypeMapping relatedMapping) {}
 
-  protected void oneToManyByPath(String relatedName) {}
+  protected void oneToManyByPath(String relatedName, NodeTypeMapping relatedMapping) {}
 
-  protected void oneToManyHierarchic(ClassTypeInfo relatedType) {}
+  protected void oneToManyHierarchic(NodeTypeMapping relatedMapping) {}
 
-  protected void manyToOneByReference(String name, ClassTypeInfo relatedType) {}
+  protected void manyToOneByReference(String name, NodeTypeMapping relatedMapping) {}
 
-  protected void manyToOneByPath(String name, ClassTypeInfo relatedType) {}
+  protected void manyToOneByPath(String name, NodeTypeMapping relatedMapping) {}
 
-  protected void manyToOneHierarchic(ClassTypeInfo relatedType) {}
+  protected void manyToOneHierarchic(NodeTypeMapping relatedMapping) {}
 
-  protected void oneToOneHierarchic(String name, ClassTypeInfo relatedType, boolean owner) {}
+  protected void oneToOneHierarchic(String name, NodeTypeMapping relatedMapping, boolean owner) {}
 
   protected void endMapping() {}
 
@@ -130,17 +130,17 @@ public class BaseTypeMappingVisitor {
           }
         } else if (valueMapping instanceof RelationshipMapping) {
           RelationshipMapping<?, ?> relationshipMapping = (RelationshipMapping<?, ?>)valueMapping;
-          ClassTypeInfo relatedType = relationshipMapping.getRelatedMapping().getType();
+          NodeTypeMapping relatedMapping = relationshipMapping.getRelatedMapping();
           RelationshipType type = relationshipMapping.getType();
           if (valueMapping instanceof AbstractOneToManyMapping<?, ?>) {
             if (valueMapping instanceof NamedOneToManyMapping) {
               NamedOneToManyMapping namedOneToManyMapping = (NamedOneToManyMapping)valueMapping;
               switch (type) {
                 case REFERENCE:
-                  oneToManyByReference(namedOneToManyMapping.getName());
+                  oneToManyByReference(namedOneToManyMapping.getName(), relatedMapping);
                   break;
                 case PATH:
-                  oneToManyByPath(namedOneToManyMapping.getName());
+                  oneToManyByPath(namedOneToManyMapping.getName(), relatedMapping);
                   break;
                 default:
                   throw new AssertionError();
@@ -148,7 +148,7 @@ public class BaseTypeMappingVisitor {
             } else {
               switch (type) {
                 case HIERARCHIC:
-                  oneToManyHierarchic(relationshipMapping.getRelatedMapping().getType());
+                  oneToManyHierarchic(relationshipMapping.getRelatedMapping());
                   break;
                 default:
                   throw new AssertionError();
@@ -160,10 +160,10 @@ public class BaseTypeMappingVisitor {
               String name = namedManyToOneMapping.getRelatedName();
               switch (type) {
                 case REFERENCE:
-                  manyToOneByReference(name, relatedType);
+                  manyToOneByReference(name, relatedMapping);
                   break;
                 case PATH:
-                  manyToOneByPath(name, relatedType);
+                  manyToOneByPath(name, relatedMapping);
                   break;
                 default:
                   throw new AssertionError();
@@ -171,7 +171,7 @@ public class BaseTypeMappingVisitor {
             } else {
               switch (type) {
                 case HIERARCHIC:
-                  manyToOneHierarchic(relatedType);
+                  manyToOneHierarchic(relatedMapping);
                   break;
                 default:
                   throw new AssertionError();
@@ -183,7 +183,7 @@ public class BaseTypeMappingVisitor {
               String name = namedOneToOneMapping.getName();
               switch (type) {
                 case HIERARCHIC:
-                  oneToOneHierarchic(name, relationshipMapping.getRelatedMapping().getType(), namedOneToOneMapping.isOwning());
+                  oneToOneHierarchic(name, relationshipMapping.getRelatedMapping(), namedOneToOneMapping.isOwning());
                   break;
                 default:
                   throw new AssertionError();

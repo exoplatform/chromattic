@@ -220,7 +220,7 @@ public class MapperBuilder {
           //
           if (jcrMember instanceof JCRPropertyMapping) {
             JCRPropertyMapping jcrProperty = (JCRPropertyMapping)jcrMember;
-            JCRPropertyPropertyMapper<C> bilto = new JCRPropertyPropertyMapper<C>(contextType, (SingleValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(), jcrProperty.getName());
+            JCRPropertyPropertyMapper<C> bilto = new JCRPropertyPropertyMapper<C>(contextType, (SingleValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(), jcrProperty.getName(), jcrProperty.getDefaultValue());
             propertyMappers.add(bilto);
           } else if (jcrMember instanceof JCRNodeAttributeMapping) {
             JCRNodeAttributeMapping nam = (JCRNodeAttributeMapping)jcrMember;

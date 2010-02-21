@@ -19,20 +19,30 @@
 
 package org.chromattic.metamodel.mapping.jcr;
 
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMapping extends JCRMemberMapping {
+public class JCRPropertyMapping<V> extends JCRMemberMapping {
 
   /** . */
   private final String name;
 
-  public JCRPropertyMapping(String name) {
+  /** . */
+  private final List<V> defaultValue;
+
+  public JCRPropertyMapping(String name, List<V> defaultValue) {
     this.name = name;
+    this.defaultValue = defaultValue;
   }
 
   public String getName() {
     return name;
+  }
+
+  public List<V> getDefaultValue() {
+    return defaultValue;
   }
 }

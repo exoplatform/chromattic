@@ -20,7 +20,6 @@
 package org.chromattic.metamodel.bean;
 
 import org.chromattic.api.BuilderException;
-import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.Path;
 import org.reflext.api.*;
 import org.reflext.api.introspection.AnnotationIntrospector;
@@ -156,43 +155,20 @@ public class BeanInfoFactory {
     MethodInfo getter,
     MethodInfo setter) throws BuilderException {
 
-    // That should be somehow improved
-    Map<Class<? extends Annotation>, List<? extends Annotation>> annotationMap = getAnnotations(
-      getter,
-      setter,
-      DefaultValue.Int.class,
-      DefaultValue.Boolean.class,
-      DefaultValue.Long.class,
-      DefaultValue.Float.class,
-      DefaultValue.Double.class
-    );
-    if (annotationMap.size() > 2) {
-      throw new BuilderException("Too many default value annotations");
-    }
-    Annotation defaultValue = null;
-    if (annotationMap.size() == 1) {
-      List<? extends Annotation> annotations = annotationMap.values().iterator().next();
-      if (annotations.size() == 1) {
-        defaultValue = annotations.get(0);
-      } else {
-        throw new BuilderException("Too many default value annotations");
-      }
-    }
-
     if (type instanceof SimpleTypeInfo) {
-      return createSimpleValueInfo(type, defaultValue);
+      return createSimpleValueInfo(type);
     } else if (type.getName().equals(String.class.getName())) {
       AnnotationIntrospector<Path> intro = new AnnotationIntrospector<Path>(Path.class);
       if ((getter != null && intro.resolve(getter) != null ) || (setter != null && intro.resolve(setter) != null)) {
         return createPath(type);
       } else {
-        return createSimpleValueInfo(type, defaultValue);
+        return createSimpleValueInfo(type);
       }
     } else if (
       type.getName().equals(InputStream.class.getName()) ||
       type.getName().equals(Date.class.getName()) ||
       type.getKind() == ClassKind.ENUM) {
-      return createSimpleValueInfo(type, defaultValue);
+      return createSimpleValueInfo(type);
     } else {
       return new BeanValueInfo(type);
     }
@@ -273,83 +249,19 @@ public class BeanInfoFactory {
    * Build a simple value info meta data.
    *
    * @param typeInfo the type info
-   * @param defaultValue the default value
    * @return the simple value info
    * @throws BuilderException any exception that may prevent the correct building such as having a default value that
    *         does not match the type
    */
-  private SimpleValueInfo<?> createSimpleValueInfo(ClassTypeInfo typeInfo, Annotation defaultValue) throws BuilderException {
+  private SimpleValueInfo<?> createSimpleValueInfo(ClassTypeInfo typeInfo) throws BuilderException {
     if (typeInfo == null) {
       throw new NullPointerException();
     }
 
     //
     if (typeInfo instanceof SimpleTypeInfo && ((SimpleTypeInfo)typeInfo).isPrimitive()) {
-      switch (((SimpleTypeInfo)typeInfo).getLiteralType()) {
-        case BOOLEAN: {
-          List<Boolean> defaultBoolean = null;
-          if (defaultValue != null) {
-            if (defaultValue instanceof DefaultValue.Boolean) {
-              defaultBoolean = Arrays.asList(((DefaultValue.Boolean)defaultValue).value());
-            } else {
-              throw new BuilderException();
-            }
-          }
-          return new SimpleValueInfo<Boolean>(typeInfo, SimpleType.PRIMITIVE_BOOLEAN, defaultBoolean);
-        }
-        case INT: {
-          List<Integer> defaultInteger = null;
-          if (defaultValue != null) {
-            if (defaultValue instanceof DefaultValue.Int) {
-              defaultInteger = Arrays.asList(((DefaultValue.Int)defaultValue).value());
-            } else {
-              throw new BuilderException();
-            }
-          }
-          return new SimpleValueInfo<Integer>(typeInfo, SimpleType.PRIMITIVE_INTEGER, defaultInteger);
-        }
-        case LONG: {
-          List<Long> defaultLong = null;
-          if (defaultValue != null) {
-            if (defaultValue instanceof DefaultValue.Long) {
-              defaultLong = Arrays.asList(((DefaultValue.Long)defaultValue).value());
-            } else {
-              throw new BuilderException();
-            }
-          }
-          return new SimpleValueInfo<Long>(typeInfo, SimpleType.PRIMITIVE_LONG, defaultLong);
-        }
-        case FLOAT: {
-          List<Float> defaultFloat = null;
-          if (defaultValue != null) {
-            if (defaultValue instanceof DefaultValue.Float) {
-              defaultFloat = Arrays.asList(((DefaultValue.Float)defaultValue).value());
-            } else {
-              throw new BuilderException();
-            }
-          }
-          return new SimpleValueInfo<Float>(typeInfo, SimpleType.PRIMITIVE_FLOAT, defaultFloat);
-        }
-        case DOUBLE: {
-          List<Double> defaultDouble = null;
-          if (defaultValue != null) {
-            if (defaultValue instanceof DefaultValue.Double) {
-              defaultDouble = Arrays.asList(((DefaultValue.Double)defaultValue).value());
-            } else {
-              throw new BuilderException();
-            }
-          }
-          return new SimpleValueInfo<Double>(typeInfo, SimpleType.PRIMITIVE_DOUBLE, defaultDouble);
-        }
-        default:
-          throw new AssertionError();
-      }
+      return foo(typeInfo);
     } else {
-      if (defaultValue != null) {
-        throw new BuilderException("Non primitive property cannot have a default value");
-      }
-
-      //
       switch (typeInfo.getKind()) {
         case CLASS:
         case ENUM:
@@ -365,7 +277,7 @@ public class BeanInfoFactory {
 
   private <E> SimpleValueInfo<E> foo(ClassTypeInfo typeInfo) {
     SimpleType<E> st = (SimpleType<E>)SimpleType.create(typeInfo);
-    return new SimpleValueInfo<E>(typeInfo, st, null);
+    return new SimpleValueInfo<E>(typeInfo, st);
   }
 
   private static SimpleValueInfo<String> createPath(ClassTypeInfo typeInfo) {
@@ -373,7 +285,7 @@ public class BeanInfoFactory {
       throw new NullPointerException();
     }
     if (typeInfo.getName().equals(String.class.getName())) {
-      return new SimpleValueInfo<String>(typeInfo, SimpleType.PATH, null);
+      return new SimpleValueInfo<String>(typeInfo, SimpleType.PATH);
     } else {
       throw new IllegalArgumentException("Simple value of type path must have a type of " + String.class.getName());
     }

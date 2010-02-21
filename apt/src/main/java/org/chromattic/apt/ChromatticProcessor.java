@@ -22,6 +22,8 @@ package org.chromattic.apt;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
+import org.chromattic.metamodel.typegen.NodeTypeBuilder;
+import org.chromattic.metamodel.typegen.XMLNodeTypeVisitor;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
@@ -45,7 +47,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
-import java.lang.annotation.Annotation;
+import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
@@ -75,7 +77,9 @@ public class ChromatticProcessor extends AbstractProcessor {
 
   private void process(RoundEnvironment roundEnv, Set<Element> elts) {
 
-    BaseTypeMappingVisitor visitor = new BaseTypeMappingVisitor();
+
+    StringWriter sw = new StringWriter();
+    BaseTypeMappingVisitor visitor = new NodeTypeBuilder(new XMLNodeTypeVisitor(sw));
 
     for (Element elt : elts) {
       TypeElement typeElt = (TypeElement)elt;
@@ -98,6 +102,9 @@ public class ChromatticProcessor extends AbstractProcessor {
 
     // Validate model
     visitor.generate();
+
+    //
+    System.out.println("sw = " + sw);
   }
 
   private void writeClass(RoundEnvironment roundEnv, StringBuilder out, ClassTypeInfo cti) {

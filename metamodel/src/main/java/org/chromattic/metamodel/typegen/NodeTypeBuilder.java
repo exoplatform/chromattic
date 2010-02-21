@@ -29,6 +29,9 @@ import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -39,10 +42,24 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   /** . */
   private final NodeTypeVisitor builder;
 
-  private SetMap<String, ClassTypeInfo> childNodeDefinitions;
+  /** . */
+  private final Map<NodeTypeMapping, NodeType> nodeTypes;
+
+  /** . */
+  private NodeType current;
 
   public NodeTypeBuilder(NodeTypeVisitor builder) {
     this.builder = builder;
+    this.nodeTypes = new HashMap<NodeTypeMapping, NodeType>();
+  }
+
+  private NodeType resolve(NodeTypeMapping mapping) {
+    NodeType nodeType = nodeTypes.get(mapping);
+    if (nodeType == null) {
+      nodeType = new NodeType(mapping);
+      nodeTypes.put(mapping, nodeType);
+    }
+    return nodeType;
   }
 
   public void start() {
@@ -51,123 +68,98 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
 
   @Override
   protected void startMapping(NodeTypeMapping mapping) {
-    childNodeDefinitions = new SetMap<String, ClassTypeInfo>();
+    current = resolve(mapping);
     builder.startType(mapping.getTypeName(), mapping.getKind() == NodeTypeKind.PRIMARY);
   }
 
   @Override
   protected void propertyMapping(JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
-
-    int propertyType;
-    SimpleValueInfo simpleValueInfo = propertyInfo.getValue();
-    SimpleType stk = simpleValueInfo.getSimpleType();
-    if (stk == SimpleType.STRING) {
-      propertyType = PropertyType.STRING;
-    } else if (stk == SimpleType.LONG || stk ==SimpleType.PRIMITIVE_LONG) {
-      propertyType = PropertyType.LONG;
-    } else if (stk == SimpleType.PATH) {
-      propertyType = PropertyType.PATH;
-    } else if (stk == SimpleType.DATE) {
-      propertyType = PropertyType.DATE;
-    } else if (stk == SimpleType.BOOLEAN || stk ==SimpleType.PRIMITIVE_BOOLEAN) {
-      propertyType = PropertyType.BOOLEAN;
-    } else if (stk == SimpleType.INTEGER || stk ==SimpleType.PRIMITIVE_INTEGER) {
-      propertyType = PropertyType.LONG;
-    } else if (stk == SimpleType.FLOAT || stk ==SimpleType.PRIMITIVE_FLOAT) {
-      propertyType = PropertyType.DOUBLE;
-    } else if (stk == SimpleType.DOUBLE || stk ==SimpleType.PRIMITIVE_DOUBLE) {
-      propertyType = PropertyType.DOUBLE;
-    } else if (stk == SimpleType.STREAM) {
-      propertyType = PropertyType.BINARY;
-    } else if (stk instanceof SimpleType.Enumerated) {
-      propertyType = PropertyType.STRING;
-    } else {
-      throw new AssertionError();
-    }
-
-    //
-    builder.addProperty(propertyMapping.getName(), propertyInfo instanceof MultiValuedPropertyInfo, propertyType);
+    current.properties.put(propertyMapping.getName(), new Property(propertyMapping, propertyInfo));
   }
 
   @Override
   protected void propertyMapMapping() {
-    builder.addProperty("*", false, PropertyType.UNDEFINED);
+    current.properties.put("*", new Property("*", false, PropertyType.UNDEFINED));
   }
 
   @Override
-  protected void oneToManyByReference(String relatedName) {
+  protected void oneToManyByReference(String relatedName, NodeTypeMapping relatedMapping) {
+    resolve(relatedMapping).properties.put(relatedName, new Property(relatedName, false, PropertyType.REFERENCE));
   }
 
   @Override
-  protected void oneToManyByPath(String relatedName) {
+  protected void oneToManyByPath(String relatedName, NodeTypeMapping relatedMapping) {
+    resolve(relatedMapping).properties.put(relatedName, new Property(relatedName, false, PropertyType.PATH));
   }
 
   @Override
-  protected void oneToManyHierarchic(ClassTypeInfo relatedType) {
-    childNodeDefinitions.get("*").add(relatedType);
+  protected void oneToManyHierarchic(NodeTypeMapping relatedMapping) {
+    current.children.get("*").add(relatedMapping);
   }
 
   @Override
-  protected void manyToOneByReference(String name, ClassTypeInfo relatedType) {
-    builder.addProperty(name, false, PropertyType.REFERENCE);
+  protected void manyToOneByReference(String name, NodeTypeMapping relatedType) {
+    current.properties.put(name, new Property(name, false, PropertyType.REFERENCE));
   }
 
   @Override
-  protected void manyToOneByPath(String name, ClassTypeInfo relatedType) {
-    builder.addProperty(name, false, PropertyType.PATH);
+  protected void manyToOneByPath(String name, NodeTypeMapping relatedMapping) {
+    current.properties.put(name, new Property(name, false, PropertyType.PATH));
   }
 
   @Override
-  protected void manyToOneHierarchic(ClassTypeInfo relatedType) {
+  protected void manyToOneHierarchic(NodeTypeMapping relatedMapping) {
+    resolve(relatedMapping).children.get("*").add(current.mapping);
   }
 
   @Override
-  protected void oneToOneHierarchic(String name, ClassTypeInfo relatedType, boolean owner) {
+  protected void oneToOneHierarchic(String name, NodeTypeMapping relatedMapping, boolean owner) {
     if (owner) {
-      childNodeDefinitions.get(name).add(relatedType);
+      current.children.get(name).add(relatedMapping);
+    } else {
+      resolve(relatedMapping).children.get(name).add(current.mapping);
     }
   }
 
   @Override
   protected void endMapping() {
-    // Now process child node definitions
-    for (String childName : childNodeDefinitions.keySet()) {
-
-      // Try to find the common ancestor type of all types
-      ClassTypeInfo ancestorType = null;
-      foo:
-      for (ClassTypeInfo relatedType1 : childNodeDefinitions.peek(childName)) {
-        for (ClassTypeInfo relatedType2 : childNodeDefinitions.peek(childName)) {
-          if (!relatedType1.isAssignableFrom(relatedType2)) {
-            continue foo;
-          }
-        }
-        ancestorType = relatedType1;
-        break;
-      }
-
-      //
-      String typeName;
-      if (ancestorType == null) {
-        typeName = "nt:base";
-      } else {
-        NodeTypeMapping ancestorMapping = getMapping(ancestorType);
-        if (ancestorMapping == null) {
-          typeName = "nt:base";
-        } else {
-          typeName = ancestorMapping.getTypeName();
-        }
-      }
-
-      //
-      builder.addChildNodeDefinition(childName, typeName);
-    }
-
-    //
-    builder.endType();
+    current = null;
   }
 
   public void end() {
+    for (NodeType nodeType : nodeTypes.values()) {
+      builder.startType(nodeType.mapping.getTypeName(), nodeType.mapping.getKind() == NodeTypeKind.PRIMARY);
+
+      //
+      for (Property property : nodeType.properties.values()) {
+        builder.addProperty(property.name, property.multiple, property.type);
+      }
+
+      //
+      for (String childName : nodeType.children.keySet()) {
+        Set<NodeTypeMapping> children = nodeType.children.get(childName);
+
+        // Try to find the common ancestor type of all types
+        NodeTypeMapping ancestorMapping = null;
+        foo:
+        for (NodeTypeMapping relatedMapping1 : children) {
+          for (NodeTypeMapping relatedMapping2 : children) {
+            if (!relatedMapping1.getType().isAssignableFrom(relatedMapping2.getType())) {
+              continue foo;
+            }
+          }
+          ancestorMapping = relatedMapping1;
+          break;
+        }
+
+        //
+        String typeName = ancestorMapping == null ? "nt:base" : ancestorMapping.getTypeName();
+
+        //
+        builder.addChildNodeDefinition(childName, typeName);
+      }
+      builder.endType();
+    }
     builder.end();
   }
 }

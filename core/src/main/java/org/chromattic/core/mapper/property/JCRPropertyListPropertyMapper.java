@@ -71,7 +71,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext> extends Prop
   }
 
   private <V> Object get(O context, SimpleValueInfo<V> elementType) throws Throwable {
-    ValueType<V> vt = ValueTypeFactory.create(elementType);
+    ValueType<V> vt = ValueTypeFactory.create(elementType, null);
     List<V> list = context.getPropertyValues(jcrPropertyName, vt, listType);
     return listType.unwrap(vt, list);
   }
@@ -82,7 +82,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext> extends Prop
   }
 
   private <V> void set(O context, Object value, SimpleValueInfo<V> elementType) throws Throwable {
-    ValueType<V> vt = ValueTypeFactory.create(elementType);
+    ValueType<V> vt = ValueTypeFactory.create(elementType, null);
     List<V> list = listType.wrap(vt, value);
     context.setPropertyValues(jcrPropertyName, vt, listType, list);
   }

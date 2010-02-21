@@ -26,6 +26,8 @@ import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.core.vt.ValueType;
 import org.chromattic.core.vt.ValueTypeFactory;
 
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -38,12 +40,16 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext> extends Property
   /** . */
   private final ValueType<O> vt;
 
-  public JCRPropertyPropertyMapper(Class<O> contextType, SingleValuedPropertyInfo<SimpleValueInfo> info, String jcrPropertyName) {
+  public JCRPropertyPropertyMapper(
+    Class<O> contextType,
+    SingleValuedPropertyInfo<SimpleValueInfo> info,
+    String jcrPropertyName,
+    List<O> defaultValue) {
     super(contextType, info);
 
     //
     this.jcrPropertyName = jcrPropertyName;
-    this.vt = ValueTypeFactory.create(info.getValue());
+    this.vt = ValueTypeFactory.create(info.getValue(), defaultValue);
   }
 
   @Override

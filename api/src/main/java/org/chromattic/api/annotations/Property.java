@@ -40,4 +40,7 @@ public @interface Property {
    * @return the jcr property name
    */
   String name();
+
+  String[] defaultValue() default {};
+
 }

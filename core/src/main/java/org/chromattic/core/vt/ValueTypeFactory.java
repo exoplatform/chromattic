@@ -33,32 +33,32 @@ import java.util.List;
  */
 public class ValueTypeFactory {
 
-  public static <V> ValueType<V> create(final SimpleValueInfo<V> sv) {
-    return create(sv, sv.getSimpleType());
+  public static <V> ValueType<V> create(final SimpleValueInfo<V> sv, List<V> defaultValue) {
+    return create(sv, sv.getSimpleType(), defaultValue);
   }
 
-  private static <E> ValueType<E> create(SimpleValueInfo<E> sv, SimpleType<E> type) {
+  private static <E> ValueType<E> create(SimpleValueInfo<E> sv, SimpleType<E> type, List<E> defaultValue) {
     ValueType vt;
     if (type instanceof SimpleType.Base) {
       SimpleType.Base base = (SimpleType.Base)type;
       if (type == SimpleType.STRING) {
-        vt = new BaseValueType.STRING.TO_STRING((List<String>)sv.getDefaultValue(), String.class);
+        vt = new BaseValueType.STRING.TO_STRING((List<String>)defaultValue, String.class);
       } else if (type == SimpleType.PATH) {
-        vt = new BaseValueType.PATH.TO_STRING((List<String>)sv.getDefaultValue(), String.class);
+        vt = new BaseValueType.PATH.TO_STRING((List<String>)defaultValue, String.class);
       } else if (type == SimpleType.INTEGER || type == SimpleType.PRIMITIVE_INTEGER) {
-        vt = new BaseValueType.LONG.TO_INT((List<Integer>)sv.getDefaultValue(), base.getRealType());
+        vt = new BaseValueType.LONG.TO_INT((List<Integer>)defaultValue, base.getRealType());
       } else if (type == SimpleType.BOOLEAN || type == SimpleType.PRIMITIVE_BOOLEAN) {
-        vt = new BaseValueType.BOOLEAN.TO_BOOLEAN((List<Boolean>)sv.getDefaultValue(), base.getRealType());
+        vt = new BaseValueType.BOOLEAN.TO_BOOLEAN((List<Boolean>)defaultValue, base.getRealType());
       } else if (type == SimpleType.LONG || type == SimpleType.PRIMITIVE_LONG) {
-        vt = new BaseValueType.LONG.TO_LONG((List<Long>)sv.getDefaultValue(), base.getRealType());
+        vt = new BaseValueType.LONG.TO_LONG((List<Long>)defaultValue, base.getRealType());
       } else if (type == SimpleType.DATE) {
-        vt = new BaseValueType.DATE.TO_DATE((List<Date>)sv.getDefaultValue(), Date.class);
+        vt = new BaseValueType.DATE.TO_DATE((List<Date>)defaultValue, Date.class);
       } else if (type == SimpleType.DOUBLE || type == SimpleType.PRIMITIVE_DOUBLE) {
-        vt = new BaseValueType.DOUBLE.TO_DOUBLE((List<Double>)sv.getDefaultValue(), base.getRealType());
+        vt = new BaseValueType.DOUBLE.TO_DOUBLE((List<Double>)defaultValue, base.getRealType());
       } else if (type == SimpleType.FLOAT || type == SimpleType.PRIMITIVE_FLOAT) {
-        vt = new BaseValueType.DOUBLE.TO_FLOAT((List<Float>)sv.getDefaultValue(), base.getRealType());
+        vt = new BaseValueType.DOUBLE.TO_FLOAT((List<Float>)defaultValue, base.getRealType());
       } else if (type == SimpleType.STREAM) {
-        vt = new BaseValueType.STREAM.TO_STREAM((List<InputStream>)sv.getDefaultValue(), InputStream.class);
+        vt = new BaseValueType.STREAM.TO_STREAM((List<InputStream>)defaultValue, InputStream.class);
       } else {
         throw new AssertionError();
       }
@@ -67,7 +67,7 @@ public class ValueTypeFactory {
       ClassTypeInfo cti = enumerated.getTypeInfo();
       Class<?> realType = (Class<?>)cti.getType();
       if (realType.isEnum()) {
-        vt = new StringEnumValueType(sv.getDefaultValue(), realType);
+        vt = new StringEnumValueType(defaultValue, realType);
       } else {
         throw new UnsupportedOperationException("investigate later " + type);
       }

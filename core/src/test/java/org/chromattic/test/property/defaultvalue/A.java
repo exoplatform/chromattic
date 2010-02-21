@@ -18,7 +18,6 @@
  */
 package org.chromattic.test.property.defaultvalue;
 
-import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
@@ -29,8 +28,7 @@ import org.chromattic.api.annotations.Property;
 @PrimaryType(name = "tp_a")
 public abstract class A {
 
-  @DefaultValue.Int(5)
-  @Property(name = "primitive_int_property")
+  @Property(name = "primitive_int_property", defaultValue = "5")
   public abstract int getPrimitiveInt();
 
   public abstract void setPrimitiveInt(int s);
