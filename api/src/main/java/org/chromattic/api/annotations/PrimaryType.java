@@ -40,6 +40,14 @@ public @interface PrimaryType {
    * @return the primary node type name
    */
   String name();
+
+  /**
+   * Returns true if the node is ordereable. This information is used when generating the
+   * meta model or checking the meta model validity against the underlying model.
+   *
+   * @return the orderability
+   */
+  boolean orderable() default false;
   
 
 }
