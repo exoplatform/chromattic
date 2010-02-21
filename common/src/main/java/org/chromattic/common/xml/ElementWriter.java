@@ -129,7 +129,7 @@ public class ElementWriter extends XMLWriter {
         }
         break;
       case CLOSED:
-        throw new IllegalStateException();
+        throw new IllegalStateException("Element " + this.qName + " is already closed");
     }
     currentChild = new ElementWriter(handler, this, qName);
     return currentChild;

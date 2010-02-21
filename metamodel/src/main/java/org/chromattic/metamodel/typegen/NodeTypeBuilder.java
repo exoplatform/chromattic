@@ -36,8 +36,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -69,6 +68,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   public void start() {
+    nodeTypes.clear();
   }
 
   @Override
@@ -131,6 +131,18 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   public void end() {
+
+    // Resolve super types
+    for (NodeType nodeType : nodeTypes.values()) {
+      ClassTypeInfo cti = nodeType.mapping.getType();
+      for (NodeType otherNodeType : nodeTypes.values()) {
+        if (otherNodeType != nodeType) {
+          if (cti.isSubType(otherNodeType.mapping.getType())) {
+            nodeType.superTypes.add(otherNodeType);
+          }
+        }
+      }
+    }
   }
 
   public void writeTo(Writer writer) throws IOException {
@@ -169,6 +181,15 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
         withAttribute("isMixin", Boolean.toString(nodeType.isMixin())).
         withAttribute("hasOrderableChildNodes", Boolean.FALSE.toString()).
         withAttribute("primaryItemName", "todo");
+
+      //
+      ElementWriter superTypesWriter = nodeTypeWriter.element("supertypes");
+      for (NodeType superType : nodeType.superTypes) {
+        superTypesWriter.element("supertype").content(superType.getName());
+      }
+
+      // Add mix:referenceable
+      superTypesWriter.element("supertype").content("mix:referenceable");
 
       //
       ElementWriter propertyDefinitionsWriter = nodeTypeWriter.element("propertyDefinitions");

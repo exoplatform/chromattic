@@ -22,10 +22,7 @@ package org.chromattic.metamodel.typegen;
 import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -42,10 +39,18 @@ public class NodeType {
   /** . */
   final Map<String, PropertyDefinition> properties;
 
+  /** . */
+  final Set<NodeType> superTypes;
+
   public NodeType(NodeTypeMapping mapping) {
     this.mapping = mapping;
     this.children = new HashMap<String, NodeDefinition>();
     this.properties = new HashMap<String, PropertyDefinition>();
+    this.superTypes = new HashSet<NodeType>();
+  }
+
+  public Collection<NodeType> getSuperTypes() {
+    return superTypes;
   }
 
   public PropertyDefinition getProperty(String propertyName) {
