@@ -21,6 +21,7 @@ package org.chromattic.core.mapper.onetoone.hierarchical;
 
 import org.chromattic.common.logging.Logger;
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.NameKind;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
@@ -33,28 +34,35 @@ import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 public class JCRNamedChildParentPropertyMapper<O extends ObjectContext> extends JCRNodePropertyMapper<O> {
 
   /** . */
-  private String nodeName;
+  private String relatedName;
 
   /** . */
   private final Logger log = Logger.getLogger(JCRNamedChildParentPropertyMapper.class);
 
   public JCRNamedChildParentPropertyMapper(
-    Class<O> contextType,
+      Class<O> contextType,
       SingleValuedPropertyInfo<BeanValueInfo> info,
-    String nodeName) throws ClassNotFoundException {
+      String relatedName) throws ClassNotFoundException {
     super(contextType, info);
 
     //
-    this.nodeName = nodeName;
+    this.relatedName = relatedName;
   }
 
-  public String getNodeName() {
-    return nodeName;
+  public String getRelatedName() {
+    return relatedName;
   }
 
   @Override
   public Object get(O ctx) throws Throwable {
-    EntityContext childCtx = ctx.getEntity().getChild(nodeName);
+    // Decode name
+    EntityContext entityCtx = ctx.getEntity();
+
+    //
+    String externalRelatedName = entityCtx.decodeName(relatedName, NameKind.OBJECT);
+
+    //
+    EntityContext childCtx = entityCtx.getChild(externalRelatedName);
     if (childCtx != null) {
       Object o = childCtx.getObject();
       Class<?> relatedClass = getRelatedClass();
@@ -71,11 +79,15 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext> extends 
   @Override
   public void set(O context, Object child) throws Throwable {
     EntityContext entity = context.getEntity();
+
+    // Decode name
+    String externalRelatedName = entity.decodeName(relatedName, NameKind.OBJECT);
+
     if (child != null) {
       EntityContext entityCtx = entity.getSession().unwrapEntity(child);
-      entity.addChild(nodeName, entityCtx);
+      entity.addChild(externalRelatedName, entityCtx);
     } else {
-      entity.removeChild(nodeName);
+      entity.removeChild(externalRelatedName);
     }
   }
 }

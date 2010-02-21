@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.chromattic.api.Status;
+import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.LinkType;
@@ -91,6 +92,19 @@ public final class EntityContext extends ObjectContext {
   public NodeTypeInfo getTypeInfo() {
     EntityContextState state = getEntity().state;
     return state.getTypeInfo();
+  }
+
+  public String decodeName(String name, NameKind nameKind) {
+    try {
+      return state.getSession().getDomain().decodeName(this, name, nameKind);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public String encodeName(String name, NameKind nameKind) {
+    return state.getSession().getDomain().encodeName(this, name, nameKind);
   }
 
   /**

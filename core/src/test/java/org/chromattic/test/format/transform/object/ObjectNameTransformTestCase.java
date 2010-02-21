@@ -39,6 +39,8 @@ public class ObjectNameTransformTestCase extends AbstractTestCase {
     getBuilder().setOptionValue(ChromatticBuilder.OBJECT_FORMATTER_CLASSNAME, FooPrefixerFormatter.class.getName());
     addClass(A.class);
     addClass(B.class);
+    addClass(D1.class);
+    addClass(D2.class);
   }
 
   public void testCreate() throws RepositoryException {
@@ -108,5 +110,21 @@ public class ObjectNameTransformTestCase extends AbstractTestCase {
     Node bNode = aNode.addNode("foo_b", "format_b");
     session.findByNode(B.class, bNode);
     assertEquals(Collections.singleton("b"), a.getChildren().keySet());
+  }
+
+  public void testOneToOne1() throws RepositoryException {
+    ChromatticSessionImpl session = login();
+    D1 d1 = session.insert(D1.class, "d");
+    D2 d2 = session.create(D2.class);
+    d2.setParent(d1);
+    assertSame(d1, d2.getParent());
+  }
+
+  public void testOneToOne2() throws RepositoryException {
+    ChromatticSessionImpl session = login();
+    D1 d1 = session.insert(D1.class, "d");
+    D2 d2 = session.create(D2.class);
+    d1.setChild(d2);
+    assertSame(d2, d1.getChild());
   }
 }

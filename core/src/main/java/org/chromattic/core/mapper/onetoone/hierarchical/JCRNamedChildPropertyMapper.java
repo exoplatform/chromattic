@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper.onetoone.hierarchical;
 
 import org.chromattic.core.DomainSession;
+import org.chromattic.core.NameKind;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
 import org.chromattic.core.EntityContext;
 import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
@@ -47,7 +48,12 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper {
 
     //
     if (parentCtx != null) {
-      EntityContext parentChildWithRelatedNameCtx = parentCtx.getChild(relatedName);
+
+      // Decode name
+      String externalRelatedName = parentCtx.decodeName(relatedName, NameKind.OBJECT);
+
+      //
+      EntityContext parentChildWithRelatedNameCtx = parentCtx.getChild(externalRelatedName);
 
       // Find out if we are mapped on this parent by the related name
       if (parentChildWithRelatedNameCtx == context) {
@@ -66,8 +72,15 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper {
       context.remove();
     } else {
       DomainSession session = context.getSession();
-      EntityContext parentContext = session.unwrapEntity(parent);
-      parentContext.addChild(relatedName, context);
+
+      // Get parent context
+      EntityContext parentCtx = session.unwrapEntity(parent);
+
+      // Decode name
+      String externalRelatedName = parentCtx.decodeName(relatedName, NameKind.OBJECT);
+
+      //
+      parentCtx.addChild(externalRelatedName, context);
     }
   }
 }
