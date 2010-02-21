@@ -57,7 +57,7 @@ public class ContentWriter extends XMLWriter implements ContentHandler {
     return documentElement;
   }
 
-  public void perform() {
+  public void close() {
     documentElement.close();
     try {
       endDocument();

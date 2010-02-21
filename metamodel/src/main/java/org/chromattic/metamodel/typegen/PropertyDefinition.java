@@ -31,15 +31,15 @@ import javax.jcr.PropertyType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class Property {
+public class PropertyDefinition {
 
-  Property(String name, boolean multiple, int type) {
+  PropertyDefinition(String name, boolean multiple, int type) {
     this.name = name;
     this.multiple = multiple;
     this.type = type;
   }
 
-  Property(JCRPropertyMapping mapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
+  PropertyDefinition(JCRPropertyMapping mapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
 
     int propertyType;
     SimpleValueInfo simpleValueInfo = propertyInfo.getValue();
@@ -80,4 +80,15 @@ class Property {
 
   final int type;
 
+  public String getName() {
+    return name;
+  }
+
+  public boolean isMultiple() {
+    return multiple;
+  }
+
+  public int getType() {
+    return type;
+  }
 }

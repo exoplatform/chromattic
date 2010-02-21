@@ -17,24 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.typegen;
+package org.chromattic.metamodel.typegen.onetoone.hierarchical;
+
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface NodeTypeVisitor {
-
-  void start();
-
-  void startType(String name, boolean primary);
-
-  void addProperty(String propertyName, boolean multiple, int propertyType);
-
-  void addChildNodeDefinition(String childName, String nodeTypeName);
-
-  void endType();
-
-  void end();
-
+@PrimaryType(name = "b1")
+public abstract class B1 {
 }

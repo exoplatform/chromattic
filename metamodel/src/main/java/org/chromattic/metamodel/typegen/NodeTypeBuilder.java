@@ -19,19 +19,25 @@
 
 package org.chromattic.metamodel.typegen;
 
-import org.chromattic.common.collection.SetMap;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
-import org.chromattic.metamodel.bean.SimpleType;
+import org.chromattic.common.xml.ContentWriter;
+import org.chromattic.common.xml.ElementWriter;
 import org.chromattic.metamodel.mapping.*;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.reflext.api.ClassTypeInfo;
+import org.xml.sax.ContentHandler;
 
 import javax.jcr.PropertyType;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -40,84 +46,82 @@ import java.util.Set;
 public class NodeTypeBuilder extends BaseTypeMappingVisitor {
 
   /** . */
-  private final NodeTypeVisitor builder;
-
-  /** . */
-  private final Map<NodeTypeMapping, NodeType> nodeTypes;
+  private final Map<ClassTypeInfo, NodeType> nodeTypes;
 
   /** . */
   private NodeType current;
 
-  public NodeTypeBuilder(NodeTypeVisitor builder) {
-    this.builder = builder;
-    this.nodeTypes = new HashMap<NodeTypeMapping, NodeType>();
+  public NodeTypeBuilder() {
+    this.nodeTypes = new HashMap<ClassTypeInfo, NodeType>();
+  }
+
+  public NodeType getNodeType(ClassTypeInfo type) {
+    return nodeTypes.get(type);
   }
 
   private NodeType resolve(NodeTypeMapping mapping) {
-    NodeType nodeType = nodeTypes.get(mapping);
+    NodeType nodeType = nodeTypes.get(mapping.getType());
     if (nodeType == null) {
       nodeType = new NodeType(mapping);
-      nodeTypes.put(mapping, nodeType);
+      nodeTypes.put(mapping.getType(), nodeType);
     }
     return nodeType;
   }
 
   public void start() {
-    builder.start();
   }
 
   @Override
   protected void startMapping(NodeTypeMapping mapping) {
     current = resolve(mapping);
-    builder.startType(mapping.getTypeName(), mapping.getKind() == NodeTypeKind.PRIMARY);
   }
 
   @Override
   protected void propertyMapping(JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
-    current.properties.put(propertyMapping.getName(), new Property(propertyMapping, propertyInfo));
+    current.properties.put(propertyMapping.getName(), new PropertyDefinition(propertyMapping, propertyInfo));
   }
 
   @Override
   protected void propertyMapMapping() {
-    current.properties.put("*", new Property("*", false, PropertyType.UNDEFINED));
+    current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));
   }
 
   @Override
   protected void oneToManyByReference(String relatedName, NodeTypeMapping relatedMapping) {
-    resolve(relatedMapping).properties.put(relatedName, new Property(relatedName, false, PropertyType.REFERENCE));
+    resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.REFERENCE));
   }
 
   @Override
   protected void oneToManyByPath(String relatedName, NodeTypeMapping relatedMapping) {
-    resolve(relatedMapping).properties.put(relatedName, new Property(relatedName, false, PropertyType.PATH));
+    resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.PATH));
   }
 
   @Override
   protected void oneToManyHierarchic(NodeTypeMapping relatedMapping) {
-    current.children.get("*").add(relatedMapping);
+    current.addChildNodeType("*", relatedMapping);
   }
 
   @Override
   protected void manyToOneByReference(String name, NodeTypeMapping relatedType) {
-    current.properties.put(name, new Property(name, false, PropertyType.REFERENCE));
+    current.properties.put(name, new PropertyDefinition(name, false, PropertyType.REFERENCE));
   }
 
   @Override
   protected void manyToOneByPath(String name, NodeTypeMapping relatedMapping) {
-    current.properties.put(name, new Property(name, false, PropertyType.PATH));
+    current.properties.put(name, new PropertyDefinition(name, false, PropertyType.PATH));
   }
 
   @Override
   protected void manyToOneHierarchic(NodeTypeMapping relatedMapping) {
-    resolve(relatedMapping).children.get("*").add(current.mapping);
+    resolve(relatedMapping).addChildNodeType("*", current.mapping);
   }
 
   @Override
   protected void oneToOneHierarchic(String name, NodeTypeMapping relatedMapping, boolean owner) {
     if (owner) {
-      current.children.get(name).add(relatedMapping);
+      current.addChildNodeType(name, relatedMapping);
     } else {
-      resolve(relatedMapping).children.get(name).add(current.mapping);
+      resolve(relatedMapping).addChildNodeType(name, current.mapping);
     }
   }
 
@@ -127,39 +131,77 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   public void end() {
-    for (NodeType nodeType : nodeTypes.values()) {
-      builder.startType(nodeType.mapping.getTypeName(), nodeType.mapping.getKind() == NodeTypeKind.PRIMARY);
+  }
+
+  public void writeTo(Writer writer) throws IOException {
+    try {
+      SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+      TransformerHandler handler = factory.newTransformerHandler();
+      handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
+      handler.getTransformer().setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+      handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
+
+      // This is proprietary, so it's a best effort
+      handler.getTransformer().setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
       //
-      for (Property property : nodeType.properties.values()) {
-        builder.addProperty(property.name, property.multiple, property.type);
-      }
+      handler.setResult(new StreamResult(writer));
 
       //
-      for (String childName : nodeType.children.keySet()) {
-        Set<NodeTypeMapping> children = nodeType.children.get(childName);
-
-        // Try to find the common ancestor type of all types
-        NodeTypeMapping ancestorMapping = null;
-        foo:
-        for (NodeTypeMapping relatedMapping1 : children) {
-          for (NodeTypeMapping relatedMapping2 : children) {
-            if (!relatedMapping1.getType().isAssignableFrom(relatedMapping2.getType())) {
-              continue foo;
-            }
-          }
-          ancestorMapping = relatedMapping1;
-          break;
-        }
-
-        //
-        String typeName = ancestorMapping == null ? "nt:base" : ancestorMapping.getTypeName();
-
-        //
-        builder.addChildNodeDefinition(childName, typeName);
-      }
-      builder.endType();
+      writeTo(handler);
     }
-    builder.end();
+    catch (Exception e) {
+      throw new UndeclaredThrowableException(e);
+    }
+  }
+
+  public void writeTo(ContentHandler handler) {
+
+    ContentWriter writer = new ContentWriter(handler);
+
+    ElementWriter nodeTypesWriter = writer.element("nodeTypes");
+
+    for (NodeType nodeType : nodeTypes.values()) {
+
+      //
+      ElementWriter nodeTypeWriter = nodeTypesWriter.element("nodeType").
+        withAttribute("name", nodeType.getName()).
+        withAttribute("isMixin", Boolean.toString(nodeType.isMixin())).
+        withAttribute("hasOrderableChildNodes", Boolean.FALSE.toString()).
+        withAttribute("primaryItemName", "todo");
+
+      //
+      ElementWriter propertyDefinitionsWriter = nodeTypeWriter.element("propertyDefinitions");
+      for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions().values()) {
+        propertyDefinitionsWriter.element("propertyDefinition").
+          withAttribute("name", propertyDefinition.getName()).
+          withAttribute("propertyType", PropertyType.nameFromValue(propertyDefinition.getType())).
+          withAttribute("autoCreated", Boolean.FALSE.toString()).
+          withAttribute("mandatory", Boolean.FALSE.toString()).
+          withAttribute("onParentVersion", "COPY").
+          withAttribute("protected", Boolean.FALSE.toString()).
+          withAttribute("multiple", Boolean.toString(propertyDefinition.isMultiple())).
+          element("valueConstraints");
+      }
+
+      //
+      ElementWriter childNodeDefinitionsWriter = nodeTypeWriter.element("childNodeDefinitions");
+      for (NodeDefinition childNodeDefinition : nodeType.getChildNodeDefinitions().values()) {
+        childNodeDefinitionsWriter.element("childNodeDefinition").
+          withAttribute("name", childNodeDefinition.getName()).
+          withAttribute("defaultPrimaryType", "").
+          withAttribute("autoCreated", "false").
+          withAttribute("mandatory", "false").
+          withAttribute("onParentVersion", "COPY").
+          withAttribute("protected", "false").
+          withAttribute("sameNameSiblings", "false").
+          element("requiredPrimaryTypes").
+          element("requiredPrimaryType").
+          content(childNodeDefinition.getNodeTypeName());
+      }
+    }
+
+    //
+    writer.close();
   }
 }

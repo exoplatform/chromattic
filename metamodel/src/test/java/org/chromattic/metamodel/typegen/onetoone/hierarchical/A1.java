@@ -17,25 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.typegen;
+package org.chromattic.metamodel.typegen.onetoone.hierarchical;
 
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "b")
-public abstract class B {
+@PrimaryType(name = "a1")
+public abstract class A1 {
 
-  @Property(name = "bar")
-  public abstract int getBar();
-
-  @MappedBy("a")
+  @MappedBy("child")
   @OneToOne
-  public abstract A getChild();
+  public abstract A2 getChild();
 
 }

@@ -19,40 +19,51 @@
 
 package org.chromattic.metamodel.typegen;
 
-import junit.framework.TestCase;
-import org.reflext.api.ClassTypeInfo;
-import org.reflext.core.TypeDomain;
-import org.reflext.jlr.JavaLangReflectMethodModel;
-import org.reflext.jlr.JavaLangReflectTypeModel;
+import org.chromattic.metamodel.mapping.NodeTypeMapping;
 
-import java.io.StringWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class XMLNodeTypeVisitorTestCase extends TestCase {
+public class NodeDefinition {
 
+  /** . */
+  private final String name;
 
-  public void testFoo() throws Exception {
+  /** . */
+  final Set<NodeTypeMapping> mappings;
 
-    TypeDomain domain = new TypeDomain(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
-    ClassTypeInfo o = (ClassTypeInfo)domain.getType(Object.class);
-    ClassTypeInfo a = (ClassTypeInfo)domain.getType(A.class);
-    ClassTypeInfo b = (ClassTypeInfo)domain.getType(B.class);
+  public NodeDefinition(String name) {
+    this.name = name;
+    this.mappings = new HashSet<NodeTypeMapping>();
+  }
 
-    StringWriter writer = new StringWriter();
-    
-    XMLNodeTypeVisitor visitor = new XMLNodeTypeVisitor(writer);
-    NodeTypeBuilder builder = new NodeTypeBuilder(visitor);
-    builder.addType(o);
-    builder.addType(a);
-    builder.addType(b);
+  public String getName() {
+    return name;
+  }
 
-    builder.generate();
+  public String getNodeTypeName() {
+    // Try to find the common ancestor type of all types
+    NodeTypeMapping ancestorMapping = null;
+    foo:
+    for (NodeTypeMapping relatedMapping1 : mappings) {
+      for (NodeTypeMapping relatedMapping2 : mappings) {
+        if (!relatedMapping1.getType().isAssignableFrom(relatedMapping2.getType())) {
+          continue foo;
+        }
+      }
+      ancestorMapping = relatedMapping1;
+      break;
+    }
 
-    System.out.println("writer = " + writer);
-
-
+    //
+    if (ancestorMapping == null) {
+      return "nt:base";
+    } else {
+      return ancestorMapping.getTypeName();
+    }
   }
 }

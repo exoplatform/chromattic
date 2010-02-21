@@ -22,28 +22,66 @@ package org.chromattic.metamodel.typegen;
 import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class NodeType {
+public class NodeType {
 
   /** . */
   final NodeTypeMapping mapping;
 
   /** . */
-  final SetMap<String, NodeTypeMapping> children;
+  final Map<String, NodeDefinition> children;
 
   /** . */
-  final Map<String, Property> properties;
+  final Map<String, PropertyDefinition> properties;
 
   public NodeType(NodeTypeMapping mapping) {
     this.mapping = mapping;
-    this.children = new SetMap<String, NodeTypeMapping>();
-    this.properties = new HashMap<String, Property>();
+    this.children = new HashMap<String, NodeDefinition>();
+    this.properties = new HashMap<String, PropertyDefinition>();
   }
 
+  public PropertyDefinition getProperty(String propertyName) {
+    return properties.get(propertyName);
+  }
+
+  public Map<String, PropertyDefinition> getPropertyDefinitions() {
+    return properties;
+  }
+
+  public String getName() {
+    return mapping.getTypeName();
+  }
+
+  public boolean isMixin() {
+    return mapping.isMixin();
+  }
+
+  public boolean isPrimary() {
+    return mapping.isPrimary();
+  }
+
+  public Map<String, NodeDefinition> getChildNodeDefinitions() {
+    return children;
+  }
+
+  public NodeDefinition getChildNodeDefinition(String childNodeName) {
+    return children.get(childNodeName);
+  }
+
+  void addChildNodeType(String childNodeName, NodeTypeMapping childNodeTypeMapping) {
+    NodeDefinition nodeDefinition = children.get(childNodeName);
+    if (nodeDefinition == null) {
+      nodeDefinition = new NodeDefinition(childNodeName);
+      children.put(childNodeName, nodeDefinition);
+    }
+    nodeDefinition.mappings.add(childNodeTypeMapping);
+  }
 }
