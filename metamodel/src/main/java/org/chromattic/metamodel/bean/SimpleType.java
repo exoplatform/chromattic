@@ -23,6 +23,7 @@ import org.reflext.api.ClassKind;
 import org.reflext.api.ClassTypeInfo;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +51,10 @@ public abstract class SimpleType<E> {
     public String toExternal(String s) {
       return s;
     }
+    @Override
+    public String toString(String s) {
+      return s;
+    }
   };
 
   /** . */
@@ -57,6 +62,10 @@ public abstract class SimpleType<E> {
     @Override
     public Integer toExternal(String s) {
       return Integer.parseInt(s);
+    }
+    @Override
+    public String toString(Integer integer) {
+      return Long.toString(integer);
     }
   };
 
@@ -66,6 +75,10 @@ public abstract class SimpleType<E> {
     public Boolean toExternal(String s) {
       return Boolean.parseBoolean(s);
     }
+    @Override
+    public String toString(Boolean b) {
+      return Boolean.toString(b);
+    }
   };
 
   /** . */
@@ -73,6 +86,10 @@ public abstract class SimpleType<E> {
     @Override
     public Long toExternal(String s) {
       return Long.parseLong(s);
+    }
+    @Override
+    public String toString(Long l) {
+      return Long.toString(l);
     }
   };
 
@@ -82,6 +99,10 @@ public abstract class SimpleType<E> {
     public Double toExternal(String s) {
       return Double.parseDouble(s);
     }
+    @Override
+    public String toString(Double d) {
+      return Double.toString(d);
+    }
   };
 
   /** . */
@@ -89,6 +110,10 @@ public abstract class SimpleType<E> {
     @Override
     public Float toExternal(String s) {
       return Float.parseFloat(s);
+    }
+    @Override
+    public String toString(Float f) {
+      return Float.toString(f);
     }
   };
 
@@ -98,6 +123,10 @@ public abstract class SimpleType<E> {
     public Integer toExternal(String s) {
       return Integer.parseInt(s);
     }
+    @Override
+    public String toString(Integer i) {
+      return Long.toString(i);
+    }
   };
 
   /** . */
@@ -105,6 +134,10 @@ public abstract class SimpleType<E> {
     @Override
     public Boolean toExternal(String s) {
       return Boolean.parseBoolean(s);
+    }
+    @Override
+    public String toString(Boolean b) {
+      return Boolean.toString(b);
     }
   };
 
@@ -114,6 +147,10 @@ public abstract class SimpleType<E> {
     public Long toExternal(String s) {
       return Long.parseLong(s);
     }
+    @Override
+    public String toString(Long l) {
+      return Long.toString(l);
+    }
   };
 
   /** . */
@@ -121,6 +158,10 @@ public abstract class SimpleType<E> {
     @Override
     public Double toExternal(String s) {
       return Double.parseDouble(s);
+    }
+    @Override
+    public String toString(Double d) {
+      return Double.toString(d);
     }
   };
 
@@ -130,12 +171,20 @@ public abstract class SimpleType<E> {
     public Float toExternal(String s) {
       return Float.parseFloat(s);
     }
+    @Override
+    public String toString(Float f) {
+      return Double.toString(f);
+    }
   };
 
   /** . */
   public static final SimpleType.Base<String> STRING = new SimpleType.Base<String>(String.class) {
     @Override
     public String toExternal(String s) {
+      return s;
+    }
+    @Override
+    public String toString(String s) {
       return s;
     }
   };
@@ -146,6 +195,10 @@ public abstract class SimpleType<E> {
     public InputStream toExternal(String s) {
       throw new UnsupportedOperationException();
     }
+    @Override
+    public String toString(InputStream inputStream) {
+      throw new UnsupportedOperationException();
+    }
   };
 
   /** . */
@@ -153,6 +206,11 @@ public abstract class SimpleType<E> {
     @Override
     public Date toExternal(String s) {
       throw new UnsupportedOperationException();
+    }
+    @Override
+    public String toString(Date date) {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      return sdf.format(date);
     }
   };
 
@@ -189,6 +247,8 @@ public abstract class SimpleType<E> {
   }
 
   public abstract E toExternal(String s);
+
+  public abstract String toString(E e);
 
   public abstract static class Base<E> extends SimpleType<E> {
 
@@ -258,6 +318,10 @@ public abstract class SimpleType<E> {
     @Override
     public String toExternal(String s) {
       throw new UnsupportedOperationException();
+    }
+
+    public String toString(String e) {
+      return e;
     }
   }
 }

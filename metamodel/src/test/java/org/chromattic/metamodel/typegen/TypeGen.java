@@ -24,6 +24,8 @@ import org.reflext.core.TypeDomain;
 import org.reflext.jlr.JavaLangReflectMethodModel;
 import org.reflext.jlr.JavaLangReflectTypeModel;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
@@ -51,5 +53,13 @@ public class TypeGen {
 
   public void generate() {
     builder.generate();
+    try {
+      StringWriter sw = new StringWriter();
+      builder.writeTo(sw);
+      System.out.println("sw = " + sw);
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }

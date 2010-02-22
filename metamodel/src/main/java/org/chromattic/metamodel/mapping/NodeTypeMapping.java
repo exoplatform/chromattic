@@ -42,7 +42,8 @@ public class NodeTypeMapping
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
-    String mixinTypeName) {
+    String mixinTypeName,
+    boolean orderable) {
     return new NodeTypeMapping(
       domain,
       objectClass,
@@ -51,7 +52,8 @@ public class NodeTypeMapping
       onDuplicate,
       mixinTypeName,
       null,
-      NodeTypeKind.MIXIN);
+      NodeTypeKind.MIXIN,
+      orderable);
   }
 
   public static NodeTypeMapping createPrimaryType(
@@ -61,7 +63,8 @@ public class NodeTypeMapping
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
     String nodeTypeName,
-    Class<? extends ObjectFormatter> formatterClass) {
+    Class<? extends ObjectFormatter> formatterClass,
+    boolean orderable) {
     return new NodeTypeMapping(
       domain,
       objectClass,
@@ -70,7 +73,8 @@ public class NodeTypeMapping
       onDuplicate,
       nodeTypeName,
       formatterClass,
-      NodeTypeKind.PRIMARY);
+      NodeTypeKind.PRIMARY,
+      orderable);
   }
 
   /** . */
@@ -97,6 +101,9 @@ public class NodeTypeMapping
   /** . */
   private final NodeTypeKind kind;
 
+  /** . */
+  private final boolean orderable;
+
   public NodeTypeMapping(
     TypeMappingDomain domain,
     ClassTypeInfo type,
@@ -105,9 +112,8 @@ public class NodeTypeMapping
     NameConflictResolution onDuplicate,
     String typeName,
     Class<? extends ObjectFormatter> formatterClass,
-    NodeTypeKind kind) {
-
-    //
+    NodeTypeKind kind,
+    boolean orderable) {
 
     //
     this.domain = domain;
@@ -118,6 +124,11 @@ public class NodeTypeMapping
     this.formatterClass = formatterClass;
     this.typeName = typeName;
     this.kind = kind;
+    this.orderable = orderable;
+  }
+
+  public boolean isOrderable() {
+    return orderable;
   }
 
   public TypeMappingDomain getDomain() {

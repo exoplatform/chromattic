@@ -52,7 +52,7 @@ public class BaseTypeMappingVisitor {
 
   protected void startMapping(NodeTypeMapping mapping) {}
 
-  protected void propertyMapping(JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {}
+  protected <V> void propertyMapping(JCRPropertyMapping<V> propertyMapping, PropertyInfo<SimpleValueInfo<V>> propertyInfo) {}
 
   protected void propertyMapMapping() {}
 
@@ -101,7 +101,7 @@ public class BaseTypeMappingVisitor {
 
             //
             if (valueInfo instanceof SimpleValueInfo) {
-              propertyMapping((JCRPropertyMapping)memberMapping, (PropertyInfo<SimpleValueInfo>)propertyInfo);
+              this.propertyMapping((JCRPropertyMapping)memberMapping, (PropertyInfo)propertyInfo);
             } else {
               // WTF ?
               throw new AssertionError();

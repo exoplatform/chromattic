@@ -77,7 +77,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected void propertyMapping(JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
+  protected <V> void propertyMapping(JCRPropertyMapping<V> propertyMapping, PropertyInfo<SimpleValueInfo<V>> propertyInfo) {
     current.properties.put(propertyMapping.getName(), new PropertyDefinition(propertyMapping, propertyInfo));
   }
 
@@ -179,8 +179,8 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
       ElementWriter nodeTypeWriter = nodeTypesWriter.element("nodeType").
         withAttribute("name", nodeType.getName()).
         withAttribute("isMixin", Boolean.toString(nodeType.isMixin())).
-        withAttribute("hasOrderableChildNodes", Boolean.FALSE.toString()).
-        withAttribute("primaryItemName", "todo");
+        withAttribute("hasOrderableChildNodes", Boolean.toString(nodeType.isOrderable()));
+        // withAttribute("primaryItemName", "todo");
 
       //
       ElementWriter superTypesWriter = nodeTypeWriter.element("supertypes");
@@ -194,15 +194,24 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
       //
       ElementWriter propertyDefinitionsWriter = nodeTypeWriter.element("propertyDefinitions");
       for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions().values()) {
-        propertyDefinitionsWriter.element("propertyDefinition").
+        ElementWriter propertyDefinitionWriter = propertyDefinitionsWriter.element("propertyDefinition").
           withAttribute("name", propertyDefinition.getName()).
           withAttribute("propertyType", PropertyType.nameFromValue(propertyDefinition.getType())).
           withAttribute("autoCreated", Boolean.FALSE.toString()).
           withAttribute("mandatory", Boolean.FALSE.toString()).
           withAttribute("onParentVersion", "COPY").
           withAttribute("protected", Boolean.FALSE.toString()).
-          withAttribute("multiple", Boolean.toString(propertyDefinition.isMultiple())).
-          element("valueConstraints");
+          withAttribute("multiple", Boolean.toString(propertyDefinition.isMultiple()));
+        propertyDefinitionWriter.element("valueConstraints");
+
+        //
+        List<String> defaultValues = propertyDefinition.getDefaultValues();
+        if (defaultValues != null) {
+          ElementWriter defaultValuesWriter = propertyDefinitionWriter.element("defaultValues");
+          for (String s : defaultValues) {
+            defaultValuesWriter.element("defaultValue").content(s);
+          }
+        }
       }
 
       //

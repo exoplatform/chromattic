@@ -42,18 +42,22 @@ public class NodeType {
   /** . */
   final Set<NodeType> superTypes;
 
-  public NodeType(NodeTypeMapping mapping) {
+  NodeType(NodeTypeMapping mapping) {
     this.mapping = mapping;
     this.children = new HashMap<String, NodeDefinition>();
     this.properties = new HashMap<String, PropertyDefinition>();
     this.superTypes = new HashSet<NodeType>();
   }
 
+  public boolean isOrderable() {
+    return mapping.isOrderable();
+  }
+
   public Collection<NodeType> getSuperTypes() {
     return superTypes;
   }
 
-  public PropertyDefinition getProperty(String propertyName) {
+  public PropertyDefinition getPropertyDefinition(String propertyName) {
     return properties.get(propertyName);
   }
 

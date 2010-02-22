@@ -26,6 +26,10 @@ import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 
 import javax.jcr.PropertyType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -37,10 +41,24 @@ public class PropertyDefinition {
     this.name = name;
     this.multiple = multiple;
     this.type = type;
+    this.defaultValues = null;
   }
 
-  PropertyDefinition(JCRPropertyMapping mapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
+  <V> PropertyDefinition(JCRPropertyMapping<V> mapping, PropertyInfo<SimpleValueInfo<V>> propertyInfo) {
 
+    //
+    List<String> defaultValues = null;
+    List<V> defaultValue = mapping.getDefaultValue();
+    if (defaultValue != null) {
+      defaultValues = new ArrayList<String>(defaultValue.size());
+      for (V v : defaultValue) {
+        String s = propertyInfo.getValue().getSimpleType().toString(v);
+        defaultValues.add(s);
+      }
+      defaultValues = Collections.unmodifiableList(defaultValues);
+    }
+
+    //
     int propertyType;
     SimpleValueInfo simpleValueInfo = propertyInfo.getValue();
     SimpleType stk = simpleValueInfo.getSimpleType();
@@ -72,6 +90,7 @@ public class PropertyDefinition {
     this.multiple = propertyInfo instanceof MultiValuedPropertyInfo;
     this.name = mapping.getName();
     this.type = propertyType;
+    this.defaultValues = defaultValues;
   }
 
   final String name;
@@ -79,6 +98,12 @@ public class PropertyDefinition {
   final boolean multiple;
 
   final int type;
+
+  final List<String> defaultValues;
+
+  public List<String> getDefaultValues() {
+    return defaultValues;
+  }
 
   public String getName() {
     return name;

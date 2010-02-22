@@ -135,7 +135,8 @@ public class TypeMappingDomain {
         NameConflictResolution.FAIL,
         "nt:base",
         null,
-        NodeTypeKind.PRIMARY);
+        NodeTypeKind.PRIMARY,
+        false);
       addedMappings.put(javaClass.getName(), objectMapping);
       return objectMapping;
     }
@@ -179,9 +180,11 @@ public class TypeMappingDomain {
         propertyMappings,
         methodMappings,
         onDuplicate,
-        mixinName);
+        mixinName,
+        false);
     } else {
       String nodeTypeName = primaryType.name();
+      boolean orderable = primaryType.orderable();
 
       //
       Class<? extends ObjectFormatter> formatter = null;
@@ -198,7 +201,8 @@ public class TypeMappingDomain {
         methodMappings,
         onDuplicate,
         nodeTypeName,
-        formatter);
+        formatter,
+        orderable);
     }
 
     // Add it to added map
