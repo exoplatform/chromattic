@@ -17,19 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping.value;
+package org.chromattic.metamodel.typegen.onetoone.hierarchical;
 
-import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.RelatedMappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToOneMapping extends AbstractOneToOneMapping<OneToOneMapping> {
+@PrimaryType(name = "c")
+public abstract class C {
 
-  public OneToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
-    super(definer, owner, relatedType, type);
-  }
+  @MappedBy("child")
+  @OneToOne
+  public abstract C getChild();
+
+  @RelatedMappedBy("child")
+  @OneToOne
+  public abstract C getParent();
+
 }

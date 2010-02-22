@@ -17,19 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping.value;
+package org.chromattic.metamodel.typegen.inheritance;
 
-import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToOneMapping extends AbstractOneToOneMapping<OneToOneMapping> {
-
-  public OneToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
-    super(definer, owner, relatedType, type);
-  }
+@PrimaryType(name = "a3")
+public abstract class A3 extends A2 {
 }

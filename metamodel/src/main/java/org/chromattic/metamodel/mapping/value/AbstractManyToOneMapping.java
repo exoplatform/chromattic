@@ -29,7 +29,7 @@ import org.reflext.api.ClassTypeInfo;
  */
 public abstract class AbstractManyToOneMapping<O extends AbstractOneToManyMapping<M, O>, M extends AbstractManyToOneMapping<O, M>> extends RelationshipMapping<O, M> {
 
-  public AbstractManyToOneMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
-    super(owner, relatedType, Multiplicity.MANY, Multiplicity.ONE, type);
+  public AbstractManyToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
+    super(definer, owner, relatedType, Multiplicity.MANY, Multiplicity.ONE, type);
   }
 }

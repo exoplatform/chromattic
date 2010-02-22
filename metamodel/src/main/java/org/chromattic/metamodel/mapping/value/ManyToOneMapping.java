@@ -29,7 +29,7 @@ import org.chromattic.api.RelationshipType;
  */
 public class ManyToOneMapping extends AbstractManyToOneMapping<OneToManyMapping, ManyToOneMapping> {
 
-  public ManyToOneMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
-    super(owner, relatedType, type);
+  public ManyToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
+    super(definer, owner, relatedType, type);
   }
 }

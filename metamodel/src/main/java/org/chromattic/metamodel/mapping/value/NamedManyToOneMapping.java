@@ -32,8 +32,8 @@ public class NamedManyToOneMapping extends AbstractManyToOneMapping<NamedOneToMa
   /** . */
   private final String relatedName;
 
-  public NamedManyToOneMapping(NodeTypeMapping owner, NodeTypeMapping relatedType, String relatedName, RelationshipType relationshipType) {
-    super(owner, relatedType, relationshipType);
+  public NamedManyToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, String relatedName, RelationshipType relationshipType) {
+    super(definer, owner, relatedType, relationshipType);
 
     //
     this.relatedName = relatedName;

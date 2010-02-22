@@ -19,9 +19,14 @@
 
 package org.chromattic.metamodel.mapping.value;
 
+import org.reflext.api.ClassTypeInfo;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class PropertyMapMapping extends ValueMapping {
+  public PropertyMapMapping(ClassTypeInfo definer) {
+    super(definer);
+  }
 }

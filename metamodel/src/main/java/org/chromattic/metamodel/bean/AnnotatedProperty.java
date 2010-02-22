@@ -17,19 +17,37 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping.value;
+package org.chromattic.metamodel.bean;
 
-import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.reflext.api.ClassTypeInfo;
+
+import java.lang.annotation.Annotation;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToOneMapping extends AbstractOneToOneMapping<OneToOneMapping> {
+public class AnnotatedProperty<A extends Annotation> extends Annotated<A> {
 
-  public OneToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
-    super(definer, owner, relatedType, type);
+  /** . */
+  private final ClassTypeInfo owner;
+
+  /** . */
+  private final PropertyInfo<?> property;
+
+  public AnnotatedProperty(A annotation, ClassTypeInfo owner, PropertyInfo<?> property) {
+    super(annotation);
+
+    //
+    this.owner = owner;
+    this.property = property;
+  }
+
+  public ClassTypeInfo getOwner() {
+    return owner;
+  }
+
+  public PropertyInfo<?> getProperty() {
+    return property;
   }
 }

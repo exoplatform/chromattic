@@ -19,11 +19,15 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
 import org.chromattic.metamodel.bean.AccessMode;
 import org.reflext.api.introspection.AnnotationIntrospector;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -83,17 +87,32 @@ public abstract class PropertyInfo<V extends ValueInfo> {
     return setter;
   }
 
-  public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+  public Collection<AnnotatedProperty<?>> getAnnotateds(Class<? extends Annotation>... annotationClasses) {
+    List<AnnotatedProperty<?>> props = new ArrayList<AnnotatedProperty<?>>();
+    for (Class<? extends Annotation> annotationClass : annotationClasses) {
+      AnnotatedProperty<?> annotation = getAnnotated(annotationClass);
+      if (annotation != null) {
+        props.add(annotation);
+      }
+    }
+    return props;
+  }
+
+  public <A extends Annotation> AnnotatedProperty<A> getAnnotated(Class<A> annotationClass) {
     if (annotationClass == null) {
       throw new NullPointerException();
     }
 
     //
     A annotation = null;
+    ClassTypeInfo owner = null;
 
     //
     if (getter != null) {
       annotation = new AnnotationIntrospector<A>(annotationClass).resolve(getter);
+      if (annotation != null) {
+        owner = getter.getOwner();
+      }
     }
 
     //
@@ -105,11 +124,16 @@ public abstract class PropertyInfo<V extends ValueInfo> {
             getter + " and setter" + setter);
         }
         annotation = setterAnnotation;
+        owner = setter.getOwner();
       }
     }
 
     //
-    return annotation;
+    if (annotation != null) {
+      return new AnnotatedProperty<A>(annotation, owner, this);
+    } else {
+      return null;
+    }
   }
 
   @Override

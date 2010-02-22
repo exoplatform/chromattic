@@ -62,4 +62,15 @@ public class OneToOneTestCase extends TestCase {
     assertEquals(0, b2NT.getChildNodeDefinitions().size());
     assertEquals(0, b2NT.getPropertyDefinitions().size());
   }
+
+  public void testSelf() throws Exception {
+    TypeGen gen = new TypeGen();
+    ClassTypeInfo c = gen.addType(C.class);
+    gen.generate();
+    NodeType cNT = gen.getNodeType(c);
+    assertEquals("c", cNT.getName());
+    assertEquals(Collections.set("child"), cNT.getChildNodeDefinitions().keySet());
+    assertEquals(0, cNT.getPropertyDefinitions().size());
+    assertEquals("c", cNT.getChildNodeDefinition("child").getNodeTypeName());
+  }
 }

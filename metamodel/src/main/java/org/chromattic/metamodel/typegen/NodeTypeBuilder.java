@@ -77,8 +77,10 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected <V> void propertyMapping(JCRPropertyMapping<V> propertyMapping, PropertyInfo<SimpleValueInfo<V>> propertyInfo) {
-    current.properties.put(propertyMapping.getName(), new PropertyDefinition(propertyMapping, propertyInfo));
+  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping<V> propertyMapping, PropertyInfo<SimpleValueInfo<V>> propertyInfo) {
+    if (definer.equals(current.mapping.getType())) {
+      current.properties.put(propertyMapping.getName(), new PropertyDefinition(propertyMapping, propertyInfo));
+    }
   }
 
   @Override
@@ -117,11 +119,13 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected void oneToOneHierarchic(String name, NodeTypeMapping relatedMapping, boolean owner) {
-    if (owner) {
-      current.addChildNodeType(name, relatedMapping);
-    } else {
-      resolve(relatedMapping).addChildNodeType(name, current.mapping);
+  protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean owner) {
+    if (definer.equals(current.mapping.getType())) {
+      if (owner) {
+        current.addChildNodeType(name, relatedMapping);
+      } else {
+        resolve(relatedMapping).addChildNodeType(name, current.mapping);
+      }
     }
   }
 

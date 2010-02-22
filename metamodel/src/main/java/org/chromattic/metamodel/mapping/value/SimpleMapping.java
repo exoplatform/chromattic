@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.mapping.value;
 
 import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
+import org.reflext.api.ClassTypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -30,7 +31,10 @@ public class SimpleMapping<M extends JCRMemberMapping> extends ValueMapping {
   /** . */
   private final M jcrMember;
 
-  public SimpleMapping(M jcrMember) {
+  public SimpleMapping(ClassTypeInfo definer, M jcrMember) {
+    super(definer);
+
+    //
     this.jcrMember = jcrMember;
   }
 

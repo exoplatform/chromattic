@@ -52,7 +52,10 @@ public class BaseTypeMappingVisitor {
 
   protected void startMapping(NodeTypeMapping mapping) {}
 
-  protected <V> void propertyMapping(JCRPropertyMapping<V> propertyMapping, PropertyInfo<SimpleValueInfo<V>> propertyInfo) {}
+  protected <V> void propertyMapping(
+    ClassTypeInfo definer,
+    JCRPropertyMapping<V> propertyMapping,
+    PropertyInfo<SimpleValueInfo<V>> propertyInfo) {}
 
   protected void propertyMapMapping() {}
 
@@ -68,7 +71,7 @@ public class BaseTypeMappingVisitor {
 
   protected void manyToOneHierarchic(NodeTypeMapping relatedMapping) {}
 
-  protected void oneToOneHierarchic(String name, NodeTypeMapping relatedMapping, boolean owner) {}
+  protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean owner) {}
 
   protected void endMapping() {}
 
@@ -101,7 +104,10 @@ public class BaseTypeMappingVisitor {
 
             //
             if (valueInfo instanceof SimpleValueInfo) {
-              this.propertyMapping((JCRPropertyMapping)memberMapping, (PropertyInfo)propertyInfo);
+              this.propertyMapping(
+                valueMapping.getDefiner(),
+                (JCRPropertyMapping)memberMapping,
+                (PropertyInfo)propertyInfo);
             } else {
               // WTF ?
               throw new AssertionError();
@@ -183,7 +189,7 @@ public class BaseTypeMappingVisitor {
               String name = namedOneToOneMapping.getName();
               switch (type) {
                 case HIERARCHIC:
-                  oneToOneHierarchic(name, relationshipMapping.getRelatedMapping(), namedOneToOneMapping.isOwning());
+                  oneToOneHierarchic(valueMapping.getDefiner(), name, relationshipMapping.getRelatedMapping(), namedOneToOneMapping.isOwning());
                   break;
                 default:
                   throw new AssertionError();

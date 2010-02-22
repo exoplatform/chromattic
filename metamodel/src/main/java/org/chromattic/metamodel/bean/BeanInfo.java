@@ -62,11 +62,12 @@ public class BeanInfo {
     return properties.get(propertyName);
   }
 
-  public <A extends Annotation> Collection<PropertyInfo> getProperties(Class<A> annotationClass) {
-    List<PropertyInfo> matched = new ArrayList<PropertyInfo>();
-    for (PropertyInfo property : properties.values()) {
-      if (property.getAnnotation(annotationClass) != null) {
-        matched.add(property);
+  public <A extends Annotation> Collection<AnnotatedProperty<A>> findAnnotatedProperties(Class<A> annotationClass) {
+    List<AnnotatedProperty<A>> matched = new ArrayList<AnnotatedProperty<A>>();
+    for (PropertyInfo<?> property : properties.values()) {
+      AnnotatedProperty<A> propertyAnnotation = property.getAnnotated(annotationClass);
+      if (propertyAnnotation != null) {
+        matched.add(propertyAnnotation);
       }
     }
     return matched;

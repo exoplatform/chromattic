@@ -33,6 +33,7 @@ import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
@@ -209,8 +210,9 @@ public class TypeMappingDomain {
     addedMappings.put(javaClass.getName(), nodeTypeMapping);
 
     // Property
-    for (PropertyInfo<?> propertyInfo : info.getProperties(Property.class)) {
-      Property propertyAnnotation = propertyInfo.getAnnotation(Property.class);
+    for (AnnotatedProperty<Property> annotatedProperty : info.findAnnotatedProperties(Property.class)) {
+      Property propertyAnnotation = annotatedProperty.getAnnotation();
+      PropertyInfo propertyInfo = annotatedProperty.getProperty();
 
       //
       ValueInfo value;
@@ -234,18 +236,19 @@ public class TypeMappingDomain {
 
       //
       String[] defaultValues = propertyAnnotation.defaultValue();
-      SimpleType simpleType = simpleValue.getSimpleType();
-      JCRPropertyMapping memberMapping = createProperty(propertyAnnotation.name(), simpleType, defaultValues);
-      SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(memberMapping);
+      SimpleType<?> simpleType = simpleValue.getSimpleType();
+      JCRPropertyMapping<?> memberMapping = createProperty(propertyAnnotation.name(), simpleType, defaultValues);
+      SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(annotatedProperty.getOwner(), memberMapping);
       PropertyMapping<SimpleMapping<JCRPropertyMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRPropertyMapping>>(propertyInfo, simpleMapping);
       propertyMappings.add(propertyMapping);
     }
 
     // Property map
-    for (PropertyInfo<?> propertyInfo : info.getProperties(Properties.class)) {
+    for (AnnotatedProperty<Properties> annotatedProperty : info.findAnnotatedProperties(Properties.class)) {
+      PropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
       if (propertyInfo instanceof MapPropertyInfo) {
         MapPropertyInfo mapPropertyInfo = (MapPropertyInfo)propertyInfo;
-        PropertyMapMapping simpleMapping = new PropertyMapMapping();
+        PropertyMapMapping simpleMapping = new PropertyMapMapping(annotatedProperty.getOwner());
         PropertyMapping<PropertyMapMapping> propertyMapping = new PropertyMapping<PropertyMapMapping>(mapPropertyInfo, simpleMapping);
         propertyMappings.add(propertyMapping);
       } else {
@@ -255,20 +258,45 @@ public class TypeMappingDomain {
 
     // Node attributes
     for (PropertyInfo<?> propertyInfo : info.getProperties()) {
-      NodeAttributeType nat = null;
-      if (propertyInfo.getAnnotation(Name.class) != null) {
-        nat = NodeAttributeType.NAME;
-      } else if (propertyInfo.getAnnotation(Id.class) != null) {
-        nat = NodeAttributeType.ID;
-      } else if (propertyInfo.getAnnotation(Path.class) != null) {
-        if (propertyInfo.getAnnotation(Property.class) == null) {
-          // Check it's not a property
-          nat = NodeAttributeType.PATH;
+      Collection<AnnotatedProperty<?>> annotations = propertyInfo.getAnnotateds(
+        Name.class,
+        Id.class,
+        Path.class,
+        WorkspaceName.class);
+      if (annotations.size() > 0) {
+        AnnotatedProperty<?> annotated;
+        if (annotations.size() > 1) {
+          throw new InvalidMappingException(javaClass, "Too many annotations of the same kind " + annotations);
+        } else {
+          annotated = annotations.iterator().next();
         }
-      } else if (propertyInfo.getAnnotation(WorkspaceName.class) != null) {
-        nat = NodeAttributeType.WORKSPACE_NAME;
-      }
-      if (nat != null) {
+        NodeAttributeType nat;
+        Annotation annotation = annotated.getAnnotation();
+        if (annotation instanceof Name) {
+          nat = NodeAttributeType.NAME;
+        } else if (annotation instanceof Id) {
+          nat = NodeAttributeType.ID;
+        } else if (annotation instanceof Path) {
+          nat = NodeAttributeType.PATH;
+        } else if (annotation instanceof WorkspaceName) {
+          nat = NodeAttributeType.WORKSPACE_NAME;
+        } else {
+          throw new AssertionError();
+        }
+/*
+          if (propertyInfo.getAnnotation(Name.class) != null) {
+            nat = NodeAttributeType.NAME;
+          } else if (propertyInfo.getAnnotation(Id.class) != null) {
+            nat = NodeAttributeType.ID;
+          } else if (propertyInfo.getAnnotation(Path.class) != null) {
+            if (propertyInfo.getAnnotation(Property.class) == null) {
+              // Check it's not a property
+              nat = NodeAttributeType.PATH;
+            }
+          } else if (propertyInfo.getAnnotation(WorkspaceName.class) != null) {
+            nat = NodeAttributeType.WORKSPACE_NAME;
+          }
+*/
         if (propertyInfo instanceof SingleValuedPropertyInfo) {
           SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
           ValueInfo vi = svpi.getValue();
@@ -285,7 +313,7 @@ public class TypeMappingDomain {
                 throw new IllegalStateException("Type " + simpleType + " is not accepted for attribute mapping");
               }
             }
-            SimpleMapping<JCRNodeAttributeMapping> simpleMapping = new SimpleMapping<JCRNodeAttributeMapping>(memberMapping);
+            SimpleMapping<JCRNodeAttributeMapping> simpleMapping = new SimpleMapping<JCRNodeAttributeMapping>(annotated.getOwner(), memberMapping);
             PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>>(propertyInfo, simpleMapping);
             propertyMappings.add(propertyMapping);
           } else {
@@ -298,15 +326,15 @@ public class TypeMappingDomain {
     }
 
     // One to one
-    for (PropertyInfo<?> propertyInfo : info.getProperties(OneToOne.class)) {
-
+    for (AnnotatedProperty<OneToOne> annotatedProperty : info.findAnnotatedProperties(OneToOne.class)) {
+      PropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
+      OneToOne oneToOneAnn = annotatedProperty.getAnnotation();
       if (propertyInfo instanceof SingleValuedPropertyInfo) {
         SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
         ValueInfo vi = svpi.getValue();
         if (vi instanceof BeanValueInfo) {
           BeanValueInfo bvi = (BeanValueInfo)vi;
           ClassTypeInfo typeInfo = bvi.getTypeInfo();
-          OneToOne oneToOneAnn = propertyInfo.getAnnotation(OneToOne.class);
           RelationshipType type = oneToOneAnn.type();
 
           //
@@ -314,15 +342,15 @@ public class TypeMappingDomain {
           if (type == RelationshipType.HIERARCHIC) {
             // The mapped by of a one to one mapping discrimines between the parent and the child
             RelationshipMapping hierarchyMapping;
-            MappedBy mappedBy = propertyInfo.getAnnotation(MappedBy.class);
+            AnnotatedProperty<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
             if (mappedBy != null) {
               NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-              hierarchyMapping = new NamedOneToOneMapping(nodeTypeMapping, relatedMapping, mappedBy.value(), RelationshipType.HIERARCHIC, true);
+              hierarchyMapping = new NamedOneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, true);
             } else {
-              RelatedMappedBy relatedMappedBy = propertyInfo.getAnnotation(RelatedMappedBy.class);
+              AnnotatedProperty<RelatedMappedBy> relatedMappedBy = propertyInfo.getAnnotated(RelatedMappedBy.class);
               if (relatedMappedBy != null) {
                 NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-                hierarchyMapping = new NamedOneToOneMapping(nodeTypeMapping, relatedMapping, relatedMappedBy.value(), RelationshipType.HIERARCHIC, false);
+                hierarchyMapping = new NamedOneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, relatedMappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, false);
               } else {
                 throw new IllegalStateException("No related by mapping found for property " + propertyInfo + " when introspecting " + info);
               }
@@ -331,7 +359,7 @@ public class TypeMappingDomain {
             propertyMappings.add(oneToOneMapping);
           } else if (type == RelationshipType.EMBEDDED) {
             NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-            OneToOneMapping embeddedMapping = new OneToOneMapping(nodeTypeMapping, relatedMapping, RelationshipType.EMBEDDED);
+            OneToOneMapping embeddedMapping = new OneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, RelationshipType.EMBEDDED);
             PropertyMapping<OneToOneMapping> a = new PropertyMapping<OneToOneMapping>(propertyInfo, embeddedMapping);
             propertyMappings.add(a);
           } else {
@@ -346,8 +374,8 @@ public class TypeMappingDomain {
     }
 
     // One to many
-    for (PropertyInfo<?> propertyInfo : info.getProperties(OneToMany.class)) {
-      OneToMany oneToManyAnn = propertyInfo.getAnnotation(OneToMany.class);
+    for (AnnotatedProperty<OneToMany> annotatedProperty : info.findAnnotatedProperties(OneToMany.class)) {
+      PropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
       if (propertyInfo instanceof MultiValuedPropertyInfo) {
         MultiValuedPropertyInfo multiValuedProperty = (MultiValuedPropertyInfo)propertyInfo;
 
@@ -369,23 +397,23 @@ public class TypeMappingDomain {
           BeanValueInfo bvi = (BeanValueInfo)beanElementType;
 
           //
-          RelationshipType type = oneToManyAnn.type();
+          RelationshipType type = annotatedProperty.getAnnotation().type();
           if (type == RelationshipType.HIERARCHIC) {
-            MappedBy mappedBy = propertyInfo.getAnnotation(MappedBy.class);
+            AnnotatedProperty<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
             if (mappedBy != null) {
               throw new IllegalStateException();
             }
             NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
-            OneToManyMapping mapping = new OneToManyMapping(nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
+            OneToManyMapping mapping = new OneToManyMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
             PropertyMapping<OneToManyMapping> oneToManyMapping = new PropertyMapping<OneToManyMapping>(propertyInfo, mapping);
             propertyMappings.add(oneToManyMapping);
           } else {
-            RelatedMappedBy mappedBy = propertyInfo.getAnnotation(RelatedMappedBy.class);
+            AnnotatedProperty<RelatedMappedBy> mappedBy = propertyInfo.getAnnotated(RelatedMappedBy.class);
             if (mappedBy == null) {
               throw new IllegalStateException();
             }
             NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
-            NamedOneToManyMapping mapping = new NamedOneToManyMapping(nodeTypeMapping, relatedMapping, mappedBy.value(), type);
+            NamedOneToManyMapping mapping = new NamedOneToManyMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), type);
             PropertyMapping<NamedOneToManyMapping> oneToManyMapping = new PropertyMapping<NamedOneToManyMapping>(propertyInfo, mapping);
             propertyMappings.add(oneToManyMapping);
           }
@@ -394,7 +422,8 @@ public class TypeMappingDomain {
     }
 
     // Many to one
-    for (PropertyInfo<?> propertyInfo : info.getProperties(ManyToOne.class)) {
+    for (AnnotatedProperty<ManyToOne> annotatedProperty : info.findAnnotatedProperties(ManyToOne.class)) {
+      PropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
       if (propertyInfo instanceof SingleValuedPropertyInfo) {
         SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
         ValueInfo vi = svpi.getValue();
@@ -402,22 +431,21 @@ public class TypeMappingDomain {
           BeanValueInfo bvi = (BeanValueInfo)vi;
 
           //
-          ManyToOne manyToOneAnn = propertyInfo.getAnnotation(ManyToOne.class);
-          RelationshipType type = manyToOneAnn.type();
+          RelationshipType type = annotatedProperty.getAnnotation().type();
 
           //
           if (type == RelationshipType.HIERARCHIC) {
             NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
-            RelationshipMapping hierarchyMapping = new ManyToOneMapping(nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
+            RelationshipMapping hierarchyMapping = new ManyToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
             PropertyMapping<RelationshipMapping> manyToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
             propertyMappings.add(manyToOneMapping);
           } else {
-            MappedBy mappedBy = propertyInfo.getAnnotation(MappedBy.class);
+            AnnotatedProperty<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
             if (mappedBy == null) {
               throw new IllegalStateException();
             }
             NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
-            NamedManyToOneMapping referenceMapping = new NamedManyToOneMapping(nodeTypeMapping, relatedMapping, mappedBy.value(), type);
+            NamedManyToOneMapping referenceMapping = new NamedManyToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), type);
             PropertyMapping<NamedManyToOneMapping> manyToOneMapping = new PropertyMapping<NamedManyToOneMapping>(propertyInfo, referenceMapping);
             propertyMappings.add(manyToOneMapping);
           }
