@@ -28,6 +28,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.chromattic.metamodel.bean.AnnotatedProperty;
 import org.reflext.jlr.JavaLangReflectTypeModel;
 import org.reflext.jlr.JavaLangReflectMethodModel;
 import org.reflext.core.TypeDomain;
@@ -71,9 +72,9 @@ public abstract class AbstractBeanTestCase extends TestCase {
 
   protected <A extends Annotation> void assertAnnotation(
     PropertyInfo<?> property,
-    Class<? extends A> annotationClass,
+    Class<A> annotationClass,
     Map<String, Object> expectedAnnotation) {
-    A ann1 = property.getAnnotation(annotationClass);
+    A ann1 = property.getAnnotated(annotationClass).getAnnotation();
     assertNotNull(ann1);
     Map<String, Object> values = new HashMap<String, Object>();
     for (Method m : ann1.getClass().getDeclaredMethods()) {

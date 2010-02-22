@@ -21,6 +21,8 @@ package org.chromattic.metamodel.typegen.inheritance;
 
 import org.chromattic.api.annotations.*;
 
+import java.util.Collection;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -33,9 +35,15 @@ public abstract class A1 {
 
   @OneToOne
   @MappedBy("bar")
-  public abstract A1 getParent();
+  public abstract A1 getParent1();
 
   @OneToOne
   @RelatedMappedBy("bar")
-  public abstract A1 getChild();
+  public abstract A1 getChild1();
+
+  @OneToMany
+  public abstract Collection<A1> getChildren2();
+
+  @ManyToOne
+  public abstract A1 getParent2();
 }

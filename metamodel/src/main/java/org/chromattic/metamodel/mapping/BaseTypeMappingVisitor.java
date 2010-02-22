@@ -57,19 +57,19 @@ public class BaseTypeMappingVisitor {
     JCRPropertyMapping<V> propertyMapping,
     PropertyInfo<SimpleValueInfo<V>> propertyInfo) {}
 
-  protected void propertyMapMapping() {}
+  protected void propertyMapMapping(ClassTypeInfo definer) {}
 
-  protected void oneToManyByReference(String relatedName, NodeTypeMapping relatedMapping) {}
+  protected void oneToManyByReference(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping) {}
 
-  protected void oneToManyByPath(String relatedName, NodeTypeMapping relatedMapping) {}
+  protected void oneToManyByPath(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping) {}
 
-  protected void oneToManyHierarchic(NodeTypeMapping relatedMapping) {}
+  protected void oneToManyHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {}
 
-  protected void manyToOneByReference(String name, NodeTypeMapping relatedMapping) {}
+  protected void manyToOneByReference(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping) {}
 
-  protected void manyToOneByPath(String name, NodeTypeMapping relatedMapping) {}
+  protected void manyToOneByPath(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping) {}
 
-  protected void manyToOneHierarchic(NodeTypeMapping relatedMapping) {}
+  protected void manyToOneHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {}
 
   protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean owner) {}
 
@@ -90,6 +90,7 @@ public class BaseTypeMappingVisitor {
 
         ValueMapping valueMapping = propertyMapping.getValueMapping();
 
+        ClassTypeInfo definer = valueMapping.getDefiner();
         if (valueMapping instanceof SimpleMapping) {
           SimpleMapping<?> simpleMapping = (SimpleMapping)valueMapping;
           PropertyInfo<? extends ValueInfo> propertyInfo = propertyMapping.getInfo();
@@ -105,7 +106,7 @@ public class BaseTypeMappingVisitor {
             //
             if (valueInfo instanceof SimpleValueInfo) {
               this.propertyMapping(
-                valueMapping.getDefiner(),
+                definer,
                 (JCRPropertyMapping)memberMapping,
                 (PropertyInfo)propertyInfo);
             } else {
@@ -143,10 +144,10 @@ public class BaseTypeMappingVisitor {
               NamedOneToManyMapping namedOneToManyMapping = (NamedOneToManyMapping)valueMapping;
               switch (type) {
                 case REFERENCE:
-                  oneToManyByReference(namedOneToManyMapping.getName(), relatedMapping);
+                  oneToManyByReference(definer, namedOneToManyMapping.getName(), relatedMapping);
                   break;
                 case PATH:
-                  oneToManyByPath(namedOneToManyMapping.getName(), relatedMapping);
+                  oneToManyByPath(definer, namedOneToManyMapping.getName(), relatedMapping);
                   break;
                 default:
                   throw new AssertionError();
@@ -154,7 +155,7 @@ public class BaseTypeMappingVisitor {
             } else {
               switch (type) {
                 case HIERARCHIC:
-                  oneToManyHierarchic(relationshipMapping.getRelatedMapping());
+                  oneToManyHierarchic(definer, relationshipMapping.getRelatedMapping());
                   break;
                 default:
                   throw new AssertionError();
@@ -166,10 +167,10 @@ public class BaseTypeMappingVisitor {
               String name = namedManyToOneMapping.getRelatedName();
               switch (type) {
                 case REFERENCE:
-                  manyToOneByReference(name, relatedMapping);
+                  manyToOneByReference(definer, name, relatedMapping);
                   break;
                 case PATH:
-                  manyToOneByPath(name, relatedMapping);
+                  manyToOneByPath(definer, name, relatedMapping);
                   break;
                 default:
                   throw new AssertionError();
@@ -177,7 +178,7 @@ public class BaseTypeMappingVisitor {
             } else {
               switch (type) {
                 case HIERARCHIC:
-                  manyToOneHierarchic(relatedMapping);
+                  manyToOneHierarchic(definer, relatedMapping);
                   break;
                 default:
                   throw new AssertionError();
@@ -189,7 +190,7 @@ public class BaseTypeMappingVisitor {
               String name = namedOneToOneMapping.getName();
               switch (type) {
                 case HIERARCHIC:
-                  oneToOneHierarchic(valueMapping.getDefiner(), name, relationshipMapping.getRelatedMapping(), namedOneToOneMapping.isOwning());
+                  oneToOneHierarchic(definer, name, relationshipMapping.getRelatedMapping(), namedOneToOneMapping.isOwning());
                   break;
                 default:
                   throw new AssertionError();
@@ -207,7 +208,7 @@ public class BaseTypeMappingVisitor {
             throw new AssertionError();
           }
         } else if (valueMapping instanceof PropertyMapMapping) {
-          propertyMapMapping();
+          propertyMapMapping(definer);
         } else {
           // WTF ?
           throw new AssertionError();

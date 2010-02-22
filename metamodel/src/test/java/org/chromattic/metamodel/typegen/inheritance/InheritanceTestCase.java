@@ -41,13 +41,13 @@ public class InheritanceTestCase extends TestCase {
     assertEquals(0, a3NT.getPropertyDefinitions().size());
   }
 
-  public void testOneToOne() throws Exception {
+  public void testChildNodeDefinitions() throws Exception {
     TypeGen gen = new TypeGen();
     ClassTypeInfo a1 = gen.addType(A1.class);
     ClassTypeInfo a3 = gen.addType(A3.class);
     gen.generate();
     NodeType a1NT = gen.getNodeType(a1);
-    assertEquals(1, a1NT.getChildNodeDefinitions().size());
+    assertEquals(2, a1NT.getChildNodeDefinitions().size());
     NodeType a3NT = gen.getNodeType(a3);
     assertEquals(0, a3NT.getChildNodeDefinitions().size());
   }

@@ -84,38 +84,52 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected void propertyMapMapping() {
-    current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));
+  protected void propertyMapMapping(ClassTypeInfo definer) {
+    if (definer.equals(current.mapping.getType())) {
+      current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));
+    }
   }
 
   @Override
-  protected void oneToManyByReference(String relatedName, NodeTypeMapping relatedMapping) {
-    resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.REFERENCE));
+  protected void oneToManyByReference(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping) {
+    if (definer.equals(current.mapping.getType())) {
+      resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.REFERENCE));
+    }
   }
 
   @Override
-  protected void oneToManyByPath(String relatedName, NodeTypeMapping relatedMapping) {
-    resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.PATH));
+  protected void oneToManyByPath(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping) {
+    if (definer.equals(current.mapping.getType())) {
+      resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.PATH));
+    }
   }
 
   @Override
-  protected void oneToManyHierarchic(NodeTypeMapping relatedMapping) {
-    current.addChildNodeType("*", relatedMapping);
+  protected void oneToManyHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {
+    if (definer.equals(current.mapping.getType())) {
+      current.addChildNodeType("*", relatedMapping);
+    }
   }
 
   @Override
-  protected void manyToOneByReference(String name, NodeTypeMapping relatedType) {
-    current.properties.put(name, new PropertyDefinition(name, false, PropertyType.REFERENCE));
+  protected void manyToOneByReference(ClassTypeInfo definer, String name, NodeTypeMapping relatedType) {
+    if (definer.equals(current.mapping.getType())) {
+      current.properties.put(name, new PropertyDefinition(name, false, PropertyType.REFERENCE));
+    }
   }
 
   @Override
-  protected void manyToOneByPath(String name, NodeTypeMapping relatedMapping) {
-    current.properties.put(name, new PropertyDefinition(name, false, PropertyType.PATH));
+  protected void manyToOneByPath(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping) {
+    if (definer.equals(current.mapping.getType())) {
+      current.properties.put(name, new PropertyDefinition(name, false, PropertyType.PATH));
+    }
   }
 
   @Override
-  protected void manyToOneHierarchic(NodeTypeMapping relatedMapping) {
-    resolve(relatedMapping).addChildNodeType("*", current.mapping);
+  protected void manyToOneHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {
+    if (definer.equals(current.mapping.getType())) {
+      resolve(relatedMapping).addChildNodeType("*", current.mapping);
+    }
   }
 
   @Override
