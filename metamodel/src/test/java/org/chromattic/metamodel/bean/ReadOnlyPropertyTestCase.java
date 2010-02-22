@@ -17,40 +17,48 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.bean;
+package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.bean.BeanInfoFactory;
-import org.reflext.api.ClassTypeInfo;
 import org.chromattic.metamodel.bean.BeanInfo;
 import org.chromattic.metamodel.bean.AccessMode;
+import org.chromattic.metamodel.bean.BeanInfoFactory;
+import org.reflext.api.ClassTypeInfo;
 
 import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReadWritePropertyTestCase extends AbstractBeanTestCase {
+public class ReadOnlyPropertyTestCase extends AbstractBeanTestCase {
 
-  public class ConsistentGetterAndSetter {
+  public class A {
     public String getA() { throw new UnsupportedOperationException(); }
-    public void setA(String a) { throw new UnsupportedOperationException(); }
   }
 
-  public void testConsistentGetterAndSetter() {
-    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(ConsistentGetterAndSetter.class);
+  public void testA() {
+    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(A.class);
     BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
-    assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_WRITE);
+    assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_ONLY);
   }
 
-  public class GetterAndSetterWithDifferentTypes {
-    public String getA() { throw new UnsupportedOperationException(); }
-    public void setA(Exception a) { throw new UnsupportedOperationException(); }
+  public class B<X> {
+    public X getA() { throw new UnsupportedOperationException(); }
   }
 
-  public void testGetterAndSetterWithDifferentTypes() {
-    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(GetterAndSetterWithDifferentTypes.class);
+  public void testB() {
+    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(B.class);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    assertEquals(new HashSet<String>(), beanInfo.getPropertyNames());
+  }
+
+  public class C extends B<String> {
+  }
+
+  public void testC() {
+    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(C.class);
     BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
     assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_ONLY);

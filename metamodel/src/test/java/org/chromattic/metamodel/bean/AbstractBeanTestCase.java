@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.bean;
+package org.chromattic.metamodel.bean;
 
 import junit.framework.TestCase;
 import junit.framework.AssertionFailedError;
@@ -28,7 +28,6 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.chromattic.metamodel.bean.AnnotatedProperty;
 import org.reflext.jlr.JavaLangReflectTypeModel;
 import org.reflext.jlr.JavaLangReflectMethodModel;
 import org.reflext.core.TypeDomain;
