@@ -39,7 +39,9 @@ import java.lang.annotation.ElementType;
 public @interface MixinType {
 
   /**
-   * @return
+   * Returns the mixin name.
+   *
+   * @return the mixin name
    */
   String name();
 }
