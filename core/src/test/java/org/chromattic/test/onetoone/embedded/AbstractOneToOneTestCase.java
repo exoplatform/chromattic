@@ -49,7 +49,6 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     assertNull(b.getMixin());
     assertNull(c.getEntity());
     setEmbedded(session, b, C.class, c);
-//    b.setMixin(c);
     assertSame(c, b.getMixin());
     assertSame(b, c.getEntity());
     Node node = session.getNode(b);
@@ -59,7 +58,6 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     session = login();
     b = session.findByPath(B.class, "b");
     c = getEmbedded(session, b, C.class);
-//    c = b.getMixin();
     assertNotNull(c);
   }
 
@@ -67,7 +65,6 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
     C c = session.create(C.class);
-//    assertNull(b.getMixin());
     assertNull(getEmbedded(session, b, C.class));
     assertNull(c.getEntity());
     c.setEntity(b);
@@ -79,7 +76,6 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     session.close();
     session = login();
     b = session.findByPath(B.class, "b");
-//    c = b.getMixin();
     c = getEmbedded(session, b, C.class);
     assertNotNull(c);
   }
@@ -87,7 +83,6 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
   public void testGetSuper() throws Exception {
     ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
-//    A a = b.getSuper();
     A a = getEmbedded(session, b, A.class);
     assertNotNull(a);
   }
@@ -96,10 +91,8 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
     B b1 = session.insert(B.class, "b1");
     B b2 = session.insert(B.class, "b2");
-//    A s = b1.getSuper();
     A s = getEmbedded(session, b1, A.class);
     try {
-//      b2.setSuper(s);
       setEmbedded(session, b2, A.class, s);
       fail();
     }
@@ -111,7 +104,6 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
     C c = session.create(C.class);
-//    b.setMixin(c);
     setEmbedded(session, b, C.class, c);
     c.setFoo("bar");
     assertEquals("bar", c.getFoo());
@@ -121,7 +113,6 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
     B b1 = session.insert(B.class, "b");
     C c = session.create(C.class);
-//    b.setMixin(c);
     setEmbedded(session, b1, C.class, c);
     B b2 = session.create(B.class);
     c.setB(b2);
