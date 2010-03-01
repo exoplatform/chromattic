@@ -27,10 +27,10 @@ import java.lang.annotation.Target;
 /**
  * Annotates the owner of a relationship:
  * <ul>
- * <li>In a one to one hierarchic relationship it indicates the parent.</li>
- * <li>In a many to one path or referenced relationship it indicates the entity owning the field, in that case it is
+ * <li>In a one to one hierarchic relationship it distinguishes the parent.</li>
+ * <li>In a many to one path or referenced relationship it distinguishes the entity owning the field, in that case it is
  * optional as the relationship is not symetric.</li>
- * <li>In an one to one embedded relationship, it indicates the entity from its embedded mixin or super type.</li>
+ * <li>In an one to one embedded relationship, it distinguishes the entity from its embedded mixin or super type.</li>
  * </ul>
  * 
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
