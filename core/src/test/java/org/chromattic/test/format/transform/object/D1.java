@@ -21,6 +21,7 @@ package org.chromattic.test.format.transform.object;
 
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 
 /**
@@ -31,6 +32,7 @@ import org.chromattic.api.annotations.PrimaryType;
 public abstract class D1 {
 
   @OneToOne
+  @Owner
   @MappedBy("foo_a")
   public abstract D2 getChild();
 

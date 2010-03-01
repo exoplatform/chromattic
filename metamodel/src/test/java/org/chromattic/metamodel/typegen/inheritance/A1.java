@@ -34,11 +34,12 @@ public abstract class A1 {
   public abstract String getFoo();
 
   @OneToOne
+  @Owner
   @MappedBy("bar")
   public abstract A1 getParent1();
 
   @OneToOne
-  @RelatedMappedBy("bar")
+  @MappedBy("bar")
   public abstract A1 getChild1();
 
   @OneToMany

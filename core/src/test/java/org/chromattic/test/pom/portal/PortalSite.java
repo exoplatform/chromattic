@@ -19,10 +19,7 @@
 
 package org.chromattic.test.pom.portal;
 
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.*;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.test.pom.SiteImpl;
 import org.chromattic.test.pom.PageImpl;
@@ -36,6 +33,7 @@ import org.chromattic.test.pom.Templatized;
 public abstract class PortalSite extends SiteImpl<PortalSites> {
 
   @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
   public abstract Templatized getTemplatized();
 
 }

@@ -200,9 +200,10 @@ public class MapperBuilder {
 
     //
     Set<PropertyMapper<?, C>> propertyMappers = new HashSet<PropertyMapper<?, C>>();
-    Set<PropertyMapper<?, EntityContext>> propertyMappersForE = new HashSet<PropertyMapper<?, EntityContext>>();
-    Set<PropertyMapper<?, EmbeddedContext>> propertyMappersForM = new HashSet<PropertyMapper<?, EmbeddedContext>>();
+    Set<PropertyMapper<?, EntityContext>> propertyMappersForEntity = new HashSet<PropertyMapper<?, EntityContext>>();
+    Set<PropertyMapper<?, EmbeddedContext>> propertyMappersForEmbedded = new HashSet<PropertyMapper<?, EmbeddedContext>>();
 
+    //
     for (PropertyMapping<?> pm : typeMapping.getPropertyMappings()) {
 
       //
@@ -226,7 +227,7 @@ public class MapperBuilder {
             JCRNodeAttributeMapping nam = (JCRNodeAttributeMapping)jcrMember;
             JCRNodeAttributePropertyMapper bilto = new JCRNodeAttributePropertyMapper((SingleValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(), nam.getType());
             if (contextType == EntityContext.class) {
-              propertyMappersForE.add(bilto);
+              propertyMappersForEntity.add(bilto);
             } else {
               throw new UnsupportedOperationException("todo");
             }
@@ -239,7 +240,7 @@ public class MapperBuilder {
             if (pmhm instanceof ManyToOneMapping) {
               JCRChildNodePropertyMapper bilto = new JCRAnyChildCollectionPropertyMapper(propertyInfo);
               relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
-              propertyMappersForE.add(bilto);
+              propertyMappersForEntity.add(bilto);
             } if (pmhm instanceof NamedOneToOneMapping) {
               NamedOneToOneMapping ncpmpm = (NamedOneToOneMapping)pmhm;
               if (ncpmpm.isOwning()) {
@@ -249,20 +250,30 @@ public class MapperBuilder {
               } else {
                 JCRChildNodePropertyMapper bilto = new JCRNamedChildPropertyMapper(propertyInfo, ncpmpm.getName());
                 relatedProperties.get(ncpmpm.getRelatedMapping().getType()).add(bilto);
-                propertyMappersForE.add(bilto);
+                propertyMappersForEntity.add(bilto);
               }
             }
           } else if (pmhm.getType() == RelationshipType.EMBEDDED) {
             NodeTypeMapping relatedMapping = classToMapping.get(propertyInfo.getValue().getTypeInfo());
+            OneToOneMapping a = (OneToOneMapping)pmhm;
             if (typeMapping.isPrimary()) {
-              JCREmbeddedParentPropertyMapper mapper = new JCREmbeddedParentPropertyMapper(propertyInfo);
-              propertyMappersForE.add(mapper);
+              if (a.isOwning()) {
+                JCREmbeddedParentPropertyMapper mapper = new JCREmbeddedParentPropertyMapper(propertyInfo);
+                propertyMappersForEntity.add(mapper);
+              } else {
+                JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper(propertyInfo);
+                propertyMappersForEmbedded.add(mapper);
+              }
             } else if (typeMapping.isMixin()) {
+              if (a.isOwning()) {
+                throw new BuilderException();
+              }
               if (relatedMapping.isPrimary()) {
                 JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper(propertyInfo);
-                propertyMappersForM.add(mapper);
+                propertyMappersForEmbedded.add(mapper);
               } else {
-                throw new BuilderException("Related class in mixin mapping must be annotated with @" + PrimaryType.class.getSimpleName());
+                throw new BuilderException("Related class of a mixin in a one to one embedded relationship must be " +
+                  "annotated with @" + PrimaryType.class.getSimpleName());
               }
             } else {
               throw new AssertionError();
@@ -307,7 +318,7 @@ public class MapperBuilder {
                   fff.getName(),
                   linkType);
                 relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
-                propertyMappersForE.add(bilto);
+                propertyMappersForEntity.add(bilto);
               }
             } else {
               if (pmhm.getType() == RelationshipType.HIERARCHIC) {
@@ -385,13 +396,13 @@ public class MapperBuilder {
       }
 
       // propertyMappers
-      Set<PropertyMapper<?, EntityContext>> tmp = new HashSet<PropertyMapper<?, EntityContext>>(propertyMappersForE);
+      Set<PropertyMapper<?, EntityContext>> tmp = new HashSet<PropertyMapper<?, EntityContext>>(propertyMappersForEntity);
 
       // methodMappers
       Set<MethodMapper<EntityContext>> tmp2 = new HashSet<MethodMapper<EntityContext>>(methodMappersForE);
 
       //
-      if (propertyMappersForM.size() > 0) {
+      if (propertyMappersForEmbedded.size() > 0) {
         throw new AssertionError();
       }
 
@@ -416,7 +427,7 @@ public class MapperBuilder {
         typeMapping.getTypeName(),
         typeMapping.getKind());
     } else {
-      if (propertyMappersForE.size() > 0) {
+      if (propertyMappersForEntity.size() > 0) {
         throw new AssertionError();
       }
 
@@ -426,7 +437,7 @@ public class MapperBuilder {
       }
 
       // propertyMappers
-      Set<PropertyMapper<?, EmbeddedContext>> tmp = new HashSet<PropertyMapper<?, EmbeddedContext>>(propertyMappersForM);
+      Set<PropertyMapper<?, EmbeddedContext>> tmp = new HashSet<PropertyMapper<?, EmbeddedContext>>(propertyMappersForEmbedded);
 
       // methodMappers
       Set<MethodMapper<EmbeddedContext>> tmp2 = new HashSet<MethodMapper<EmbeddedContext>>();

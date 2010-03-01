@@ -37,10 +37,12 @@ public abstract class SiteImpl<T extends Sites> {
   public abstract T getSites();
 
   @OneToOne
+  @Owner
   @MappedBy("root")
   public abstract PageImpl getRoot();
 
   @OneToOne
+  @Owner
   @MappedBy("navigation")
   public abstract NavigationImpl getNavigation();
 

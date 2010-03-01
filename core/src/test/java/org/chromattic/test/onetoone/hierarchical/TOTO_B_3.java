@@ -21,7 +21,7 @@ package org.chromattic.test.onetoone.hierarchical;
 
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.RelatedMappedBy;
+import org.chromattic.api.annotations.MappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -31,7 +31,7 @@ import org.chromattic.api.annotations.RelatedMappedBy;
 public abstract class TOTO_B_3 {
 
   @OneToOne
-  @RelatedMappedBy("b")
+  @MappedBy("b")
   public abstract TOTO_A_3 getA();
 
   public abstract void setA(TOTO_A_3 a);

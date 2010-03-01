@@ -20,7 +20,7 @@
 package org.chromattic.test.pom.portal;
 
 import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.RelatedMappedBy;
+import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.test.pom.Sites;
 import org.chromattic.test.pom.WorkspaceImpl;
 
@@ -31,7 +31,7 @@ import org.chromattic.test.pom.WorkspaceImpl;
 @PrimaryType(name = "exo:portals")
 public abstract class PortalSites extends Sites<PortalSite> {
 
-  @RelatedMappedBy("portals")
+  @MappedBy("portals")
   public abstract WorkspaceImpl getWorkspace();
 
 }

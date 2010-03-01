@@ -19,12 +19,7 @@
 
 package org.chromattic.test.pom;
 
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.*;
 
 import java.util.Collection;
 
@@ -44,6 +39,7 @@ public abstract class NavigationImpl {
   public abstract NavigationImpl getParent();
 
   @OneToOne
+  @Owner
   @MappedBy("target")
   public abstract NavigationTargetImpl getTarget();
 

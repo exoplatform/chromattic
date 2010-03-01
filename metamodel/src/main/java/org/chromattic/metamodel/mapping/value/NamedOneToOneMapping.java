@@ -33,23 +33,15 @@ public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneM
   /** . */
   private final String name;
 
-  /** . */
-  private final boolean owning;
-
   public NamedOneToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, String name, RelationshipType type, boolean owning) {
-    super(definer, owner, relatedType, type);
+    super(definer, owner, relatedType, type, owning);
 
     //
     this.name = name;
-    this.owning = owning;
   }
 
   public String getName() {
     return name;
-  }
-
-  public boolean isOwning() {
-    return owning;
   }
 
   @Override

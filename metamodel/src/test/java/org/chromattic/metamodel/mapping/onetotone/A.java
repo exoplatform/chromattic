@@ -21,6 +21,7 @@ package org.chromattic.metamodel.mapping.onetotone;
 
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 
 /**
@@ -31,6 +32,7 @@ import org.chromattic.api.annotations.PrimaryType;
 public abstract class A {
 
   @OneToOne
+  @Owner
   @MappedBy("foo")
   public abstract B getB();
 

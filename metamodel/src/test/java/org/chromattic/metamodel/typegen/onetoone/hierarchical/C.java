@@ -19,10 +19,7 @@
 
 package org.chromattic.metamodel.typegen.onetoone.hierarchical;
 
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.RelatedMappedBy;
+import org.chromattic.api.annotations.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -32,10 +29,11 @@ import org.chromattic.api.annotations.RelatedMappedBy;
 public abstract class C {
 
   @MappedBy("child")
+  @Owner
   @OneToOne
   public abstract C getChild();
 
-  @RelatedMappedBy("child")
+  @MappedBy("child")
   @OneToOne
   public abstract C getParent();
 

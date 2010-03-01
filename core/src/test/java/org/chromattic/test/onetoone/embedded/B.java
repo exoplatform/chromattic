@@ -20,9 +20,10 @@
 package org.chromattic.test.onetoone.embedded;
 
 import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.RelatedMappedBy;
+import org.chromattic.api.annotations.MappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -32,17 +33,19 @@ import org.chromattic.api.annotations.RelatedMappedBy;
 public abstract class B {
 
   @OneToOne
-  @RelatedMappedBy("b")
+  @MappedBy("b")
   public abstract C getParent();
 
   public abstract void setParent(C b);
 
   @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
   public abstract C getMixin();
 
   public abstract void setMixin(C b);
 
   @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
   public abstract A getSuper();
 
   public abstract void setSuper(A a);

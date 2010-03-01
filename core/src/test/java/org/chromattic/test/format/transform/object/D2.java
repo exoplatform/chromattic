@@ -21,7 +21,7 @@ package org.chromattic.test.format.transform.object;
 
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.RelatedMappedBy;
+import org.chromattic.api.annotations.MappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -31,7 +31,7 @@ import org.chromattic.api.annotations.RelatedMappedBy;
 public abstract class D2 {
 
   @OneToOne
-  @RelatedMappedBy("foo_b")
+  @MappedBy("foo_b")
   public abstract D1 getParent();
 
   public abstract void setParent(D1 parent);

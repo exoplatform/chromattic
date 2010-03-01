@@ -18,10 +18,7 @@
  */
 package org.chromattic.ext.ntdef;
 
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.*;
 import org.chromattic.common.IO;
 
 import java.io.ByteArrayInputStream;
@@ -38,6 +35,7 @@ import java.util.Date;
 public abstract class NTFile extends NTHierarchyNode {
   
   @OneToOne
+  @Owner
   @MappedBy("jcr:content")
   public abstract Object getContent();
 

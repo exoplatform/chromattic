@@ -19,6 +19,7 @@
 
 package org.chromattic.test.onetoone.hierarchical;
 
+import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.MappedBy;
@@ -31,6 +32,7 @@ import org.chromattic.api.annotations.MappedBy;
 public abstract class TOTO_A_1 {
 
   @OneToOne
+  @Owner
   @MappedBy("b")
   public abstract TOTO_B_1 getB();
 

@@ -29,7 +29,7 @@ import org.reflext.api.ClassTypeInfo;
  */
 public class OneToOneMapping extends AbstractOneToOneMapping<OneToOneMapping> {
 
-  public OneToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
-    super(definer, owner, relatedType, type);
+  public OneToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type, boolean owning) {
+    super(definer, owner, relatedType, type, owning);
   }
 }

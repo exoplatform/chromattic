@@ -19,14 +19,7 @@
 
 package org.chromattic.test.pom;
 
-import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.RelatedMappedBy;
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.*;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.test.pom.portal.PortalSite;
 
@@ -40,6 +33,7 @@ import java.util.Collection;
 public abstract class PageImpl {
 
   @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
   public abstract Templatized getTemplatized();
 
   @Name
@@ -52,15 +46,15 @@ public abstract class PageImpl {
   public abstract void setTemplate(PageImpl template);
 
   @OneToMany(type = RelationshipType.REFERENCE)
-  @RelatedMappedBy("template")
+  @MappedBy("template")
   public abstract Collection<PortalSite> getTemplatizedPortals();
 
   @OneToMany(type = RelationshipType.REFERENCE)
-  @RelatedMappedBy("template")
+  @MappedBy("template")
   public abstract Collection<PageImpl> getTemplatizedPages();
 
   @OneToMany(type = RelationshipType.REFERENCE)
-  @RelatedMappedBy("template")
+  @MappedBy("template")
   public abstract Collection<Templatized> getTemplatizedObjects();
 
   @OneToMany
@@ -70,10 +64,11 @@ public abstract class PageImpl {
   public abstract PageImpl getPageParent();
 
   @OneToOne
-  @RelatedMappedBy("root")
+  @MappedBy("root")
   public abstract SiteImpl getSiteParent();
 
   @OneToOne
+  @Owner
   @MappedBy("container")
   public abstract UIContainerImpl getContainer();
 

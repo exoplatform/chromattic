@@ -19,27 +19,24 @@
 
 package org.chromattic.api.annotations;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
 
 /**
- * Defines the name of the property that is used on the other side of the relationship to maintain one to many
- * relationship with path or reference.
- *
+ * Annotates the owner of a relationship:
+ * <ul>
+ * <li>In a one to one hierarchic relationship it indicates the parent.</li>
+ * <li>In a many to one path or referenced relationship it indicates the entity owning the field, in that case it is
+ * optional as the relationship is not symetric.</li>
+ * <li>In an one to one embedded relationship, it indicates the entity from its embedded mixin or super type.</li>
+ * </ul>
+ * 
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
- * @see org.chromattic.api.annotations.MappedBy
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface RelatedMappedBy {
-
-  /**
-   * The name of the property of the related entity that maintains the relationship.
-   *
-   * @return the property name
-   */
-  public abstract String value();
+public @interface Owner {
 }

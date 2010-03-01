@@ -21,7 +21,7 @@ package org.chromattic.test.onetoone.hierarchical;
 
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.RelatedMappedBy;
+import org.chromattic.api.annotations.MappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -31,13 +31,13 @@ import org.chromattic.api.annotations.RelatedMappedBy;
 public abstract class C4 {
 
   @OneToOne
-  @RelatedMappedBy("c2")
+  @MappedBy("c2")
   public abstract C1 getParent1();
 
   public abstract void setParent1(C1 c1);
 
   @OneToOne
-  @RelatedMappedBy("c3")
+  @MappedBy("c3")
   public abstract C1 getParent2();
 
   public abstract void setParent2(C1 c1);

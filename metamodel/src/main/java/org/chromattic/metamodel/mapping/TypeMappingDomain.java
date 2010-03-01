@@ -343,23 +343,30 @@ public class TypeMappingDomain {
             // The mapped by of a one to one mapping discrimines between the parent and the child
             RelationshipMapping hierarchyMapping;
             AnnotatedProperty<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
-            if (mappedBy != null) {
+
+            //
+            if (mappedBy == null)
+            {
+              throw new InvalidMappingException(javaClass, "Annotated one to one hierarchic relationship " +
+                "must be annotated by " + MappedBy.class.getName());
+            }
+
+            //
+            AnnotatedProperty<Owner> owner = propertyInfo.getAnnotated(Owner.class);
+            if (owner != null) {
               NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
               hierarchyMapping = new NamedOneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, true);
             } else {
-              AnnotatedProperty<RelatedMappedBy> relatedMappedBy = propertyInfo.getAnnotated(RelatedMappedBy.class);
-              if (relatedMappedBy != null) {
-                NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-                hierarchyMapping = new NamedOneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, relatedMappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, false);
-              } else {
-                throw new IllegalStateException("No related by mapping found for property " + propertyInfo + " when introspecting " + info);
-              }
+              NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
+              hierarchyMapping = new NamedOneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, false);
             }
             oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
             propertyMappings.add(oneToOneMapping);
           } else if (type == RelationshipType.EMBEDDED) {
+            AnnotatedProperty<Owner> owner = propertyInfo.getAnnotated(Owner.class);
+            boolean owning = owner != null;
             NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-            OneToOneMapping embeddedMapping = new OneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, RelationshipType.EMBEDDED);
+            OneToOneMapping embeddedMapping = new OneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, RelationshipType.EMBEDDED, owning);
             PropertyMapping<OneToOneMapping> a = new PropertyMapping<OneToOneMapping>(propertyInfo, embeddedMapping);
             propertyMappings.add(a);
           } else {
@@ -407,10 +414,10 @@ public class TypeMappingDomain {
             OneToManyMapping mapping = new OneToManyMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
             PropertyMapping<OneToManyMapping> oneToManyMapping = new PropertyMapping<OneToManyMapping>(propertyInfo, mapping);
             propertyMappings.add(oneToManyMapping);
-          } else {
-            AnnotatedProperty<RelatedMappedBy> mappedBy = propertyInfo.getAnnotated(RelatedMappedBy.class);
+          } else if (type == RelationshipType.REFERENCE || type == RelationshipType.PATH) {
+            AnnotatedProperty<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
             if (mappedBy == null) {
-              throw new IllegalStateException();
+              throw new InvalidMappingException(javaClass, "By reference or by path one to many must be annotated with " + MappedBy.class.getName());
             }
             NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
             NamedOneToManyMapping mapping = new NamedOneToManyMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), type);

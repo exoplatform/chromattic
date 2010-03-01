@@ -19,6 +19,7 @@
 package org.chromattic.test.lifecycle;
 
 import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToOne;
 
@@ -30,6 +31,7 @@ import org.chromattic.api.annotations.OneToOne;
 public abstract class M1 {
 
   @OneToOne
+  @Owner
   @MappedBy("mandatory")
   public abstract M2 getMandatory();
   

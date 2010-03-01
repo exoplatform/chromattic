@@ -19,11 +19,7 @@
 
 package org.chromattic.test.pom;
 
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Id;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.*;
 import org.chromattic.test.pom.group.GroupSites;
 import org.chromattic.test.pom.portal.PortalSites;
 
@@ -41,10 +37,12 @@ public abstract class WorkspaceImpl {
   public abstract String getName();
 
   @OneToOne
+  @Owner
   @MappedBy("groups")
   public abstract GroupSites getGroups();
 
   @OneToOne
+  @Owner
   @MappedBy("portals")
   public abstract PortalSites getPortals();
 

@@ -20,10 +20,7 @@
 package org.chromattic.test.onetoone.embedded;
 
 import org.chromattic.api.RelationshipType;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.MixinType;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Property;
+import org.chromattic.api.annotations.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -43,6 +40,7 @@ public abstract class C {
   public abstract String getFoo();
 
   @OneToOne
+  @Owner
   @MappedBy("b")
   public abstract B getB();
 

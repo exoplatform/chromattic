@@ -30,8 +30,17 @@ import org.reflext.api.ClassTypeInfo;
  */
 public abstract class AbstractOneToOneMapping<T extends AbstractOneToOneMapping<T>> extends RelationshipMapping<T, T> {
 
-  public AbstractOneToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
+  /** . */
+  private final boolean owning;
+
+  public AbstractOneToOneMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type, boolean owning) {
     super(definer, owner, relatedType, Multiplicity.ONE, Multiplicity.ONE, type);
+
+    //
+    this.owning = owning;
   }
 
+  public boolean isOwning() {
+    return owning;
+  }
 }
