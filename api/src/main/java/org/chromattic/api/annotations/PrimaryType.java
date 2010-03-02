@@ -48,6 +48,12 @@ public @interface PrimaryType {
    * @return the orderability
    */
   boolean orderable() default false;
-  
+
+  /**
+   * Returns true if the type is abstract.
+   *
+   * @return the value true if the type is abstract
+   */
+  boolean abstract_() default false;
 
 }
