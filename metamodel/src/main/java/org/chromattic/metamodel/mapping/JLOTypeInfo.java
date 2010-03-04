@@ -62,6 +62,10 @@ class JLOTypeInfo implements ClassTypeInfo {
     return Collections.emptyList();
   }
 
+  public ClassTypeInfo getSuperClass() {
+    return null;
+  }
+
   public TypeInfo getSuperType() {
     return null;
   }

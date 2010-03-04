@@ -29,6 +29,7 @@ import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.mapping.value.*;
 import org.reflext.api.*;
+import org.reflext.api.Annotated;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
@@ -468,7 +469,8 @@ public class TypeMappingDomain {
     MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL);
 
     // Create
-    for (MethodInfo method : introspector.resolveMethods(javaClass, Create.class)) {
+    for (Annotated<MethodInfo, Create> annotatedMethods : introspector.resolveMethods(javaClass, Create.class)) {
+      MethodInfo method = annotatedMethods.getTarget();
       if (!method.isStatic()) {
         List<TypeInfo> parameterTypes = method.getParameterTypes();
         if (parameterTypes.size() < 2) {
@@ -492,7 +494,8 @@ public class TypeMappingDomain {
     }
 
     // Destroy
-    for (MethodInfo method : introspector.resolveMethods(javaClass, Destroy.class)) {
+    for (Annotated<MethodInfo, Destroy> annotatedMethods : introspector.resolveMethods(javaClass, Destroy.class)) {
+      MethodInfo method = annotatedMethods.getTarget();
       if (!method.isStatic()) {
         List<TypeInfo> parameterTypes = method.getParameterTypes();
         if (parameterTypes.size() != 0) {
@@ -506,7 +509,8 @@ public class TypeMappingDomain {
     }
 
     // Find by id
-    for (MethodInfo method : introspector.resolveMethods(javaClass, FindById.class)) {
+    for (Annotated<MethodInfo, FindById> annotatedMethods : introspector.resolveMethods(javaClass, FindById.class)) {
+      MethodInfo method = annotatedMethods.getTarget();
       if (!method.isStatic()) {
         List<TypeInfo> parameterTypes = method.getParameterTypes();
         if (parameterTypes.size() == 1) {
