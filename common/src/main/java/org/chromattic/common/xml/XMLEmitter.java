@@ -19,12 +19,25 @@
 
 package org.chromattic.common.xml;
 
+import org.xml.sax.SAXException;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class XMLWriter {
+public abstract class XMLEmitter extends Emitter {
+  public XMLEmitter(Handler handler) {
+    super(handler);
+  }
 
-  public abstract ElementWriter element(String qName);
+  public final void comment(String data) throws SAXException {
+    if (data == null) {
+      throw new NullPointerException();
+    }
+    if (handler.lexical != null) {
+      emitChild(null);
+      handler.lexical.comment(data.toCharArray(), 0, data.length());
+    }
+  }
 
 }

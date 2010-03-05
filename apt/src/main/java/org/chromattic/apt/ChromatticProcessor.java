@@ -104,7 +104,7 @@ public class ChromatticProcessor extends AbstractProcessor {
     try {
       StringWriter sw = new StringWriter();
       visitor.writeTo(sw);
-      System.out.println("Generated node types (still beta) " + sw);
+      System.out.println(sw);
     }
     catch (IOException e) {
       // Should not happen

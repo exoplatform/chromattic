@@ -19,14 +19,16 @@
 
 package org.chromattic.metamodel.typegen;
 
-import org.chromattic.common.xml.ContentWriter;
-import org.chromattic.common.xml.ElementWriter;
+import org.chromattic.common.xml.DocumentEmitter;
+import org.chromattic.common.xml.ElementEmitter;
 import org.chromattic.metamodel.mapping.*;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 
 import javax.jcr.PropertyType;
 import javax.xml.transform.OutputKeys;
@@ -178,30 +180,33 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
       handler.setResult(new StreamResult(writer));
 
       //
-      writeTo(handler);
+      writeTo(handler, handler);
     }
     catch (Exception e) {
       throw new UndeclaredThrowableException(e);
     }
   }
 
-  public void writeTo(ContentHandler handler) {
+  public void writeTo(ContentHandler contentHandler, LexicalHandler lexicalHandler) throws SAXException {
 
-    ContentWriter writer = new ContentWriter(handler);
+    DocumentEmitter writer = new DocumentEmitter(contentHandler, lexicalHandler);
 
-    ElementWriter nodeTypesWriter = writer.element("nodeTypes");
+    writer.comment("Node type generation prototype");
+
+    ElementEmitter nodeTypesWriter = writer.documentElement("nodeTypes");
 
     for (NodeType nodeType : nodeTypes.values()) {
 
       //
-      ElementWriter nodeTypeWriter = nodeTypesWriter.element("nodeType").
+      nodeTypesWriter.comment(" Node type generated for the class " + nodeType.mapping.getType().getName() + " ");
+      ElementEmitter nodeTypeWriter = nodeTypesWriter.element("nodeType").
         withAttribute("name", nodeType.getName()).
         withAttribute("isMixin", Boolean.toString(nodeType.isMixin())).
         withAttribute("hasOrderableChildNodes", Boolean.toString(nodeType.isOrderable()));
         // withAttribute("primaryItemName", "todo");
 
       //
-      ElementWriter superTypesWriter = nodeTypeWriter.element("supertypes");
+      ElementEmitter superTypesWriter = nodeTypeWriter.element("supertypes");
       for (NodeType superType : nodeType.superTypes) {
         superTypesWriter.element("supertype").content(superType.getName());
       }
@@ -210,9 +215,9 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
       superTypesWriter.element("supertype").content("mix:referenceable");
 
       //
-      ElementWriter propertyDefinitionsWriter = nodeTypeWriter.element("propertyDefinitions");
+      ElementEmitter propertyDefinitionsWriter = nodeTypeWriter.element("propertyDefinitions");
       for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions().values()) {
-        ElementWriter propertyDefinitionWriter = propertyDefinitionsWriter.element("propertyDefinition").
+        ElementEmitter propertyDefinitionWriter = propertyDefinitionsWriter.element("propertyDefinition").
           withAttribute("name", propertyDefinition.getName()).
           withAttribute("propertyType", PropertyType.nameFromValue(propertyDefinition.getType())).
           withAttribute("autoCreated", Boolean.FALSE.toString()).
@@ -225,7 +230,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
         //
         List<String> defaultValues = propertyDefinition.getDefaultValues();
         if (defaultValues != null) {
-          ElementWriter defaultValuesWriter = propertyDefinitionWriter.element("defaultValues");
+          ElementEmitter defaultValuesWriter = propertyDefinitionWriter.element("defaultValues");
           for (String s : defaultValues) {
             defaultValuesWriter.element("defaultValue").content(s);
           }
@@ -233,7 +238,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
       }
 
       //
-      ElementWriter childNodeDefinitionsWriter = nodeTypeWriter.element("childNodeDefinitions");
+      ElementEmitter childNodeDefinitionsWriter = nodeTypeWriter.element("childNodeDefinitions");
       for (NodeDefinition childNodeDefinition : nodeType.getChildNodeDefinitions().values()) {
         childNodeDefinitionsWriter.element("childNodeDefinition").
           withAttribute("name", childNodeDefinition.getName()).
