@@ -63,7 +63,7 @@ class PersistentEntityContextState extends EntityContextState {
 
   PersistentEntityContextState(Node node, DomainSession session) throws RepositoryException {
     this.session = session;
-    this.propertyCache = session.domain.stateCacheEnabled ? new HashMap<String, Object>() : null;
+    this.propertyCache = session.domain.propertyCacheEnabled ? new HashMap<String, Object>() : null;
     this.node = node;
     this.typeInfo = session.domain.nodeInfoManager.getPrimaryTypeInfo(node.getPrimaryNodeType());
   }

@@ -37,6 +37,8 @@ public interface SessionWrapper {
 
   Property getProperty(Node node, String relPath) throws RepositoryException;
 
+  Iterator<Property> getProperties(Node node) throws RepositoryException;
+
   Node getNode(Node node, String relPath) throws RepositoryException;
 
   NodeType getNodeType(String nodeTypeName) throws RepositoryException;

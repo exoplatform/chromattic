@@ -670,7 +670,7 @@ public class DomainSessionImpl extends DomainSession {
         if (current.hasNode(pathSegment)) {
           current = current.getNode(pathSegment);
         } else {
-          if (domain.rootCreateMode == Domain.NO_CREATE) {
+          if (domain.rootCreateMode == Domain.NO_CREATE_MODE) {
             throw new NoSuchNodeException("No existing root node " + domain.rootNodePath);
           } else {
             current = current.addNode(pathSegment);

@@ -77,6 +77,12 @@ public class SessionWrapperImpl implements SessionWrapper {
     };
   }
 
+  public Iterator<Property> getProperties(Node node) throws RepositoryException {
+    @SuppressWarnings("unchecked")
+    Iterator<Property> properties = node.getProperties();
+    return properties;
+  }
+
   public Property getProperty(Node node, String relPath) throws RepositoryException {
     if (hasPropertyOptimized) {
       try {

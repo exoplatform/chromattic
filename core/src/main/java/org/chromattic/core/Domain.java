@@ -49,10 +49,10 @@ public class Domain {
   public static int CREATE_MODE = 1;
 
   /** . */
-  public static int NO_CREATE = 2;
+  public static int NO_CREATE_MODE = 2;
 
   /** . */
-  private static final Set<Integer> CREATE_MODES = Collections.set(LAZY_CREATE_MODE, CREATE_MODE, NO_CREATE);
+  private static final Set<Integer> CREATE_MODES = Collections.set(LAZY_CREATE_MODE, CREATE_MODE, NO_CREATE_MODE);
 
   /** . */
   private final Map<String, ObjectMapper> typeMapperByNodeType;
@@ -67,7 +67,10 @@ public class Domain {
   final ObjectFormatter objectFormatter;
 
   /** . */
-  final boolean stateCacheEnabled;
+  final boolean propertyCacheEnabled;
+
+  /** . */
+  final boolean propertyReadAheadEnabled;
 
   /** . */
   final boolean hasPropertyOptimized;
@@ -94,7 +97,8 @@ public class Domain {
     Set<NodeTypeMapping> typeMappings,
     Instrumentor instrumentor,
     ObjectFormatter objectFormatter,
-    boolean stateCacheEnabled,
+    boolean propertyCacheEnabled,
+    boolean propertyReadAheadEnabled,
     boolean hasPropertyOptimized,
     boolean hasNodeOptimized,
     String rootNodePath,
@@ -133,7 +137,8 @@ public class Domain {
     this.typeMapperByNodeType = typeMapperByNodeType;
     this.instrumentor = instrumentor;
     this.objectFormatter = objectFormatter;
-    this.stateCacheEnabled = stateCacheEnabled;
+    this.propertyCacheEnabled = propertyCacheEnabled;
+    this.propertyReadAheadEnabled = propertyReadAheadEnabled;
     this.hasPropertyOptimized = hasPropertyOptimized;
     this.hasNodeOptimized = hasNodeOptimized;
     this.rootNodePath = rootNodePath;

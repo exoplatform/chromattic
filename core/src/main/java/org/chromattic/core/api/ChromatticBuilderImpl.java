@@ -88,9 +88,6 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     }
 
     //
-    boolean stateCacheEnabled = options.getValue(CACHE_STATE_ENABLED);
-
-    //
     String rootNodePath;
     try {
       rootNodePath = Path.normalizeAbsolutePath(options.getValue(ROOT_NODE_PATH));
@@ -101,8 +98,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
     //
     int rootCreateMode;
-    boolean createRootNode = options.getValue(CREATE_ROOT_NODE);
-    if (createRootNode) {
+    if (options.getValue(CREATE_ROOT_NODE)) {
       boolean lazyCreateMode = options.getValue(LAZY_CREATE_ROOT_NODE);
       if (lazyCreateMode) {
         rootCreateMode = Domain.LAZY_CREATE_MODE;
@@ -110,8 +106,12 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
         rootCreateMode = Domain.CREATE_MODE;
       }
     } else {
-      rootCreateMode = Domain.NO_CREATE;
+      rootCreateMode = Domain.NO_CREATE_MODE;
     }
+
+    //
+    boolean propertyCacheEnabled = options.getValue(PROPERTY_CACHE_ENABLED);
+    boolean propertyReadAheadEnabled = options.getValue(PROPERTY_READ_AHEAD_ENABLED);
 
     //
     Instrumentor instrumentor = create(options.getInstance(INSTRUMENTOR_CLASSNAME), Instrumentor.class);
@@ -127,7 +127,8 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       mappings,
       instrumentor,
       objectFormatter,
-      stateCacheEnabled,
+      propertyCacheEnabled,
+      propertyReadAheadEnabled,
       hasPropertyOptimized,
       hasNodeOptimized,
       rootNodePath,

@@ -104,7 +104,7 @@ public abstract class AbstractTestCase extends TestCase {
   @Override
   protected void setUp() throws Exception {
     String p1 = getClass().getName().replace('.', '_');
-    String p2 = config.stateCacheEnabled ? "cache" : "nocache";
+    String p2 = config.propertyCacheEnabled ? "propertycached" : "propertynotcached";
     String p3 = config.optimizeHasNodeEnabled ? "hasnodeoptimized" : "hasnodenotoptimized";
     String p4 = config.optimizeHasPropertyEnabled ? "haspropertyoptimized" : "haspropertynotoptimized";
     String p5 = config.instrumentorClassName.lastIndexOf('.') == -1 ?
@@ -126,7 +126,7 @@ public abstract class AbstractTestCase extends TestCase {
 
     //
     builder.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
-    builder.setOptionValue(ChromatticBuilder.CACHE_STATE_ENABLED, config.stateCacheEnabled);
+    builder.setOptionValue(ChromatticBuilder.PROPERTY_CACHE_ENABLED, config.propertyCacheEnabled);
     builder.setOptionValue(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
     builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, config.optimizeHasPropertyEnabled);
     builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, config.optimizeHasNodeEnabled);
@@ -249,7 +249,7 @@ public abstract class AbstractTestCase extends TestCase {
     private final String instrumentorClassName;
 
     /** . */
-    private final boolean stateCacheEnabled;
+    private final boolean propertyCacheEnabled;
 
     /** . */
     private final boolean optimizeHasPropertyEnabled;
@@ -259,11 +259,11 @@ public abstract class AbstractTestCase extends TestCase {
 
     public Config(
       String instrumentorClassName,
-      boolean stateCacheEnabled,
+      boolean propertyCacheEnabled,
       boolean optimizeHasPropertyEnabled,
       boolean optimizeHasNodeEnabled) {
       this.instrumentorClassName = instrumentorClassName;
-      this.stateCacheEnabled = stateCacheEnabled;
+      this.propertyCacheEnabled = propertyCacheEnabled;
       this.optimizeHasNodeEnabled = optimizeHasNodeEnabled;
       this.optimizeHasPropertyEnabled = optimizeHasPropertyEnabled;
     }
@@ -272,17 +272,17 @@ public abstract class AbstractTestCase extends TestCase {
       return instrumentorClassName;
     }
 
-    public boolean isStateCacheEnabled() {
-      return stateCacheEnabled;
+    public boolean isPropertyCacheEnabled() {
+      return propertyCacheEnabled;
     }
 
     public boolean isStateCacheDisabled() {
-      return !stateCacheEnabled;
+      return !propertyCacheEnabled;
     }
 
     @Override
     public String toString() {
-      return "Config[instrumentorClassName=" + instrumentorClassName + ",stateCacheEnaled=" + stateCacheEnabled + "" +
+      return "Config[instrumentorClassName=" + instrumentorClassName + ",stateCacheEnaled=" + propertyCacheEnabled + "" +
         ",optimizeHasNodeEnabled=" + optimizeHasNodeEnabled + ",optimizeHasPropertyEnabled=" + optimizeHasPropertyEnabled + "]";
     }
   }

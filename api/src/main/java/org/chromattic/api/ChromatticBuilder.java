@@ -80,11 +80,20 @@ public abstract class ChromatticBuilder {
    * maintains a cache that avoids to use the underlying JCR session. As a consequence
    * any change made directly to the JCR session will not be visible in the object domain.
    */
-  public static final Option<Boolean> CACHE_STATE_ENABLED =
+  public static final Option<Boolean> PROPERTY_CACHE_ENABLED =
     new Option<Boolean>(
       Option.Type.BOOLEAN,
-      "org.chromattic.api.Option.cache.state.enabled",
-      "cache state enabled");
+      "org.chromattic.api.Option.property.cache.enabled",
+      "property cache enabled");
+
+  /**
+   * Todo.
+   */
+  public static final Option<Boolean> PROPERTY_READ_AHEAD_ENABLED =
+    new Option<Boolean>(
+      Option.Type.BOOLEAN,
+      "org.chromattic.api.Option.property.read_ahead.enabled",
+      "property read ahead enabled");
 
   /**
    * Enable / disable all JCR optimizations.
@@ -145,7 +154,8 @@ public abstract class ChromatticBuilder {
    * Options configurable via system properties.
    */
   private final static Set<Option> systemOptions = Collections.unmodifiableSet(new HashSet<Option>(Arrays.asList(
-    CACHE_STATE_ENABLED,
+    PROPERTY_CACHE_ENABLED,
+    PROPERTY_READ_AHEAD_ENABLED,
     JCR_OPTIMIZE_ENABLED,
     JCR_OPTIMIZE_HAS_PROPERTY_ENABLED,
     JCR_OPTIMIZE_HAS_NODE_ENABLED
@@ -286,7 +296,8 @@ public abstract class ChromatticBuilder {
     options.setValue(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl", false);
     options.setValue(SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle", false);
     options.setValue(OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName(), false);
-    options.setValue(CACHE_STATE_ENABLED, false, false);
+    options.setValue(PROPERTY_CACHE_ENABLED, false, false);
+    options.setValue(PROPERTY_READ_AHEAD_ENABLED, false, false);
     options.setValue(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, false, false);
     options.setValue(JCR_OPTIMIZE_HAS_NODE_ENABLED, false, false);
     options.setValue(ROOT_NODE_PATH, "/", false);
