@@ -63,7 +63,7 @@
     <chromattic.snapshots.repo.url>http://repository.exoplatform.org/content/repositories/chromattic-snapshots/</chromattic.snapshots.repo.url>
   
     <!-- Dependencies versions -->
-    <reflext.version>1.0.0-beta6</reflext.version>
+    <reflext.version>1.0.0</reflext.version>
     
     <!-- Plugins settings -->
 
