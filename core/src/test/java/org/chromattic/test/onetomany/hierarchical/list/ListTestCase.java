@@ -23,6 +23,7 @@ import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -36,6 +37,99 @@ public class ListTestCase extends AbstractTestCase {
     addClass(A3.class);
     addClass(B3.class);
   }
+
+/*
+  public void testWeird() throws Exception {
+    ChromatticSessionImpl session = login();
+    A3 a = session.insert(A3.class, "aaa");
+    Node node = session.getNode(a);
+    node.addNode("1", "totm_b");
+    node.addNode("2", "totm_b");
+    node.addNode("3", "totm_b");
+    node.addNode("4", "totm_b");
+*/
+/*
+    List<B3> bs = a.getChildren();
+    bs.add(session.create(B3.class, "1"));
+    bs.add(session.create(B3.class, "2"));
+    bs.add(session.create(B3.class, "3"));
+*//*
+
+    session.save();
+    session.close();
+
+    session = login();
+    a = session.findByPath(A3.class, "aaa");
+    node = session.getNode(a);
+    NodeIterator i = node.getNodes();
+    i.nextNode().remove();
+    i.nextNode().remove();
+    i.nextNode().remove();
+*/
+/*
+    bs = a.getChildren();
+    bs.remove(0);
+    bs.remove(0);
+*//*
+
+    session.save();
+    session.close();
+
+    session = login();
+    a = session.findByPath(A3.class, "aaa");
+    node = session.getNode(a);
+//    List<B3> bs = a.getChildren();
+//    bs.add(session.create(B3.class, "1"));
+    node.addNode("5", "totm_b");
+    node.orderBefore("5", null);
+    session.save();
+    session.close();
+
+  }
+*/
+
+/*
+  public void testWeird2() throws Exception {
+    ChromatticSessionImpl session = login();
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    bs.add(session.create(B3.class, "1"));
+    bs.add(session.create(B3.class, "2"));
+    bs.add(session.create(B3.class, "3"));
+    Iterator<B3> i = a.getChildren().iterator();
+    assertEquals("1", session.getName(i.next()));
+    assertEquals("2", session.getName(i.next()));
+    assertEquals("3", session.getName(i.next()));
+    assertFalse(i.hasNext());
+    session.save();
+    session.close();
+
+    session = login();
+    a = session.findByPath(A3.class, "aaa");
+    bs = a.getChildren();
+    bs.remove(0);
+    bs.remove(0);
+    i = a.getChildren().iterator();
+    assertEquals("3", session.getName(i.next()));
+    assertFalse(i.hasNext());
+    session.save();
+    session.close();
+
+    session = login();
+    a = session.findByPath(A3.class, "aaa");
+    bs = a.getChildren();
+    B3 foo = session.create(B3.class, "4");
+    bs.add(foo);
+
+    i = a.getChildren().iterator();
+    assertEquals("3", session.getName(i.next()));
+    assertEquals("4", session.getName(i.next()));
+    assertFalse(i.hasNext());
+
+    session.save();
+    session.close();
+  }
+*/
 
   public void testAddSingleton() throws Exception {
     ChromatticSessionImpl session = login();
