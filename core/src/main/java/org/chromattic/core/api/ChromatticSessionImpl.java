@@ -174,6 +174,20 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.findByPath(null, clazz, relPath);
   }
 
+  public <O> O findByPath(Class<O> clazz, String path, boolean absolute) throws NullPointerException, ClassCastException, ChromatticException {
+    if (clazz == null) {
+      throw new NullPointerException();
+    }
+    if (path == null) {
+      throw new NullPointerException();
+    }
+    if (absolute) {
+      return domainSession.findByPath(clazz, path);
+    } else {
+      return domainSession.findByPath(null, clazz, path);
+    }
+  }
+
   public void save() throws UndeclaredRepositoryException {
     domainSession.save();
   }

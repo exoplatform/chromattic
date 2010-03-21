@@ -32,7 +32,9 @@ import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import java.util.*;
 
@@ -85,6 +87,15 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
+  @Override
+  protected <E> E _findByPath(Class<E> clazz, String path) throws RepositoryException {
+    Node node = sessionWrapper.getNode(path);
+    if (node != null) {
+      return _findByNode(clazz, node);
+    }
+    return null;
+  }
+
   protected <O> O _findByPath(EntityContext ctx, Class<O> clazz, String relPath) throws RepositoryException {
     Node origin;
     if (ctx != null) {
@@ -93,14 +104,11 @@ public class DomainSessionImpl extends DomainSession {
       origin = _getRoot();
       nodeRead(origin);
     }
-    try {
-      Node node = origin.getNode(relPath);
-      nodeRead(node);
+    Node node = sessionWrapper.getNode(origin, relPath);
+    if (node != null) {
       return _findByNode(clazz, node);
     }
-    catch (PathNotFoundException e) {
-      return null;
-    }
+    return null;
   }
 
   protected EntityContext _persist(EntityContext ctx, String name) throws RepositoryException {
@@ -443,15 +451,14 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     // Attempt to load the object
-    try {
-      log.trace("About to load node with id {} and class {}", id, clazz.getName());
-      Node node = sessionWrapper.getNodeByUUID(id);
+    log.trace("About to load node with id {} and class {}", id, clazz.getName());
+    Node node = sessionWrapper.getNodeByUUID(id);
+    if (node != null) {
       return _findByNode(clazz, node);
-    }
-    catch (ItemNotFoundException e) {
+    } else {
       log.trace("Could not find node with id {}", id, clazz.getName());
-      return null;
     }
+    return null;
   }
 
   protected <O> O _findByNode(Class<O> clazz, Node node) throws RepositoryException {
@@ -466,13 +473,7 @@ public class DomainSessionImpl extends DomainSession {
     if (ctx == null) {
       return null;
     } else {
-      Object object = ctx.object;
-      if (clazz.isInstance(object)) {
-        return clazz.cast(object);
-      } else {
-        String msg = "Could not cast context " + ctx + " with class " + object.getClass().getName() + " to class " + clazz.getName();
-        throw new ClassCastException(msg);
-      }
+      return cast(ctx, clazz);
     }
   }
 
@@ -488,25 +489,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     // Attempt to get the object
-    EntityContext ctx = contexts.get(node.getUUID());
-
-    //
-    if (ctx == null) {
-      try {
-        log.trace("About to read node with path {}", node.getPath());
-        nodeRead(node);
-        log.trace("Loaded node with path {}", node.getPath());
-        ctx = contexts.get(node.getUUID());
-        log.trace("Obtained context {} node for path {}", ctx, node.getPath());
-      }
-      catch (ItemNotFoundException e) {
-        log.trace("Could not find node with path {}", node.getPath());
-        return null;
-      }
-    }
-
-    //
-    return ctx;
+    return nodeRead(node);
   }
 
   protected void _save() throws RepositoryException {
@@ -693,7 +676,17 @@ public class DomainSessionImpl extends DomainSession {
     return current;
   }
 
-  private void nodeRead(Node node) throws RepositoryException {
+  private <O> O cast(EntityContext ctx, Class<O> clazz) {
+    Object object = ctx.object;
+    if (clazz.isInstance(object)) {
+      return clazz.cast(object);
+    } else {
+      String msg = "Could not cast context " + ctx + " with class " + object.getClass().getName() + " to class " + clazz.getName();
+      throw new ClassCastException(msg);
+    }
+  }
+
+  private EntityContext nodeRead(Node node) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();
     ObjectMapper mapper = domain.getTypeMapper(nodeTypeName);
@@ -708,9 +701,11 @@ public class DomainSessionImpl extends DomainSession {
       else {
         log.trace("Context {} is already present for path ", ctx, node.getPath());
       }
+      return ctx;
     }
     else {
       log.trace("Could not find mapper for node type {}", nodeTypeName);
+      return null;
     }
   }
 

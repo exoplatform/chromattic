@@ -22,14 +22,7 @@ package org.chromattic.core.jcr;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
-import javax.jcr.Session;
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.PathNotFoundException;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import java.util.Iterator;
@@ -97,6 +90,15 @@ public class SessionWrapperImpl implements SessionWrapper {
       } else {
         return null;
       }
+    }
+  }
+
+  public Node getNode(String path) throws RepositoryException {
+    Item item = session.getItem(path);
+    if (item instanceof Node) {
+      return (Node)item;
+    } else {
+      return null;
     }
   }
 
@@ -168,7 +170,12 @@ public class SessionWrapperImpl implements SessionWrapper {
   }
 
   public Node getNodeByUUID(String uuid) throws RepositoryException {
-    return session.getNodeByUUID(uuid);
+    try {
+      return session.getNodeByUUID(uuid);
+    }
+    catch (ItemNotFoundException e) {
+      return null;
+    }
   }
 
   public Node getParent(Node childNode) throws RepositoryException {

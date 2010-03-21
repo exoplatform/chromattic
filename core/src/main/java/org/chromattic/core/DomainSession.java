@@ -85,6 +85,8 @@ public abstract class DomainSession {
 
   protected abstract <E> E _findByPath(EntityContext ctx, Class<E> clazz, String relPath) throws RepositoryException;
 
+  protected abstract <E> E _findByPath(Class<E> clazz, String path) throws RepositoryException;
+
   protected abstract void _orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
 
   protected abstract Node _getRoot() throws RepositoryException;
@@ -156,6 +158,15 @@ public abstract class DomainSession {
   public <E> E findByPath(EntityContext ctx, Class<E> clazz, String relPath) throws UndeclaredRepositoryException {
     try {
       return _findByPath(ctx, clazz, relPath);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public <E> E findByPath(Class<E> clazz, String path) throws UndeclaredRepositoryException {
+    try {
+      return _findByPath(clazz, path);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

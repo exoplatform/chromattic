@@ -163,6 +163,22 @@ public interface ChromatticSession {
   <O> O findByPath(Class<O> clazz, String relPath) throws NullPointerException, ClassCastException, ChromatticException;
 
   /**
+   * Finds an object given its specified path. The provided path can either be absolute or relative to the
+   * root node of the session according to the value of the <code>absolute</code> method parameter. When the object
+   * is not found the method returns null.
+   *
+   * @param clazz the expected class
+   * @param path the path relative to the chromattic root
+   * @param <O> the object type
+   * @param absolute true when an absolute path must be provided
+   * @return the object
+   * @throws NullPointerException if any argument is null
+   * @throws ClassCastException if the object cannot be cast to the specified class
+   * @throws ChromatticException any chromattic exception
+   */
+  <O> O findByPath(Class<O> clazz, String path, boolean absolute) throws NullPointerException, ClassCastException, ChromatticException;
+
+  /**
    * Finds an object mapped to the provided node.
    *
    * @param clazz the expected class
