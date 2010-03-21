@@ -94,12 +94,15 @@ public class SessionWrapperImpl implements SessionWrapper {
   }
 
   public Node getNode(String path) throws RepositoryException {
-    Item item = session.getItem(path);
-    if (item instanceof Node) {
-      return (Node)item;
-    } else {
-      return null;
+    try {
+      Item item = session.getItem(path);
+      if (item instanceof Node) {
+        return (Node)item;
+      }
     }
+    catch (PathNotFoundException ignore) {
+    }
+    return null;
   }
 
   public Node getNode(Node node, String relPath) throws RepositoryException {

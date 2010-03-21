@@ -35,41 +35,84 @@ public class FindByPathTestCase extends AbstractTestCase {
     addClass(TFI_A.class);
   }
 
-  public void testSessionFind() throws RepositoryException {
+  public void testSessionRelativeFind() throws RepositoryException {
     ChromatticSession session = login();
     TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
-    TFI_A b = session.findByPath(TFI_A.class, "tfi_a_a");
+    TFI_A b = session.findByPath(TFI_A.class, "tfi_a_a", false);
     assertSame(a, b);
   }
 
-  public void testCCE() throws Exception {
+  public void testSessionAbsoluteFind() throws RepositoryException {
     ChromatticSession session = login();
     TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
+    String path = session.getPath(a);
+    TFI_A b = session.findByPath(TFI_A.class, path, true);
+    assertSame(a, b);
+  }
+
+  public void testCCERelative() throws Exception {
+    ChromatticSession session = login();
+    session.insert(TFI_A.class, "tfi_a_a");
     try {
-      session.findByPath(String.class, "tfi_a_a");
+      session.findByPath(String.class, "tfi_a_a", false);
       fail();
     }
     catch (ClassCastException e) {
     }
   }
 
-  public void testNotFound() throws RepositoryException {
+  public void testCCEAbsolute() throws Exception {
     ChromatticSession session = login();
-    TFI_A a = session.findByPath(TFI_A.class, "foo");
+    TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
+    String path = session.getPath(a);
+    try {
+      session.findByPath(String.class, path, true);
+      fail();
+    }
+    catch (ClassCastException e) {
+    }
+  }
+
+  public void testRelativeNotFound() throws RepositoryException {
+    ChromatticSession session = login();
+    TFI_A a = session.findByPath(TFI_A.class, "foo", false);
     assertNull(a);
   }
 
-  public void testNPE() throws Exception {
+  public void testAbsoluteNotFound() throws RepositoryException {
+    ChromatticSession session = login();
+    TFI_A a = session.findByPath(TFI_A.class, "/foo", true);
+    assertNull(a);
+  }
+
+  public void testRelativeNPE() throws Exception {
     ChromatticSession session = login();
     session.insert(TFI_A.class, "tfi_a_a");
     try {
-      session.findByPath(TFI_A.class, null);
+      session.findByPath(TFI_A.class, null, false);
       fail();
     }
     catch (NullPointerException e) {
     }
     try {
-      session.findByPath(null, "tfi_a_a");
+      session.findByPath(null, "tfi_a_a", false);
+      fail();
+    }
+    catch (NullPointerException e) {
+    }
+  }
+
+  public void testAbsoluteNPE() throws Exception {
+    ChromatticSession session = login();
+    session.insert(TFI_A.class, "tfi_a_a");
+    try {
+      session.findByPath(TFI_A.class, null, true);
+      fail();
+    }
+    catch (NullPointerException e) {
+    }
+    try {
+      session.findByPath(null, "tfi_a_a", true);
       fail();
     }
     catch (NullPointerException e) {
