@@ -284,20 +284,6 @@ public class TypeMappingDomain {
         } else {
           throw new AssertionError();
         }
-/*
-          if (propertyInfo.getAnnotation(Name.class) != null) {
-            nat = NodeAttributeType.NAME;
-          } else if (propertyInfo.getAnnotation(Id.class) != null) {
-            nat = NodeAttributeType.ID;
-          } else if (propertyInfo.getAnnotation(Path.class) != null) {
-            if (propertyInfo.getAnnotation(Property.class) == null) {
-              // Check it's not a property
-              nat = NodeAttributeType.PATH;
-            }
-          } else if (propertyInfo.getAnnotation(WorkspaceName.class) != null) {
-            nat = NodeAttributeType.WORKSPACE_NAME;
-          }
-*/
         if (propertyInfo instanceof SingleValuedPropertyInfo) {
           SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
           ValueInfo vi = svpi.getValue();

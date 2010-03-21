@@ -33,12 +33,4 @@ import java.lang.annotation.ElementType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Path {
-
-  /**
-   * Return true if the returned path must be absolute. Otherwise the path should be related
-   * to the root session.
-   *
-   * @return the value true if the returned path must be absolute
-   */
-  boolean absolute() default true;
 }
