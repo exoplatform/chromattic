@@ -1,3 +1,15 @@
+- no mapper registered -> NPE during a findByPath
+- Chromattic : Session : add getparent(Object o); / getChildren() / getPorperty() / detyped stuff
+- Chromattic : @Properties only residual ?
+- Chromattic : weak ref
+- Chromattic : persist(Class, "") throws exception
+- utiliser le portlet ID dans une portlet
+- maybe remove save/close from the chromattic interface
+- notion de REL LINK in associations
+- better remove (no need for navigating everything, use prefix)!!!!
+- @PrimaryType(name = "foo", mixinTypes = {Mixin.class})
+
+
 - map Enum on LONG in addition of STRING
 - @Property(cascaded=true|false)
 - Self-bounded type resolution
