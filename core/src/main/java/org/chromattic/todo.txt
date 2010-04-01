@@ -1,3 +1,4 @@
+- !bug: PATH relationship with move are not preserved
 - no mapper registered -> NPE during a findByPath
 - Chromattic : Session : add getparent(Object o); / getChildren() / getPorperty() / detyped stuff
 - Chromattic : @Properties only residual ?
