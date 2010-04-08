@@ -111,7 +111,8 @@ public final class ChromatticSessionImpl implements ChromatticSession {
   public String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext parentCtx = domainSession.unwrapEntity(parent);
     EntityContext childCtx = domainSession.unwrapEntity(child);
-    return domainSession.persist(parentCtx, childCtx, name).getId();
+    domainSession.persist(parentCtx, childCtx, name);
+    return childCtx.getId();
   }
 
   public String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
@@ -122,7 +123,8 @@ public final class ChromatticSessionImpl implements ChromatticSession {
       String msg = "Attempt to persist non named object " + childCtx;
       throw new IllegalArgumentException(msg);
     }
-    return domainSession.persist(parentCtx, childCtx, name).getId();
+    domainSession.persist(parentCtx, childCtx, name);
+    return childCtx.getId();
   }
 
   public String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
@@ -132,14 +134,18 @@ public final class ChromatticSessionImpl implements ChromatticSession {
       String msg = "Attempt to persist non named object " + ctx;
       throw new IllegalArgumentException(msg);
     }
-
-    //
-    return domainSession.persist(ctx, name).getId();
+    domainSession.persist(ctx, name);
+    return ctx.getId();
   }
 
   public String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext ctx = domainSession.unwrapEntity(o);
-    return domainSession.persist(ctx, relPath).getId();
+    domainSession.persist(ctx, relPath);
+    return ctx.getId();
+  }
+
+  public <O> O copy(Object parent, O o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    throw new UnsupportedOperationException();
   }
 
   public <O> O findByNode(Class<O> clazz, Node node) throws UndeclaredRepositoryException {

@@ -135,6 +135,21 @@ public interface ChromatticSession {
   String persist(Object parent, Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
+   * Clones a persistent object into a new persistent object.
+   *
+   * @param parent the parent object
+   * @param o the object to clone
+   * @param name the object name
+   * @param <O> the object type
+   * @return the cloned object
+   * @throws NullPointerException if the parent or object argument is null
+   * @throws IllegalArgumentException if the parent is not a persistent object or the name is not valid or the object
+   * is not a chromattic persistent object
+   * @throws ChromatticException any chromattic exception
+   */
+  <O> O copy(Object parent, O o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
+
+  /**
    * Finds an object with a path relative to a specified origin object. If the object is not found then the method returns null.
    *
    * @param origin the origin object

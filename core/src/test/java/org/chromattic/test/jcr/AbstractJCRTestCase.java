@@ -16,32 +16,36 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.chromattic.test.jcr;
 
-import org.chromattic.core.jcr.info.NodeInfo;
-import org.chromattic.core.jcr.info.NodeInfoManager;
-import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
+import junit.framework.TestCase;
+import org.chromattic.exo.ExoSessionLifeCycle;
+import org.chromattic.spi.jcr.SessionLifeCycle;
 
-import javax.jcr.Node;
+import javax.jcr.Session;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeTypeInfoTestCase extends AbstractJCRTestCase {
+public abstract class AbstractJCRTestCase extends TestCase {
 
-  private NodeInfoManager mgr;
+  /** . */
+  protected Session session;
+
+  protected SessionLifeCycle sessionLF;
 
   @Override
   protected void setUp() throws Exception {
-    super.setUp();
-    mgr = new NodeInfoManager();
+    sessionLF = new ExoSessionLifeCycle();
+    session = sessionLF.login();
   }
 
-  public void testFoo() throws Exception {
-    Node a = session.getRootNode().addNode("a", "nt:unstructured");
-    NodeInfo info = mgr.getInfo(a);
-    PropertyDefinitionInfo pdi = info.findPropertyDefinition("jcr:primaryType");
-    assertNotNull(pdi);
+  @Override
+  protected void tearDown() throws Exception {
+    session.logout();
+    session = null;
+    sessionLF = null;
   }
 }

@@ -111,7 +111,7 @@ public class DomainSessionImpl extends DomainSession {
     return null;
   }
 
-  protected EntityContext _persist(EntityContext ctx, String name) throws RepositoryException {
+  protected void _persist(EntityContext ctx, String name) throws RepositoryException {
     if (ctx == null) {
       throw new NullPointerException("No null object context accepted");
     }
@@ -131,7 +131,7 @@ public class DomainSessionImpl extends DomainSession {
     log.trace("Adding node for context {} and node type {}", ctx, ctx.mapper);
 
     //
-    return _persist(_getRoot(), name, ctx);
+    _persist(_getRoot(), name, ctx);
   }
 
   /**
@@ -140,12 +140,11 @@ public class DomainSessionImpl extends DomainSession {
    * @param srcCtx the source context
    * @param name the destination path relative to the source context
    * @param dstCtx the destination context
-   * @return the entity context
    * @throws NullPointerException
    * @throws IllegalArgumentException
    * @throws RepositoryException
    */
-  protected EntityContext _persist(EntityContext srcCtx, String name, EntityContext dstCtx) throws
+  protected void _persist(EntityContext srcCtx, String name, EntityContext dstCtx) throws
     NullPointerException,
     IllegalArgumentException,
     IllegalStateException,
@@ -175,10 +174,10 @@ public class DomainSessionImpl extends DomainSession {
     Node parentNode = srcCtx.state.getNode();
 
     //
-    return _persist(parentNode, name, dstCtx);
+    _persist(parentNode, name, dstCtx);
   }
 
-  private EntityContext _persist(Node srcNode, String name, EntityContext dstCtx) throws RepositoryException {
+  private void _persist(Node srcNode, String name, EntityContext dstCtx) throws RepositoryException {
     ObjectMapper mapper = dstCtx.mapper;
 
     //
@@ -229,9 +228,28 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     log.trace("Added context {} for path {}", dstCtx, dstCtx.getId(), dstNode.getPath());
+  }
 
-    //
-    return dstCtx;
+  @Override
+  protected EntityContext copy(EntityContext parentCtx, EntityContext ctx, String name) throws RepositoryException {
+    if (parentCtx == null) {
+      throw new NullPointerException();
+    }
+    if (ctx == null) {
+      throw new NullPointerException();
+    }
+    if (name == null) {
+      throw new NullPointerException();
+    }
+    if (parentCtx.getStatus() == Status.PERSISTENT) {
+      throw new IllegalArgumentException("Parent object is not persistent");
+    }
+    if (ctx.getStatus() == Status.PERSISTENT) {
+      throw new IllegalArgumentException("Copied object is not persistent");
+    }
+
+    // Make duplicate check
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -404,7 +422,7 @@ public class DomainSessionImpl extends DomainSession {
     sessionWrapper.orderBefore(parentNode, srcNode, dstNode);
   }
 
-  protected <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException {
+  protected ObjectContext _create(Class<?> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException {
     if (clazz == null) {
       throw new NullPointerException();
     }
@@ -439,7 +457,7 @@ public class DomainSessionImpl extends DomainSession {
       }
       octx = new EmbeddedContext((ObjectMapper<EmbeddedContext>)typeMapper, this);
     }
-    return clazz.cast(octx.getObject());
+    return octx;
   }
 
   protected <O> O _findById(Class<O> clazz, String id) throws RepositoryException {

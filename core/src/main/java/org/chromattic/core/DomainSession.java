@@ -55,11 +55,13 @@ public abstract class DomainSession {
 
   protected abstract void _setName(EntityContext ctx, String name) throws RepositoryException;
 
-  protected abstract EntityContext _persist(EntityContext ctx, String name) throws RepositoryException;
+  protected abstract void _persist(EntityContext ctx, String name) throws RepositoryException;
 
-  protected abstract EntityContext _persist(EntityContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
+  protected abstract void _persist(EntityContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
 
-  protected abstract <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
+  protected abstract EntityContext copy(EntityContext parentCtx, EntityContext prototypeCtx, String name) throws RepositoryException;
+
+  protected abstract ObjectContext _create(Class<?> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
 
   protected abstract <E> E _findById(Class<E> clazz, String id) throws RepositoryException;
 
@@ -182,9 +184,9 @@ public abstract class DomainSession {
     }
   }
 
-  public EntityContext persist(EntityContext ctx, String name) throws UndeclaredRepositoryException {
+  public void persist(EntityContext ctx, String name) throws UndeclaredRepositoryException {
     try {
-      return _persist(ctx, name);
+      _persist(ctx, name);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -193,7 +195,8 @@ public abstract class DomainSession {
 
   public <O> O create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
     try {
-      return _create(clazz, name);
+      ObjectContext octx = _create(clazz, name);
+      return clazz.cast(octx.getObject());
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -368,9 +371,9 @@ public abstract class DomainSession {
     }
   }
 
-  public final EntityContext persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {
+  public final void persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {
     try {
-      return _persist(parentCtx, name, childCtx);
+      _persist(parentCtx, name, childCtx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

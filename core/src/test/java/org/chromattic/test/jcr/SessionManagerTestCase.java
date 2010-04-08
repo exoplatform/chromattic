@@ -18,27 +18,20 @@
  */
 package org.chromattic.test.jcr;
 
-import junit.framework.TestCase;
+import javax.jcr.*;
 
-import javax.jcr.Session;
-import javax.jcr.Node;
-
-import org.chromattic.exo.ExoSessionLifeCycle;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.SessionWrapperImpl;
 import org.chromattic.core.jcr.LinkType;
-import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.common.collection.Collections;
 
-import java.util.Set;
-import java.util.List;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SessionManagerTestCase extends TestCase {
+public class SessionManagerTestCase extends AbstractJCRTestCase {
 
   /** . */
   private SessionWrapper mgr;
@@ -51,8 +44,7 @@ public class SessionManagerTestCase extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    SessionLifeCycle sessionLF = new ExoSessionLifeCycle();
-    Session session = sessionLF.login();
+    super.setUp();
 
     //
     this.mgr = new SessionWrapperImpl(sessionLF, session, false, false);
