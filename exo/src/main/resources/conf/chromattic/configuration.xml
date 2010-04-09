@@ -114,7 +114,7 @@
       <value-param>
         <name>conf-path</name>
         <description>JCR configuration file</description>
-        <value>jar:/conf/standalone/jcr-config.xml</value>
+        <value>jar:/conf/chromattic/jcr-config.xml</value>
       </value-param>
     </init-params>
   </component>

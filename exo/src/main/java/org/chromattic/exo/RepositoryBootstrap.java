@@ -36,11 +36,11 @@ public class RepositoryBootstrap {
   public void bootstrap() throws Exception {
 
     // JCR configuration
-    String containerConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/configuration.xml").toString();
+    String containerConf = Thread.currentThread().getContextClassLoader().getResource("conf/chromattic/configuration.xml").toString();
     StandaloneContainer.addConfigurationURL(containerConf);
 
     //
-    String loginConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/login.conf").toString();
+    String loginConf = Thread.currentThread().getContextClassLoader().getResource("conf/chromattic/login.conf").toString();
     System.setProperty("java.security.auth.login.config", loginConf);
 
     //

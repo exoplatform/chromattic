@@ -51,7 +51,7 @@
           </initializer>
           <cache enabled="true" class="org.exoplatform.services.jcr.impl.dataflow.persistent.jbosscache.JBossCacheWorkspaceStorageCache">
             <properties>
-              <property name="jbosscache-configuration" value="conf/standalone/jbosscache-config.xml" />
+              <property name="jbosscache-configuration" value="conf/chromattic/jbosscache-config.xml" />
             </properties>
           </cache>
           <query-handler class="org.exoplatform.services.jcr.impl.core.query.lucene.SearchIndex">
@@ -62,7 +62,7 @@
           <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManagerImpl">
             <properties>
               <property name="time-out" value="15m" />
-              <property name="jbosscache-configuration" value="conf/standalone/jbosscache-lockconfig.xml" />
+              <property name="jbosscache-configuration" value="conf/chromattic/jbosscache-lockconfig.xml" />
              </properties>
           </lock-manager>
         </workspace>
