@@ -32,10 +32,9 @@ import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.PropertyDefinition;
 import java.util.*;
 
 /**
@@ -231,25 +230,78 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected EntityContext copy(EntityContext parentCtx, EntityContext ctx, String name) throws RepositoryException {
+  protected EntityContext _copy(EntityContext srcCtx, String name) throws RepositoryException {
+    return _copy(getRoot(), srcCtx, name);
+  }
+
+  @Override
+  protected EntityContext _copy(EntityContext parentCtx, EntityContext srcCtx, String name) throws RepositoryException {
     if (parentCtx == null) {
-      throw new NullPointerException();
-    }
-    if (ctx == null) {
-      throw new NullPointerException();
-    }
-    if (name == null) {
       throw new NullPointerException();
     }
     if (parentCtx.getStatus() == Status.PERSISTENT) {
       throw new IllegalArgumentException("Parent object is not persistent");
     }
-    if (ctx.getStatus() == Status.PERSISTENT) {
+
+    //
+    return _copy(parentCtx.getNode(), srcCtx, name);
+  }
+
+  private EntityContext _copy(Node parentNode, EntityContext srcCtx, String name) throws RepositoryException {
+    if (srcCtx == null) {
+      throw new NullPointerException();
+    }
+    if (name == null) {
+      throw new NullPointerException();
+    }
+    if (srcCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalArgumentException("Copied object is not persistent");
     }
 
-    // Make duplicate check
-    throw new UnsupportedOperationException();
+    //
+    EntityContext dstCtx = (EntityContext)_create(srcCtx.mapper.getObjectClass(), null);
+
+    //
+    _persist(parentNode, name, dstCtx);
+
+    //
+    Node dstNode = dstCtx.getNode();
+
+    // Copy mixins
+    for (NodeType mixinNodeType : srcCtx.getNode().getMixinNodeTypes()) {
+      dstNode.addMixin(mixinNodeType.getName());
+    }
+
+    // Copy node state
+    for (Iterator<Property> i = sessionWrapper.getProperties(srcCtx.getNode());i.hasNext();) {
+      Property p = i.next();
+      PropertyDefinition def = p.getDefinition();
+      if (def.isProtected()) {
+        // We skip protected state
+      } else {
+        if (def.isMultiple()) {
+          Value[] values = p.getValues();
+          dstNode.setProperty(p.getName(), values);
+        } else {
+          Value value = p.getValue();
+          dstNode.setProperty(p.getName(), value);
+        }
+      }
+    }
+
+    // Copy children
+    for (Iterator<Node> i = sessionWrapper.getChildren(srcCtx.getNode());i.hasNext();) {
+      Node n = i.next();
+      EntityContext c = _getEntity(n);
+      if (c == null) {
+        throw new UnsupportedOperationException();
+      } else {
+        _copy(dstNode, c, n.getName());
+      }
+    }
+
+    //
+    return dstCtx;
   }
 
   @Override

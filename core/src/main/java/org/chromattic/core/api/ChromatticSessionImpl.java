@@ -144,8 +144,21 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     return ctx.getId();
   }
 
+  public <O> O copy(O o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    EntityContext srcCtx = domainSession.unwrapEntity(o);
+    EntityContext dstCtx = domainSession.copy(srcCtx, name);
+    @SuppressWarnings("unchecked")
+    O dst = (O)dstCtx.getObject();
+    return dst;
+  }
+
   public <O> O copy(Object parent, O o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    throw new UnsupportedOperationException();
+    EntityContext srcCtx = domainSession.unwrapEntity(o);
+    EntityContext parentCtx = domainSession.unwrapEntity(parent);
+    EntityContext dstCtx = domainSession.copy(parentCtx, srcCtx, name);
+    @SuppressWarnings("unchecked")
+    O dst = (O)dstCtx.getObject();
+    return dst;
   }
 
   public <O> O findByNode(Class<O> clazz, Node node) throws UndeclaredRepositoryException {

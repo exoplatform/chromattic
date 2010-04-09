@@ -59,7 +59,9 @@ public abstract class DomainSession {
 
   protected abstract void _persist(EntityContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
 
-  protected abstract EntityContext copy(EntityContext parentCtx, EntityContext prototypeCtx, String name) throws RepositoryException;
+  protected abstract EntityContext _copy(EntityContext srcCtx, String name) throws RepositoryException;
+
+  protected abstract EntityContext _copy(EntityContext parentCtx, EntityContext srcCtx, String name) throws RepositoryException;
 
   protected abstract ObjectContext _create(Class<?> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
 
@@ -187,6 +189,24 @@ public abstract class DomainSession {
   public void persist(EntityContext ctx, String name) throws UndeclaredRepositoryException {
     try {
       _persist(ctx, name);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public EntityContext copy(EntityContext srcCtx, String name) throws UndeclaredRepositoryException {
+    try {
+      return _copy(srcCtx, name);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public EntityContext copy(EntityContext parentCtx, EntityContext srcCtx, String name) throws UndeclaredRepositoryException {
+    try {
+      return _copy(parentCtx, srcCtx, name);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
