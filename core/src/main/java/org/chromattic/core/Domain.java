@@ -235,22 +235,51 @@ public class Domain {
    * Encodes the name for the specified context.
    *
    * @param ownerCtx the context
-   * @param external the external name
+   * @param externalName the external name
    * @param nameKind the name kind
    * @return the encoded name
+   * @throws NullPointerException if the owner context argument is null
+   * @throws RepositoryException any repository exception
    */
-  String encodeName(EntityContext ownerCtx, String external, NameKind nameKind) {
-    if (external == null) {
+  String encodeName(EntityContext ownerCtx, String externalName, NameKind nameKind) throws NullPointerException, RepositoryException {
+    if (ownerCtx == null) {
+      throw new NullPointerException();
+    }
+    return encodeName(ownerCtx.state.getNode(), externalName, nameKind);
+  }
+
+  /**
+   * Encodes the name for the specified context.
+   *
+   * @param ownerNode the node
+   * @param externalName the external name
+   * @param nameKind the name kind
+   * @return the encoded name
+   * @throws NullPointerException if any argument is null
+   * @throws RepositoryException any repository exception
+   */
+  String encodeName(Node ownerNode, String externalName, NameKind nameKind) throws NullPointerException, RepositoryException {
+    if (ownerNode == null) {
+      throw new NullPointerException("No null owner node accepted");
+    }
+    if (externalName == null) {
       throw new NullPointerException("No null name accepted");
     }
+    if (nameKind == null) {
+      throw new NullPointerException("No null name kind accepted");
+    }
+
+    //
     if (nameKind == NameKind.PROPERTY) {
-      return external;
+      return externalName;
     }
 
     //
     ObjectFormatter formatter = null;
-    if (ownerCtx != null) {
-      formatter = ownerCtx.mapper.getFormatter();
+    String nodeTypeName = ownerNode.getPrimaryNodeType().getName();
+    ObjectMapper parentMapper = getTypeMapper(nodeTypeName);
+    if (parentMapper != null) {
+      formatter = parentMapper.getFormatter();
     }
     if (formatter == null) {
       formatter = objectFormatter;
@@ -260,7 +289,7 @@ public class Domain {
     String internal;
     try {
       if (nameKind == NameKind.OBJECT) {
-        internal = formatter.encodeNodeName(null, external);
+        internal = formatter.encodeNodeName(null, externalName);
       } else {
         // internal = formatter.encodePropertyName(null, external);
         throw new UnsupportedOperationException();
@@ -276,7 +305,7 @@ public class Domain {
       throw new UndeclaredThrowableException(e);
     }
     if (internal == null) {
-      throw new IllegalArgumentException("Name " + external + " was converted to null");
+      throw new IllegalArgumentException("Name " + externalName + " was converted to null");
     }
     Path.validateName(internal);
     return internal;

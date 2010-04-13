@@ -70,18 +70,24 @@ public class ObjectNameTransformTestCase extends AbstractTestCase {
     assertEquals("foo_b", bNode.getName());
   }
 
-  public void testGetName() throws RepositoryException {
+  public void testName() throws RepositoryException {
     ChromatticSessionImpl session = login();
     Node aNode = session.getRoot().addNode("foo_a", "format_a");
     A a = session.findByNode(A.class, aNode);
     assertEquals("a", a.getName());
+    a.setName("b");
+    assertEquals("b", a.getName());
+    assertEquals("foo_b", aNode.getName());
   }
 
-  public void testSessionGetName() throws RepositoryException {
+  public void testSessionName() throws RepositoryException {
     ChromatticSessionImpl session = login();
     Node aNode = session.getRoot().addNode("foo_a", "format_a");
     A a = session.findByNode(A.class, aNode);
     assertEquals("a", session.getName(a));
+    session.setName(a, "b");
+    assertEquals("b", session.getName(a));
+    assertEquals("foo_b", aNode.getName());
   }
 
   public void testOneToManyPut() throws RepositoryException {

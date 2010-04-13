@@ -190,11 +190,7 @@ public class DomainSessionImpl extends DomainSession {
     ObjectMapper mapper = dstCtx.mapper;
 
     //
-    Object parent = _findByNode(Object.class, srcNode);
-    EntityContext parentCtx = parent != null ? unwrapEntity(parent) : null;
-
-    //
-    name = domain.encodeName(parentCtx, name, NameKind.OBJECT);
+    name = domain.encodeName(srcNode, name, NameKind.OBJECT);
 
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
@@ -426,9 +422,6 @@ public class DomainSessionImpl extends DomainSession {
     Node dstNode = dstCtx.state.getNode();
 
     //
-    dstName = domain.encodeName(dstCtx, dstName, NameKind.OBJECT);
-
-    //
     _move(srcCtx, dstNode, dstName);
   }
 
@@ -443,6 +436,9 @@ public class DomainSessionImpl extends DomainSession {
       log.error(msg);
       throw new IllegalStateException(msg);
     }
+
+    //
+    dstName = domain.encodeName(dstNode, dstName, NameKind.OBJECT);
 
     //
     Node srcNode = srcCtx.state.getNode();

@@ -104,7 +104,12 @@ public final class EntityContext extends ObjectContext {
   }
 
   public String encodeName(String name, NameKind nameKind) {
-    return state.getSession().getDomain().encodeName(this, name, nameKind);
+    try {
+      return state.getSession().getDomain().encodeName(this, name, nameKind);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
   }
 
   /**

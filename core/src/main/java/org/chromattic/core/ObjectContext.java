@@ -26,6 +26,7 @@ import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.vt.ValueType;
 import org.chromattic.spi.instrument.MethodHandler;
 
+import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -42,7 +43,7 @@ public abstract class ObjectContext implements MethodHandler {
 
   public abstract NodeTypeInfo getTypeInfo();
 
-  public final <V> V getPropertyValue(String propertyName, ValueType<V> type) {
+  public final <V> V getPropertyValue(String propertyName, ValueType<V> type) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -55,7 +56,7 @@ public abstract class ObjectContext implements MethodHandler {
     return state.getPropertyValue(typeInfo, propertyName, type);
   }
 
-  public final <V> List<V> getPropertyValues(String propertyName, ValueType<V> simpleType, ListType listType) {
+  public final <V> List<V> getPropertyValues(String propertyName, ValueType<V> simpleType, ListType listType) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -68,7 +69,7 @@ public abstract class ObjectContext implements MethodHandler {
     return state.getPropertyValues(typeInfo, propertyName, simpleType, listType);
   }
 
-  public final <V> void setPropertyValue(String propertyName, ValueType<V> type, V o) {
+  public final <V> void setPropertyValue(String propertyName, ValueType<V> type, V o) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -103,7 +104,7 @@ public abstract class ObjectContext implements MethodHandler {
     }
   }
 
-  public final <V> void setPropertyValues(String propertyName, ValueType<V> type, ListType listType, List<V> objects) {
+  public final <V> void setPropertyValues(String propertyName, ValueType<V> type, ListType listType, List<V> objects) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 

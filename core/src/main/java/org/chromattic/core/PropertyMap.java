@@ -56,7 +56,12 @@ class PropertyMap extends AbstractMap<String, Object> {
   @Override
   public Object get(Object key) {
     if (key instanceof String) {
-      return ctx.getPropertyValue((String)key, ValueType.DEFAULT);
+      try {
+        return ctx.getPropertyValue((String)key, ValueType.DEFAULT);
+      }
+      catch (RepositoryException e) {
+        throw new UndeclaredRepositoryException(e);
+      }
     } else {
       return null;
     }
@@ -73,9 +78,14 @@ class PropertyMap extends AbstractMap<String, Object> {
 
   @Override
   public Object put(String key, Object value) {
-    Object previous = ctx.getPropertyValue(key, ValueType.DEFAULT);
-    ctx.setPropertyValue(key, ValueType.DEFAULT, value);
-    return previous;
+    try {
+      Object previous = ctx.getPropertyValue(key, ValueType.DEFAULT);
+      ctx.setPropertyValue(key, ValueType.DEFAULT, value);
+      return previous;
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
   }
 
   private class SetImpl extends AbstractSet<Map.Entry<String, Object>> {
@@ -112,7 +122,12 @@ class PropertyMap extends AbstractMap<String, Object> {
                       return key;
                     }
                     public Object getValue() {
-                      return ctx.getPropertyValue(key, ValueType.DEFAULT);
+                      try {
+                        return ctx.getPropertyValue(key, ValueType.DEFAULT);
+                      }
+                      catch (RepositoryException e) {
+                        throw new UndeclaredRepositoryException(e);
+                      }
                     }
                     public Object setValue(Object value) {
                       throw new UnsupportedOperationException();
