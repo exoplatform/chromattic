@@ -297,7 +297,7 @@ public interface ChromatticSession {
    * @throws NullPointerException if the specified object is null
    * @throws IllegalArgumentException if the specified object is not a chromattic object
    */
-  void setName(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException
+  void setName(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
    * Returns the path of a specified entity.
