@@ -289,6 +289,17 @@ public interface ChromatticSession {
   String getName(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
+   * Updates the name of the specified entity.
+   *
+   * @param o the entity to get the name
+   * @param name the new entity name
+   * @throws ChromatticException any chromattic exception
+   * @throws NullPointerException if the specified object is null
+   * @throws IllegalArgumentException if the specified object is not a chromattic object
+   */
+  void setName(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException
+
+  /**
    * Returns the path of a specified entity.
    *
    * @param o the entity to get the path

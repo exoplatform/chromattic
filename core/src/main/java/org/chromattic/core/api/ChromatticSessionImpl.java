@@ -76,6 +76,18 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.getName(ctx);
   }
 
+  public void setName(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    if (o == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    EntityContext ctx = domainSession.unwrapEntity(o);
+
+    //
+    domainSession.setName(ctx, name);
+  }
+
   public String getPath(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
