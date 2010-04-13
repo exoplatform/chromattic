@@ -224,7 +224,7 @@ public final class EntityContext extends ObjectContext {
 
   public void addChild(String name, EntityContext childCtx) {
     if (childCtx.getStatus() == Status.PERSISTENT) {
-      state.getSession().move(childCtx, this);
+      state.getSession().move(childCtx, this, name);
     } else {
       state.getSession().persist(this, childCtx, name);
     }

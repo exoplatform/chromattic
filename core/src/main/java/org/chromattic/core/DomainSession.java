@@ -95,7 +95,7 @@ public abstract class DomainSession {
 
   protected abstract Node _getRoot() throws RepositoryException;
 
-  protected abstract void _move(EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
+  protected abstract void _move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws RepositoryException;
 
   protected abstract void _addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws RepositoryException;
 
@@ -259,9 +259,9 @@ public abstract class DomainSession {
     }
   }
 
-  public void move(EntityContext srcCtx, EntityContext dstCtx) throws UndeclaredRepositoryException {
+  public void move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws UndeclaredRepositoryException {
     try {
-      _move(srcCtx, dstCtx);
+      _move(srcCtx, dstCtx, dstName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

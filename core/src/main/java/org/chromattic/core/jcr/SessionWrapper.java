@@ -49,7 +49,7 @@ public interface SessionWrapper {
 
   void orderBefore(Node parentNode, Node srcNode, Node dstNode) throws RepositoryException;
 
-  void move(Node srcNode, Node dstNode) throws RepositoryException;
+  void move(Node srcNode, Node dstNode, String dstName) throws RepositoryException;
 
   Node getParent(Node childNode) throws RepositoryException;
 

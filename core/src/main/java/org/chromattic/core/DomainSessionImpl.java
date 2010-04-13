@@ -60,13 +60,23 @@ public class DomainSessionImpl extends DomainSession {
     this.contexts = new HashMap<String, EntityContext>();
   }
 
-  protected void _setName(EntityContext ctx, String name) {
+  protected void _setName(EntityContext ctx, String name) throws RepositoryException {
     if (ctx == null) {
       throw new NullPointerException();
     }
 
     //
-    ctx.state.setName(name);
+    switch (ctx.getStatus()) {
+      case TRANSIENT:
+        ((TransientEntityContextState)ctx.state).setName(name);
+        break;
+      case PERSISTENT:
+        Node parentNode = ctx.getNode().getParent();
+        _move(ctx, parentNode, name);
+        break;
+      default:
+        throw new IllegalStateException("Removed node cannot have its name updated");
+    }
   }
 
   @Override
@@ -400,21 +410,11 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected void _move(EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException {
-    if (srcCtx == null) {
-      String msg = "Cannot move null context";
-      log.error(msg);
-      throw new NullPointerException(msg);
-    }
+  protected void _move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws RepositoryException {
     if (dstCtx == null) {
       String msg = "Cannot move to null context";
       log.error(msg);
       throw new NullPointerException(msg);
-    }
-    if (srcCtx.getStatus() != Status.PERSISTENT) {
-      String msg = "Attempt to move non persistent context " + srcCtx + " as child of " + dstCtx;
-      log.error(msg);
-      throw new IllegalStateException(msg);
     }
     if (dstCtx.getStatus() != Status.PERSISTENT) {
       String msg = "Attempt to move child " + srcCtx + " to a non persistent context " + dstCtx;
@@ -424,8 +424,28 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     Node dstNode = dstCtx.state.getNode();
+
+    //
+    dstName = domain.encodeName(dstCtx, dstName, NameKind.OBJECT);
+
+    //
+    _move(srcCtx, dstNode, dstName);
+  }
+
+  private void _move(EntityContext srcCtx, Node dstNode, String dstName) throws RepositoryException {
+    if (srcCtx == null) {
+      String msg = "Cannot move null context";
+      log.error(msg);
+      throw new NullPointerException(msg);
+    }
+    if (srcCtx.getStatus() != Status.PERSISTENT) {
+      String msg = "Attempt to move non persistent context " + srcCtx + " as child of " + dstNode.getPath();
+      log.error(msg);
+      throw new IllegalStateException(msg);
+    }
+
+    //
     Node srcNode = srcCtx.state.getNode();
-    String name = srcNode.getName();
 
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
@@ -435,12 +455,13 @@ public class DomainSessionImpl extends DomainSession {
       onDuplicate = parentTypeMapper.getOnDuplicate();
     }
 
+
     // Check insertion capability
-    Node previousNode = sessionWrapper.getNode(dstNode, name);
+    Node previousNode = sessionWrapper.getNode(dstNode, dstName);
     if (previousNode != null) {
-      log.trace("Found existing child with same name {}", name);
+      log.trace("Found existing child with same name {}", dstName);
       if (onDuplicate == NameConflictResolution.FAIL) {
-        String msg = "Attempt to move context " + dstCtx + " as an existing child with name " + name + " child of node " + dstNode.getPath();
+        String msg = "Attempt to move context " + dstNode.getPath() + " as an existing child with name " + dstName + " child of node " + dstNode.getPath();
         log.error(msg);
         throw new DuplicateNameException(msg);
       } else {
@@ -451,7 +472,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    sessionWrapper.move(srcNode, dstNode);
+    sessionWrapper.move(srcNode, dstNode, dstName);
 
     // Generate some kind of event ????
   }

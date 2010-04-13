@@ -151,4 +151,16 @@ public class MapTestCase extends AbstractTestCase {
     }
     assertSame(b1, a.getChildren().get("b"));
   }
+
+  public void testRename() throws Exception {
+    ChromatticSession session = login();
+    A3 a = session.insert(A3.class, "totmhm_a");
+    B3 b = session.create(B3.class);
+    a.getChildren().put("b", b);
+    assertEquals("b", b.getName());
+    assertSame(a, b.getParent());
+    a.getChildren().put("c", b);
+    assertEquals("c", b.getName());
+    assertSame(a, b.getParent());
+  }
 }

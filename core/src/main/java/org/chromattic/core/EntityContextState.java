@@ -40,8 +40,6 @@ abstract class EntityContextState {
 
   abstract String getPath();
 
-  abstract void setName(String name);
-
   abstract Node getNode();
 
   abstract DomainSession getSession();

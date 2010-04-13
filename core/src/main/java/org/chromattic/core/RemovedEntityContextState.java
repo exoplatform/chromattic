@@ -45,10 +45,6 @@ class RemovedEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  void setName(String name) {
-    throw new IllegalStateException();
-  }
-
   String getPath() {
     throw new IllegalStateException();
   }

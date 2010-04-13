@@ -144,8 +144,8 @@ public class SessionWrapperImpl implements SessionWrapper {
     return childNode;
   }
 
-  public void move(Node srcNode, Node dstNode) throws RepositoryException {
-    String dstPath = dstNode.getPath() + "/" + srcNode.getName();
+  public void move(Node srcNode, Node dstNode, String dstName) throws RepositoryException {
+    String dstPath = dstNode.getPath() + "/" + dstName;
     session.move(srcNode.getPath(), dstPath);
   }
 

@@ -98,10 +98,6 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  void setName(String name) {
-    throw new IllegalStateException("Node name are read only");
-  }
-
   Node getNode() {
     return node;
   }

@@ -64,11 +64,7 @@ public class NodeAttributeTestCase extends AbstractTestCase {
     assertEquals(workspaceName, a.getWorkspace());
 
     //
-    try {
-      a.setName("foo");
-      fail();
-    }
-    catch (IllegalStateException e) { }
+    a.setName("foo");
     try {
       a.setId("foo");
       fail();
@@ -85,10 +81,13 @@ public class NodeAttributeTestCase extends AbstractTestCase {
     }
     catch (UnsupportedOperationException e) { }
 
+    //
+    String newPath = aPath.substring(0, aPath.lastIndexOf('/')) + "/foo";
+
     // Check state has not changed
-    assertEquals(aName, a.getName());
+    assertEquals("foo", a.getName());
     assertEquals(aId, a.getId());
-    assertEquals(aPath, a.getPath());
+    assertEquals(newPath, a.getPath());
     assertEquals(workspaceName, a.getWorkspace());
 
     //
@@ -97,9 +96,9 @@ public class NodeAttributeTestCase extends AbstractTestCase {
     //
     session = login();
     a = session.findById(TNA_A.class, aId);
-    assertEquals(aName, a.getName());
+    assertEquals("foo", a.getName());
     assertEquals(aId, a.getId());
-    assertEquals(aPath, a.getPath());
+    assertEquals(newPath, a.getPath());
     assertEquals(workspaceName, a.getWorkspace());
   }
 
