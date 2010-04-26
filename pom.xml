@@ -168,6 +168,18 @@
         <groupId>org.exoplatform.jcr</groupId>
         <artifactId>exo.jcr.component.core</artifactId>
         <version>1.12.1-GA</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.cache</groupId>
+            <artifactId>jbosscache-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.cache</groupId>
+        <artifactId>jbosscache-core</artifactId>
+        <version>3.2.4.GA</version>
       </dependency>
 
       <dependency>
