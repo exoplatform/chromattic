@@ -1,0 +1,4 @@
+The reference guide.
+
+= Getting started with Chromattic =
+{{include document=gettingstarted.wiki/}}

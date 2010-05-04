@@ -1,0 +1,100 @@
+This chapter will introduce you to the basic of Chromattic and the Java Content Repository to object mapping.
+
+= The website example =
+
+We want to model a web site persisted in a JCR server. The site contains web pages that are organized according
+to a tree structure making easy to expose the pages on the web.
+
+== The Page object ==
+
+The {{code}}org.chromattic.docs.reference.gettingstarted.Page{{/code}} class is the object representation of a web page.
+The {{code}}Page{{/code}} object is mapped to the JCR //page// node type. The {{code}}Page{{/code}} class contains
+the properties we want for the representation of a web page:
+
+* The property {{code}}name{{/code}} is the web page name and is mapped to the JCR node name.
+* The property {{code}}content{{/code}} is the web page content and is mapped to the JCR //content// node property of type
+{{code}}STRING{{/code}}.
+
+{{important}}The Javabean properties needs to be modelled as abstract methods because it allows Chromattic to implement them to make
+the mapping between objects and node possible.{{/important}}
+
+{{example title="The Page class"}}
+{{code language=java}}
+{@javadoc org.chromattic.docs.reference.gettingstarted.Page}
+{@include org.chromattic.docs.reference.gettingstarted.Page}
+{{/code}}
+{{/example}}
+
+Chromattic uses annotations to declare which and how classes are mapped to node types. The most important annotation
+is the {{code}}@org.chromattic.api.annotations.PrimaryType{{/code}} that declares the mapping of a class to a
+node type. Our class is annotated with the {{code}}@PrimaryType{{/code}} annotation, the {{code}}name{{/code}} parameter
+specifies the name of the node type mapped to the class.
+
+{{note}}JCR defines two kinds of node types which are primary node type and mixin node type. By default we
+denote by node type a primary node type. Mixin node type can also be mapped by Chromattic that is explained in
+the chapter XYZ.{{/note}}
+
+The {{code}}@org.chromattic.api.annotations.Name{{/code}} annotation targets Javabean property getters or setters and
+indicates that the property is mapped to the name of the node. Indeed each JCR node has a mandatory name and this is the
+way to expose it on a class. As a result the {{code}}Page{{/code}} //name// property is mapped to the node name.
+
+Like the {{code}}@Name{{/code}} annotation the {{code}}@org.chromattic.api.annotations.Property{{/code}} annotation
+targets Javabean properties. It specifies how a property is mapped to a node property. It has a mandatory
+{{code}}name{{/code}} parameter that specifies the node property name. The node property type does not need to be
+specified as it is deduced from the class property. In our example, we map the //content// Javabean property to
+a //content// node property.
+
+== The JCR node types ==
+
+TBW
+
+== The client ==
+
+We have designed and mapped our {{code}}Page{{/code}} object and now we will examine how to interact with a JCR server via
+Chromattic and the object we have mapped.
+
+=== Chromattic bootstrap ===
+
+TBW
+
+=== Interacting with Chromattic objects ===
+
+TBW
+
+== Project build ==
+
+The project build is an important piece of the software infrastructure and Chromattic has been developped to integrate
+seamlessly with the build.
+
+Chromattic leverages the [[Java^^tm^^ 6 Annotation Processor Tool>>http://java.sun.com/javase/6/docs/technotes/guides/apt/index.html]]
+(abbreviated as APT) that works at the Java^^tm^^compiler level and therefore there is nothing much to integrate in the
+build itself.
+
+As many Object Relational Mapping tool, Chromattic needs a bit of instrumentation to make the magic work effectively.
+Chromattic does not modify existing classes, it takes the existing classes and adds new classes and that is done thanks
+to the APT plugin. It means that instrumentation is performed at the compilation time by generating Java^^tm^^source file
+that are compiled by the compiler instead of generating those classes at the load time in the virtual machine.
+
+The only condition to enable Chromattic instrumentation is to have the Chromattic APT jar on the compilation classpath.
+Nothing more, nothing less.
+
+=== Building with Maven ===
+
+Building with Maven is very easy and requires a dependency on the Chromattic API and APT module in your pom file.
+
+* The API dependency provides the Chromattic API classes prefixed with the {{code}}org.chromattic.api{{/code}} package.
+* The API dependency triggers the Chromattic instrumentation.
+
+{{code language=XML}}
+
+<dependency>
+  <groupId>org.chromattic</groupId>
+  <artifactId>chromattic.api</artifactId>
+</dependency>
+
+<dependency>
+  <groupId>org.chromattic</groupId>
+  <artifactId>chromattic.apt</artifactId>
+</dependency>
+
+{{/code}}
