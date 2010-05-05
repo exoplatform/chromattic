@@ -19,9 +19,8 @@
 
 package org.chromattic.metamodel.typegen;
 
-import org.chromattic.common.xml.DocumentEmitter;
-import org.chromattic.common.xml.ElementEmitter;
-import org.chromattic.metamodel.mapping.*;
+import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
+import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
@@ -31,14 +30,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
 import javax.jcr.PropertyType;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -47,13 +42,13 @@ import java.util.*;
 public class NodeTypeBuilder extends BaseTypeMappingVisitor {
 
   /** . */
-  private final Map<ClassTypeInfo, NodeType> nodeTypes;
+  private final LinkedHashMap<ClassTypeInfo, NodeType> nodeTypes;
 
   /** . */
   private NodeType current;
 
   public NodeTypeBuilder() {
-    this.nodeTypes = new HashMap<ClassTypeInfo, NodeType>();
+    this.nodeTypes = new LinkedHashMap<ClassTypeInfo, NodeType>();
   }
 
   public NodeType getNodeType(ClassTypeInfo type) {
@@ -154,6 +149,8 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
 
     // Resolve super types
     for (NodeType nodeType : nodeTypes.values()) {
+
+      //
       ClassTypeInfo cti = nodeType.mapping.getType();
       for (NodeType otherNodeType : nodeTypes.values()) {
         if (otherNodeType != nodeType) {
@@ -162,99 +159,25 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
           }
         }
       }
+
+      //
+      foo:
+      for (NodeType superNodeType : nodeType.superTypes) {
+        for (NodeType otherSuperNodeType : nodeType.superTypes) {
+          if (otherSuperNodeType != superNodeType && otherSuperNodeType.mapping.getType().isSubType(superNodeType.mapping.getType())) {
+            continue foo;
+          }
+        }
+        nodeType.declaredSuperTypes.add(superNodeType);
+      }
     }
   }
 
   public void writeTo(Writer writer) throws IOException {
-    try {
-      SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
-      TransformerHandler handler = factory.newTransformerHandler();
-      handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
-      handler.getTransformer().setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-      handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
-
-      // This is proprietary, so it's a best effort
-      handler.getTransformer().setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-
-      //
-      handler.setResult(new StreamResult(writer));
-
-      //
-      writeTo(handler, handler);
-    }
-    catch (Exception e) {
-      throw new UndeclaredThrowableException(e);
-    }
+    new NodeTypeSerializer(new ArrayList<NodeType>(nodeTypes.values())).writeTo(writer);
   }
 
   public void writeTo(ContentHandler contentHandler, LexicalHandler lexicalHandler) throws SAXException {
-
-    DocumentEmitter writer = new DocumentEmitter(contentHandler, lexicalHandler);
-
-    writer.comment("Node type generation prototype");
-
-    ElementEmitter nodeTypesWriter = writer.documentElement("nodeTypes");
-
-    for (NodeType nodeType : nodeTypes.values()) {
-
-      //
-      nodeTypesWriter.comment(" Node type generated for the class " + nodeType.mapping.getType().getName() + " ");
-      ElementEmitter nodeTypeWriter = nodeTypesWriter.element("nodeType").
-        withAttribute("name", nodeType.getName()).
-        withAttribute("isMixin", Boolean.toString(nodeType.isMixin())).
-        withAttribute("hasOrderableChildNodes", Boolean.toString(nodeType.isOrderable()));
-        // withAttribute("primaryItemName", "todo");
-
-      //
-      ElementEmitter superTypesWriter = nodeTypeWriter.element("supertypes");
-      for (NodeType superType : nodeType.superTypes) {
-        superTypesWriter.element("supertype").content(superType.getName());
-      }
-
-      // Add mix:referenceable
-      superTypesWriter.element("supertype").content("mix:referenceable");
-
-      //
-      ElementEmitter propertyDefinitionsWriter = nodeTypeWriter.element("propertyDefinitions");
-      for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions().values()) {
-        ElementEmitter propertyDefinitionWriter = propertyDefinitionsWriter.element("propertyDefinition").
-          withAttribute("name", propertyDefinition.getName()).
-          withAttribute("propertyType", PropertyType.nameFromValue(propertyDefinition.getType())).
-          withAttribute("autoCreated", Boolean.FALSE.toString()).
-          withAttribute("mandatory", Boolean.FALSE.toString()).
-          withAttribute("onParentVersion", "COPY").
-          withAttribute("protected", Boolean.FALSE.toString()).
-          withAttribute("multiple", Boolean.toString(propertyDefinition.isMultiple()));
-        propertyDefinitionWriter.element("valueConstraints");
-
-        //
-        List<String> defaultValues = propertyDefinition.getDefaultValues();
-        if (defaultValues != null) {
-          ElementEmitter defaultValuesWriter = propertyDefinitionWriter.element("defaultValues");
-          for (String s : defaultValues) {
-            defaultValuesWriter.element("defaultValue").content(s);
-          }
-        }
-      }
-
-      //
-      ElementEmitter childNodeDefinitionsWriter = nodeTypeWriter.element("childNodeDefinitions");
-      for (NodeDefinition childNodeDefinition : nodeType.getChildNodeDefinitions().values()) {
-        childNodeDefinitionsWriter.element("childNodeDefinition").
-          withAttribute("name", childNodeDefinition.getName()).
-          withAttribute("defaultPrimaryType", "").
-          withAttribute("autoCreated", "false").
-          withAttribute("mandatory", "false").
-          withAttribute("onParentVersion", "COPY").
-          withAttribute("protected", "false").
-          withAttribute("sameNameSiblings", "false").
-          element("requiredPrimaryTypes").
-          element("requiredPrimaryType").
-          content(childNodeDefinition.getNodeTypeName());
-      }
-    }
-
-    //
-    writer.close();
+    new NodeTypeSerializer(new ArrayList<NodeType>(nodeTypes.values())).writeTo(contentHandler, lexicalHandler);
   }
 }

@@ -19,9 +19,13 @@
 
 package org.chromattic.apt;
 
+import org.chromattic.api.annotations.Generate;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.common.collection.SetMap;
+import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.NodeTypeBuilder;
+import org.chromattic.metamodel.typegen.NodeTypeSerializer;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
@@ -34,22 +38,18 @@ import org.reflext.core.TypeDomain;
 import org.reflext.apt.JavaxLangTypeModel;
 import org.reflext.apt.JavaxLangMethodModel;
 
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.Filer;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.tools.Diagnostic;
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
-import java.io.StringWriter;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
+import javax.tools.StandardLocation;
+import java.io.Writer;
+import java.util.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -58,32 +58,84 @@ import java.io.PrintWriter;
  * @version $Revision$
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
-@SupportedAnnotationTypes({"org.chromattic.api.annotations.PrimaryType","org.chromattic.api.annotations.MixinType"})
+@SupportedAnnotationTypes({
+  "org.chromattic.api.annotations.PrimaryType",
+  "org.chromattic.api.annotations.MixinType",
+  "org.chromattic.api.annotations.Generate"})
 public class ChromatticProcessor extends AbstractProcessor {
 
   /** . */
   private final TypeDomain<Object, ExecutableElement> domain = new TypeDomain<Object, ExecutableElement>(new JavaxLangTypeModel(), new JavaxLangMethodModel());
 
+  /** . */
+  private ProcessingEnvironment env;
+
+  @Override
+  public void init(ProcessingEnvironment env) {
+
+    //
+    this.env = env;
+
+    //
+    super.init(env);
+  }
+
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+
+    Set<String> packageMetaData = new HashSet<String>();
+
+    Set<? extends Element> a = roundEnv.getElementsAnnotatedWith(Generate.class);
+    for (Element e : a)
+    {
+      PackageElement pkgElt = (PackageElement)e;
+      String s = new StringBuilder().append(pkgElt.getQualifiedName()).toString();
+      packageMetaData.add(s);
+    }
+
     Set<Element> elts = new HashSet<Element>();
     elts.addAll(roundEnv.getElementsAnnotatedWith(PrimaryType.class));
     elts.addAll(roundEnv.getElementsAnnotatedWith(MixinType.class));
-    process(roundEnv, elts);
+
+    try {
+      process(roundEnv, elts, packageMetaData);
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
     return true;
   }
 
-  private void process(RoundEnvironment roundEnv, Set<Element> elts) {
+  private void process(
+    RoundEnvironment roundEnv,
+    Set<Element> elts,
+    Set<String> packageMetaData) throws IOException {
 
+    Filer filer = processingEnv.getFiler();
 
     NodeTypeBuilder visitor = new NodeTypeBuilder();
 
+    SetMap<String, ClassTypeInfo> bilto = new SetMap<String, ClassTypeInfo>();
+
     for (Element elt : elts) {
       TypeElement typeElt = (TypeElement)elt;
+
+      //
       ClassTypeInfo cti = (ClassTypeInfo)domain.getType(typeElt);
+
+      //
+      for (String packageName : PackageNameIterator.with(cti.getPackageName()))
+      {
+        if (packageMetaData.contains(packageName)) {
+          Set<ClassTypeInfo> set = bilto.get(packageName);
+          set.add(cti);
+          break;
+        }
+      }
+
       processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "About to process the type " + cti.getName());
       visitor.addType(cti);
-      Filer filer = processingEnv.getFiler();
       try {
         JavaFileObject jfo = filer.createSourceFile(typeElt.getQualifiedName() + "_Chromattic", typeElt);
         PrintWriter out = new PrintWriter(jfo.openWriter());
@@ -101,13 +153,17 @@ public class ChromatticProcessor extends AbstractProcessor {
     visitor.generate();
 
     //
-    try {
-      StringWriter sw = new StringWriter();
-      visitor.writeTo(sw);
-      System.out.println(sw);
-    }
-    catch (IOException e) {
-      // Should not happen
+    for (String packageName : bilto.keySet()) {
+      env.getMessager().printMessage(Diagnostic.Kind.NOTE, "Processing node type package " + packageName);
+      List<NodeType> nodeTypes = new ArrayList<NodeType>();
+      for (ClassTypeInfo cti : bilto.get(packageName)) {
+        nodeTypes.add(visitor.getNodeType(cti));
+      }
+      FileObject file = filer.createResource(StandardLocation.SOURCE_OUTPUT, packageName, "nodetypes.xml");
+      NodeTypeSerializer serializer = new NodeTypeSerializer(nodeTypes);
+      Writer writer = file.openWriter();
+      serializer.writeTo(writer);
+      writer.close();
     }
   }
 

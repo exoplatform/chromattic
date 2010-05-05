@@ -30,25 +30,46 @@ import org.reflext.api.ClassTypeInfo;
  */
 public class InheritanceTestCase extends TestCase {
 
-  public void testProperty() throws Exception {
+  private NodeType a1NT;
+  private NodeType a3NT;
+  private NodeType a4NT;
+
+  @Override
+  protected void setUp() throws Exception {
     TypeGen gen = new TypeGen();
     ClassTypeInfo a1 = gen.addType(A1.class);
     ClassTypeInfo a3 = gen.addType(A3.class);
+    ClassTypeInfo a4 = gen.addType(A4.class);
     gen.generate();
-    NodeType a1NT = gen.getNodeType(a1);
+    a1NT = gen.getNodeType(a1);
+    a3NT = gen.getNodeType(a3);
+    a4NT = gen.getNodeType(a4);
+  }
+
+  public void testSuperTypes() throws Exception {
+    assertEquals(0, a1NT.getSuperTypes().size());
+    assertEquals(1, a3NT.getSuperTypes().size());
+    assertTrue(a3NT.getSuperTypes().contains(a1NT));
+    assertEquals(2, a4NT.getSuperTypes().size());
+    assertTrue(a4NT.getSuperTypes().contains(a1NT));
+    assertTrue(a4NT.getSuperTypes().contains(a3NT));
+  }
+
+  public void testDeclaredSuperTypes() throws Exception {
+    assertEquals(0, a1NT.getDeclaredSuperTypes().size());
+    assertEquals(1, a3NT.getDeclaredSuperTypes().size());
+    assertTrue(a3NT.getDeclaredSuperTypes().contains(a1NT));
+    assertEquals(1, a4NT.getDeclaredSuperTypes().size());
+    assertTrue(a4NT.getDeclaredSuperTypes().contains(a3NT));
+  }
+
+  public void testProperty() throws Exception {
     assertEquals(1, a1NT.getPropertyDefinitions().size());
-    NodeType a3NT = gen.getNodeType(a3);
     assertEquals(0, a3NT.getPropertyDefinitions().size());
   }
 
   public void testChildNodeDefinitions() throws Exception {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo a1 = gen.addType(A1.class);
-    ClassTypeInfo a3 = gen.addType(A3.class);
-    gen.generate();
-    NodeType a1NT = gen.getNodeType(a1);
     assertEquals(2, a1NT.getChildNodeDefinitions().size());
-    NodeType a3NT = gen.getNodeType(a3);
     assertEquals(0, a3NT.getChildNodeDefinitions().size());
   }
 }
