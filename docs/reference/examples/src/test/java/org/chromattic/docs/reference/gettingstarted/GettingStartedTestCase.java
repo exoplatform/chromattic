@@ -31,23 +31,22 @@ import org.chromattic.api.ChromatticSession;
 public class GettingStartedTestCase extends TestCase {
 
   public void testClient() {
+    // -1-
     ChromatticBuilder builder = ChromatticBuilder.create();
     builder.add(Page.class);
     Chromattic chromattic = builder.build();
 
-    // 
+    // -2-
     ChromatticSession session = chromattic.openSession();
-
-    //
-    Page page = session.insert(Page.class, "index");
-    page.setContent("Hello World");
-
-    //
-    assertEquals("index", page.getName());
-    assertEquals("Hello World", page.getContent());
-
-    //
-    session.save();
-    session.close();
+    try
+    {
+      Page page = session.insert(Page.class, "index");
+      page.setContent("Hello World");
+      session.save();
+    }
+    finally
+    {
+      session.close();
+    }
   }
 }

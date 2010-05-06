@@ -53,13 +53,27 @@ TBW
 We have designed and mapped our {{code}}Page{{/code}} object and now we will examine how to interact with a JCR server via
 Chromattic and the object we have mapped.
 
+The goal of the client is very simple and focus on demonstraing the bootstrap of Chromattic and the persistence of a
+simple {{code}}Page{{/code}} in the Java Content Repository.
+
 === Chromattic bootstrap ===
 
-TBW
+Chromattic bootstrap is easy to perform, it relies mainly on the {{code}}ChromatticBuilder{{/code}} object. The builder
+is configured with the project Chromattic classes to obtain an instance of the {{code}}Chromattic{{/code}} object. The
+{{code}}Chromattic{{/code}} object can be used to create {{code}}ChromatticSession{{/code}} objects. The
+{{code}}ChromatticSession{{/code}} is the main runtime API used to interract with Chromattic.
 
 === Interacting with Chromattic objects ===
 
-TBW
+In the previous section we have covered how to obtain a {{code}}ChromatticSession{{/code}} object thanks to the builder.
+Now let's show how to use the session.
+
+=== The full interaction ===
+
+{{code language=java}}
+{@include org.chromattic.docs.reference.gettingstarted.GettingStartedTestCase#testClient()}
+{{/code}}
+
 
 == Project build ==
 
@@ -83,18 +97,21 @@ Nothing more, nothing less.
 Building with Maven is very easy and requires a dependency on the Chromattic API and APT module in your pom file.
 
 * The API dependency provides the Chromattic API classes prefixed with the {{code}}org.chromattic.api{{/code}} package.
-* The API dependency triggers the Chromattic instrumentation.
+* The APT dependency triggers the Chromattic instrumentation.
 
-{{code language=XML}}
-
-<dependency>
+{{code language=XML}}<dependency>
   <groupId>org.chromattic</groupId>
   <artifactId>chromattic.api</artifactId>
 </dependency>
-
 <dependency>
   <groupId>org.chromattic</groupId>
   <artifactId>chromattic.apt</artifactId>
-</dependency>
+</dependency>{{/code}}
 
-{{/code}}
+And that's it, we have just configured our project.
+
+== Running the client ==
+
+The client requires different jars for running
+
+todo : provide an uber client jar

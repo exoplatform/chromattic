@@ -32,12 +32,51 @@
   <name>Chromattic Framework Reference Guide</name>
   <description>Chromattic Framework Reference Guide</description>
 
+  <dependencies>
+    <!--
+        <dependency>
+          <groupId>org.chromattic</groupId>
+          <artifactId>chromattic.api</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>org.chromattic</groupId>
+          <artifactId>chromattic.api</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+          <classifier>sources</classifier>
+        </dependency>
+    -->
+        <dependency>
+          <groupId>org.chromattic</groupId>
+          <artifactId>chromattic.docs.reference.examples</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>org.chromattic</groupId>
+          <artifactId>chromattic.docs.reference.examples</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+          <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+          <groupId>org.chromattic</groupId>
+          <artifactId>chromattic.docs.reference.examples</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+          <type>test-jar</type>
+        </dependency>
+        <dependency>
+          <groupId>org.chromattic</groupId>
+          <artifactId>chromattic.docs.reference.examples</artifactId>
+          <version>1.1.0-SNAPSHOT</version>
+          <classifier>test-sources</classifier>
+        </dependency>
+  </dependencies>
+
   <build>
        <plugins>
           <plugin>
             <groupId>org.wikbook</groupId>
             <artifactId>wikbook.maven</artifactId>
-            <version>0.9.4</version>
+            <version>0.9.7</version>
             <executions>
               <execution>
                 <phase>prepare-package</phase>
@@ -52,32 +91,6 @@
               <destinationDirectory>${project.build.directory}/en/en-US</destinationDirectory>
               <destinationFileName>master.xml</destinationFileName>
             </configuration>
-
-            <dependencies>
-              <dependency>
-                <groupId>org.chromattic</groupId>
-                <artifactId>chromattic.api</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
-              </dependency>
-              <dependency>
-                <groupId>org.chromattic</groupId>
-                <artifactId>chromattic.api</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
-                <classifier>sources</classifier>
-              </dependency>
-              <dependency>
-                <groupId>org.chromattic</groupId>
-                <artifactId>chromattic.docs.reference.examples</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
-              </dependency>
-              <dependency>
-                <groupId>org.chromattic</groupId>
-                <artifactId>chromattic.docs.reference.examples</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
-                <classifier>sources</classifier>
-              </dependency>
-            </dependencies>
-
           </plugin>
 
          <plugin>
