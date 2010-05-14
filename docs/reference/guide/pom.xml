@@ -76,7 +76,7 @@
           <plugin>
             <groupId>org.wikbook</groupId>
             <artifactId>wikbook.maven</artifactId>
-            <version>0.9.7</version>
+            <version>0.9.9</version>
             <executions>
               <execution>
                 <phase>prepare-package</phase>

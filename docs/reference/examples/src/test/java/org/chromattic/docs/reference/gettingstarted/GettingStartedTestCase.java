@@ -32,21 +32,24 @@ public class GettingStartedTestCase extends TestCase {
 
   public void testClient() {
     // -1-
-    ChromatticBuilder builder = ChromatticBuilder.create();
-    builder.add(Page.class);
-    Chromattic chromattic = builder.build();
+    ChromatticBuilder builder = ChromatticBuilder.create(); // <1> Create a new builder
+    builder.add(Page.class); // <2> We add the Page class to the build
+    Chromattic chromattic = builder.build(); // <3> Now the Chromattic object can be created
+
+    //
+    assertEquals("", "");
 
     // -2-
-    ChromatticSession session = chromattic.openSession();
+    ChromatticSession session = chromattic.openSession(); // <4> Any Chromattic interaction requires to open a session
     try
     {
-      Page page = session.insert(Page.class, "index");
-      page.setContent("Hello World");
-      session.save();
+      Page page = session.insert(Page.class, "index"); // <5> A new page is inserted under the /index path
+      page.setContent("Hello World"); // <6> Set the content property
+      session.save(); // <7> Saves the session to persist changes in the repository
     }
     finally
     {
-      session.close();
+      session.close(); // <8> We must close the session to properly release the session
     }
   }
 }

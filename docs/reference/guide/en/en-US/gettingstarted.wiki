@@ -1,4 +1,4 @@
-This chapter will introduce you to the basic of Chromattic and the Java Content Repository to object mapping.
+This chapter introduces you to the basic of Chromattic and the Java Content Repository to object mapping.
 
 = The website example =
 
@@ -51,29 +51,33 @@ TBW
 == The client ==
 
 We have designed and mapped our {{code}}Page{{/code}} object and now we will examine how to interact with a JCR server via
-Chromattic and the object we have mapped.
-
-The goal of the client is very simple and focus on demonstraing the bootstrap of Chromattic and the persistence of a
+Chromattic. The goal of the client is very simple and focus on demonstrating the bootstrap of Chromattic and the persistence of a
 simple {{code}}Page{{/code}} in the Java Content Repository.
 
 === Chromattic bootstrap ===
 
+The boostrap is the creation and the configuration of the Chromattic runtime. Usually the bootstrap occurs during the
+initialization of the application, for instance in a web application, it is most often performed in a
+{{code}}ServletContextListener{{/code}} initialization.
+
 Chromattic bootstrap is easy to perform, it relies mainly on the {{code}}ChromatticBuilder{{/code}} object. The builder
-is configured with the project Chromattic classes to obtain an instance of the {{code}}Chromattic{{/code}} object. The
+is configured with the Chromattic application classes to obtain an instance of the {{code}}Chromattic{{/code}} object. The
 {{code}}Chromattic{{/code}} object can be used to create {{code}}ChromatticSession{{/code}} objects. The
 {{code}}ChromatticSession{{/code}} is the main runtime API used to interract with Chromattic.
 
-=== Interacting with Chromattic objects ===
-
-In the previous section we have covered how to obtain a {{code}}ChromatticSession{{/code}} object thanks to the builder.
-Now let's show how to use the session.
-
-=== The full interaction ===
-
 {{code language=java}}
-{@include org.chromattic.docs.reference.gettingstarted.GettingStartedTestCase#testClient()}
+{@include org.chromattic.docs.reference.gettingstarted.GettingStartedTestCase#testClient() {1}}
 {{/code}}
 
+=== Interacting with Chromattic objects ===
+
+We have just explained how to obtain a {{code}}Chromattic{{/code}} object thanks to the builder.
+Now it is time to show how to obtain and use the {{code}}ChromatticSession{{/code}} with the goal to insert a
+new page node. Let's examine the code:
+
+{{code language=java}}
+{@include org.chromattic.docs.reference.gettingstarted.GettingStartedTestCase#testClient() {2}}
+{{/code}}
 
 == Project build ==
 
