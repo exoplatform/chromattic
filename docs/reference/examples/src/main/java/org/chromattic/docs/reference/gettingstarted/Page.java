@@ -37,11 +37,24 @@ public abstract class Page {
   public abstract String getName(); // <2> The name property is mapped to the node name
 
   /**
+   * Returns the page title.
+   * @return the page title
+   */
+  @Property(name = "title")
+  public abstract String getTitle(); // <3> The title property is mapped to the title node property
+
+  /**
+   * Updates the page title.
+   * @param title the new page title
+   */
+  public abstract void setTitle(String title);
+
+  /**
    * Returns the page content.
    * @return the page content
    */
   @Property(name = "content")
-  public abstract String getContent(); // <3> The content property is mapped to the content node property
+  public abstract String getContent(); // <4> The content property is mapped to the content node property
 
   /**
    * Updates the page content.

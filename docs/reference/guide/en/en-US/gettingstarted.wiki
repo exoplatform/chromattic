@@ -1,9 +1,11 @@
-This chapter introduces you to the basic of Chromattic and the Java Content Repository to object mapping.
+This chapter introduces you to the basic of Chromattic and the Java Content Repository to object mapping. We will show
+the most basic Chromattic application and focus on the various steps to build this application.
 
 = The website example =
 
-We want to model a web site persisted in a JCR server. The site contains web pages that are organized according
-to a tree structure making easy to expose the pages on the web.
+The project example models a web site persisted in a JCR server. The site contains web pages that are organized
+according to a tree structure making easy to display the pages on the web. The natural JCR hierarchy tree shape
+will model the hierarchy of the pages.
 
 == The Page object ==
 
@@ -12,8 +14,8 @@ The {{code}}Page{{/code}} object is mapped to the JCR //page// node type. The {{
 the properties we want for the representation of a web page:
 
 * The property {{code}}name{{/code}} is the web page name and is mapped to the JCR node name.
-* The property {{code}}content{{/code}} is the web page content and is mapped to the JCR //content// node property of type
-{{code}}STRING{{/code}}.
+* The property {{code}}title{{/code}} is the page title and is mapped to the JCR //title// node property of type {{code}}STRING{{/code}}.
+* The property {{code}}content{{/code}} is the page content and is mapped to the JCR //content// node property of type {{code}}STRING{{/code}}.
 
 {{important}}The Javabean properties needs to be modelled as abstract methods because it allows Chromattic to implement them to make
 the mapping between objects and node possible.{{/important}}
@@ -25,7 +27,7 @@ the mapping between objects and node possible.{{/important}}
 {{/code}}
 {{/example}}
 
-Chromattic uses annotations to declare which and how classes are mapped to node types. The most important annotation
+Chromattic uses code annotations to declare which and how classes are mapped to node types. The most important annotation
 is the {{code}}@org.chromattic.api.annotations.PrimaryType{{/code}} that declares the mapping of a class to a
 node type. Our class is annotated with the {{code}}@PrimaryType{{/code}} annotation, the {{code}}name{{/code}} parameter
 specifies the name of the node type mapped to the class.
@@ -46,13 +48,20 @@ a //content// node property.
 
 == The JCR node types ==
 
-TBW
+Node types are important for JCR, they define the schema of the node data. In our application we have a {{code}}page{{/code}}
+  node type that follows the {{code}}Page{{/code}} class. Chromattic can generate for you the node type definition when the
+ classes are compiled. It results in a {{code}}nodetype.xml{{/code}} file resources located in the class output of the
+ Java^^tm^^ compiler.
+
+todo : explain how this file is generated via the @
+
+{{warning}}The node type generation is still a work in progress and it is still an experimental feature{{/warning}}
 
 == The client ==
 
-We have designed and mapped our {{code}}Page{{/code}} object and now we will examine how to interact with a JCR server via
-Chromattic. The goal of the client is very simple and focus on demonstrating the bootstrap of Chromattic and the persistence of a
-simple {{code}}Page{{/code}} in the Java Content Repository.
+We have designed and mapped our {{code}}Page{{/code}} object and now we will examine how to interact with a JCR server
+via Chromattic. The goal of the client is very simple and focus on demonstrating the bootstrap of Chromattic and the
+persistence of a simple {{code}}Page{{/code}} in the Java Content Repository.
 
 === Chromattic bootstrap ===
 
@@ -85,11 +94,11 @@ The project build is an important piece of the software infrastructure and Chrom
 seamlessly with the build.
 
 Chromattic leverages the [[Java^^tm^^ 6 Annotation Processor Tool>>http://java.sun.com/javase/6/docs/technotes/guides/apt/index.html]]
-(abbreviated as APT) that works at the Java^^tm^^compiler level and therefore there is nothing much to integrate in the
-build itself.
+(abbreviated as APT) that works at the Java^^tm^^compiler level and therefore there is nothing much to do to integrate
+Chromattic in the build itself.
 
-As many Object Relational Mapping tool, Chromattic needs a bit of instrumentation to make the magic work effectively.
-Chromattic does not modify existing classes, it takes the existing classes and adds new classes and that is done thanks
+As many Object Relational Mapping tool, Chromattic needs a bit of instrumentation to make the magic work.
+Chromattic does not modify existing classes, it takes the existing classes and adds new classes and that is achieved thanks
 to the APT plugin. It means that instrumentation is performed at the compilation time by generating Java^^tm^^source file
 that are compiled by the compiler instead of generating those classes at the load time in the virtual machine.
 
