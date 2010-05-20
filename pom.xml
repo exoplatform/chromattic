@@ -167,7 +167,7 @@
       <dependency>
         <groupId>org.exoplatform.jcr</groupId>
         <artifactId>exo.jcr.component.core</artifactId>
-        <version>1.12.1-GA</version>
+        <version>1.12.2-CR1</version>
         <exclusions>
           <exclusion>
             <groupId>org.jboss.cache</groupId>
