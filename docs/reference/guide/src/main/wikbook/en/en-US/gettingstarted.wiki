@@ -21,10 +21,10 @@ the properties we want for the representation of a web page:
 the mapping between objects and node possible.{{/important}}
 
 {{example title="The Page class"}}
-{{code language=java}}
+{{java}}
 {@javadoc org.chromattic.docs.reference.gettingstarted.Page}
 {@include org.chromattic.docs.reference.gettingstarted.Page}
-{{/code}}
+{{/java}}
 {{/example}}
 
 Chromattic uses code annotations to declare which and how classes are mapped to node types. The most important annotation
@@ -53,7 +53,16 @@ Node types are important for JCR, they define the schema of the node data. In ou
   when the classes are compiled. It results in a {{code}}nodetype.xml{{/code}} file resources located in the class output of
   the Java^^tm^^ compiler.
 
-todo : explain how this file is generated via the @
+The annotation {{code}}org.chromattic.api.annotations.NodeTypeDefs{{/code}} instructs the compiler to generate the the
+node type definitions in the XML format that can be used by the JCR server to create the node type. The annotation
+targets a package and it generate the node type for any Chromattic class inside this package and in the sub packages.
+
+{{example title="The org.chromattic.docs.reference.gettingstarted.package-info.java file package"}}
+{{java}}
+@NodeTypeDefs package org.chromattic.docs.reference.gettingstarted;
+
+import org.chromattic.api.annotations.NodeTypeDefs;
+{{/example}}
 
 {{warning}}The node type generation is still a work in progress and should be considered as an experimental feature{{/warning}}
 
@@ -74,9 +83,9 @@ is configured with the Chromattic application classes to obtain an instance of t
 {{code}}Chromattic{{/code}} object can be used to create {{code}}ChromatticSession{{/code}} objects. The
 {{code}}ChromatticSession{{/code}} is the main runtime API used to interract with Chromattic.
 
-{{code language=java}}
+{{java}}
 {@include org.chromattic.docs.reference.gettingstarted.GettingStartedTestCase#testClient() {1}}
-{{/code}}
+{{/java}}
 
 === Interacting with Chromattic objects ===
 
@@ -84,9 +93,9 @@ We have just explained how to obtain a {{code}}Chromattic{{/code}} object thanks
 Now it is time to show how to obtain and use the {{code}}ChromatticSession{{/code}} with the goal to insert a
 new page node. Let's examine the code:
 
-{{code language=java}}
+{{java}}
 {@include org.chromattic.docs.reference.gettingstarted.GettingStartedTestCase#testClient() {2}}
-{{/code}}
+{{/java}}
 
 == Project build ==
 
