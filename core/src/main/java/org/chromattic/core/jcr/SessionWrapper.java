@@ -19,8 +19,6 @@
 
 package org.chromattic.core.jcr;
 
-import org.chromattic.core.jcr.info.NodeInfo;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -78,5 +76,7 @@ public interface SessionWrapper {
   Session getSession();
 
   void close();
+
+  boolean isClosed();
 
 }

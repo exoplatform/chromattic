@@ -23,6 +23,8 @@ import org.chromattic.api.ChromatticException;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.query.QueryBuilder;
+import org.chromattic.common.logging.Logger;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.spi.instrument.MethodHandler;
@@ -37,6 +39,9 @@ import java.util.Iterator;
  * @version $Revision$
  */
 public abstract class DomainSession {
+
+  /** . */
+  protected static final Logger log = Logger.getLogger(DomainSession.class);
 
   /** . */
   protected final EventBroadcaster broadcaster;
@@ -119,7 +124,7 @@ public abstract class DomainSession {
     return domain.queryManager.createQueryBuilder(this, fromClass);
   }
 
-  public void addEventListener(EventListener listener) {
+  public void addEventListener(EventListener listener) throws NullPointerException {
     broadcaster.addLifeCycleListener(listener);
   }
 
@@ -128,8 +133,13 @@ public abstract class DomainSession {
       _close();
     }
     catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
+      log.error("A repository exception happened when the session was closed", e);
     }
+  }
+
+  public boolean isClosed()
+  {
+    return sessionWrapper.isClosed();
   }
 
   public EmbeddedContext getEmbedded(EntityContext ctx, Class<?> embeddedClass) throws UndeclaredRepositoryException {

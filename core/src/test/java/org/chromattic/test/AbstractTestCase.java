@@ -140,7 +140,7 @@ public abstract class AbstractTestCase extends TestCase {
     //
     chromattic = builder.build();
 
-    // NCreate virtual root node if required
+    // Create virtual root node if required
     if (pingRootNode) {
       ChromatticSessionImpl sess = login();
       sess.getRoot();

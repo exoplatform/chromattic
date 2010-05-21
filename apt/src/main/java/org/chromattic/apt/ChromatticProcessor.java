@@ -19,7 +19,7 @@
 
 package org.chromattic.apt;
 
-import org.chromattic.api.annotations.Generate;
+import org.chromattic.api.annotations.NodeTypeDefs;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.common.collection.SetMap;
@@ -85,7 +85,7 @@ public class ChromatticProcessor extends AbstractProcessor {
 
     Set<String> packageMetaData = new HashSet<String>();
 
-    Set<? extends Element> a = roundEnv.getElementsAnnotatedWith(Generate.class);
+    Set<? extends Element> a = roundEnv.getElementsAnnotatedWith(NodeTypeDefs.class);
     for (Element e : a)
     {
       PackageElement pkgElt = (PackageElement)e;

@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EventBroadcaster implements EventListener {
+public final class EventBroadcaster implements EventListener {
 
   /** . */
   private List<LifeCycleListener> lifeCycleListeners;
@@ -44,21 +44,27 @@ public class EventBroadcaster implements EventListener {
     this.lifeCycleListeners = null;
   }
 
-  public final void addLifeCycleListener(EventListener listener) {
+  public void addLifeCycleListener(EventListener listener) throws NullPointerException {
     if (listener == null) {
       throw new NullPointerException();
     }
     if (listener instanceof LifeCycleListener) {
-      if (lifeCycleListeners == null) {
-        lifeCycleListeners = new ArrayList<LifeCycleListener>();
+      LifeCycleListener lifeCycleListener = (LifeCycleListener)listener;
+      if (lifeCycleListeners == null  || !lifeCycleListeners.contains(lifeCycleListener)) {
+        if (lifeCycleListeners == null) {
+          lifeCycleListeners = new ArrayList<LifeCycleListener>();
+        }
+        lifeCycleListeners.add(lifeCycleListener);
       }
-      lifeCycleListeners.add((LifeCycleListener)listener);
     }
     if (listener instanceof StateChangeListener) {
-      if (stateChangeListeners == null) {
-        stateChangeListeners = new ArrayList<StateChangeListener>();
+      StateChangeListener stateChangeListener = (StateChangeListener)listener;
+      if (stateChangeListeners == null || !stateChangeListeners.contains(stateChangeListener)) {
+        if (stateChangeListeners == null) {
+          stateChangeListeners = new ArrayList<StateChangeListener>();
+        }
+        stateChangeListeners.add(stateChangeListener);
       }
-      stateChangeListeners.add((StateChangeListener)listener);
     }
   }
 

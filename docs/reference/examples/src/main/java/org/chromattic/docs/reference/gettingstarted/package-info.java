@@ -1,4 +1,4 @@
-@Generate
+@NodeTypeDefs
 package org.chromattic.docs.reference.gettingstarted;
 
-import org.chromattic.api.annotations.Generate;
+import org.chromattic.api.annotations.NodeTypeDefs;

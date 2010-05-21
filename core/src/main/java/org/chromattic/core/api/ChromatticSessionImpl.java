@@ -271,6 +271,10 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     domainSession.close();
   }
 
+  public boolean isClosed() {
+    return domainSession.isClosed();
+  }
+
   public <O> QueryBuilder<O> createQueryBuilder(Class<O> fromClass) throws NullPointerException, IllegalArgumentException, ChromatticException {
     return domainSession.createQueryBuilder(fromClass);
   }

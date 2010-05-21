@@ -26,6 +26,9 @@ import javax.jcr.Session;
 import javax.jcr.Node;
 
 /**
+ * The session manages Chromattic objects at runtime, it is obtained from a {@link org.chromattic.api.Chromattic}
+ * instance.  A session is meant to be used by one thread and not shared among threads. 
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
@@ -336,12 +339,33 @@ public interface ChromatticSession {
    */
   <E> void setEmbedded(Object o, Class<E> embeddedType, E embedded) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
-  void addEventListener(EventListener listener);
+  /**
+   * Adds an event listener to this session.
+   *
+   * @param listener the listener to add
+   * @throws NullPointerException if the provided listener is null
+   */
+  void addEventListener(EventListener listener) throws NullPointerException;
 
+  /**
+   * Save the transient changes.
+   *
+   * @throws ChromatticException any chromattic exception
+   */
   void save() throws ChromatticException;
 
+  /**
+   * Close and dispose the session.
+   */
   void close();
 
+  boolean isClosed();
+
+  /**
+   * Returns the underlying JCR session or null if the session is closed.
+   *
+   * @return the JCR session.
+   */
   Session getJCRSession();
 
 }

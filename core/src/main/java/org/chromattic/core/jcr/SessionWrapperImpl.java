@@ -36,10 +36,10 @@ import java.util.RandomAccess;
 public class SessionWrapperImpl implements SessionWrapper {
 
   /** . */
-  private final Logger log = Logger.getLogger(SessionWrapperImpl.class);
+  private static final Logger log = Logger.getLogger(SessionWrapperImpl.class);
 
   /** . */
-  public final Session session;
+  private Session session;
 
   /** . */
   private AbstractLinkManager[] linkMgrs;
@@ -299,10 +299,19 @@ public class SessionWrapperImpl implements SessionWrapper {
     return session;
   }
 
+  public boolean isClosed()
+  {
+    return session == null;
+  }
+
   public void close() {
-    for (AbstractLinkManager mgr : linkMgrs) {
-      mgr.clear();
+    if (session != null)
+    {
+      for (AbstractLinkManager mgr : linkMgrs) {
+        mgr.clear();
+      }
+      sessionLifeCycle.close(session);
+      session = null;
     }
-    sessionLifeCycle.close(session);
   }
 }

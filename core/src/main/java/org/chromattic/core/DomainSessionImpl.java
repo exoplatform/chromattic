@@ -49,9 +49,6 @@ public class DomainSessionImpl extends DomainSession {
   /** . */
   private Map<String, EntityContext> contexts;
 
-  /** . */
-  private final Logger log = Logger.getLogger(ChromatticSessionImpl.class);
-
   public DomainSessionImpl(Domain domain, SessionWrapper sessionWrapper) {
     super(domain, sessionWrapper);
 
