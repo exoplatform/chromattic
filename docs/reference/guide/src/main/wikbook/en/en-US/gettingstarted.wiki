@@ -49,13 +49,13 @@ a //content// node property.
 == The JCR node types ==
 
 Node types are important for JCR, they define the schema of the node data. In our application we have a {{code}}page{{/code}}
-  node type that follows the {{code}}Page{{/code}} class. Chromattic can generate for you the node type definition when the
- classes are compiled. It results in a {{code}}nodetype.xml{{/code}} file resources located in the class output of the
- Java^^tm^^ compiler.
+  node type that is modelled after the {{code}}Page{{/code}} class. Chromattic can generate for you the node type definition
+  when the classes are compiled. It results in a {{code}}nodetype.xml{{/code}} file resources located in the class output of
+  the Java^^tm^^ compiler.
 
 todo : explain how this file is generated via the @
 
-{{warning}}The node type generation is still a work in progress and it is still an experimental feature{{/warning}}
+{{warning}}The node type generation is still a work in progress and should be considered as an experimental feature{{/warning}}
 
 == The client ==
 
@@ -69,7 +69,7 @@ The boostrap is the creation and the configuration of the Chromattic runtime. Us
 initialization of the application, for instance in a web application, it is most often performed in a
 {{code}}ServletContextListener{{/code}} initialization.
 
-Chromattic bootstrap is easy to perform, it relies mainly on the {{code}}ChromatticBuilder{{/code}} object. The builder
+Chromattic bootstrap relies mainly on the {{code}}ChromatticBuilder{{/code}} object. The builder
 is configured with the Chromattic application classes to obtain an instance of the {{code}}Chromattic{{/code}} object. The
 {{code}}Chromattic{{/code}} object can be used to create {{code}}ChromatticSession{{/code}} objects. The
 {{code}}ChromatticSession{{/code}} is the main runtime API used to interract with Chromattic.
@@ -107,21 +107,20 @@ Nothing more, nothing less.
 
 === Building with Maven ===
 
-Building with Maven is very easy and requires a dependency on the Chromattic API and APT module in your pom file.
+Building with Maven is very easy and only requires a dependency on the Chromattic API and APT module in your pom file.
 
-* The API dependency provides the Chromattic API classes prefixed with the {{code}}org.chromattic.api{{/code}} package.
-* The APT dependency triggers the Chromattic instrumentation.
-
+* The API dependency provides the Chromattic API classes prefixed with the {{code}}org.chromattic.api{{/code}} package. (((
 {{code language=XML}}<dependency>
   <groupId>org.chromattic</groupId>
   <artifactId>chromattic.api</artifactId>
-</dependency>
-<dependency>
+</dependency>{{/code}})))
+* The APT dependency triggers the Chromattic instrumentation. (((
+{{code language=XML}}<dependency>
   <groupId>org.chromattic</groupId>
   <artifactId>chromattic.apt</artifactId>
-</dependency>{{/code}}
+</dependency>{{/code}})))
 
-And that's it, we have just configured our project.
+And that's it, we have just configured our project. 
 
 == Running the client ==
 
