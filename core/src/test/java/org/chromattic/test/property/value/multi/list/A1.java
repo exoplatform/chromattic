@@ -30,34 +30,34 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_c")
-public abstract class TP_F {
+@PrimaryType(name = "tp_a")
+public abstract class A1 {
 
-  @Property(name = "string_array_property")
+  @Property(name = "string_property")
   @DefaultValue
   public abstract List<String> getString();
 
   public abstract void setString(List<String> s);
 
-  @Property(name = "int_array_property")
+  @Property(name = "int_property")
   @DefaultValue
   public abstract List<Integer> getInt();
 
   public abstract void setInt(List<Integer> s);
 
-  @Property(name = "long_array_property")
+  @Property(name = "long_property")
   @DefaultValue
   public abstract List<Long> getLong();
 
   public abstract void setLong(List<Long> s);
 
-  @Property(name = "boolean_array_property")
+  @Property(name = "boolean_property")
   @DefaultValue
   public abstract List<Boolean> getBoolean();
 
   public abstract void setBoolean(List<Boolean> s);
 
-  @Property(name = "date_array_property")
+  @Property(name = "date_property")
   @DefaultValue
   public abstract List<Date> getDate();
 
