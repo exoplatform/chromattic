@@ -51,7 +51,7 @@ public class SingleValuedMappedToSingleValuedTest extends AbstractSingleValuedTe
       assertFalse(primitive);
     }
     catch (InvocationTargetException e) {
-      if (e.getCause() instanceof IllegalStateException) {
+      if (e.getCause() instanceof NullPointerException) {
         assertTrue(primitive);
       } else {
         AssertionFailedError afe = new AssertionFailedError();

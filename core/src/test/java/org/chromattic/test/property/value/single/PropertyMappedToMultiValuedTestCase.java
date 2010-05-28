@@ -36,11 +36,11 @@ import java.util.Date;
 public class PropertyMappedToMultiValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TP_E.class);
+    addClass(C1.class);
   }
 
   /** . */
-  private TP_E e;
+  private C1 e;
 
   /** . */
   private Node eNode;
@@ -60,7 +60,7 @@ public class PropertyMappedToMultiValuedTestCase extends AbstractTestCase {
     Node rootNode = session.getRoot();
     eNode = rootNode.addNode("tp_a_a", "tp_c");
     factory = session.getJCRSession().getValueFactory();
-    e = session.findByNode(TP_E.class, eNode);
+    e = session.findByNode(C1.class, eNode);
     events = new EventQueue();
 
     //

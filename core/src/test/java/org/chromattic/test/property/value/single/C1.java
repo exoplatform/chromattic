@@ -21,91 +21,54 @@ package org.chromattic.test.property.value.single;
 
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.api.annotations.Path;
 
 import java.util.Date;
-import java.io.InputStream;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_a")
-public abstract class TP_A {
+@PrimaryType(name = "tp_c")
+public abstract class C1 {
 
-  @Property(name = "string_property")
+  @Property(name = "string_array_property")
   public abstract String getString();
 
   public abstract void setString(String s);
 
-  @Path @Property(name = "path_property") 
-  public abstract String getPath();
-
-  public abstract void setPath(String s);
-
-  @Property(name = "primitive_int_property")
+  @Property(name = "primitive_int_array_property")
   public abstract int getPrimitiveInt();
 
   public abstract void setPrimitiveInt(int s);
 
-  @Property(name = "int_property")
+  @Property(name = "int_array_property")
   public abstract Integer getInt();
 
   public abstract void setInt(Integer s);
 
-  @Property(name = "primitive_long_property")
+  @Property(name = "primitive_long_array_property")
   public abstract long getPrimitiveLong();
 
   public abstract void setPrimitiveLong(long s);
 
-  @Property(name = "long_property")
+  @Property(name = "long_array_property")
   public abstract Long getLong();
 
   public abstract void setLong(Long s);
 
-  @Property(name = "primitive_boolean_property")
+  @Property(name = "primitive_boolean_array_property")
   public abstract boolean getPrimitiveBoolean();
 
   public abstract void setPrimitiveBoolean(boolean s);
 
-  @Property(name = "boolean_property")
+  @Property(name = "boolean_array_property")
   public abstract Boolean getBoolean();
 
   public abstract void setBoolean(Boolean s);
 
-  @Property(name = "primitive_float_property")
-  public abstract float getPrimitiveFloat();
-
-  public abstract void setPrimitiveFloat(float s);
-
-  @Property(name = "float_property")
-  public abstract Float getFloat();
-
-  public abstract void setFloat(Float s);
-
-  @Property(name = "primitive_double_property")
-  public abstract double getPrimitiveDouble();
-
-  public abstract void setPrimitiveDouble(double s);
-
-  @Property(name = "double_property")
-  public abstract Double getDouble();
-
-  public abstract void setDouble(Double s);
-
-  @Property(name = "date_property")
+  @Property(name = "date_array_property")
   public abstract Date getDate();
 
   public abstract void setDate(Date s);
-
-  @Property(name = "bytes_property")
-  public abstract InputStream getBytes();
-
-  public abstract void setBytes(InputStream s);
-
-  @Property(name = "missing_property")
-  public abstract String getMissing();
-
-  public abstract void setMissing(String s);
 
 }

@@ -38,11 +38,11 @@ import java.io.InputStream;
 public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TP_A.class);
+    addClass(A1.class);
   }
 
   /** . */
-  private TP_A a;
+  private A1 a;
 
   /** . */
   private Node aNode;
@@ -61,7 +61,7 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     aNode = rootNode.addNode("tp_a_a", "tp_a");
-    a = session.findByNode(TP_A.class, aNode);
+    a = session.findByNode(A1.class, aNode);
     factory = session.getJCRSession().getValueFactory();
     events = new EventQueue();
 

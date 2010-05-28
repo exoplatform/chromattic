@@ -183,7 +183,7 @@ class PersistentEntityContextState extends EntityContextState {
 
           //
           if (value == null && vt.isPrimitive()) {
-            throw new IllegalStateException("Cannot convert null to primitive type " + vt);
+            throw new NullPointerException("Cannot convert null to primitive type " + vt);
           }
         }
       } else {
