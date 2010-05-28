@@ -32,19 +32,19 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyPropertyMapper<O extends ObjectContext> extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, O> {
+public class JCRPropertyPropertyMapper<O extends ObjectContext, V> extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo<V>>, O> {
 
   /** . */
   private final String jcrPropertyName;
 
   /** . */
-  private final ValueType<O> vt;
+  private final ValueType<V> vt;
 
   public JCRPropertyPropertyMapper(
     Class<O> contextType,
-    SingleValuedPropertyInfo<SimpleValueInfo> info,
+    SingleValuedPropertyInfo<SimpleValueInfo<V>> info,
     String jcrPropertyName,
-    List<O> defaultValue) {
+    List<V> defaultValue) {
     super(contextType, info);
 
     //

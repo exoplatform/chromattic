@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.property;
+package org.chromattic.test.property.value;
 
 import junit.framework.Assert;
 
@@ -139,22 +139,32 @@ public abstract class AbstractValuedTest extends Assert {
   }
 
   protected void safeArrayEquals(MultiValue expectedObjects, Value[] values) throws Exception {
-    assertEquals(expectedObjects.size(), values.length);
-    for (int i = 0;i < values.length;i++) {
-      Value v1 = create(expectedObjects.getObject(i));
-      Value v2 = values[i];
-      safeValueEquals(v1, v2);
+    if (expectedObjects == null) {
+      assertNull(values);
+    } else {
+      assertNotNull(values);
+      assertEquals(expectedObjects.size(), values.length);
+      for (int i = 0;i < values.length;i++) {
+        Value v1 = create(expectedObjects.getObject(i));
+        Value v2 = values[i];
+        safeValueEquals(v1, v2);
+      }
     }
   }
 
   protected void safeArrayEquals(MultiValue expectedObjects, MultiValue objects) throws Exception {
-    assertEquals(expectedObjects.size(), objects.size());
-    for (int i = 0;i < expectedObjects.size();i++) {
-      Object o = objects.getObject(i);
-      assertEquals(expectedObjects.getObject(i), o);
+    if (expectedObjects == null) {
+      assertNull(objects);
+    } else {
+      assertNotNull(objects);
+      assertEquals(expectedObjects.size(), objects.size());
+      for (int i = 0;i < expectedObjects.size();i++) {
+        Object o = objects.getObject(i);
+        assertEquals(expectedObjects.getObject(i), o);
+      }
     }
   }
 
-  protected abstract void run() throws Exception;
+  public abstract void run() throws Exception;
 
 }

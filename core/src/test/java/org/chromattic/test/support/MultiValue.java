@@ -33,6 +33,10 @@ import java.io.IOException;
  */
 public abstract class MultiValue {
 
+  public static MultiValue safeCreate(Object o) {
+    return o == null ? null : create(o);
+  }
+
   public static MultiValue create(Object o) {
     if (o.getClass().isArray()) {
       return new Array(o);

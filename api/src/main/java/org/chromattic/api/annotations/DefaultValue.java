@@ -17,44 +17,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property;
+package org.chromattic.api.annotations;
 
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Property;
-
-import java.util.Date;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Define the default value of a property. 
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_a")
-public abstract class TP_G {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface DefaultValue {
 
-  @Property(name = "string_property")
-  public abstract List<String> getString();
-
-  public abstract void setString(List<String> s);
-
-  @Property(name = "int_property")
-  public abstract List<Integer> getInt();
-
-  public abstract void setInt(List<Integer> s);
-
-  @Property(name = "long_property")
-  public abstract List<Long> getLong();
-
-  public abstract void setLong(List<Long> s);
-
-  @Property(name = "boolean_property")
-  public abstract List<Boolean> getBoolean();
-
-  public abstract void setBoolean(List<Boolean> s);
-
-  @Property(name = "date_property")
-  public abstract List<Date> getDate();
-
-  public abstract void setDate(List<Date> s);
+  /**
+   * Returns the list of property values as string format.
+   *
+   * @return the list of property values
+   */
+  String[] value() default {};
 
 }

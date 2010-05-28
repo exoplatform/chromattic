@@ -2,3 +2,6 @@ The reference guide.
 
 = Getting started with Chromattic =
 {{include document=gettingstarted.wiki/}}
+
+= Primary type mapping =
+{{include document=primarytypemapping.wiki/}}

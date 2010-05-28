@@ -222,16 +222,41 @@ class PersistentEntityContextState extends EntityContextState {
           values = new Value[]{property.getValue()};
         }
       } else {
-        values = new Value[0];
+        values = null;
       }
 
       //
-      List<V> list = listType.create(vt, values.length);
-      for (int i = 0;i < values.length;i++) {
-        Value value = values[i];
-        V v = vt.get(value);
-        list.set(i, v);
+      List<V> list;
+      if (values != null) {
+        list = listType.create(vt, values.length);
+        for (int i = 0;i < values.length;i++) {
+          Value value = values[i];
+          V v = vt.get(value);
+          list.set(i, v);
+        }
+      } else {
+        List<V> defaultValue = vt.getDefaultValue();
+        if (defaultValue != null) {
+          if (def.isMultiple()) {
+            list = listType.create(vt, defaultValue.size());
+            for (int i = 0;i < defaultValue.size();i++) {
+              V v = defaultValue.get(i);
+              list.set(i, v);
+            }
+          } else {
+            if (defaultValue.size() > 0) {
+              list = listType.create(vt, 1);
+              list.set(0, defaultValue.get(0));
+            } else {
+              list = listType.create(vt, 0);
+            }
+          }
+        } else {
+          list = null;
+        }
       }
+
+      //
       return list;
     }
     catch (RepositoryException e) {

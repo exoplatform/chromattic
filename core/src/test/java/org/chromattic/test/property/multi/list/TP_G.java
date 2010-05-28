@@ -17,8 +17,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property;
+package org.chromattic.test.property.multi.list;
 
+import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
@@ -29,30 +30,35 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_c")
-public abstract class TP_F {
+@PrimaryType(name = "tp_a")
+public abstract class TP_G {
 
-  @Property(name = "string_array_property")
+  @Property(name = "string_property")
+  @DefaultValue
   public abstract List<String> getString();
 
   public abstract void setString(List<String> s);
 
-  @Property(name = "int_array_property")
+  @Property(name = "int_property")
+  @DefaultValue
   public abstract List<Integer> getInt();
 
   public abstract void setInt(List<Integer> s);
 
-  @Property(name = "long_array_property")
+  @Property(name = "long_property")
+  @DefaultValue
   public abstract List<Long> getLong();
 
   public abstract void setLong(List<Long> s);
 
-  @Property(name = "boolean_array_property")
+  @Property(name = "boolean_property")
+  @DefaultValue
   public abstract List<Boolean> getBoolean();
 
   public abstract void setBoolean(List<Boolean> s);
 
-  @Property(name = "date_array_property")
+  @Property(name = "date_property")
+  @DefaultValue
   public abstract List<Date> getDate();
 
   public abstract void setDate(List<Date> s);

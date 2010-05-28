@@ -105,7 +105,7 @@ public class BaseTypeMappingVisitor {
 
             //
             if (valueInfo instanceof SimpleValueInfo) {
-              this.propertyMapping(
+              propertyMapping(
                 definer,
                 (JCRPropertyMapping)memberMapping,
                 (PropertyInfo)propertyInfo);

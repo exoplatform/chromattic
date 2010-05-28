@@ -1,0 +1,97 @@
+= The {{code}}@PrimaryType{{/code}} annotation =
+
+The {{code}}org.chromattic.api.annotations.PrimaryType{{/code}} annotation creates a unique correspondance between
+a Java class and a JCR primary node type. The mapping between an annotated class and the primary type must be unique for
+the JCR node type, therefore it is not possible to have the same node type mapped to more than one class inside the same
+Chromattic application.
+
+= Mapping properties =
+
+Class properties are naturally mapped to JCR node properties via the {{code}}org.chromattic.api.annotations.Property{{/code}}
+annotation.
+
+A JCR property can be either single valued or multi valued depending on its definition and we are able to support
+both kinds in Chromattic. There is also the capability to map a single valued property to a multi valued property, wether
+it is a class or a JCR property.
+
+Finally we will detail the various JCR property value types and their corresponding Java types.
+
+We will study several styles of property mapping.
+
+== Property type mapping ==
+
+=== Corresponding types ===
+
+A few types are the same for Java and JCR, leading to a straightforward mapping between those types:
+
+* String: a {{code}}java.lang.String{{/code}}
+* Boolean: a {{code}}java.lang.Boolean{{/code}}
+* Binary: a {{code}}java.io.InputStream{{/code}}
+
+{{note}}In a future revision, it could be interesting to map the binary type to a java byte array.{{/note}}
+
+=== Numeric types ===
+
+JCR provides two numeric types known as long and double. For each of those types, there is the choice between 
+the corresponding Java primitive type or Java wrapper type. In addition, the more convenient {{code}}int{{/code}}
+and {{code}}java.lang.Integer{{/code}} types can be used. Likewise, the types {{code}}float{{/code}} and
+{{code}}java.lang.Float{{/code}} can be used instead of doubles.
+
+=== Time mapping ===
+
+JCR exposes the {{code}}java.util.Calendar{{/code}} type but is called date, {{code}}Calendar{{/code}} is just the
+type that JCR exposes to manipulate dates. Chromattic uses the {{code}}java.util.Date{{/code}} type.
+
+== Property mapping ==
+
+The {{code}}org.chromattic.api.annotations.Property{{/code}} annotation binds an object to a node property. Our
+{{code}}Page{{/code}} shows several examples of property mapping using the {{code}}@Property{{/code}} annotation.
+This annotation has a mandatory {{code}}name{{/code}} parameter to provide the name of the corresponding JCR
+property. 
+
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getTitle()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getTitle()}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#setTitle(java.lang.String)}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#setTitle(java.lang.String)}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getLastModifiedDate()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getLastModifiedDate()}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#setLastModifiedDate(java.util.Date)}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#setLastModifiedDate(java.util.Date)}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getTags()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getTags()}
+{{/java}}
+
+We show here a quick overview of various mapping styles:
+
+* The title property maps a single valued Java string to a single valued JCR string
+* The last modified date property maps a single valued Java date to a single valued JCR date
+* The tags property maps a multi valued string to a multi valued JCR string
+
+== Single valued property mapping ==
+
+The most common mapping style between a single valued class and node property.
+
+== Multi valued property mapping ==
+
+JCR naturally provide support for multi valued properties, so does Chromattic. Chromattic gives you the choice
+to use either arrays or collections to access data.
+
+== Mixed mapping ==
+
+It can be convenient to map a single valued property to a multi valued property. For instance a multi valued JCR
+ property exposed as a single valued property provides access to the first value of the values.
+
+|                  |JCR single valued|JCR multi valued
+|Java single valued|trivial mapping  |access the first element
+|Java multi valued |a list of size 1 |trivial mapping
+
+The same multi valued JCR property can be exposed both as a single and multi valued property. The multi valued property
+gives access to the complete list of values and the single valued property is useful when the first value needs to be
+accessed.
+
+= Mapping parent child relationships =

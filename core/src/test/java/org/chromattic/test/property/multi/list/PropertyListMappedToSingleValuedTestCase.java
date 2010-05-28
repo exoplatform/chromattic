@@ -17,10 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property;
+package org.chromattic.test.property.multi.list;
 
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.test.property.multi.MultiValuedMappedToSingleValuedTest;
 import org.chromattic.test.support.MultiValue;
 
 import javax.jcr.Node;
@@ -31,17 +32,17 @@ import javax.jcr.PropertyType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
+public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TP_F.class);
+    addClass(TP_G.class);
   }
 
   /** . */
-  private TP_F f;
+  private TP_G g;
 
   /** . */
-  private Node fNode;
+  private Node gNode;
 
   /** . */
   private ValueFactory factory;
@@ -53,17 +54,18 @@ public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    fNode = rootNode.addNode("tp_c_a", "tp_c");
-    f = session.findByNode(TP_F.class, fNode);
+    gNode = rootNode.addNode("tp_d_a", "tp_a");
+    g = session.findByNode(TP_G.class, gNode);
+    assertNotNull(g);
     factory = session.getJCRSession().getValueFactory();
   }
 
   public void testBoolean() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      f,
-      fNode,
-      "boolean_array_property",
+      g,
+      gNode,
+      "boolean_property",
       "getBoolean",
       "setBoolean",
       PropertyType.BOOLEAN,
@@ -72,11 +74,11 @@ public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testInt() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      f,
-      fNode,
-      "int_array_property",
+      g,
+      gNode,
+      "int_property",
       "getInt",
       "setInt",
       PropertyType.LONG,
@@ -85,11 +87,11 @@ public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testLong() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      f,
-      fNode,
-      "long_array_property",
+      g,
+      gNode,
+      "long_property",
       "getLong",
       "setLong",
       PropertyType.LONG,
@@ -98,11 +100,11 @@ public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testString() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      f,
-      fNode,
-      "string_array_property",
+      g,
+      gNode,
+      "string_property",
       "getString",
       "setString",
       PropertyType.STRING,

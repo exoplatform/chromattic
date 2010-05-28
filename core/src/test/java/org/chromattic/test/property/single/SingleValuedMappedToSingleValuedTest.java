@@ -16,24 +16,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.property.single;
 
-package org.chromattic.test.property;
-
+import junit.framework.AssertionFailedError;
 import org.chromattic.test.support.MultiValue;
 import org.chromattic.test.support.EventQueue;
 
 import javax.jcr.ValueFactory;
 import javax.jcr.Node;
-import javax.jcr.Value;
 import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SingleValuedMappedToMultiValuedTest extends AbstractSingleValuedTest {
+public class SingleValuedMappedToSingleValuedTest extends AbstractSingleValuedTest {
 
-  public SingleValuedMappedToMultiValuedTest(
+  public SingleValuedMappedToSingleValuedTest(
     ValueFactory factory,
     Object o,
     Node node,
@@ -46,26 +45,28 @@ public class SingleValuedMappedToMultiValuedTest extends AbstractSingleValuedTes
     super(factory, o, node, propertyName, getterName, setterName, propertyType, values, events);
   }
 
-  protected void run() throws Exception {
+  public void run() throws Exception {
     try {
-      assertNull(getter.invoke(o));
+      assertEquals(null, getter.invoke(o));
       assertFalse(primitive);
     }
     catch (InvocationTargetException e) {
       if (e.getCause() instanceof IllegalStateException) {
         assertTrue(primitive);
       } else {
-        fail();
+        AssertionFailedError afe = new AssertionFailedError();
+        afe.initCause(e);
+        throw afe;
       }
     }
     events.assertEmpty();
 
     //
-    node.setProperty(propertyName, new Value[]{create(values.getObject(0))});
+    node.setProperty(propertyName, create(values.getObject(0)));
     safeValueEquals(values.getObject(0), getter.invoke(o));
     setter.invoke(o, values.getObject(1));
     assertTrue(node.hasProperty(propertyName));
-    safeArrayEquals(values.sub(1), node.getProperty(propertyName).getValues());
+    safeValueEquals(values.getObject(1), node.getProperty(propertyName).getValue());
     events.assertPropertyChangedEvent(node.getUUID(), o, propertyName, values.getObject(1));
     events.assertEmpty();
 

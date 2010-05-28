@@ -17,8 +17,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property;
+package org.chromattic.test.property.multi.array;
 
+import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
@@ -32,41 +33,49 @@ import java.util.Date;
 public abstract class TP_D {
 
   @Property(name = "string_property")
+  @DefaultValue
   public abstract String[] getString();
 
   public abstract void setString(String[] s);
 
   @Property(name = "primitive_int_property")
+  @DefaultValue
   public abstract int[] getPrimitiveInt();
 
   public abstract void setPrimitiveInt(int[] s);
 
   @Property(name = "int_property")
+  @DefaultValue
   public abstract Integer[] getInt();
 
   public abstract void setInt(Integer[] s);
 
   @Property(name = "primitive_long_property")
+  @DefaultValue
   public abstract long[] getPrimitiveLong();
 
   public abstract void setPrimitiveLong(long[] s);
 
   @Property(name = "long_property")
+  @DefaultValue
   public abstract Long[] getLong();
 
   public abstract void setLong(Long[] s);
 
   @Property(name = "primitive_boolean_property")
+  @DefaultValue
   public abstract boolean[] getPrimitiveBoolean();
 
   public abstract void setPrimitiveBoolean(boolean[] s);
 
   @Property(name = "boolean_property")
+  @DefaultValue
   public abstract Boolean[] getBoolean();
 
   public abstract void setBoolean(Boolean[] s);
 
   @Property(name = "date_property")
+  @DefaultValue
   public abstract Date[] getDate();
 
   public abstract void setDate(Date[] s);

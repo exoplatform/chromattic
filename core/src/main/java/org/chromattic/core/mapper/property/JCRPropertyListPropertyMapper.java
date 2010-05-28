@@ -35,7 +35,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyListPropertyMapper<O extends ObjectContext> extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo>, O> {
+public class JCRPropertyListPropertyMapper<O extends ObjectContext, V> extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo<V>>, O> {
 
   /** . */
   private final String jcrPropertyName;
@@ -44,9 +44,16 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext> extends Prop
   private final ListType listType;
 
   /** . */
-  private final SimpleValueInfo<?> elementType;
+  private final SimpleValueInfo<V> elementType;
 
-  public JCRPropertyListPropertyMapper(Class<O> contextType, MultiValuedPropertyInfo<SimpleValueInfo> info, String jcrPropertyName) {
+  /** . */
+  private final ValueType<V> vt;
+
+  public JCRPropertyListPropertyMapper(
+    Class<O> contextType,
+    MultiValuedPropertyInfo<SimpleValueInfo<V>> info,
+    String jcrPropertyName,
+    List<V> defaultValue) {
     super(contextType, info);
 
     //
@@ -63,26 +70,17 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext> extends Prop
     this.listType = listType;
     this.jcrPropertyName = jcrPropertyName;
     this.elementType = info.getValue();
+    this.vt = ValueTypeFactory.create(elementType, defaultValue);
   }
 
   @Override
   public Object get(O context) throws Throwable {
-    return get(context, elementType);
-  }
-
-  private <V> Object get(O context, SimpleValueInfo<V> elementType) throws Throwable {
-    ValueType<V> vt = ValueTypeFactory.create(elementType, null);
     List<V> list = context.getPropertyValues(jcrPropertyName, vt, listType);
-    return listType.unwrap(vt, list);
+    return list == null ? null : listType.unwrap(vt, list);
   }
 
   @Override
   public void set(O context, Object value) throws Throwable {
-    set(context, value, elementType);
-  }
-
-  private <V> void set(O context, Object value, SimpleValueInfo<V> elementType) throws Throwable {
-    ValueType<V> vt = ValueTypeFactory.create(elementType, null);
     List<V> list = listType.wrap(vt, value);
     context.setPropertyValues(jcrPropertyName, vt, listType, list);
   }

@@ -17,13 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property;
+package org.chromattic.test.property.single;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.MultiValue;
 import org.chromattic.test.support.EventQueue;
 import org.chromattic.core.api.ChromatticSessionImpl;
-import org.chromattic.api.NoSuchPropertyException;
 
 import javax.jcr.Node;
 import javax.jcr.ValueFactory;

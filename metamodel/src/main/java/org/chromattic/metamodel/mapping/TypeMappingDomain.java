@@ -116,7 +116,7 @@ public class TypeMappingDomain {
 
   private static <V> JCRPropertyMapping<V> createProperty(String name, SimpleType<V> type, String[] defaultValue) {
     List<V> defaultValueList = null;
-    if (defaultValue.length > 0) {
+    if (defaultValue != null) {
       defaultValueList = new ArrayList<V>(defaultValue.length);
       for (String value : defaultValue) {
         V v = type.toExternal(value);
@@ -236,7 +236,14 @@ public class TypeMappingDomain {
       }
 
       //
-      String[] defaultValues = propertyAnnotation.defaultValue();
+      String[] defaultValues = null;
+      AnnotatedProperty<DefaultValue> defaultValueAnnotated = propertyInfo.getAnnotated(DefaultValue.class);
+      if (defaultValueAnnotated != null) {
+        DefaultValue defaultValueAnnotation = defaultValueAnnotated.getAnnotation();
+        defaultValues = defaultValueAnnotation.value();
+      }
+
+      //
       SimpleType<?> simpleType = simpleValue.getSimpleType();
       JCRPropertyMapping<?> memberMapping = createProperty(propertyAnnotation.name(), simpleType, defaultValues);
       SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(annotatedProperty.getOwner(), memberMapping);

@@ -37,6 +37,7 @@ public abstract class A {
   public abstract void setString(String s);
 
   @Property(name = "strings")
+  @DefaultValue
   public abstract List<String> getStrings();
 
   public abstract void setStrings(List<String> strings);
