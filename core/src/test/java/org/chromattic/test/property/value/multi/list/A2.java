@@ -17,67 +17,44 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.value.multi.array;
+package org.chromattic.test.property.value.multi.list;
 
-import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 @PrimaryType(name = "tp_a")
-public abstract class TP_D {
+public abstract class A2 {
 
   @Property(name = "string_property")
-  @DefaultValue
-  public abstract String[] getString();
+  public abstract List<String> getString();
 
-  public abstract void setString(String[] s);
-
-  @Property(name = "primitive_int_property")
-  @DefaultValue
-  public abstract int[] getPrimitiveInt();
-
-  public abstract void setPrimitiveInt(int[] s);
+  public abstract void setString(List<String> s);
 
   @Property(name = "int_property")
-  @DefaultValue
-  public abstract Integer[] getInt();
+  public abstract List<Integer> getInt();
 
-  public abstract void setInt(Integer[] s);
-
-  @Property(name = "primitive_long_property")
-  @DefaultValue
-  public abstract long[] getPrimitiveLong();
-
-  public abstract void setPrimitiveLong(long[] s);
+  public abstract void setInt(List<Integer> s);
 
   @Property(name = "long_property")
-  @DefaultValue
-  public abstract Long[] getLong();
+  public abstract List<Long> getLong();
 
-  public abstract void setLong(Long[] s);
-
-  @Property(name = "primitive_boolean_property")
-  @DefaultValue
-  public abstract boolean[] getPrimitiveBoolean();
-
-  public abstract void setPrimitiveBoolean(boolean[] s);
+  public abstract void setLong(List<Long> s);
 
   @Property(name = "boolean_property")
-  @DefaultValue
-  public abstract Boolean[] getBoolean();
+  public abstract List<Boolean> getBoolean();
 
-  public abstract void setBoolean(Boolean[] s);
+  public abstract void setBoolean(List<Boolean> s);
 
   @Property(name = "date_property")
-  @DefaultValue
-  public abstract Date[] getDate();
+  public abstract List<Date> getDate();
 
-  public abstract void setDate(Date[] s);
+  public abstract void setDate(List<Date> s);
 
 }

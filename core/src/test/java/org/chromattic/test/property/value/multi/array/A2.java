@@ -19,7 +19,6 @@
 
 package org.chromattic.test.property.value.multi.array;
 
-import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
@@ -29,58 +28,45 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_c")
-public abstract class TP_C {
+@PrimaryType(name = "tp_a")
+public abstract class A2 {
 
-  @Property(name = "string_array_property")
-  @DefaultValue
+  @Property(name = "string_property")
   public abstract String[] getString();
 
   public abstract void setString(String[] s);
 
-  @Property(name = "primitive_int_array_property")
-  @DefaultValue
+  @Property(name = "primitive_int_property")
   public abstract int[] getPrimitiveInt();
 
   public abstract void setPrimitiveInt(int[] s);
 
-  @Property(name = "int_array_property")
-  @DefaultValue
+  @Property(name = "int_property")
   public abstract Integer[] getInt();
 
   public abstract void setInt(Integer[] s);
 
-  @Property(name = "primitive_long_array_property")
-  @DefaultValue
+  @Property(name = "primitive_long_property")
   public abstract long[] getPrimitiveLong();
 
   public abstract void setPrimitiveLong(long[] s);
 
-  @Property(name = "long_array_property")
-  @DefaultValue
+  @Property(name = "long_property")
   public abstract Long[] getLong();
 
   public abstract void setLong(Long[] s);
 
-  @Property(name = "primitive_boolean_array_property")
-  @DefaultValue
+  @Property(name = "primitive_boolean_property")
   public abstract boolean[] getPrimitiveBoolean();
 
   public abstract void setPrimitiveBoolean(boolean[] s);
 
-  @Property(name = "primitive_boolean_array_property")
-  public abstract boolean[] getNullablePrimitiveBoolean();
-
-  public abstract void setNullablePrimitiveBoolean(boolean[] s);
-
-  @Property(name = "boolean_array_property")
-  @DefaultValue
+  @Property(name = "boolean_property")
   public abstract Boolean[] getBoolean();
 
   public abstract void setBoolean(Boolean[] s);
 
-  @Property(name = "date_array_property")
-  @DefaultValue
+  @Property(name = "date_property")
   public abstract Date[] getDate();
 
   public abstract void setDate(Date[] s);

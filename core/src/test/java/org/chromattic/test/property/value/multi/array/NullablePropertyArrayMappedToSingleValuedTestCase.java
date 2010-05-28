@@ -21,25 +21,25 @@ package org.chromattic.test.property.value.multi.array;
 
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.test.property.value.multi.MultiValuedMappedToSingleValuedTest;
+import org.chromattic.test.property.value.multi.NullableMultiValuedMappedToSingleValuedTest;
 import org.chromattic.test.support.MultiValue;
 
 import javax.jcr.Node;
-import javax.jcr.ValueFactory;
 import javax.jcr.PropertyType;
+import javax.jcr.ValueFactory;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase {
+public class NullablePropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(A1.class);
+    addClass(A2.class);
   }
 
   /** . */
-  private A1 d;
+  private A2 d;
 
   /** . */
   private Node dNode;
@@ -55,13 +55,13 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
     dNode = rootNode.addNode("tp_d_a", "tp_a");
-    d = session.findByNode(A1.class, dNode);
+    d = session.findByNode(A2.class, dNode);
     assertNotNull(d);
     factory = session.getJCRSession().getValueFactory();
   }
 
   public void testPrimitiveBoolean() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new NullableMultiValuedMappedToSingleValuedTest(
       factory,
       d,
       dNode,
@@ -74,7 +74,7 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
   }
 
   public void testBoolean() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new NullableMultiValuedMappedToSingleValuedTest(
       factory,
       d,
       dNode,
@@ -87,7 +87,7 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
   }
 
   public void testPrimitiveInt() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new NullableMultiValuedMappedToSingleValuedTest(
       factory,
       d,
       dNode,
@@ -100,7 +100,7 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
   }
 
   public void testInt() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new NullableMultiValuedMappedToSingleValuedTest(
       factory,
       d,
       dNode,
@@ -113,7 +113,7 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
   }
 
   public void testPrimitiveLong() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new NullableMultiValuedMappedToSingleValuedTest(
       factory,
       d,
       dNode,
@@ -126,7 +126,7 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
   }
 
   public void testLong() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new NullableMultiValuedMappedToSingleValuedTest(
       factory,
       d,
       dNode,
@@ -139,7 +139,7 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
   }
 
   public void testString() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new NullableMultiValuedMappedToSingleValuedTest(
       factory,
       d,
       dNode,

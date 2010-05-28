@@ -81,7 +81,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, V> extends P
 
   @Override
   public void set(O context, Object value) throws Throwable {
-    List<V> list = listType.wrap(vt, value);
+    List<V> list = value == null ? null : listType.wrap(vt, value);
     context.setPropertyValues(jcrPropertyName, vt, listType, list);
   }
 }

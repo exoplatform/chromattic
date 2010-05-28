@@ -297,12 +297,12 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
+      int neededType = def.getType();
+
+      //
       if (jcrValue != null) {
-        int neededType = def.getType();
-        if (neededType != PropertyType.UNDEFINED) {
-          if (neededType != jcrValue.getType()) {
-            throw new ClassCastException("Cannot cast type " + jcrValue.getType() + " to type " + neededType + " when setting property " + propertyName);
-          }
+        if (neededType != PropertyType.UNDEFINED && neededType != jcrValue.getType()) {
+          throw new ClassCastException("Cannot cast type " + jcrValue.getType() + " to type " + neededType + " when setting property " + propertyName);
         }
       }
 
@@ -337,11 +337,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, ListType listType, List<V> objects) {
-    if (objects == null) {
-      throw new NullPointerException();
-    }
-
+  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, ListType listType, List<V> propertyValues) {
     try {
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
       if (def == null) {
@@ -349,23 +345,43 @@ class PersistentEntityContextState extends EntityContextState {
           "  with type " + node.getPrimaryNodeType().getName());
       }
 
-      ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
-      Value[] values;
-      int size = objects.size();
-      values = new Value[size];
-      for (int i = 0;i < size;i++) {
-        V element = objects.get(i);
-        values[i] = vt.get(valueFactory, element);
+      //
+      int neededType = def.getType();
+
+      //
+      Value[] jcrValues;
+      if (propertyValues != null) {
+        ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
+        int size = propertyValues.size();
+        jcrValues = new Value[size];
+        for (int i = 0;i < size;i++) {
+          V element = propertyValues.get(i);
+          Value jcrValue = vt.get(valueFactory, element);
+          if (neededType != PropertyType.UNDEFINED && neededType != jcrValue.getType()) {
+            throw new ClassCastException("Cannot cast type " + jcrValue.getType() + " to type " + neededType + " when setting property " + propertyName);
+          }
+          jcrValues[i] = jcrValue;
+        }
+      } else {
+        jcrValues = null;
       }
 
       //
-      if (def.isMultiple()) {
-        node.setProperty(propertyName, values);
+      if (jcrValues != null) {
+        if (def.isMultiple()) {
+          node.setProperty(propertyName, jcrValues);
+        } else {
+          if (jcrValues.length > 1) {
+            throw new IllegalArgumentException("Cannot update with an array of length greater than 1");
+          } else if (jcrValues.length == 1) {
+            node.setProperty(propertyName, jcrValues[0]);
+          } else {
+            node.setProperty(propertyName, (Value)null);
+          }
+        }
       } else {
-        if (values.length > 1) {
-          throw new IllegalArgumentException("Cannot update with an array of length greater than 1");
-        } else if (values.length == 1) {
-          node.setProperty(propertyName, values[0]);
+        if (def.isMultiple()) {
+          node.setProperty(propertyName, (Value[])null);
         } else {
           node.setProperty(propertyName, (Value)null);
         }
