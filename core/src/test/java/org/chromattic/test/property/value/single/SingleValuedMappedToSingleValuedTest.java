@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.property.single;
+package org.chromattic.test.property.value.single;
 
 import junit.framework.AssertionFailedError;
 import org.chromattic.test.support.MultiValue;

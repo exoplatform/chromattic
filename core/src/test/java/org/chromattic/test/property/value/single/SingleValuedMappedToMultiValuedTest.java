@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.single;
+package org.chromattic.test.property.value.single;
 
 import org.chromattic.test.support.MultiValue;
 import org.chromattic.test.support.EventQueue;

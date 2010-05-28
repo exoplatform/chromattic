@@ -17,11 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.multi.list;
+package org.chromattic.test.property.value.multi.array;
 
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.test.property.multi.MultiValuedMappedToSingleValuedTest;
+import org.chromattic.test.property.value.multi.MultiValuedMappedToMultiValuedTest;
 import org.chromattic.test.support.MultiValue;
 
 import javax.jcr.Node;
@@ -32,17 +32,17 @@ import javax.jcr.PropertyType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
+public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TP_G.class);
+    addClass(TP_C.class);
   }
 
   /** . */
-  private TP_G g;
+  private TP_C c;
 
   /** . */
-  private Node gNode;
+  private Node cNode;
 
   /** . */
   private ValueFactory factory;
@@ -54,61 +54,99 @@ public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    gNode = rootNode.addNode("tp_d_a", "tp_a");
-    g = session.findByNode(TP_G.class, gNode);
-    assertNotNull(g);
+    cNode = rootNode.addNode("tp_c_a", "tp_c");
+    c = session.findByNode(TP_C.class, cNode);
     factory = session.getJCRSession().getValueFactory();
   }
 
-  public void testBoolean() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+  public void testPrimitiveBoolean() throws Exception {
+    new MultiValuedMappedToMultiValuedTest(
       factory,
-      g,
-      gNode,
-      "boolean_property",
+      c,
+      cNode,
+      "primitive_boolean_array_property",
+      "getPrimitiveBoolean",
+      "setPrimitiveBoolean",
+      PropertyType.BOOLEAN,
+      new MultiValue.Array(new boolean[]{true, false, true})
+    ).run();
+  }
+
+  public void testBoolean() throws Exception {
+    new MultiValuedMappedToMultiValuedTest(
+      factory,
+      c,
+      cNode,
+      "boolean_array_property",
       "getBoolean",
       "setBoolean",
       PropertyType.BOOLEAN,
-      new MultiValue.List(true, false, true)
+      new MultiValue.Array(new Boolean[]{true, false, true})
+    ).run();
+  }
+
+  public void testPrimitiveInt() throws Exception {
+    new MultiValuedMappedToMultiValuedTest(
+      factory,
+      c,
+      cNode,
+      "primitive_int_array_property",
+      "getPrimitiveInt",
+      "setPrimitiveInt",
+      PropertyType.LONG,
+      new MultiValue.Array(new int[]{0, 1, 2})
     ).run();
   }
 
   public void testInt() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new MultiValuedMappedToMultiValuedTest(
       factory,
-      g,
-      gNode,
-      "int_property",
+      c,
+      cNode,
+      "int_array_property",
       "getInt",
       "setInt",
       PropertyType.LONG,
-      new MultiValue.List(0, 1, 2)
+      new MultiValue.Array(new Integer[]{0, 1, 2})
+    ).run();
+  }
+
+  public void testPrimitiveLong() throws Exception {
+    new MultiValuedMappedToMultiValuedTest(
+      factory,
+      c,
+      cNode,
+      "primitive_long_array_property",
+      "getPrimitiveLong",
+      "setPrimitiveLong",
+      PropertyType.LONG,
+      new MultiValue.Array(new long[]{0, 1, 2})
     ).run();
   }
 
   public void testLong() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new MultiValuedMappedToMultiValuedTest(
       factory,
-      g,
-      gNode,
-      "long_property",
+      c,
+      cNode,
+      "long_array_property",
       "getLong",
       "setLong",
       PropertyType.LONG,
-      new MultiValue.List(0L, 1L, 2L)
+      new MultiValue.Array(new Long[]{0L, 1L, 2L})
     ).run();
   }
 
   public void testString() throws Exception {
-    new MultiValuedMappedToSingleValuedTest(
+    new MultiValuedMappedToMultiValuedTest(
       factory,
-      g,
-      gNode,
-      "string_property",
+      c,
+      cNode,
+      "string_array_property",
       "getString",
       "setString",
       PropertyType.STRING,
-      new MultiValue.List("foo", "bar1", "bar2")
+      new MultiValue.Array(new String[]{"foo", "bar1", "bar2"})
     ).run();
   }
 }

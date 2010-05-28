@@ -17,11 +17,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.single;
+package org.chromattic.test.property.value.multi;
 
 import org.chromattic.test.property.value.AbstractValuedTest;
 import org.chromattic.test.support.MultiValue;
-import org.chromattic.test.support.EventQueue;
 
 import javax.jcr.Node;
 import javax.jcr.ValueFactory;
@@ -30,12 +29,10 @@ import javax.jcr.ValueFactory;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractSingleValuedTest extends AbstractValuedTest {
+public abstract class AbstractMultiValuedTest extends AbstractValuedTest {
 
-  /** . */
-  protected final EventQueue events;
 
-  protected AbstractSingleValuedTest(
+  protected AbstractMultiValuedTest(
     ValueFactory factory,
     Object o,
     Node node,
@@ -43,11 +40,16 @@ public abstract class AbstractSingleValuedTest extends AbstractValuedTest {
     String getterName,
     String setterName,
     int propertyType,
-    MultiValue values,
-    EventQueue events) throws Exception {
-    super(factory, o, node, propertyName, getterName, setterName, propertyType, values);
-
-    //
-    this.events = events;
+    MultiValue values) throws Exception {
+    super(
+      factory,
+      o,
+      node,
+      propertyName,
+      getterName,
+      setterName,
+      propertyType,
+      values);
   }
+
 }

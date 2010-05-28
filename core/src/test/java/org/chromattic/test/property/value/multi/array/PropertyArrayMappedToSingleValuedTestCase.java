@@ -17,11 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.multi.array;
+package org.chromattic.test.property.value.multi.array;
 
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.test.property.multi.MultiValuedMappedToMultiValuedTest;
+import org.chromattic.test.property.value.multi.MultiValuedMappedToSingleValuedTest;
 import org.chromattic.test.support.MultiValue;
 
 import javax.jcr.Node;
@@ -32,17 +32,17 @@ import javax.jcr.PropertyType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
+public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TP_C.class);
+    addClass(TP_D.class);
   }
 
   /** . */
-  private TP_C c;
+  private TP_D d;
 
   /** . */
-  private Node cNode;
+  private Node dNode;
 
   /** . */
   private ValueFactory factory;
@@ -54,17 +54,18 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    cNode = rootNode.addNode("tp_c_a", "tp_c");
-    c = session.findByNode(TP_C.class, cNode);
+    dNode = rootNode.addNode("tp_d_a", "tp_a");
+    d = session.findByNode(TP_D.class, dNode);
+    assertNotNull(d);
     factory = session.getJCRSession().getValueFactory();
   }
 
   public void testPrimitiveBoolean() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      c,
-      cNode,
-      "primitive_boolean_array_property",
+      d,
+      dNode,
+      "primitive_boolean_property",
       "getPrimitiveBoolean",
       "setPrimitiveBoolean",
       PropertyType.BOOLEAN,
@@ -73,11 +74,11 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testBoolean() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      c,
-      cNode,
-      "boolean_array_property",
+      d,
+      dNode,
+      "boolean_property",
       "getBoolean",
       "setBoolean",
       PropertyType.BOOLEAN,
@@ -86,11 +87,11 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testPrimitiveInt() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      c,
-      cNode,
-      "primitive_int_array_property",
+      d,
+      dNode,
+      "primitive_int_property",
       "getPrimitiveInt",
       "setPrimitiveInt",
       PropertyType.LONG,
@@ -99,11 +100,11 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testInt() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      c,
-      cNode,
-      "int_array_property",
+      d,
+      dNode,
+      "int_property",
       "getInt",
       "setInt",
       PropertyType.LONG,
@@ -112,11 +113,11 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testPrimitiveLong() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      c,
-      cNode,
-      "primitive_long_array_property",
+      d,
+      dNode,
+      "primitive_long_property",
       "getPrimitiveLong",
       "setPrimitiveLong",
       PropertyType.LONG,
@@ -125,11 +126,11 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testLong() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      c,
-      cNode,
-      "long_array_property",
+      d,
+      dNode,
+      "long_property",
       "getLong",
       "setLong",
       PropertyType.LONG,
@@ -138,11 +139,11 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testString() throws Exception {
-    new MultiValuedMappedToMultiValuedTest(
+    new MultiValuedMappedToSingleValuedTest(
       factory,
-      c,
-      cNode,
-      "string_array_property",
+      d,
+      dNode,
+      "string_property",
       "getString",
       "setString",
       PropertyType.STRING,
