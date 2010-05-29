@@ -20,26 +20,29 @@ We will study several styles of property mapping.
 
 == Property type mapping ==
 
-=== Corresponding types ===
+=== Variable length types ===
 
-A few types are the same for Java and JCR, leading to a straightforward mapping between those types:
+JCR provides two types to map variable length data.
 
-* String: a {{code}}java.lang.String{{/code}}
-* Boolean: a {{code}}java.lang.Boolean{{/code}}
-* Binary: a {{code}}java.io.InputStream{{/code}}
+* The JCR string type is mapped to the Java {{code}}java.lang.String{{/code}} type.
+* The JCR binary type is mapped to the Java {{code}}java.io.InputStream{{/code}} type.
 
 {{note}}In a future revision, it could be interesting to map the binary type to a java byte array.{{/note}}
 
-=== Numeric types ===
+=== Primitive types ===
 
-JCR provides two numeric types known as long and double. For each of those types, there is the choice between 
-the corresponding Java primitive type or Java wrapper type. In addition, the more convenient {{code}}int{{/code}}
-and {{code}}java.lang.Integer{{/code}} types can be used. Likewise, the types {{code}}float{{/code}} and
-{{code}}java.lang.Float{{/code}} can be used instead of doubles.
+The types {{code}}BOOLEAN{{/code}}, {{code}}LONG{{/code}} and {{code}}DOUBLE{{/code}} are supported by JCR
+and can be mapped to Java primitive types.
 
-=== Time mapping ===
+* The JCR {{code}}BOOLEAN{{/code}} type is mapped to the Java boolean type
+* The JCR {{code}}LONG{{/code}} type is mapped to either the Java int or long type
+* The JCR {{code}}DOUBLE{{/code}} type is mapped to either the Java double or float type
 
-JCR exposes the {{code}}java.util.Calendar{{/code}} type but is called date, {{code}}Calendar{{/code}} is just the
+For each of those types, there is the choice between the corresponding Java primitive type or Java wrapper type.
+
+=== Temporal type ===
+
+JCR exposes the {{code}}java.util.Calendar{{/code}} type but is called {{code}}DATE{{/code}}, {{code}}Calendar{{/code}} is just the
 type that JCR exposes to manipulate dates. Chromattic uses the {{code}}java.util.Date{{/code}} type.
 
 == Property mapping ==
@@ -74,12 +77,42 @@ We show here a quick overview of various mapping styles:
 
 == Single valued property mapping ==
 
-The most common mapping style between a single valued class and node property.
+The most common mapping style between a single valued class and node property. The object property must
+provide at least a setter method or a getter method, probably both in most use cases, those methods must
+use the same java property type. The {{code}}Page{{/code}} title property is the perfect example:
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getTitle()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#setTitle(java.lang.String)}
+{{/java}}
+
+The corresponding JCR node defines a corresponding title property with the string type:
+
+{{xml indent=2}}
+<propertyDefinition name="title" requiredType="STRING" autoCreated="false" mandatory="false" onParentVersion="COPY"
+protected="false" multiple="false">
+  <valueConstraints />
+</propertyDefinition>
+{{/xml}}
+
+The property getter method returns the JCR property value. If the property does not exist, the null value is returned
+when the java property type is not a primitive type. Sometimes it can happen that the JCR property does not exist
+but this property is mapped to a primitive type. When the situation occurs Chromattic throws a {{code}}NullPointerException{{/code}},
+that behavior is similar to what happens when a null value is unboxed to its corresponding primitive type.
+
+The property setter method updates the JCR property value when it is invoked. For non primitive type it is possible to
+remove the property by providing a null argument.
 
 == Multi valued property mapping ==
 
 JCR naturally provide support for multi valued properties, so does Chromattic. Chromattic gives you the choice
-to use either arrays or collections to access data.
+to use either arrays or collections to access data. Primitive arrays can be used when the type mapping allows it.
+
+When a list of values is returned by a getter method, any modification to this list is only visible to this list and
+does not affect the JCR property values. When the JCR property does not exist, a null value is returned to the caller.
+
+To update the values of a JCR property, the property setter has to be invoked. The list of values is read once and
+copied to the corresponding JCR property. If the list is null, it simply delete the property.
 
 == Mixed mapping ==
 
