@@ -32,14 +32,17 @@
   <name>Chromattic Framework Reference Guide</name>
   <description>Chromattic Framework Reference Guide</description>
 
+  <properties>
+    <wikbook.version>0.9.17</wikbook.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.wikbook</groupId>
       <artifactId>wikbook.docbkxstyle</artifactId>
-      <version>0.9.16</version>
+      <version>${wikbook.version}</version>
     </dependency>
 
-    <!--
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.api</artifactId>
@@ -51,7 +54,6 @@
           <version>1.1.0-SNAPSHOT</version>
           <classifier>sources</classifier>
         </dependency>
-    -->
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
@@ -85,7 +87,7 @@
       <plugin>
         <groupId>org.wikbook</groupId>
         <artifactId>wikbook.maven</artifactId>
-        <version>0.9.16</version>
+        <version>${wikbook.version}</version>
         <executions>
           <execution>
             <phase>prepare-package</phase>

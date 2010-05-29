@@ -46,7 +46,7 @@ public abstract class Page {
    * @return the page title
    */
   @Property(name = "title")
-  public abstract String getTitle(); // <1> The title property is mapped the string type
+  public abstract String getTitle();
 
   /**
    * Updates the page title.
@@ -61,7 +61,7 @@ public abstract class Page {
    * @return the date of the last modification
    */
   @Property(name = "lastmodifieddate")
-  public abstract Date getLastModifiedDate(); // <2> the last modified date property is mapped to a java.util.Calendar type
+  public abstract Date getLastModifiedDate();
 
   /**
    * Updates the date of the page last modification.
@@ -71,12 +71,19 @@ public abstract class Page {
   public abstract void setLastModifiedDate(Date date);
 
   /**
-   * Returns the list of tags of the page.
+   * Returns the list of the page tags.
    *
    * @return the list of tags
    */
   @Property(name = "tags")
-  public abstract List<String> getTags(); // <3> the tags property is mapped to a multi valued string type
+  public abstract List<String> getTags(); 
+
+  /**
+   * Update the list of the page tags.
+   *
+   * @param tags the list of tags
+   */
+  public abstract void setTags(List<String> tags);
 
   @OneToMany
   public abstract Collection<Page> getChildren();

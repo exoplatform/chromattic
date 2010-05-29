@@ -12,6 +12,8 @@
 - better remove (no need for navigating everything, use prefix)!!!!
 - @PrimaryType(name = "foo", mixinTypes = {Mixin.class})
 
+- map BNIARY to byte[] 
+
 
 - map Enum on LONG in addition of STRING
 - @Property(cascaded=true|false)

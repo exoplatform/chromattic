@@ -432,6 +432,7 @@
       </activation>
       <build>
         <plugins>
+<!--
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
@@ -454,7 +455,7 @@
                       <phases>deploy,site</phases>
                     </requirePluginVersions>
                     <requireMavenVersion>
-                      <!-- Version 2.0.9 started specifying default versions for all core plugins in the super pom. -->
+                      &lt;!&ndash; Version 2.0.9 started specifying default versions for all core plugins in the super pom. &ndash;&gt;
                       <version>2.0.9</version>
                     </requireMavenVersion>
                   </rules>
@@ -462,6 +463,7 @@
               </execution>
             </executions>
           </plugin>
+-->
         </plugins>
       </build>
     </profile>
