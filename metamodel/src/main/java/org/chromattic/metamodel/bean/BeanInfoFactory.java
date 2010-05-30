@@ -250,7 +250,7 @@ public class BeanInfoFactory {
 
     //
     if (typeInfo instanceof SimpleTypeInfo && ((SimpleTypeInfo)typeInfo).isPrimitive()) {
-      return foo(typeInfo);
+      return new SimpleValueInfo(typeInfo);
     } else {
       switch (typeInfo.getKind()) {
         case CLASS:
@@ -261,12 +261,7 @@ public class BeanInfoFactory {
       }
 
       //
-      return foo(typeInfo);
+      return new SimpleValueInfo(typeInfo);
     }
-  }
-
-  private <E> SimpleValueInfo foo(ClassTypeInfo typeInfo) {
-    SimpleType st = SimpleType.create(typeInfo);
-    return new SimpleValueInfo(typeInfo, st);
   }
 }

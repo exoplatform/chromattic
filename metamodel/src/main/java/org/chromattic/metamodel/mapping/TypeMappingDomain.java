@@ -117,7 +117,6 @@ public class TypeMappingDomain {
 
   private static <V> JCRPropertyMapping createProperty(
     String name,
-    SimpleType type,
     JCRPropertyType jcrType,
     String[] defaultValue) {
 
@@ -249,39 +248,15 @@ public class TypeMappingDomain {
         defaultValues = defaultValueAnnotation.value();
       }
 
-      //
-      SimpleType simpleType = simpleValue.getSimpleType();
-
       // Determine mapping
       JCRPropertyType<?> jcrType = JCRPropertyType.get(propertyAnnotation.type());
       if (jcrType == null) {
-        if (simpleType == SimpleType.STRING) {
-          jcrType = JCRPropertyType.STRING;
-        } else if (simpleType == SimpleType.LONG || simpleType == SimpleType.PRIMITIVE_LONG) {
-          jcrType = JCRPropertyType.LONG;
-        } else if (simpleType == SimpleType.DATE) {
-          jcrType = JCRPropertyType.DATE;
-        } else if (simpleType == SimpleType.BOOLEAN || simpleType == SimpleType.PRIMITIVE_BOOLEAN) {
-          jcrType = JCRPropertyType.BOOLEAN;
-        } else if (simpleType == SimpleType.INTEGER || simpleType == SimpleType.PRIMITIVE_INTEGER) {
-          jcrType = JCRPropertyType.LONG;
-        } else if (simpleType == SimpleType.FLOAT || simpleType == SimpleType.PRIMITIVE_FLOAT) {
-          jcrType = JCRPropertyType.DOUBLE;
-        } else if (simpleType == SimpleType.DOUBLE || simpleType == SimpleType.PRIMITIVE_DOUBLE) {
-          jcrType = JCRPropertyType.DOUBLE;
-        } else if (simpleType == SimpleType.STREAM) {
-          jcrType = JCRPropertyType.BINARY;
-        } else if (simpleType instanceof SimpleType.Enumerated) {
-          jcrType = JCRPropertyType.STRING;
-        } else {
-          throw new InvalidMappingException(javaClass, "Invalid jcr type");
-        }
+        jcrType = simpleValue.getJCRType();
       }
 
       //
       JCRPropertyMapping memberMapping = createProperty(
         propertyAnnotation.name(),
-        simpleType,
         jcrType,
         defaultValues);
       SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(annotatedProperty.getOwner(), memberMapping);
@@ -335,13 +310,13 @@ public class TypeMappingDomain {
           if (vi instanceof SimpleValueInfo) {
             SimpleValueInfo svi = (SimpleValueInfo)vi;
             JCRNodeAttributeMapping memberMapping = new JCRNodeAttributeMapping(nat);
-            SimpleType simpleType = svi.getSimpleType();
+            ClassTypeInfo simpleType = svi.getTypeInfo();
             if (nat == NodeAttributeType.PATH) {
-              if (simpleType != SimpleType.STRING) {
+              if (!simpleType.getName().equals(String.class.getName())) {
                 throw new IllegalStateException("Type " + simpleType + " is not accepted for path attribute mapping");
               }
             } else {
-              if (simpleType != SimpleType.STRING) {
+              if (!simpleType.getName().equals(String.class.getName())) {
                 throw new IllegalStateException("Type " + simpleType + " is not accepted for attribute mapping");
               }
             }
@@ -425,7 +400,7 @@ public class TypeMappingDomain {
             throw new IllegalStateException("Wrong key value type " + mapProperty.getKeyValue());
           }
           SimpleValueInfo svi = (SimpleValueInfo)mapProperty.getKeyValue();
-          if (svi.getSimpleType() != SimpleType.STRING) {
+          if (!svi.getTypeInfo().getName().equals(String.class.getName())) {
             throw new IllegalStateException();
           }
         }

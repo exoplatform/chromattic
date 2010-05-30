@@ -118,8 +118,8 @@ public class BaseTypeMappingVisitor {
               ValueInfo valueInfo = ((SingleValuedPropertyInfo)propertyInfo).getValue();
               if (valueInfo instanceof SimpleValueInfo) {
                 SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
-                SimpleType simpleType = simpleValueInfo.getSimpleType();
-                if (simpleType == SimpleType.STRING) {
+                ClassTypeInfo simpleType = simpleValueInfo.getTypeInfo();
+                if (simpleType.getName().equals(String.class.getName())) {
                   // OK
                 } else {
                   throw new AssertionError(mapping.getType().toString() + " wrong simple type "+ simpleType);
