@@ -70,7 +70,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I> extend
     }
 
     // YES IT'S UGLY BUT FOR NOW IT'S OK
-    ValueType<I, E> vt = (ValueType<I,E>)ValueTypeFactory.create(info.getValue().getSimpleType(), propertyType);
+    ValueType<I, E> vt = (ValueType<I,E>)ValueTypeFactory.create(info.getValue().getTypeInfo(), propertyType);
 
     //
     this.listType = listType;

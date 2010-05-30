@@ -51,7 +51,7 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext, E, I> extends Pr
     super(contextType, info);
 
     // YES IT'S UGLY BUT FOR NOW IT'S OK
-    ValueType<I, E> vt = (ValueType<I,E>)ValueTypeFactory.create(info.getValue().getSimpleType(), jcrType);
+    ValueType<I, E> vt = (ValueType<I,E>)ValueTypeFactory.create(info.getValue().getTypeInfo(), jcrType);
 
     //
     this.jcrPropertyName = jcrPropertyName;
