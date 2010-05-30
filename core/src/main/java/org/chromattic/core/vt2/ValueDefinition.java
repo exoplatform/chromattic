@@ -23,10 +23,12 @@ import org.chromattic.metamodel.bean.SimpleType;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.spi.type.ValueType;
 
-import javax.jcr.*;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -163,65 +165,40 @@ public class ValueDefinition<E> {
     }
   }
 
-  public Value get(ValueFactory factory, E value) throws RepositoryException {
-
-    Object internal = valueType.getInternal(value);
-
-    //
-    switch (jcrType.getCode()) {
-      case PropertyType.STRING:
-        return factory.createValue((String)internal, PropertyType.STRING);
-      case PropertyType.NAME:
-        return factory.createValue((String)internal, PropertyType.NAME);
-      case PropertyType.PATH:
-        return factory.createValue((String)internal, PropertyType.PATH);
-      case PropertyType.BINARY:
-        return factory.createValue((InputStream)internal);
-      case PropertyType.LONG:
-        return factory.createValue((Long)internal);
-      case PropertyType.DOUBLE:
-        return factory.createValue((Double)internal);
-      case PropertyType.DATE:
-        return factory.createValue((Calendar)internal);
-      case PropertyType.BOOLEAN:
-        return factory.createValue((Boolean)internal);
-      default:
-        throw new AssertionError();
+  /**
+   * Converts an external value to a JCR value.
+   *
+   * @param factory the value factory
+   * @param expectedType the expected JCR type
+   * @param value the value to convert
+   * @return the converted value
+   * @throws RepositoryException any repository exception
+   * @throws ClassCastException if the value does not meet the expected type
+   */
+  public Value get(ValueFactory factory, int expectedType, E value) throws RepositoryException, ClassCastException {
+    if (expectedType != PropertyType.UNDEFINED && expectedType != jcrType.getCode()) {
+      throw new ClassCastException("Cannot cast type " + valueType.getExternalType() + " to type " + expectedType);
+    } else {
+      Object internal = valueType.getInternal(value);
+      return jcrType.getValue(factory, internal);
     }
   }
 
-  public E get(Value value) throws RepositoryException {
-
-    int propertyType = value.getType();
-
-    //
-    Object o;
-    switch (propertyType) {
-      case PropertyType.NAME:
-      case PropertyType.PATH:
-      case PropertyType.STRING:
-        o = value.getString();
-        break;
-      case PropertyType.BOOLEAN:
-        o = value.getBoolean();
-        break;
-      case PropertyType.DOUBLE:
-        o = value.getDouble();
-        break;
-      case PropertyType.LONG:
-        o = value.getLong();
-        break;
-      case PropertyType.DATE:
-        o = value.getDate();
-        break;
-      case PropertyType.BINARY:
-        o = value.getStream();
-        break;
-      default:
-        throw new AssertionError("Property type " + propertyType + " not handled");
+  /**
+   * Converts a JCR value to its external representation.
+   *
+   * @param value the value to convert
+   * @return the converted value
+   * @throws RepositoryException any repository exception
+   * @throws ClassCastException if the value type is not the expected type
+   */
+  public E get(Value value) throws RepositoryException, ClassCastException {
+    if (value.getType() == jcrType.getCode()) {
+      Object o = jcrType.getValue(value);
+      return (E)valueType.getExternal(o);
+    } else {
+      throw new ClassCastException();
     }
-
-    return (E)valueType.getExternal(o);
   }
 
 

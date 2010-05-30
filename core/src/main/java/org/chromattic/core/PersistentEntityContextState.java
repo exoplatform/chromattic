@@ -316,20 +316,13 @@ class PersistentEntityContextState extends EntityContextState {
         }
 
         //
+        int expectedType = def.getType();
+
+        //
         ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
-        jcrValue = vt.get(valueFactory, propertyValue);
+        jcrValue = vt.get(valueFactory, expectedType, propertyValue);
       } else {
         jcrValue = null;
-      }
-
-      //
-      int neededType = def.getType();
-
-      //
-      if (jcrValue != null) {
-        if (neededType != PropertyType.UNDEFINED && neededType != jcrValue.getType()) {
-          throw new ClassCastException("Cannot cast type " + jcrValue.getType() + " to type " + neededType + " when setting property " + propertyName);
-        }
       }
 
       //
@@ -377,9 +370,6 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      int neededType = def.getType();
-
-      //
       Value[] jcrValues;
       if (propertyValues != null) {
         ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
@@ -387,10 +377,7 @@ class PersistentEntityContextState extends EntityContextState {
         jcrValues = new Value[size];
         for (int i = 0;i < size;i++) {
           V element = propertyValues.get(i);
-          Value jcrValue = vt.get(valueFactory, element);
-          if (neededType != PropertyType.UNDEFINED && neededType != jcrValue.getType()) {
-            throw new ClassCastException("Cannot cast type " + jcrValue.getType() + " to type " + neededType + " when setting property " + propertyName);
-          }
+          Value jcrValue = vt.get(valueFactory, def.getType(), element);
           jcrValues[i] = jcrValue;
         }
       } else {
