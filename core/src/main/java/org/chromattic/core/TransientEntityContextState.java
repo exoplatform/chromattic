@@ -75,19 +75,19 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt) {
+  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
     throw new IllegalStateException();
   }
 
-  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, ListType listType) {
+  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ListType listType) {
     throw new IllegalStateException();
   }
 
-  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, V o) {
+  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V o) {
     throw new IllegalStateException();
   }
 
-  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, ListType listType, List<V> objects) {
+  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ListType listType, List<V> objects) {
     throw new IllegalStateException();
   }
 

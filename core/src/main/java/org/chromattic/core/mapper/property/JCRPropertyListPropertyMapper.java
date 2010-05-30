@@ -37,7 +37,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyListPropertyMapper<O extends ObjectContext, V> extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo>, O> {
+public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I> extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo>, O> {
 
   /** . */
   private final String jcrPropertyName;
@@ -49,13 +49,13 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, V> extends P
   private final SimpleValueInfo elementType;
 
   /** . */
-  private final ValueDefinition<V> vt;
+  private final ValueDefinition<I, E> vt;
 
   public JCRPropertyListPropertyMapper(
     Class<O> contextType,
     MultiValuedPropertyInfo<SimpleValueInfo> info,
     String jcrPropertyName,
-    JCRPropertyType<V> propertyType,
+    JCRPropertyType<I> propertyType,
     List<String> defaultValue) {
     super(contextType, info);
 
@@ -69,25 +69,25 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, V> extends P
       throw new AssertionError();
     }
 
-    //
-    ValueType vt = ValueTypeFactory.create(info.getValue().getSimpleType(), propertyType);
+    // YES IT'S UGLY BUT FOR NOW IT'S OK
+    ValueType<I, E> vt = (ValueType<I,E>)ValueTypeFactory.create(info.getValue().getSimpleType(), propertyType);
 
     //
     this.listType = listType;
     this.jcrPropertyName = jcrPropertyName;
     this.elementType = info.getValue();
-    this.vt = new ValueDefinition<V>(info.getValue().getSimpleType(), propertyType, vt, defaultValue);
+    this.vt = new ValueDefinition<I, E>(info.getValue().getSimpleType(), propertyType, vt, defaultValue);
   }
 
   @Override
   public Object get(O context) throws Throwable {
-    List<V> list = context.getPropertyValues(jcrPropertyName, vt, listType);
+    List<E> list = context.getPropertyValues(jcrPropertyName, vt, listType);
     return list == null ? null : listType.unwrap(vt, list);
   }
 
   @Override
   public void set(O context, Object value) throws Throwable {
-    List<V> list = value == null ? null : listType.wrap(vt, value);
+    List<E> list = value == null ? null : listType.wrap(vt, value);
     context.setPropertyValues(jcrPropertyName, vt, listType, list);
   }
 }

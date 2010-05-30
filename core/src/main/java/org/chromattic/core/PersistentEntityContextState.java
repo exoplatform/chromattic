@@ -115,7 +115,7 @@ class PersistentEntityContextState extends EntityContextState {
     return typeInfo;
   }
 
-  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt) {
+  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
     try {
       //
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
@@ -157,7 +157,7 @@ class PersistentEntityContextState extends EntityContextState {
 
           // We use the type from the real value itself when no one was provided
           if (vt == null) {
-            vt = (ValueDefinition<V>)ValueDefinition.get(jcrValue.getType());
+            vt = (ValueDefinition<?, V>)ValueDefinition.get(jcrValue.getType());
           }
 
           //
@@ -211,7 +211,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, ListType listType) {
+  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ListType listType) {
     try {
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
       if (def == null) {
@@ -276,7 +276,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, V propertyValue) {
+  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V propertyValue) {
     try {
       //
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
@@ -307,11 +307,11 @@ class PersistentEntityContextState extends EntityContextState {
         if (vt == null) {
 
           // We try first the definition type
-          vt = (ValueDefinition<V>)ValueDefinition.get(def.getType());
+          vt = (ValueDefinition<?, V>)ValueDefinition.get(def.getType());
 
           // We had a undefined type so we are going to use a type based on the provided value
           if (vt == null) {
-            vt = (ValueDefinition<V>)ValueDefinition.get(propertyValue);
+            vt = (ValueDefinition<?, V>)ValueDefinition.get(propertyValue);
           }
         }
 
@@ -356,7 +356,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, ListType listType, List<V> propertyValues) {
+  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ListType listType, List<V> propertyValues) {
     try {
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
       if (def == null) {

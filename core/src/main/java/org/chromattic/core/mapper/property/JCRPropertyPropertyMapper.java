@@ -34,28 +34,28 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyPropertyMapper<O extends ObjectContext, V> extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, O> {
+public class JCRPropertyPropertyMapper<O extends ObjectContext, E, I> extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, O> {
 
   /** . */
   private final String jcrPropertyName;
 
   /** . */
-  private final ValueDefinition<V> vt;
+  private final ValueDefinition<I, E> vt;
 
   public JCRPropertyPropertyMapper(
     Class<O> contextType,
     SingleValuedPropertyInfo<SimpleValueInfo> info,
     String jcrPropertyName,
     List<String> defaultValue,
-    JCRPropertyType<V> jcrType) {
+    JCRPropertyType<I> jcrType) {
     super(contextType, info);
 
-    //
-    ValueType vt = ValueTypeFactory.create(info.getValue().getSimpleType(), jcrType);
+    // YES IT'S UGLY BUT FOR NOW IT'S OK
+    ValueType<I, E> vt = (ValueType<I,E>)ValueTypeFactory.create(info.getValue().getSimpleType(), jcrType);
 
     //
     this.jcrPropertyName = jcrPropertyName;
-    this.vt = new ValueDefinition<V>(info.getValue().getSimpleType(), jcrType, vt, defaultValue);
+    this.vt = new ValueDefinition<I, E>(info.getValue().getSimpleType(), jcrType, vt, defaultValue);
   }
 
   @Override
@@ -63,7 +63,7 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext, V> extends Prope
     return get(context, vt);
   }
 
-  private <V> V get(O context, ValueDefinition<V> d) throws Throwable {
+  private <V> V get(O context, ValueDefinition<?, V> d) throws Throwable {
     return context.getPropertyValue(jcrPropertyName, d);
   }
 
@@ -72,7 +72,7 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext, V> extends Prope
     set(context, vt, o);
   }
 
-  private <V> void set(O context, ValueDefinition<V> vt, Object o) throws Throwable {
+  private <V> void set(O context, ValueDefinition<?, V> vt, Object o) throws Throwable {
     Class<V> javaType = vt.getObjectType();
     V v = javaType.cast(o);
     context.setPropertyValue(jcrPropertyName, vt, v);

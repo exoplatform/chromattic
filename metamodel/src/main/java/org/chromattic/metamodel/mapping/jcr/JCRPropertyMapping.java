@@ -25,7 +25,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMapping extends JCRMemberMapping {
+public class JCRPropertyMapping<I> extends JCRMemberMapping {
 
   /** . */
   private final String name;
@@ -34,15 +34,15 @@ public class JCRPropertyMapping extends JCRMemberMapping {
   private final List<String> defaultValue;
 
   /** . */
-  private final JCRPropertyType jcrType;
+  private final JCRPropertyType<I> jcrType;
 
-  public JCRPropertyMapping(String name, JCRPropertyType jcrType, List<String> defaultValue) {
+  public JCRPropertyMapping(String name, JCRPropertyType<I> jcrType, List<String> defaultValue) {
     this.name = name;
     this.jcrType = jcrType;
     this.defaultValue = defaultValue;
   }
 
-  public JCRPropertyType getJCRType() {
+  public JCRPropertyType<I> getJCRType() {
     return jcrType;
   }
 

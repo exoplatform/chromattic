@@ -221,7 +221,7 @@ public class MapperBuilder {
           //
           if (jcrMember instanceof JCRPropertyMapping) {
             JCRPropertyMapping jcrProperty = (JCRPropertyMapping)jcrMember;
-            JCRPropertyPropertyMapper<C, ?> mapper = createPropertyPM(contextType, pm, jcrProperty);
+            JCRPropertyPropertyMapper<C, ?, ?> mapper = createPropertyPM(contextType, pm, jcrProperty);
             propertyMappers.add(mapper);
           } else if (jcrMember instanceof JCRNodeAttributeMapping) {
             JCRNodeAttributeMapping nam = (JCRNodeAttributeMapping)jcrMember;
@@ -349,7 +349,7 @@ public class MapperBuilder {
           //
           if (jcrMember instanceof JCRPropertyMapping) {
             JCRPropertyMapping jcrProperty = (JCRPropertyMapping)jcrMember;
-            JCRPropertyListPropertyMapper<C, ?> mapper = createPropertyListPM(contextType, pm, jcrProperty);
+            JCRPropertyListPropertyMapper<C, ?, ?> mapper = createPropertyListPM(contextType, pm, jcrProperty);
             propertyMappers.add(mapper);
           }
         } else if (pmvm instanceof PropertyMapMapping) {
@@ -478,11 +478,11 @@ public class MapperBuilder {
     return mapper;
   }
 
-  private <C extends ObjectContext, V> JCRPropertyPropertyMapper<C, V> createPropertyPM(
+  private <C extends ObjectContext, V, I> JCRPropertyPropertyMapper<C, V, I> createPropertyPM(
     Class<C> contextType,
     PropertyMapping<?> pm,
-    JCRPropertyMapping jcrProperty) {
-    return new JCRPropertyPropertyMapper<C, V>(
+    JCRPropertyMapping<I> jcrProperty) {
+    return new JCRPropertyPropertyMapper<C, V, I>(
       contextType,
       (SingleValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(),
       jcrProperty.getName(),
@@ -490,11 +490,11 @@ public class MapperBuilder {
       jcrProperty.getJCRType());
   }
 
-  private static <C extends ObjectContext, V> JCRPropertyListPropertyMapper<C, V> createPropertyListPM(
+  private static <C extends ObjectContext, V, I> JCRPropertyListPropertyMapper<C, V, I> createPropertyListPM(
     Class<C> contextType,
     PropertyMapping<?> pm,
-    JCRPropertyMapping jcrProperty) {
-    return new JCRPropertyListPropertyMapper<C, V>(
+    JCRPropertyMapping<I> jcrProperty) {
+    return new JCRPropertyListPropertyMapper<C, V, I>(
       contextType,
       (MultiValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(),
       jcrProperty.getName(),

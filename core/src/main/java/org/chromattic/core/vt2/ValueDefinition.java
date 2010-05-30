@@ -36,9 +36,9 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ValueDefinition<E> {
+public class ValueDefinition<I, E> {
 
-  public static ValueDefinition<?> get(Object o) {
+  public static ValueDefinition<?, ?> get(Object o) {
     int code;
     if (o instanceof String) {
       code = PropertyType.STRING;
@@ -62,52 +62,52 @@ public class ValueDefinition<E> {
     return get(code);
   }
 
-  public static ValueDefinition<?> get(int code) {
+  public static ValueDefinition<?, ?> get(int code) {
     switch (code) {
       case PropertyType.STRING:
-        return new ValueDefinition<String>(
+        return new ValueDefinition<String, String>(
           SimpleType.STRING,
           JCRPropertyType.STRING,
           SimpleValueTypes.STRING,
           null
         );
       case PropertyType.PATH:
-        return new ValueDefinition<String>(
+        return new ValueDefinition<String, String>(
           SimpleType.STRING,
           JCRPropertyType.PATH,
           SimpleValueTypes.PATH,
           null
         );
       case PropertyType.NAME:
-        return new ValueDefinition<String>(
+        return new ValueDefinition<String, String>(
           SimpleType.STRING,
           JCRPropertyType.NAME,
           SimpleValueTypes.NAME,
           null
         );
       case PropertyType.LONG:
-        return new ValueDefinition<Long>(
+        return new ValueDefinition<Long, Long>(
           SimpleType.LONG,
           JCRPropertyType.LONG,
           SimpleValueTypes.LONG,
           null
         );
       case PropertyType.BOOLEAN:
-        return new ValueDefinition<Boolean>(
+        return new ValueDefinition<Boolean, Boolean>(
           SimpleType.BOOLEAN,
           JCRPropertyType.BOOLEAN,
           SimpleValueTypes.BOOLEAN,
           null
         );
       case PropertyType.DOUBLE:
-        return new ValueDefinition<Double>(
+        return new ValueDefinition<Double, Double>(
           SimpleType.DOUBLE,
           JCRPropertyType.DOUBLE,
           SimpleValueTypes.DOUBLE,
           null
         );
       case PropertyType.BINARY:
-        return new ValueDefinition<InputStream>(
+        return new ValueDefinition<InputStream, InputStream>(
           SimpleType.STREAM,
           JCRPropertyType.BINARY,
           SimpleValueTypes.BINARY,
@@ -124,18 +124,18 @@ public class ValueDefinition<E> {
   private final SimpleType simpleType;
 
   /** . */
-  private final ValueType valueType;
+  private final ValueType<I, E> valueType;
 
   /** . */
   private final List<String> defaultValue;
 
   /** . */
-  private final JCRPropertyType jcrType;
+  private final JCRPropertyType<I> jcrType;
 
   public ValueDefinition(
     SimpleType simpleType,
-    JCRPropertyType jcrType,
-    ValueType<?, E> valueType,
+    JCRPropertyType<I> jcrType,
+    ValueType<I, E> valueType,
     List<String> defaultValue) {
     this.simpleType = simpleType;
     this.valueType = valueType;
@@ -179,7 +179,7 @@ public class ValueDefinition<E> {
     if (expectedType != PropertyType.UNDEFINED && expectedType != jcrType.getCode()) {
       throw new ClassCastException("Cannot cast type " + valueType.getExternalType() + " to type " + expectedType);
     } else {
-      Object internal = valueType.getInternal(value);
+      I internal = valueType.getInternal(value);
       return jcrType.getValue(factory, internal);
     }
   }
@@ -194,8 +194,8 @@ public class ValueDefinition<E> {
    */
   public E get(Value value) throws RepositoryException, ClassCastException {
     if (value.getType() == jcrType.getCode()) {
-      Object o = jcrType.getValue(value);
-      return (E)valueType.getExternal(o);
+      I internal = jcrType.getValue(value);
+      return valueType.getExternal(internal);
     } else {
       throw new ClassCastException();
     }
