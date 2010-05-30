@@ -49,6 +49,11 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.spi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
       <artifactId>chromattic.common</artifactId>
     </dependency>
 
@@ -70,13 +75,11 @@
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.core</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.jlr</artifactId>
-      <scope>test</scope>
     </dependency>
 
   </dependencies>

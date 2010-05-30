@@ -17,10 +17,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.vt2;
+package org.chromattic.spi.type;
 
 import org.chromattic.api.TypeConversionException;
-import org.chromattic.spi.type.ValueType;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -34,7 +33,10 @@ import java.util.Date;
  */
 public class SimpleValueTypes {
 
-  public static ValueType.STRING<String> STRING = new ValueType.STRING<String>() {
+  private SimpleValueTypes() {
+  }
+
+  public final static class STRING extends ValueType.STRING<String> {
     @Override
     public String getInternal(String s) {
       return s;
@@ -55,9 +57,9 @@ public class SimpleValueTypes {
     public Class<String> getExternalType() {
       return String.class;
     }
-  };
+  }
 
-  public static ValueType.PATH<String> PATH = new ValueType.PATH<String>() {
+  public final static class PATH extends ValueType.PATH<String> {
     @Override
     public String getInternal(String s) {
       return s;
@@ -78,9 +80,9 @@ public class SimpleValueTypes {
     public Class<String> getExternalType() {
       return String.class;
     }
-  };
+  }
 
-  public static ValueType.NAME<String> NAME = new ValueType.NAME<String>() {
+  public static final class NAME extends ValueType.NAME<String> {
     @Override
     public String getInternal(String s) {
       return s;
@@ -101,9 +103,9 @@ public class SimpleValueTypes {
     public Class<String> getExternalType() {
       return String.class;
     }
-  };
+  }
 
-  public static ValueType.LONG<Integer> INTEGER = new ValueType.LONG<Integer>() {
+  public static final class INTEGER extends ValueType.LONG<Integer> {
     @Override
     public Long getInternal(Integer external) {
       return (long)external;
@@ -124,9 +126,9 @@ public class SimpleValueTypes {
     public Class<Integer> getExternalType() {
       return Integer.class;
     }
-  };
+  }
 
-  public static ValueType.LONG<Integer> PRIMITIVE_INTEGER = new ValueType.LONG<Integer>() {
+  public static final class PRIMITIVE_INTEGER extends ValueType.LONG<Integer> {
     @Override
     public Long getInternal(Integer external) {
       return (long)external;
@@ -147,9 +149,9 @@ public class SimpleValueTypes {
     public Class<Integer> getExternalType() {
       return Integer.class;
     }
-  };
+  }
 
-  public static ValueType.LONG<Long> LONG = new ValueType.LONG<Long>() {
+  public static final class LONG extends ValueType.LONG<Long> {
     @Override
     public Long getInternal(Long external) {
       return external;
@@ -171,9 +173,9 @@ public class SimpleValueTypes {
     public Class<Long> getExternalType() {
       return Long.class;
     }
-  };
+  }
 
-  public static ValueType.LONG<Long> PRIMITIVE_LONG = new ValueType.LONG<Long>() {
+  public static final class PRIMITIVE_LONG extends ValueType.LONG<Long> {
     @Override
     public Long getInternal(Long external) {
       return (long)external;
@@ -194,9 +196,9 @@ public class SimpleValueTypes {
     public Class<Long> getExternalType() {
       return Long.class;
     }
-  };
+  }
 
-  public static ValueType.DOUBLE<Double> DOUBLE = new ValueType.DOUBLE<Double>() {
+  public static final class DOUBLE extends ValueType.DOUBLE<Double> {
     @Override
     public Double getInternal(Double external) {
       return external;
@@ -217,9 +219,9 @@ public class SimpleValueTypes {
     public Class<Double> getExternalType() {
       return Double.class;
     }
-  };
+  }
 
-  public static ValueType.DOUBLE<Double> PRIMITIVE_DOUBLE = new ValueType.DOUBLE<Double>() {
+  public static final class PRIMITIVE_DOUBLE extends ValueType.DOUBLE<Double> {
     @Override
     public Double getInternal(Double external) {
       return external;
@@ -240,9 +242,9 @@ public class SimpleValueTypes {
     public Class<Double> getExternalType() {
       return Double.class;
     }
-  };
+  }
 
-  public static ValueType.DOUBLE<Float> FLOAT = new ValueType.DOUBLE<Float>() {
+  public static final class FLOAT extends ValueType.DOUBLE<Float> {
     @Override
     public Double getInternal(Float external) {
       return (double)(float)external;
@@ -263,9 +265,9 @@ public class SimpleValueTypes {
     public Class<Float> getExternalType() {
       return Float.class;
     }
-  };
+  }
 
-  public static ValueType.DOUBLE<Float> PRIMITIVE_FLOAT = new ValueType.DOUBLE<Float>() {
+  public static final class PRIMITIVE_FLOAT extends ValueType.DOUBLE<Float> {
     @Override
     public Double getInternal(Float external) {
       return (double)(float)external;
@@ -286,9 +288,9 @@ public class SimpleValueTypes {
     public Class<Float> getExternalType() {
       return Float.class;
     }
-  };
+  }
 
-  public static ValueType.BOOLEAN<Boolean> BOOLEAN = new ValueType.BOOLEAN<Boolean>() {
+  public static final class BOOLEAN extends ValueType.BOOLEAN<Boolean> {
     @Override
     public Boolean getInternal(Boolean external) {
       return external;
@@ -309,9 +311,9 @@ public class SimpleValueTypes {
     public Class<Boolean> getExternalType() {
       return Boolean.class;
     }
-  };
+  }
 
-  public static ValueType.BOOLEAN<Boolean> PRIMITIVE_BOOLEAN = new ValueType.BOOLEAN<Boolean>() {
+  public static final class PRIMITIVE_BOOLEAN extends ValueType.BOOLEAN<Boolean> {
     @Override
     public Boolean getInternal(Boolean external) {
       return external;
@@ -332,9 +334,9 @@ public class SimpleValueTypes {
     public Class<Boolean> getExternalType() {
       return Boolean.class;
     }
-  };
+  }
 
-  public static ValueType.BINARY<InputStream> BINARY = new ValueType.BINARY<java.io.InputStream>() {
+  public static final class BINARY extends ValueType.BINARY<java.io.InputStream> {
     @Override
     public InputStream getInternal(InputStream inputStream) {
       return inputStream;
@@ -355,9 +357,9 @@ public class SimpleValueTypes {
     public Class<InputStream> getExternalType() {
       return InputStream.class;
     }
-  };
+  }
 
-  public static ValueType.DATE<Date> DATE = new ValueType.DATE<Date>() {
+  public static final class DATE extends ValueType.DATE<Date> {
     @Override
     public Calendar getInternal(Date date) {
       Calendar calendar = Calendar.getInstance();
@@ -387,5 +389,5 @@ public class SimpleValueTypes {
     public Class<Date> getExternalType() {
       return Date.class;
     }
-  };
+  }
 }

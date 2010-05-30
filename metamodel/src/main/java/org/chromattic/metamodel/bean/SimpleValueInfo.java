@@ -20,13 +20,18 @@
 package org.chromattic.metamodel.bean;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.SimpleValueTypes;
+import org.chromattic.spi.type.ValueType;
 import org.reflext.api.ClassKind;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.core.TypeDomain;
+import org.reflext.jlr.JavaLangReflectMethodModel;
+import org.reflext.jlr.JavaLangReflectTypeModel;
 
 import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -34,24 +39,45 @@ import java.util.Map;
  */
 public class SimpleValueInfo extends ValueInfo {
 
+  private static final TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(
+    new JavaLangReflectTypeModel(),
+    new JavaLangReflectMethodModel()
+  );
+
   /** . */
-  private static final Map<String, JCRPropertyType<?>> typeMapping = new HashMap<String, JCRPropertyType<?>>();
+  private static final Map<String, ClassTypeInfo> typeMapping = new HashMap<String, ClassTypeInfo>();
+
+  /** . */
+  private static final Map<JCRPropertyType<?>, ClassTypeInfo> jcrTypes = new HashMap<JCRPropertyType<?>, ClassTypeInfo>();
 
   static {
-    typeMapping.put(int.class.getName(), JCRPropertyType.LONG);
-    typeMapping.put(Integer.class.getName(), JCRPropertyType.LONG);
-    typeMapping.put(long.class.getName(), JCRPropertyType.LONG);
-    typeMapping.put(Long.class.getName(), JCRPropertyType.LONG);
-    typeMapping.put(boolean.class.getName(), JCRPropertyType.BOOLEAN);
-    typeMapping.put(Boolean.class.getName(), JCRPropertyType.BOOLEAN);
-    typeMapping.put(float.class.getName(), JCRPropertyType.DOUBLE);
-    typeMapping.put(Float.class.getName(), JCRPropertyType.DOUBLE);
-    typeMapping.put(double.class.getName(), JCRPropertyType.DOUBLE);
-    typeMapping.put(Double.class.getName(), JCRPropertyType.DOUBLE);
-    typeMapping.put(String.class.getName(), JCRPropertyType.STRING);
-    typeMapping.put(InputStream.class.getName(), JCRPropertyType.BINARY);
-    typeMapping.put(Date.class.getName(), JCRPropertyType.DATE);
+    typeMapping.put(int.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.PRIMITIVE_INTEGER.class));
+    typeMapping.put(Integer.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.INTEGER.class));
+    typeMapping.put(long.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.PRIMITIVE_LONG.class));
+    typeMapping.put(Long.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.LONG.class));
+    typeMapping.put(boolean.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.PRIMITIVE_BOOLEAN.class));
+    typeMapping.put(Boolean.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.BOOLEAN.class));
+    typeMapping.put(float.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.PRIMITIVE_FLOAT.class));
+    typeMapping.put(Float.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.FLOAT.class));
+    typeMapping.put(double.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.PRIMITIVE_DOUBLE.class));
+    typeMapping.put(Double.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.DOUBLE.class));
+    typeMapping.put(String.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.STRING.class));
+    typeMapping.put(InputStream.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.BINARY.class));
+    typeMapping.put(Date.class.getName(), (ClassTypeInfo)typeDomain.getType(SimpleValueTypes.DATE.class));
+
+    //
+    jcrTypes.put(JCRPropertyType.STRING, (ClassTypeInfo)typeDomain.getType(ValueType.STRING.class));
+    jcrTypes.put(JCRPropertyType.PATH, (ClassTypeInfo)typeDomain.getType(ValueType.PATH.class));
+    jcrTypes.put(JCRPropertyType.NAME, (ClassTypeInfo)typeDomain.getType(ValueType.NAME.class));
+    jcrTypes.put(JCRPropertyType.LONG, (ClassTypeInfo)typeDomain.getType(ValueType.LONG.class));
+    jcrTypes.put(JCRPropertyType.DOUBLE, (ClassTypeInfo)typeDomain.getType(ValueType.DOUBLE.class));
+    jcrTypes.put(JCRPropertyType.BOOLEAN, (ClassTypeInfo)typeDomain.getType(ValueType.BOOLEAN.class));
+    jcrTypes.put(JCRPropertyType.BINARY, (ClassTypeInfo)typeDomain.getType(ValueType.BINARY.class));
+    jcrTypes.put(JCRPropertyType.DATE, (ClassTypeInfo)typeDomain.getType(ValueType.DATE.class));
   }
+
+  /** The value type info as defined by the type. */
+//  private final ClassTypeInfo valueTypeInfo;
 
   /** . */
   private final JCRPropertyType<?> jcrType;
@@ -60,11 +86,17 @@ public class SimpleValueInfo extends ValueInfo {
     super(typeInfo);
 
     //
-    JCRPropertyType<?> jcrType;
+    JCRPropertyType<?> jcrType = null;
     if (typeInfo.getKind() == ClassKind.ENUM) {
       jcrType = JCRPropertyType.STRING;
     } else {
-      jcrType = typeMapping.get(typeInfo.getName());
+      ClassTypeInfo valueTypeInfo = typeMapping.get(typeInfo.getName());
+      for (Map.Entry<JCRPropertyType<?>, ClassTypeInfo> entry : jcrTypes.entrySet()) {
+        if (valueTypeInfo.isSubType(entry.getValue())) {
+          jcrType = entry.getKey();
+          break;
+        }
+      }
     }
 
     //

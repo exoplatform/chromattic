@@ -20,6 +20,7 @@
 package org.chromattic.core.vt2;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.SimpleValueTypes;
 import org.chromattic.spi.type.ValueType;
 
 import javax.jcr.PropertyType;
@@ -67,49 +68,49 @@ public class ValueDefinition<I, E> {
         return new ValueDefinition<String, String>(
           String.class,
           JCRPropertyType.STRING,
-          SimpleValueTypes.STRING,
+          new SimpleValueTypes.STRING(),
           null
         );
       case PropertyType.PATH:
         return new ValueDefinition<String, String>(
           String.class,
           JCRPropertyType.PATH,
-          SimpleValueTypes.PATH,
+          new SimpleValueTypes.PATH(),
           null
         );
       case PropertyType.NAME:
         return new ValueDefinition<String, String>(
           String.class,
           JCRPropertyType.NAME,
-          SimpleValueTypes.NAME,
+          new SimpleValueTypes.NAME(),
           null
         );
       case PropertyType.LONG:
         return new ValueDefinition<Long, Long>(
           Long.class,
           JCRPropertyType.LONG,
-          SimpleValueTypes.LONG,
+          new SimpleValueTypes.LONG(),
           null
         );
       case PropertyType.BOOLEAN:
         return new ValueDefinition<Boolean, Boolean>(
           Boolean.class,
           JCRPropertyType.BOOLEAN,
-          SimpleValueTypes.BOOLEAN,
+          new SimpleValueTypes.BOOLEAN(),
           null
         );
       case PropertyType.DOUBLE:
         return new ValueDefinition<Double, Double>(
           Double.class,
           JCRPropertyType.DOUBLE,
-          SimpleValueTypes.DOUBLE,
+          new SimpleValueTypes.DOUBLE(),
           null
         );
       case PropertyType.BINARY:
         return new ValueDefinition<InputStream, InputStream>(
           InputStream.class,
           JCRPropertyType.BINARY,
-          SimpleValueTypes.BINARY,
+          new SimpleValueTypes.BINARY(),
           null
         );
       case PropertyType.UNDEFINED:
