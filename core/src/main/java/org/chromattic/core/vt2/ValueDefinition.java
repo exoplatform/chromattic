@@ -19,7 +19,6 @@
 
 package org.chromattic.core.vt2;
 
-import org.chromattic.metamodel.bean.SimpleType;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.spi.type.ValueType;
 
@@ -66,49 +65,49 @@ public class ValueDefinition<I, E> {
     switch (code) {
       case PropertyType.STRING:
         return new ValueDefinition<String, String>(
-          SimpleType.STRING,
+          String.class,
           JCRPropertyType.STRING,
           SimpleValueTypes.STRING,
           null
         );
       case PropertyType.PATH:
         return new ValueDefinition<String, String>(
-          SimpleType.STRING,
+          String.class,
           JCRPropertyType.PATH,
           SimpleValueTypes.PATH,
           null
         );
       case PropertyType.NAME:
         return new ValueDefinition<String, String>(
-          SimpleType.STRING,
+          String.class,
           JCRPropertyType.NAME,
           SimpleValueTypes.NAME,
           null
         );
       case PropertyType.LONG:
         return new ValueDefinition<Long, Long>(
-          SimpleType.LONG,
+          Long.class,
           JCRPropertyType.LONG,
           SimpleValueTypes.LONG,
           null
         );
       case PropertyType.BOOLEAN:
         return new ValueDefinition<Boolean, Boolean>(
-          SimpleType.BOOLEAN,
+          Boolean.class,
           JCRPropertyType.BOOLEAN,
           SimpleValueTypes.BOOLEAN,
           null
         );
       case PropertyType.DOUBLE:
         return new ValueDefinition<Double, Double>(
-          SimpleType.DOUBLE,
+          Double.class,
           JCRPropertyType.DOUBLE,
           SimpleValueTypes.DOUBLE,
           null
         );
       case PropertyType.BINARY:
         return new ValueDefinition<InputStream, InputStream>(
-          SimpleType.STREAM,
+          InputStream.class,
           JCRPropertyType.BINARY,
           SimpleValueTypes.BINARY,
           null
@@ -121,7 +120,7 @@ public class ValueDefinition<I, E> {
   }
 
   /** . */
-  private final SimpleType simpleType;
+  private final Class realType;
 
   /** . */
   private final ValueType<I, E> valueType;
@@ -133,22 +132,18 @@ public class ValueDefinition<I, E> {
   private final JCRPropertyType<I> jcrType;
 
   public ValueDefinition(
-    SimpleType simpleType,
+    Class realType,
     JCRPropertyType<I> jcrType,
     ValueType<I, E> valueType,
     List<String> defaultValue) {
-    this.simpleType = simpleType;
+    this.realType = realType;
     this.valueType = valueType;
     this.defaultValue = defaultValue;
     this.jcrType = jcrType;
   }
 
   public boolean isPrimitive() {
-    if (simpleType instanceof SimpleType.Base) {
-      return ((SimpleType.Base)simpleType).isPrimitive();
-    } else {
-      return false;
-    }
+    return realType.isPrimitive();
   }
 
   public List<E> getDefaultValue() {
@@ -203,11 +198,7 @@ public class ValueDefinition<I, E> {
 
 
   public Class<?> getRealType() {
-    if (simpleType instanceof SimpleType.Base) {
-      return ((SimpleType.Base)simpleType).getRealType();
-    } else {
-      return valueType.getExternalType();
-    }
+    return realType;
   }
 
   public Class<E> getObjectType() {
