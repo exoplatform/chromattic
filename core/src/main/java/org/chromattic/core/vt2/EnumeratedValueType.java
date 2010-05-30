@@ -17,30 +17,33 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.vt;
+package org.chromattic.core.vt2;
 
-import java.util.List;
+import org.chromattic.api.TypeConversionException;
+import org.chromattic.spi.type.ValueType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class StringEnumValueType<E extends Enum<E>> extends BaseValueType.STRING<E> {
+public class EnumeratedValueType<E extends Enum<E>> extends ValueType.STRING<E> {
 
   /** . */
   private final Class<E> externalType;
 
-  public StringEnumValueType(List<E> defaultValues, Class<E> externalType) {
-    super(defaultValues, externalType, externalType);
-
-    //
+  public EnumeratedValueType(Class<E> externalType) {
     this.externalType = externalType;
   }
 
   @Override
-  public E toExternal(String internal) {
+  public String getInternal(E e) throws TypeConversionException {
+    return e.name();
+  }
+
+  @Override
+  public E getExternal(String s) throws TypeConversionException {
     try {
-      return Enum.valueOf(externalType, internal);
+      return Enum.valueOf(externalType, s);
     }
     catch (IllegalArgumentException e) {
       throw new IllegalStateException("Enum value cannot be determined from the stored value", e);
@@ -48,7 +51,17 @@ public class StringEnumValueType<E extends Enum<E>> extends BaseValueType.STRING
   }
 
   @Override
-  public String toInternal(E external) {
-    return external.name();
+  public E fromString(String s) throws TypeConversionException {
+    return getExternal(s);
+  }
+
+  @Override
+  public String toString(E e) throws TypeConversionException {
+    return getInternal(e);
+  }
+
+  @Override
+  public Class<E> getExternalType() {
+    return externalType;
   }
 }

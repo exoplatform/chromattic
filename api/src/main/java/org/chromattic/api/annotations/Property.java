@@ -41,4 +41,13 @@ public @interface Property {
    */
   String name();
 
+  /**
+   * Specify the property type of the mapped property, the value must be a legal value referenced by
+   * {@code javax.jcr.PropertyType}. The default value returned is -1 which means that the value is guessed
+   * by Chromattic according to the type of the annotated property.
+   *
+   * @return the property type value.
+   */
+  int type() default -1;
+
 }

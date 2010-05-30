@@ -19,7 +19,7 @@
 package org.chromattic.core;
 
 import org.chromattic.common.collection.wrapped.WrappedArrayList;
-import org.chromattic.core.vt.ValueType;
+import org.chromattic.core.vt2.ValueDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +30,16 @@ import java.util.List;
  */
 public abstract class ListType {
 
-  public abstract <E> List<E> create(ValueType<E> elementType, int size);
+  public abstract <E> List<E> create(ValueDefinition<E> elementType, int size);
 
-  public abstract <E> Object unwrap(ValueType<E> elementType, List<E> list);
+  public abstract <E> Object unwrap(ValueDefinition<E> elementType, List<E> list);
 
-  public abstract <E> List<E> wrap(ValueType<E> elementType, Object array);
+  public abstract <E> List<E> wrap(ValueDefinition<E> elementType, Object array);
 
   public static final ListType ARRAY = new ListType() {
 
     @Override
-    public <E> List<E> create(ValueType<E> elementType, int size) {
+    public <E> List<E> create(ValueDefinition<E> elementType, int size) {
       return WrappedArrayList.create(
         elementType.getObjectType(),
         elementType.getRealType(),
@@ -47,12 +47,12 @@ public abstract class ListType {
     }
 
     @Override
-    public <E> List<E> wrap(ValueType<E> elementType, Object array) {
+    public <E> List<E> wrap(ValueDefinition<E> elementType, Object array) {
       return WrappedArrayList.wrap(elementType.getObjectType(), array);
     }
 
     @Override
-    public <E> Object unwrap(ValueType<E> elementType, List<E> list) {
+    public <E> Object unwrap(ValueDefinition<E> elementType, List<E> list) {
       return ((WrappedArrayList)list).getArray();
     }
   };
@@ -60,7 +60,7 @@ public abstract class ListType {
   public static final ListType LIST = new ListType() {
 
     @Override
-    public <E> List<E> create(ValueType<E> elementType, int size) {
+    public <E> List<E> create(ValueDefinition<E> elementType, int size) {
       ArrayList<E> list = new ArrayList<E>(size);
       for (int i = 0;i < size;i++) {
         list.add(null);
@@ -69,12 +69,12 @@ public abstract class ListType {
     }
 
     @Override
-    public <E> List<E> wrap(ValueType<E> elementType, Object array) {
+    public <E> List<E> wrap(ValueDefinition<E> elementType, Object array) {
       return (List<E>)array;
     }
 
     @Override
-    public <E> Object unwrap(ValueType<E> elementType, List<E> list) {
+    public <E> Object unwrap(ValueDefinition<E> elementType, List<E> list) {
       return list;
     }
   };

@@ -23,6 +23,7 @@ import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
+import javax.jcr.PropertyType;
 import java.util.Date;
 import java.io.InputStream;
 
@@ -38,7 +39,7 @@ public abstract class A1 {
 
   public abstract void setString(String s);
 
-  @Path @Property(name = "path_property")
+  @Property(name = "path_property", type = PropertyType.PATH)
   public abstract String getPath();
 
   public abstract void setPath(String s);

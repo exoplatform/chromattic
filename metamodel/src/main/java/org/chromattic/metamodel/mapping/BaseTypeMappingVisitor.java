@@ -54,8 +54,8 @@ public class BaseTypeMappingVisitor {
 
   protected <V> void propertyMapping(
     ClassTypeInfo definer,
-    JCRPropertyMapping<V> propertyMapping,
-    PropertyInfo<SimpleValueInfo<V>> propertyInfo) {}
+    JCRPropertyMapping propertyMapping,
+    PropertyInfo<SimpleValueInfo> propertyInfo) {}
 
   protected void propertyMapMapping(ClassTypeInfo definer) {}
 
@@ -120,8 +120,6 @@ public class BaseTypeMappingVisitor {
                 SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
                 SimpleType simpleType = simpleValueInfo.getSimpleType();
                 if (simpleType == SimpleType.STRING) {
-                  // OK
-                } else if (simpleType == SimpleType.PATH) {
                   // OK
                 } else {
                   throw new AssertionError(mapping.getType().toString() + " wrong simple type "+ simpleType);

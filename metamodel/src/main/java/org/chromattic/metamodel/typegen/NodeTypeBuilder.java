@@ -74,7 +74,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping<V> propertyMapping, PropertyInfo<SimpleValueInfo<V>> propertyInfo) {
+  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
     if (definer.equals(current.mapping.getType())) {
       current.properties.put(propertyMapping.getName(), new PropertyDefinition(propertyMapping, propertyInfo));
     }

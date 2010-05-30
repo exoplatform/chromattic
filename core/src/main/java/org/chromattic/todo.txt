@@ -12,8 +12,9 @@
 - better remove (no need for navigating everything, use prefix)!!!!
 - @PrimaryType(name = "foo", mixinTypes = {Mixin.class})
 
-- map BNIARY to byte[] 
+- map BINARY to byte[]
 
+- allow to force the backend JCR type to map a STRING to a PATH => remove @Path @Property
 
 - map Enum on LONG in addition of STRING
 - @Property(cascaded=true|false)

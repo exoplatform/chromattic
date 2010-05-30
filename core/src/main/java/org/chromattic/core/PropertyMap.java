@@ -22,7 +22,7 @@ package org.chromattic.core;
 import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.common.JCR;
 import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.core.vt.ValueType;
+import org.chromattic.core.vt2.ValueDefinition;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
@@ -57,7 +57,7 @@ class PropertyMap extends AbstractMap<String, Object> {
   public Object get(Object key) {
     if (key instanceof String) {
       try {
-        return ctx.getPropertyValue((String)key, ValueType.DEFAULT);
+        return ctx.getPropertyValue((String)key, null);
       }
       catch (RepositoryException e) {
         throw new UndeclaredRepositoryException(e);
@@ -79,8 +79,8 @@ class PropertyMap extends AbstractMap<String, Object> {
   @Override
   public Object put(String key, Object value) {
     try {
-      Object previous = ctx.getPropertyValue(key, ValueType.DEFAULT);
-      ctx.setPropertyValue(key, ValueType.DEFAULT, value);
+      Object previous = ctx.getPropertyValue(key, null);
+      ctx.setPropertyValue(key, null, value);
       return previous;
     }
     catch (RepositoryException e) {
@@ -123,7 +123,7 @@ class PropertyMap extends AbstractMap<String, Object> {
                     }
                     public Object getValue() {
                       try {
-                        return ctx.getPropertyValue(key, ValueType.DEFAULT);
+                        return ctx.getPropertyValue(key, null);
                       }
                       catch (RepositoryException e) {
                         throw new UndeclaredRepositoryException(e);

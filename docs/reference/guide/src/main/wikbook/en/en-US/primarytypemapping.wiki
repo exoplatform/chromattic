@@ -126,8 +126,8 @@ protected="false" multiple="false">
 == Multi valued property mapping ==
 
 JCR naturally provide support for multi valued properties, so does Chromattic. Chromattic gives you the choice
-to use either arrays or a {{code}}java.util.List{{/code}} to access the data. Primitive arrays can be used when
-the type mapping allows it.
+to use either an array or a {{code}}java.util.List{{/code}} to access the data. A primitive array can be used when
+the type allows it.
 
 {{java}}
 {@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getTags()}

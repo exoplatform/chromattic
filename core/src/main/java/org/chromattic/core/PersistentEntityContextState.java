@@ -27,7 +27,7 @@ import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
-import org.chromattic.core.vt.ValueType;
+import org.chromattic.core.vt2.ValueDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -115,7 +115,7 @@ class PersistentEntityContextState extends EntityContextState {
     return typeInfo;
   }
 
-  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt) {
+  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt) {
     try {
       //
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
@@ -154,6 +154,13 @@ class PersistentEntityContextState extends EntityContextState {
 
         //
         if (jcrValue != null) {
+
+          // We use the type from the real value itself when no one was provided
+          if (vt == null) {
+            vt = (ValueDefinition<V>)ValueDefinition.get(jcrValue.getType());
+          }
+
+          //
           value = vt.get(jcrValue);
 
           //
@@ -204,12 +211,17 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, ListType listType) {
+  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, ListType listType) {
     try {
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
       if (def == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
+      }
+
+      //
+      if (vt == null) {
+        throw new UnsupportedOperationException("Not supported at the moment");
       }
 
       //
@@ -264,7 +276,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, V propertyValue) {
+  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, V propertyValue) {
     try {
       //
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
@@ -290,6 +302,20 @@ class PersistentEntityContextState extends EntityContextState {
       //
       Value jcrValue;
       if (propertyValue != null) {
+
+        //
+        if (vt == null) {
+
+          // We try first the definition type
+          vt = (ValueDefinition<V>)ValueDefinition.get(def.getType());
+
+          // We had a undefined type so we are going to use a type based on the provided value
+          if (vt == null) {
+            vt = (ValueDefinition<V>)ValueDefinition.get(propertyValue);
+          }
+        }
+
+        //
         ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
         jcrValue = vt.get(valueFactory, propertyValue);
       } else {
@@ -337,12 +363,17 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, ListType listType, List<V> propertyValues) {
+  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, ListType listType, List<V> propertyValues) {
     try {
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
       if (def == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
+      }
+
+      //
+      if (vt == null) {
+        throw new UnsupportedOperationException("Not supported at the moment");
       }
 
       //

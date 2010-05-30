@@ -23,7 +23,6 @@ import org.reflext.api.ClassKind;
 import org.reflext.api.ClassTypeInfo;
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,182 +42,51 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class SimpleType<E> {
+public abstract class SimpleType {
 
   /** . */
-  public final static SimpleType.Base<String> PATH = new SimpleType.Base<String>(String.class) {
-    @Override
-    public String toExternal(String s) {
-      return s;
-    }
-    @Override
-    public String toString(String s) {
-      return s;
-    }
-  };
+  public static final SimpleType.Base<Integer> PRIMITIVE_INTEGER = new SimpleType.Base<Integer>(int.class);
 
   /** . */
-  public static final SimpleType.Base<Integer> PRIMITIVE_INTEGER = new SimpleType.Base<Integer>(int.class) {
-    @Override
-    public Integer toExternal(String s) {
-      return Integer.parseInt(s);
-    }
-    @Override
-    public String toString(Integer integer) {
-      return Long.toString(integer);
-    }
-  };
+  public static final SimpleType.Base<Boolean> PRIMITIVE_BOOLEAN = new SimpleType.Base<Boolean>(boolean.class);
 
   /** . */
-  public static final SimpleType.Base<Boolean> PRIMITIVE_BOOLEAN = new SimpleType.Base<Boolean>(boolean.class) {
-    @Override
-    public Boolean toExternal(String s) {
-      return Boolean.parseBoolean(s);
-    }
-    @Override
-    public String toString(Boolean b) {
-      return Boolean.toString(b);
-    }
-  };
+  public static final SimpleType.Base<Long> PRIMITIVE_LONG = new SimpleType.Base<Long>(long.class);
 
   /** . */
-  public static final SimpleType.Base<Long> PRIMITIVE_LONG = new SimpleType.Base<Long>(long.class) {
-    @Override
-    public Long toExternal(String s) {
-      return Long.parseLong(s);
-    }
-    @Override
-    public String toString(Long l) {
-      return Long.toString(l);
-    }
-  };
+  public static final SimpleType.Base<Double> PRIMITIVE_DOUBLE = new SimpleType.Base<Double>(double.class);
 
   /** . */
-  public static final SimpleType.Base<Double> PRIMITIVE_DOUBLE = new SimpleType.Base<Double>(double.class) {
-    @Override
-    public Double toExternal(String s) {
-      return Double.parseDouble(s);
-    }
-    @Override
-    public String toString(Double d) {
-      return Double.toString(d);
-    }
-  };
+  public static final SimpleType.Base<Float> PRIMITIVE_FLOAT = new SimpleType.Base<Float>(float.class);
 
   /** . */
-  public static final SimpleType.Base<Float> PRIMITIVE_FLOAT = new SimpleType.Base<Float>(float.class) {
-    @Override
-    public Float toExternal(String s) {
-      return Float.parseFloat(s);
-    }
-    @Override
-    public String toString(Float f) {
-      return Float.toString(f);
-    }
-  };
+  public static final SimpleType.Base<Integer> INTEGER = new SimpleType.Base<Integer>(Integer.class);
 
   /** . */
-  public static final SimpleType.Base<Integer> INTEGER = new SimpleType.Base<Integer>(Integer.class) {
-    @Override
-    public Integer toExternal(String s) {
-      return Integer.parseInt(s);
-    }
-    @Override
-    public String toString(Integer i) {
-      return Long.toString(i);
-    }
-  };
+  public static final SimpleType.Base<Boolean> BOOLEAN = new SimpleType.Base<Boolean>(Boolean.class);
 
   /** . */
-  public static final SimpleType.Base<Boolean> BOOLEAN = new SimpleType.Base<Boolean>(Boolean.class) {
-    @Override
-    public Boolean toExternal(String s) {
-      return Boolean.parseBoolean(s);
-    }
-    @Override
-    public String toString(Boolean b) {
-      return Boolean.toString(b);
-    }
-  };
+  public static final SimpleType.Base<Long> LONG = new SimpleType.Base<Long>(Long.class);
 
   /** . */
-  public static final SimpleType.Base<Long> LONG = new SimpleType.Base<Long>(Long.class) {
-    @Override
-    public Long toExternal(String s) {
-      return Long.parseLong(s);
-    }
-    @Override
-    public String toString(Long l) {
-      return Long.toString(l);
-    }
-  };
+  public static final SimpleType.Base<Double> DOUBLE = new SimpleType.Base<Double>(Double.class);
 
   /** . */
-  public static final SimpleType.Base<Double> DOUBLE = new SimpleType.Base<Double>(Double.class) {
-    @Override
-    public Double toExternal(String s) {
-      return Double.parseDouble(s);
-    }
-    @Override
-    public String toString(Double d) {
-      return Double.toString(d);
-    }
-  };
+  public static final SimpleType.Base<Float> FLOAT = new SimpleType.Base<Float>(Float.class);
 
   /** . */
-  public static final SimpleType.Base<Float> FLOAT = new SimpleType.Base<Float>(Float.class) {
-    @Override
-    public Float toExternal(String s) {
-      return Float.parseFloat(s);
-    }
-    @Override
-    public String toString(Float f) {
-      return Double.toString(f);
-    }
-  };
+  public static final SimpleType.Base<String> STRING = new SimpleType.Base<String>(String.class);
 
   /** . */
-  public static final SimpleType.Base<String> STRING = new SimpleType.Base<String>(String.class) {
-    @Override
-    public String toExternal(String s) {
-      return s;
-    }
-    @Override
-    public String toString(String s) {
-      return s;
-    }
-  };
+  public static final SimpleType.Base<InputStream> STREAM = new SimpleType.Base<InputStream>(InputStream.class);
 
   /** . */
-  public static final SimpleType.Base<InputStream> STREAM = new SimpleType.Base<InputStream>(InputStream.class) {
-    @Override
-    public InputStream toExternal(String s) {
-      throw new UnsupportedOperationException();
-    }
-    @Override
-    public String toString(InputStream inputStream) {
-      throw new UnsupportedOperationException();
-    }
-  };
-
-  /** . */
-  public static final SimpleType.Base<Date> DATE = new SimpleType.Base<Date>(Date.class) {
-    @Override
-    public Date toExternal(String s) {
-      throw new UnsupportedOperationException();
-    }
-    @Override
-    public String toString(Date date) {
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-      return sdf.format(date);
-    }
-  };
+  public static final SimpleType.Base<Date> DATE = new SimpleType.Base<Date>(Date.class);
 
   /** . */
   private static final Map<String, SimpleType.Base<?>> builtin = new HashMap<String, SimpleType.Base<?>>();
 
   static {
-    add(PATH);
     add(PRIMITIVE_INTEGER);
     add(PRIMITIVE_BOOLEAN);
     add(PRIMITIVE_LONG);
@@ -238,7 +106,7 @@ public abstract class SimpleType<E> {
     builtin.put(type.getRealType().getName(), type);
   }
 
-  public static SimpleType<?> create(ClassTypeInfo type) {
+  public static SimpleType create(ClassTypeInfo type) {
     if (type.getKind() == ClassKind.ENUM) {
       return new Enumerated(type);
     } else {
@@ -246,11 +114,7 @@ public abstract class SimpleType<E> {
     }
   }
 
-  public abstract E toExternal(String s);
-
-  public abstract String toString(E e);
-
-  public abstract static class Base<E> extends SimpleType<E> {
+  public static class Base<E> extends SimpleType {
 
     /** . */
     private final Class<E> objectType;
@@ -258,7 +122,7 @@ public abstract class SimpleType<E> {
     /** . */
     private final Class<?> realType;
 
-    protected Base(Class<?> realType) {
+    private Base(Class<?> realType) {
 
       //
       Class<?> objectType;
@@ -302,7 +166,7 @@ public abstract class SimpleType<E> {
     }
   }
 
-  public static class Enumerated extends SimpleType<String> {
+  public static class Enumerated extends SimpleType {
 
     /** . */
     private final ClassTypeInfo typeInfo;
@@ -313,15 +177,6 @@ public abstract class SimpleType<E> {
 
     public ClassTypeInfo getTypeInfo() {
       return typeInfo;
-    }
-
-    @Override
-    public String toExternal(String s) {
-      throw new UnsupportedOperationException();
-    }
-
-    public String toString(String e) {
-      return e;
     }
   }
 }

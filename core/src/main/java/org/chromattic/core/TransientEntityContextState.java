@@ -20,10 +20,9 @@
 package org.chromattic.core;
 
 import org.chromattic.api.Status;
-import org.chromattic.metamodel.bean.SimpleValueInfo;
+import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
-import org.chromattic.core.vt.ValueType;
 
 import javax.jcr.Node;
 import java.util.List;
@@ -76,19 +75,19 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt) {
+  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt) {
     throw new IllegalStateException();
   }
 
-  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, ListType listType) {
+  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, ListType listType) {
     throw new IllegalStateException();
   }
 
-  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, V o) {
+  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, V o) {
     throw new IllegalStateException();
   }
 
-  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueType<V> vt, ListType listType, List<V> objects) {
+  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<V> vt, ListType listType, List<V> objects) {
     throw new IllegalStateException();
   }
 

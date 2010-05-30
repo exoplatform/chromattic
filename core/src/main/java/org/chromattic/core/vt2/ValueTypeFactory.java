@@ -17,15 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.vt;
+package org.chromattic.core.vt2;
 
 import org.chromattic.metamodel.bean.SimpleType;
-import org.chromattic.metamodel.bean.SimpleValueInfo;
+import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.ValueType;
 import org.reflext.api.ClassTypeInfo;
-
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,47 +30,78 @@ import java.util.List;
  */
 public class ValueTypeFactory {
 
-  public static <V> ValueType<V> create(final SimpleValueInfo<V> sv, List<V> defaultValue) {
-    return create(sv, sv.getSimpleType(), defaultValue);
-  }
-
-  private static <E> ValueType<E> create(SimpleValueInfo<E> sv, SimpleType<E> type, List<E> defaultValue) {
+  public static <I> ValueType<I, ?> create(SimpleType type, JCRPropertyType<I> jcrType) {
     ValueType vt;
     if (type instanceof SimpleType.Base) {
       SimpleType.Base base = (SimpleType.Base)type;
       if (type == SimpleType.STRING) {
-        vt = new BaseValueType.STRING.TO_STRING((List<String>)defaultValue, String.class);
-      } else if (type == SimpleType.PATH) {
-        vt = new BaseValueType.PATH.TO_STRING((List<String>)defaultValue, String.class);
+        if (jcrType == JCRPropertyType.PATH) {
+          vt = SimpleValueTypes.PATH;
+        } else if (jcrType == JCRPropertyType.STRING) {
+          vt = SimpleValueTypes.STRING;
+        } else {
+          throw new AssertionError("todo");
+        }
       } else if (type == SimpleType.INTEGER || type == SimpleType.PRIMITIVE_INTEGER) {
-        vt = new BaseValueType.LONG.TO_INT((List<Integer>)defaultValue, base.getRealType());
+        if (jcrType == JCRPropertyType.LONG) {
+          vt = SimpleValueTypes.INTEGER;
+        } else {
+          throw new AssertionError("todo");
+        }
       } else if (type == SimpleType.BOOLEAN || type == SimpleType.PRIMITIVE_BOOLEAN) {
-        vt = new BaseValueType.BOOLEAN.TO_BOOLEAN((List<Boolean>)defaultValue, base.getRealType());
+        if (jcrType == JCRPropertyType.BOOLEAN) {
+          vt = SimpleValueTypes.BOOLEAN;
+        } else {
+          throw new AssertionError("todo");
+        }
       } else if (type == SimpleType.LONG || type == SimpleType.PRIMITIVE_LONG) {
-        vt = new BaseValueType.LONG.TO_LONG((List<Long>)defaultValue, base.getRealType());
+        if (jcrType == JCRPropertyType.LONG) {
+          vt = SimpleValueTypes.LONG;
+        } else {
+          throw new AssertionError("todo");
+        }
       } else if (type == SimpleType.DATE) {
-        vt = new BaseValueType.DATE.TO_DATE((List<Date>)defaultValue, Date.class);
+        if (jcrType == JCRPropertyType.DATE) {
+          vt = SimpleValueTypes.DATE;
+        } else {
+          throw new AssertionError("todo");
+        }
       } else if (type == SimpleType.DOUBLE || type == SimpleType.PRIMITIVE_DOUBLE) {
-        vt = new BaseValueType.DOUBLE.TO_DOUBLE((List<Double>)defaultValue, base.getRealType());
+        if (jcrType == JCRPropertyType.DOUBLE) {
+          vt = SimpleValueTypes.DOUBLE;
+        } else {
+          throw new AssertionError("todo");
+        }
       } else if (type == SimpleType.FLOAT || type == SimpleType.PRIMITIVE_FLOAT) {
-        vt = new BaseValueType.DOUBLE.TO_FLOAT((List<Float>)defaultValue, base.getRealType());
+        if (jcrType == JCRPropertyType.DOUBLE) {
+          vt = SimpleValueTypes.FLOAT;
+        } else {
+          throw new AssertionError("todo");
+        }
       } else if (type == SimpleType.STREAM) {
-        vt = new BaseValueType.STREAM.TO_STREAM((List<InputStream>)defaultValue, InputStream.class);
+        if (jcrType == JCRPropertyType.BINARY) {
+          vt = SimpleValueTypes.BINARY;
+        } else {
+          throw new AssertionError("todo");
+        }
       } else {
         throw new AssertionError();
       }
     } else {
+      if (jcrType != JCRPropertyType.STRING) {
+        throw new AssertionError("todo");
+      }
       SimpleType.Enumerated enumerated = (SimpleType.Enumerated)type;
       ClassTypeInfo cti = enumerated.getTypeInfo();
       Class<?> realType = (Class<?>)cti.getType();
       if (realType.isEnum()) {
-        vt = new StringEnumValueType(defaultValue, realType);
+        vt = new EnumeratedValueType(realType);
       } else {
         throw new UnsupportedOperationException("investigate later " + type);
       }
     }
 
     //
-    return (ValueType<E>)vt;
+    return (ValueType<I, ?>)vt;
   }
 }

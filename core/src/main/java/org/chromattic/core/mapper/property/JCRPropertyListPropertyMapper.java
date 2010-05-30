@@ -21,13 +21,15 @@ package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ListType;
 import org.chromattic.core.ObjectContext;
+import org.chromattic.core.vt2.ValueDefinition;
+import org.chromattic.core.vt2.ValueTypeFactory;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean.ArrayPropertyInfo;
 import org.chromattic.metamodel.bean.ListPropertyInfo;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.vt.ValueType;
-import org.chromattic.core.vt.ValueTypeFactory;
+import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.ValueType;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyListPropertyMapper<O extends ObjectContext, V> extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo<V>>, O> {
+public class JCRPropertyListPropertyMapper<O extends ObjectContext, V> extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo>, O> {
 
   /** . */
   private final String jcrPropertyName;
@@ -44,16 +46,17 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, V> extends P
   private final ListType listType;
 
   /** . */
-  private final SimpleValueInfo<V> elementType;
+  private final SimpleValueInfo elementType;
 
   /** . */
-  private final ValueType<V> vt;
+  private final ValueDefinition<V> vt;
 
   public JCRPropertyListPropertyMapper(
     Class<O> contextType,
-    MultiValuedPropertyInfo<SimpleValueInfo<V>> info,
+    MultiValuedPropertyInfo<SimpleValueInfo> info,
     String jcrPropertyName,
-    List<V> defaultValue) {
+    JCRPropertyType<V> propertyType,
+    List<String> defaultValue) {
     super(contextType, info);
 
     //
@@ -67,10 +70,13 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, V> extends P
     }
 
     //
+    ValueType vt = ValueTypeFactory.create(info.getValue().getSimpleType(), propertyType);
+
+    //
     this.listType = listType;
     this.jcrPropertyName = jcrPropertyName;
     this.elementType = info.getValue();
-    this.vt = ValueTypeFactory.create(elementType, defaultValue);
+    this.vt = new ValueDefinition<V>(info.getValue().getSimpleType(), propertyType, vt, defaultValue);
   }
 
   @Override

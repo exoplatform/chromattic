@@ -23,7 +23,7 @@ import org.chromattic.api.ChromatticIOException;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
-import org.chromattic.core.vt.ValueType;
+import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import javax.jcr.RepositoryException;
@@ -43,7 +43,7 @@ public abstract class ObjectContext implements MethodHandler {
 
   public abstract NodeTypeInfo getTypeInfo();
 
-  public final <V> V getPropertyValue(String propertyName, ValueType<V> type) throws RepositoryException {
+  public final <V> V getPropertyValue(String propertyName, ValueDefinition<V> type) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -56,7 +56,7 @@ public abstract class ObjectContext implements MethodHandler {
     return state.getPropertyValue(typeInfo, propertyName, type);
   }
 
-  public final <V> List<V> getPropertyValues(String propertyName, ValueType<V> simpleType, ListType listType) throws RepositoryException {
+  public final <V> List<V> getPropertyValues(String propertyName, ValueDefinition<V> simpleType, ListType listType) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -69,7 +69,7 @@ public abstract class ObjectContext implements MethodHandler {
     return state.getPropertyValues(typeInfo, propertyName, simpleType, listType);
   }
 
-  public final <V> void setPropertyValue(String propertyName, ValueType<V> type, V o) throws RepositoryException {
+  public final <V> void setPropertyValue(String propertyName, ValueDefinition<V> type, V o) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -104,7 +104,7 @@ public abstract class ObjectContext implements MethodHandler {
     }
   }
 
-  public final <V> void setPropertyValues(String propertyName, ValueType<V> type, ListType listType, List<V> objects) throws RepositoryException {
+  public final <V> void setPropertyValues(String propertyName, ValueDefinition<V> type, ListType listType, List<V> objects) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 

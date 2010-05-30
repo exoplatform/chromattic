@@ -17,32 +17,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
-
-import org.reflext.api.ClassTypeInfo;
+package org.chromattic.api;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleValueInfo extends ValueInfo {
-
-  /** . */
-  private final SimpleType simpleType;
-
-  SimpleValueInfo(ClassTypeInfo typeInfo, SimpleType simpleType) {
-    super(typeInfo);
-
-    //
-    this.simpleType = simpleType;
+public class TypeConversionException extends ChromatticException {
+  public TypeConversionException() {
   }
 
-  public SimpleType getSimpleType() {
-    return simpleType;
+  public TypeConversionException(String message) {
+    super(message);
   }
 
-  @Override
-  public String toString() {
-    return "SimpleValueInfo[simpleType=" + simpleType + "]";
+  public TypeConversionException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public TypeConversionException(Throwable cause) {
+    super(cause);
   }
 }

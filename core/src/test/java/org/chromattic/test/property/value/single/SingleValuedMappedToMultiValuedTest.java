@@ -53,7 +53,9 @@ public class SingleValuedMappedToMultiValuedTest extends AbstractSingleValuedTes
     }
     catch (InvocationTargetException e) {
       if (e.getCause() instanceof NullPointerException) {
-        assertTrue(primitive);
+        if (!primitive) {
+          throw ((NullPointerException)e.getCause());
+        }
       } else {
         fail();
       }

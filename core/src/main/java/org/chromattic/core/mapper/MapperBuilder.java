@@ -220,7 +220,7 @@ public class MapperBuilder {
 
           //
           if (jcrMember instanceof JCRPropertyMapping) {
-            JCRPropertyMapping<?> jcrProperty = (JCRPropertyMapping)jcrMember;
+            JCRPropertyMapping jcrProperty = (JCRPropertyMapping)jcrMember;
             JCRPropertyPropertyMapper<C, ?> mapper = createPropertyPM(contextType, pm, jcrProperty);
             propertyMappers.add(mapper);
           } else if (jcrMember instanceof JCRNodeAttributeMapping) {
@@ -348,7 +348,7 @@ public class MapperBuilder {
 
           //
           if (jcrMember instanceof JCRPropertyMapping) {
-            JCRPropertyMapping<?> jcrProperty = (JCRPropertyMapping)jcrMember;
+            JCRPropertyMapping jcrProperty = (JCRPropertyMapping)jcrMember;
             JCRPropertyListPropertyMapper<C, ?> mapper = createPropertyListPM(contextType, pm, jcrProperty);
             propertyMappers.add(mapper);
           }
@@ -481,22 +481,24 @@ public class MapperBuilder {
   private <C extends ObjectContext, V> JCRPropertyPropertyMapper<C, V> createPropertyPM(
     Class<C> contextType,
     PropertyMapping<?> pm,
-    JCRPropertyMapping<V> jcrProperty) {
+    JCRPropertyMapping jcrProperty) {
     return new JCRPropertyPropertyMapper<C, V>(
       contextType,
-      (SingleValuedPropertyInfo<SimpleValueInfo<V>>)pm.getInfo(),
+      (SingleValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(),
       jcrProperty.getName(),
-      jcrProperty.getDefaultValue());
+      jcrProperty.getDefaultValue(),
+      jcrProperty.getJCRType());
   }
 
   private static <C extends ObjectContext, V> JCRPropertyListPropertyMapper<C, V> createPropertyListPM(
     Class<C> contextType,
     PropertyMapping<?> pm,
-    JCRPropertyMapping<V> jcrProperty) {
+    JCRPropertyMapping jcrProperty) {
     return new JCRPropertyListPropertyMapper<C, V>(
       contextType,
-      (MultiValuedPropertyInfo<SimpleValueInfo<V>>)pm.getInfo(),
+      (MultiValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(),
       jcrProperty.getName(),
+      jcrProperty.getJCRType(),
       jcrProperty.getDefaultValue());
   }
 }

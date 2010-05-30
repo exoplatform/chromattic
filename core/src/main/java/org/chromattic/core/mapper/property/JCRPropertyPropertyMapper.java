@@ -21,10 +21,12 @@ package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
+import org.chromattic.core.vt2.ValueDefinition;
+import org.chromattic.core.vt2.ValueTypeFactory;
 import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
-import org.chromattic.core.vt.ValueType;
-import org.chromattic.core.vt.ValueTypeFactory;
+import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.ValueType;
 
 import java.util.List;
 
@@ -32,24 +34,28 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyPropertyMapper<O extends ObjectContext, V> extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo<V>>, O> {
+public class JCRPropertyPropertyMapper<O extends ObjectContext, V> extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, O> {
 
   /** . */
   private final String jcrPropertyName;
 
   /** . */
-  private final ValueType<V> vt;
+  private final ValueDefinition<V> vt;
 
   public JCRPropertyPropertyMapper(
     Class<O> contextType,
-    SingleValuedPropertyInfo<SimpleValueInfo<V>> info,
+    SingleValuedPropertyInfo<SimpleValueInfo> info,
     String jcrPropertyName,
-    List<V> defaultValue) {
+    List<String> defaultValue,
+    JCRPropertyType<V> jcrType) {
     super(contextType, info);
 
     //
+    ValueType vt = ValueTypeFactory.create(info.getValue().getSimpleType(), jcrType);
+
+    //
     this.jcrPropertyName = jcrPropertyName;
-    this.vt = ValueTypeFactory.create(info.getValue(), defaultValue);
+    this.vt = new ValueDefinition<V>(info.getValue().getSimpleType(), jcrType, vt, defaultValue);
   }
 
   @Override
@@ -57,7 +63,7 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext, V> extends Prope
     return get(context, vt);
   }
 
-  private <V> V get(O context, ValueType<V> d) throws Throwable {
+  private <V> V get(O context, ValueDefinition<V> d) throws Throwable {
     return context.getPropertyValue(jcrPropertyName, d);
   }
 
@@ -66,7 +72,7 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext, V> extends Prope
     set(context, vt, o);
   }
 
-  private <V> void set(O context, ValueType<V> vt, Object o) throws Throwable {
+  private <V> void set(O context, ValueDefinition<V> vt, Object o) throws Throwable {
     Class<V> javaType = vt.getObjectType();
     V v = javaType.cast(o);
     context.setPropertyValue(jcrPropertyName, vt, v);

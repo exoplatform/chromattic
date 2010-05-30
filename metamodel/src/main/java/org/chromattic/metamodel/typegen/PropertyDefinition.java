@@ -21,14 +21,9 @@ package org.chromattic.metamodel.typegen;
 
 import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean.PropertyInfo;
-import org.chromattic.metamodel.bean.SimpleType;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 
-import javax.jcr.PropertyType;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,53 +39,11 @@ public class PropertyDefinition {
     this.defaultValues = null;
   }
 
-  <V> PropertyDefinition(JCRPropertyMapping<V> mapping, PropertyInfo<SimpleValueInfo<V>> propertyInfo) {
-
-    //
-    List<String> defaultValues = null;
-    List<V> defaultValue = mapping.getDefaultValue();
-    if (defaultValue != null) {
-      defaultValues = new ArrayList<String>(defaultValue.size());
-      for (V v : defaultValue) {
-        String s = propertyInfo.getValue().getSimpleType().toString(v);
-        defaultValues.add(s);
-      }
-      defaultValues = Collections.unmodifiableList(defaultValues);
-    }
-
-    //
-    int propertyType;
-    SimpleValueInfo simpleValueInfo = propertyInfo.getValue();
-    SimpleType stk = simpleValueInfo.getSimpleType();
-    if (stk == SimpleType.STRING) {
-      propertyType = PropertyType.STRING;
-    } else if (stk == SimpleType.LONG || stk ==SimpleType.PRIMITIVE_LONG) {
-      propertyType = PropertyType.LONG;
-    } else if (stk == SimpleType.PATH) {
-      propertyType = PropertyType.PATH;
-    } else if (stk == SimpleType.DATE) {
-      propertyType = PropertyType.DATE;
-    } else if (stk == SimpleType.BOOLEAN || stk ==SimpleType.PRIMITIVE_BOOLEAN) {
-      propertyType = PropertyType.BOOLEAN;
-    } else if (stk == SimpleType.INTEGER || stk ==SimpleType.PRIMITIVE_INTEGER) {
-      propertyType = PropertyType.LONG;
-    } else if (stk == SimpleType.FLOAT || stk ==SimpleType.PRIMITIVE_FLOAT) {
-      propertyType = PropertyType.DOUBLE;
-    } else if (stk == SimpleType.DOUBLE || stk ==SimpleType.PRIMITIVE_DOUBLE) {
-      propertyType = PropertyType.DOUBLE;
-    } else if (stk == SimpleType.STREAM) {
-      propertyType = PropertyType.BINARY;
-    } else if (stk instanceof SimpleType.Enumerated) {
-      propertyType = PropertyType.STRING;
-    } else {
-      throw new AssertionError();
-    }
-
-    //
+  <V> PropertyDefinition(JCRPropertyMapping mapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
     this.multiple = propertyInfo instanceof MultiValuedPropertyInfo;
     this.name = mapping.getName();
-    this.type = propertyType;
-    this.defaultValues = defaultValues;
+    this.type = mapping.getJCRType().getCode();
+    this.defaultValues = mapping.getDefaultValue();
   }
 
   final String name;

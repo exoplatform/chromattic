@@ -25,24 +25,32 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMapping<V> extends JCRMemberMapping {
+public class JCRPropertyMapping extends JCRMemberMapping {
 
   /** . */
   private final String name;
 
   /** . */
-  private final List<V> defaultValue;
+  private final List<String> defaultValue;
 
-  public JCRPropertyMapping(String name, List<V> defaultValue) {
+  /** . */
+  private final JCRPropertyType jcrType;
+
+  public JCRPropertyMapping(String name, JCRPropertyType jcrType, List<String> defaultValue) {
     this.name = name;
+    this.jcrType = jcrType;
     this.defaultValue = defaultValue;
+  }
+
+  public JCRPropertyType getJCRType() {
+    return jcrType;
   }
 
   public String getName() {
     return name;
   }
 
-  public List<V> getDefaultValue() {
+  public List<String> getDefaultValue() {
     return defaultValue;
   }
 }

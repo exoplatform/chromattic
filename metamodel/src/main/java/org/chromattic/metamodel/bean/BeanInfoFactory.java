@@ -20,7 +20,6 @@
 package org.chromattic.metamodel.bean;
 
 import org.chromattic.api.BuilderException;
-import org.chromattic.api.annotations.Path;
 import org.reflext.api.*;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.MethodIntrospector;
@@ -150,30 +149,6 @@ public class BeanInfoFactory {
     return list;
   }
 
-  private ValueInfo createValue(
-    ClassTypeInfo type,
-    MethodInfo getter,
-    MethodInfo setter) throws BuilderException {
-
-    if (type instanceof SimpleTypeInfo) {
-      return createSimpleValueInfo(type);
-    } else if (type.getName().equals(String.class.getName())) {
-      AnnotationIntrospector<Path> intro = new AnnotationIntrospector<Path>(Path.class);
-      if ((getter != null && intro.resolve(getter) != null ) || (setter != null && intro.resolve(setter) != null)) {
-        return createPath(type);
-      } else {
-        return createSimpleValueInfo(type);
-      }
-    } else if (
-      type.getName().equals(InputStream.class.getName()) ||
-      type.getName().equals(Date.class.getName()) ||
-      type.getKind() == ClassKind.ENUM) {
-      return createSimpleValueInfo(type);
-    } else {
-      return new BeanValueInfo(type);
-    }
-  }
-
   private PropertyInfo createPropertyInfo(
     ClassTypeInfo beanTypeInfo,
     String name,
@@ -191,7 +166,7 @@ public class BeanInfoFactory {
           TypeInfo elementTV = parameterizedTI.getTypeArguments().get(0);
           ClassTypeInfo elementTI = resolveClass(beanTypeInfo, elementTV);
           if (elementTI != null) {
-            ValueInfo resolvedElementTI = createValue(elementTI, getter, setter);
+            ValueInfo resolvedElementTI = createValue(elementTI);
             if (rawClassName.equals("java.util.Collection")) {
               return new CollectionPropertyInfo<ValueInfo>(
                 name,
@@ -210,11 +185,11 @@ public class BeanInfoFactory {
           TypeInfo elementTV = parameterizedTI.getTypeArguments().get(1);
           ClassTypeInfo elementTI = resolveClass(beanTypeInfo, elementTV);
           if (elementTI != null) {
-            ValueInfo resolvedElementTI = createValue(elementTI, getter, setter);
+            ValueInfo resolvedElementTI = createValue(elementTI);
             TypeInfo keyTV = parameterizedTI.getTypeArguments().get(0);
             ClassTypeInfo keyTI = resolveClass(beanTypeInfo, keyTV);
             if (keyTI != null) {
-              ValueInfo resolvedKeyTI = createValue(keyTI, getter, setter);
+              ValueInfo resolvedKeyTI = createValue(keyTI);
               return new MapPropertyInfo<ValueInfo, ValueInfo>(
                 name,
                 resolvedElementTI,
@@ -226,7 +201,7 @@ public class BeanInfoFactory {
         }
       }
     } else if (resolvedTI instanceof ClassTypeInfo) {
-      ValueInfo resolved = createValue((ClassTypeInfo)resolvedTI, getter, setter);
+      ValueInfo resolved = createValue((ClassTypeInfo)resolvedTI);
       return new SingleValuedPropertyInfo<ValueInfo>(
         name,
         resolved,
@@ -236,13 +211,28 @@ public class BeanInfoFactory {
       TypeInfo componentTI = ((ArrayTypeInfo)resolvedTI).getComponentType();
       if (componentTI instanceof ClassTypeInfo) {
         ClassTypeInfo rawComponentTI = (ClassTypeInfo)componentTI;
-        ValueInfo resolved = createValue(rawComponentTI, getter, setter);
+        ValueInfo resolved = createValue(rawComponentTI);
         if (resolved instanceof SimpleValueInfo) {
           return new ArrayPropertyInfo<SimpleValueInfo>(name, (SimpleValueInfo)resolved, getter, setter);
         }
       }
     }
     return null;
+  }
+
+  private ValueInfo createValue(ClassTypeInfo type) throws BuilderException {
+    if (type instanceof SimpleTypeInfo) {
+      return createSimpleValueInfo(type);
+    } else if (type.getName().equals(String.class.getName())) {
+      return createSimpleValueInfo(type);
+    } else if (
+      type.getName().equals(InputStream.class.getName()) ||
+        type.getName().equals(Date.class.getName()) ||
+        type.getKind() == ClassKind.ENUM) {
+      return createSimpleValueInfo(type);
+    } else {
+      return new BeanValueInfo(type);
+    }
   }
 
   /**
@@ -253,7 +243,7 @@ public class BeanInfoFactory {
    * @throws BuilderException any exception that may prevent the correct building such as having a default value that
    *         does not match the type
    */
-  private SimpleValueInfo<?> createSimpleValueInfo(ClassTypeInfo typeInfo) throws BuilderException {
+  private SimpleValueInfo createSimpleValueInfo(ClassTypeInfo typeInfo) throws BuilderException {
     if (typeInfo == null) {
       throw new NullPointerException();
     }
@@ -275,19 +265,8 @@ public class BeanInfoFactory {
     }
   }
 
-  private <E> SimpleValueInfo<E> foo(ClassTypeInfo typeInfo) {
-    SimpleType<E> st = (SimpleType<E>)SimpleType.create(typeInfo);
-    return new SimpleValueInfo<E>(typeInfo, st);
-  }
-
-  private static SimpleValueInfo<String> createPath(ClassTypeInfo typeInfo) {
-    if (typeInfo == null) {
-      throw new NullPointerException();
-    }
-    if (typeInfo.getName().equals(String.class.getName())) {
-      return new SimpleValueInfo<String>(typeInfo, SimpleType.PATH);
-    } else {
-      throw new IllegalArgumentException("Simple value of type path must have a type of " + String.class.getName());
-    }
+  private <E> SimpleValueInfo foo(ClassTypeInfo typeInfo) {
+    SimpleType st = SimpleType.create(typeInfo);
+    return new SimpleValueInfo(typeInfo, st);
   }
 }
