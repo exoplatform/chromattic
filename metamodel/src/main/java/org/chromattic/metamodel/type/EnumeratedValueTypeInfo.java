@@ -17,22 +17,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
+package org.chromattic.metamodel.type;
 
+import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.EnumeratedValueType;
+import org.chromattic.spi.type.ValueType;
 import org.reflext.api.ClassTypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleValueInfo extends ValueInfo {
+public class EnumeratedValueTypeInfo implements ValueTypeInfo {
 
-  SimpleValueInfo(ClassTypeInfo typeInfo) {
-    super(typeInfo);
+  /** . */
+  private final ClassTypeInfo enumInfo;
+
+  public EnumeratedValueTypeInfo(ClassTypeInfo enumInfo) {
+    this.enumInfo = enumInfo;
   }
 
-  @Override
-  public String toString() {
-    return "SimpleValueInfo[typeInfo=" + typeInfo + "]";
+  public JCRPropertyType<String> getJCRPropertyType() {
+    return JCRPropertyType.STRING;
+  }
+
+  public ValueType<?, ?> create() {
+    Class clazz = (Class<Object>)enumInfo.getType();
+    return new EnumeratedValueType(clazz);
   }
 }

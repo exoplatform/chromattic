@@ -17,22 +17,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
+package org.chromattic.test.type.bytearray;
 
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.Property;
+import org.chromattic.test.type.stringenum.Currency;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleValueInfo extends ValueInfo {
+@PrimaryType(name = "tts_b")
+public abstract class A {
 
-  SimpleValueInfo(ClassTypeInfo typeInfo) {
-    super(typeInfo);
-  }
+  @Property(name = "bytes")
+  public abstract byte[] getBytes();
 
-  @Override
-  public String toString() {
-    return "SimpleValueInfo[typeInfo=" + typeInfo + "]";
-  }
+  public abstract void setBytes(byte[] te);
+
 }

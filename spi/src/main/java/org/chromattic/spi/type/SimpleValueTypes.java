@@ -21,6 +21,9 @@ package org.chromattic.spi.type;
 
 import org.chromattic.api.TypeConversionException;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -356,6 +359,39 @@ public class SimpleValueTypes {
     @Override
     public Class<InputStream> getExternalType() {
       return InputStream.class;
+    }
+  }
+
+  public static final class BYTE_ARRAY extends ValueType.BINARY<byte[]> {
+    @Override
+    public Class<byte[]> getExternalType() {
+      return byte[].class;
+    }
+    @Override
+    public InputStream getInternal(byte[] bytes) throws TypeConversionException {
+      return new ByteArrayInputStream(bytes);
+    }
+    @Override
+    public byte[] getExternal(InputStream inputStream) throws TypeConversionException {
+      try {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[256];
+        for (int l = inputStream.read(buffer);l != -1;l = inputStream.read(buffer)) {
+          baos.write(buffer, 0, l);
+        }
+        return baos.toByteArray();
+      }
+      catch (IOException e) {
+        throw new TypeConversionException(e);
+      }
+    }
+    @Override
+    public byte[] fromString(String s) throws TypeConversionException {
+      throw new UnsupportedOperationException();
+    }
+    @Override
+    public String toString(byte[] bytes) throws TypeConversionException {
+      throw new UnsupportedOperationException();
     }
   }
 

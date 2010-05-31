@@ -36,42 +36,76 @@ public abstract class ValueType<I, E> {
   public abstract static class STRING<E> extends ValueType<String, E> {
     protected STRING() {
     }
+    @Override
+    public final Class<String> getInternalType() {
+      return String.class;
+    }
   }
 
   public abstract static class BINARY<E> extends ValueType<InputStream, E> {
     protected BINARY() {
+    }
+    @Override
+    public final Class<InputStream> getInternalType() {
+      return InputStream.class;
     }
   }
 
   public abstract static class LONG<E> extends ValueType<Long, E> {
     protected LONG() {
     }
+    @Override
+    public final Class<Long> getInternalType() {
+      return Long.class;
+    }
   }
 
   public abstract static class DOUBLE<E> extends ValueType<Double, E> {
     protected DOUBLE() {
+    }
+    @Override
+    public final Class<Double> getInternalType() {
+      return Double.class;
     }
   }
 
   public abstract static class DATE<E> extends ValueType<Calendar, E> {
     protected DATE() {
     }
+    @Override
+    public final Class<Calendar> getInternalType() {
+      return Calendar.class;
+    }
   }
 
   public abstract static class BOOLEAN<E> extends ValueType<Boolean, E> {
     protected BOOLEAN() {
+    }
+    @Override
+    public final Class<Boolean> getInternalType() {
+      return Boolean.class;
     }
   }
 
   public abstract static class NAME<E> extends ValueType<String, E> {
     protected NAME() {
     }
+    @Override
+    public final Class<String> getInternalType() {
+      return String.class;
+    }
   }
 
   public abstract static class PATH<E> extends ValueType<String, E> {
     protected PATH() {
     }
+    @Override
+    public final Class<String> getInternalType() {
+      return String.class;
+    }
   }
+
+  public abstract Class<I> getInternalType();
 
   public abstract Class<E> getExternalType();
 

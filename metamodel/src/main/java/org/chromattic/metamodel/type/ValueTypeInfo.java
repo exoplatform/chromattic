@@ -17,22 +17,19 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
+package org.chromattic.metamodel.type;
 
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.ValueType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleValueInfo extends ValueInfo {
+interface ValueTypeInfo {
 
-  SimpleValueInfo(ClassTypeInfo typeInfo) {
-    super(typeInfo);
-  }
+  JCRPropertyType<?> getJCRPropertyType();
 
-  @Override
-  public String toString() {
-    return "SimpleValueInfo[typeInfo=" + typeInfo + "]";
-  }
+  ValueType<?, ?> create();
+
 }

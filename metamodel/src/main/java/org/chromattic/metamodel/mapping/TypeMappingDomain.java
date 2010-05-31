@@ -29,6 +29,7 @@ import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.metamodel.mapping.value.*;
+import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.reflext.api.*;
 import org.reflext.api.Annotated;
 import org.reflext.api.introspection.AnnotationIntrospector;
@@ -249,9 +250,10 @@ public class TypeMappingDomain {
       }
 
       // Determine mapping
+      PropertyTypeResolver resolver = new PropertyTypeResolver();
       JCRPropertyType<?> jcrType = JCRPropertyType.get(propertyAnnotation.type());
       if (jcrType == null) {
-        jcrType = simpleValue.getJCRType();
+        jcrType = resolver.resolveJCRPropertyType(simpleValue.getTypeInfo());
       }
 
       //

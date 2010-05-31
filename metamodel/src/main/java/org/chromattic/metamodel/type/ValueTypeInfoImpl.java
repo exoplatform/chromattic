@@ -17,10 +17,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.vt2;
+package org.chromattic.metamodel.type;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.chromattic.spi.type.ValueType;
 import org.reflext.api.ClassTypeInfo;
 
@@ -28,20 +27,44 @@ import org.reflext.api.ClassTypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ValueTypeFactory {
+class ValueTypeInfoImpl<I> implements ValueTypeInfo {
 
-  public static <I> ValueType<I, ?> create(ClassTypeInfo type, JCRPropertyType<I> jcrType) {
-    PropertyTypeResolver resolver = new PropertyTypeResolver();
+  /** . */
+  private final ValueType<I, ?> instance;
+
+  /** . */
+  private final JCRPropertyType<I> propertyType;
+
+  /** . */
+  private final ClassTypeInfo typeInfo;
+
+  ValueTypeInfoImpl(
+    Class<? extends ValueType<I, ?>> type,
+    JCRPropertyType<I> propertyType) {
 
     //
-    ValueType vt = resolver.resolveValueType(type);
-
-    //
-    if (!vt.getInternalType().equals(jcrType.getJavaType())) {
-      throw new AssertionError("todo with type " + type + " / property type" + vt);
+    ValueType<I, ?> instance;
+    try {
+      instance = type.newInstance();
+    }
+    catch (InstantiationException e) {
+      throw new AssertionError(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new AssertionError(e);
     }
 
     //
-    return (ValueType<I, ?>)vt;
+    this.instance = instance;
+    this.propertyType = propertyType;
+    this.typeInfo = (ClassTypeInfo)PropertyTypeResolver.typeDomain.getType(type);
+  }
+
+  public JCRPropertyType<I> getJCRPropertyType() {
+    return propertyType;
+  }
+
+  public ValueType<I, ?> create() {
+    return instance;
   }
 }

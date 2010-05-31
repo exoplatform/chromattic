@@ -211,9 +211,16 @@ public class BeanInfoFactory {
       TypeInfo componentTI = ((ArrayTypeInfo)resolvedTI).getComponentType();
       if (componentTI instanceof ClassTypeInfo) {
         ClassTypeInfo rawComponentTI = (ClassTypeInfo)componentTI;
-        ValueInfo resolved = createValue(rawComponentTI);
-        if (resolved instanceof SimpleValueInfo) {
-          return new ArrayPropertyInfo<SimpleValueInfo>(name, (SimpleValueInfo)resolved, getter, setter);
+
+        if (rawComponentTI.getName().equals("byte")) {
+
+
+          //
+        } else {
+          ValueInfo resolved = createValue(rawComponentTI);
+          if (resolved instanceof SimpleValueInfo) {
+            return new ArrayPropertyInfo<SimpleValueInfo>(name, (SimpleValueInfo)resolved, getter, setter);
+          }
         }
       }
     }
