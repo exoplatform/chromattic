@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.chromattic.metamodel.bean.qualifiers.PropertyQualifierResolver;
 import org.reflext.api.*;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
@@ -41,17 +42,17 @@ public class BeanInfoFactory {
 
     this.qualifier = new PropertyQualifierResolver(typeInfo);
 
-    Map<String, QualifiedPropertyInfo> properties = buildProperties(typeInfo);
+    Map<String, PropertyQualifier> properties = buildProperties(typeInfo);
     return new BeanInfo(typeInfo, properties);
   }
 
-  private Map<String, QualifiedPropertyInfo> buildProperties(ClassTypeInfo type) {
+  private Map<String, PropertyQualifier> buildProperties(ClassTypeInfo type) {
     MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL, true);
     Map<String, MethodInfo> getterMap = introspector.getGetterMap(type);
     Map<String, Set<MethodInfo>> setterMap = introspector.getSetterMap(type);
 
     //
-    Map<String, QualifiedPropertyInfo> properties = new HashMap<String, QualifiedPropertyInfo>();
+    Map<String, PropertyQualifier> properties = new HashMap<String, PropertyQualifier>();
 
     //
     for (Map.Entry<String, MethodInfo> getterEntry : getterMap.entrySet()) {
@@ -61,7 +62,7 @@ public class BeanInfoFactory {
 
       //
       Set<MethodInfo> setters = setterMap.get(name);
-      QualifiedPropertyInfo qproperty = null;
+      PropertyQualifier qproperty = null;
 
       //
       if (setters != null) {
@@ -97,7 +98,7 @@ public class BeanInfoFactory {
         TypeInfo setterTypeInfo = setter.getParameterTypes().get(0);
         TypeInfo resolvedTI = type.resolve(setterTypeInfo);
         PropertyInfo property = new PropertyInfo(name, resolvedTI, null, setter);
-        QualifiedPropertyInfo qproperty = qualifier.createPropertyInfo(type, property, resolvedTI);
+        PropertyQualifier qproperty = qualifier.createPropertyInfo(type, property, resolvedTI);
         if (qproperty != null) {
           properties.put(name, qproperty);
           break;

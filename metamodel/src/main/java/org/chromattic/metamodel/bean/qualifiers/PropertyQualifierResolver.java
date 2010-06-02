@@ -17,9 +17,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
+package org.chromattic.metamodel.bean.qualifiers;
 
 import org.chromattic.api.BuilderException;
+import org.chromattic.metamodel.bean.*;
 import org.reflext.api.*;
 
 import java.io.InputStream;
@@ -38,7 +39,7 @@ public class PropertyQualifierResolver {
     this.beanType = beanType;
   }
 
-  public QualifiedPropertyInfo createPropertyInfo(
+  public PropertyQualifier createPropertyInfo(
     ClassTypeInfo beanTypeInfo,
     PropertyInfo propertyInfo,
     TypeInfo typeInfo) {
@@ -55,9 +56,9 @@ public class PropertyQualifierResolver {
           if (elementTI != null) {
             ValueInfo resolvedElementTI = createValue(elementTI);
             if (rawClassName.equals("java.util.Collection")) {
-              return new CollectionQualifiedPropertyInfo<ValueInfo>(propertyInfo, resolvedElementTI);
+              return new CollectionPropertyQualifier<ValueInfo>(propertyInfo, resolvedElementTI);
             } else {
-              return new ListQualifiedPropertyInfo<ValueInfo>(propertyInfo, resolvedElementTI);
+              return new ListPropertyQualifier<ValueInfo>(propertyInfo, resolvedElementTI);
             }
           }
         } else if (rawClassName.equals("java.util.Map")) {
@@ -69,14 +70,14 @@ public class PropertyQualifierResolver {
             ClassTypeInfo keyTI = resolveClass(beanTypeInfo, keyTV);
             if (keyTI != null) {
               ValueInfo resolvedKeyTI = createValue(keyTI);
-              return new MapQualifiedPropertyInfo<ValueInfo, ValueInfo>(propertyInfo, resolvedElementTI, resolvedKeyTI);
+              return new MapPropertyQualifier<ValueInfo, ValueInfo>(propertyInfo, resolvedElementTI, resolvedKeyTI);
             }
           }
         }
       }
     } else if (resolvedTI instanceof ClassTypeInfo) {
       ValueInfo resolved = createValue((ClassTypeInfo)resolvedTI);
-      return new SingleValuedQualifiedPropertyInfo<ValueInfo>(propertyInfo, resolved);
+      return new SingleValuedPropertyQualifier<ValueInfo>(propertyInfo, resolved);
     } else if (resolvedTI instanceof ArrayTypeInfo) {
       TypeInfo componentTI = ((ArrayTypeInfo)resolvedTI).getComponentType();
       if (componentTI instanceof ClassTypeInfo) {
@@ -89,7 +90,7 @@ public class PropertyQualifierResolver {
         } else {
           ValueInfo resolved = createValue(rawComponentTI);
           if (resolved instanceof SimpleValueInfo) {
-            return new ArrayQualifiedPropertyInfo<SimpleValueInfo>(propertyInfo, (SimpleValueInfo)resolved);
+            return new ArrayPropertyQualifier<SimpleValueInfo>(propertyInfo, (SimpleValueInfo)resolved);
           }
         }
       }

@@ -22,8 +22,8 @@ package org.chromattic.core.mapper.onetomany.reference;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
-import org.chromattic.metamodel.bean.CollectionQualifiedPropertyInfo;
-import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.CollectionPropertyQualifier;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -38,7 +38,7 @@ public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionProper
   final LinkType linkType;
 
   public JCRReferentCollectionPropertyMapper(
-    CollectionQualifiedPropertyInfo<BeanValueInfo> info,
+    CollectionPropertyQualifier<BeanValueInfo> info,
     String propertyName,
     LinkType linkType) throws ClassNotFoundException {
     super(EntityContext.class, info);

@@ -20,8 +20,8 @@
 package org.chromattic.core.mapper;
 
 import org.chromattic.core.EntityContext;
-import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedQualifiedPropertyInfo;
+import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -29,7 +29,7 @@ import org.chromattic.metamodel.bean.SingleValuedQualifiedPropertyInfo;
  */
 public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper<EntityContext> {
 
-  public JCRChildNodePropertyMapper(SingleValuedQualifiedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
+  public JCRChildNodePropertyMapper(SingleValuedPropertyQualifier<BeanValueInfo> info) throws ClassNotFoundException {
     super(EntityContext.class, info);
   }
 }

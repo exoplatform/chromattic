@@ -17,37 +17,27 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
+package org.chromattic.metamodel.bean.qualifiers;
 
-import org.reflext.api.ClassTypeInfo;
-
-import java.lang.annotation.Annotation;
+import org.chromattic.metamodel.bean.PropertyInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class AnnotatedProperty<A extends Annotation> extends Annotated<A> {
+public class MapPropertyQualifier<K extends ValueInfo, V extends ValueInfo> extends MultiValuedPropertyQualifier<V> {
 
   /** . */
-  private final ClassTypeInfo owner;
+  private final K keyValue;
 
-  /** . */
-  private final QualifiedPropertyInfo<?> property;
-
-  public AnnotatedProperty(A annotation, ClassTypeInfo owner, QualifiedPropertyInfo<?> property) {
-    super(annotation);
+  public MapPropertyQualifier(PropertyInfo property, V elementValue, K keyValue) {
+    super(property, elementValue);
 
     //
-    this.owner = owner;
-    this.property = property;
+    this.keyValue = keyValue;
   }
 
-  public ClassTypeInfo getOwner() {
-    return owner;
-  }
-
-  public QualifiedPropertyInfo<?> getProperty() {
-    return property;
+  public K getKeyValue() {
+    return keyValue;
   }
 }

@@ -20,6 +20,10 @@
 package org.chromattic.metamodel.mapping;
 
 import org.chromattic.api.RelationshipType;
+import org.chromattic.metamodel.bean.qualifiers.MultiValuedPropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
@@ -55,7 +59,7 @@ public class BaseTypeMappingVisitor {
   protected <V> void propertyMapping(
     ClassTypeInfo definer,
     JCRPropertyMapping propertyMapping,
-    QualifiedPropertyInfo<SimpleValueInfo> propertyInfo) {}
+    PropertyQualifier<SimpleValueInfo> propertyInfo) {}
 
   protected void propertyMapMapping(ClassTypeInfo definer) {}
 
@@ -93,14 +97,14 @@ public class BaseTypeMappingVisitor {
         ClassTypeInfo definer = valueMapping.getDefiner();
         if (valueMapping instanceof SimpleMapping) {
           SimpleMapping<?> simpleMapping = (SimpleMapping)valueMapping;
-          QualifiedPropertyInfo<? extends ValueInfo> propertyInfo = propertyMapping.getInfo();
+          PropertyQualifier<? extends ValueInfo> propertyInfo = propertyMapping.getInfo();
           JCRMemberMapping memberMapping = simpleMapping.getJCRMember();
           if (memberMapping instanceof JCRPropertyMapping) {
             ValueInfo valueInfo;
-            if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
-              valueInfo = ((SingleValuedQualifiedPropertyInfo<?>)propertyInfo).getValue();
+            if (propertyInfo instanceof SingleValuedPropertyQualifier) {
+              valueInfo = ((SingleValuedPropertyQualifier<?>)propertyInfo).getValue();
             } else {
-              valueInfo = ((MultiValuedQualifiedPropertyInfo<?>)propertyInfo).getValue();
+              valueInfo = ((MultiValuedPropertyQualifier<?>)propertyInfo).getValue();
             }
 
             //
@@ -108,14 +112,14 @@ public class BaseTypeMappingVisitor {
               propertyMapping(
                 definer,
                 (JCRPropertyMapping)memberMapping,
-                (QualifiedPropertyInfo)propertyInfo);
+                (PropertyQualifier)propertyInfo);
             } else {
               // WTF ?
               throw new AssertionError();
             }
           } else if (memberMapping instanceof JCRNodeAttributeMapping) {
-            if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
-              ValueInfo valueInfo = ((SingleValuedQualifiedPropertyInfo)propertyInfo).getValue();
+            if (propertyInfo instanceof SingleValuedPropertyQualifier) {
+              ValueInfo valueInfo = ((SingleValuedPropertyQualifier)propertyInfo).getValue();
               if (valueInfo instanceof SimpleValueInfo) {
                 SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
                 ClassTypeInfo simpleType = simpleValueInfo.getTypeInfo();

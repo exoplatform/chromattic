@@ -23,10 +23,10 @@ import org.chromattic.core.ListType;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.core.vt2.ValueTypeFactory;
-import org.chromattic.metamodel.bean.ListQualifiedPropertyInfo;
-import org.chromattic.metamodel.bean.MultiValuedQualifiedPropertyInfo;
-import org.chromattic.metamodel.bean.SimpleValueInfo;
-import org.chromattic.metamodel.bean.ArrayQualifiedPropertyInfo;
+import org.chromattic.metamodel.bean.qualifiers.ListPropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.MultiValuedPropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.ArrayPropertyQualifier;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.spi.type.ValueType;
@@ -37,7 +37,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I> extends PropertyMapper<MultiValuedQualifiedPropertyInfo<SimpleValueInfo>, O> {
+public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I> extends PropertyMapper<MultiValuedPropertyQualifier<SimpleValueInfo>, O> {
 
   /** . */
   private final String jcrPropertyName;
@@ -53,7 +53,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I> extend
 
   public JCRPropertyListPropertyMapper(
     Class<O> contextType,
-    MultiValuedQualifiedPropertyInfo<SimpleValueInfo> info,
+    MultiValuedPropertyQualifier<SimpleValueInfo> info,
     String jcrPropertyName,
     JCRPropertyType<I> propertyType,
     List<String> defaultValue) {
@@ -61,9 +61,9 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I> extend
 
     //
     ListType listType;
-    if (info instanceof ArrayQualifiedPropertyInfo) {
+    if (info instanceof ArrayPropertyQualifier) {
       listType = ListType.ARRAY;
-    } else if (info instanceof ListQualifiedPropertyInfo) {
+    } else if (info instanceof ListPropertyQualifier) {
       listType = ListType.LIST;
     } else {
       throw new AssertionError();

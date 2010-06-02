@@ -21,16 +21,16 @@ package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.metamodel.bean.MapQualifiedPropertyInfo;
-import org.chromattic.metamodel.bean.SimpleValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.MapPropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMapPropertyMapper<O extends ObjectContext> extends PropertyMapper<MapQualifiedPropertyInfo<SimpleValueInfo, SimpleValueInfo>, O> {
+public class JCRPropertyMapPropertyMapper<O extends ObjectContext> extends PropertyMapper<MapPropertyQualifier<SimpleValueInfo, SimpleValueInfo>, O> {
 
-  public JCRPropertyMapPropertyMapper(Class<O> contextType, MapQualifiedPropertyInfo<SimpleValueInfo, SimpleValueInfo> info) {
+  public JCRPropertyMapPropertyMapper(Class<O> contextType, MapPropertyQualifier<SimpleValueInfo, SimpleValueInfo> info) {
     super(contextType, info);
   }
 

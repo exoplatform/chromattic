@@ -23,8 +23,8 @@ import org.chromattic.core.DomainSession;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
 import org.chromattic.core.EntityContext;
-import org.chromattic.metamodel.bean.SingleValuedQualifiedPropertyInfo;
-import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -32,7 +32,7 @@ import org.chromattic.metamodel.bean.BeanValueInfo;
  */
 public class JCRAnyChildCollectionPropertyMapper<O extends ObjectContext> extends JCRChildNodePropertyMapper {
 
-  public JCRAnyChildCollectionPropertyMapper(SingleValuedQualifiedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
+  public JCRAnyChildCollectionPropertyMapper(SingleValuedPropertyQualifier<BeanValueInfo> info) throws ClassNotFoundException {
     super(info);
   }
 

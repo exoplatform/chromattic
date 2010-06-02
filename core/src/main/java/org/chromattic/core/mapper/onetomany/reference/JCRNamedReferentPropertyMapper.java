@@ -24,8 +24,8 @@ import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
-import org.chromattic.metamodel.bean.SingleValuedQualifiedPropertyInfo;
-import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -41,7 +41,7 @@ public class JCRNamedReferentPropertyMapper<O extends ObjectContext> extends JCR
 
   public JCRNamedReferentPropertyMapper(
     Class<O> contextType,
-    SingleValuedQualifiedPropertyInfo<BeanValueInfo> info,
+    SingleValuedPropertyQualifier<BeanValueInfo> info,
     String propertyName,
     LinkType linkType) throws ClassNotFoundException {
     super(contextType, info);

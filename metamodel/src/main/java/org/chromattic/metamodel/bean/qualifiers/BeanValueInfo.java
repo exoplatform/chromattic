@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
+package org.chromattic.metamodel.bean.qualifiers;
 
 import org.reflext.api.ClassTypeInfo;
 

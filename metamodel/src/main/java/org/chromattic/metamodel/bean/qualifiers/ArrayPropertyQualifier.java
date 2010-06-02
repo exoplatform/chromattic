@@ -17,15 +17,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
+package org.chromattic.metamodel.bean.qualifiers;
+
+import org.chromattic.metamodel.bean.PropertyInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ListQualifiedPropertyInfo<V extends ValueInfo> extends CollectionQualifiedPropertyInfo<V> {
+public class ArrayPropertyQualifier<V extends ValueInfo> extends MultiValuedPropertyQualifier<V> {
 
-  public ListQualifiedPropertyInfo(PropertyInfo property, V elementValue) {
+  public ArrayPropertyQualifier(PropertyInfo property, V elementValue) {
     super(property, elementValue);
   }
 }

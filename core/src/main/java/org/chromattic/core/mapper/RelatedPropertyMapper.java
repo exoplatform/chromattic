@@ -21,8 +21,7 @@ package org.chromattic.core.mapper;
 
 
 import org.chromattic.core.ObjectContext;
-import org.chromattic.metamodel.bean.PropertyInfo;
-import org.chromattic.metamodel.bean.QualifiedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyQualifier;
 
 import java.util.Set;
 
@@ -30,7 +29,7 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class RelatedPropertyMapper<P extends QualifiedPropertyInfo, C extends ObjectContext> extends PropertyMapper<P, C> {
+public abstract class RelatedPropertyMapper<P extends PropertyQualifier, C extends ObjectContext> extends PropertyMapper<P, C> {
 
   /** . */
   protected Set<ObjectMapper> relatedTypes;

@@ -25,6 +25,7 @@ import org.chromattic.api.annotations.*;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.metamodel.bean.*;
+import org.chromattic.metamodel.bean.qualifiers.*;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
@@ -236,17 +237,17 @@ public class TypeMappingDomain {
     addedMappings.put(javaClass.getName(), nodeTypeMapping);
 
     // Property
-    for (AnnotatedProperty<Property> annotatedProperty : info.findAnnotatedProperties(Property.class)) {
+    for (AnnotatedPropertyQualifier<Property> annotatedProperty : info.findAnnotatedProperties(Property.class)) {
       Property propertyAnnotation = annotatedProperty.getAnnotation();
-      QualifiedPropertyInfo propertyInfo = annotatedProperty.getProperty();
+      PropertyQualifier propertyInfo = annotatedProperty.getProperty();
 
       //
       ValueInfo value;
-      if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
-        SingleValuedQualifiedPropertyInfo svp = (SingleValuedQualifiedPropertyInfo)propertyInfo;
+      if (propertyInfo instanceof SingleValuedPropertyQualifier) {
+        SingleValuedPropertyQualifier svp = (SingleValuedPropertyQualifier)propertyInfo;
         value = svp.getValue();
-      } else if (propertyInfo instanceof MultiValuedQualifiedPropertyInfo) {
-        MultiValuedQualifiedPropertyInfo mvp = (MultiValuedQualifiedPropertyInfo)propertyInfo;
+      } else if (propertyInfo instanceof MultiValuedPropertyQualifier) {
+        MultiValuedPropertyQualifier mvp = (MultiValuedPropertyQualifier)propertyInfo;
         value = mvp.getValue();
       } else {
         throw new IllegalStateException();
@@ -262,7 +263,7 @@ public class TypeMappingDomain {
 
       //
       String[] defaultValues = null;
-      AnnotatedProperty<DefaultValue> defaultValueAnnotated = propertyInfo.getAnnotated(DefaultValue.class);
+      AnnotatedPropertyQualifier<DefaultValue> defaultValueAnnotated = propertyInfo.getAnnotated(DefaultValue.class);
       if (defaultValueAnnotated != null) {
         DefaultValue defaultValueAnnotation = defaultValueAnnotated.getAnnotation();
         defaultValues = defaultValueAnnotation.value();
@@ -286,10 +287,10 @@ public class TypeMappingDomain {
     }
 
     // Property map
-    for (AnnotatedProperty<Properties> annotatedProperty : info.findAnnotatedProperties(Properties.class)) {
-      QualifiedPropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
-      if (propertyInfo instanceof MapQualifiedPropertyInfo) {
-        MapQualifiedPropertyInfo mapPropertyInfo = (MapQualifiedPropertyInfo)propertyInfo;
+    for (AnnotatedPropertyQualifier<Properties> annotatedProperty : info.findAnnotatedProperties(Properties.class)) {
+      PropertyQualifier<?> propertyInfo = annotatedProperty.getProperty();
+      if (propertyInfo instanceof MapPropertyQualifier) {
+        MapPropertyQualifier mapPropertyInfo = (MapPropertyQualifier)propertyInfo;
         PropertyMapMapping simpleMapping = new PropertyMapMapping(annotatedProperty.getOwner());
         PropertyMapping<PropertyMapMapping> propertyMapping = new PropertyMapping<PropertyMapMapping>(mapPropertyInfo, simpleMapping);
         propertyMappings.add(propertyMapping);
@@ -299,14 +300,14 @@ public class TypeMappingDomain {
     }
 
     // Node attributes
-    for (QualifiedPropertyInfo<?> propertyInfo : info.getProperties()) {
-      Collection<AnnotatedProperty<?>> annotations = propertyInfo.getAnnotateds(
+    for (PropertyQualifier<?> propertyInfo : info.getProperties()) {
+      Collection<AnnotatedPropertyQualifier<?>> annotations = propertyInfo.getAnnotateds(
         Name.class,
         Id.class,
         Path.class,
         WorkspaceName.class);
       if (annotations.size() > 0) {
-        AnnotatedProperty<?> annotated;
+        AnnotatedPropertyQualifier<?> annotated;
         if (annotations.size() > 1) {
           throw new InvalidMappingException(javaClass, "Too many annotations of the same kind " + annotations);
         } else {
@@ -325,8 +326,8 @@ public class TypeMappingDomain {
         } else {
           throw new AssertionError();
         }
-        if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
-          SingleValuedQualifiedPropertyInfo svpi = (SingleValuedQualifiedPropertyInfo)propertyInfo;
+        if (propertyInfo instanceof SingleValuedPropertyQualifier) {
+          SingleValuedPropertyQualifier svpi = (SingleValuedPropertyQualifier)propertyInfo;
           ValueInfo vi = svpi.getValue();
           if (vi instanceof SimpleValueInfo) {
             SimpleValueInfo svi = (SimpleValueInfo)vi;
@@ -354,11 +355,11 @@ public class TypeMappingDomain {
     }
 
     // One to one
-    for (AnnotatedProperty<OneToOne> annotatedProperty : info.findAnnotatedProperties(OneToOne.class)) {
-      QualifiedPropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
+    for (AnnotatedPropertyQualifier<OneToOne> annotatedProperty : info.findAnnotatedProperties(OneToOne.class)) {
+      PropertyQualifier<?> propertyInfo = annotatedProperty.getProperty();
       OneToOne oneToOneAnn = annotatedProperty.getAnnotation();
-      if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
-        SingleValuedQualifiedPropertyInfo svpi = (SingleValuedQualifiedPropertyInfo)propertyInfo;
+      if (propertyInfo instanceof SingleValuedPropertyQualifier) {
+        SingleValuedPropertyQualifier svpi = (SingleValuedPropertyQualifier)propertyInfo;
         ValueInfo vi = svpi.getValue();
         if (vi instanceof BeanValueInfo) {
           BeanValueInfo bvi = (BeanValueInfo)vi;
@@ -370,7 +371,7 @@ public class TypeMappingDomain {
           if (type == RelationshipType.HIERARCHIC) {
             // The mapped by of a one to one mapping discrimines between the parent and the child
             RelationshipMapping hierarchyMapping;
-            AnnotatedProperty<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
+            AnnotatedPropertyQualifier<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
 
             //
             if (mappedBy == null)
@@ -380,7 +381,7 @@ public class TypeMappingDomain {
             }
 
             //
-            AnnotatedProperty<Owner> owner = propertyInfo.getAnnotated(Owner.class);
+            AnnotatedPropertyQualifier<Owner> owner = propertyInfo.getAnnotated(Owner.class);
             if (owner != null) {
               NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
               hierarchyMapping = new NamedOneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, true);
@@ -391,7 +392,7 @@ public class TypeMappingDomain {
             oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
             propertyMappings.add(oneToOneMapping);
           } else if (type == RelationshipType.EMBEDDED) {
-            AnnotatedProperty<Owner> owner = propertyInfo.getAnnotated(Owner.class);
+            AnnotatedPropertyQualifier<Owner> owner = propertyInfo.getAnnotated(Owner.class);
             boolean owning = owner != null;
             NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
             OneToOneMapping embeddedMapping = new OneToOneMapping(annotatedProperty.getOwner(), nodeTypeMapping, relatedMapping, RelationshipType.EMBEDDED, owning);
@@ -409,14 +410,14 @@ public class TypeMappingDomain {
     }
 
     // One to many
-    for (AnnotatedProperty<OneToMany> annotatedProperty : info.findAnnotatedProperties(OneToMany.class)) {
-      QualifiedPropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
-      if (propertyInfo instanceof MultiValuedQualifiedPropertyInfo) {
-        MultiValuedQualifiedPropertyInfo multiValuedProperty = (MultiValuedQualifiedPropertyInfo)propertyInfo;
+    for (AnnotatedPropertyQualifier<OneToMany> annotatedProperty : info.findAnnotatedProperties(OneToMany.class)) {
+      PropertyQualifier<?> propertyInfo = annotatedProperty.getProperty();
+      if (propertyInfo instanceof MultiValuedPropertyQualifier) {
+        MultiValuedPropertyQualifier multiValuedProperty = (MultiValuedPropertyQualifier)propertyInfo;
 
         //
-        if (multiValuedProperty instanceof MapQualifiedPropertyInfo) {
-          MapQualifiedPropertyInfo mapProperty = (MapQualifiedPropertyInfo)multiValuedProperty;
+        if (multiValuedProperty instanceof MapPropertyQualifier) {
+          MapPropertyQualifier mapProperty = (MapPropertyQualifier)multiValuedProperty;
           if (!(mapProperty.getKeyValue() instanceof SimpleValueInfo)) {
             throw new IllegalStateException("Wrong key value type " + mapProperty.getKeyValue());
           }
@@ -434,7 +435,7 @@ public class TypeMappingDomain {
           //
           RelationshipType type = annotatedProperty.getAnnotation().type();
           if (type == RelationshipType.HIERARCHIC) {
-            AnnotatedProperty<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
+            AnnotatedPropertyQualifier<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
             if (mappedBy != null) {
               throw new IllegalStateException();
             }
@@ -443,7 +444,7 @@ public class TypeMappingDomain {
             PropertyMapping<OneToManyMapping> oneToManyMapping = new PropertyMapping<OneToManyMapping>(propertyInfo, mapping);
             propertyMappings.add(oneToManyMapping);
           } else if (type == RelationshipType.REFERENCE || type == RelationshipType.PATH) {
-            AnnotatedProperty<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
+            AnnotatedPropertyQualifier<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
             if (mappedBy == null) {
               throw new InvalidMappingException(javaClass, "By reference or by path one to many must be annotated with " + MappedBy.class.getName());
             }
@@ -457,10 +458,10 @@ public class TypeMappingDomain {
     }
 
     // Many to one
-    for (AnnotatedProperty<ManyToOne> annotatedProperty : info.findAnnotatedProperties(ManyToOne.class)) {
-      QualifiedPropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
-      if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
-        SingleValuedQualifiedPropertyInfo svpi = (SingleValuedQualifiedPropertyInfo)propertyInfo;
+    for (AnnotatedPropertyQualifier<ManyToOne> annotatedProperty : info.findAnnotatedProperties(ManyToOne.class)) {
+      PropertyQualifier<?> propertyInfo = annotatedProperty.getProperty();
+      if (propertyInfo instanceof SingleValuedPropertyQualifier) {
+        SingleValuedPropertyQualifier svpi = (SingleValuedPropertyQualifier)propertyInfo;
         ValueInfo vi = svpi.getValue();
         if (vi instanceof BeanValueInfo) {
           BeanValueInfo bvi = (BeanValueInfo)vi;
@@ -475,7 +476,7 @@ public class TypeMappingDomain {
             PropertyMapping<RelationshipMapping> manyToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
             propertyMappings.add(manyToOneMapping);
           } else {
-            AnnotatedProperty<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
+            AnnotatedPropertyQualifier<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
             if (mappedBy == null) {
               throw new IllegalStateException();
             }

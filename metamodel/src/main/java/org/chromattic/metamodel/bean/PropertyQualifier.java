@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
@@ -32,7 +33,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class QualifiedPropertyInfo<V extends ValueInfo> {
+public abstract class PropertyQualifier<V extends ValueInfo> {
 
   /** . */
   private final PropertyInfo property;
@@ -40,7 +41,7 @@ public abstract class QualifiedPropertyInfo<V extends ValueInfo> {
   /** . */
   private final V value;
 
-  public QualifiedPropertyInfo(PropertyInfo property, V value) {
+  public PropertyQualifier(PropertyInfo property, V value) {
     this.property = property;
     this.value = value;
   }
@@ -53,10 +54,10 @@ public abstract class QualifiedPropertyInfo<V extends ValueInfo> {
     return value;
   }
 
-  public Collection<AnnotatedProperty<?>> getAnnotateds(Class<? extends Annotation>... annotationClasses) {
-    List<AnnotatedProperty<?>> props = new ArrayList<AnnotatedProperty<?>>();
+  public Collection<AnnotatedPropertyQualifier<?>> getAnnotateds(Class<? extends Annotation>... annotationClasses) {
+    List<AnnotatedPropertyQualifier<?>> props = new ArrayList<AnnotatedPropertyQualifier<?>>();
     for (Class<? extends Annotation> annotationClass : annotationClasses) {
-      AnnotatedProperty<?> annotation = getAnnotated(annotationClass);
+      AnnotatedPropertyQualifier<?> annotation = getAnnotated(annotationClass);
       if (annotation != null) {
         props.add(annotation);
       }
@@ -64,7 +65,7 @@ public abstract class QualifiedPropertyInfo<V extends ValueInfo> {
     return props;
   }
 
-  public <A extends Annotation> AnnotatedProperty<A> getAnnotated(Class<A> annotationClass) {
+  public <A extends Annotation> AnnotatedPropertyQualifier<A> getAnnotated(Class<A> annotationClass) {
     if (annotationClass == null) {
       throw new NullPointerException();
     }
@@ -99,7 +100,7 @@ public abstract class QualifiedPropertyInfo<V extends ValueInfo> {
 
     //
     if (annotation != null) {
-      return new AnnotatedProperty<A>(annotation, owner, this);
+      return new AnnotatedPropertyQualifier<A>(annotation, owner, this);
     } else {
       return null;
     }

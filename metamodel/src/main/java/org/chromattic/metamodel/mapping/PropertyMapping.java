@@ -19,9 +19,8 @@
 
 package org.chromattic.metamodel.mapping;
 
-import org.chromattic.metamodel.bean.PropertyInfo;
-import org.chromattic.metamodel.bean.QualifiedPropertyInfo;
-import org.chromattic.metamodel.bean.ValueInfo;
+import org.chromattic.metamodel.bean.PropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
 import org.chromattic.metamodel.mapping.value.ValueMapping;
 
 /**
@@ -31,12 +30,12 @@ import org.chromattic.metamodel.mapping.value.ValueMapping;
 public class PropertyMapping<V extends ValueMapping> {
 
   /** . */
-  private final QualifiedPropertyInfo<? extends ValueInfo> info;
+  private final PropertyQualifier<? extends ValueInfo> info;
 
   /** . */
   private final V valueMapping;
 
-  PropertyMapping(QualifiedPropertyInfo<? extends ValueInfo> info, V valueMapping) {
+  PropertyMapping(PropertyQualifier<? extends ValueInfo> info, V valueMapping) {
     this.info = info;
     this.valueMapping = valueMapping;
   }
@@ -45,7 +44,7 @@ public class PropertyMapping<V extends ValueMapping> {
     return info.getProperty().getName();
   }
 
-  public QualifiedPropertyInfo<? extends ValueInfo> getInfo() {
+  public PropertyQualifier<? extends ValueInfo> getInfo() {
     return info;
   }
 

@@ -17,25 +17,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
+package org.chromattic.metamodel.bean.qualifiers;
+
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.PropertyQualifier;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MapQualifiedPropertyInfo<K extends ValueInfo, V extends ValueInfo> extends MultiValuedQualifiedPropertyInfo<V> {
+public class SingleValuedPropertyQualifier<V extends ValueInfo> extends PropertyQualifier<V> {
 
-  /** . */
-  private final K keyValue;
-
-  public MapQualifiedPropertyInfo(PropertyInfo property, V elementValue, K keyValue) {
-    super(property, elementValue);
-
-    //
-    this.keyValue = keyValue;
-  }
-
-  public K getKeyValue() {
-    return keyValue;
+  public SingleValuedPropertyQualifier(PropertyInfo property, V value) {
+    super(property, value);
   }
 }

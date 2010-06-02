@@ -21,8 +21,8 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
-import org.chromattic.metamodel.bean.MultiValuedQualifiedPropertyInfo;
-import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.MultiValuedPropertyQualifier;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,7 +33,7 @@ public class JCRAnyChildParentPropertyMapper<O extends ObjectContext> extends JC
   /** . */
   private final AnyChildMultiValueMapper valueMapper;
 
-  public JCRAnyChildParentPropertyMapper(Class<O> contextType, MultiValuedQualifiedPropertyInfo<BeanValueInfo> info, AnyChildMultiValueMapper valueMapper) throws ClassNotFoundException {
+  public JCRAnyChildParentPropertyMapper(Class<O> contextType, MultiValuedPropertyQualifier<BeanValueInfo> info, AnyChildMultiValueMapper valueMapper) throws ClassNotFoundException {
     super(contextType, info);
 
     //

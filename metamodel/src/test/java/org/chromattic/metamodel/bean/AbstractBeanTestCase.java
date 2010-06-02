@@ -28,6 +28,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
@@ -41,11 +42,11 @@ public abstract class AbstractBeanTestCase extends TestCase {
   /** . */
   protected final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
-  protected  void assertProperty(QualifiedPropertyInfo<?> property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
+  protected  void assertProperty(PropertyQualifier<?> property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
     assertNotNull(property);
     assertEquals(expectedName, property.getProperty().getName());
-    if (property instanceof SingleValuedQualifiedPropertyInfo) {
-      SingleValuedQualifiedPropertyInfo svpi = (SingleValuedQualifiedPropertyInfo)property;
+    if (property instanceof SingleValuedPropertyQualifier) {
+      SingleValuedPropertyQualifier svpi = (SingleValuedPropertyQualifier)property;
       assertEquals(expectedType.getName(), svpi.getValue().getTypeInfo().getName());
       switch (accessMode) {
         case READ_ONLY:
@@ -67,7 +68,7 @@ public abstract class AbstractBeanTestCase extends TestCase {
   }
 
   protected <A extends Annotation> void assertAnnotation(
-    QualifiedPropertyInfo<?> property,
+    PropertyQualifier<?> property,
     Class<A> annotationClass,
     Map<String, Object> expectedAnnotation) {
     A ann1 = property.getAnnotated(annotationClass).getAnnotation();
