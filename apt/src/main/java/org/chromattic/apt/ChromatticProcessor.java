@@ -27,23 +27,17 @@ import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.NodeTypeBuilder;
 import org.chromattic.metamodel.typegen.NodeTypeSerializer;
 import org.chromattic.spi.instrument.MethodHandler;
-import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.MethodInfo;
-import org.reflext.api.TypeInfo;
-import org.reflext.api.VoidTypeInfo;
-import org.reflext.api.ClassKind;
+import org.reflext.api.*;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
-import org.reflext.core.TypeDomain;
-import org.reflext.apt.JavaxLangTypeModel;
-import org.reflext.apt.JavaxLangMethodModel;
+import org.reflext.apt.JavaxLangReflectionModel;
+import org.reflext.core.TypeResolverImpl;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
@@ -65,7 +59,7 @@ import java.io.PrintWriter;
 public class ChromatticProcessor extends AbstractProcessor {
 
   /** . */
-  private final TypeDomain<Object, ExecutableElement> domain = new TypeDomain<Object, ExecutableElement>(new JavaxLangTypeModel(), new JavaxLangMethodModel());
+  private final TypeResolver<Object> domain = TypeResolverImpl.create(JavaxLangReflectionModel.getInstance());
 
   /** . */
   private ProcessingEnvironment env;
@@ -122,7 +116,7 @@ public class ChromatticProcessor extends AbstractProcessor {
       TypeElement typeElt = (TypeElement)elt;
 
       //
-      ClassTypeInfo cti = (ClassTypeInfo)domain.getType(typeElt);
+      ClassTypeInfo cti = (ClassTypeInfo)domain.resolve(typeElt);
 
       //
       for (String packageName : PackageNameIterator.with(cti.getPackageName()))

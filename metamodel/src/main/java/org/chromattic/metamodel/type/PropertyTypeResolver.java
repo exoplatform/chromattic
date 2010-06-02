@@ -24,12 +24,11 @@ import org.chromattic.spi.type.SimpleValueTypes;
 import org.chromattic.spi.type.ValueType;
 import org.reflext.api.ClassKind;
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.core.TypeDomain;
-import org.reflext.jlr.JavaLangReflectMethodModel;
-import org.reflext.jlr.JavaLangReflectTypeModel;
+import org.reflext.api.TypeResolver;
+import org.reflext.core.TypeResolverImpl;
+import org.reflext.jlr.JavaLangReflectReflectionModel;
 
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,10 +42,7 @@ import java.util.Map;
 public class PropertyTypeResolver {
 
   /** . */
-  static final TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(
-    new JavaLangReflectTypeModel(),
-    new JavaLangReflectMethodModel()
-  );
+  static final TypeResolver<Type> typeDomain = TypeResolverImpl.create(new JavaLangReflectReflectionModel());
 
   /** . */
   private static final Map<String, ValueTypeInfoImpl> defaultTypeMappings;
@@ -77,14 +73,14 @@ public class PropertyTypeResolver {
 
     //
     Map<JCRPropertyType<?>, ClassTypeInfo> _jcrTypes = new HashMap<JCRPropertyType<?>, ClassTypeInfo>();
-    _jcrTypes.put(JCRPropertyType.STRING, (ClassTypeInfo)typeDomain.getType(ValueType.STRING.class));
-    _jcrTypes.put(JCRPropertyType.PATH, (ClassTypeInfo)typeDomain.getType(ValueType.PATH.class));
-    _jcrTypes.put(JCRPropertyType.NAME, (ClassTypeInfo)typeDomain.getType(ValueType.NAME.class));
-    _jcrTypes.put(JCRPropertyType.LONG, (ClassTypeInfo)typeDomain.getType(ValueType.LONG.class));
-    _jcrTypes.put(JCRPropertyType.DOUBLE, (ClassTypeInfo)typeDomain.getType(ValueType.DOUBLE.class));
-    _jcrTypes.put(JCRPropertyType.BOOLEAN, (ClassTypeInfo)typeDomain.getType(ValueType.BOOLEAN.class));
-    _jcrTypes.put(JCRPropertyType.BINARY, (ClassTypeInfo)typeDomain.getType(ValueType.BINARY.class));
-    _jcrTypes.put(JCRPropertyType.DATE, (ClassTypeInfo)typeDomain.getType(ValueType.DATE.class));
+    _jcrTypes.put(JCRPropertyType.STRING, (ClassTypeInfo)typeDomain.resolve(ValueType.STRING.class));
+    _jcrTypes.put(JCRPropertyType.PATH, (ClassTypeInfo)typeDomain.resolve(ValueType.PATH.class));
+    _jcrTypes.put(JCRPropertyType.NAME, (ClassTypeInfo)typeDomain.resolve(ValueType.NAME.class));
+    _jcrTypes.put(JCRPropertyType.LONG, (ClassTypeInfo)typeDomain.resolve(ValueType.LONG.class));
+    _jcrTypes.put(JCRPropertyType.DOUBLE, (ClassTypeInfo)typeDomain.resolve(ValueType.DOUBLE.class));
+    _jcrTypes.put(JCRPropertyType.BOOLEAN, (ClassTypeInfo)typeDomain.resolve(ValueType.BOOLEAN.class));
+    _jcrTypes.put(JCRPropertyType.BINARY, (ClassTypeInfo)typeDomain.resolve(ValueType.BINARY.class));
+    _jcrTypes.put(JCRPropertyType.DATE, (ClassTypeInfo)typeDomain.resolve(ValueType.DATE.class));
 
 
     defaultTypeMappings = _typeMapping;

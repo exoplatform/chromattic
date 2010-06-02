@@ -21,6 +21,7 @@ package org.chromattic.metamodel.bean;
 
 import org.chromattic.api.BuilderException;
 import org.reflext.api.*;
+import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
@@ -132,7 +133,8 @@ public class BeanInfoFactory {
   }
 
   private <A extends Annotation> List<A> getAnnotation(MethodInfo getter, MethodInfo setter, Class<A> annotationClass) {
-    AnnotationIntrospector<A> spector = new AnnotationIntrospector<A>(annotationClass);
+    AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
+    AnnotationIntrospector<A> spector = new AnnotationIntrospector<A>(annotationType);
     List<A> list = new ArrayList<A>(2);
     if (getter != null) {
       A getterAnnotation = spector.resolve(getter);

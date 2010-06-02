@@ -20,13 +20,12 @@
 package org.chromattic.metamodel.typegen;
 
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.core.TypeDomain;
-import org.reflext.jlr.JavaLangReflectMethodModel;
-import org.reflext.jlr.JavaLangReflectTypeModel;
+import org.reflext.api.TypeResolver;
+import org.reflext.core.TypeResolverImpl;
+import org.reflext.jlr.JavaLangReflectReflectionModel;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
@@ -36,13 +35,13 @@ import java.lang.reflect.Type;
 public class TypeGen {
 
   /** . */
-  private final TypeDomain<Type, Method> domain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());;
+  private final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
   /** . */
   private final NodeTypeBuilder builder = new NodeTypeBuilder();
 
   public ClassTypeInfo addType(Class<?> type) {
-    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(type);
+    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(type);
     builder.addType(typeInfo);
     return typeInfo;
   }

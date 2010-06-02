@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.bean;
 
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
 
 import java.util.Map;
@@ -79,7 +80,10 @@ public class BeanInfo {
     }
 
     //
-    AnnotationIntrospector<A> introspector = new AnnotationIntrospector<A>(annotationClass);
+    AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
+
+    //
+    AnnotationIntrospector<A> introspector = new AnnotationIntrospector<A>(annotationType);
 
     //
     return introspector.resolve(typeInfo);

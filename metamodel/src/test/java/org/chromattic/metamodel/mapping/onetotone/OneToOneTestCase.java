@@ -24,9 +24,11 @@ import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.TypeMappingDomain;
 import org.chromattic.metamodel.mapping.value.NamedOneToOneMapping;
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.core.TypeDomain;
-import org.reflext.jlr.JavaLangReflectMethodModel;
-import org.reflext.jlr.JavaLangReflectTypeModel;
+import org.reflext.api.TypeResolver;
+import org.reflext.core.TypeResolverImpl;
+import org.reflext.jlr.JavaLangReflectReflectionModel;
+
+import java.lang.reflect.Type;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -36,10 +38,10 @@ public class OneToOneTestCase extends TestCase {
 
   public void testFoo() {
 
-    TypeDomain domain = new TypeDomain(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
-    ClassTypeInfo o = (ClassTypeInfo)domain.getType(Object.class);
-    ClassTypeInfo a = (ClassTypeInfo)domain.getType(A.class);
-    ClassTypeInfo b = (ClassTypeInfo)domain.getType(B.class);
+    TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
+    ClassTypeInfo o = (ClassTypeInfo)domain.resolve(Object.class);
+    ClassTypeInfo a = (ClassTypeInfo)domain.resolve(A.class);
+    ClassTypeInfo b = (ClassTypeInfo)domain.resolve(B.class);
 
     TypeMappingDomain builder = new TypeMappingDomain(false);
     builder.add(o);

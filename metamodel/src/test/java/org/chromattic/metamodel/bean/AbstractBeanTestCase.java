@@ -28,12 +28,9 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.reflext.jlr.JavaLangReflectTypeModel;
-import org.reflext.jlr.JavaLangReflectMethodModel;
-import org.reflext.core.TypeDomain;
-import org.chromattic.metamodel.bean.AccessMode;
-import org.chromattic.metamodel.bean.PropertyInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.reflext.api.TypeResolver;
+import org.reflext.core.TypeResolverImpl;
+import org.reflext.jlr.JavaLangReflectReflectionModel;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -42,7 +39,7 @@ import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 public abstract class AbstractBeanTestCase extends TestCase {
 
   /** . */
-  protected final TypeDomain<Type, Method> domain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
+  protected final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
   protected  void assertProperty(PropertyInfo property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
     assertNotNull(property);

@@ -19,8 +19,6 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.bean.BeanInfo;
-import org.chromattic.metamodel.bean.BeanInfoFactory;
 import org.reflext.api.ClassTypeInfo;
 
 import java.lang.annotation.Retention;
@@ -53,14 +51,14 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
   public static class Foo1_1 extends Foo1 { }
 
   public void testFoo1() {
-    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo1.class);
+    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo1.class);
     BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
   }
 
   public void testFoo1_1() {
-    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo1_1.class);
+    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo1_1.class);
     BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
@@ -79,7 +77,7 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
   }
 
   public void testFoo2() {
-    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo2.class);
+    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo2.class);
     BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
@@ -101,7 +99,7 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
   public void testFoo3() {
 /*
     try {
-      ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo3.class);
+      ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo3.class);
       fail();
     }
     catch (IllegalStateException e) {
@@ -118,7 +116,7 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
   }
 
   public void testFoo4() {
-    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo4.class);
+    ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo4.class);
     BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));

@@ -32,12 +32,10 @@ import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.format.ObjectFormatter;
 import org.reflext.api.*;
-import org.reflext.jlr.JavaLangReflectTypeModel;
-import org.reflext.jlr.JavaLangReflectMethodModel;
-import org.reflext.core.TypeDomain;
+import org.reflext.core.TypeResolverImpl;
+import org.reflext.jlr.JavaLangReflectReflectionModel;
 
 import java.util.*;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
@@ -57,13 +55,13 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
   @Override
   protected Chromattic boot(Options options, Set<Class> classes) throws BuilderException {
-    TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
+    TypeResolver<Type> typeDomain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
     //
     TypeMappingDomain mappingBuilder = new TypeMappingDomain(true);
     Set<NodeTypeMapping> mappings = new HashSet<NodeTypeMapping>();
     for (Class clazz : classes) {
-      ClassTypeInfo typeInfo = (ClassTypeInfo)typeDomain.getType(clazz);
+      ClassTypeInfo typeInfo = (ClassTypeInfo)typeDomain.resolve(clazz);
       mappingBuilder.add(typeInfo);
     }
     mappings.addAll(mappingBuilder.build());

@@ -31,8 +31,9 @@ import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.reflext.api.*;
-import org.reflext.api.Annotated;
+import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
+import org.reflext.api.introspection.AnnotationTarget;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
 
@@ -44,6 +45,24 @@ import java.util.*;
  * @version $Revision$
  */
 public class TypeMappingDomain {
+
+  /** . */
+  private static final AnnotationType<NamingPolicy, ?> NAMING_POLICY = AnnotationType.get(NamingPolicy.class);
+
+  /** . */
+  private static final AnnotationType<PrimaryType, ?> PRIMARY_TYPE = AnnotationType.get(PrimaryType.class);
+
+  /** . */
+  private static final AnnotationType<MixinType, ?> MIXIN_TYPE = AnnotationType.get(MixinType.class);
+
+  /** . */
+  private static final AnnotationType<Create, ?> CREATE = AnnotationType.get(Create.class);
+
+  /** . */
+  private static final AnnotationType<Destroy, ?> DESTROY = AnnotationType.get(Destroy.class);
+
+  /** . */
+  private static final AnnotationType<FindById, ?> FIND_BY_ID = AnnotationType.get(FindById.class);
 
   /** . */
   private final boolean processFormatter;
@@ -161,17 +180,17 @@ public class TypeMappingDomain {
 
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
-    NamingPolicy namingPolicy = new AnnotationIntrospector<NamingPolicy>(NamingPolicy.class).resolve(javaClass);
+    NamingPolicy namingPolicy = new AnnotationIntrospector<NamingPolicy>(NAMING_POLICY).resolve(javaClass);
     if (namingPolicy != null) {
       onDuplicate = namingPolicy.onDuplicate();
     }
 
     //
-    PrimaryType primaryType = javaClass.getDeclaredAnnotation(PrimaryType.class);
+    PrimaryType primaryType = javaClass.getDeclaredAnnotation(PRIMARY_TYPE);
 
     //
     if (primaryType == null) {
-      MixinType mixinType = javaClass.getDeclaredAnnotation(MixinType.class);
+      MixinType mixinType = javaClass.getDeclaredAnnotation(MIXIN_TYPE);
 
       //
       if (mixinType == null) {
@@ -477,7 +496,7 @@ public class TypeMappingDomain {
     MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL);
 
     // Create
-    for (Annotated<MethodInfo, Create> annotatedMethods : introspector.resolveMethods(javaClass, Create.class)) {
+    for (AnnotationTarget<MethodInfo, Create> annotatedMethods : introspector.resolveMethods(javaClass, CREATE)) {
       MethodInfo method = annotatedMethods.getTarget();
       if (!method.isStatic()) {
         List<TypeInfo> parameterTypes = method.getParameterTypes();
@@ -502,7 +521,7 @@ public class TypeMappingDomain {
     }
 
     // Destroy
-    for (Annotated<MethodInfo, Destroy> annotatedMethods : introspector.resolveMethods(javaClass, Destroy.class)) {
+    for (AnnotationTarget<MethodInfo, Destroy> annotatedMethods : introspector.resolveMethods(javaClass, DESTROY)) {
       MethodInfo method = annotatedMethods.getTarget();
       if (!method.isStatic()) {
         List<TypeInfo> parameterTypes = method.getParameterTypes();
@@ -517,7 +536,7 @@ public class TypeMappingDomain {
     }
 
     // Find by id
-    for (Annotated<MethodInfo, FindById> annotatedMethods : introspector.resolveMethods(javaClass, FindById.class)) {
+    for (AnnotationTarget<MethodInfo, FindById> annotatedMethods : introspector.resolveMethods(javaClass, FIND_BY_ID)) {
       MethodInfo method = annotatedMethods.getTarget();
       if (!method.isStatic()) {
         List<TypeInfo> parameterTypes = method.getParameterTypes();

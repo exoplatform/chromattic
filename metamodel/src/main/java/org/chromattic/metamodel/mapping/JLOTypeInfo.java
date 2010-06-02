@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.mapping;
 
 import org.reflext.api.*;
+import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.relationship.TypeRelationship;
 
 import java.lang.annotation.Annotation;
@@ -82,7 +83,7 @@ class JLOTypeInfo implements ClassTypeInfo {
     return null;
   }
 
-  public <A extends Annotation> A getDeclaredAnnotation(Class<A> annotationClass) {
+  public <A> A getDeclaredAnnotation(AnnotationType<A, ?> annotationType) {
     return null;
   }
 

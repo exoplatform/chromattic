@@ -57,7 +57,7 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
     //
     this.instance = instance;
     this.propertyType = propertyType;
-    this.typeInfo = (ClassTypeInfo)PropertyTypeResolver.typeDomain.getType(type);
+    this.typeInfo = (ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(type);
   }
 
   public JCRPropertyType<I> getJCRPropertyType() {

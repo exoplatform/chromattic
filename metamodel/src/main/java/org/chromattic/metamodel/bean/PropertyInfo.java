@@ -21,7 +21,7 @@ package org.chromattic.metamodel.bean;
 
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
-import org.chromattic.metamodel.bean.AccessMode;
+import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
 
 import java.lang.annotation.Annotation;
@@ -108,8 +108,11 @@ public abstract class PropertyInfo<V extends ValueInfo> {
     ClassTypeInfo owner = null;
 
     //
+    AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
+
+    //
     if (getter != null) {
-      annotation = new AnnotationIntrospector<A>(annotationClass).resolve(getter);
+      annotation = new AnnotationIntrospector<A>(annotationType).resolve(getter);
       if (annotation != null) {
         owner = getter.getOwner();
       }
@@ -117,7 +120,7 @@ public abstract class PropertyInfo<V extends ValueInfo> {
 
     //
     if (setter != null) {
-      A setterAnnotation = new AnnotationIntrospector<A>(annotationClass).resolve(setter);
+      A setterAnnotation = new AnnotationIntrospector<A>(annotationType).resolve(setter);
       if (setterAnnotation != null) {
         if (annotation != null) {
           throw new IllegalStateException("The same annotation " + annotation + " is present on a getter " +
