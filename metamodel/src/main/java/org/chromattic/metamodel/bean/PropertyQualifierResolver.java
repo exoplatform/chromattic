@@ -29,12 +29,12 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyQualifier {
+public class PropertyQualifierResolver {
 
   /** . */
   private final ClassTypeInfo beanType;
 
-  public PropertyQualifier(ClassTypeInfo beanType) {
+  public PropertyQualifierResolver(ClassTypeInfo beanType) {
     this.beanType = beanType;
   }
 

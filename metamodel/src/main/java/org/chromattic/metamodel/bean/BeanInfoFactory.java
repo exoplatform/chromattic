@@ -19,15 +19,10 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.chromattic.api.BuilderException;
 import org.reflext.api.*;
-import org.reflext.api.annotation.AnnotationType;
-import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
 
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
@@ -37,14 +32,14 @@ import java.util.*;
 public class BeanInfoFactory {
 
   /** . */
-  private PropertyQualifier qualifier;
+  private PropertyQualifierResolver qualifier;
 
   public BeanInfoFactory() {
   }
 
   public BeanInfo build(ClassTypeInfo typeInfo) {
 
-    this.qualifier = new PropertyQualifier(typeInfo);
+    this.qualifier = new PropertyQualifierResolver(typeInfo);
 
     Map<String, QualifiedPropertyInfo> properties = buildProperties(typeInfo);
     return new BeanInfo(typeInfo, properties);
