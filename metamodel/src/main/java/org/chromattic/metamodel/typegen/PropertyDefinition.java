@@ -19,8 +19,9 @@
 
 package org.chromattic.metamodel.typegen;
 
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.MultiValuedQualifiedPropertyInfo;
 import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.QualifiedPropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 
@@ -39,8 +40,8 @@ public class PropertyDefinition {
     this.defaultValues = null;
   }
 
-  <V> PropertyDefinition(JCRPropertyMapping mapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
-    this.multiple = propertyInfo instanceof MultiValuedPropertyInfo;
+  <V> PropertyDefinition(JCRPropertyMapping mapping, QualifiedPropertyInfo<SimpleValueInfo> propertyInfo) {
+    this.multiple = propertyInfo instanceof MultiValuedQualifiedPropertyInfo;
     this.name = mapping.getName();
     this.type = mapping.getJCRType().getCode();
     this.defaultValues = mapping.getDefaultValue();

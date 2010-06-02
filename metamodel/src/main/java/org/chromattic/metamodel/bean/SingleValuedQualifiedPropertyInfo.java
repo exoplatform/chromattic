@@ -19,25 +19,13 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.reflext.api.MethodInfo;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MapPropertyInfo<K extends ValueInfo, V extends ValueInfo> extends MultiValuedPropertyInfo<V> {
+public class SingleValuedQualifiedPropertyInfo<V extends ValueInfo> extends QualifiedPropertyInfo<V> {
 
-  /** . */
-  private final K keyValue;
-
-  public MapPropertyInfo(String name, V elementValue, K keyValue, MethodInfo getter, MethodInfo setter) {
-    super(name, elementValue, getter, setter);
-
-    //
-    this.keyValue = keyValue;
-  }
-
-  public K getKeyValue() {
-    return keyValue;
+  public SingleValuedQualifiedPropertyInfo(PropertyInfo property, V value) {
+    super(property, value);
   }
 }

@@ -22,6 +22,7 @@ package org.chromattic.core.mapper;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.QualifiedPropertyInfo;
 import org.reflext.api.MethodInfo;
 
 import java.lang.reflect.Method;
@@ -30,7 +31,7 @@ import java.lang.reflect.Method;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyMapper<P extends PropertyInfo, O extends ObjectContext> implements MethodInvoker<O> {
+public abstract class PropertyMapper<P extends QualifiedPropertyInfo, O extends ObjectContext> implements MethodInvoker<O> {
 
   /** . */
   ObjectMapper<O> mapper;
@@ -63,12 +64,12 @@ public abstract class PropertyMapper<P extends PropertyInfo, O extends ObjectCon
   }
 
   public Object invoke(O ctx, Method method, Object[] args) throws Throwable {
-    MethodInfo getter = info.getGetter();
+    MethodInfo getter = info.getProperty().getGetter();
     if (getter != null && method.equals(getter.getMethod())) {
       return get(ctx);
     } else {
-      MethodInfo setter = info.getSetter();
-      if (setter != null && method.equals(info.getSetter().getMethod())) {
+      MethodInfo setter = info.getProperty().getSetter();
+      if (setter != null && method.equals(info.getProperty().getSetter().getMethod())) {
         set(ctx, args[0]);
         return null;
       } else {

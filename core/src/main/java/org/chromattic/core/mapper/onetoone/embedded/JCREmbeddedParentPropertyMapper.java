@@ -21,19 +21,19 @@ package org.chromattic.core.mapper.onetoone.embedded;
 import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.SingleValuedQualifiedPropertyInfo;
 import org.chromattic.core.mapper.RelatedPropertyMapper;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCREmbeddedParentPropertyMapper extends RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, EntityContext> {
+public class JCREmbeddedParentPropertyMapper extends RelatedPropertyMapper<SingleValuedQualifiedPropertyInfo<BeanValueInfo>, EntityContext> {
 
   /** . */
   private final Class relatedClass;
 
-  public JCREmbeddedParentPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
+  public JCREmbeddedParentPropertyMapper(SingleValuedQualifiedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
     super(EntityContext.class, info);
 
     //

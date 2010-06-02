@@ -22,6 +22,7 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.QualifiedPropertyInfo;
 
 import java.util.Set;
 
@@ -29,7 +30,7 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class RelatedPropertyMapper<P extends PropertyInfo, C extends ObjectContext> extends PropertyMapper<P, C> {
+public abstract class RelatedPropertyMapper<P extends QualifiedPropertyInfo, C extends ObjectContext> extends PropertyMapper<P, C> {
 
   /** . */
   protected Set<ObjectMapper> relatedTypes;
@@ -42,6 +43,6 @@ public abstract class RelatedPropertyMapper<P extends PropertyInfo, C extends Ob
 
   @Override
   public String toString() {
-    return getClass().getSimpleName() + "[name=" + info.getName() + "]";
+    return getClass().getSimpleName() + "[name=" + info.getProperty().getName() + "]";
   }
 }

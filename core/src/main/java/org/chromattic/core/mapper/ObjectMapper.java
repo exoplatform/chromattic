@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.QualifiedPropertyInfo;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.ProxyFactory;
@@ -80,12 +80,12 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
     // Build the dispatcher map
     Map<Method, MethodInvoker<C>> dispatchers = new HashMap<Method, MethodInvoker<C>>();
     for (PropertyMapper<?, C> propertyMapper : propertyMappers) {
-      PropertyInfo info = propertyMapper.getInfo();
-      MethodInfo getter = info.getGetter();
+      QualifiedPropertyInfo<?> info = propertyMapper.getInfo();
+      MethodInfo getter = info.getProperty().getGetter();
       if (getter != null) {
         dispatchers.put((Method)getter.getMethod(), propertyMapper);
       }
-      MethodInfo setter = info.getSetter();
+      MethodInfo setter = info.getProperty().getSetter();
       if (setter != null) {
         dispatchers.put((Method)setter.getMethod(), propertyMapper);
       }

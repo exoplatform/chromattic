@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.mapping;
 
 import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.QualifiedPropertyInfo;
 import org.chromattic.metamodel.bean.ValueInfo;
 import org.chromattic.metamodel.mapping.value.ValueMapping;
 
@@ -30,21 +31,21 @@ import org.chromattic.metamodel.mapping.value.ValueMapping;
 public class PropertyMapping<V extends ValueMapping> {
 
   /** . */
-  private final PropertyInfo<? extends ValueInfo> info;
+  private final QualifiedPropertyInfo<? extends ValueInfo> info;
 
   /** . */
   private final V valueMapping;
 
-  PropertyMapping(PropertyInfo<? extends ValueInfo> info, V valueMapping) {
+  PropertyMapping(QualifiedPropertyInfo<? extends ValueInfo> info, V valueMapping) {
     this.info = info;
     this.valueMapping = valueMapping;
   }
 
   public String getName() {
-    return info.getName();
+    return info.getProperty().getName();
   }
 
-  public PropertyInfo<? extends ValueInfo> getInfo() {
+  public QualifiedPropertyInfo<? extends ValueInfo> getInfo() {
     return info;
   }
 
@@ -56,13 +57,13 @@ public class PropertyMapping<V extends ValueMapping> {
   public boolean equals(Object obj) {
     if (obj instanceof PropertyMapping) {
       PropertyMapping that = (PropertyMapping)obj;
-      return info.getName().equals(that.info.getName());
+      return info.getProperty().getName().equals(that.info.getProperty().getName());
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    return info.getName().hashCode();
+    return info.getProperty().getName().hashCode();
   }
 }

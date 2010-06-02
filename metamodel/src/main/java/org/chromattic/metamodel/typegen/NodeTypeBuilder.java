@@ -19,10 +19,10 @@
 
 package org.chromattic.metamodel.typegen;
 
+import org.chromattic.metamodel.bean.QualifiedPropertyInfo;
 import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
-import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.xml.sax.ContentHandler;
@@ -74,7 +74,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping propertyMapping, PropertyInfo<SimpleValueInfo> propertyInfo) {
+  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping propertyMapping, QualifiedPropertyInfo<SimpleValueInfo> propertyInfo) {
     if (definer.equals(current.mapping.getType())) {
       current.properties.put(propertyMapping.getName(), new PropertyDefinition(propertyMapping, propertyInfo));
     }

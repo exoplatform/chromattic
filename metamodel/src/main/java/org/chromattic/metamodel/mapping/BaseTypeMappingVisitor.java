@@ -55,7 +55,7 @@ public class BaseTypeMappingVisitor {
   protected <V> void propertyMapping(
     ClassTypeInfo definer,
     JCRPropertyMapping propertyMapping,
-    PropertyInfo<SimpleValueInfo> propertyInfo) {}
+    QualifiedPropertyInfo<SimpleValueInfo> propertyInfo) {}
 
   protected void propertyMapMapping(ClassTypeInfo definer) {}
 
@@ -93,14 +93,14 @@ public class BaseTypeMappingVisitor {
         ClassTypeInfo definer = valueMapping.getDefiner();
         if (valueMapping instanceof SimpleMapping) {
           SimpleMapping<?> simpleMapping = (SimpleMapping)valueMapping;
-          PropertyInfo<? extends ValueInfo> propertyInfo = propertyMapping.getInfo();
+          QualifiedPropertyInfo<? extends ValueInfo> propertyInfo = propertyMapping.getInfo();
           JCRMemberMapping memberMapping = simpleMapping.getJCRMember();
           if (memberMapping instanceof JCRPropertyMapping) {
             ValueInfo valueInfo;
-            if (propertyInfo instanceof SingleValuedPropertyInfo) {
-              valueInfo = ((SingleValuedPropertyInfo<?>)propertyInfo).getValue();
+            if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
+              valueInfo = ((SingleValuedQualifiedPropertyInfo<?>)propertyInfo).getValue();
             } else {
-              valueInfo = ((MultiValuedPropertyInfo<?>)propertyInfo).getValue();
+              valueInfo = ((MultiValuedQualifiedPropertyInfo<?>)propertyInfo).getValue();
             }
 
             //
@@ -108,14 +108,14 @@ public class BaseTypeMappingVisitor {
               propertyMapping(
                 definer,
                 (JCRPropertyMapping)memberMapping,
-                (PropertyInfo)propertyInfo);
+                (QualifiedPropertyInfo)propertyInfo);
             } else {
               // WTF ?
               throw new AssertionError();
             }
           } else if (memberMapping instanceof JCRNodeAttributeMapping) {
-            if (propertyInfo instanceof SingleValuedPropertyInfo) {
-              ValueInfo valueInfo = ((SingleValuedPropertyInfo)propertyInfo).getValue();
+            if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
+              ValueInfo valueInfo = ((SingleValuedQualifiedPropertyInfo)propertyInfo).getValue();
               if (valueInfo instanceof SimpleValueInfo) {
                 SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
                 ClassTypeInfo simpleType = simpleValueInfo.getTypeInfo();

@@ -238,15 +238,15 @@ public class TypeMappingDomain {
     // Property
     for (AnnotatedProperty<Property> annotatedProperty : info.findAnnotatedProperties(Property.class)) {
       Property propertyAnnotation = annotatedProperty.getAnnotation();
-      PropertyInfo propertyInfo = annotatedProperty.getProperty();
+      QualifiedPropertyInfo propertyInfo = annotatedProperty.getProperty();
 
       //
       ValueInfo value;
-      if (propertyInfo instanceof SingleValuedPropertyInfo) {
-        SingleValuedPropertyInfo svp = (SingleValuedPropertyInfo)propertyInfo;
+      if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
+        SingleValuedQualifiedPropertyInfo svp = (SingleValuedQualifiedPropertyInfo)propertyInfo;
         value = svp.getValue();
-      } else if (propertyInfo instanceof MultiValuedPropertyInfo) {
-        MultiValuedPropertyInfo mvp = (MultiValuedPropertyInfo)propertyInfo;
+      } else if (propertyInfo instanceof MultiValuedQualifiedPropertyInfo) {
+        MultiValuedQualifiedPropertyInfo mvp = (MultiValuedQualifiedPropertyInfo)propertyInfo;
         value = mvp.getValue();
       } else {
         throw new IllegalStateException();
@@ -287,9 +287,9 @@ public class TypeMappingDomain {
 
     // Property map
     for (AnnotatedProperty<Properties> annotatedProperty : info.findAnnotatedProperties(Properties.class)) {
-      PropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
-      if (propertyInfo instanceof MapPropertyInfo) {
-        MapPropertyInfo mapPropertyInfo = (MapPropertyInfo)propertyInfo;
+      QualifiedPropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
+      if (propertyInfo instanceof MapQualifiedPropertyInfo) {
+        MapQualifiedPropertyInfo mapPropertyInfo = (MapQualifiedPropertyInfo)propertyInfo;
         PropertyMapMapping simpleMapping = new PropertyMapMapping(annotatedProperty.getOwner());
         PropertyMapping<PropertyMapMapping> propertyMapping = new PropertyMapping<PropertyMapMapping>(mapPropertyInfo, simpleMapping);
         propertyMappings.add(propertyMapping);
@@ -299,7 +299,7 @@ public class TypeMappingDomain {
     }
 
     // Node attributes
-    for (PropertyInfo<?> propertyInfo : info.getProperties()) {
+    for (QualifiedPropertyInfo<?> propertyInfo : info.getProperties()) {
       Collection<AnnotatedProperty<?>> annotations = propertyInfo.getAnnotateds(
         Name.class,
         Id.class,
@@ -325,8 +325,8 @@ public class TypeMappingDomain {
         } else {
           throw new AssertionError();
         }
-        if (propertyInfo instanceof SingleValuedPropertyInfo) {
-          SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
+        if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
+          SingleValuedQualifiedPropertyInfo svpi = (SingleValuedQualifiedPropertyInfo)propertyInfo;
           ValueInfo vi = svpi.getValue();
           if (vi instanceof SimpleValueInfo) {
             SimpleValueInfo svi = (SimpleValueInfo)vi;
@@ -355,10 +355,10 @@ public class TypeMappingDomain {
 
     // One to one
     for (AnnotatedProperty<OneToOne> annotatedProperty : info.findAnnotatedProperties(OneToOne.class)) {
-      PropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
+      QualifiedPropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
       OneToOne oneToOneAnn = annotatedProperty.getAnnotation();
-      if (propertyInfo instanceof SingleValuedPropertyInfo) {
-        SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
+      if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
+        SingleValuedQualifiedPropertyInfo svpi = (SingleValuedQualifiedPropertyInfo)propertyInfo;
         ValueInfo vi = svpi.getValue();
         if (vi instanceof BeanValueInfo) {
           BeanValueInfo bvi = (BeanValueInfo)vi;
@@ -410,13 +410,13 @@ public class TypeMappingDomain {
 
     // One to many
     for (AnnotatedProperty<OneToMany> annotatedProperty : info.findAnnotatedProperties(OneToMany.class)) {
-      PropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
-      if (propertyInfo instanceof MultiValuedPropertyInfo) {
-        MultiValuedPropertyInfo multiValuedProperty = (MultiValuedPropertyInfo)propertyInfo;
+      QualifiedPropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
+      if (propertyInfo instanceof MultiValuedQualifiedPropertyInfo) {
+        MultiValuedQualifiedPropertyInfo multiValuedProperty = (MultiValuedQualifiedPropertyInfo)propertyInfo;
 
         //
-        if (multiValuedProperty instanceof MapPropertyInfo) {
-          MapPropertyInfo mapProperty = (MapPropertyInfo)multiValuedProperty;
+        if (multiValuedProperty instanceof MapQualifiedPropertyInfo) {
+          MapQualifiedPropertyInfo mapProperty = (MapQualifiedPropertyInfo)multiValuedProperty;
           if (!(mapProperty.getKeyValue() instanceof SimpleValueInfo)) {
             throw new IllegalStateException("Wrong key value type " + mapProperty.getKeyValue());
           }
@@ -458,9 +458,9 @@ public class TypeMappingDomain {
 
     // Many to one
     for (AnnotatedProperty<ManyToOne> annotatedProperty : info.findAnnotatedProperties(ManyToOne.class)) {
-      PropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
-      if (propertyInfo instanceof SingleValuedPropertyInfo) {
-        SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
+      QualifiedPropertyInfo<?> propertyInfo = annotatedProperty.getProperty();
+      if (propertyInfo instanceof SingleValuedQualifiedPropertyInfo) {
+        SingleValuedQualifiedPropertyInfo svpi = (SingleValuedQualifiedPropertyInfo)propertyInfo;
         ValueInfo vi = svpi.getValue();
         if (vi instanceof BeanValueInfo) {
           BeanValueInfo bvi = (BeanValueInfo)vi;

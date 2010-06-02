@@ -28,6 +28,7 @@ import org.chromattic.core.EntityContext;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedParentPropertyMapper;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedPropertyMapper;
+import org.chromattic.metamodel.bean.*;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.metamodel.mapping.MethodMapping;
@@ -52,13 +53,7 @@ import org.chromattic.core.mapper.property.JCRPropertyListPropertyMapper;
 import org.chromattic.core.mapper.nodeattribute.JCRNodeAttributePropertyMapper;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
-import org.chromattic.metamodel.bean.MapPropertyInfo;
-import org.chromattic.metamodel.bean.CollectionPropertyInfo;
-import org.chromattic.metamodel.bean.SimpleValueInfo;
-import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.ListPropertyInfo;
+import org.chromattic.metamodel.bean.SingleValuedQualifiedPropertyInfo;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.spi.instrument.ProxyFactory;
@@ -207,11 +202,11 @@ public class MapperBuilder {
     for (PropertyMapping<?> pm : typeMapping.getPropertyMappings()) {
 
       //
-      if (pm.getInfo() instanceof SingleValuedPropertyInfo) {
+      if (pm.getInfo() instanceof SingleValuedQualifiedPropertyInfo) {
         ValueMapping pmvm = pm.getValueMapping();
 
         //
-        SingleValuedPropertyInfo<BeanValueInfo> propertyInfo = (SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo();
+        SingleValuedQualifiedPropertyInfo<BeanValueInfo> propertyInfo = (SingleValuedQualifiedPropertyInfo<BeanValueInfo>)pm.getInfo();
 
         //
         if (pmvm instanceof SimpleMapping) {
@@ -225,7 +220,7 @@ public class MapperBuilder {
             propertyMappers.add(mapper);
           } else if (jcrMember instanceof JCRNodeAttributeMapping) {
             JCRNodeAttributeMapping nam = (JCRNodeAttributeMapping)jcrMember;
-            JCRNodeAttributePropertyMapper bilto = new JCRNodeAttributePropertyMapper((SingleValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(), nam.getType());
+            JCRNodeAttributePropertyMapper bilto = new JCRNodeAttributePropertyMapper((SingleValuedQualifiedPropertyInfo<SimpleValueInfo>)pm.getInfo(), nam.getType());
             if (contextType == EntityContext.class) {
               propertyMappersForEntity.add(bilto);
             } else {
@@ -298,7 +293,7 @@ public class MapperBuilder {
             }
           }
         }
-      } else if (pm.getInfo() instanceof MultiValuedPropertyInfo) {
+      } else if (pm.getInfo() instanceof MultiValuedQualifiedPropertyInfo) {
         ValueMapping pmvm = pm.getValueMapping();
 
         //
@@ -314,7 +309,7 @@ public class MapperBuilder {
               if (linkType != null) {
                 NamedOneToManyMapping fff = (NamedOneToManyMapping)pmhm;
                 JCRReferentCollectionPropertyMapper bilto = new JCRReferentCollectionPropertyMapper(
-                  (CollectionPropertyInfo<BeanValueInfo>)pm.getInfo(),
+                  (CollectionQualifiedPropertyInfo<BeanValueInfo>)pm.getInfo(),
                   fff.getName(),
                   linkType);
                 relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
@@ -323,12 +318,12 @@ public class MapperBuilder {
             } else {
               if (pmhm.getType() == RelationshipType.HIERARCHIC) {
 
-                MultiValuedPropertyInfo<BeanValueInfo> mpi = (MultiValuedPropertyInfo<BeanValueInfo>)pm.getInfo();
+                MultiValuedQualifiedPropertyInfo<BeanValueInfo> mpi = (MultiValuedQualifiedPropertyInfo<BeanValueInfo>)pm.getInfo();
                 AnyChildMultiValueMapper valueMapper;
-                if (mpi instanceof MapPropertyInfo) {
+                if (mpi instanceof MapQualifiedPropertyInfo) {
                   valueMapper = new AnyChildMultiValueMapper.Map();
-                } else if (mpi instanceof CollectionPropertyInfo) {
-                  if (mpi instanceof ListPropertyInfo) {
+                } else if (mpi instanceof CollectionQualifiedPropertyInfo) {
+                  if (mpi instanceof ListQualifiedPropertyInfo) {
                     valueMapper = new AnyChildMultiValueMapper.List();
                   } else {
                     valueMapper = new AnyChildMultiValueMapper.Collection();
@@ -353,7 +348,7 @@ public class MapperBuilder {
             propertyMappers.add(mapper);
           }
         } else if (pmvm instanceof PropertyMapMapping) {
-          JCRPropertyMapPropertyMapper<C> bilto = new JCRPropertyMapPropertyMapper<C>(contextType, (MapPropertyInfo)pm.getInfo());
+          JCRPropertyMapPropertyMapper<C> bilto = new JCRPropertyMapPropertyMapper<C>(contextType, (MapQualifiedPropertyInfo)pm.getInfo());
           propertyMappers.add(bilto);
         }
       }
@@ -484,7 +479,7 @@ public class MapperBuilder {
     JCRPropertyMapping<I> jcrProperty) {
     return new JCRPropertyPropertyMapper<C, V, I>(
       contextType,
-      (SingleValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(),
+      (SingleValuedQualifiedPropertyInfo<SimpleValueInfo>)pm.getInfo(),
       jcrProperty.getName(),
       jcrProperty.getDefaultValue(),
       jcrProperty.getJCRType());
@@ -496,7 +491,7 @@ public class MapperBuilder {
     JCRPropertyMapping<I> jcrProperty) {
     return new JCRPropertyListPropertyMapper<C, V, I>(
       contextType,
-      (MultiValuedPropertyInfo<SimpleValueInfo>)pm.getInfo(),
+      (MultiValuedQualifiedPropertyInfo<SimpleValueInfo>)pm.getInfo(),
       jcrProperty.getName(),
       jcrProperty.getJCRType(),
       jcrProperty.getDefaultValue());

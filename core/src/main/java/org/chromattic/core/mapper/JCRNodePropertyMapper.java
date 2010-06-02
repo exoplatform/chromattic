@@ -21,18 +21,18 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.SingleValuedQualifiedPropertyInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRNodePropertyMapper<O extends ObjectContext> extends RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, O> {
+public abstract class JCRNodePropertyMapper<O extends ObjectContext> extends RelatedPropertyMapper<SingleValuedQualifiedPropertyInfo<BeanValueInfo>, O> {
 
   /** . */
   private final Class relatedClass;
 
-  protected JCRNodePropertyMapper(Class<O> contextType, SingleValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
+  protected JCRNodePropertyMapper(Class<O> contextType, SingleValuedQualifiedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
     super(contextType, info);
 
     //

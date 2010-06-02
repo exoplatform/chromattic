@@ -38,12 +38,10 @@ public class PropertyQualifier {
     this.beanType = beanType;
   }
 
-  public PropertyInfo createPropertyInfo(
+  public QualifiedPropertyInfo createPropertyInfo(
     ClassTypeInfo beanTypeInfo,
-    String name,
-    TypeInfo typeInfo,
-    MethodInfo getter,
-    MethodInfo setter) {
+    PropertyInfo propertyInfo,
+    TypeInfo typeInfo) {
     TypeInfo resolvedTI = beanTypeInfo.resolve(typeInfo);
     if (resolvedTI instanceof ParameterizedTypeInfo) {
       ParameterizedTypeInfo parameterizedTI = (ParameterizedTypeInfo)resolvedTI;
@@ -57,17 +55,9 @@ public class PropertyQualifier {
           if (elementTI != null) {
             ValueInfo resolvedElementTI = createValue(elementTI);
             if (rawClassName.equals("java.util.Collection")) {
-              return new CollectionPropertyInfo<ValueInfo>(
-                name,
-                resolvedElementTI,
-                getter,
-                setter);
+              return new CollectionQualifiedPropertyInfo<ValueInfo>(propertyInfo, resolvedElementTI);
             } else {
-              return new ListPropertyInfo<ValueInfo>(
-                name,
-                resolvedElementTI,
-                getter,
-                setter);
+              return new ListQualifiedPropertyInfo<ValueInfo>(propertyInfo, resolvedElementTI);
             }
           }
         } else if (rawClassName.equals("java.util.Map")) {
@@ -79,23 +69,14 @@ public class PropertyQualifier {
             ClassTypeInfo keyTI = resolveClass(beanTypeInfo, keyTV);
             if (keyTI != null) {
               ValueInfo resolvedKeyTI = createValue(keyTI);
-              return new MapPropertyInfo<ValueInfo, ValueInfo>(
-                name,
-                resolvedElementTI,
-                resolvedKeyTI,
-                getter,
-                setter);
+              return new MapQualifiedPropertyInfo<ValueInfo, ValueInfo>(propertyInfo, resolvedElementTI, resolvedKeyTI);
             }
           }
         }
       }
     } else if (resolvedTI instanceof ClassTypeInfo) {
       ValueInfo resolved = createValue((ClassTypeInfo)resolvedTI);
-      return new SingleValuedPropertyInfo<ValueInfo>(
-        name,
-        resolved,
-        getter,
-        setter);
+      return new SingleValuedQualifiedPropertyInfo<ValueInfo>(propertyInfo, resolved);
     } else if (resolvedTI instanceof ArrayTypeInfo) {
       TypeInfo componentTI = ((ArrayTypeInfo)resolvedTI).getComponentType();
       if (componentTI instanceof ClassTypeInfo) {
@@ -108,7 +89,7 @@ public class PropertyQualifier {
         } else {
           ValueInfo resolved = createValue(rawComponentTI);
           if (resolved instanceof SimpleValueInfo) {
-            return new ArrayPropertyInfo<SimpleValueInfo>(name, (SimpleValueInfo)resolved, getter, setter);
+            return new ArrayQualifiedPropertyInfo<SimpleValueInfo>(propertyInfo, (SimpleValueInfo)resolved);
           }
         }
       }

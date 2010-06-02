@@ -40,9 +40,9 @@ public class BeanInfo {
   private final ClassTypeInfo typeInfo;
 
   /** . */
-  private final Map<String, PropertyInfo> properties;
+  private final Map<String, QualifiedPropertyInfo> properties;
 
-  BeanInfo(ClassTypeInfo typeInfo, Map<String, PropertyInfo> properties) {
+  BeanInfo(ClassTypeInfo typeInfo, Map<String, QualifiedPropertyInfo> properties) {
     this.typeInfo = typeInfo;
     this.properties = properties;
   }
@@ -51,7 +51,7 @@ public class BeanInfo {
     return properties.keySet();
   }
 
-  public Collection<PropertyInfo> getProperties() {
+  public Collection<QualifiedPropertyInfo> getProperties() {
     return properties.values();
   }
 
@@ -59,13 +59,13 @@ public class BeanInfo {
     return typeInfo;
   }
 
-  public PropertyInfo getProperty(String propertyName) {
+  public QualifiedPropertyInfo getProperty(String propertyName) {
     return properties.get(propertyName);
   }
 
   public <A extends Annotation> Collection<AnnotatedProperty<A>> findAnnotatedProperties(Class<A> annotationClass) {
     List<AnnotatedProperty<A>> matched = new ArrayList<AnnotatedProperty<A>>();
-    for (PropertyInfo<?> property : properties.values()) {
+    for (QualifiedPropertyInfo<?> property : properties.values()) {
       AnnotatedProperty<A> propertyAnnotation = property.getAnnotated(annotationClass);
       if (propertyAnnotation != null) {
         matched.add(propertyAnnotation);

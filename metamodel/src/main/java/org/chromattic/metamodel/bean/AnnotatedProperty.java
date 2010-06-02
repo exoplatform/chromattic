@@ -33,9 +33,9 @@ public class AnnotatedProperty<A extends Annotation> extends Annotated<A> {
   private final ClassTypeInfo owner;
 
   /** . */
-  private final PropertyInfo<?> property;
+  private final QualifiedPropertyInfo<?> property;
 
-  public AnnotatedProperty(A annotation, ClassTypeInfo owner, PropertyInfo<?> property) {
+  public AnnotatedProperty(A annotation, ClassTypeInfo owner, QualifiedPropertyInfo<?> property) {
     super(annotation);
 
     //
@@ -47,7 +47,7 @@ public class AnnotatedProperty<A extends Annotation> extends Annotated<A> {
     return owner;
   }
 
-  public PropertyInfo<?> getProperty() {
+  public QualifiedPropertyInfo<?> getProperty() {
     return property;
   }
 }

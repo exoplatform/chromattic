@@ -19,15 +19,13 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.reflext.api.MethodInfo;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ListPropertyInfo<V extends ValueInfo> extends CollectionPropertyInfo<V> {
+public class CollectionQualifiedPropertyInfo<V extends ValueInfo> extends MultiValuedQualifiedPropertyInfo<V> {
 
-  public ListPropertyInfo(String name, V elementValue, MethodInfo getter, MethodInfo setter) {
-    super(name, elementValue, getter, setter);
+  public CollectionQualifiedPropertyInfo(PropertyInfo property, V elementValue) {
+    super(property, elementValue);
   }
 }

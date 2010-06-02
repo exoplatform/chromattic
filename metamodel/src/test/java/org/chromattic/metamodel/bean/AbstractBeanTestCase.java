@@ -41,24 +41,24 @@ public abstract class AbstractBeanTestCase extends TestCase {
   /** . */
   protected final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
-  protected  void assertProperty(PropertyInfo property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
+  protected  void assertProperty(QualifiedPropertyInfo<?> property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
     assertNotNull(property);
-    assertEquals(expectedName, property.getName());
-    if (property instanceof SingleValuedPropertyInfo) {
-      SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)property;
+    assertEquals(expectedName, property.getProperty().getName());
+    if (property instanceof SingleValuedQualifiedPropertyInfo) {
+      SingleValuedQualifiedPropertyInfo svpi = (SingleValuedQualifiedPropertyInfo)property;
       assertEquals(expectedType.getName(), svpi.getValue().getTypeInfo().getName());
       switch (accessMode) {
         case READ_ONLY:
-          assertNotNull(property.getGetter());
-          assertNull(property.getSetter());
+          assertNotNull(property.getProperty().getGetter());
+          assertNull(property.getProperty().getSetter());
           break;
         case WRITE_ONLY:
-          assertNull(property.getGetter());
-          assertNotNull(property.getSetter());
+          assertNull(property.getProperty().getGetter());
+          assertNotNull(property.getProperty().getSetter());
           break;
         case READ_WRITE:
-          assertNotNull(property.getGetter());
-          assertNotNull(property.getSetter());
+          assertNotNull(property.getProperty().getGetter());
+          assertNotNull(property.getProperty().getSetter());
           break;
       }
     } else {
@@ -67,7 +67,7 @@ public abstract class AbstractBeanTestCase extends TestCase {
   }
 
   protected <A extends Annotation> void assertAnnotation(
-    PropertyInfo<?> property,
+    QualifiedPropertyInfo<?> property,
     Class<A> annotationClass,
     Map<String, Object> expectedAnnotation) {
     A ann1 = property.getAnnotated(annotationClass).getAnnotation();

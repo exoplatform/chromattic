@@ -46,17 +46,17 @@ public class BeanInfoFactory {
 
     this.qualifier = new PropertyQualifier(typeInfo);
 
-    Map<String, PropertyInfo> properties = buildProperties(typeInfo);
+    Map<String, QualifiedPropertyInfo> properties = buildProperties(typeInfo);
     return new BeanInfo(typeInfo, properties);
   }
 
-  private Map<String, PropertyInfo> buildProperties(ClassTypeInfo type) {
+  private Map<String, QualifiedPropertyInfo> buildProperties(ClassTypeInfo type) {
     MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL, true);
     Map<String, MethodInfo> getterMap = introspector.getGetterMap(type);
     Map<String, Set<MethodInfo>> setterMap = introspector.getSetterMap(type);
 
     //
-    Map<String, PropertyInfo> properties = new HashMap<String, PropertyInfo>();
+    Map<String, QualifiedPropertyInfo> properties = new HashMap<String, QualifiedPropertyInfo>();
 
     //
     for (Map.Entry<String, MethodInfo> getterEntry : getterMap.entrySet()) {
@@ -66,36 +66,31 @@ public class BeanInfoFactory {
 
       //
       Set<MethodInfo> setters = setterMap.get(name);
-      PropertyInfo property = null;
+      QualifiedPropertyInfo qproperty = null;
 
       //
       if (setters != null) {
         for (MethodInfo setter : setters) {
           TypeInfo setterTypeInfo = setter.getParameterTypes().get(0);
           if (getterTypeInfo.equals(setterTypeInfo)) {
-            property = qualifier.createPropertyInfo(
-              type,
-              name,
-              getterTypeInfo,
-              getter,
-              setter);
+            TypeInfo resolvedTI = type.resolve(getterTypeInfo);
+            PropertyInfo property = new PropertyInfo(name, resolvedTI, getter, setter);
+            qproperty = qualifier.createPropertyInfo(type, property, resolvedTI);
+            break;
           }
         }
       }
 
       //
-      if (property == null) {
-        property = qualifier.createPropertyInfo(
-          type,
-          name,
-          getterTypeInfo,
-          getter,
-          null);
+      if (qproperty == null) {
+        TypeInfo resolvedTI = type.resolve(getterTypeInfo);
+        PropertyInfo property = new PropertyInfo(name, resolvedTI, getter, null);
+        qproperty = qualifier.createPropertyInfo(type, property, resolvedTI);
       }
 
       //
-      if (property != null) {
-        properties.put(name, property);
+      if (qproperty != null) {
+        properties.put(name, qproperty);
       }
     }
 
@@ -105,14 +100,11 @@ public class BeanInfoFactory {
       String name = setterEntry.getKey();
       for (MethodInfo setter : setterEntry.getValue()) {
         TypeInfo setterTypeInfo = setter.getParameterTypes().get(0);
-        PropertyInfo property = qualifier.createPropertyInfo(
-          type,
-          name,
-          setterTypeInfo,
-          null,
-          setter);
-        if (property != null) {
-          properties.put(name, property);
+        TypeInfo resolvedTI = type.resolve(setterTypeInfo);
+        PropertyInfo property = new PropertyInfo(name, resolvedTI, null, setter);
+        QualifiedPropertyInfo qproperty = qualifier.createPropertyInfo(type, property, resolvedTI);
+        if (qproperty != null) {
+          properties.put(name, qproperty);
           break;
         }
       }

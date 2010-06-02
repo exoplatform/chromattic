@@ -21,6 +21,7 @@ package org.chromattic.metamodel.bean;
 
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
+import org.reflext.api.TypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
 
@@ -34,10 +35,13 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyInfo<V extends ValueInfo> {
+public final class PropertyInfo {
 
   /** . */
   private final String name;
+
+  /** . */
+  private final TypeInfo declaredType;
 
   /** . */
   private final MethodInfo getter;
@@ -45,12 +49,9 @@ public abstract class PropertyInfo<V extends ValueInfo> {
   /** . */
   private final MethodInfo setter;
 
-  /** . */
-  private final V value;
-
-  public PropertyInfo(String name, V value, MethodInfo getter, MethodInfo setter) {
+  public PropertyInfo(String name, TypeInfo declaredType, MethodInfo getter, MethodInfo setter) {
     this.name = name;
-    this.value = value;
+    this.declaredType = declaredType;
     this.getter = getter;
     this.setter = setter;
   }
@@ -59,8 +60,8 @@ public abstract class PropertyInfo<V extends ValueInfo> {
     return name;
   }
 
-  public V getValue() {
-    return value;
+  public TypeInfo getDeclaredType() {
+    return declaredType;
   }
 
   public AccessMode getAccessMode() {
@@ -85,58 +86,6 @@ public abstract class PropertyInfo<V extends ValueInfo> {
 
   public MethodInfo getSetter() {
     return setter;
-  }
-
-  public Collection<AnnotatedProperty<?>> getAnnotateds(Class<? extends Annotation>... annotationClasses) {
-    List<AnnotatedProperty<?>> props = new ArrayList<AnnotatedProperty<?>>();
-    for (Class<? extends Annotation> annotationClass : annotationClasses) {
-      AnnotatedProperty<?> annotation = getAnnotated(annotationClass);
-      if (annotation != null) {
-        props.add(annotation);
-      }
-    }
-    return props;
-  }
-
-  public <A extends Annotation> AnnotatedProperty<A> getAnnotated(Class<A> annotationClass) {
-    if (annotationClass == null) {
-      throw new NullPointerException();
-    }
-
-    //
-    A annotation = null;
-    ClassTypeInfo owner = null;
-
-    //
-    AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
-
-    //
-    if (getter != null) {
-      annotation = new AnnotationIntrospector<A>(annotationType).resolve(getter);
-      if (annotation != null) {
-        owner = getter.getOwner();
-      }
-    }
-
-    //
-    if (setter != null) {
-      A setterAnnotation = new AnnotationIntrospector<A>(annotationType).resolve(setter);
-      if (setterAnnotation != null) {
-        if (annotation != null) {
-          throw new IllegalStateException("The same annotation " + annotation + " is present on a getter " +
-            getter + " and setter" + setter);
-        }
-        annotation = setterAnnotation;
-        owner = setter.getOwner();
-      }
-    }
-
-    //
-    if (annotation != null) {
-      return new AnnotatedProperty<A>(annotation, owner, this);
-    } else {
-      return null;
-    }
   }
 
   @Override
