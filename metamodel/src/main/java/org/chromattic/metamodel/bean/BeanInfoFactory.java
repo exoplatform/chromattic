@@ -36,10 +36,16 @@ import java.util.*;
  */
 public class BeanInfoFactory {
 
+  /** . */
+  private PropertyQualifier qualifier;
+
   public BeanInfoFactory() {
   }
 
   public BeanInfo build(ClassTypeInfo typeInfo) {
+
+    this.qualifier = new PropertyQualifier(typeInfo);
+
     Map<String, PropertyInfo> properties = buildProperties(typeInfo);
     return new BeanInfo(typeInfo, properties);
   }
@@ -67,7 +73,7 @@ public class BeanInfoFactory {
         for (MethodInfo setter : setters) {
           TypeInfo setterTypeInfo = setter.getParameterTypes().get(0);
           if (getterTypeInfo.equals(setterTypeInfo)) {
-            property = createPropertyInfo(
+            property = qualifier.createPropertyInfo(
               type,
               name,
               getterTypeInfo,
@@ -79,7 +85,7 @@ public class BeanInfoFactory {
 
       //
       if (property == null) {
-        property = createPropertyInfo(
+        property = qualifier.createPropertyInfo(
           type,
           name,
           getterTypeInfo,
@@ -99,7 +105,7 @@ public class BeanInfoFactory {
       String name = setterEntry.getKey();
       for (MethodInfo setter : setterEntry.getValue()) {
         TypeInfo setterTypeInfo = setter.getParameterTypes().get(0);
-        PropertyInfo property = createPropertyInfo(
+        PropertyInfo property = qualifier.createPropertyInfo(
           type,
           name,
           setterTypeInfo,
@@ -114,163 +120,5 @@ public class BeanInfoFactory {
 
     //
     return properties;
-  }
-
-  private ClassTypeInfo resolveClass(ClassTypeInfo baseType, TypeInfo type) {
-    TypeInfo resolvedType = baseType.resolve(type);
-    return resolvedType instanceof ClassTypeInfo ? (ClassTypeInfo)resolvedType : null;
-  }
-
-  private Map<Class<? extends Annotation>, List<? extends Annotation>> getAnnotations(MethodInfo getter, MethodInfo setter, Class<? extends Annotation>... annotationClasses) {
-    Map<Class<? extends Annotation>, List<? extends Annotation>> annotationMap = new HashMap<Class<? extends Annotation>, List<? extends Annotation>>();
-    for (Class<? extends Annotation> annotationClass : annotationClasses) {
-      List<? extends Annotation> annotations = getAnnotation(getter, setter, annotationClass);
-      if (annotations.size() > 0) {
-        annotationMap.put(annotationClass, annotations);
-      }
-    }
-    return annotationMap;
-  }
-
-  private <A extends Annotation> List<A> getAnnotation(MethodInfo getter, MethodInfo setter, Class<A> annotationClass) {
-    AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
-    AnnotationIntrospector<A> spector = new AnnotationIntrospector<A>(annotationType);
-    List<A> list = new ArrayList<A>(2);
-    if (getter != null) {
-      A getterAnnotation = spector.resolve(getter);
-      if (getterAnnotation != null) {
-        list.add(getterAnnotation);
-      }
-    }
-    if (setter != null) {
-      A setterAnnotation = spector.resolve(setter);
-      if (setterAnnotation != null) {
-        list.add(setterAnnotation);
-      }
-    }
-    return list;
-  }
-
-  private PropertyInfo createPropertyInfo(
-    ClassTypeInfo beanTypeInfo,
-    String name,
-    TypeInfo typeInfo,
-    MethodInfo getter,
-    MethodInfo setter) {
-    TypeInfo resolvedTI = beanTypeInfo.resolve(typeInfo);
-    if (resolvedTI instanceof ParameterizedTypeInfo) {
-      ParameterizedTypeInfo parameterizedTI = (ParameterizedTypeInfo)resolvedTI;
-      TypeInfo rawTI = parameterizedTI.getRawType();
-      if (rawTI instanceof ClassTypeInfo) {
-        ClassTypeInfo rawClassTI = (ClassTypeInfo)rawTI;
-        String rawClassName = rawClassTI.getName();
-        if (rawClassName.equals("java.util.Collection") || rawClassName.equals("java.util.List")) {
-          TypeInfo elementTV = parameterizedTI.getTypeArguments().get(0);
-          ClassTypeInfo elementTI = resolveClass(beanTypeInfo, elementTV);
-          if (elementTI != null) {
-            ValueInfo resolvedElementTI = createValue(elementTI);
-            if (rawClassName.equals("java.util.Collection")) {
-              return new CollectionPropertyInfo<ValueInfo>(
-                name,
-                resolvedElementTI,
-                getter,
-                setter);
-            } else {
-              return new ListPropertyInfo<ValueInfo>(
-                name,
-                resolvedElementTI,
-                getter,
-                setter);
-            }
-          }
-        } else if (rawClassName.equals("java.util.Map")) {
-          TypeInfo elementTV = parameterizedTI.getTypeArguments().get(1);
-          ClassTypeInfo elementTI = resolveClass(beanTypeInfo, elementTV);
-          if (elementTI != null) {
-            ValueInfo resolvedElementTI = createValue(elementTI);
-            TypeInfo keyTV = parameterizedTI.getTypeArguments().get(0);
-            ClassTypeInfo keyTI = resolveClass(beanTypeInfo, keyTV);
-            if (keyTI != null) {
-              ValueInfo resolvedKeyTI = createValue(keyTI);
-              return new MapPropertyInfo<ValueInfo, ValueInfo>(
-                name,
-                resolvedElementTI,
-                resolvedKeyTI,
-                getter,
-                setter);
-            }
-          }
-        }
-      }
-    } else if (resolvedTI instanceof ClassTypeInfo) {
-      ValueInfo resolved = createValue((ClassTypeInfo)resolvedTI);
-      return new SingleValuedPropertyInfo<ValueInfo>(
-        name,
-        resolved,
-        getter,
-        setter);
-    } else if (resolvedTI instanceof ArrayTypeInfo) {
-      TypeInfo componentTI = ((ArrayTypeInfo)resolvedTI).getComponentType();
-      if (componentTI instanceof ClassTypeInfo) {
-        ClassTypeInfo rawComponentTI = (ClassTypeInfo)componentTI;
-
-        if (rawComponentTI.getName().equals("byte")) {
-
-
-          //
-        } else {
-          ValueInfo resolved = createValue(rawComponentTI);
-          if (resolved instanceof SimpleValueInfo) {
-            return new ArrayPropertyInfo<SimpleValueInfo>(name, (SimpleValueInfo)resolved, getter, setter);
-          }
-        }
-      }
-    }
-    return null;
-  }
-
-  private ValueInfo createValue(ClassTypeInfo type) throws BuilderException {
-    if (type instanceof SimpleTypeInfo) {
-      return createSimpleValueInfo(type);
-    } else if (type.getName().equals(String.class.getName())) {
-      return createSimpleValueInfo(type);
-    } else if (
-      type.getName().equals(InputStream.class.getName()) ||
-        type.getName().equals(Date.class.getName()) ||
-        type.getKind() == ClassKind.ENUM) {
-      return createSimpleValueInfo(type);
-    } else {
-      return new BeanValueInfo(type);
-    }
-  }
-
-  /**
-   * Build a simple value info meta data.
-   *
-   * @param typeInfo the type info
-   * @return the simple value info
-   * @throws BuilderException any exception that may prevent the correct building such as having a default value that
-   *         does not match the type
-   */
-  private SimpleValueInfo createSimpleValueInfo(ClassTypeInfo typeInfo) throws BuilderException {
-    if (typeInfo == null) {
-      throw new NullPointerException();
-    }
-
-    //
-    if (typeInfo instanceof SimpleTypeInfo && ((SimpleTypeInfo)typeInfo).isPrimitive()) {
-      return new SimpleValueInfo(typeInfo);
-    } else {
-      switch (typeInfo.getKind()) {
-        case CLASS:
-        case ENUM:
-          break;
-        default:
-          throw new AssertionError();
-      }
-
-      //
-      return new SimpleValueInfo(typeInfo);
-    }
   }
 }
