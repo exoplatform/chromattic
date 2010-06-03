@@ -19,16 +19,25 @@
 
 package org.chromattic.metamodel.bean.qualifiers;
 
-import org.chromattic.metamodel.bean.PropertyInfo;
-import org.chromattic.metamodel.bean.PropertyQualifier;
+import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SingleValuedPropertyQualifier<V extends ValueInfo> extends PropertyQualifier<V> {
+public class MapValueInfo<K extends ValueInfo, E extends ValueInfo> extends MultiValueInfo<E> {
 
-  public SingleValuedPropertyQualifier(PropertyRole role, PropertyInfo property, V value) {
-    super(role, property, value);
+  /** . */
+  private final K key;
+
+  public MapValueInfo(TypeInfo typeInfo, K key, E element) {
+    super(typeInfo, element);
+
+    //
+    this.key = key;
+  }
+
+  public K getKey() {
+    return key;
   }
 }

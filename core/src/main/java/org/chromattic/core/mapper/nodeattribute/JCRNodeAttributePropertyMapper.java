@@ -20,8 +20,8 @@
 package org.chromattic.core.mapper.nodeattribute;
 
 import org.chromattic.api.Status;
+import org.chromattic.metamodel.bean.PropertyQualifier;
 import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.EntityContext;
@@ -30,12 +30,12 @@ import org.chromattic.core.EntityContext;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRNodeAttributePropertyMapper extends PropertyMapper<SingleValuedPropertyQualifier<SimpleValueInfo>, EntityContext> {
+public class JCRNodeAttributePropertyMapper extends PropertyMapper<SimpleValueInfo, EntityContext> {
 
   /** . */
   private final NodeAttributeType type;
 
-  public JCRNodeAttributePropertyMapper(SingleValuedPropertyQualifier<SimpleValueInfo> info, NodeAttributeType type) {
+  public JCRNodeAttributePropertyMapper(PropertyQualifier<SimpleValueInfo> info, NodeAttributeType type) {
     super(EntityContext.class, info);
 
     //

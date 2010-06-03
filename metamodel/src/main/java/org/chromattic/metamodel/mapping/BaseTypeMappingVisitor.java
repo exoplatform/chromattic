@@ -20,9 +20,8 @@
 package org.chromattic.metamodel.mapping;
 
 import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.bean.qualifiers.MultiValuedPropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.MultiValueInfo;
 import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
 import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
@@ -60,7 +59,7 @@ public class BaseTypeMappingVisitor {
   protected <V> void propertyMapping(
     ClassTypeInfo definer,
     JCRPropertyMapping propertyMapping,
-    PropertyQualifier<SimpleValueInfo> propertyInfo) {}
+    boolean multiple) {}
 
   protected void propertyMapMapping(ClassTypeInfo definer) {}
 
@@ -100,37 +99,32 @@ public class BaseTypeMappingVisitor {
           SimpleMapping<?> simpleMapping = (SimpleMapping)valueMapping;
           PropertyQualifier<? extends ValueInfo> propertyInfo = propertyMapping.getInfo();
           JCRMemberMapping memberMapping = simpleMapping.getJCRMember();
+          ValueInfo valueInfo = propertyInfo.getValue();
           if (memberMapping instanceof JCRPropertyMapping) {
-            ValueInfo valueInfo;
-            if (propertyInfo instanceof SingleValuedPropertyQualifier) {
-              valueInfo = ((SingleValuedPropertyQualifier<?>)propertyInfo).getValue();
+            boolean multiple;
+            if (valueInfo instanceof MultiValueInfo) {
+              valueInfo = ((MultiValueInfo<?>)valueInfo).getElement();
+              multiple = true;
             } else {
-              valueInfo = ((MultiValuedPropertyQualifier<?>)propertyInfo).getValue();
+              multiple = false;
             }
-
-            //
             if (valueInfo instanceof SimpleValueInfo) {
               propertyMapping(
                 definer,
                 (JCRPropertyMapping)memberMapping,
-                (PropertyQualifier)propertyInfo);
+                multiple);
             } else {
               // WTF ?
               throw new AssertionError();
             }
           } else if (memberMapping instanceof JCRNodeAttributeMapping) {
-            if (propertyInfo instanceof SingleValuedPropertyQualifier) {
-              ValueInfo valueInfo = ((SingleValuedPropertyQualifier)propertyInfo).getValue();
-              if (valueInfo instanceof SimpleValueInfo) {
-                SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
-                TypeInfo simpleType = simpleValueInfo.getTypeInfo();
-                if (simpleType instanceof ClassTypeInfo && ((ClassTypeInfo)simpleType).getName().equals(String.class.getName())) {
-                  // OK
-                } else {
-                  throw new AssertionError(mapping.getType().toString() + " wrong simple type "+ simpleType);
-                }
+            if (valueInfo instanceof SimpleValueInfo) {
+              SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
+              TypeInfo simpleType = simpleValueInfo.getTypeInfo();
+              if (simpleType instanceof ClassTypeInfo && ((ClassTypeInfo)simpleType).getName().equals(String.class.getName())) {
+                // OK
               } else {
-                throw new AssertionError();
+                throw new AssertionError(mapping.getType().toString() + " wrong simple type "+ simpleType);
               }
             } else {
               throw new AssertionError();

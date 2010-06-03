@@ -19,25 +19,12 @@
 
 package org.chromattic.metamodel.bean.qualifiers;
 
-import org.chromattic.metamodel.bean.PropertyInfo;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MapPropertyQualifier<K extends ValueInfo, V extends ValueInfo> extends MultiValuedPropertyQualifier<V> {
+public enum CollectionType {
 
-  /** . */
-  private final K keyValue;
+  ARRAY, COLLECTION, LIST
 
-  public MapPropertyQualifier(PropertyRole role, PropertyInfo property, V elementValue, K keyValue) {
-    super(role, property, elementValue);
-
-    //
-    this.keyValue = keyValue;
-  }
-
-  public K getKeyValue() {
-    return keyValue;
-  }
 }

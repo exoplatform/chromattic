@@ -20,8 +20,8 @@ package org.chromattic.core.mapper.onetoone.embedded;
 
 import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
+import org.chromattic.metamodel.bean.PropertyQualifier;
 import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
 
 /**
@@ -31,7 +31,7 @@ import org.chromattic.core.mapper.JCRNodePropertyMapper;
 public class JCREmbeddedPropertyMapper extends JCRNodePropertyMapper<EmbeddedContext> {
 
 
-  public JCREmbeddedPropertyMapper(SingleValuedPropertyQualifier<BeanValueInfo> info) throws ClassNotFoundException {
+  public JCREmbeddedPropertyMapper(PropertyQualifier<BeanValueInfo> info) throws ClassNotFoundException {
     super(EmbeddedContext.class, info);
   }
 

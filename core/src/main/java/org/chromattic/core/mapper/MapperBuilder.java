@@ -28,6 +28,7 @@ import org.chromattic.core.EntityContext;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedParentPropertyMapper;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedPropertyMapper;
+import org.chromattic.metamodel.bean.PropertyQualifier;
 import org.chromattic.metamodel.bean.qualifiers.*;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
@@ -200,12 +201,14 @@ public class MapperBuilder {
     //
     for (PropertyMapping<?> pm : typeMapping.getPropertyMappings()) {
 
+      ValueInfo value = pm.getInfo().getValue();
+
       //
-      if (pm.getInfo() instanceof SingleValuedPropertyQualifier) {
+      if (value instanceof SingleValueInfo) {
         ValueMapping pmvm = pm.getValueMapping();
 
         //
-        SingleValuedPropertyQualifier<BeanValueInfo> propertyInfo = (SingleValuedPropertyQualifier<BeanValueInfo>)pm.getInfo();
+//        SingleValuedPropertyQualifier<BeanValueInfo> propertyInfo = (SingleValuedPropertyQualifier<BeanValueInfo>)pm.getInfo();
 
         //
         if (pmvm instanceof SimpleMapping) {
@@ -219,7 +222,7 @@ public class MapperBuilder {
             propertyMappers.add(mapper);
           } else if (jcrMember instanceof JCRNodeAttributeMapping) {
             JCRNodeAttributeMapping nam = (JCRNodeAttributeMapping)jcrMember;
-            JCRNodeAttributePropertyMapper bilto = new JCRNodeAttributePropertyMapper((SingleValuedPropertyQualifier<SimpleValueInfo>)pm.getInfo(), nam.getType());
+            JCRNodeAttributePropertyMapper bilto = new JCRNodeAttributePropertyMapper((PropertyQualifier<SimpleValueInfo>)pm.getInfo(), nam.getType());
             if (contextType == EntityContext.class) {
               propertyMappersForEntity.add(bilto);
             } else {
@@ -232,30 +235,30 @@ public class MapperBuilder {
           //
           if (pmhm.getType() == RelationshipType.HIERARCHIC) {
             if (pmhm instanceof ManyToOneMapping) {
-              JCRChildNodePropertyMapper bilto = new JCRAnyChildCollectionPropertyMapper(propertyInfo);
+              JCRChildNodePropertyMapper bilto = new JCRAnyChildCollectionPropertyMapper((PropertyQualifier<BeanValueInfo>)pm.getInfo());
               relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
               propertyMappersForEntity.add(bilto);
             } if (pmhm instanceof NamedOneToOneMapping) {
               NamedOneToOneMapping ncpmpm = (NamedOneToOneMapping)pmhm;
               if (ncpmpm.isOwning()) {
-                JCRNamedChildParentPropertyMapper<C> bilto = new JCRNamedChildParentPropertyMapper<C>(contextType, propertyInfo, ncpmpm.getName());
+                JCRNamedChildParentPropertyMapper<C> bilto = new JCRNamedChildParentPropertyMapper<C>(contextType, (PropertyQualifier<BeanValueInfo>)pm.getInfo(), ncpmpm.getName());
                 relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
                 propertyMappers.add(bilto);
               } else {
-                JCRChildNodePropertyMapper bilto = new JCRNamedChildPropertyMapper(propertyInfo, ncpmpm.getName());
+                JCRChildNodePropertyMapper bilto = new JCRNamedChildPropertyMapper((PropertyQualifier<BeanValueInfo>)pm.getInfo(), ncpmpm.getName());
                 relatedProperties.get(ncpmpm.getRelatedMapping().getType()).add(bilto);
                 propertyMappersForEntity.add(bilto);
               }
             }
           } else if (pmhm.getType() == RelationshipType.EMBEDDED) {
-            NodeTypeMapping relatedMapping = classToMapping.get(propertyInfo.getValue().getTypeInfo());
+            NodeTypeMapping relatedMapping = classToMapping.get(pm.getInfo().getValue().getTypeInfo());
             OneToOneMapping a = (OneToOneMapping)pmhm;
             if (typeMapping.isPrimary()) {
               if (a.isOwning()) {
-                JCREmbeddedParentPropertyMapper mapper = new JCREmbeddedParentPropertyMapper(propertyInfo);
+                JCREmbeddedParentPropertyMapper mapper = new JCREmbeddedParentPropertyMapper((PropertyQualifier<BeanValueInfo>)pm.getInfo());
                 propertyMappersForEntity.add(mapper);
               } else {
-                JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper(propertyInfo);
+                JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper((PropertyQualifier<BeanValueInfo>)pm.getInfo());
                 propertyMappersForEmbedded.add(mapper);
               }
             } else if (typeMapping.isMixin()) {
@@ -263,7 +266,7 @@ public class MapperBuilder {
                 throw new BuilderException();
               }
               if (relatedMapping.isPrimary()) {
-                JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper(propertyInfo);
+                JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper((PropertyQualifier<BeanValueInfo>)pm.getInfo());
                 propertyMappersForEmbedded.add(mapper);
               } else {
                 throw new BuilderException("Related class of a mixin in a one to one embedded relationship must be " +
@@ -283,7 +286,7 @@ public class MapperBuilder {
             if (linkType != null) {
               JCRNamedReferentPropertyMapper<C> blah = new JCRNamedReferentPropertyMapper<C>(
                 contextType,
-                propertyInfo,
+                (PropertyQualifier<BeanValueInfo>)pm.getInfo(),
                 nmtovm.getRelatedName(),
                 linkType
                 );
@@ -292,7 +295,7 @@ public class MapperBuilder {
             }
           }
         }
-      } else if (pm.getInfo() instanceof MultiValuedPropertyQualifier) {
+      } else if (value instanceof MultiValueInfo) {
         ValueMapping pmvm = pm.getValueMapping();
 
         //
@@ -308,7 +311,7 @@ public class MapperBuilder {
               if (linkType != null) {
                 NamedOneToManyMapping fff = (NamedOneToManyMapping)pmhm;
                 JCRReferentCollectionPropertyMapper bilto = new JCRReferentCollectionPropertyMapper(
-                  (CollectionPropertyQualifier<BeanValueInfo>)pm.getInfo(),
+                  (PropertyQualifier<CollectionValueInfo<BeanValueInfo>>)pm.getInfo(),
                   fff.getName(),
                   linkType);
                 relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
@@ -316,21 +319,25 @@ public class MapperBuilder {
               }
             } else {
               if (pmhm.getType() == RelationshipType.HIERARCHIC) {
-
-                MultiValuedPropertyQualifier<BeanValueInfo> mpi = (MultiValuedPropertyQualifier<BeanValueInfo>)pm.getInfo();
                 AnyChildMultiValueMapper valueMapper;
-                if (mpi instanceof MapPropertyQualifier) {
+                if (value instanceof MapValueInfo) {
                   valueMapper = new AnyChildMultiValueMapper.Map();
-                } else if (mpi instanceof CollectionPropertyQualifier) {
-                  if (mpi instanceof ListPropertyQualifier) {
-                    valueMapper = new AnyChildMultiValueMapper.List();
-                  } else {
-                    valueMapper = new AnyChildMultiValueMapper.Collection();
+                } else if (value instanceof CollectionValueInfo) {
+                  CollectionValueInfo cvi = (CollectionValueInfo)value;
+                  switch (cvi.getType()) {
+                    case LIST:
+                      valueMapper = new AnyChildMultiValueMapper.List();
+                      break;
+                    case COLLECTION:
+                      valueMapper = new AnyChildMultiValueMapper.Collection();
+                      break;
+                    default:
+                      throw new IllegalStateException();
                   }
                 } else {
                   throw new IllegalStateException();
                 }
-                JCRAnyChildParentPropertyMapper<C> bilto = new JCRAnyChildParentPropertyMapper<C>(contextType, mpi, valueMapper);
+                JCRAnyChildParentPropertyMapper bilto = new JCRAnyChildParentPropertyMapper(contextType, pm.getInfo(), valueMapper);
                 relatedProperties.get(pmhm.getRelatedMapping().getType()).add(bilto);
                 propertyMappers.add(bilto);
               }
@@ -347,7 +354,7 @@ public class MapperBuilder {
             propertyMappers.add(mapper);
           }
         } else if (pmvm instanceof PropertyMapMapping) {
-          JCRPropertyMapPropertyMapper<C> bilto = new JCRPropertyMapPropertyMapper<C>(contextType, (MapPropertyQualifier)pm.getInfo());
+          JCRPropertyMapPropertyMapper<C> bilto = new JCRPropertyMapPropertyMapper<C>(contextType, (PropertyQualifier<MapValueInfo<SimpleValueInfo, SimpleValueInfo>>)pm.getInfo());
           propertyMappers.add(bilto);
         }
       }
@@ -478,7 +485,7 @@ public class MapperBuilder {
     JCRPropertyMapping<I> jcrProperty) {
     return new JCRPropertyPropertyMapper<C, V, I>(
       contextType,
-      (SingleValuedPropertyQualifier<SimpleValueInfo>)pm.getInfo(),
+      (PropertyQualifier<SimpleValueInfo>)pm.getInfo(),
       jcrProperty.getName(),
       jcrProperty.getDefaultValue(),
       jcrProperty.getJCRType());
@@ -490,7 +497,7 @@ public class MapperBuilder {
     JCRPropertyMapping<I> jcrProperty) {
     return new JCRPropertyListPropertyMapper<C, V, I>(
       contextType,
-      (MultiValuedPropertyQualifier<SimpleValueInfo>)pm.getInfo(),
+      (PropertyQualifier<CollectionValueInfo<SimpleValueInfo>>)pm.getInfo(),
       jcrProperty.getName(),
       jcrProperty.getJCRType(),
       jcrProperty.getDefaultValue());

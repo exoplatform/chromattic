@@ -25,7 +25,7 @@ import org.reflext.api.TypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleValueInfo extends ValueInfo {
+public class SimpleValueInfo extends SingleValueInfo {
 
   SimpleValueInfo(TypeInfo typeInfo) {
     super(typeInfo);

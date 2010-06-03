@@ -235,23 +235,18 @@ public class TypeMappingDomain {
     addedMappings.put(javaClass.getName(), nodeTypeMapping);
 
     //
-    for (PropertyQualifier propertyInfo : info.getProperties()) {
+    for (PropertyQualifier<?> propertyInfo : info.getProperties()) {
 
       PropertyRole role = propertyInfo.getRole();
+
+      ValueInfo value = propertyInfo.getValue();
 
       if (role instanceof PropertyRole.Property) {
         PropertyRole.Property roleProperty = (PropertyRole.Property)role;
 
         //
-        ValueInfo value;
-        if (propertyInfo instanceof SingleValuedPropertyQualifier) {
-          SingleValuedPropertyQualifier svp = (SingleValuedPropertyQualifier)propertyInfo;
-          value = svp.getValue();
-        } else if (propertyInfo instanceof MultiValuedPropertyQualifier) {
-          MultiValuedPropertyQualifier mvp = (MultiValuedPropertyQualifier)propertyInfo;
-          value = mvp.getValue();
-        } else {
-          throw new IllegalStateException();
+        if (value instanceof MultiValueInfo) {
+          value = ((MultiValueInfo)value).getElement();
         }
 
         //
@@ -286,32 +281,25 @@ public class TypeMappingDomain {
         PropertyMapping<SimpleMapping<JCRPropertyMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRPropertyMapping>>(propertyInfo, simpleMapping);
         propertyMappings.add(propertyMapping);
       } else if (role instanceof PropertyRole.Properties) {
-        if (propertyInfo instanceof MapPropertyQualifier) {
-          MapPropertyQualifier mapPropertyInfo = (MapPropertyQualifier)propertyInfo;
-        PropertyMapMapping simpleMapping = new PropertyMapMapping(role.getDeclaringType());
-          PropertyMapping<PropertyMapMapping> propertyMapping = new PropertyMapping<PropertyMapMapping>(mapPropertyInfo, simpleMapping);
+        if (value instanceof MapValueInfo) {
+          PropertyMapMapping simpleMapping = new PropertyMapMapping(role.getDeclaringType());
+          PropertyMapping<PropertyMapMapping> propertyMapping = new PropertyMapping<PropertyMapMapping>(propertyInfo, simpleMapping);
           propertyMappings.add(propertyMapping);
         } else {
           throw new InvalidMappingException(javaClass, "The property annotated with @Properties must inherit from Map<String, ?>");
         }
       } else if (role instanceof PropertyRole.Attribute) {
         PropertyRole.Attribute attributeRole = (PropertyRole.Attribute)role;
-        if (propertyInfo instanceof SingleValuedPropertyQualifier) {
-          SingleValuedPropertyQualifier svpi = (SingleValuedPropertyQualifier)propertyInfo;
-          ValueInfo vi = svpi.getValue();
-          if (vi instanceof SimpleValueInfo) {
-            SimpleValueInfo svi = (SimpleValueInfo)vi;
-            JCRNodeAttributeMapping memberMapping = new JCRNodeAttributeMapping(attributeRole.type);
-            TypeInfo simpleType = svi.getTypeInfo();
-            if (simpleType instanceof ClassTypeInfo && ((ClassTypeInfo)simpleType).getName().equals(String.class.getName())) {
-              SimpleMapping<JCRNodeAttributeMapping> simpleMapping = new SimpleMapping<JCRNodeAttributeMapping>(role.getDeclaringType(), memberMapping);
-              PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>>(propertyInfo, simpleMapping);
-              propertyMappings.add(propertyMapping);
-            } else {
-              throw new InvalidMappingException(javaClass, "Type " + simpleType + " is not accepted for path attribute mapping");
-            }
+        if (value instanceof SimpleValueInfo) {
+          SimpleValueInfo svi = (SimpleValueInfo)value;
+          JCRNodeAttributeMapping memberMapping = new JCRNodeAttributeMapping(attributeRole.type);
+          TypeInfo simpleType = svi.getTypeInfo();
+          if (simpleType instanceof ClassTypeInfo && ((ClassTypeInfo)simpleType).getName().equals(String.class.getName())) {
+            SimpleMapping<JCRNodeAttributeMapping> simpleMapping = new SimpleMapping<JCRNodeAttributeMapping>(role.getDeclaringType(), memberMapping);
+            PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>>(propertyInfo, simpleMapping);
+            propertyMappings.add(propertyMapping);
           } else {
-            throw new InvalidMappingException(javaClass);
+            throw new InvalidMappingException(javaClass, "Type " + simpleType + " is not accepted for path attribute mapping");
           }
         } else {
           throw new InvalidMappingException(javaClass);
@@ -320,48 +308,42 @@ public class TypeMappingDomain {
         PropertyRole.Relationship relationshipRole = (PropertyRole.Relationship)role;
         RelationshipType type = relationshipRole.type;
         if (relationshipRole instanceof PropertyRole.OneToOne) {
-          if (propertyInfo instanceof SingleValuedPropertyQualifier) {
-            SingleValuedPropertyQualifier svpi = (SingleValuedPropertyQualifier)propertyInfo;
-            ValueInfo vi = svpi.getValue();
-            if (vi instanceof BeanValueInfo) {
-              BeanValueInfo bvi = (BeanValueInfo)vi;
-              ClassTypeInfo typeInfo = bvi.getTypeInfo();
+          if (value instanceof BeanValueInfo) {
+            BeanValueInfo bvi = (BeanValueInfo)value;
+            ClassTypeInfo typeInfo = bvi.getTypeInfo();
+
+            //
+            PropertyMapping<RelationshipMapping> oneToOneMapping;
+            if (type == RelationshipType.HIERARCHIC) {
+              // The mapped by of a one to one mapping discrimines between the parent and the child
+              RelationshipMapping hierarchyMapping;
+              AnnotatedPropertyQualifier<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
 
               //
-              PropertyMapping<RelationshipMapping> oneToOneMapping;
-              if (type == RelationshipType.HIERARCHIC) {
-                // The mapped by of a one to one mapping discrimines between the parent and the child
-                RelationshipMapping hierarchyMapping;
-                AnnotatedPropertyQualifier<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
-
-                //
-                if (mappedBy == null)
-                {
-                  throw new InvalidMappingException(javaClass, "Annotated one to one hierarchic relationship " +
-                    "must be annotated by " + MappedBy.class.getName());
-                }
-
-                //
-                AnnotatedPropertyQualifier<Owner> owner = propertyInfo.getAnnotated(Owner.class);
-                if (owner != null) {
-                  NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-              hierarchyMapping = new NamedOneToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, true);
-                } else {
-                  NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-              hierarchyMapping = new NamedOneToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, false);
-                }
-                oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
-                propertyMappings.add(oneToOneMapping);
-              } else if (type == RelationshipType.EMBEDDED) {
-                AnnotatedPropertyQualifier<Owner> owner = propertyInfo.getAnnotated(Owner.class);
-                boolean owning = owner != null;
-                NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-            OneToOneMapping embeddedMapping = new OneToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, RelationshipType.EMBEDDED, owning);
-                PropertyMapping<OneToOneMapping> a = new PropertyMapping<OneToOneMapping>(propertyInfo, embeddedMapping);
-                propertyMappings.add(a);
-              } else {
-                throw new IllegalStateException();
+              if (mappedBy == null)
+              {
+                throw new InvalidMappingException(javaClass, "Annotated one to one hierarchic relationship " +
+                  "must be annotated by " + MappedBy.class.getName());
               }
+
+              //
+              AnnotatedPropertyQualifier<Owner> owner = propertyInfo.getAnnotated(Owner.class);
+              if (owner != null) {
+                NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
+            hierarchyMapping = new NamedOneToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, true);
+              } else {
+                NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
+            hierarchyMapping = new NamedOneToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, false);
+              }
+              oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
+              propertyMappings.add(oneToOneMapping);
+            } else if (type == RelationshipType.EMBEDDED) {
+              AnnotatedPropertyQualifier<Owner> owner = propertyInfo.getAnnotated(Owner.class);
+              boolean owning = owner != null;
+              NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
+              OneToOneMapping embeddedMapping = new OneToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, RelationshipType.EMBEDDED, owning);
+              PropertyMapping<OneToOneMapping> a = new PropertyMapping<OneToOneMapping>(propertyInfo, embeddedMapping);
+              propertyMappings.add(a);
             } else {
               throw new IllegalStateException();
             }
@@ -369,24 +351,24 @@ public class TypeMappingDomain {
             throw new IllegalStateException();
           }
         } else if (relationshipRole instanceof PropertyRole.OneToMany) {
-          if (propertyInfo instanceof MultiValuedPropertyQualifier) {
-            MultiValuedPropertyQualifier multiValuedProperty = (MultiValuedPropertyQualifier)propertyInfo;
+          if (value instanceof MultiValueInfo) {
+            MultiValueInfo multiValue = (MultiValueInfo)value;
 
             //
-            if (multiValuedProperty instanceof MapPropertyQualifier) {
-              MapPropertyQualifier mapProperty = (MapPropertyQualifier)multiValuedProperty;
-              if (!(mapProperty.getKeyValue() instanceof SimpleValueInfo)) {
-                throw new IllegalStateException("Wrong key value type " + mapProperty.getKeyValue());
+            if (multiValue instanceof MapValueInfo) {
+              MapValueInfo mapValue = (MapValueInfo)multiValue;
+              if (!(mapValue.getKey() instanceof SimpleValueInfo)) {
+                throw new IllegalStateException("Wrong key value type " + mapValue.getKey());
               }
-              SimpleValueInfo svi = (SimpleValueInfo)mapProperty.getKeyValue();
-              TypeInfo ti = (TypeInfo)svi.getTypeInfo();
+              SimpleValueInfo svi = (SimpleValueInfo)mapValue.getKey();
+              TypeInfo ti = svi.getTypeInfo();
               if (!(ti instanceof ClassTypeInfo) || !((ClassTypeInfo)ti).getName().equals(String.class.getName())) {
                 throw new InvalidMappingException(javaClass);
               }
             }
 
             //
-            ValueInfo beanElementType = multiValuedProperty.getValue();
+            ValueInfo beanElementType = multiValue.getElement();
             if (beanElementType instanceof BeanValueInfo) {
               BeanValueInfo bvi = (BeanValueInfo)beanElementType;
 
@@ -397,7 +379,7 @@ public class TypeMappingDomain {
                   throw new IllegalStateException();
                 }
                 NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
-            OneToManyMapping mapping = new OneToManyMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
+                OneToManyMapping mapping = new OneToManyMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
                 PropertyMapping<OneToManyMapping> oneToManyMapping = new PropertyMapping<OneToManyMapping>(propertyInfo, mapping);
                 propertyMappings.add(oneToManyMapping);
               } else if (type == RelationshipType.REFERENCE || type == RelationshipType.PATH) {
@@ -406,37 +388,31 @@ public class TypeMappingDomain {
                   throw new InvalidMappingException(javaClass, "By reference or by path one to many must be annotated with " + MappedBy.class.getName());
                 }
                 NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
-            NamedOneToManyMapping mapping = new NamedOneToManyMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), type);
+                NamedOneToManyMapping mapping = new NamedOneToManyMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), type);
                 PropertyMapping<NamedOneToManyMapping> oneToManyMapping = new PropertyMapping<NamedOneToManyMapping>(propertyInfo, mapping);
                 propertyMappings.add(oneToManyMapping);
               }
             }
           }
         } else if (relationshipRole instanceof PropertyRole.ManyToOne) {
-          if (propertyInfo instanceof SingleValuedPropertyQualifier) {
-            SingleValuedPropertyQualifier svpi = (SingleValuedPropertyQualifier)propertyInfo;
-            ValueInfo vi = svpi.getValue();
-            if (vi instanceof BeanValueInfo) {
-              BeanValueInfo bvi = (BeanValueInfo)vi;
+          if (value instanceof BeanValueInfo) {
+            BeanValueInfo bvi = (BeanValueInfo)value;
 
-              //
-              if (type == RelationshipType.HIERARCHIC) {
-                NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
-            RelationshipMapping hierarchyMapping = new ManyToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
-                PropertyMapping<RelationshipMapping> manyToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
-                propertyMappings.add(manyToOneMapping);
-              } else {
-                AnnotatedPropertyQualifier<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
-                if (mappedBy == null) {
-                  throw new IllegalStateException();
-                }
-                NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
-            NamedManyToOneMapping referenceMapping = new NamedManyToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), type);
-                PropertyMapping<NamedManyToOneMapping> manyToOneMapping = new PropertyMapping<NamedManyToOneMapping>(propertyInfo, referenceMapping);
-                propertyMappings.add(manyToOneMapping);
-              }
+            //
+            if (type == RelationshipType.HIERARCHIC) {
+              NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
+              RelationshipMapping hierarchyMapping = new ManyToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, RelationshipType.HIERARCHIC);
+              PropertyMapping<RelationshipMapping> manyToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
+              propertyMappings.add(manyToOneMapping);
             } else {
-              throw new IllegalStateException();
+              AnnotatedPropertyQualifier<MappedBy> mappedBy = propertyInfo.getAnnotated(MappedBy.class);
+              if (mappedBy == null) {
+                throw new IllegalStateException();
+              }
+              NodeTypeMapping relatedMapping = resolve(bvi.getTypeInfo(), addedMappings);
+              NamedManyToOneMapping referenceMapping = new NamedManyToOneMapping(role.getDeclaringType(), nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), type);
+              PropertyMapping<NamedManyToOneMapping> manyToOneMapping = new PropertyMapping<NamedManyToOneMapping>(propertyInfo, referenceMapping);
+              propertyMappings.add(manyToOneMapping);
             }
           } else {
             throw new IllegalStateException();

@@ -28,7 +28,8 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.SingleValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
@@ -46,10 +47,10 @@ public abstract class AbstractBeanTestCase extends TestCase {
   protected  void assertProperty(PropertyQualifier<?> property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
     assertNotNull(property);
     assertEquals(expectedName, property.getProperty().getName());
-    if (property instanceof SingleValuedPropertyQualifier) {
-      SingleValuedPropertyQualifier svpi = (SingleValuedPropertyQualifier)property;
-      assertTrue(svpi.getValue().getTypeInfo() instanceof ClassTypeInfo);
-      assertEquals(expectedType.getName(), ((ClassTypeInfo)svpi.getValue().getTypeInfo()).getName());
+    ValueInfo value = property.getValue();
+    if (value instanceof SingleValueInfo) {
+      assertTrue(value.getTypeInfo() instanceof ClassTypeInfo);
+      assertEquals(expectedType.getName(), ((ClassTypeInfo)value.getTypeInfo()).getName());
       switch (accessMode) {
         case READ_ONLY:
           assertNotNull(property.getProperty().getGetter());

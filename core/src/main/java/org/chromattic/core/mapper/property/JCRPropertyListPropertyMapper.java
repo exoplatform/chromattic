@@ -23,10 +23,9 @@ import org.chromattic.core.ListType;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.core.vt2.ValueTypeFactory;
-import org.chromattic.metamodel.bean.qualifiers.ListPropertyQualifier;
-import org.chromattic.metamodel.bean.qualifiers.MultiValuedPropertyQualifier;
+import org.chromattic.metamodel.bean.PropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.CollectionValueInfo;
 import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.ArrayPropertyQualifier;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.spi.type.ValueType;
@@ -37,7 +36,8 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I> extends PropertyMapper<MultiValuedPropertyQualifier<SimpleValueInfo>, O> {
+public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I>
+  extends PropertyMapper<CollectionValueInfo<SimpleValueInfo>, O> {
 
   /** . */
   private final String jcrPropertyName;
@@ -53,7 +53,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I> extend
 
   public JCRPropertyListPropertyMapper(
     Class<O> contextType,
-    MultiValuedPropertyQualifier<SimpleValueInfo> info,
+    PropertyQualifier<CollectionValueInfo<SimpleValueInfo>> info,
     String jcrPropertyName,
     JCRPropertyType<I> propertyType,
     List<String> defaultValue) {
@@ -61,22 +61,25 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I> extend
 
     //
     ListType listType;
-    if (info instanceof ArrayPropertyQualifier) {
-      listType = ListType.ARRAY;
-    } else if (info instanceof ListPropertyQualifier) {
-      listType = ListType.LIST;
-    } else {
-      throw new AssertionError();
+    switch (info.getValue().getType()) {
+      case ARRAY:
+        listType = ListType.ARRAY;
+        break;
+      case LIST:
+        listType = ListType.LIST;
+        break;
+      default:
+        throw new AssertionError();
     }
 
     // YES IT'S UGLY BUT FOR NOW IT'S OK
-    ValueType<I, E> vt = (ValueType<I,E>)ValueTypeFactory.create(info.getValue().getTypeInfo(), propertyType);
+    ValueType<I, E> vt = (ValueType<I,E>)ValueTypeFactory.create(info.getValue().getElement().getTypeInfo(), propertyType);
 
     //
     this.listType = listType;
     this.jcrPropertyName = jcrPropertyName;
-    this.elementType = info.getValue();
-    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getTypeInfo().getType(), propertyType, vt, defaultValue);
+    this.elementType = info.getValue().getElement();
+    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getElement().getTypeInfo().getType(), propertyType, vt, defaultValue);
   }
 
   @Override

@@ -23,8 +23,8 @@ import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.core.vt2.ValueTypeFactory;
+import org.chromattic.metamodel.bean.PropertyQualifier;
 import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.spi.type.ValueType;
 
@@ -34,7 +34,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyPropertyMapper<O extends ObjectContext, E, I> extends PropertyMapper<SingleValuedPropertyQualifier<SimpleValueInfo>, O> {
+public class JCRPropertyPropertyMapper<O extends ObjectContext, E, I> extends PropertyMapper<SimpleValueInfo, O> {
 
   /** . */
   private final String jcrPropertyName;
@@ -44,7 +44,7 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext, E, I> extends Pr
 
   public JCRPropertyPropertyMapper(
     Class<O> contextType,
-    SingleValuedPropertyQualifier<SimpleValueInfo> info,
+    PropertyQualifier<SimpleValueInfo> info,
     String jcrPropertyName,
     List<String> defaultValue,
     JCRPropertyType<I> jcrType) {

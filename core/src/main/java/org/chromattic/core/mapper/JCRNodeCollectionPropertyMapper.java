@@ -20,23 +20,25 @@
 package org.chromattic.core.mapper;
 
 import org.chromattic.core.ObjectContext;
+import org.chromattic.metamodel.bean.PropertyQualifier;
 import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.MultiValuedPropertyQualifier;
+import org.chromattic.metamodel.bean.qualifiers.MultiValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRNodeCollectionPropertyMapper<O extends ObjectContext> extends RelatedPropertyMapper<MultiValuedPropertyQualifier<BeanValueInfo>, O> {
+public abstract class JCRNodeCollectionPropertyMapper<O extends ObjectContext, V extends MultiValueInfo<BeanValueInfo>>
+  extends RelatedPropertyMapper<V,  O> {
 
   /** . */
   private final Class relatedClass;
 
-  public JCRNodeCollectionPropertyMapper(Class<O> contextType, MultiValuedPropertyQualifier<BeanValueInfo> info) throws ClassNotFoundException {
+  public JCRNodeCollectionPropertyMapper(Class<O> contextType, PropertyQualifier<V> info) throws ClassNotFoundException {
     super(contextType, info);
 
     //
-    relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getTypeInfo().getName());
+    relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getElement().getTypeInfo().getName());
   }
 
   public Class<?> getRelatedClass() {

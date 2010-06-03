@@ -128,11 +128,13 @@ public class PropertyQualifierResolver {
           ClassTypeInfo elementTI = resolveClass(beanTypeInfo, elementTV);
           if (elementTI != null) {
             ValueInfo resolvedElementTI = createValue(elementTI);
+            CollectionType collectionType;
             if (rawClassName.equals("java.util.Collection")) {
-              return new CollectionPropertyQualifier<ValueInfo>(role, propertyInfo, resolvedElementTI);
+              collectionType = CollectionType.COLLECTION;
             } else {
-              return new ListPropertyQualifier<ValueInfo>(role, propertyInfo, resolvedElementTI);
+              collectionType = CollectionType.LIST;
             }
+            return new PropertyQualifier<CollectionValueInfo>(role, propertyInfo, new CollectionValueInfo<ValueInfo>(resolvedTI, collectionType, resolvedElementTI));
           }
         } else if (rawClassName.equals("java.util.Map")) {
           TypeInfo elementTV = parameterizedTI.getTypeArguments().get(1);
@@ -143,14 +145,17 @@ public class PropertyQualifierResolver {
             ClassTypeInfo keyTI = resolveClass(beanTypeInfo, keyTV);
             if (keyTI != null) {
               ValueInfo resolvedKeyTI = createValue(keyTI);
-              return new MapPropertyQualifier<ValueInfo, ValueInfo>(role, propertyInfo, resolvedElementTI, resolvedKeyTI);
+              return new PropertyQualifier<ValueInfo>(
+                role,
+                propertyInfo,
+                new MapValueInfo<ValueInfo,ValueInfo>(resolvedTI, resolvedKeyTI, resolvedElementTI));
             }
           }
         }
       }
     } else if (resolvedTI instanceof ClassTypeInfo) {
       ValueInfo resolved = createValue((ClassTypeInfo)resolvedTI);
-      return new SingleValuedPropertyQualifier<ValueInfo>(role, propertyInfo, resolved);
+      return new PropertyQualifier<ValueInfo>(role, propertyInfo, resolved);
     } else if (resolvedTI instanceof ArrayTypeInfo) {
       TypeInfo componentTI = ((ArrayTypeInfo)resolvedTI).getComponentType();
       if (componentTI instanceof ClassTypeInfo) {
@@ -163,7 +168,7 @@ public class PropertyQualifierResolver {
         } else {
           ValueInfo resolved = createValue(rawComponentTI);
           if (resolved instanceof SimpleValueInfo) {
-            return new ArrayPropertyQualifier<SimpleValueInfo>(role, propertyInfo, (SimpleValueInfo)resolved);
+            return new PropertyQualifier<CollectionValueInfo>(role, propertyInfo, new CollectionValueInfo<ValueInfo>(resolvedTI, CollectionType.ARRAY, resolved));
           }
         }
       }

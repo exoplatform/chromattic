@@ -115,7 +115,7 @@ public class PropertyTypeResolver {
         return typeMappings.get(cti.getName());
       }
     } else {
-      throw new UnsupportedOperationException("todo");
+      throw new UnsupportedOperationException("todo " + typeInfo);
     }
 
     //

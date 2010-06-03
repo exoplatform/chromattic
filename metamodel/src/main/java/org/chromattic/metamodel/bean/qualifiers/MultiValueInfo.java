@@ -19,15 +19,25 @@
 
 package org.chromattic.metamodel.bean.qualifiers;
 
-import org.chromattic.metamodel.bean.PropertyInfo;
+import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class CollectionPropertyQualifier<V extends ValueInfo> extends MultiValuedPropertyQualifier<V> {
+public class MultiValueInfo<E extends ValueInfo> extends ValueInfo {
 
-  public CollectionPropertyQualifier(PropertyRole role, PropertyInfo property, V elementValue) {
-    super(role, property, elementValue);
+  /** . */
+  private final E element;
+
+  public MultiValueInfo(TypeInfo typeInfo, E element) {
+    super(typeInfo);
+
+    //
+    this.element = element;
+  }
+
+  public E getElement() {
+    return element;
   }
 }
