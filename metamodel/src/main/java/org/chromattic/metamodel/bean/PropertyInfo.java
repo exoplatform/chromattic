@@ -92,4 +92,56 @@ public final class PropertyInfo {
   public String toString() {
     return "Property[name=" + name + "]";
   }
+
+  public Collection<AnnotatedProperty<?>> getAnnotateds(Class<? extends Annotation>... annotationClasses) {
+    List<AnnotatedProperty<?>> props = new ArrayList<AnnotatedProperty<?>>();
+    for (Class<? extends Annotation> annotationClass : annotationClasses) {
+      AnnotatedProperty<?> annotation = getAnnotated(annotationClass);
+      if (annotation != null) {
+        props.add(annotation);
+      }
+    }
+    return props;
+  }
+
+  public <A extends Annotation> AnnotatedProperty<A> getAnnotated(Class<A> annotationClass) {
+    if (annotationClass == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    A annotation = null;
+    ClassTypeInfo owner = null;
+
+    //
+    AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
+
+    //
+    if (getter != null) {
+      annotation = new AnnotationIntrospector<A>(annotationType).resolve(getter);
+      if (annotation != null) {
+        owner = getter.getOwner();
+      }
+    }
+
+    //
+    if (setter != null) {
+      A setterAnnotation = new AnnotationIntrospector<A>(annotationType).resolve(setter);
+      if (setterAnnotation != null) {
+        if (annotation != null) {
+          throw new IllegalStateException("The same annotation " + annotation + " is present on a getter " +
+            getter + " and setter" + setter);
+        }
+        annotation = setterAnnotation;
+        owner = setter.getOwner();
+      }
+    }
+
+    //
+    if (annotation != null) {
+      return new AnnotatedProperty<A>(annotation, owner, this);
+    } else {
+      return null;
+    }
+  }
 }

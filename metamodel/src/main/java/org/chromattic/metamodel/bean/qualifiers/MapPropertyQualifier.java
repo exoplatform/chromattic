@@ -30,8 +30,8 @@ public class MapPropertyQualifier<K extends ValueInfo, V extends ValueInfo> exte
   /** . */
   private final K keyValue;
 
-  public MapPropertyQualifier(PropertyInfo property, V elementValue, K keyValue) {
-    super(property, elementValue);
+  public MapPropertyQualifier(PropertyRole role, PropertyInfo property, V elementValue, K keyValue) {
+    super(role, property, elementValue);
 
     //
     this.keyValue = keyValue;

@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.chromattic.metamodel.bean.qualifiers.PropertyRole;
 import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.annotation.AnnotationType;
@@ -36,14 +37,22 @@ import java.util.List;
 public abstract class PropertyQualifier<V extends ValueInfo> {
 
   /** . */
+  private final PropertyRole role;
+
+  /** . */
   private final PropertyInfo property;
 
   /** . */
   private final V value;
 
-  public PropertyQualifier(PropertyInfo property, V value) {
+  public PropertyQualifier(PropertyRole role, PropertyInfo property, V value) {
+    this.role = role;
     this.property = property;
     this.value = value;
+  }
+
+  public PropertyRole getRole() {
+    return role;
   }
 
   public PropertyInfo getProperty() {

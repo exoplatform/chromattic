@@ -28,7 +28,7 @@ import org.chromattic.metamodel.bean.PropertyQualifier;
  */
 public abstract class MultiValuedPropertyQualifier<V extends ValueInfo> extends PropertyQualifier<V> {
 
-  public MultiValuedPropertyQualifier(PropertyInfo property, V elementValue) {
-    super(property, elementValue);
+  public MultiValuedPropertyQualifier(PropertyRole role, PropertyInfo property, V elementValue) {
+    super(role, property, elementValue);
   }
 }

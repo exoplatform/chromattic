@@ -27,7 +27,7 @@ import org.chromattic.metamodel.bean.PropertyInfo;
  */
 public class ListPropertyQualifier<V extends ValueInfo> extends CollectionPropertyQualifier<V> {
 
-  public ListPropertyQualifier(PropertyInfo property, V elementValue) {
-    super(property, elementValue);
+  public ListPropertyQualifier(PropertyRole role, PropertyInfo property, V elementValue) {
+    super(role, property, elementValue);
   }
 }
