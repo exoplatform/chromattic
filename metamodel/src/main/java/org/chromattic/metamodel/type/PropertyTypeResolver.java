@@ -24,6 +24,7 @@ import org.chromattic.spi.type.SimpleValueTypes;
 import org.chromattic.spi.type.ValueType;
 import org.reflext.api.ClassKind;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
@@ -94,22 +95,27 @@ public class PropertyTypeResolver {
     typeMappings = new HashMap<String, ValueTypeInfoImpl>(defaultTypeMappings);
   }
 
-  public JCRPropertyType<?> resolveJCRPropertyType(ClassTypeInfo cti) {
+  public JCRPropertyType<?> resolveJCRPropertyType(TypeInfo cti) {
     ValueTypeInfo vti = resolveType(cti);
     return vti != null ? vti.getJCRPropertyType() : null;
   }
 
-  public ValueType<?, ?> resolveValueType(ClassTypeInfo cti) {
+  public ValueType<?, ?> resolveValueType(TypeInfo cti) {
     ValueTypeInfo vti = resolveType(cti);
     return vti != null ? vti.create() : null;
   }
 
-  ValueTypeInfo resolveType(ClassTypeInfo typeInfo) {
+  ValueTypeInfo resolveType(TypeInfo typeInfo) {
     ValueTypeInfo jcrType;
-    if (typeInfo.getKind() == ClassKind.ENUM) {
-      jcrType = new EnumeratedValueTypeInfo(typeInfo);
+    if (typeInfo instanceof ClassTypeInfo) {
+      ClassTypeInfo cti = (ClassTypeInfo)typeInfo;
+      if (cti.getKind() == ClassKind.ENUM) {
+        jcrType = new EnumeratedValueTypeInfo(cti);
+      } else {
+        return typeMappings.get(cti.getName());
+      }
     } else {
-      return typeMappings.get(typeInfo.getName());
+      throw new UnsupportedOperationException("todo");
     }
 
     //

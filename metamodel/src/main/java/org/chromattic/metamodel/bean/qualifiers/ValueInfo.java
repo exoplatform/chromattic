@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.bean.qualifiers;
 
-import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -28,13 +28,13 @@ import org.reflext.api.ClassTypeInfo;
 public class ValueInfo {
 
   /** . */
-  protected final ClassTypeInfo typeInfo;
+  protected final TypeInfo typeInfo;
 
-  public ValueInfo(ClassTypeInfo typeInfo) {
+  public ValueInfo(TypeInfo typeInfo) {
     this.typeInfo = typeInfo;
   }
 
-  public ClassTypeInfo getTypeInfo() {
+  public TypeInfo getTypeInfo() {
     return typeInfo;
   }
 }

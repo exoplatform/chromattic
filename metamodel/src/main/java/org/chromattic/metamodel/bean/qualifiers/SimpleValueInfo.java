@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.bean.qualifiers;
 
-import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -27,7 +27,7 @@ import org.reflext.api.ClassTypeInfo;
  */
 public class SimpleValueInfo extends ValueInfo {
 
-  SimpleValueInfo(ClassTypeInfo typeInfo) {
+  SimpleValueInfo(TypeInfo typeInfo) {
     super(typeInfo);
   }
 

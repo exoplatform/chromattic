@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.chromattic.metamodel.bean.qualifiers.SingleValuedPropertyQualifier;
+import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
@@ -47,7 +48,8 @@ public abstract class AbstractBeanTestCase extends TestCase {
     assertEquals(expectedName, property.getProperty().getName());
     if (property instanceof SingleValuedPropertyQualifier) {
       SingleValuedPropertyQualifier svpi = (SingleValuedPropertyQualifier)property;
-      assertEquals(expectedType.getName(), svpi.getValue().getTypeInfo().getName());
+      assertTrue(svpi.getValue().getTypeInfo() instanceof ClassTypeInfo);
+      assertEquals(expectedType.getName(), ((ClassTypeInfo)svpi.getValue().getTypeInfo()).getName());
       switch (accessMode) {
         case READ_ONLY:
           assertNotNull(property.getProperty().getGetter());

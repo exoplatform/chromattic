@@ -23,6 +23,7 @@ import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.chromattic.spi.type.ValueType;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -30,7 +31,7 @@ import org.reflext.api.ClassTypeInfo;
  */
 public class ValueTypeFactory {
 
-  public static <I> ValueType<I, ?> create(ClassTypeInfo type, JCRPropertyType<I> jcrType) {
+  public static <I> ValueType<I, ?> create(TypeInfo type, JCRPropertyType<I> jcrType) {
     PropertyTypeResolver resolver = new PropertyTypeResolver();
 
     //

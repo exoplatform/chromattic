@@ -32,6 +32,11 @@ public class BeanValueInfo extends ValueInfo {
   }
 
   @Override
+  public ClassTypeInfo getTypeInfo() {
+    return (ClassTypeInfo)super.getTypeInfo();
+  }
+
+  @Override
   public String toString() {
     return "BeanValueInfo[type=" + typeInfo +  "]";
   }

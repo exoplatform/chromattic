@@ -30,6 +30,7 @@ import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.metamodel.bean.*;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -122,8 +123,8 @@ public class BaseTypeMappingVisitor {
               ValueInfo valueInfo = ((SingleValuedPropertyQualifier)propertyInfo).getValue();
               if (valueInfo instanceof SimpleValueInfo) {
                 SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
-                ClassTypeInfo simpleType = simpleValueInfo.getTypeInfo();
-                if (simpleType.getName().equals(String.class.getName())) {
+                TypeInfo simpleType = simpleValueInfo.getTypeInfo();
+                if (simpleType instanceof ClassTypeInfo && ((ClassTypeInfo)simpleType).getName().equals(String.class.getName())) {
                   // OK
                 } else {
                   throw new AssertionError(mapping.getType().toString() + " wrong simple type "+ simpleType);

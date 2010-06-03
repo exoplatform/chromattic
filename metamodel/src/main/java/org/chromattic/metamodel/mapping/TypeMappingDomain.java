@@ -302,19 +302,14 @@ public class TypeMappingDomain {
           if (vi instanceof SimpleValueInfo) {
             SimpleValueInfo svi = (SimpleValueInfo)vi;
             JCRNodeAttributeMapping memberMapping = new JCRNodeAttributeMapping(attributeRole.type);
-            ClassTypeInfo simpleType = svi.getTypeInfo();
-            if (attributeRole.type == NodeAttributeType.PATH) {
-              if (!simpleType.getName().equals(String.class.getName())) {
-                throw new IllegalStateException("Type " + simpleType + " is not accepted for path attribute mapping");
-              }
+            TypeInfo simpleType = svi.getTypeInfo();
+            if (simpleType instanceof ClassTypeInfo && ((ClassTypeInfo)simpleType).getName().equals(String.class.getName())) {
+              SimpleMapping<JCRNodeAttributeMapping> simpleMapping = new SimpleMapping<JCRNodeAttributeMapping>(role.getDeclaringType(), memberMapping);
+              PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>>(propertyInfo, simpleMapping);
+              propertyMappings.add(propertyMapping);
             } else {
-              if (!simpleType.getName().equals(String.class.getName())) {
-                throw new IllegalStateException("Type " + simpleType + " is not accepted for attribute mapping");
-              }
+              throw new InvalidMappingException(javaClass, "Type " + simpleType + " is not accepted for path attribute mapping");
             }
-            SimpleMapping<JCRNodeAttributeMapping> simpleMapping = new SimpleMapping<JCRNodeAttributeMapping>(role.getDeclaringType(), memberMapping);
-            PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>>(propertyInfo, simpleMapping);
-            propertyMappings.add(propertyMapping);
           } else {
             throw new InvalidMappingException(javaClass);
           }
@@ -384,8 +379,9 @@ public class TypeMappingDomain {
                 throw new IllegalStateException("Wrong key value type " + mapProperty.getKeyValue());
               }
               SimpleValueInfo svi = (SimpleValueInfo)mapProperty.getKeyValue();
-              if (!svi.getTypeInfo().getName().equals(String.class.getName())) {
-                throw new IllegalStateException();
+              TypeInfo ti = (TypeInfo)svi.getTypeInfo();
+              if (!(ti instanceof ClassTypeInfo) || !((ClassTypeInfo)ti).getName().equals(String.class.getName())) {
+                throw new InvalidMappingException(javaClass);
               }
             }
 
