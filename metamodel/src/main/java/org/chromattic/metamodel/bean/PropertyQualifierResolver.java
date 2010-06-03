@@ -21,7 +21,6 @@ package org.chromattic.metamodel.bean;
 
 import org.chromattic.api.BuilderException;
 import org.chromattic.api.annotations.*;
-import org.chromattic.metamodel.bean.*;
 import org.chromattic.metamodel.bean.value.*;
 import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
