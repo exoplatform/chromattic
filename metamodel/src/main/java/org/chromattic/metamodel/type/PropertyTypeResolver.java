@@ -40,34 +40,34 @@ import java.util.Map;
 public class PropertyTypeResolver {
 
   /** . */
-  static final TypeResolver<Type> typeDomain = TypeResolverImpl.create(new JavaLangReflectReflectionModel());
+  static final TypeResolver<Type> typeDomain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
+
+  //
 
   /** . */
-  private static final Map<String, ValueTypeInfoImpl> defaultTypeMappings;
+  private static final Map<TypeInfo, ValueTypeInfoImpl> defaultTypeMappings;
 
   /** . */
   private static final Map<JCRPropertyType<?>, ClassTypeInfo> jcrTypes;
 
-  private static final ValueTypeInfoImpl<InputStream> BYTE_ARRAY = new ValueTypeInfoImpl<InputStream>(SimpleValueTypes.BYTE_ARRAY.class, JCRPropertyType.BINARY);
-
-
   static {
 
     // The base mappings
-    Map<String, ValueTypeInfoImpl> _typeMapping = new HashMap<String, ValueTypeInfoImpl>();
-    _typeMapping.put(int.class.getName(), new ValueTypeInfoImpl<Long>(SimpleValueTypes.PRIMITIVE_INTEGER.class, JCRPropertyType.LONG));
-    _typeMapping.put(Integer.class.getName(), new ValueTypeInfoImpl<Long>(SimpleValueTypes.INTEGER.class, JCRPropertyType.LONG));
-    _typeMapping.put(long.class.getName(), new ValueTypeInfoImpl<Long>(SimpleValueTypes.PRIMITIVE_LONG.class, JCRPropertyType.LONG));
-    _typeMapping.put(Long.class.getName(), new ValueTypeInfoImpl<Long>(SimpleValueTypes.LONG.class, JCRPropertyType.LONG));
-    _typeMapping.put(boolean.class.getName(), new ValueTypeInfoImpl<Boolean>(SimpleValueTypes.PRIMITIVE_BOOLEAN.class, JCRPropertyType.BOOLEAN));
-    _typeMapping.put(Boolean.class.getName(), new ValueTypeInfoImpl<Boolean>(SimpleValueTypes.BOOLEAN.class, JCRPropertyType.BOOLEAN));
-    _typeMapping.put(float.class.getName(), new ValueTypeInfoImpl<Double>(SimpleValueTypes.PRIMITIVE_FLOAT.class, JCRPropertyType.DOUBLE));
-    _typeMapping.put(Float.class.getName(), new ValueTypeInfoImpl<Double>(SimpleValueTypes.FLOAT.class, JCRPropertyType.DOUBLE));
-    _typeMapping.put(double.class.getName(), new ValueTypeInfoImpl<Double>(SimpleValueTypes.PRIMITIVE_DOUBLE.class, JCRPropertyType.DOUBLE));
-    _typeMapping.put(Double.class.getName(), new ValueTypeInfoImpl<Double>(SimpleValueTypes.DOUBLE.class, JCRPropertyType.DOUBLE));
-    _typeMapping.put(String.class.getName(), new ValueTypeInfoImpl<String>(SimpleValueTypes.STRING.class, JCRPropertyType.STRING));
-    _typeMapping.put(InputStream.class.getName(), new ValueTypeInfoImpl<InputStream>(SimpleValueTypes.BINARY.class, JCRPropertyType.BINARY));
-    _typeMapping.put(Date.class.getName(), new ValueTypeInfoImpl<Calendar>(SimpleValueTypes.DATE.class, JCRPropertyType.DATE));
+    Map<TypeInfo, ValueTypeInfoImpl> _typeMapping = new HashMap<TypeInfo, ValueTypeInfoImpl>();
+    _typeMapping.put(typeDomain.resolve(int.class), new ValueTypeInfoImpl<Long>(SimpleValueTypes.PRIMITIVE_INTEGER.class, JCRPropertyType.LONG));
+    _typeMapping.put(typeDomain.resolve(Integer.class), new ValueTypeInfoImpl<Long>(SimpleValueTypes.INTEGER.class, JCRPropertyType.LONG));
+    _typeMapping.put(typeDomain.resolve(long.class), new ValueTypeInfoImpl<Long>(SimpleValueTypes.PRIMITIVE_LONG.class, JCRPropertyType.LONG));
+    _typeMapping.put(typeDomain.resolve(Long.class), new ValueTypeInfoImpl<Long>(SimpleValueTypes.LONG.class, JCRPropertyType.LONG));
+    _typeMapping.put(typeDomain.resolve(boolean.class), new ValueTypeInfoImpl<Boolean>(SimpleValueTypes.PRIMITIVE_BOOLEAN.class, JCRPropertyType.BOOLEAN));
+    _typeMapping.put(typeDomain.resolve(Boolean.class), new ValueTypeInfoImpl<Boolean>(SimpleValueTypes.BOOLEAN.class, JCRPropertyType.BOOLEAN));
+    _typeMapping.put(typeDomain.resolve(float.class), new ValueTypeInfoImpl<Double>(SimpleValueTypes.PRIMITIVE_FLOAT.class, JCRPropertyType.DOUBLE));
+    _typeMapping.put(typeDomain.resolve(Float.class), new ValueTypeInfoImpl<Double>(SimpleValueTypes.FLOAT.class, JCRPropertyType.DOUBLE));
+    _typeMapping.put(typeDomain.resolve(double.class), new ValueTypeInfoImpl<Double>(SimpleValueTypes.PRIMITIVE_DOUBLE.class, JCRPropertyType.DOUBLE));
+    _typeMapping.put(typeDomain.resolve(Double.class), new ValueTypeInfoImpl<Double>(SimpleValueTypes.DOUBLE.class, JCRPropertyType.DOUBLE));
+    _typeMapping.put(typeDomain.resolve(String.class), new ValueTypeInfoImpl<String>(SimpleValueTypes.STRING.class, JCRPropertyType.STRING));
+    _typeMapping.put(typeDomain.resolve(InputStream.class), new ValueTypeInfoImpl<InputStream>(SimpleValueTypes.BINARY.class, JCRPropertyType.BINARY));
+    _typeMapping.put(typeDomain.resolve(Date.class), new ValueTypeInfoImpl<Calendar>(SimpleValueTypes.DATE.class, JCRPropertyType.DATE));
+    _typeMapping.put(typeDomain.resolve(byte[].class), new ValueTypeInfoImpl<InputStream>(SimpleValueTypes.BYTE_ARRAY.class, JCRPropertyType.BINARY));
 
     //
     Map<JCRPropertyType<?>, ClassTypeInfo> _jcrTypes = new HashMap<JCRPropertyType<?>, ClassTypeInfo>();
@@ -86,10 +86,10 @@ public class PropertyTypeResolver {
   }
 
   /** . */
-  private final Map<String, ValueTypeInfoImpl> typeMappings;
+  private final Map<TypeInfo, ValueTypeInfoImpl> typeMappings;
 
   public PropertyTypeResolver() {
-    typeMappings = new HashMap<String, ValueTypeInfoImpl>(defaultTypeMappings);
+    typeMappings = new HashMap<TypeInfo, ValueTypeInfoImpl>(defaultTypeMappings);
   }
 
   public JCRPropertyType<?> resolveJCRPropertyType(TypeInfo cti) {
@@ -109,22 +109,14 @@ public class PropertyTypeResolver {
       if (cti.getKind() == ClassKind.ENUM) {
         jcrType = new EnumeratedValueTypeInfo(cti);
       } else {
-        return typeMappings.get(cti.getName());
-      }
-    } else if (typeInfo instanceof ArrayTypeInfo) {
-      ArrayTypeInfo ati = (ArrayTypeInfo)typeInfo;
-      TypeInfo ti = ati.getComponentType();
-      if (ti instanceof SimpleTypeInfo) {
-        SimpleTypeInfo sti = (SimpleTypeInfo)ti;
-        if (sti.getLiteralType() == LiteralType.BYTE) {
-          jcrType = BYTE_ARRAY;
-        } else {
-          throw new UnsupportedOperationException("todo " + typeInfo);
-        }
-      } else {
-        throw new UnsupportedOperationException("todo " + typeInfo);
+        jcrType = typeMappings.get(cti);
       }
     } else {
+      jcrType = typeMappings.get(typeInfo);
+    }
+
+    //
+    if (jcrType == null) {
       throw new UnsupportedOperationException("todo " + typeInfo);
     }
 
