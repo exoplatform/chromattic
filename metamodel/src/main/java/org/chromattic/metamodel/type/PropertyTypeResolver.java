@@ -102,7 +102,7 @@ public class PropertyTypeResolver {
     return vti != null ? vti.create() : null;
   }
 
-  ValueTypeInfo resolveType(TypeInfo typeInfo) {
+  public ValueTypeInfo resolveType(TypeInfo typeInfo) {
     ValueTypeInfo jcrType;
     if (typeInfo instanceof ClassTypeInfo) {
       ClassTypeInfo cti = (ClassTypeInfo)typeInfo;
@@ -113,11 +113,6 @@ public class PropertyTypeResolver {
       }
     } else {
       jcrType = typeMappings.get(typeInfo);
-    }
-
-    //
-    if (jcrType == null) {
-      throw new UnsupportedOperationException("todo " + typeInfo);
     }
 
     //

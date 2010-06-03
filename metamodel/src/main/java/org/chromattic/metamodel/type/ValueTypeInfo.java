@@ -26,7 +26,7 @@ import org.chromattic.spi.type.ValueType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-interface ValueTypeInfo {
+public interface ValueTypeInfo {
 
   JCRPropertyType<?> getJCRPropertyType();
 

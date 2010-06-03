@@ -24,12 +24,12 @@ import org.chromattic.api.annotations.*;
 import org.chromattic.metamodel.bean.value.*;
 import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
+import org.chromattic.metamodel.type.PropertyTypeResolver;
+import org.chromattic.metamodel.type.ValueTypeInfo;
 import org.reflext.api.*;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,8 +41,12 @@ public class PropertyQualifierResolver {
   /** . */
   private final ClassTypeInfo beanType;
 
+  /** . */
+  private final PropertyTypeResolver typeResolver;
+
   public PropertyQualifierResolver(ClassTypeInfo beanType) {
     this.beanType = beanType;
+    this.typeResolver = new PropertyTypeResolver();
   }
 
   private List<PropertyRole> findRoles(PropertyInfo propertyInfo) {
@@ -132,34 +136,47 @@ public class PropertyQualifierResolver {
 
   private ValueInfo bilto(TypeInfo typeInfo) {
 
-    
+    ValueInfo res = createValue(typeInfo);
 
+    // It's a simple value type
+    if (res != null) {
+      return res;
+    }
+
+    //
     if (typeInfo instanceof ParameterizedTypeInfo) {
+
+      //
       ParameterizedTypeInfo parameterizedTI = (ParameterizedTypeInfo)typeInfo;
       TypeInfo rawTI = parameterizedTI.getRawType();
+
+      //
       if (rawTI instanceof ClassTypeInfo) {
         ClassTypeInfo rawClassTI = (ClassTypeInfo)rawTI;
         String rawClassName = rawClassTI.getName();
+
+        //
         if (rawClassName.equals("java.util.Collection") || rawClassName.equals("java.util.List")) {
           TypeInfo elementTV = parameterizedTI.getTypeArguments().get(0);
           ClassTypeInfo elementTI = resolveClass(beanType, elementTV);
+          CollectionType collectionType = rawClassName.equals("java.util.Collection") ? CollectionType.COLLECTION : CollectionType.LIST;
+
+          //
           if (elementTI != null) {
             ValueInfo resolvedElementTI = createValue(elementTI);
-            CollectionType collectionType;
-            if (rawClassName.equals("java.util.Collection")) {
-              collectionType = CollectionType.COLLECTION;
-            } else {
-              collectionType = CollectionType.LIST;
-            }
             return new CollectionValueInfo<ValueInfo>(typeInfo, collectionType, resolvedElementTI);
           }
         } else if (rawClassName.equals("java.util.Map")) {
           TypeInfo elementTV = parameterizedTI.getTypeArguments().get(1);
           ClassTypeInfo elementTI = resolveClass(beanType, elementTV);
+
+          //
           if (elementTI != null) {
             ValueInfo resolvedElementTI = createValue(elementTI);
             TypeInfo keyTV = parameterizedTI.getTypeArguments().get(0);
             ClassTypeInfo keyTI = resolveClass(beanType, keyTV);
+
+            //
             if (keyTI != null) {
               ValueInfo resolvedKeyTI = createValue(keyTI);
               return new MapValueInfo<ValueInfo,ValueInfo>(typeInfo, resolvedKeyTI, resolvedElementTI);
@@ -167,9 +184,6 @@ public class PropertyQualifierResolver {
           }
         }
       }
-    } else if (typeInfo instanceof ClassTypeInfo) {
-      ValueInfo resolved = createValue((ClassTypeInfo)typeInfo);
-      return resolved;
     } else if (typeInfo instanceof ArrayTypeInfo) {
       TypeInfo componentTI = ((ArrayTypeInfo)typeInfo).getComponentType();
       if (componentTI instanceof ClassTypeInfo) {
@@ -189,53 +203,19 @@ public class PropertyQualifierResolver {
     return null;
   }
 
+  private ValueInfo createValue(TypeInfo typeInfo) throws BuilderException {
+    ValueTypeInfo vti = typeResolver.resolveType(typeInfo);
+    if (vti != null) {
+      return new SimpleValueInfo(typeInfo);
+    } else if (typeInfo instanceof ClassTypeInfo) {
+      return new BeanValueInfo((ClassTypeInfo)typeInfo);
+    } else {
+      return null;
+    }
+  }
+
   private ClassTypeInfo resolveClass(ClassTypeInfo baseType, TypeInfo type) {
     TypeInfo resolvedType = baseType.resolve(type);
     return resolvedType instanceof ClassTypeInfo ? (ClassTypeInfo)resolvedType : null;
-  }
-
-  private ValueInfo createValue(ClassTypeInfo type) throws BuilderException {
-    if (type instanceof SimpleTypeInfo) {
-      return createSimpleValueInfo(type);
-    } else if (type.getName().equals(String.class.getName())) {
-      return createSimpleValueInfo(type);
-    } else if (
-      type.getName().equals(InputStream.class.getName()) ||
-        type.getName().equals(Date.class.getName()) ||
-        type.getKind() == ClassKind.ENUM) {
-      return createSimpleValueInfo(type);
-    } else {
-      return new BeanValueInfo(type);
-    }
-  }
-
-  /**
-   * Build a simple value info meta data.
-   *
-   * @param typeInfo the type info
-   * @return the simple value info
-   * @throws BuilderException any exception that may prevent the correct building such as having a default value that
-   *         does not match the type
-   */
-  private SingleValueInfo createSimpleValueInfo(ClassTypeInfo typeInfo) throws BuilderException {
-    if (typeInfo == null) {
-      throw new NullPointerException();
-    }
-
-    //
-    if (typeInfo instanceof SimpleTypeInfo && ((SimpleTypeInfo)typeInfo).isPrimitive()) {
-      return new SimpleValueInfo(typeInfo);
-    } else {
-      switch (typeInfo.getKind()) {
-        case CLASS:
-        case ENUM:
-          break;
-        default:
-          throw new AssertionError();
-      }
-
-      //
-      return new SimpleValueInfo(typeInfo);
-    }
   }
 }
