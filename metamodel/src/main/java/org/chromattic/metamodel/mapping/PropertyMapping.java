@@ -20,7 +20,7 @@
 package org.chromattic.metamodel.mapping;
 
 import org.chromattic.metamodel.bean.PropertyQualifier;
-import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
+import org.chromattic.metamodel.bean.value.ValueInfo;
 import org.chromattic.metamodel.mapping.value.ValueMapping;
 
 /**

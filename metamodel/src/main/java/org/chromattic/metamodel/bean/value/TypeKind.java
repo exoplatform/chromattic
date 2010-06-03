@@ -17,17 +17,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean.qualifiers;
-
-import org.reflext.api.TypeInfo;
+package org.chromattic.metamodel.bean.value;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class SingleValueInfo extends ValueInfo {
+public enum TypeKind {
 
-  public SingleValueInfo(TypeInfo typeInfo) {
-    super(typeInfo);
-  }
+  SIMPLE,
+
+  BEAN,
+
+  MULTI
+
 }

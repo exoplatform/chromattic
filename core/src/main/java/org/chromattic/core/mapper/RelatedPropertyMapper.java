@@ -22,7 +22,7 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.PropertyQualifier;
-import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
+import org.chromattic.metamodel.bean.value.ValueInfo;
 
 import java.util.Set;
 

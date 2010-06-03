@@ -20,9 +20,9 @@
 package org.chromattic.metamodel.mapping;
 
 import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.bean.qualifiers.MultiValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.TypeKind;
-import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
+import org.chromattic.metamodel.bean.value.MultiValueInfo;
+import org.chromattic.metamodel.bean.value.TypeKind;
+import org.chromattic.metamodel.bean.value.ValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;

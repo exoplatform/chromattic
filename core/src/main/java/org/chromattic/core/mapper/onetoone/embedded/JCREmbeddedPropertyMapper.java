@@ -21,7 +21,7 @@ package org.chromattic.core.mapper.onetoone.embedded;
 import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
 import org.chromattic.metamodel.bean.PropertyQualifier;
-import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
+import org.chromattic.metamodel.bean.value.BeanValueInfo;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
 
 /**

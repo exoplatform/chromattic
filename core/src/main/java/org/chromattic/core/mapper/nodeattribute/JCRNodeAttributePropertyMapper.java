@@ -21,7 +21,7 @@ package org.chromattic.core.mapper.nodeattribute;
 
 import org.chromattic.api.Status;
 import org.chromattic.metamodel.bean.PropertyQualifier;
-import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
+import org.chromattic.metamodel.bean.value.SimpleValueInfo;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.EntityContext;

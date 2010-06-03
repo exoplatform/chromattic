@@ -19,8 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.bean.qualifiers.PropertyRole;
-import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
+import org.chromattic.metamodel.bean.value.ValueInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;

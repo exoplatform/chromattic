@@ -17,11 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean.qualifiers;
+package org.chromattic.metamodel.bean;
 
 import org.chromattic.api.BuilderException;
 import org.chromattic.api.annotations.*;
 import org.chromattic.metamodel.bean.*;
+import org.chromattic.metamodel.bean.value.*;
 import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.reflext.api.*;

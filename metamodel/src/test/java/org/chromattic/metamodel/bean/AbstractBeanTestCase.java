@@ -28,8 +28,8 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.chromattic.metamodel.bean.qualifiers.SingleValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
+import org.chromattic.metamodel.bean.value.SingleValueInfo;
+import org.chromattic.metamodel.bean.value.ValueInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;

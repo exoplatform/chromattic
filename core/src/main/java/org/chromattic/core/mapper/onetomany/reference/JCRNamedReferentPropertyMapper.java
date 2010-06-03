@@ -25,7 +25,7 @@ import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.metamodel.bean.PropertyQualifier;
-import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
+import org.chromattic.metamodel.bean.value.BeanValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

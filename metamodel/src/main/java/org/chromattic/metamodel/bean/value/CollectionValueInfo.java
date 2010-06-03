@@ -17,32 +17,27 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean.qualifiers;
+package org.chromattic.metamodel.bean.value;
 
-import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class BeanValueInfo extends SingleValueInfo {
+public class CollectionValueInfo<E extends ValueInfo> extends MultiValueInfo<E> {
 
-  public BeanValueInfo(ClassTypeInfo typeInfo) {
-    super(typeInfo);
+  /** . */
+  private final CollectionType type;
+
+  public CollectionValueInfo(TypeInfo typeInfo, CollectionType type, E element) {
+    super(typeInfo, element);
+
+    //
+    this.type = type;
   }
 
-  @Override
-  public ClassTypeInfo getTypeInfo() {
-    return (ClassTypeInfo)super.getTypeInfo();
-  }
-
-  @Override
-  public TypeKind getKind() {
-    return TypeKind.BEAN;
-  }
-
-  @Override
-  public String toString() {
-    return "BeanValueInfo[type=" + getTypeInfo() +  "]";
+  public CollectionType getType() {
+    return type;
   }
 }

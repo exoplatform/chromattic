@@ -29,7 +29,7 @@ import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedParentPropertyMapper;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedPropertyMapper;
 import org.chromattic.metamodel.bean.PropertyQualifier;
-import org.chromattic.metamodel.bean.qualifiers.*;
+import org.chromattic.metamodel.bean.value.*;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.metamodel.mapping.MethodMapping;

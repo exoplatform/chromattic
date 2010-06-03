@@ -21,8 +21,8 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.PropertyQualifier;
-import org.chromattic.metamodel.bean.qualifiers.BeanValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.MultiValueInfo;
+import org.chromattic.metamodel.bean.value.BeanValueInfo;
+import org.chromattic.metamodel.bean.value.MultiValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

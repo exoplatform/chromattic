@@ -24,7 +24,7 @@ import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.core.vt2.ValueTypeFactory;
 import org.chromattic.metamodel.bean.PropertyQualifier;
-import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
+import org.chromattic.metamodel.bean.value.SimpleValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.spi.type.ValueType;
 

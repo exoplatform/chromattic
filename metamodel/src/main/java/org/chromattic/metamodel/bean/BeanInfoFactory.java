@@ -19,7 +19,6 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.bean.qualifiers.PropertyQualifierResolver;
 import org.reflext.api.*;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
