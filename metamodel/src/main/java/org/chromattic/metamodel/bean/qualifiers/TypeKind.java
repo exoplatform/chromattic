@@ -19,25 +19,16 @@
 
 package org.chromattic.metamodel.bean.qualifiers;
 
-import org.reflext.api.TypeInfo;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleValueInfo extends SingleValueInfo {
+public enum TypeKind {
 
-  SimpleValueInfo(TypeInfo typeInfo) {
-    super(typeInfo);
-  }
+  SIMPLE,
 
-  @Override
-  public TypeKind getKind() {
-    return TypeKind.SIMPLE;
-  }
+  BEAN,
 
-  @Override
-  public String toString() {
-    return "SimpleValueInfo[typeInfo=" + getTypeInfo() + "]";
-  }
+  MULTI
+
 }

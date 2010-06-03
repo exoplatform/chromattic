@@ -28,11 +28,14 @@ import org.reflext.api.TypeInfo;
 public abstract class ValueInfo {
 
   /** . */
-  protected final TypeInfo typeInfo;
+  private final TypeInfo typeInfo;
+
 
   public ValueInfo(TypeInfo typeInfo) {
     this.typeInfo = typeInfo;
   }
+
+  public abstract TypeKind getKind();
 
   public TypeInfo getTypeInfo() {
     return typeInfo;

@@ -40,4 +40,9 @@ public class MultiValueInfo<E extends ValueInfo> extends ValueInfo {
   public E getElement() {
     return element;
   }
+
+  @Override
+  public TypeKind getKind() {
+    return TypeKind.MULTI;
+  }
 }

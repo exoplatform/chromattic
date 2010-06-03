@@ -19,11 +19,9 @@
 
 package org.chromattic.metamodel.typegen;
 
-import org.chromattic.metamodel.bean.PropertyQualifier;
 import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
-import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;

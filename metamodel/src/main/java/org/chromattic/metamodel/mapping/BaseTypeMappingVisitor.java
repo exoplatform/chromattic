@@ -21,7 +21,7 @@ package org.chromattic.metamodel.mapping;
 
 import org.chromattic.api.RelationshipType;
 import org.chromattic.metamodel.bean.qualifiers.MultiValueInfo;
-import org.chromattic.metamodel.bean.qualifiers.SimpleValueInfo;
+import org.chromattic.metamodel.bean.qualifiers.TypeKind;
 import org.chromattic.metamodel.bean.qualifiers.ValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
@@ -108,7 +108,7 @@ public class BaseTypeMappingVisitor {
             } else {
               multiple = false;
             }
-            if (valueInfo instanceof SimpleValueInfo) {
+            if (valueInfo.getKind() == TypeKind.SIMPLE) {
               propertyMapping(
                 definer,
                 (JCRPropertyMapping)memberMapping,
@@ -118,9 +118,8 @@ public class BaseTypeMappingVisitor {
               throw new AssertionError();
             }
           } else if (memberMapping instanceof JCRNodeAttributeMapping) {
-            if (valueInfo instanceof SimpleValueInfo) {
-              SimpleValueInfo simpleValueInfo = (SimpleValueInfo)valueInfo;
-              TypeInfo simpleType = simpleValueInfo.getTypeInfo();
+            if (valueInfo.getKind() == TypeKind.SIMPLE) {
+              TypeInfo simpleType = valueInfo.getTypeInfo();
               if (simpleType instanceof ClassTypeInfo && ((ClassTypeInfo)simpleType).getName().equals(String.class.getName())) {
                 // OK
               } else {

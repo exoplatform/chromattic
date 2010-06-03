@@ -167,7 +167,7 @@ public class PropertyQualifierResolver {
           //
         } else {
           ValueInfo resolved = createValue(rawComponentTI);
-          if (resolved instanceof SimpleValueInfo) {
+          if (resolved.getKind() == TypeKind.SIMPLE) {
             return new PropertyQualifier<CollectionValueInfo>(role, propertyInfo, new CollectionValueInfo<ValueInfo>(resolvedTI, CollectionType.ARRAY, resolved));
           }
         }
@@ -206,7 +206,7 @@ public class PropertyQualifierResolver {
    * @throws BuilderException any exception that may prevent the correct building such as having a default value that
    *         does not match the type
    */
-  private SimpleValueInfo createSimpleValueInfo(ClassTypeInfo typeInfo) throws BuilderException {
+  private SingleValueInfo createSimpleValueInfo(ClassTypeInfo typeInfo) throws BuilderException {
     if (typeInfo == null) {
       throw new NullPointerException();
     }

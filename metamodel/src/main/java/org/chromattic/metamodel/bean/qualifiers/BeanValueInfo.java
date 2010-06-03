@@ -37,7 +37,12 @@ public class BeanValueInfo extends SingleValueInfo {
   }
 
   @Override
+  public TypeKind getKind() {
+    return TypeKind.BEAN;
+  }
+
+  @Override
   public String toString() {
-    return "BeanValueInfo[type=" + typeInfo +  "]";
+    return "BeanValueInfo[type=" + getTypeInfo() +  "]";
   }
 }

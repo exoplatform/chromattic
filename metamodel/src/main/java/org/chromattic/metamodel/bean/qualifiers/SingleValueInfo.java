@@ -26,6 +26,7 @@ import org.reflext.api.TypeInfo;
  * @version $Revision$
  */
 public abstract class SingleValueInfo extends ValueInfo {
+
   public SingleValueInfo(TypeInfo typeInfo) {
     super(typeInfo);
   }
