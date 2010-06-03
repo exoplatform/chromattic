@@ -70,7 +70,7 @@ public class BeanInfoFactory {
           if (getterTypeInfo.equals(setterTypeInfo)) {
             TypeInfo resolvedTI = type.resolve(getterTypeInfo);
             PropertyInfo property = new PropertyInfo(name, resolvedTI, getter, setter);
-            qproperty = qualifier.createPropertyInfo(type, property, resolvedTI);
+            qproperty = qualifier.createPropertyInfo(property);
             break;
           }
         }
@@ -80,7 +80,7 @@ public class BeanInfoFactory {
       if (qproperty == null) {
         TypeInfo resolvedTI = type.resolve(getterTypeInfo);
         PropertyInfo property = new PropertyInfo(name, resolvedTI, getter, null);
-        qproperty = qualifier.createPropertyInfo(type, property, resolvedTI);
+        qproperty = qualifier.createPropertyInfo(property);
       }
 
       //
@@ -97,7 +97,7 @@ public class BeanInfoFactory {
         TypeInfo setterTypeInfo = setter.getParameterTypes().get(0);
         TypeInfo resolvedTI = type.resolve(setterTypeInfo);
         PropertyInfo property = new PropertyInfo(name, resolvedTI, null, setter);
-        PropertyQualifier qproperty = qualifier.createPropertyInfo(type, property, resolvedTI);
+        PropertyQualifier qproperty = qualifier.createPropertyInfo(property);
         if (qproperty != null) {
           properties.put(name, qproperty);
           break;

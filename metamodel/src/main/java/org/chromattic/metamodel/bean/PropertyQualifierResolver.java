@@ -101,23 +101,22 @@ public class PropertyQualifierResolver {
   }
 
   public PropertyQualifier createPropertyInfo(
-    ClassTypeInfo beanTypeInfo,
-    PropertyInfo propertyInfo,
-    TypeInfo typeInfo) {
+    PropertyInfo propertyInfo
+  ) {
 
     //
     List<PropertyRole> roles = findRoles(propertyInfo);
 
     //
     if (roles.size() > 1) {
-      throw new InvalidMappingException(beanTypeInfo, "Too many annotations of the same kind " + roles);
+      throw new InvalidMappingException(beanType, "Too many annotations of the same kind " + roles);
     }
 
     // Get role
     PropertyRole role = roles.isEmpty() ? null : roles.get(0);
 
     //
-    TypeInfo resolvedTI = beanTypeInfo.resolve(typeInfo);
+    TypeInfo resolvedTI = beanType.resolve(propertyInfo.getDeclaredType());
 
     //
     ValueInfo vi = bilto(resolvedTI);
@@ -132,6 +131,8 @@ public class PropertyQualifierResolver {
   }
 
   private ValueInfo bilto(TypeInfo typeInfo) {
+
+    
 
     if (typeInfo instanceof ParameterizedTypeInfo) {
       ParameterizedTypeInfo parameterizedTI = (ParameterizedTypeInfo)typeInfo;
