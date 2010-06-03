@@ -21,7 +21,7 @@ package org.chromattic.metamodel.type;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.spi.type.EnumeratedValueType;
-import org.chromattic.spi.type.ValueType;
+import org.chromattic.spi.type.SimpleTypeConverter;
 import org.reflext.api.ClassTypeInfo;
 
 /**
@@ -41,7 +41,7 @@ public class EnumeratedValueTypeInfo implements ValueTypeInfo {
     return JCRPropertyType.STRING;
   }
 
-  public ValueType<?, ?> create() {
+  public SimpleTypeConverter<?, ?> create() {
     Class clazz = (Class<Object>)enumInfo.getType();
     return new EnumeratedValueType(clazz);
   }

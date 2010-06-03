@@ -20,8 +20,8 @@
 package org.chromattic.core.vt2;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.SimpleTypeConverter;
 import org.chromattic.spi.type.SimpleValueTypes;
-import org.chromattic.spi.type.ValueType;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -124,7 +124,7 @@ public class ValueDefinition<I, E> {
   private final Class realType;
 
   /** . */
-  private final ValueType<I, E> valueType;
+  private final SimpleTypeConverter<I, E> valueType;
 
   /** . */
   private final List<String> defaultValue;
@@ -135,7 +135,7 @@ public class ValueDefinition<I, E> {
   public ValueDefinition(
     Class realType,
     JCRPropertyType<I> jcrType,
-    ValueType<I, E> valueType,
+    SimpleTypeConverter<I, E> valueType,
     List<String> defaultValue) {
     this.realType = realType;
     this.valueType = valueType;

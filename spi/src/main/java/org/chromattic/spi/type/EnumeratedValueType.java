@@ -25,7 +25,7 @@ import org.chromattic.api.TypeConversionException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EnumeratedValueType<E extends Enum<E>> extends ValueType.STRING<E> {
+public class EnumeratedValueType<E extends Enum<E>> extends SimpleTypeConverter.STRING<E> {
 
   /** . */
   private final Class<E> externalType;

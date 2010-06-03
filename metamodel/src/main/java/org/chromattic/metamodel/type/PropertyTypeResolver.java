@@ -20,8 +20,8 @@
 package org.chromattic.metamodel.type;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.SimpleTypeConverter;
 import org.chromattic.spi.type.SimpleValueTypes;
-import org.chromattic.spi.type.ValueType;
 import org.reflext.api.*;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
@@ -71,14 +71,14 @@ public class PropertyTypeResolver {
 
     //
     Map<JCRPropertyType<?>, ClassTypeInfo> _jcrTypes = new HashMap<JCRPropertyType<?>, ClassTypeInfo>();
-    _jcrTypes.put(JCRPropertyType.STRING, (ClassTypeInfo)typeDomain.resolve(ValueType.STRING.class));
-    _jcrTypes.put(JCRPropertyType.PATH, (ClassTypeInfo)typeDomain.resolve(ValueType.PATH.class));
-    _jcrTypes.put(JCRPropertyType.NAME, (ClassTypeInfo)typeDomain.resolve(ValueType.NAME.class));
-    _jcrTypes.put(JCRPropertyType.LONG, (ClassTypeInfo)typeDomain.resolve(ValueType.LONG.class));
-    _jcrTypes.put(JCRPropertyType.DOUBLE, (ClassTypeInfo)typeDomain.resolve(ValueType.DOUBLE.class));
-    _jcrTypes.put(JCRPropertyType.BOOLEAN, (ClassTypeInfo)typeDomain.resolve(ValueType.BOOLEAN.class));
-    _jcrTypes.put(JCRPropertyType.BINARY, (ClassTypeInfo)typeDomain.resolve(ValueType.BINARY.class));
-    _jcrTypes.put(JCRPropertyType.DATE, (ClassTypeInfo)typeDomain.resolve(ValueType.DATE.class));
+    _jcrTypes.put(JCRPropertyType.STRING, (ClassTypeInfo)typeDomain.resolve(SimpleTypeConverter.STRING.class));
+    _jcrTypes.put(JCRPropertyType.PATH, (ClassTypeInfo)typeDomain.resolve(SimpleTypeConverter.PATH.class));
+    _jcrTypes.put(JCRPropertyType.NAME, (ClassTypeInfo)typeDomain.resolve(SimpleTypeConverter.NAME.class));
+    _jcrTypes.put(JCRPropertyType.LONG, (ClassTypeInfo)typeDomain.resolve(SimpleTypeConverter.LONG.class));
+    _jcrTypes.put(JCRPropertyType.DOUBLE, (ClassTypeInfo)typeDomain.resolve(SimpleTypeConverter.DOUBLE.class));
+    _jcrTypes.put(JCRPropertyType.BOOLEAN, (ClassTypeInfo)typeDomain.resolve(SimpleTypeConverter.BOOLEAN.class));
+    _jcrTypes.put(JCRPropertyType.BINARY, (ClassTypeInfo)typeDomain.resolve(SimpleTypeConverter.BINARY.class));
+    _jcrTypes.put(JCRPropertyType.DATE, (ClassTypeInfo)typeDomain.resolve(SimpleTypeConverter.DATE.class));
 
 
     defaultTypeMappings = _typeMapping;
@@ -97,7 +97,7 @@ public class PropertyTypeResolver {
     return vti != null ? vti.getJCRPropertyType() : null;
   }
 
-  public ValueType<?, ?> resolveValueType(TypeInfo cti) {
+  public SimpleTypeConverter<?, ?> resolveValueType(TypeInfo cti) {
     ValueTypeInfo vti = resolveType(cti);
     return vti != null ? vti.create() : null;
   }

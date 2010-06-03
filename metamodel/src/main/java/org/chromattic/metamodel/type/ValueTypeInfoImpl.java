@@ -20,7 +20,7 @@
 package org.chromattic.metamodel.type;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
-import org.chromattic.spi.type.ValueType;
+import org.chromattic.spi.type.SimpleTypeConverter;
 import org.reflext.api.ClassTypeInfo;
 
 /**
@@ -30,7 +30,7 @@ import org.reflext.api.ClassTypeInfo;
 class ValueTypeInfoImpl<I> implements ValueTypeInfo {
 
   /** . */
-  private final ValueType<I, ?> instance;
+  private final SimpleTypeConverter<I, ?> instance;
 
   /** . */
   private final JCRPropertyType<I> propertyType;
@@ -39,11 +39,11 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
   private final ClassTypeInfo typeInfo;
 
   ValueTypeInfoImpl(
-    Class<? extends ValueType<I, ?>> type,
+    Class<? extends SimpleTypeConverter<I, ?>> type,
     JCRPropertyType<I> propertyType) {
 
     //
-    ValueType<I, ?> instance;
+    SimpleTypeConverter<I, ?> instance;
     try {
       instance = type.newInstance();
     }
@@ -64,7 +64,7 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
     return propertyType;
   }
 
-  public ValueType<I, ?> create() {
+  public SimpleTypeConverter<I, ?> create() {
     return instance;
   }
 }

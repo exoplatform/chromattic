@@ -21,8 +21,7 @@ package org.chromattic.core.vt2;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.metamodel.type.PropertyTypeResolver;
-import org.chromattic.spi.type.ValueType;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.spi.type.SimpleTypeConverter;
 import org.reflext.api.TypeInfo;
 
 /**
@@ -31,11 +30,11 @@ import org.reflext.api.TypeInfo;
  */
 public class ValueTypeFactory {
 
-  public static <I> ValueType<I, ?> create(TypeInfo type, JCRPropertyType<I> jcrType) {
+  public static <I> SimpleTypeConverter<I, ?> create(TypeInfo type, JCRPropertyType<I> jcrType) {
     PropertyTypeResolver resolver = new PropertyTypeResolver();
 
     //
-    ValueType vt = resolver.resolveValueType(type);
+    SimpleTypeConverter vt = resolver.resolveValueType(type);
 
     //
     if (!vt.getInternalType().equals(jcrType.getJavaType())) {
@@ -43,6 +42,6 @@ public class ValueTypeFactory {
     }
 
     //
-    return (ValueType<I, ?>)vt;
+    return (SimpleTypeConverter<I, ?>)vt;
   }
 }

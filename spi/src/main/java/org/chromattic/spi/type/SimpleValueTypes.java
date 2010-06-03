@@ -39,7 +39,7 @@ public class SimpleValueTypes {
   private SimpleValueTypes() {
   }
 
-  public final static class STRING extends ValueType.STRING<String> {
+  public final static class STRING extends SimpleTypeConverter.STRING<String> {
     @Override
     public String getInternal(String s) {
       return s;
@@ -62,7 +62,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public final static class PATH extends ValueType.PATH<String> {
+  public final static class PATH extends SimpleTypeConverter.PATH<String> {
     @Override
     public String getInternal(String s) {
       return s;
@@ -85,7 +85,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class NAME extends ValueType.NAME<String> {
+  public static final class NAME extends SimpleTypeConverter.NAME<String> {
     @Override
     public String getInternal(String s) {
       return s;
@@ -108,7 +108,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class INTEGER extends ValueType.LONG<Integer> {
+  public static final class INTEGER extends SimpleTypeConverter.LONG<Integer> {
     @Override
     public Long getInternal(Integer external) {
       return (long)external;
@@ -131,7 +131,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class PRIMITIVE_INTEGER extends ValueType.LONG<Integer> {
+  public static final class PRIMITIVE_INTEGER extends SimpleTypeConverter.LONG<Integer> {
     @Override
     public Long getInternal(Integer external) {
       return (long)external;
@@ -154,7 +154,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class LONG extends ValueType.LONG<Long> {
+  public static final class LONG extends SimpleTypeConverter.LONG<Long> {
     @Override
     public Long getInternal(Long external) {
       return external;
@@ -178,7 +178,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class PRIMITIVE_LONG extends ValueType.LONG<Long> {
+  public static final class PRIMITIVE_LONG extends SimpleTypeConverter.LONG<Long> {
     @Override
     public Long getInternal(Long external) {
       return (long)external;
@@ -201,7 +201,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class DOUBLE extends ValueType.DOUBLE<Double> {
+  public static final class DOUBLE extends SimpleTypeConverter.DOUBLE<Double> {
     @Override
     public Double getInternal(Double external) {
       return external;
@@ -224,7 +224,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class PRIMITIVE_DOUBLE extends ValueType.DOUBLE<Double> {
+  public static final class PRIMITIVE_DOUBLE extends SimpleTypeConverter.DOUBLE<Double> {
     @Override
     public Double getInternal(Double external) {
       return external;
@@ -247,7 +247,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class FLOAT extends ValueType.DOUBLE<Float> {
+  public static final class FLOAT extends SimpleTypeConverter.DOUBLE<Float> {
     @Override
     public Double getInternal(Float external) {
       return (double)(float)external;
@@ -270,7 +270,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class PRIMITIVE_FLOAT extends ValueType.DOUBLE<Float> {
+  public static final class PRIMITIVE_FLOAT extends SimpleTypeConverter.DOUBLE<Float> {
     @Override
     public Double getInternal(Float external) {
       return (double)(float)external;
@@ -293,7 +293,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class BOOLEAN extends ValueType.BOOLEAN<Boolean> {
+  public static final class BOOLEAN extends SimpleTypeConverter.BOOLEAN<Boolean> {
     @Override
     public Boolean getInternal(Boolean external) {
       return external;
@@ -316,7 +316,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class PRIMITIVE_BOOLEAN extends ValueType.BOOLEAN<Boolean> {
+  public static final class PRIMITIVE_BOOLEAN extends SimpleTypeConverter.BOOLEAN<Boolean> {
     @Override
     public Boolean getInternal(Boolean external) {
       return external;
@@ -339,7 +339,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class BINARY extends ValueType.BINARY<java.io.InputStream> {
+  public static final class BINARY extends SimpleTypeConverter.BINARY<java.io.InputStream> {
     @Override
     public InputStream getInternal(InputStream inputStream) {
       return inputStream;
@@ -362,7 +362,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class BYTE_ARRAY extends ValueType.BINARY<byte[]> {
+  public static final class BYTE_ARRAY extends SimpleTypeConverter.BINARY<byte[]> {
     @Override
     public Class<byte[]> getExternalType() {
       return byte[].class;
@@ -395,7 +395,7 @@ public class SimpleValueTypes {
     }
   }
 
-  public static final class DATE extends ValueType.DATE<Date> {
+  public static final class DATE extends SimpleTypeConverter.DATE<Date> {
     @Override
     public Calendar getInternal(Date date) {
       Calendar calendar = Calendar.getInstance();

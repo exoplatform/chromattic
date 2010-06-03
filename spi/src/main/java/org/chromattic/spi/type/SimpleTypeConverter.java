@@ -25,15 +25,17 @@ import java.io.InputStream;
 import java.util.Calendar;
 
 /**
+ * The Service Provider Interface for converting simple types.  
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ValueType<I, E> {
+public abstract class SimpleTypeConverter<I, E> {
 
-  private ValueType() {
+  private SimpleTypeConverter() {
   }
 
-  public abstract static class STRING<E> extends ValueType<String, E> {
+  public abstract static class STRING<E> extends SimpleTypeConverter<String, E> {
     protected STRING() {
     }
     @Override
@@ -42,7 +44,7 @@ public abstract class ValueType<I, E> {
     }
   }
 
-  public abstract static class BINARY<E> extends ValueType<InputStream, E> {
+  public abstract static class BINARY<E> extends SimpleTypeConverter<InputStream, E> {
     protected BINARY() {
     }
     @Override
@@ -51,7 +53,7 @@ public abstract class ValueType<I, E> {
     }
   }
 
-  public abstract static class LONG<E> extends ValueType<Long, E> {
+  public abstract static class LONG<E> extends SimpleTypeConverter<Long, E> {
     protected LONG() {
     }
     @Override
@@ -60,7 +62,7 @@ public abstract class ValueType<I, E> {
     }
   }
 
-  public abstract static class DOUBLE<E> extends ValueType<Double, E> {
+  public abstract static class DOUBLE<E> extends SimpleTypeConverter<Double, E> {
     protected DOUBLE() {
     }
     @Override
@@ -69,7 +71,7 @@ public abstract class ValueType<I, E> {
     }
   }
 
-  public abstract static class DATE<E> extends ValueType<Calendar, E> {
+  public abstract static class DATE<E> extends SimpleTypeConverter<Calendar, E> {
     protected DATE() {
     }
     @Override
@@ -78,7 +80,7 @@ public abstract class ValueType<I, E> {
     }
   }
 
-  public abstract static class BOOLEAN<E> extends ValueType<Boolean, E> {
+  public abstract static class BOOLEAN<E> extends SimpleTypeConverter<Boolean, E> {
     protected BOOLEAN() {
     }
     @Override
@@ -87,7 +89,7 @@ public abstract class ValueType<I, E> {
     }
   }
 
-  public abstract static class NAME<E> extends ValueType<String, E> {
+  public abstract static class NAME<E> extends SimpleTypeConverter<String, E> {
     protected NAME() {
     }
     @Override
@@ -96,7 +98,7 @@ public abstract class ValueType<I, E> {
     }
   }
 
-  public abstract static class PATH<E> extends ValueType<String, E> {
+  public abstract static class PATH<E> extends SimpleTypeConverter<String, E> {
     protected PATH() {
     }
     @Override
