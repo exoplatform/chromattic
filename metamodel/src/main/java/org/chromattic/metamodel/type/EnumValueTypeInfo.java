@@ -20,7 +20,6 @@
 package org.chromattic.metamodel.type;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
-import org.chromattic.spi.type.EnumeratedValueType;
 import org.chromattic.spi.type.SimpleTypeConverter;
 import org.reflext.api.ClassTypeInfo;
 
@@ -28,12 +27,12 @@ import org.reflext.api.ClassTypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EnumeratedValueTypeInfo implements ValueTypeInfo {
+public class EnumValueTypeInfo implements ValueTypeInfo {
 
   /** . */
   private final ClassTypeInfo enumInfo;
 
-  public EnumeratedValueTypeInfo(ClassTypeInfo enumInfo) {
+  public EnumValueTypeInfo(ClassTypeInfo enumInfo) {
     this.enumInfo = enumInfo;
   }
 
@@ -43,6 +42,6 @@ public class EnumeratedValueTypeInfo implements ValueTypeInfo {
 
   public SimpleTypeConverter<?, ?> create() {
     Class clazz = (Class<Object>)enumInfo.getType();
-    return new EnumeratedValueType(clazz);
+    return new EnumSimpleTypeConverter(clazz);
   }
 }

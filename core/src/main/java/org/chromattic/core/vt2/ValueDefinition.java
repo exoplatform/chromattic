@@ -20,8 +20,8 @@
 package org.chromattic.core.vt2;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.metamodel.type.SimpleTypeConverters;
 import org.chromattic.spi.type.SimpleTypeConverter;
-import org.chromattic.spi.type.SimpleValueTypes;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -68,49 +68,49 @@ public class ValueDefinition<I, E> {
         return new ValueDefinition<String, String>(
           String.class,
           JCRPropertyType.STRING,
-          new SimpleValueTypes.STRING(),
+          new SimpleTypeConverters.STRING(),
           null
         );
       case PropertyType.PATH:
         return new ValueDefinition<String, String>(
           String.class,
           JCRPropertyType.PATH,
-          new SimpleValueTypes.PATH(),
+          new SimpleTypeConverters.PATH(),
           null
         );
       case PropertyType.NAME:
         return new ValueDefinition<String, String>(
           String.class,
           JCRPropertyType.NAME,
-          new SimpleValueTypes.NAME(),
+          new SimpleTypeConverters.NAME(),
           null
         );
       case PropertyType.LONG:
         return new ValueDefinition<Long, Long>(
           Long.class,
           JCRPropertyType.LONG,
-          new SimpleValueTypes.LONG(),
+          new SimpleTypeConverters.LONG(),
           null
         );
       case PropertyType.BOOLEAN:
         return new ValueDefinition<Boolean, Boolean>(
           Boolean.class,
           JCRPropertyType.BOOLEAN,
-          new SimpleValueTypes.BOOLEAN(),
+          new SimpleTypeConverters.BOOLEAN(),
           null
         );
       case PropertyType.DOUBLE:
         return new ValueDefinition<Double, Double>(
           Double.class,
           JCRPropertyType.DOUBLE,
-          new SimpleValueTypes.DOUBLE(),
+          new SimpleTypeConverters.DOUBLE(),
           null
         );
       case PropertyType.BINARY:
         return new ValueDefinition<InputStream, InputStream>(
           InputStream.class,
           JCRPropertyType.BINARY,
-          new SimpleValueTypes.BINARY(),
+          new SimpleTypeConverters.BINARY(),
           null
         );
       case PropertyType.UNDEFINED:

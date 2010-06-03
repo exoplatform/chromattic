@@ -17,20 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.spi.type;
+package org.chromattic.metamodel.type;
 
 import org.chromattic.api.TypeConversionException;
+import org.chromattic.spi.type.SimpleTypeConverter;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EnumeratedValueType<E extends Enum<E>> extends SimpleTypeConverter.STRING<E> {
+public class EnumSimpleTypeConverter<E extends Enum<E>> extends SimpleTypeConverter.STRING<E> {
 
   /** . */
   private final Class<E> externalType;
 
-  public EnumeratedValueType(Class<E> externalType) {
+  public EnumSimpleTypeConverter(Class<E> externalType) {
     this.externalType = externalType;
   }
 

@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.util.Calendar;
 
 /**
- * The Service Provider Interface for converting simple types.  
+ * The base class for the simple type Service Provider Interface.
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -34,6 +34,18 @@ public abstract class SimpleTypeConverter<I, E> {
 
   private SimpleTypeConverter() {
   }
+
+  public abstract Class<I> getInternalType();
+
+  public abstract Class<E> getExternalType();
+
+  public abstract I getInternal(E e) throws TypeConversionException;
+
+  public abstract E getExternal(I i) throws TypeConversionException;
+
+  public abstract E fromString(String s) throws TypeConversionException;
+
+  public abstract String toString(E e) throws TypeConversionException;
 
   public abstract static class STRING<E> extends SimpleTypeConverter<String, E> {
     protected STRING() {
@@ -106,17 +118,5 @@ public abstract class SimpleTypeConverter<I, E> {
       return String.class;
     }
   }
-
-  public abstract Class<I> getInternalType();
-
-  public abstract Class<E> getExternalType();
-
-  public abstract I getInternal(E e) throws TypeConversionException;
-
-  public abstract E getExternal(I i) throws TypeConversionException;
-
-  public abstract E fromString(String s) throws TypeConversionException;
-
-  public abstract String toString(E e) throws TypeConversionException;
 
 }

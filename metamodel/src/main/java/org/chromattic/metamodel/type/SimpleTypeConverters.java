@@ -17,9 +17,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.spi.type;
+package org.chromattic.metamodel.type;
 
 import org.chromattic.api.TypeConversionException;
+import org.chromattic.spi.type.SimpleTypeConverter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,9 +35,9 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleValueTypes {
+public class SimpleTypeConverters {
 
-  private SimpleValueTypes() {
+  private SimpleTypeConverters() {
   }
 
   public final static class STRING extends SimpleTypeConverter.STRING<String> {
