@@ -20,8 +20,8 @@
 package org.chromattic.core.vt2;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
-import org.chromattic.metamodel.type.SimpleTypeConverters;
-import org.chromattic.spi.type.SimpleTypeConverter;
+import org.chromattic.metamodel.type.SimpleTypeProviders;
+import org.chromattic.spi.type.SimpleTypeProvider;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -68,49 +68,49 @@ public class ValueDefinition<I, E> {
         return new ValueDefinition<String, String>(
           String.class,
           JCRPropertyType.STRING,
-          new SimpleTypeConverters.STRING(),
+          new SimpleTypeProviders.STRING(),
           null
         );
       case PropertyType.PATH:
         return new ValueDefinition<String, String>(
           String.class,
           JCRPropertyType.PATH,
-          new SimpleTypeConverters.PATH(),
+          new SimpleTypeProviders.PATH(),
           null
         );
       case PropertyType.NAME:
         return new ValueDefinition<String, String>(
           String.class,
           JCRPropertyType.NAME,
-          new SimpleTypeConverters.NAME(),
+          new SimpleTypeProviders.NAME(),
           null
         );
       case PropertyType.LONG:
         return new ValueDefinition<Long, Long>(
           Long.class,
           JCRPropertyType.LONG,
-          new SimpleTypeConverters.LONG(),
+          new SimpleTypeProviders.LONG(),
           null
         );
       case PropertyType.BOOLEAN:
         return new ValueDefinition<Boolean, Boolean>(
           Boolean.class,
           JCRPropertyType.BOOLEAN,
-          new SimpleTypeConverters.BOOLEAN(),
+          new SimpleTypeProviders.BOOLEAN(),
           null
         );
       case PropertyType.DOUBLE:
         return new ValueDefinition<Double, Double>(
           Double.class,
           JCRPropertyType.DOUBLE,
-          new SimpleTypeConverters.DOUBLE(),
+          new SimpleTypeProviders.DOUBLE(),
           null
         );
       case PropertyType.BINARY:
         return new ValueDefinition<InputStream, InputStream>(
           InputStream.class,
           JCRPropertyType.BINARY,
-          new SimpleTypeConverters.BINARY(),
+          new SimpleTypeProviders.BINARY(),
           null
         );
       case PropertyType.UNDEFINED:
@@ -124,7 +124,7 @@ public class ValueDefinition<I, E> {
   private final Class realType;
 
   /** . */
-  private final SimpleTypeConverter<I, E> valueType;
+  private final SimpleTypeProvider<I, E> valueType;
 
   /** . */
   private final List<String> defaultValue;
@@ -135,7 +135,7 @@ public class ValueDefinition<I, E> {
   public ValueDefinition(
     Class realType,
     JCRPropertyType<I> jcrType,
-    SimpleTypeConverter<I, E> valueType,
+    SimpleTypeProvider<I, E> valueType,
     List<String> defaultValue) {
     this.realType = realType;
     this.valueType = valueType;

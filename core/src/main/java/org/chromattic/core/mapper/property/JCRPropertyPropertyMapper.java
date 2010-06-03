@@ -26,7 +26,7 @@ import org.chromattic.core.vt2.ValueTypeFactory;
 import org.chromattic.metamodel.bean.PropertyQualifier;
 import org.chromattic.metamodel.bean.value.SimpleValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
-import org.chromattic.spi.type.SimpleTypeConverter;
+import org.chromattic.spi.type.SimpleTypeProvider;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext, E, I> extends Pr
     super(contextType, info);
 
     // YES IT'S UGLY BUT FOR NOW IT'S OK
-    SimpleTypeConverter<I, E> vt = (SimpleTypeConverter<I,E>)ValueTypeFactory.create(info.getValue().getTypeInfo(), jcrType);
+    SimpleTypeProvider<I, E> vt = (SimpleTypeProvider<I,E>)ValueTypeFactory.create(info.getValue().getTypeInfo(), jcrType);
 
     //
     this.jcrPropertyName = jcrPropertyName;

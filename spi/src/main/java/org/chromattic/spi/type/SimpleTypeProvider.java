@@ -30,9 +30,9 @@ import java.util.Calendar;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class SimpleTypeConverter<I, E> {
+public abstract class SimpleTypeProvider<I, E> {
 
-  private SimpleTypeConverter() {
+  private SimpleTypeProvider() {
   }
 
   public abstract Class<I> getInternalType();
@@ -47,7 +47,7 @@ public abstract class SimpleTypeConverter<I, E> {
 
   public abstract String toString(E e) throws TypeConversionException;
 
-  public abstract static class STRING<E> extends SimpleTypeConverter<String, E> {
+  public abstract static class STRING<E> extends SimpleTypeProvider<String, E> {
     protected STRING() {
     }
     @Override
@@ -56,7 +56,7 @@ public abstract class SimpleTypeConverter<I, E> {
     }
   }
 
-  public abstract static class BINARY<E> extends SimpleTypeConverter<InputStream, E> {
+  public abstract static class BINARY<E> extends SimpleTypeProvider<InputStream, E> {
     protected BINARY() {
     }
     @Override
@@ -65,7 +65,7 @@ public abstract class SimpleTypeConverter<I, E> {
     }
   }
 
-  public abstract static class LONG<E> extends SimpleTypeConverter<Long, E> {
+  public abstract static class LONG<E> extends SimpleTypeProvider<Long, E> {
     protected LONG() {
     }
     @Override
@@ -74,7 +74,7 @@ public abstract class SimpleTypeConverter<I, E> {
     }
   }
 
-  public abstract static class DOUBLE<E> extends SimpleTypeConverter<Double, E> {
+  public abstract static class DOUBLE<E> extends SimpleTypeProvider<Double, E> {
     protected DOUBLE() {
     }
     @Override
@@ -83,7 +83,7 @@ public abstract class SimpleTypeConverter<I, E> {
     }
   }
 
-  public abstract static class DATE<E> extends SimpleTypeConverter<Calendar, E> {
+  public abstract static class DATE<E> extends SimpleTypeProvider<Calendar, E> {
     protected DATE() {
     }
     @Override
@@ -92,7 +92,7 @@ public abstract class SimpleTypeConverter<I, E> {
     }
   }
 
-  public abstract static class BOOLEAN<E> extends SimpleTypeConverter<Boolean, E> {
+  public abstract static class BOOLEAN<E> extends SimpleTypeProvider<Boolean, E> {
     protected BOOLEAN() {
     }
     @Override
@@ -101,7 +101,7 @@ public abstract class SimpleTypeConverter<I, E> {
     }
   }
 
-  public abstract static class NAME<E> extends SimpleTypeConverter<String, E> {
+  public abstract static class NAME<E> extends SimpleTypeProvider<String, E> {
     protected NAME() {
     }
     @Override
@@ -110,7 +110,7 @@ public abstract class SimpleTypeConverter<I, E> {
     }
   }
 
-  public abstract static class PATH<E> extends SimpleTypeConverter<String, E> {
+  public abstract static class PATH<E> extends SimpleTypeProvider<String, E> {
     protected PATH() {
     }
     @Override

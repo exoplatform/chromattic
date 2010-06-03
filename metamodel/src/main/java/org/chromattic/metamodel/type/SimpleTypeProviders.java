@@ -20,7 +20,7 @@
 package org.chromattic.metamodel.type;
 
 import org.chromattic.api.TypeConversionException;
-import org.chromattic.spi.type.SimpleTypeConverter;
+import org.chromattic.spi.type.SimpleTypeProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,12 +35,12 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleTypeConverters {
+public class SimpleTypeProviders {
 
-  private SimpleTypeConverters() {
+  private SimpleTypeProviders() {
   }
 
-  public final static class STRING extends SimpleTypeConverter.STRING<String> {
+  public final static class STRING extends SimpleTypeProvider.STRING<String> {
     @Override
     public String getInternal(String s) {
       return s;
@@ -63,7 +63,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public final static class PATH extends SimpleTypeConverter.PATH<String> {
+  public final static class PATH extends SimpleTypeProvider.PATH<String> {
     @Override
     public String getInternal(String s) {
       return s;
@@ -86,7 +86,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class NAME extends SimpleTypeConverter.NAME<String> {
+  public static final class NAME extends SimpleTypeProvider.NAME<String> {
     @Override
     public String getInternal(String s) {
       return s;
@@ -109,7 +109,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class INTEGER extends SimpleTypeConverter.LONG<Integer> {
+  public static final class INTEGER extends SimpleTypeProvider.LONG<Integer> {
     @Override
     public Long getInternal(Integer external) {
       return (long)external;
@@ -132,7 +132,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class PRIMITIVE_INTEGER extends SimpleTypeConverter.LONG<Integer> {
+  public static final class PRIMITIVE_INTEGER extends SimpleTypeProvider.LONG<Integer> {
     @Override
     public Long getInternal(Integer external) {
       return (long)external;
@@ -155,7 +155,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class LONG extends SimpleTypeConverter.LONG<Long> {
+  public static final class LONG extends SimpleTypeProvider.LONG<Long> {
     @Override
     public Long getInternal(Long external) {
       return external;
@@ -179,7 +179,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class PRIMITIVE_LONG extends SimpleTypeConverter.LONG<Long> {
+  public static final class PRIMITIVE_LONG extends SimpleTypeProvider.LONG<Long> {
     @Override
     public Long getInternal(Long external) {
       return (long)external;
@@ -202,7 +202,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class DOUBLE extends SimpleTypeConverter.DOUBLE<Double> {
+  public static final class DOUBLE extends SimpleTypeProvider.DOUBLE<Double> {
     @Override
     public Double getInternal(Double external) {
       return external;
@@ -225,7 +225,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class PRIMITIVE_DOUBLE extends SimpleTypeConverter.DOUBLE<Double> {
+  public static final class PRIMITIVE_DOUBLE extends SimpleTypeProvider.DOUBLE<Double> {
     @Override
     public Double getInternal(Double external) {
       return external;
@@ -248,7 +248,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class FLOAT extends SimpleTypeConverter.DOUBLE<Float> {
+  public static final class FLOAT extends SimpleTypeProvider.DOUBLE<Float> {
     @Override
     public Double getInternal(Float external) {
       return (double)(float)external;
@@ -271,7 +271,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class PRIMITIVE_FLOAT extends SimpleTypeConverter.DOUBLE<Float> {
+  public static final class PRIMITIVE_FLOAT extends SimpleTypeProvider.DOUBLE<Float> {
     @Override
     public Double getInternal(Float external) {
       return (double)(float)external;
@@ -294,7 +294,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class BOOLEAN extends SimpleTypeConverter.BOOLEAN<Boolean> {
+  public static final class BOOLEAN extends SimpleTypeProvider.BOOLEAN<Boolean> {
     @Override
     public Boolean getInternal(Boolean external) {
       return external;
@@ -317,7 +317,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class PRIMITIVE_BOOLEAN extends SimpleTypeConverter.BOOLEAN<Boolean> {
+  public static final class PRIMITIVE_BOOLEAN extends SimpleTypeProvider.BOOLEAN<Boolean> {
     @Override
     public Boolean getInternal(Boolean external) {
       return external;
@@ -340,7 +340,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class BINARY extends SimpleTypeConverter.BINARY<java.io.InputStream> {
+  public static final class BINARY extends SimpleTypeProvider.BINARY<java.io.InputStream> {
     @Override
     public InputStream getInternal(InputStream inputStream) {
       return inputStream;
@@ -363,7 +363,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class BYTE_ARRAY extends SimpleTypeConverter.BINARY<byte[]> {
+  public static final class BYTE_ARRAY extends SimpleTypeProvider.BINARY<byte[]> {
     @Override
     public Class<byte[]> getExternalType() {
       return byte[].class;
@@ -396,7 +396,7 @@ public class SimpleTypeConverters {
     }
   }
 
-  public static final class DATE extends SimpleTypeConverter.DATE<Date> {
+  public static final class DATE extends SimpleTypeProvider.DATE<Date> {
     @Override
     public Calendar getInternal(Date date) {
       Calendar calendar = Calendar.getInstance();

@@ -20,18 +20,18 @@
 package org.chromattic.metamodel.type;
 
 import org.chromattic.api.TypeConversionException;
-import org.chromattic.spi.type.SimpleTypeConverter;
+import org.chromattic.spi.type.SimpleTypeProvider;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EnumSimpleTypeConverter<E extends Enum<E>> extends SimpleTypeConverter.STRING<E> {
+public class EnumSimpleTypeProvider<E extends Enum<E>> extends SimpleTypeProvider.STRING<E> {
 
   /** . */
   private final Class<E> externalType;
 
-  public EnumSimpleTypeConverter(Class<E> externalType) {
+  public EnumSimpleTypeProvider(Class<E> externalType) {
     this.externalType = externalType;
   }
 

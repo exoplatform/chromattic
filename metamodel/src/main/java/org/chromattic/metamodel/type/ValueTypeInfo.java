@@ -20,7 +20,7 @@
 package org.chromattic.metamodel.type;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
-import org.chromattic.spi.type.SimpleTypeConverter;
+import org.chromattic.spi.type.SimpleTypeProvider;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -30,6 +30,6 @@ public interface ValueTypeInfo {
 
   JCRPropertyType<?> getJCRPropertyType();
 
-  SimpleTypeConverter<?, ?> create();
+  SimpleTypeProvider<?, ?> create();
 
 }

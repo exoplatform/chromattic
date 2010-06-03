@@ -28,9 +28,9 @@ package org.chromattic.spi.type;
 public @interface SimpleType {
 
   /**
-   * Returns the {@link org.chromattic.spi.type.SimpleTypeConverter} class.
+   * Returns the {@link SimpleTypeProvider} class.
    *
    * @return the converter class
    */
-  Class<SimpleTypeConverter<?, ?>> converter();
+  Class<SimpleTypeProvider<?, ?>> value();
 }

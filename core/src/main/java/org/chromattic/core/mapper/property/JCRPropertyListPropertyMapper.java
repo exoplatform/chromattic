@@ -28,7 +28,7 @@ import org.chromattic.metamodel.bean.value.CollectionValueInfo;
 import org.chromattic.metamodel.bean.value.SimpleValueInfo;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
-import org.chromattic.spi.type.SimpleTypeConverter;
+import org.chromattic.spi.type.SimpleTypeProvider;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I>
     }
 
     // YES IT'S UGLY BUT FOR NOW IT'S OK
-    SimpleTypeConverter<I, E> vt = (SimpleTypeConverter<I,E>)ValueTypeFactory.create(info.getValue().getElement().getTypeInfo(), propertyType);
+    SimpleTypeProvider<I, E> vt = (SimpleTypeProvider<I,E>)ValueTypeFactory.create(info.getValue().getElement().getTypeInfo(), propertyType);
 
     //
     this.listType = listType;
