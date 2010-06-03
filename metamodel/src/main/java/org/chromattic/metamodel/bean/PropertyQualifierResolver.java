@@ -113,19 +113,35 @@ public class PropertyQualifierResolver {
       throw new InvalidMappingException(beanTypeInfo, "Too many annotations of the same kind " + roles);
     }
 
-    //
+    // Get role
     PropertyRole role = roles.isEmpty() ? null : roles.get(0);
 
+    //
     TypeInfo resolvedTI = beanTypeInfo.resolve(typeInfo);
-    if (resolvedTI instanceof ParameterizedTypeInfo) {
-      ParameterizedTypeInfo parameterizedTI = (ParameterizedTypeInfo)resolvedTI;
+
+    //
+    ValueInfo vi = bilto(resolvedTI);
+
+    //
+    if (vi != null) {
+      return new PropertyQualifier(role, propertyInfo, vi);
+    }
+
+    //
+    return null;
+  }
+
+  private ValueInfo bilto(TypeInfo typeInfo) {
+
+    if (typeInfo instanceof ParameterizedTypeInfo) {
+      ParameterizedTypeInfo parameterizedTI = (ParameterizedTypeInfo)typeInfo;
       TypeInfo rawTI = parameterizedTI.getRawType();
       if (rawTI instanceof ClassTypeInfo) {
         ClassTypeInfo rawClassTI = (ClassTypeInfo)rawTI;
         String rawClassName = rawClassTI.getName();
         if (rawClassName.equals("java.util.Collection") || rawClassName.equals("java.util.List")) {
           TypeInfo elementTV = parameterizedTI.getTypeArguments().get(0);
-          ClassTypeInfo elementTI = resolveClass(beanTypeInfo, elementTV);
+          ClassTypeInfo elementTI = resolveClass(beanType, elementTV);
           if (elementTI != null) {
             ValueInfo resolvedElementTI = createValue(elementTI);
             CollectionType collectionType;
@@ -134,38 +150,35 @@ public class PropertyQualifierResolver {
             } else {
               collectionType = CollectionType.LIST;
             }
-            return new PropertyQualifier<CollectionValueInfo>(role, propertyInfo, new CollectionValueInfo<ValueInfo>(resolvedTI, collectionType, resolvedElementTI));
+            return new CollectionValueInfo<ValueInfo>(typeInfo, collectionType, resolvedElementTI);
           }
         } else if (rawClassName.equals("java.util.Map")) {
           TypeInfo elementTV = parameterizedTI.getTypeArguments().get(1);
-          ClassTypeInfo elementTI = resolveClass(beanTypeInfo, elementTV);
+          ClassTypeInfo elementTI = resolveClass(beanType, elementTV);
           if (elementTI != null) {
             ValueInfo resolvedElementTI = createValue(elementTI);
             TypeInfo keyTV = parameterizedTI.getTypeArguments().get(0);
-            ClassTypeInfo keyTI = resolveClass(beanTypeInfo, keyTV);
+            ClassTypeInfo keyTI = resolveClass(beanType, keyTV);
             if (keyTI != null) {
               ValueInfo resolvedKeyTI = createValue(keyTI);
-              return new PropertyQualifier<ValueInfo>(
-                role,
-                propertyInfo,
-                new MapValueInfo<ValueInfo,ValueInfo>(resolvedTI, resolvedKeyTI, resolvedElementTI));
+              return new MapValueInfo<ValueInfo,ValueInfo>(typeInfo, resolvedKeyTI, resolvedElementTI);
             }
           }
         }
       }
-    } else if (resolvedTI instanceof ClassTypeInfo) {
-      ValueInfo resolved = createValue((ClassTypeInfo)resolvedTI);
-      return new PropertyQualifier<ValueInfo>(role, propertyInfo, resolved);
-    } else if (resolvedTI instanceof ArrayTypeInfo) {
-      TypeInfo componentTI = ((ArrayTypeInfo)resolvedTI).getComponentType();
+    } else if (typeInfo instanceof ClassTypeInfo) {
+      ValueInfo resolved = createValue((ClassTypeInfo)typeInfo);
+      return resolved;
+    } else if (typeInfo instanceof ArrayTypeInfo) {
+      TypeInfo componentTI = ((ArrayTypeInfo)typeInfo).getComponentType();
       if (componentTI instanceof ClassTypeInfo) {
         ClassTypeInfo rawComponentTI = (ClassTypeInfo)componentTI;
         if (rawComponentTI.getName().equals("byte")) {
-          return new PropertyQualifier<SingleValueInfo>(role, propertyInfo, new SimpleValueInfo(resolvedTI));
+          return new SimpleValueInfo(typeInfo);
         } else {
           ValueInfo resolved = createValue(rawComponentTI);
           if (resolved.getKind() == TypeKind.SIMPLE) {
-            return new PropertyQualifier<CollectionValueInfo>(role, propertyInfo, new CollectionValueInfo<ValueInfo>(resolvedTI, CollectionType.ARRAY, resolved));
+            return new CollectionValueInfo<ValueInfo>(typeInfo, CollectionType.ARRAY, resolved);
           }
         }
       }
