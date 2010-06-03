@@ -22,10 +22,7 @@ package org.chromattic.metamodel.type;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
 import org.chromattic.spi.type.SimpleValueTypes;
 import org.chromattic.spi.type.ValueType;
-import org.reflext.api.ClassKind;
-import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.TypeInfo;
-import org.reflext.api.TypeResolver;
+import org.reflext.api.*;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
 
@@ -51,6 +48,9 @@ public class PropertyTypeResolver {
   /** . */
   private static final Map<JCRPropertyType<?>, ClassTypeInfo> jcrTypes;
 
+  private static final ValueTypeInfoImpl<InputStream> BYTE_ARRAY = new ValueTypeInfoImpl<InputStream>(SimpleValueTypes.BYTE_ARRAY.class, JCRPropertyType.BINARY);
+
+
   static {
 
     // The base mappings
@@ -68,9 +68,6 @@ public class PropertyTypeResolver {
     _typeMapping.put(String.class.getName(), new ValueTypeInfoImpl<String>(SimpleValueTypes.STRING.class, JCRPropertyType.STRING));
     _typeMapping.put(InputStream.class.getName(), new ValueTypeInfoImpl<InputStream>(SimpleValueTypes.BINARY.class, JCRPropertyType.BINARY));
     _typeMapping.put(Date.class.getName(), new ValueTypeInfoImpl<Calendar>(SimpleValueTypes.DATE.class, JCRPropertyType.DATE));
-
-    //
-    _typeMapping.put("byte", new ValueTypeInfoImpl<InputStream>(SimpleValueTypes.BYTE_ARRAY.class, JCRPropertyType.BINARY));
 
     //
     Map<JCRPropertyType<?>, ClassTypeInfo> _jcrTypes = new HashMap<JCRPropertyType<?>, ClassTypeInfo>();
@@ -113,6 +110,19 @@ public class PropertyTypeResolver {
         jcrType = new EnumeratedValueTypeInfo(cti);
       } else {
         return typeMappings.get(cti.getName());
+      }
+    } else if (typeInfo instanceof ArrayTypeInfo) {
+      ArrayTypeInfo ati = (ArrayTypeInfo)typeInfo;
+      TypeInfo ti = ati.getComponentType();
+      if (ti instanceof SimpleTypeInfo) {
+        SimpleTypeInfo sti = (SimpleTypeInfo)ti;
+        if (sti.getLiteralType() == LiteralType.BYTE) {
+          jcrType = BYTE_ARRAY;
+        } else {
+          throw new UnsupportedOperationException("todo " + typeInfo);
+        }
+      } else {
+        throw new UnsupportedOperationException("todo " + typeInfo);
       }
     } else {
       throw new UnsupportedOperationException("todo " + typeInfo);

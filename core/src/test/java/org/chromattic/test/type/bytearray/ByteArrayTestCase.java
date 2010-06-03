@@ -19,10 +19,15 @@
 
 package org.chromattic.test.type.bytearray;
 
+import org.chromattic.common.IO;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
+import javax.jcr.Value;
+import java.io.InputStream;
 import java.util.Arrays;
 
 /**
@@ -37,17 +42,24 @@ public class ByteArrayTestCase extends AbstractTestCase {
   }
 
   public void testMapping() throws Exception {
-/*
     ChromatticSessionImpl session = login();
     A a = session.insert(A.class, "a");
+    Node node = session.getNode(a);
+    assertFalse(node.hasProperty("bytes"));
     assertEquals(null, a.getBytes());
     a.setBytes(new byte[]{0,1,2});
     assertTrue(Arrays.equals(new byte[]{0,1,2}, a.getBytes()));
-    Node node = session.getNode(a);
-*/
-//    assertEquals("EURO", node.getProperty("bytes").getIn());
-//    a.setCurrency(null);
-//    assertFalse(node.hasProperty("currency"));
+    assertTrue(node.hasProperty("bytes"));
+    Property bytes = node.getProperty("bytes");
+    assertEquals(PropertyType.BINARY, bytes.getType());
+    InputStream in = bytes.getStream();
+    assertTrue(Arrays.equals(new byte[]{0,1,2},IO.getBytes(in)));
+    node.setProperty("bytes", (Value)null);
+    if (getConfig().isStateCacheDisabled()) {
+      assertEquals(null, a.getBytes());
+    } else {
+      assertTrue(Arrays.equals(new byte[]{0,1,2}, a.getBytes()));
+    }
   }
 
 /*

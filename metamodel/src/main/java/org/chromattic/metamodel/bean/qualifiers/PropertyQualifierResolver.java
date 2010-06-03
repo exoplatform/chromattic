@@ -160,11 +160,8 @@ public class PropertyQualifierResolver {
       TypeInfo componentTI = ((ArrayTypeInfo)resolvedTI).getComponentType();
       if (componentTI instanceof ClassTypeInfo) {
         ClassTypeInfo rawComponentTI = (ClassTypeInfo)componentTI;
-
         if (rawComponentTI.getName().equals("byte")) {
-
-
-          //
+          return new PropertyQualifier<SingleValueInfo>(role, propertyInfo, new SimpleValueInfo(resolvedTI));
         } else {
           ValueInfo resolved = createValue(rawComponentTI);
           if (resolved.getKind() == TypeKind.SIMPLE) {
