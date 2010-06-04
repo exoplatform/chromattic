@@ -203,7 +203,7 @@ The ##Page## object also provides to its parent with a property annotated with t
 {@include org.chromattic.docs.reference.primarytypemapping.Page#setParent(org.chromattic.docs.reference.primarytypemapping.Page)}
 {{/java}}
 
- In two situations it can return a null value:
+ A null value can be obtained in two particular situations:
 
 1. When an object is associated to the root node, indeed the root node is the only node without a parent
 1. When an object has a parent of a JCR node type that is not mapped to the Chromattic object returned the getter
@@ -219,6 +219,20 @@ There are several ways for adding a child and we are going to examine two of the
 
 The first way to add a child is to use the collection returned by the parent object. As said earlier, any modification to the
 collection is directly reflected into the corresponding JCR node.
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testAddChild() {1}}
+{{/java}}
+
+The second way is to use to add a child is to use the parent setter.
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testSetParent() {1}}
+{{/java}}
+
+Setting the parent to the child has the same effect than adding the child to the collection. Indeed we can notice in both
+examples that the when one style is used, we get the same result: the parent getter returns the parent object and the children
+collection contains the child.
 
 == Destroying a node ==
 

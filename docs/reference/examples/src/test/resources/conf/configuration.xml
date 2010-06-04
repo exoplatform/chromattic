@@ -26,17 +26,30 @@
 
   <external-component-plugins>
  		<target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
-       <component-plugin>
-         <name>add.nodeType</name>
-         <set-method>addPlugin</set-method>
-         <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
-         <init-params>
-           <values-param>
-             <name>autoCreatedInNewRepository</name>
-             <description>Node types configuration file</description>
-             <value>jar:/org/chromattic/docs/reference/gettingstarted/nodetypes.xml</value>
-           </values-param>
-         </init-params>
-       </component-plugin>
+    <component-plugin>
+      <name>add.nodeType</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+      <init-params>
+        <values-param>
+          <name>autoCreatedInNewRepository</name>
+          <description>Node types configuration file</description>
+          <value>jar:/org/chromattic/docs/reference/gettingstarted/nodetypes.xml</value>
+          <value>jar:/org/chromattic/docs/reference/primarytypemapping/nodetypes.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>add.namespaces</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
+      <init-params>
+        <properties-param>
+          <name>namespaces</name>
+         <property name="gs" value="http://www.chromattic.org/examples/gettingstarted/1.1/"/>
+          <property name="ptm" value="http://www.gatein.org/examples/primarytypemapping/1.1/"/>
+          </properties-param>
+      </init-params>
+    </component-plugin>
   </external-component-plugins>
 </configuration>

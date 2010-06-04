@@ -26,7 +26,7 @@ import org.chromattic.api.annotations.Property;
 /**
  * The page of a site.
  */
-@PrimaryType(name = "page") // <1> The Page class is mapped to the page node type
+@PrimaryType(name = "gs:page") // <1> The Page class is mapped to the page node type
 public abstract class Page {
 
   /**
