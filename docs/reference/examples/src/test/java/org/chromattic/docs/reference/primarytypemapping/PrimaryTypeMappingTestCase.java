@@ -67,7 +67,7 @@ public class PrimaryTypeMappingTestCase extends TestCase {
     assertTrue(page.getChildren().contains(child)); // <3> The children collection contains the child
 
     // -2-
-    // child.setParent(null); // <4> Setting the parent to null destroys the child
-    // assertFalse(page.getChildren().contains(child)); // <5> And the parent does not contain the child anymore
+    child.setParent(null); // <4> Setting the parent to null destroys the child
+    assertFalse(page.getChildren().contains(child)); // <5> And the parent does not contain the child anymore
   }
 }

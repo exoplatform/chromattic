@@ -170,7 +170,8 @@ accessed.
 
 Chromattic makes the usage of the JCR node hierarchy very natural thanks to the relationship mapping. The usage of Java
 generics combined with different types of collection provides a flexible mapping. Java generics allows collection filtering
-based on the type of the collection.
+based on the type of the collection, it becomes handy when you need to access the a subset of the child nodes filtered with
+ a specific node type (make a chapter on genericity).
 
 Chromattic provides access to the children of node with a Java collection. A bean annotates a collection valued getter
 with the ##@OneToMany## annotation.
@@ -234,15 +235,67 @@ Setting the parent to the child has the same effect than adding the child to the
 examples that the when one style is used, we get the same result: the parent getter returns the parent object and the children
 collection contains the child.
 
+In both case, Chromattic will use the name set on the child before it is inserted in its parent. The session ##create## method
+call takes as second argument the name of the future child. This name is stored temporarily on the create child and is used
+when the node is effectively inserted.
+
 == Destroying a node ==
 
-We have explained two ways for adding a child to a parent, we will now see that we can use the same ways to destroy a node
+We have explained two ways for adding a child to a parent, we will now see that we can use the same methods to destroy a node
 and its relationship to its parent (indeed in JCR, the only node with no parent is the root node).
+
+When a child is removed from its parent collection, it is removed.
 
 {{java}}
 {@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testChildrenCollection() {2}}
 {{/java}}
 
+Setting the parent of a Chromattic object to null forces Chromattic to remove the object and the associated node.
+
 {{java}}
 {@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testParent() {2}}
 {{/java}}
+
+== Collection types ==
+
+In our example we have examined the ##ManyToOne## side of the relationship based on a ##java.util.Collection## interface.
+Two other type of mapping are available ##java.util.List## and ##java.util.Map##, let's study what would become our example
+with such mappings.
+
+=== ##java.util.List## mapping ===
+
+The list mapping must be only used when the corresponding node type has defined its children to be ordered. The list interface
+adds the notion of order to the collection interface, and using the order oriented method on the list will affect the
+order of the children.
+
+{{example title="Moving a child from the first position to the last position"}}
+{{java}}
+children.add(children.get(0));
+{{/java}}
+{{/example}}
+
+=== ##java.util.Map## mapping ==
+
+The map interface adds the notion of key which is very useful when the children needs to be accessed by their key. Previously
+we have seen that when the child is created from the session, its name has to be specifed. When the map interface is used,
+this is not necessary anymore, as the child name is specified when it is inserted with the ##put(String key, Page value)## operation.
+
+{{example title="Child insertion"}}
+{{java}}
+Page page = session.create(Page.class);
+children.put("foo", page);
+{{/java}}
+{{/example}}
+
+{{example title="Obtaining a particular child"}}
+{{java}}
+Page foo = children.get("foo");
+{{/java}}
+{{/example}}
+
+{{example title="Child removal"}}
+{{java}}
+children.remove("foo");
+{{/java}}
+{{/example}}
+
