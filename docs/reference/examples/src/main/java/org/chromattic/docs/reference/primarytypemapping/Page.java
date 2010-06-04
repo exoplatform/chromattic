@@ -85,10 +85,26 @@ public abstract class Page {
    */
   public abstract void setTags(List<String> tags);
 
+  /**
+   * Returns the collection of page children.
+   *
+   * @return the children
+   */
   @OneToMany
   public abstract Collection<Page> getChildren();
 
+  /**
+   * Returns the page parent.
+   *
+   * @return the parent
+   */
   @ManyToOne
   public abstract Page getParent();
 
+  /**
+   * Update the page parent.
+   *
+   * @param page the parent
+   */
+  public abstract void setParent(Page page);
 }

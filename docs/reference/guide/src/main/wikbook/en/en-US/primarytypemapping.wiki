@@ -131,7 +131,7 @@ protected="false" multiple="false">
 
 JCR naturally provide support for multi valued properties, so does Chromattic. Chromattic gives you the choice
 to use either an array or a ##java.util.List## to access the data. A primitive array can be used when
-the type allows it.
+the type is a primitive type.
 
 {{java}}
 {@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getTags()}
@@ -167,3 +167,58 @@ gives access to the complete list of values and the single valued property is us
 accessed.
 
 = Mapping parent child relationships =
+
+Chromattic makes the usage of the JCR node hierarchy very natural thanks to the relationship mapping. The usage of Java
+generics combined with different types of collection provides a flexible mapping. Java generics allows collection filtering
+based on the type of the collection.
+
+Chromattic provides access to the children of node with a Java collection. A bean annotates a collection valued getter
+with the ##@OneToMany## annotation.
+
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getChildren()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getChildren()}
+{{/java}}
+
+The getter method never returns a null value as a node always provides a set of children even if this set is empty. Unlike for
+multi valued property collection, any modification to this collection will be reflected directly by the underlying JCR node
+children and vice versa:
+
+* The ##add(Page page)## adds a page
+* The ##remove(Object o)## removes a page
+* The ##clear()## removes all the page children
+* The ##iterator()## returns an ##iterator## that can be used to remove any child
+
+The other collection methods of the collection class are read methods that won't modify the children and provides various ways
+to deal with the children.
+
+The ##Page## object also provides to its parent with a property annotated with the ##ManyToOne## annotation. The getter
+ method returns the object associated to the parent node.
+
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getParent()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getParent()}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#setParent(org.chromattic.docs.reference.primarytypemapping.Page)}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#setParent(org.chromattic.docs.reference.primarytypemapping.Page)}
+{{/java}}
+
+ In two situations it can return a null value:
+
+1. When an object is associated to the root node, indeed the root node is the only node without a parent
+1. When an object has a parent of a JCR node type that is not mapped to the Chromattic object returned the getter
+
+It is legal for an object to have several parent accessors when the corresponding JCR node type can have different
+parent node types. When the various parent types share a common parent class, this class can be used to have a single
+ accessor instead. Ultimately it is possible to use the ##java.lang.Object## type that is implicitely mapped to the
+##nt:base## node typen, the ##nt:base## node type is the super type of all JCR node types. (todo: make a section about that somewhere else to clarify)
+
+== Adding a child node ==
+
+There are several ways for adding a child and we are going to examine two of them in this section.
+
+The first way to add a child is to use the collection returned by the parent object. As said earlier, any modification to the
+collection is directly reflected into the corresponding JCR node.
+
+== Destroying a node ==
+
