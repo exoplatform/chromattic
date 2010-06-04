@@ -102,13 +102,13 @@ delete the property by providing a null argument.
 
 {{java}}
 {@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getTitle()}
-{@include org.chromattic.docs.reference.primarytypemapping.Page#getTitle()} // <1> The title property is mapped the STRING type
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getTitle()} // <1> The title property is mapped the ##STRING## type
 
 {@javadoc org.chromattic.docs.reference.primarytypemapping.Page#setTitle(java.lang.String)}
 {@include org.chromattic.docs.reference.primarytypemapping.Page#setTitle(java.lang.String)}
 
 {@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getLastModifiedDate()}
-{@include org.chromattic.docs.reference.primarytypemapping.Page#getLastModifiedDate()} // <2> the last modified date property is mapped to a DATE type
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getLastModifiedDate()} // <2> the last modified date property is mapped to the ##DATE## type
 
 {@javadoc org.chromattic.docs.reference.primarytypemapping.Page#setLastModifiedDate(java.util.Date)}
 {@include org.chromattic.docs.reference.primarytypemapping.Page#setLastModifiedDate(java.util.Date)}
@@ -221,13 +221,13 @@ The first way to add a child is to use the collection returned by the parent obj
 collection is directly reflected into the corresponding JCR node.
 
 {{java}}
-{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testAddChild() {1}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testChildrenCollection() {1}}
 {{/java}}
 
 The second way is to use to add a child is to use the parent setter.
 
 {{java}}
-{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testSetParent() {1}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testParent() {1}}
 {{/java}}
 
 Setting the parent to the child has the same effect than adding the child to the collection. Indeed we can notice in both
@@ -236,3 +236,13 @@ collection contains the child.
 
 == Destroying a node ==
 
+We have explained two ways for adding a child to a parent, we will now see that we can use the same ways to destroy a node
+and its relationship to its parent (indeed in JCR, the only node with no parent is the root node).
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testChildrenCollection() {2}}
+{{/java}}
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testParent() {2}}
+{{/java}}
