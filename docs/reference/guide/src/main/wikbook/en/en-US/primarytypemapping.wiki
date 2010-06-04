@@ -1,11 +1,11 @@
-= The {{code}}@PrimaryType{{/code}} annotation =
+= The ##@PrimaryType## annotation =
 
-The {{code}}org.chromattic.api.annotations.PrimaryType{{/code}} annotation creates a unique correspondance between
+The ##org.chromattic.api.annotations.PrimaryType## annotation creates a unique correspondance between
 a Java class and a JCR primary node type. The mapping between an annotated class and the primary type must be unique for
 the JCR node type, therefore it is not possible to have the same node type mapped to more than one class inside the same
 Chromattic application.
 
-We use a modified version of the {{code}}Page{{/code}} object that contains now more properties to illustrate
+We use a modified version of the ##Page## object that contains now more properties to illustrate
 this chapter.
 
 = Mapping properties =
@@ -14,32 +14,40 @@ this chapter.
 
 JCR defines the following set of property types:
 
-* The {{code}}STRING{{/code}} type
-* The {{code}}BOOLEAN{{/code}} type
-* The {{code}}LONG{{/code}} type
-* The {{code}}DOUBLE{{/code}} type
-* The {{code}}DATE{{/code}} type
-* The {{code}}NAME{{/code}} type
-* The {{code}}BINARY{{/code}} type
-* The {{code}}PATH{{/code}} type
-* The {{code}}REFERENCE{{/code}} type
+* The ##STRING## type
+* The ##BOOLEAN## type
+* The ##LONG## type
+* The ##DOUBLE## type
+* The ##DATE## type
+* The ##NAME## type
+* The ##BINARY## type
+* The ##PATH## type
+* The ##REFERENCE## type
 
-Any of those types except the {{code}}REFERENCE{{/code}} type can be mapped to an object property.
+Any of those types except the ##REFERENCE## type can be mapped to an object property.
 
-{{code}}REFERENCE{{/code}} types can be used, however this type is not mapped to a specific Java type, instead
+##REFERENCE## types can be used, however this type is not mapped to a specific Java type, instead
 Chromattic supports it thanks to the concept of relationship that will be explained later.
 
 === Generic data types ===
 
 JCR provides two types to map generic data types:
 
-* The JCR {{code}}STRING{{/code}} type is mapped to the Java {{code}}java.lang.String{{/code}} type.
-* The JCR {{code}}BINARY{{/code}} type is mapped to the Java {{code}}java.io.InputStream{{/code}} type.
+* The JCR ##STRING## type is mapped to the Java ##java.lang.String## type.
+* The JCR ##BINARY## type is mapped to the Java ##byte[]## type or the  ##java.io.InputStream## type.
 
-The string type is pretty straightforward to use, but the binary stream has a different semantic. This behavior
-is actually the JCR behavior and Chromattic just choosed to reuse it, as JCR developers should be familliar with it.
-The fundamental reason JCR uses an input stream to read and write binary data is efficiency with large binary content,
-the stream based approach does not force to hold all the data in memory.
+The string type is pretty straightforward to use, you simplet get or set the string that is mapped to the JCR property.
+
+
+The binary type can be used in two ways, the first way maps the ##BINARY## type to a byte array. This mapping style is similar
+to the string mapping except that a byte array is not immutable. The client has the opportunity to alter the array as Chromattic
+cannot prevent it to be modified. This mapping style is very straightforward too but has the inconvenient to load the whole
+stream into memory which is not always desirable for very large streams.
+
+The other way maps the ##BINARY## type to an ##java.io.InputStream##. This behavior is actually the JCR native behavior and
+Chromattic just choosed to reuse it, as JCR developers should be familliar with it. The fundamental reason JCR uses an input stream
+to read and write binary data is efficiency with large binary content, the stream based approach does not force to hold all
+the data in memory, unlike the byte array approach.
 
 To read the data, the property getter returns an input stream that provides access to the binary data. The stream should be
 used as any other kind of input stream: consume data until the stream is empty and then close the stream in a finally block.
@@ -48,38 +56,34 @@ To write data, the property setter must be called with an input stream that is u
 the data available. It means that on the return of the setter, the input stream shouldn't be used anymore for reading
 data as Chromattic will close the stream.
 
-{{note}}In a future revision, it could be interesting to map the binary type to a java byte array. It provides
-a more natural way of accessing date, however this would not be suitable for very large binary access that
-need to be streamed.{{/note}}
-
 === Primitive types ===
 
-The types {{code}}BOOLEAN{{/code}}, {{code}}LONG{{/code}} and {{code}}DOUBLE{{/code}} are mapped to Java primitive types:
+The types ##BOOLEAN##, ##LONG## and ##DOUBLE## are mapped to Java primitive types:
 
-* The JCR {{code}}BOOLEAN{{/code}} type is mapped to the Java boolean type
-* The JCR {{code}}LONG{{/code}} type is mapped to either the Java int or long type
-* The JCR {{code}}DOUBLE{{/code}} type is mapped to either the Java double or float type
+* The JCR ##BOOLEAN## type is mapped to the Java ##boolean## type
+* The JCR ##LONG## type is mapped to either the Java ##int## or ##long## type
+* The JCR ##DOUBLE## type is mapped to either the Java ##double## or ##float## type
 
-For each of those types, there is the choice between the Java primitive type or Java wrapper type.
+For each of those types, there is the choice between either the Java primitive type or the Java wrapper type.
 
 === Temporal type ===
 
-JCR defines a {{code}}DATE{{/code}} type exposed by Chromattic as the {{code}}java.util.Date{{/code}} type. Date
+JCR defines a ##DATE## type exposed by Chromattic as the ##java.util.Date## type. Date
 objects are mutable by nature and Chromattic on read or on write. A data object returned by Chromattic can be
 modified without changing mapped JCR value, likewise a property update will read the value once and copy it.
 
 == Property mapping ==
 
-The {{code}}org.chromattic.api.annotations.Property{{/code}} annotation binds an object to a node property. Our
-{{code}}Page{{/code}} shows several examples of property mapping using the {{code}}@Property{{/code}} annotation.
-This annotation has a mandatory {{code}}name{{/code}} parameter to provide the name of the corresponding JCR
+The ##org.chromattic.api.annotations.Property## annotation binds an object to a node property. Our
+##Page## shows several examples of property mapping using the ##@Property## annotation.
+This annotation has a mandatory ##name## parameter to provide the name of the corresponding JCR
 property. 
 
 {{java}}
 {@include org.chromattic.api.annotations.Property}
 {{/java}}
 
-The {{code}}Property{{/code}} annotation can either annotate the getter or annotate the setter but it should be used
+The ##Property## annotation can either annotate the getter or annotate the setter but it should be used
 only once with read/write accessible properties.
 
 == Single valued property mapping ==
@@ -90,7 +94,7 @@ use the same java property type.
 
 A property getter method returns the JCR property value. If the property does not exist, the null value is returned
 when the java property type is not a primitive type. Sometimes it can happen that the JCR property does not exist
-but this property is mapped to a primitive type. When the situation occurs Chromattic throws a {{code}}NullPointerException{{/code}},
+but this property is mapped to a primitive type. When the situation occurs Chromattic throws a ##NullPointerException##,
 that behavior is similar to what happens when a null value is unboxed to its corresponding primitive type.
 
 A property setter method updates the JCR property value when it is invoked. For non primitive type it is possible to
@@ -126,7 +130,7 @@ protected="false" multiple="false">
 == Multi valued property mapping ==
 
 JCR naturally provide support for multi valued properties, so does Chromattic. Chromattic gives you the choice
-to use either an array or a {{code}}java.util.List{{/code}} to access the data. A primitive array can be used when
+to use either an array or a ##java.util.List## to access the data. A primitive array can be used when
 the type allows it.
 
 {{java}}

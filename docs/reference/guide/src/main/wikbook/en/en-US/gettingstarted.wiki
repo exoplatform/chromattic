@@ -9,13 +9,13 @@ will model the hierarchy of the pages.
 
 == The Page object ==
 
-The {{code}}org.chromattic.docs.reference.gettingstarted.Page{{/code}} class is the object representation of a web page.
-The {{code}}Page{{/code}} object is mapped to the JCR //page// node type. The {{code}}Page{{/code}} class contains
+The ##org.chromattic.docs.reference.gettingstarted.Page## class is the object representation of a web page.
+The ##Page## object is mapped to the JCR //page// node type. The ##Page## class contains
 the properties we want for the representation of a web page:
 
-* The property {{code}}name{{/code}} is the web page name and is mapped to the JCR node name.
-* The property {{code}}title{{/code}} is the page title and is mapped to the JCR //title// node property of type {{code}}STRING{{/code}}.
-* The property {{code}}content{{/code}} is the page content and is mapped to the JCR //content// node property of type {{code}}STRING{{/code}}.
+* The property ##name## is the web page name and is mapped to the JCR node name.
+* The property ##title## is the page title and is mapped to the JCR //title// node property of type ##STRING##.
+* The property ##content## is the page content and is mapped to the JCR //content// node property of type ##STRING##.
 
 {{important}}The Javabean properties needs to be modelled as abstract methods because it allows Chromattic to implement them to make
 the mapping between objects and node possible.{{/important}}
@@ -28,32 +28,32 @@ the mapping between objects and node possible.{{/important}}
 {{/example}}
 
 Chromattic uses code annotations to declare which and how classes are mapped to node types. The most important annotation
-is the {{code}}@org.chromattic.api.annotations.PrimaryType{{/code}} that declares the mapping of a class to a
-node type. Our class is annotated with the {{code}}@PrimaryType{{/code}} annotation, the {{code}}name{{/code}} parameter
+is the ##@org.chromattic.api.annotations.PrimaryType## that declares the mapping of a class to a
+node type. Our class is annotated with the ##@PrimaryType## annotation, the ##name## parameter
 specifies the name of the node type mapped to the class.
 
 {{note}}JCR defines two kinds of node types which are primary node type and mixin node type. By default we
 denote by node type a primary node type. Mixin node type can also be mapped by Chromattic that is explained in
 the chapter XYZ.{{/note}}
 
-The {{code}}@org.chromattic.api.annotations.Name{{/code}} annotation targets Javabean property getters or setters and
+The ##@org.chromattic.api.annotations.Name## annotation targets Javabean property getters or setters and
 indicates that the property is mapped to the name of the node. Indeed each JCR node has a mandatory name and this is the
-way to expose it on a class. As a result the {{code}}Page{{/code}} //name// property is mapped to the node name.
+way to expose it on a class. As a result the ##Page## //name// property is mapped to the node name.
 
-Like the {{code}}@Name{{/code}} annotation the {{code}}@org.chromattic.api.annotations.Property{{/code}} annotation
+Like the ##@Name## annotation the ##@org.chromattic.api.annotations.Property## annotation
 targets Javabean properties. It specifies how a property is mapped to a node property. It has a mandatory
-{{code}}name{{/code}} parameter that specifies the node property name. The node property type does not need to be
+##name## parameter that specifies the node property name. The node property type does not need to be
 specified as it is deduced from the class property. In our example, we map the //content// Javabean property to
 a //content// node property.
 
 == The JCR node types ==
 
-Node types are important for JCR, they define the schema of the node data. In our application we have a {{code}}page{{/code}}
-  node type that is modelled after the {{code}}Page{{/code}} class. Chromattic can generate for you the node type definition
-  when the classes are compiled. It results in a {{code}}nodetype.xml{{/code}} file resources located in the class output of
+Node types are important for JCR, they define the schema of the node data. In our application we have a ##page##
+  node type that is modelled after the ##Page## class. Chromattic can generate for you the node type definition
+  when the classes are compiled. It results in a ##nodetype.xml## file resources located in the class output of
   the Java^^tm^^ compiler.
 
-The annotation {{code}}org.chromattic.api.annotations.NodeTypeDefs{{/code}} instructs the compiler to generate the the
+The annotation ##org.chromattic.api.annotations.NodeTypeDefs## instructs the compiler to generate the the
 node type definitions in the XML format that can be used by the JCR server to create the node type. The annotation
 targets a package and it generate the node type for any Chromattic class inside this package and in the sub packages.
 
@@ -68,20 +68,20 @@ import org.chromattic.api.annotations.NodeTypeDefs;
 
 == The client ==
 
-We have designed and mapped our {{code}}Page{{/code}} object and now we will examine how to interact with a JCR server
+We have designed and mapped our ##Page## object and now we will examine how to interact with a JCR server
 via Chromattic. The goal of the client is very simple and focus on demonstrating the bootstrap of Chromattic and the
-persistence of a simple {{code}}Page{{/code}} in the Java Content Repository.
+persistence of a simple ##Page## in the Java Content Repository.
 
 === Chromattic bootstrap ===
 
 The boostrap is the creation and the configuration of the Chromattic runtime. Usually the bootstrap occurs during the
 initialization of the application, for instance in a web application, it is most often performed in a
-{{code}}ServletContextListener{{/code}} initialization.
+##ServletContextListener## initialization.
 
-Chromattic bootstrap relies mainly on the {{code}}ChromatticBuilder{{/code}} object. The builder
-is configured with the Chromattic application classes to obtain an instance of the {{code}}Chromattic{{/code}} object. The
-{{code}}Chromattic{{/code}} object can be used to create {{code}}ChromatticSession{{/code}} objects. The
-{{code}}ChromatticSession{{/code}} is the main runtime API used to interract with Chromattic.
+Chromattic bootstrap relies mainly on the ##ChromatticBuilder## object. The builder
+is configured with the Chromattic application classes to obtain an instance of the ##Chromattic## object. The
+##Chromattic## object can be used to create ##ChromatticSession## objects. The
+##ChromatticSession## is the main runtime API used to interract with Chromattic.
 
 {{java}}
 {@include org.chromattic.docs.reference.gettingstarted.GettingStartedTestCase#testClient() {1}}
@@ -89,8 +89,8 @@ is configured with the Chromattic application classes to obtain an instance of t
 
 === Interacting with Chromattic objects ===
 
-We have just explained how to obtain a {{code}}Chromattic{{/code}} object thanks to the builder.
-Now it is time to show how to obtain and use the {{code}}ChromatticSession{{/code}} with the goal to insert a
+We have just explained how to obtain a ##Chromattic## object thanks to the builder.
+Now it is time to show how to obtain and use the ##ChromatticSession## with the goal to insert a
 new page node. Let's examine the code:
 
 {{java}}
@@ -118,7 +118,7 @@ Nothing more, nothing less.
 
 Building with Maven is very easy and only requires a dependency on the Chromattic API and APT module in your pom file.
 
-* The API dependency provides the Chromattic API classes prefixed with the {{code}}org.chromattic.api{{/code}} package. (((
+* The API dependency provides the Chromattic API classes prefixed with the ##org.chromattic.api## package. (((
 {{code language=XML}}<dependency>
   <groupId>org.chromattic</groupId>
   <artifactId>chromattic.api</artifactId>
