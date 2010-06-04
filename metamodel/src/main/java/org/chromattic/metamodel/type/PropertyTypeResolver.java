@@ -45,8 +45,6 @@ public class PropertyTypeResolver {
   /** . */
   static final TypeResolver<Type> typeDomain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
-  //
-
   /** . */
   private static final Map<TypeInfo, ValueTypeInfoImpl> defaultTypeMappings;
 
@@ -138,17 +136,10 @@ public class PropertyTypeResolver {
           //
           ClassTypeInfo stp = (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.class);
           TypeVariableInfo tvi = stp.getTypeParameters().get(1); // <E>
-          System.out.println("tvi = " + tvi);
-          System.out.println("tvi = " + tvi);
-          System.out.println("tvi = " + tvi);
-          System.out.println("tvi = " + tvi);
-          System.out.println("tvi = " + tvi);
           ClassTypeInfo aaa = (ClassTypeInfo)abc.resolve(tvi);
-/*
           if (!aaa.equals(typeInfo)) {
             throw new AssertionError(aaa + " should be equals to " + typeInfo);
           }
-*/
 
           //
           ValueTypeInfoImpl vtii = new ValueTypeInfoImpl(abc, aaaaa);
