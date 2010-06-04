@@ -17,36 +17,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.vt2;
+package org.chromattic.metamodel.type;
 
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
-import org.chromattic.spi.type.SimpleTypeProvider;
-import org.reflext.api.TypeInfo;
+import org.chromattic.spi.type.SimpleType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ValueTypeFactory {
+@SimpleType(MoneyTypeProvider.class)
+public class Money {
 
-  public static <I> SimpleTypeProvider<I, ?> create(TypeInfo type, JCRPropertyType<I> jcrType) {
-    PropertyTypeResolver resolver = new PropertyTypeResolver();
+  /** . */
+  final long amount;
 
-    //
-    SimpleTypeProvider vt = resolver.resolveValueType(type);
+  public Money(long amount) {
+    this.amount = amount;
+  }
 
-    //
-    if (vt == null) {
-      throw new IllegalArgumentException("could not find type provider for " + type);
-    }
-
-    //
-    if (!vt.getInternalType().equals(jcrType.getJavaType())) {
-      throw new AssertionError("todo with type " + type + " / property type" + vt);
-    }
-
-    //
-    return (SimpleTypeProvider<I, ?>)vt;
+  public long getAmount() {
+    return amount;
   }
 }

@@ -17,36 +17,39 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.vt2;
+package org.chromattic.metamodel.type;
 
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
+import org.chromattic.api.TypeConversionException;
 import org.chromattic.spi.type.SimpleTypeProvider;
-import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ValueTypeFactory {
+public class MoneyTypeProvider extends SimpleTypeProvider.LONG<Money> {
 
-  public static <I> SimpleTypeProvider<I, ?> create(TypeInfo type, JCRPropertyType<I> jcrType) {
-    PropertyTypeResolver resolver = new PropertyTypeResolver();
+  @Override
+  public Class<Money> getExternalType() {
+    return Money.class;
+  }
 
-    //
-    SimpleTypeProvider vt = resolver.resolveValueType(type);
+  @Override
+  public Long getInternal(Money money) throws TypeConversionException {
+    return money.amount;
+  }
 
-    //
-    if (vt == null) {
-      throw new IllegalArgumentException("could not find type provider for " + type);
-    }
+  @Override
+  public Money getExternal(Long amount) throws TypeConversionException {
+    return new Money(amount);
+  }
 
-    //
-    if (!vt.getInternalType().equals(jcrType.getJavaType())) {
-      throw new AssertionError("todo with type " + type + " / property type" + vt);
-    }
+  @Override
+  public Money fromString(String s) throws TypeConversionException {
+    return new Money(Long.parseLong(s));
+  }
 
-    //
-    return (SimpleTypeProvider<I, ?>)vt;
+  @Override
+  public String toString(Money money) throws TypeConversionException {
+    return Long.toString(money.amount);
   }
 }

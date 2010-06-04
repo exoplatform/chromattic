@@ -76,6 +76,16 @@ public class ChromatticProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    try {
+      return _process(annotations, roundEnv);
+    }
+    catch (RuntimeException e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
+  private boolean _process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
     Set<String> packageMetaData = new HashSet<String>();
 

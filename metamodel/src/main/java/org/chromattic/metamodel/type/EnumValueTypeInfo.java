@@ -41,6 +41,7 @@ public class EnumValueTypeInfo implements ValueTypeInfo {
   }
 
   public SimpleTypeProvider<?, ?> create() {
+    // todo : maybe need a cache here?
     Class clazz = (Class<Object>)enumInfo.getType();
     return new EnumSimpleTypeProvider(clazz);
   }

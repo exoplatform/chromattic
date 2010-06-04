@@ -20,8 +20,12 @@
 package org.chromattic.metamodel.type;
 
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.spi.type.SimpleType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.*;
+import org.reflext.api.annotation.AnnotationInfo;
+import org.reflext.api.annotation.AnnotationParameterInfo;
+import org.reflext.api.annotation.AnnotationType;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
 
@@ -47,7 +51,7 @@ public class PropertyTypeResolver {
   private static final Map<TypeInfo, ValueTypeInfoImpl> defaultTypeMappings;
 
   /** . */
-  private static final Map<JCRPropertyType<?>, ClassTypeInfo> jcrTypes;
+  private static final Map<ClassTypeInfo, JCRPropertyType<?>> jcrTypes;
 
   static {
 
@@ -69,17 +73,17 @@ public class PropertyTypeResolver {
     _typeMapping.put(typeDomain.resolve(byte[].class), new ValueTypeInfoImpl<InputStream>(SimpleTypeProviders.BYTE_ARRAY.class, JCRPropertyType.BINARY));
 
     //
-    Map<JCRPropertyType<?>, ClassTypeInfo> _jcrTypes = new HashMap<JCRPropertyType<?>, ClassTypeInfo>();
-    _jcrTypes.put(JCRPropertyType.STRING, (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.STRING.class));
-    _jcrTypes.put(JCRPropertyType.PATH, (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.PATH.class));
-    _jcrTypes.put(JCRPropertyType.NAME, (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.NAME.class));
-    _jcrTypes.put(JCRPropertyType.LONG, (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.LONG.class));
-    _jcrTypes.put(JCRPropertyType.DOUBLE, (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.DOUBLE.class));
-    _jcrTypes.put(JCRPropertyType.BOOLEAN, (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.BOOLEAN.class));
-    _jcrTypes.put(JCRPropertyType.BINARY, (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.BINARY.class));
-    _jcrTypes.put(JCRPropertyType.DATE, (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.DATE.class));
+    Map<ClassTypeInfo, JCRPropertyType<?>> _jcrTypes = new HashMap<ClassTypeInfo, JCRPropertyType<?>>();
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.STRING.class), JCRPropertyType.STRING);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.PATH.class), JCRPropertyType.PATH);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.NAME.class), JCRPropertyType.NAME);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.LONG.class), JCRPropertyType.LONG);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.DOUBLE.class), JCRPropertyType.DOUBLE);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.BOOLEAN.class), JCRPropertyType.BOOLEAN);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.BINARY.class), JCRPropertyType.BINARY);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.DATE.class), JCRPropertyType.DATE);
 
-
+    //
     defaultTypeMappings = _typeMapping;
     jcrTypes = _jcrTypes;
   }
@@ -112,6 +116,46 @@ public class PropertyTypeResolver {
       }
     } else {
       jcrType = typeMappings.get(typeInfo);
+    }
+
+    //
+    if (jcrType == null) {
+      if (typeInfo instanceof ClassTypeInfo) {
+        ClassTypeInfo cti = (ClassTypeInfo)typeInfo;
+        AnnotationType<AnnotationInfo, ClassTypeInfo> at = AnnotationType.get((ClassTypeInfo)typeDomain.resolve(SimpleType.class));
+        AnnotationInfo ai = cti.getDeclaredAnnotation(at);
+        if (ai != null) {
+          AnnotationParameterInfo param = ai.getParameter("value");
+          ClassTypeInfo abc = (ClassTypeInfo)param.getValue();
+
+          // Find the right subclass
+          ClassTypeInfo current = abc;
+          while (!current.getSuperClass().getName().equals(SimpleTypeProvider.class.getName())) {
+            current = current.getSuperClass();
+          }
+          JCRPropertyType aaaaa = jcrTypes.get(current);
+
+          //
+          ClassTypeInfo stp = (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.class);
+          TypeVariableInfo tvi = stp.getTypeParameters().get(1); // <E>
+          System.out.println("tvi = " + tvi);
+          System.out.println("tvi = " + tvi);
+          System.out.println("tvi = " + tvi);
+          System.out.println("tvi = " + tvi);
+          System.out.println("tvi = " + tvi);
+          ClassTypeInfo aaa = (ClassTypeInfo)abc.resolve(tvi);
+/*
+          if (!aaa.equals(typeInfo)) {
+            throw new AssertionError(aaa + " should be equals to " + typeInfo);
+          }
+*/
+
+          //
+          ValueTypeInfoImpl vtii = new ValueTypeInfoImpl(abc, aaaaa);
+          typeMappings.put(typeInfo, vtii);
+          jcrType = vtii;
+        }
+      }
     }
 
     //

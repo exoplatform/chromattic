@@ -30,7 +30,7 @@ import org.reflext.api.ClassTypeInfo;
 class ValueTypeInfoImpl<I> implements ValueTypeInfo {
 
   /** . */
-  private final SimpleTypeProvider<I, ?> instance;
+  private SimpleTypeProvider<I, ?> instance;
 
   /** . */
   private final JCRPropertyType<I> propertyType;
@@ -38,24 +38,12 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
   /** . */
   private final ClassTypeInfo typeInfo;
 
-  ValueTypeInfoImpl(
-    Class<? extends SimpleTypeProvider<I, ?>> type,
-    JCRPropertyType<I> propertyType) {
+  ValueTypeInfoImpl(ClassTypeInfo typeInfo, JCRPropertyType<I> propertyType) {
+    this.propertyType = propertyType;
+    this.typeInfo = typeInfo;
+  }
 
-    //
-    SimpleTypeProvider<I, ?> instance;
-    try {
-      instance = type.newInstance();
-    }
-    catch (InstantiationException e) {
-      throw new AssertionError(e);
-    }
-    catch (IllegalAccessException e) {
-      throw new AssertionError(e);
-    }
-
-    //
-    this.instance = instance;
+  ValueTypeInfoImpl(Class<? extends SimpleTypeProvider<I, ?>> type, JCRPropertyType<I> propertyType) {
     this.propertyType = propertyType;
     this.typeInfo = (ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(type);
   }
@@ -65,6 +53,18 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
   }
 
   public SimpleTypeProvider<I, ?> create() {
+    if (instance == null) {
+      Class type = (Class)typeInfo.getType();
+      try {
+        instance = (SimpleTypeProvider<I,?>)type.newInstance();
+      }
+      catch (InstantiationException e) {
+        throw new AssertionError(e);
+      }
+      catch (IllegalAccessException e) {
+        throw new AssertionError(e);
+      }
+    }
     return instance;
   }
 }
