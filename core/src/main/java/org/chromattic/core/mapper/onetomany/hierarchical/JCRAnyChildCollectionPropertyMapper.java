@@ -49,8 +49,7 @@ public class JCRAnyChildCollectionPropertyMapper<O extends ObjectContext> extend
   @Override
   public void set(EntityContext context, Object parent) throws Throwable {
     if (parent == null) {
-      // context.remove();
-      throw new UnsupportedOperationException("todo remove parent");
+      context.remove();
     } else {
       DomainSession session = context.getSession();
       EntityContext parentContext = session.unwrapEntity(parent);

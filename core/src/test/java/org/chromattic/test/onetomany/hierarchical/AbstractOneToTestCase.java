@@ -19,6 +19,7 @@
 
 package org.chromattic.test.onetomany.hierarchical;
 
+import org.chromattic.api.Status;
 import org.chromattic.common.TypeLiteral;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
@@ -46,6 +47,16 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
   public abstract void setOne(M many, O one);
 
   public abstract O getOne(M many);
+
+  public final void testRemoveSetParent() throws Exception {
+    ChromatticSessionImpl session = login();
+    O o = session.insert(oneSide, "o");
+    M m = session.create(manySide, "m");
+    setOne(m, o);
+    assertSame(o, getOne(m));
+    setOne(m, null);
+    assertSame(Status.REMOVED, session.getStatus(m));
+  }
 
   public final void testAddChild() throws Exception {
     ChromatticSessionImpl session = login();
