@@ -39,22 +39,24 @@ JCR provides two types to map generic data types:
 The string type is pretty straightforward to use, you simplet get or set the string that is mapped to the JCR property.
 
 
-The binary type can be used in two ways, the first way maps the ##BINARY## type to a byte array. This mapping style is similar
-to the string mapping except that a byte array is not immutable. The client has the opportunity to alter the array as Chromattic
-cannot prevent it to be modified. This mapping style is very straightforward too but has the inconvenient to load the whole
-stream into memory which is not always desirable for very large streams.
+The binary type can be used in two different manners, the first one maps the ##BINARY## type to a byte array. This mapping
+style is similar to the string mapping except that a byte array is not immutable. The client has the opportunity to alter the
+array as Chromattic cannot prevent it to be modified. This mapping style is very straightforward too but has the inconvenient
+to load the whole stream into memory which is not always desirable for very large streams.
 
-The other way maps the ##BINARY## type to an ##java.io.InputStream##. This behavior is actually the JCR native behavior and
-Chromattic just choosed to reuse it, as JCR developers should be familliar with it. The fundamental reason JCR uses an input stream
-to read and write binary data is efficiency with large binary content, the stream based approach does not force to hold all
-the data in memory, unlike the byte array approach.
+The other manner maps the ##BINARY## type to an ##java.io.InputStream##. This behavior is actually the JCR native behavior and
+Chromattic provides it as well, as it has the benefit to use an input stream to read and write binary data which is efficient
+for large binary content. This approach does not force to hold all the data in memory, unlike the byte array approach. However
+it requires a little extra work from the developer to use the input stream carefully.
 
 To read the data, the property getter returns an input stream that provides access to the binary data. The stream should be
 used as any other kind of input stream: consume data until the stream is empty and then close the stream in a finally block.
+The stream must be used corrected, otherwise the entire content could be loaded in memory and that would defeat the
+purpose of the stream based approach.
 
 To write data, the property setter must be called with an input stream that is used to consume all
 the data available. It means that on the return of the setter, the input stream shouldn't be used anymore for reading
-data as Chromattic will close the stream.
+data as Chromattic will close the stream. Again here, the stream must be used carefully.
 
 === Primitive types ===
 
