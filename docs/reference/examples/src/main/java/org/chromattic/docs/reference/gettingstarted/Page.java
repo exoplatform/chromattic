@@ -26,7 +26,7 @@ import org.chromattic.api.annotations.Property;
 /**
  * The page of a site.
  */
-@PrimaryType(name = "gs:page") // <1> The Page class is mapped to the page node type
+@PrimaryType(name = "gs:page") // <> The Page class is mapped to the page node type
 public abstract class Page {
 
   /**
@@ -34,14 +34,14 @@ public abstract class Page {
    * @return the page name
    */
   @Name
-  public abstract String getName(); // <2> The name property is mapped to the node name
+  public abstract String getName(); // <> The name property is mapped to the node name
 
   /**
    * Returns the page title.
    * @return the page title
    */
   @Property(name = "title")
-  public abstract String getTitle(); // <3> The title property is mapped to the title node property
+  public abstract String getTitle(); // <> The title property is mapped to the title node property
 
   /**
    * Updates the page title.
@@ -54,7 +54,7 @@ public abstract class Page {
    * @return the page content
    */
   @Property(name = "content")
-  public abstract String getContent(); // <4> The content property is mapped to the content node property
+  public abstract String getContent(); // <> The content property is mapped to the content node property
 
   /**
    * Updates the page content.

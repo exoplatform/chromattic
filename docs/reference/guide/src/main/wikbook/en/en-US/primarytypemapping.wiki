@@ -135,7 +135,7 @@ the type is a primitive type.
 
 {{java}}
 {@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getTags()}
-{@include org.chromattic.docs.reference.primarytypemapping.Page#getTags()} // <3> the tags property is mapped to a multi valued STRING type
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getTags()} // <> the tags property is mapped to a multi valued ##STRING## type
 {{/java}}
 
 The corresponding JCR node defines a tags properties:

@@ -47,14 +47,14 @@ public class PrimaryTypeMappingTestCase extends TestCase {
     Page page = session.insert(Page.class, "foo");
 
     // -1-
-    Page child = session.create(Page.class, "bar"); // <1> Create the transient page object
-    Collection<Page> children = page.getChildren(); // <2> Obtain the children collection from the parent
-    children.add(child); // <3> The child becomes persistent and the bar node is created under the foo node
-    assertSame(page, child.getParent()); // <4> The parent is set to foo
+    Page child = session.create(Page.class, "bar"); // <> Create the transient page object
+    Collection<Page> children = page.getChildren(); // <> Obtain the children collection from the parent
+    children.add(child); // <> The child becomes persistent and the bar node is created under the foo node
+    assertSame(page, child.getParent()); // <> The parent is set to foo
 
     // -2-
-    children.remove(child); // <5> Removing the child from the collection destroys the child
-    assertFalse(page.getChildren().contains(child)); // <6> And the parent does not contain the child anymore
+    children.remove(child); // <> Removing the child from the collection destroys the child
+    assertFalse(page.getChildren().contains(child)); // <> And the parent does not contain the child anymore
   }
 
   public void testParent() {
@@ -62,12 +62,12 @@ public class PrimaryTypeMappingTestCase extends TestCase {
     Page page = session.insert(Page.class, "foo1");
 
     // -1-
-    Page child = session.create(Page.class, "bar"); // <1> Create the transient page object
-    child.setParent(page); // <2> The child becomes persistent and the bar node is created under the foo node
-    assertTrue(page.getChildren().contains(child)); // <3> The children collection contains the child
+    Page child = session.create(Page.class, "bar"); // <> Create the transient page object
+    child.setParent(page); // <> The child becomes persistent and the bar node is created under the foo node
+    assertTrue(page.getChildren().contains(child)); // <> The children collection contains the child
 
     // -2-
-    child.setParent(null); // <4> Setting the parent to null destroys the child
-    assertFalse(page.getChildren().contains(child)); // <5> And the parent does not contain the child anymore
+    child.setParent(null); // <> Setting the parent to null destroys the child
+    assertFalse(page.getChildren().contains(child)); // <> And the parent does not contain the child anymore
   }
 }
