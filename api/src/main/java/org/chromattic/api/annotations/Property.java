@@ -47,6 +47,7 @@ public @interface Property {
    * by Chromattic according to the type of the annotated property.
    *
    * @return the property type value.
+   * @since 1.1
    */
   int type() default -1;
 
