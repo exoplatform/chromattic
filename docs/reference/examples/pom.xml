@@ -51,6 +51,11 @@
       <artifactId>chromattic.exo</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.ext</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

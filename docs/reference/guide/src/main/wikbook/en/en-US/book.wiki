@@ -1,6 +1,3 @@
-The reference guide.
-
-= Motivation =
 {{include document=motivation.wiki/}}
 
 = Getting started with Chromattic =

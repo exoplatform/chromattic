@@ -1,1 +1,63 @@
-The main purpose :-)
+Chromattic development started during July 2009 when I had to develop a rich model called MOP (Model Object for Portals)
+that was persisted in a JCR repository. The development started with the prototyping of the model as a set of Java
+interfaces, just bare interfaces plus a set of value objects. Once I was satisfied with the initial model, I decided
+it was time to write the JCR persistence implementation and quickly I realized that I would not be able to achieve it
+without investing a lot of time in writing very error prone code.
+
+Obviously the idea of using a mapping framework stroke me and I fell in the Not Invented Here syndrom for some reason.
+
+If you are reading this chapter it's probably because you are not yet convinced that Chromattic can do something for
+you (if you are convinced, read the chapter so you can convince other persons) and //some reason// is probably not
+enough to convince you.
+
+JCR defines a set of base node types for modelling a file system and that's a perfect example to use:
+
+* ##nt:hierarchyNode##: a super type for file and folder, its purpose is mainly to define a common node type for children
+of a folder
+* ##nt:resource##: a node type for modelling a resource, basically it's data
+* ##nt:file##: a node type for a file, it contains data via a ##jcr:content## child node of type ##nt:resource##
+* ##nt:folder##: a node type for a folder with children of type ##nt:hierarchynode##
+
+The following examples list the content of a directory structure and we have two versions, one using the native JCR API and one
+using Chromattic objects mapped onto the same node types.
+
+{{example title="Directory listing with the JCR native API"}}
+{{java}}
+{@include org.chromattic.docs.reference.motivation.MotivationTestCase#list(javax.jcr.Node)}
+{{/java}}
+{{/example}}
+
+{{example title="Directory listing with Chromattic objects"}}
+{{java}}
+{@include org.chromattic.docs.reference.motivation.MotivationTestCase#list(org.chromattic.ext.ntdef.NTHierarchyNode)}
+{{/java}}
+{{/example}}
+
+There are several difference between the two versions, but the most important one is **type safety**. The JCR
+version use ##javax.jcr.Node## objects and the main drawback is that the effective type of a node is never known
+until runtime. Chromattic main purpose is to provide type safety to Java programs that use JCR:
+
+* The ##list## method argument is typed with ##NTHierarchyNode## and that guarantees that the method will never
+be invoked with an appropriate node type, this guarantee is enforced during the compilation of any program that wants
+to invoke the ##list## method.
+* The ##instanceof## operator is what a Java developer uses when he wants to determine the type of an object. The JCR
+version performs the same operation but there is more work to do.
+
+The second benefit of Chromattic is productivity: modern IDEs provide an impressive set of tools that gives much power
+to the developer, Chromattic type safe and object oriented nature fits perfectly here:
+
+* A Chromattic object is a Java object and the IDE is able to perform code completion.
+* Refactoring is a commodity offered by any IDE that can be leveraged on a Chromattic model.
+
+The third benefit of Chromattic is to hide the quircks of the native JCR API. This benefit is probably very subjective as
+one developer may feel very comfortable with the JCR API. The biased truth is that ** I ** am not:
+
+* Any operation provided by the JCR native API throws a checked ##RepositoryException##. Checked versus non
+checked exception is a great Java debate, I don't have a good answer for it. I feel comfortable with both, because
+I think that if it used correctly, it gives good results. In the case of JCR, I don't think it was a good idea, as
+it force the control flow of the application that has to either rethrow it and deal with it.
+* I would define a good API as an intuitive API, specially when it comes of the part of the API that are the most used.
+For instance in the former example, the obtention of a node property uses three operations (##hasProperty##, ##getProperty## and ##getString##)
+where it could use just one.
+
+There are many other reasons left to use Chromattic, let's discover them in this guide. 
