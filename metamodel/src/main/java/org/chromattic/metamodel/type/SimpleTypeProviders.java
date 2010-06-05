@@ -427,4 +427,72 @@ public class SimpleTypeProviders {
       return Date.class;
     }
   }
+
+  public static final class CALENDAR extends SimpleTypeProvider.DATE<Calendar> {
+    @Override
+    public Class<Calendar> getExternalType() {
+      return Calendar.class;  
+    }
+    @Override
+    public Calendar getInternal(Calendar calendar) throws TypeConversionException {
+      return calendar;  
+    }
+    @Override
+    public Calendar getExternal(Calendar calendar) throws TypeConversionException {
+      return calendar;  
+    }
+    @Override
+    public Calendar fromString(String s) throws TypeConversionException {
+      try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Calendar c = Calendar.getInstance();
+        c.setTime(sdf.parse(s));
+        return c;
+      }
+      catch (ParseException e) {
+        throw new TypeConversionException(e);
+      }
+    }
+    @Override
+    public String toString(Calendar calendar) throws TypeConversionException {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      return sdf.format(calendar.getTime());  
+    }
+  }
+
+  public static final class TIMESTAMP extends SimpleTypeProvider.DATE<Long> {
+    @Override
+    public Class<Long> getExternalType() {
+      return Long.class;
+    }
+    @Override
+    public Calendar getInternal(Long l) throws TypeConversionException {
+      Calendar c = Calendar.getInstance();
+      c.setTimeInMillis(l);
+      return c;
+    }
+    @Override
+    public Long getExternal(Calendar calendar) throws TypeConversionException {
+      return calendar.getTimeInMillis();
+    }
+    @Override
+    public Long fromString(String s) throws TypeConversionException {
+      try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Calendar c = Calendar.getInstance();
+        c.setTime(sdf.parse(s));
+        return c.getTimeInMillis();
+      }
+      catch (ParseException e) {
+        throw new TypeConversionException(e);
+      }
+    }
+    @Override
+    public String toString(Long l) throws TypeConversionException {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      Calendar c = Calendar.getInstance();
+      c.setTimeInMillis(l);
+      return sdf.format(c);  
+    }
+  }
 }

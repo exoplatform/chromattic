@@ -67,8 +67,8 @@ public class PropertyTypeResolver {
     _typeMapping.put(typeDomain.resolve(Double.class), new ValueTypeInfoImpl<Double>(SimpleTypeProviders.DOUBLE.class, JCRPropertyType.DOUBLE));
     _typeMapping.put(typeDomain.resolve(String.class), new ValueTypeInfoImpl<String>(SimpleTypeProviders.STRING.class, JCRPropertyType.STRING));
     _typeMapping.put(typeDomain.resolve(InputStream.class), new ValueTypeInfoImpl<InputStream>(SimpleTypeProviders.BINARY.class, JCRPropertyType.BINARY));
-    _typeMapping.put(typeDomain.resolve(Date.class), new ValueTypeInfoImpl<Calendar>(SimpleTypeProviders.DATE.class, JCRPropertyType.DATE));
     _typeMapping.put(typeDomain.resolve(byte[].class), new ValueTypeInfoImpl<InputStream>(SimpleTypeProviders.BYTE_ARRAY.class, JCRPropertyType.BINARY));
+    _typeMapping.put(typeDomain.resolve(Date.class), new ValueTypeInfoImpl<Calendar>(SimpleTypeProviders.DATE.class, JCRPropertyType.DATE));
 
     //
     Map<ClassTypeInfo, JCRPropertyType<?>> _jcrTypes = new HashMap<ClassTypeInfo, JCRPropertyType<?>>();
