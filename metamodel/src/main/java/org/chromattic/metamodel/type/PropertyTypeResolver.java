@@ -49,7 +49,7 @@ public class PropertyTypeResolver {
   private static final Map<TypeInfo, ValueTypeInfoImpl> defaultTypeMappings;
 
   /** . */
-  private static final Map<ClassTypeInfo, PropertyMetaType<?>> jcrTypes;
+  private static final Map<ClassTypeInfo, PropertyMetaType<?>> propertyMetaTypes;
 
   static {
 
@@ -83,7 +83,7 @@ public class PropertyTypeResolver {
 
     //
     defaultTypeMappings = _typeMapping;
-    jcrTypes = _jcrTypes;
+    propertyMetaTypes = _jcrTypes;
   }
 
   /** . */
@@ -131,7 +131,7 @@ public class PropertyTypeResolver {
           while (!current.getSuperClass().getName().equals(SimpleTypeProvider.class.getName())) {
             current = current.getSuperClass();
           }
-          PropertyMetaType aaaaa = jcrTypes.get(current);
+          PropertyMetaType aaaaa = propertyMetaTypes.get(current);
 
           //
           ClassTypeInfo stp = (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.class);
