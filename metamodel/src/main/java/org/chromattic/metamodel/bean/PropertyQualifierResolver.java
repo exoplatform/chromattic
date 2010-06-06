@@ -24,8 +24,7 @@ import org.chromattic.api.annotations.*;
 import org.chromattic.metamodel.bean.value.*;
 import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
-import org.chromattic.metamodel.type.ValueTypeInfo;
+import org.chromattic.metamodel.type.*;
 import org.reflext.api.*;
 
 import java.util.ArrayList;
@@ -42,9 +41,9 @@ public class PropertyQualifierResolver {
   final ClassTypeInfo beanType;
 
   /** . */
-  private final PropertyTypeResolver typeResolver;
+  private final SimpleTypeResolver typeResolver;
 
-  public PropertyQualifierResolver(PropertyTypeResolver typeResolver, ClassTypeInfo beanType) {
+  public PropertyQualifierResolver(SimpleTypeResolver typeResolver, ClassTypeInfo beanType) {
     this.beanType = beanType;
     this.typeResolver = typeResolver;
   }
@@ -134,7 +133,7 @@ public class PropertyQualifierResolver {
     return null;
   }
 
-  public PropertyTypeResolver getTypeResolver() {
+  public SimpleTypeResolver getTypeResolver() {
     // Should we make a defensive copy ??
     return typeResolver;
   }
@@ -209,7 +208,7 @@ public class PropertyQualifierResolver {
   }
 
   private ValueInfo createValue(TypeInfo typeInfo) throws BuilderException {
-    ValueTypeInfo vti = typeResolver.resolveType(typeInfo);
+    SimpleTypeMapping vti = typeResolver.resolveType(typeInfo);
     if (vti != null) {
       return new SimpleValueInfo(typeInfo);
     } else if (typeInfo instanceof ClassTypeInfo) {

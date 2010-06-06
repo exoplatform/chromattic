@@ -54,7 +54,7 @@ import org.chromattic.core.mapper.property.JCRPropertyMapPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyListPropertyMapper;
 import org.chromattic.core.mapper.nodeattribute.JCRNodeAttributePropertyMapper;
 import org.chromattic.core.jcr.LinkType;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
+import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.spi.instrument.MethodHandler;
@@ -121,7 +121,7 @@ public class MapperBuilder {
   private final ValueTypeFactory valueTypeFactory;
 
   public MapperBuilder(
-    PropertyTypeResolver propertyTypeResolver,
+    SimpleTypeResolver propertyTypeResolver,
     Set<NodeTypeMapping> typeMappings,
     Instrumentor instrumentor) {
     Map<ClassTypeInfo, NodeTypeMapping> classToMapping = new HashMap<ClassTypeInfo, NodeTypeMapping>();

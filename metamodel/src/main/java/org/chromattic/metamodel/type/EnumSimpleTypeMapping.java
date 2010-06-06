@@ -27,12 +27,12 @@ import org.reflext.api.ClassTypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EnumValueTypeInfo implements ValueTypeInfo {
+public class EnumSimpleTypeMapping implements SimpleTypeMapping {
 
   /** . */
   private final ClassTypeInfo enumInfo;
 
-  public EnumValueTypeInfo(ClassTypeInfo enumInfo) {
+  public EnumSimpleTypeMapping(ClassTypeInfo enumInfo) {
     this.enumInfo = enumInfo;
   }
 

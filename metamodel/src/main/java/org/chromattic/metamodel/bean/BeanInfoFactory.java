@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.type.PropertyTypeResolver;
+import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.*;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
@@ -33,9 +33,9 @@ import java.util.*;
 public class BeanInfoFactory {
 
   /** . */
-  private final PropertyTypeResolver typeResolver;
+  private final SimpleTypeResolver typeResolver;
 
-  public BeanInfoFactory(PropertyTypeResolver typeResolver) {
+  public BeanInfoFactory(SimpleTypeResolver typeResolver) {
     this.typeResolver = typeResolver;
   }
 

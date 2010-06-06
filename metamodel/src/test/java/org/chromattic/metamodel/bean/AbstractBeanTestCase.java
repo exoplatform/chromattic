@@ -30,7 +30,7 @@ import java.util.HashMap;
 
 import org.chromattic.metamodel.bean.value.SingleValueInfo;
 import org.chromattic.metamodel.bean.value.ValueInfo;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
+import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
@@ -46,7 +46,7 @@ public abstract class AbstractBeanTestCase extends TestCase {
   protected final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
   protected final BeanInfo beanInfo(ClassTypeInfo typeInfo) {
-    return new BeanInfoFactory(new PropertyTypeResolver()).build(typeInfo);
+    return new BeanInfoFactory(new SimpleTypeResolver()).build(typeInfo);
   }
 
   protected final void assertProperty(PropertyQualifier<?> property, String expectedName, Class<?> expectedType, AccessMode accessMode) {

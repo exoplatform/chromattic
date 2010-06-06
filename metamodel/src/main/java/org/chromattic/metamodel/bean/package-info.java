@@ -17,24 +17,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.type;
-
-import junit.framework.TestCase;
-
 /**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
+ * This package focus on creating the information defined by a Java class and its Chromattic annotations.
+ * The introspection are done via the Reflext framework to be independant of the phase in which introspection
+ * is done. The {@link BeanInfoFactory} takes a {@link org.reflext.api.ClassTypeInfo} as argument and produces
+ * a {@link BeanInfo} object.
  */
-public class SimpleTypeTest extends TestCase {
-
-
-
-  public void testFoo() {
-
-
-    SimpleTypeResolver res = new SimpleTypeResolver();
-    SimpleTypeMapping vti = res.resolveType(SimpleTypeResolver.typeDomain.resolve(Money.class));
-
-
-  }
-}
+package org.chromattic.metamodel.bean;

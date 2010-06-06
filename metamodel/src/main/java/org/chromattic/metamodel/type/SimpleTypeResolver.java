@@ -41,13 +41,13 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyTypeResolver {
+public class SimpleTypeResolver {
 
   /** . */
   static final TypeResolver<Type> typeDomain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
   /** . */
-  private static final PropertyTypeResolver base;
+  private static final SimpleTypeResolver base;
 
   /** . */
   private static final EnumMap<LiteralType, TypeInfo> literalWrappers;
@@ -55,7 +55,7 @@ public class PropertyTypeResolver {
   static {
 
     // The base mappings
-    PropertyTypeResolver _base = new PropertyTypeResolver(new HashMap<TypeInfo, PropertyTypeEntry>());
+    SimpleTypeResolver _base = new SimpleTypeResolver(new HashMap<TypeInfo, PropertyTypeEntry>());
 
     // Numeric
     _base.add(SimpleTypeProviders.INTEGER.class);
@@ -98,14 +98,14 @@ public class PropertyTypeResolver {
   /** . */
   private final Map<TypeInfo, PropertyTypeEntry> typeMappings;
 
-  private PropertyTypeResolver(Map<TypeInfo, PropertyTypeEntry> typeMappings) {
+  private SimpleTypeResolver(Map<TypeInfo, PropertyTypeEntry> typeMappings) {
     this.typeMappings = typeMappings;
   }
 
   /**
    * The default constructor.
    */
-  public PropertyTypeResolver() {
+  public SimpleTypeResolver() {
     this(base);
   }
 
@@ -114,7 +114,7 @@ public class PropertyTypeResolver {
    *
    * @param that that resolver to clone
    */
-  public PropertyTypeResolver(PropertyTypeResolver that) {
+  public SimpleTypeResolver(SimpleTypeResolver that) {
     if (that == null) {
       throw new NullPointerException();
     }
@@ -131,7 +131,7 @@ public class PropertyTypeResolver {
 
   private synchronized <I, E> void add(Class<? extends SimpleTypeProvider<I, E>> provider) {
     ClassTypeInfo bilto = (ClassTypeInfo)typeDomain.resolve(provider);
-    ValueTypeInfoImpl<I> a = new ValueTypeInfoImpl<I>(bilto);
+    SimpleTypeMappingImpl<I> a = new SimpleTypeMappingImpl<I>(bilto);
     PropertyTypeEntry existing = typeMappings.get(a.external);
     if (existing == null) {
       typeMappings.put(a.external, new PropertyTypeEntry(a));
@@ -140,25 +140,25 @@ public class PropertyTypeResolver {
     }
   }
 
-  public synchronized ValueTypeInfo resolveType(TypeInfo typeInfo) {
+  public synchronized SimpleTypeMapping resolveType(TypeInfo typeInfo) {
     return resolveType(typeInfo, null);
   }
 
-  public synchronized ValueTypeInfo resolveType(
+  public synchronized SimpleTypeMapping resolveType(
     TypeInfo typeInfo,
     PropertyMetaType<?> propertyMT) {
-    ValueTypeInfo jcrType = null;
+    SimpleTypeMapping jcrType = null;
     if (typeInfo instanceof ClassTypeInfo) {
       ClassTypeInfo cti = (ClassTypeInfo)typeInfo;
       if (cti.getKind() == ClassKind.ENUM) {
-        jcrType = new EnumValueTypeInfo(cti);
+        jcrType = new EnumSimpleTypeMapping(cti);
       }
     }
 
     //
     if (jcrType == null) {
-      if (typeInfo instanceof SimpleTypeInfo) {
-        SimpleTypeInfo sti = (SimpleTypeInfo)typeInfo;
+      if (typeInfo instanceof org.reflext.api.SimpleTypeInfo) {
+        org.reflext.api.SimpleTypeInfo sti = (org.reflext.api.SimpleTypeInfo)typeInfo;
         if (sti.isPrimitive()) {
           typeInfo = literalWrappers.get(sti.getLiteralType());
         }
@@ -182,7 +182,7 @@ public class PropertyTypeResolver {
         if (ai != null) {
           AnnotationParameterInfo param = ai.getParameter("value");
           ClassTypeInfo abc = (ClassTypeInfo)param.getValue();
-          ValueTypeInfoImpl vtii = new ValueTypeInfoImpl(abc);
+          SimpleTypeMappingImpl vtii = new SimpleTypeMappingImpl(abc);
           if (propertyMT != null && propertyMT != vtii.getPropertyMetaType()) {
             throw new UnsupportedOperationException("todo " + vtii.getPropertyMetaType() + " " + propertyMT);
           }

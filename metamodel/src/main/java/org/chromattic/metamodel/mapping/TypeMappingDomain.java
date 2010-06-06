@@ -32,8 +32,8 @@ import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.*;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
-import org.chromattic.metamodel.type.ValueTypeInfo;
+import org.chromattic.metamodel.type.SimpleTypeResolver;
+import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.reflext.api.*;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
@@ -83,13 +83,13 @@ public class TypeMappingDomain {
   private boolean resolved;
 
   /** . */
-  private final PropertyTypeResolver typeResolver;
+  private final SimpleTypeResolver typeResolver;
 
   public TypeMappingDomain(boolean processFormatter) {
-    this(new PropertyTypeResolver(), processFormatter);
+    this(new SimpleTypeResolver(), processFormatter);
   }
 
-  public TypeMappingDomain(PropertyTypeResolver typeResolver, boolean processFormatter) {
+  public TypeMappingDomain(SimpleTypeResolver typeResolver, boolean processFormatter) {
     this.mappings = new HashMap<String, NodeTypeMapping>();
     this.beanInfoBuilder = new BeanInfoFactory(typeResolver);
     this.processFormatter = processFormatter;
@@ -279,7 +279,7 @@ public class TypeMappingDomain {
         PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(roleProperty.type);
 
         //
-        ValueTypeInfo abc = typeResolver.resolveType(value.getTypeInfo(), propertyMetaType);
+        SimpleTypeMapping abc = typeResolver.resolveType(value.getTypeInfo(), propertyMetaType);
         if (abc == null) {
           throw new InvalidMappingException(javaClass, "No simple type mapping for " + value.getTypeInfo());
         }

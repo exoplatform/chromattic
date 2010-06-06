@@ -20,8 +20,8 @@
 package org.chromattic.core.vt2;
 
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
-import org.chromattic.metamodel.type.ValueTypeInfo;
+import org.chromattic.metamodel.type.SimpleTypeMapping;
+import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.TypeInfo;
 
@@ -32,14 +32,14 @@ import org.reflext.api.TypeInfo;
 public class ValueTypeFactory {
 
   /** . */
-  private final PropertyTypeResolver typeResolver;
+  private final SimpleTypeResolver typeResolver;
 
-  public ValueTypeFactory(PropertyTypeResolver typeResolver) {
+  public ValueTypeFactory(SimpleTypeResolver typeResolver) {
     this.typeResolver = typeResolver;
   }
 
   public <I> SimpleTypeProvider<I, ?> create(TypeInfo type, PropertyMetaType<I> jcrType) {
-    ValueTypeInfo vti = typeResolver.resolveType(type, jcrType);
+    SimpleTypeMapping vti = typeResolver.resolveType(type, jcrType);
     if (vti == null) {
       throw new IllegalArgumentException("could not find type provider for " + type);
     }

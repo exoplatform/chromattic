@@ -34,18 +34,18 @@ import java.util.Map;
 class PropertyTypeEntry {
 
   /** . */
-  private final ValueTypeInfoImpl<?> defaultValueTypeInfo;
+  private final SimpleTypeMappingImpl<?> defaultValueTypeInfo;
 
   /** . */
-  private final Map<PropertyMetaType<?>, ValueTypeInfoImpl<?>> metaTypeMapping;
+  private final Map<PropertyMetaType<?>, SimpleTypeMappingImpl<?>> metaTypeMapping;
 
   PropertyTypeEntry(PropertyTypeEntry that) {
     this.defaultValueTypeInfo = that.defaultValueTypeInfo;
-    this.metaTypeMapping = new HashMap<PropertyMetaType<?>, ValueTypeInfoImpl<?>>(that.metaTypeMapping);
+    this.metaTypeMapping = new HashMap<PropertyMetaType<?>, SimpleTypeMappingImpl<?>>(that.metaTypeMapping);
   }
 
-  PropertyTypeEntry(ValueTypeInfoImpl<?> defaultValueTypeInfo) {
-    Map<PropertyMetaType<?>, ValueTypeInfoImpl<?>> metaTypeMapping = new HashMap<PropertyMetaType<?>, ValueTypeInfoImpl<?>>();
+  PropertyTypeEntry(SimpleTypeMappingImpl<?> defaultValueTypeInfo) {
+    Map<PropertyMetaType<?>, SimpleTypeMappingImpl<?>> metaTypeMapping = new HashMap<PropertyMetaType<?>, SimpleTypeMappingImpl<?>>();
     metaTypeMapping.put(defaultValueTypeInfo.getPropertyMetaType(), defaultValueTypeInfo);
 
     //
@@ -53,11 +53,11 @@ class PropertyTypeEntry {
     this.metaTypeMapping = metaTypeMapping;
   }
 
-  public ValueTypeInfoImpl<?> getDefault() {
+  public SimpleTypeMappingImpl<?> getDefault() {
     return defaultValueTypeInfo;
   }
 
-  public synchronized <I> ValueTypeInfoImpl<I> add(ValueTypeInfoImpl<I> valueType) {
+  public synchronized <I> SimpleTypeMappingImpl<I> add(SimpleTypeMappingImpl<I> valueType) {
     if (!valueType.external.equals(defaultValueTypeInfo.external)) {
       throw new IllegalArgumentException("Was expecting those types to be equals " + valueType.external + " " + defaultValueTypeInfo.external);
     }
@@ -65,12 +65,12 @@ class PropertyTypeEntry {
     return valueType;
   }
 
-  public synchronized <I> ValueTypeInfoImpl<I> get(PropertyMetaType<I> propertyMT) {
-    return (ValueTypeInfoImpl<I>)metaTypeMapping.get(propertyMT);
+  public synchronized <I> SimpleTypeMappingImpl<I> get(PropertyMetaType<I> propertyMT) {
+    return (SimpleTypeMappingImpl<I>)metaTypeMapping.get(propertyMT);
   }
 
-  public synchronized ValueTypeInfoImpl<?> resolve(PropertyMetaType<?> propertyMT) {
-    ValueTypeInfoImpl<?> valueTypeInfo = metaTypeMapping.get(propertyMT);
+  public synchronized SimpleTypeMappingImpl<?> resolve(PropertyMetaType<?> propertyMT) {
+    SimpleTypeMappingImpl<?> valueTypeInfo = metaTypeMapping.get(propertyMT);
     if (valueTypeInfo == null) {
       valueTypeInfo = defaultValueTypeInfo;
     }

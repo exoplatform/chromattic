@@ -19,7 +19,6 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.reflext.api.ClassTypeInfo;
 
 import java.lang.annotation.Retention;

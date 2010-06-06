@@ -32,22 +32,22 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class ValueTypeInfoImpl<I> implements ValueTypeInfo {
+class SimpleTypeMappingImpl<I> implements SimpleTypeMapping {
 
   /** . */
-  static final Map<ClassTypeInfo, PropertyMetaType<?>> propertyMetaTypes;
+  private static final Map<ClassTypeInfo, PropertyMetaType<?>> propertyMetaTypes;
   
   static {
     //
     Map<ClassTypeInfo, PropertyMetaType<?>> _jcrTypes = new HashMap<ClassTypeInfo, PropertyMetaType<?>>();
-    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.STRING.class), PropertyMetaType.STRING);
-    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.PATH.class), PropertyMetaType.PATH);
-    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.NAME.class), PropertyMetaType.NAME);
-    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.LONG.class), PropertyMetaType.LONG);
-    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.DOUBLE.class), PropertyMetaType.DOUBLE);
-    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.BOOLEAN.class), PropertyMetaType.BOOLEAN);
-    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.BINARY.class), PropertyMetaType.BINARY);
-    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.DATE.class), PropertyMetaType.DATE);
+    _jcrTypes.put((ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.STRING.class), PropertyMetaType.STRING);
+    _jcrTypes.put((ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.PATH.class), PropertyMetaType.PATH);
+    _jcrTypes.put((ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.NAME.class), PropertyMetaType.NAME);
+    _jcrTypes.put((ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.LONG.class), PropertyMetaType.LONG);
+    _jcrTypes.put((ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.DOUBLE.class), PropertyMetaType.DOUBLE);
+    _jcrTypes.put((ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.BOOLEAN.class), PropertyMetaType.BOOLEAN);
+    _jcrTypes.put((ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.BINARY.class), PropertyMetaType.BINARY);
+    _jcrTypes.put((ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.DATE.class), PropertyMetaType.DATE);
     propertyMetaTypes = _jcrTypes;
   }
 
@@ -63,7 +63,7 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
   /** . */
   final TypeInfo external;
 
-  ValueTypeInfoImpl(ClassTypeInfo typeInfo) {
+  SimpleTypeMappingImpl(ClassTypeInfo typeInfo) {
     
     // Find the right subclass
     ClassTypeInfo current = typeInfo;
@@ -72,7 +72,7 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
     }
 
     //
-    ClassTypeInfo stp = (ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.class);
+    ClassTypeInfo stp = (ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.class);
     TypeVariableInfo tvi = stp.getTypeParameters().get(1); // <E>
     TypeInfo aaa = typeInfo.resolve(tvi);
 //    if (!aaa.equals(typeInfo)) {
@@ -88,9 +88,9 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
     this.external = aaa;
   }
 
-  ValueTypeInfoImpl(ClassTypeInfo typeInfo, PropertyMetaType<I> propertyMetaType) {
+  SimpleTypeMappingImpl(ClassTypeInfo typeInfo, PropertyMetaType<I> propertyMetaType) {
 
-    ClassTypeInfo stp = (ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.class);
+    ClassTypeInfo stp = (ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(SimpleTypeProvider.class);
     TypeVariableInfo tvi = stp.getTypeParameters().get(1); // <E>
     TypeInfo aaa = typeInfo.resolve(tvi);
 
@@ -100,8 +100,8 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
     this.external = aaa;
   }
 
-  ValueTypeInfoImpl(Class<? extends SimpleTypeProvider<I, ?>> type, PropertyMetaType<I> propertyMetaType) {
-    this((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(type), propertyMetaType);
+  SimpleTypeMappingImpl(Class<? extends SimpleTypeProvider<I, ?>> type, PropertyMetaType<I> propertyMetaType) {
+    this((ClassTypeInfo)SimpleTypeResolver.typeDomain.resolve(type), propertyMetaType);
   }
 
   public PropertyMetaType<I> getPropertyMetaType() {

@@ -24,7 +24,7 @@ import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
 import org.chromattic.metamodel.mapping.TypeMappingDomain;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
+import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
@@ -59,7 +59,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     TypeResolver<Type> typeResolver = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
     //
-    PropertyTypeResolver propertyTypeResolver = new PropertyTypeResolver();
+    SimpleTypeResolver propertyTypeResolver = new SimpleTypeResolver();
 
     //
     TypeMappingDomain mappingBuilder = new TypeMappingDomain(propertyTypeResolver, true);

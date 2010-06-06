@@ -26,7 +26,7 @@ import org.chromattic.spi.type.SimpleTypeProvider;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EnumSimpleTypeProvider<E extends Enum<E>> extends SimpleTypeProvider.STRING<E> {
+class EnumSimpleTypeProvider<E extends Enum<E>> extends SimpleTypeProvider.STRING<E> {
 
   /** . */
   private final Class<E> externalType;

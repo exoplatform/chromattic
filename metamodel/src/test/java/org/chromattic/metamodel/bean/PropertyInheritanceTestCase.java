@@ -19,11 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.bean.BeanInfoFactory;
-import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.reflext.api.ClassTypeInfo;
-import org.chromattic.metamodel.bean.BeanInfo;
-import org.chromattic.metamodel.bean.AccessMode;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
