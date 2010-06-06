@@ -31,11 +31,15 @@ import org.reflext.api.TypeInfo;
  */
 public class ValueTypeFactory {
 
-  public static <I> SimpleTypeProvider<I, ?> create(TypeInfo type, PropertyMetaType<I> jcrType) {
-    PropertyTypeResolver resolver = new PropertyTypeResolver();
+  /** . */
+  private final PropertyTypeResolver typeResolver;
 
-    //
-    ValueTypeInfo vti = resolver.resolveType(type, jcrType);
+  public ValueTypeFactory(PropertyTypeResolver typeResolver) {
+    this.typeResolver = typeResolver;
+  }
+
+  public <I> SimpleTypeProvider<I, ?> create(TypeInfo type, PropertyMetaType<I> jcrType) {
+    ValueTypeInfo vti = typeResolver.resolveType(type, jcrType);
     if (vti == null) {
       throw new IllegalArgumentException("could not find type provider for " + type);
     }

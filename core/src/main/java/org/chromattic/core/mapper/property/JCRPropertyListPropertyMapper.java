@@ -53,6 +53,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I>
 
   public JCRPropertyListPropertyMapper(
     Class<O> contextType,
+    SimpleTypeProvider<I, E> vt,
     PropertyQualifier<CollectionValueInfo<SimpleValueInfo>> info,
     String jcrPropertyName,
     PropertyMetaType<I> propertyType,
@@ -73,7 +74,6 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I>
     }
 
     // YES IT'S UGLY BUT FOR NOW IT'S OK
-    SimpleTypeProvider<I, E> vt = (SimpleTypeProvider<I,E>)ValueTypeFactory.create(info.getValue().getElement().getTypeInfo(), propertyType);
 
     //
     this.listType = listType;

@@ -24,6 +24,7 @@ import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
 import org.chromattic.metamodel.mapping.TypeMappingDomain;
+import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
@@ -55,13 +56,16 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
   @Override
   protected Chromattic boot(Options options, Set<Class> classes) throws BuilderException {
-    TypeResolver<Type> typeDomain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
+    TypeResolver<Type> typeResolver = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
     //
-    TypeMappingDomain mappingBuilder = new TypeMappingDomain(true);
+    PropertyTypeResolver propertyTypeResolver = new PropertyTypeResolver();
+
+    //
+    TypeMappingDomain mappingBuilder = new TypeMappingDomain(propertyTypeResolver, true);
     Set<NodeTypeMapping> mappings = new HashSet<NodeTypeMapping>();
     for (Class clazz : classes) {
-      ClassTypeInfo typeInfo = (ClassTypeInfo)typeDomain.resolve(clazz);
+      ClassTypeInfo typeInfo = (ClassTypeInfo)typeResolver.resolve(clazz);
       mappingBuilder.add(typeInfo);
     }
     mappings.addAll(mappingBuilder.build());
@@ -119,9 +123,10 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
     //
     SessionLifeCycle sessionLifeCycle = create(options.getInstance(SESSION_LIFECYCLE_CLASSNAME), SessionLifeCycle.class);
-    
+
     // Build domain
     Domain domain = new Domain(
+      propertyTypeResolver,
       mappings,
       instrumentor,
       objectFormatter,

@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.reflext.api.*;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
@@ -32,20 +33,25 @@ import java.util.*;
 public class BeanInfoFactory {
 
   /** . */
-  private PropertyQualifierResolver qualifier;
+  private final PropertyTypeResolver typeResolver;
 
-  public BeanInfoFactory() {
+  public BeanInfoFactory(PropertyTypeResolver typeResolver) {
+    this.typeResolver = typeResolver;
   }
 
   public BeanInfo build(ClassTypeInfo typeInfo) {
 
-    this.qualifier = new PropertyQualifierResolver(typeInfo);
-
-    Map<String, PropertyQualifier> properties = buildProperties(typeInfo);
+    PropertyQualifierResolver qualifier = new PropertyQualifierResolver(typeResolver, typeInfo);
+    Map<String, PropertyQualifier> properties = buildProperties(qualifier);
     return new BeanInfo(typeInfo, properties);
   }
 
-  private Map<String, PropertyQualifier> buildProperties(ClassTypeInfo type) {
+  private Map<String, PropertyQualifier> buildProperties(PropertyQualifierResolver qualifier) {
+
+    //
+    ClassTypeInfo type = qualifier.beanType;
+
+    //
     MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL, true);
     Map<String, MethodInfo> getterMap = introspector.getGetterMap(type);
     Map<String, Set<MethodInfo>> setterMap = introspector.getSetterMap(type);

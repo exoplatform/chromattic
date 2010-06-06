@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.reflext.api.ClassTypeInfo;
 
 import java.lang.annotation.Retention;
@@ -52,14 +53,15 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
 
   public void testFoo1() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo1.class);
-    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    BeanInfo beanInfo = beanInfo(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
   }
 
+
   public void testFoo1_1() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo1_1.class);
-    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    BeanInfo beanInfo = beanInfo(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
   }
@@ -78,7 +80,7 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
 
   public void testFoo2() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo2.class);
-    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    BeanInfo beanInfo = beanInfo(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
   }
@@ -117,7 +119,7 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
 
   public void testFoo4() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo4.class);
-    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    BeanInfo beanInfo = beanInfo(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
   }

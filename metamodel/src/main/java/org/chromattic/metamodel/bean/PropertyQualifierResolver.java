@@ -39,14 +39,14 @@ import java.util.List;
 public class PropertyQualifierResolver {
 
   /** . */
-  private final ClassTypeInfo beanType;
+  final ClassTypeInfo beanType;
 
   /** . */
   private final PropertyTypeResolver typeResolver;
 
-  public PropertyQualifierResolver(ClassTypeInfo beanType) {
+  public PropertyQualifierResolver(PropertyTypeResolver typeResolver, ClassTypeInfo beanType) {
     this.beanType = beanType;
-    this.typeResolver = new PropertyTypeResolver();
+    this.typeResolver = typeResolver;
   }
 
   private List<PropertyRole> findRoles(PropertyInfo propertyInfo) {
@@ -132,6 +132,11 @@ public class PropertyQualifierResolver {
 
     //
     return null;
+  }
+
+  public PropertyTypeResolver getTypeResolver() {
+    // Should we make a defensive copy ??
+    return typeResolver;
   }
 
   private ValueInfo bilto(TypeInfo typeInfo) {

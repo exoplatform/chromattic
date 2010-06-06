@@ -36,7 +36,7 @@ public class ReadOnlyPropertyTestCase extends AbstractBeanTestCase {
 
   public void testA() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(A.class);
-    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    BeanInfo beanInfo = beanInfo(typeInfo);
     assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
     assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_ONLY);
   }
@@ -47,7 +47,7 @@ public class ReadOnlyPropertyTestCase extends AbstractBeanTestCase {
 
   public void testB() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(B.class);
-    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    BeanInfo beanInfo = beanInfo(typeInfo);
     assertEquals(new HashSet<String>(), beanInfo.getPropertyNames());
   }
 
@@ -56,7 +56,7 @@ public class ReadOnlyPropertyTestCase extends AbstractBeanTestCase {
 
   public void testC() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(C.class);
-    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    BeanInfo beanInfo = beanInfo(typeInfo);
     assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
     assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_ONLY);
   }

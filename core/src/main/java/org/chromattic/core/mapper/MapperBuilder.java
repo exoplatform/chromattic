@@ -28,6 +28,7 @@ import org.chromattic.core.EntityContext;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedParentPropertyMapper;
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedPropertyMapper;
+import org.chromattic.core.vt2.ValueTypeFactory;
 import org.chromattic.metamodel.bean.PropertyQualifier;
 import org.chromattic.metamodel.bean.value.*;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
@@ -53,10 +54,12 @@ import org.chromattic.core.mapper.property.JCRPropertyMapPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyListPropertyMapper;
 import org.chromattic.core.mapper.nodeattribute.JCRNodeAttributePropertyMapper;
 import org.chromattic.core.jcr.LinkType;
+import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.spi.instrument.ProxyFactory;
+import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Set;
@@ -114,13 +117,20 @@ public class MapperBuilder {
   /** . */
   private final Map<ClassTypeInfo, NodeTypeMapping> classToMapping;
 
-  public MapperBuilder(Set<NodeTypeMapping> typeMappings, Instrumentor instrumentor) {
+  /** . */
+  private final ValueTypeFactory valueTypeFactory;
+
+  public MapperBuilder(
+    PropertyTypeResolver propertyTypeResolver,
+    Set<NodeTypeMapping> typeMappings,
+    Instrumentor instrumentor) {
     Map<ClassTypeInfo, NodeTypeMapping> classToMapping = new HashMap<ClassTypeInfo, NodeTypeMapping>();
     for (NodeTypeMapping typeMapping : typeMappings) {
       classToMapping.put(typeMapping.getType(), typeMapping);
     }
 
     //
+    this.valueTypeFactory = new ValueTypeFactory(propertyTypeResolver);
     this.typeMappings = typeMappings;
     this.instrumentor = instrumentor;
     this.classToMapping = classToMapping;
@@ -483,21 +493,34 @@ public class MapperBuilder {
     Class<C> contextType,
     PropertyMapping<?> pm,
     JCRPropertyMapping<I> jcrProperty) {
+
+    SimpleTypeProvider<I, V> vt = (SimpleTypeProvider<I, V>)valueTypeFactory.create(pm.getInfo().getValue().getTypeInfo(), jcrProperty.getJCRType());
+
     return new JCRPropertyPropertyMapper<C, V, I>(
       contextType,
+      vt,
       (PropertyQualifier<SimpleValueInfo>)pm.getInfo(),
       jcrProperty.getName(),
       jcrProperty.getDefaultValue(),
       jcrProperty.getJCRType());
   }
 
-  private static <C extends ObjectContext, V, I> JCRPropertyListPropertyMapper<C, V, I> createPropertyListPM(
+  private <C extends ObjectContext, V, I> JCRPropertyListPropertyMapper<C, V, I> createPropertyListPM(
     Class<C> contextType,
     PropertyMapping<?> pm,
     JCRPropertyMapping<I> jcrProperty) {
+
+    //
+    PropertyQualifier<CollectionValueInfo<SimpleValueInfo>> a = (PropertyQualifier<CollectionValueInfo<SimpleValueInfo>>)pm.getInfo();
+
+    //
+    SimpleTypeProvider<I, V> vt = (SimpleTypeProvider<I, V>)valueTypeFactory.create(a.getValue().getElement().getTypeInfo(), jcrProperty.getJCRType());
+
+    //
     return new JCRPropertyListPropertyMapper<C, V, I>(
       contextType,
-      (PropertyQualifier<CollectionValueInfo<SimpleValueInfo>>)pm.getInfo(),
+      vt,
+      a,
       jcrProperty.getName(),
       jcrProperty.getJCRType(),
       jcrProperty.getDefaultValue());

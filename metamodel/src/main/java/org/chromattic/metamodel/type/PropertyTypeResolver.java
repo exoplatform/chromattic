@@ -35,6 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * This code is synchronized. Normally it should not have performance impact on runtime, i.e
+ * this should not be used at runtime and the result should be cached somewhere in the runtime layer.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
@@ -43,8 +46,10 @@ public class PropertyTypeResolver {
   /** . */
   static final TypeResolver<Type> typeDomain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
+  /** . */
   private static final PropertyTypeResolver base;
 
+  /** . */
   private static final EnumMap<LiteralType, TypeInfo> literalWrappers;
 
   static {
@@ -93,12 +98,35 @@ public class PropertyTypeResolver {
   /** . */
   private final Map<TypeInfo, PropertyTypeEntry> typeMappings;
 
-  public PropertyTypeResolver(Map<TypeInfo, PropertyTypeEntry> typeMappings) {
-    this.typeMappings = new HashMap<TypeInfo, PropertyTypeEntry>(typeMappings);
+  private PropertyTypeResolver(Map<TypeInfo, PropertyTypeEntry> typeMappings) {
+    this.typeMappings = typeMappings;
   }
 
+  /**
+   * The default constructor.
+   */
   public PropertyTypeResolver() {
-    this(base.typeMappings);
+    this(base);
+  }
+
+  /**
+   * Deep clone constructor.
+   *
+   * @param that that resolver to clone
+   */
+  public PropertyTypeResolver(PropertyTypeResolver that) {
+    if (that == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    HashMap<TypeInfo, PropertyTypeEntry> typeMappings = new HashMap<TypeInfo, PropertyTypeEntry>();
+    for (Map.Entry<TypeInfo, PropertyTypeEntry> entry : that.typeMappings.entrySet()) {
+      typeMappings.put(entry.getKey(), new PropertyTypeEntry(entry.getValue()));
+    }
+
+    //
+    this.typeMappings = typeMappings;
   }
 
   private synchronized <I, E> void add(Class<? extends SimpleTypeProvider<I, E>> provider) {

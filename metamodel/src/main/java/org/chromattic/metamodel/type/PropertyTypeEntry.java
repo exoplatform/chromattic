@@ -37,11 +37,20 @@ class PropertyTypeEntry {
   private final ValueTypeInfoImpl<?> defaultValueTypeInfo;
 
   /** . */
-  private final Map<PropertyMetaType<?>, ValueTypeInfoImpl<?>> metaTypeMapping = new HashMap<PropertyMetaType<?>, ValueTypeInfoImpl<?>>();
+  private final Map<PropertyMetaType<?>, ValueTypeInfoImpl<?>> metaTypeMapping;
+
+  PropertyTypeEntry(PropertyTypeEntry that) {
+    this.defaultValueTypeInfo = that.defaultValueTypeInfo;
+    this.metaTypeMapping = new HashMap<PropertyMetaType<?>, ValueTypeInfoImpl<?>>(that.metaTypeMapping);
+  }
 
   PropertyTypeEntry(ValueTypeInfoImpl<?> defaultValueTypeInfo) {
+    Map<PropertyMetaType<?>, ValueTypeInfoImpl<?>> metaTypeMapping = new HashMap<PropertyMetaType<?>, ValueTypeInfoImpl<?>>();
+    metaTypeMapping.put(defaultValueTypeInfo.getPropertyMetaType(), defaultValueTypeInfo);
+
+    //
     this.defaultValueTypeInfo = defaultValueTypeInfo;
-    this.metaTypeMapping.put(defaultValueTypeInfo.getPropertyMetaType(), defaultValueTypeInfo);
+    this.metaTypeMapping = metaTypeMapping;
   }
 
   public ValueTypeInfoImpl<?> getDefault() {

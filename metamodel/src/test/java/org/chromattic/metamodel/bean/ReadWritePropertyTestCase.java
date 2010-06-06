@@ -36,7 +36,7 @@ public class ReadWritePropertyTestCase extends AbstractBeanTestCase {
 
   public void testConsistentGetterAndSetter() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(ConsistentGetterAndSetter.class);
-    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    BeanInfo beanInfo = beanInfo(typeInfo);
     assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
     assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_WRITE);
   }
@@ -48,7 +48,7 @@ public class ReadWritePropertyTestCase extends AbstractBeanTestCase {
 
   public void testGetterAndSetterWithDifferentTypes() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(GetterAndSetterWithDifferentTypes.class);
-    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
+    BeanInfo beanInfo = beanInfo(typeInfo);
     assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
     assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_ONLY);
   }

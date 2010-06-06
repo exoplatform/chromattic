@@ -82,13 +82,22 @@ public class TypeMappingDomain {
   /** . */
   private boolean resolved;
 
+  /** . */
+  private final PropertyTypeResolver typeResolver;
+
   public TypeMappingDomain(boolean processFormatter) {
+    this(new PropertyTypeResolver(), processFormatter);
+  }
+
+  public TypeMappingDomain(PropertyTypeResolver typeResolver, boolean processFormatter) {
     this.mappings = new HashMap<String, NodeTypeMapping>();
-    this.beanInfoBuilder = new BeanInfoFactory();
+    this.beanInfoBuilder = new BeanInfoFactory(typeResolver);
     this.processFormatter = processFormatter;
     this.types = new HashSet<ClassTypeInfo>();
     this.resolved = false;
+    this.typeResolver = typeResolver;
   }
+
 
   public NodeTypeMapping get(ClassTypeInfo type) {
     return mappings.get(type.getName());
@@ -267,11 +276,10 @@ public class TypeMappingDomain {
         }
 
         // Determine mapping
-        PropertyTypeResolver resolver = new PropertyTypeResolver();
         PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(roleProperty.type);
 
         //
-        ValueTypeInfo abc = resolver.resolveType(value.getTypeInfo(), propertyMetaType);
+        ValueTypeInfo abc = typeResolver.resolveType(value.getTypeInfo(), propertyMetaType);
         if (abc == null) {
           throw new InvalidMappingException(javaClass, "No simple type mapping for " + value.getTypeInfo());
         }

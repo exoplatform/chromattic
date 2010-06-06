@@ -34,16 +34,16 @@ public class JCRPropertyMapping<I> extends JCRMemberMapping {
   private final List<String> defaultValue;
 
   /** . */
-  private final PropertyMetaType<I> jcrType;
+  private final PropertyMetaType<I> metaType;
 
-  public JCRPropertyMapping(String name, PropertyMetaType<I> jcrType, List<String> defaultValue) {
+  public JCRPropertyMapping(String name, PropertyMetaType<I> metaType, List<String> defaultValue) {
     this.name = name;
-    this.jcrType = jcrType;
+    this.metaType = metaType;
     this.defaultValue = defaultValue;
   }
 
   public PropertyMetaType<I> getJCRType() {
-    return jcrType;
+    return metaType;
   }
 
   public String getName() {

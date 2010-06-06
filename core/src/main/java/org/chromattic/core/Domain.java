@@ -27,6 +27,7 @@ import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.core.mapper.MapperBuilder;
 import org.chromattic.core.jcr.info.NodeInfoManager;
 import org.chromattic.core.query.QueryManager;
+import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.api.format.ObjectFormatter;
 
@@ -94,6 +95,7 @@ public class Domain {
   final QueryManager queryManager;
 
   public Domain(
+    PropertyTypeResolver resolver,
     Set<NodeTypeMapping> typeMappings,
     Instrumentor instrumentor,
     ObjectFormatter objectFormatter,
@@ -104,8 +106,11 @@ public class Domain {
     String rootNodePath,
     int rootCreateMode) {
 
+
     //
-    MapperBuilder builder = new MapperBuilder(typeMappings, instrumentor);
+
+    //
+    MapperBuilder builder = new MapperBuilder(resolver, typeMappings, instrumentor);
 
     //
     if (!CREATE_MODES.contains(rootCreateMode)) {
