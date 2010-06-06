@@ -22,6 +22,11 @@ package org.chromattic.metamodel.type;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
+import org.reflext.api.TypeVariableInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -30,22 +35,73 @@ import org.reflext.api.ClassTypeInfo;
 class ValueTypeInfoImpl<I> implements ValueTypeInfo {
 
   /** . */
+  static final Map<ClassTypeInfo, PropertyMetaType<?>> propertyMetaTypes;
+  
+  static {
+    //
+    Map<ClassTypeInfo, PropertyMetaType<?>> _jcrTypes = new HashMap<ClassTypeInfo, PropertyMetaType<?>>();
+    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.STRING.class), PropertyMetaType.STRING);
+    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.PATH.class), PropertyMetaType.PATH);
+    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.NAME.class), PropertyMetaType.NAME);
+    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.LONG.class), PropertyMetaType.LONG);
+    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.DOUBLE.class), PropertyMetaType.DOUBLE);
+    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.BOOLEAN.class), PropertyMetaType.BOOLEAN);
+    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.BINARY.class), PropertyMetaType.BINARY);
+    _jcrTypes.put((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.DATE.class), PropertyMetaType.DATE);
+    propertyMetaTypes = _jcrTypes;
+  }
+
+  /** . */
   private SimpleTypeProvider<I, ?> instance;
 
   /** . */
   private final PropertyMetaType<I> propertyMetaType;
 
   /** . */
-  private final ClassTypeInfo typeInfo;
+  final ClassTypeInfo typeInfo;
+
+  /** . */
+  final TypeInfo external;
+
+  ValueTypeInfoImpl(ClassTypeInfo typeInfo) {
+    
+    // Find the right subclass
+    ClassTypeInfo current = typeInfo;
+    while (!current.getSuperClass().getName().equals(SimpleTypeProvider.class.getName())) {
+      current = current.getSuperClass();
+    }
+
+    //
+    ClassTypeInfo stp = (ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.class);
+    TypeVariableInfo tvi = stp.getTypeParameters().get(1); // <E>
+    TypeInfo aaa = typeInfo.resolve(tvi);
+//    if (!aaa.equals(typeInfo)) {
+//      throw new AssertionError(aaa + " should be equals to " + typeInfo);
+//    }
+
+    //
+    PropertyMetaType aaaaa = propertyMetaTypes.get(current);
+
+    //
+    this.propertyMetaType = aaaaa;
+    this.typeInfo = typeInfo;
+    this.external = aaa;
+  }
 
   ValueTypeInfoImpl(ClassTypeInfo typeInfo, PropertyMetaType<I> propertyMetaType) {
+
+    ClassTypeInfo stp = (ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(SimpleTypeProvider.class);
+    TypeVariableInfo tvi = stp.getTypeParameters().get(1); // <E>
+    TypeInfo aaa = typeInfo.resolve(tvi);
+
+    //
     this.propertyMetaType = propertyMetaType;
     this.typeInfo = typeInfo;
+    this.external = aaa;
   }
 
   ValueTypeInfoImpl(Class<? extends SimpleTypeProvider<I, ?>> type, PropertyMetaType<I> propertyMetaType) {
-    this.propertyMetaType = propertyMetaType;
-    this.typeInfo = (ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(type);
+    this((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(type), propertyMetaType);
   }
 
   public PropertyMetaType<I> getJCRPropertyType() {

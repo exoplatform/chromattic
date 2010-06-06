@@ -132,29 +132,6 @@ public class SimpleTypeProviders {
     }
   }
 
-  public static final class PRIMITIVE_INTEGER extends SimpleTypeProvider.LONG<Integer> {
-    @Override
-    public Long getInternal(Integer external) {
-      return (long)external;
-    }
-    @Override
-    public Integer getExternal(Long internal) {
-      return (int)(long)internal;
-    }
-    @Override
-    public Integer fromString(String s) {
-      return Integer.parseInt(s);
-    }
-    @Override
-    public String toString(Integer integer) throws TypeConversionException {
-      return integer.toString();
-    }
-    @Override
-    public Class<Integer> getExternalType() {
-      return Integer.class;
-    }
-  }
-
   public static final class LONG extends SimpleTypeProvider.LONG<Long> {
     @Override
     public Long getInternal(Long external) {
@@ -179,53 +156,7 @@ public class SimpleTypeProviders {
     }
   }
 
-  public static final class PRIMITIVE_LONG extends SimpleTypeProvider.LONG<Long> {
-    @Override
-    public Long getInternal(Long external) {
-      return (long)external;
-    }
-    @Override
-    public Long getExternal(Long internal) {
-      return internal;
-    }
-    @Override
-    public Long fromString(String s) {
-      return Long.parseLong(s);
-    }
-    @Override
-    public String toString(Long aLong) throws TypeConversionException {
-      return aLong.toString();
-    }
-    @Override
-    public Class<Long> getExternalType() {
-      return Long.class;
-    }
-  }
-
   public static final class DOUBLE extends SimpleTypeProvider.DOUBLE<Double> {
-    @Override
-    public Double getInternal(Double external) {
-      return external;
-    }
-    @Override
-    public Double getExternal(Double internal) {
-      return internal;
-    }
-    @Override
-    public Double fromString(String s) {
-      return Double.parseDouble(s);
-    }
-    @Override
-    public String toString(Double aDouble) throws TypeConversionException {
-      return aDouble.toString();
-    }
-    @Override
-    public Class<Double> getExternalType() {
-      return Double.class;
-    }
-  }
-
-  public static final class PRIMITIVE_DOUBLE extends SimpleTypeProvider.DOUBLE<Double> {
     @Override
     public Double getInternal(Double external) {
       return external;
@@ -271,53 +202,7 @@ public class SimpleTypeProviders {
     }
   }
 
-  public static final class PRIMITIVE_FLOAT extends SimpleTypeProvider.DOUBLE<Float> {
-    @Override
-    public Double getInternal(Float external) {
-      return (double)(float)external;
-    }
-    @Override
-    public Float getExternal(Double internal) {
-      return (float)(double)internal;
-    }
-    @Override
-    public Float fromString(String s) {
-      return Float.parseFloat(s);
-    }
-    @Override
-    public String toString(Float aFloat) throws TypeConversionException {
-      return aFloat.toString();
-    }
-    @Override
-    public Class<Float> getExternalType() {
-      return Float.class;
-    }
-  }
-
   public static final class BOOLEAN extends SimpleTypeProvider.BOOLEAN<Boolean> {
-    @Override
-    public Boolean getInternal(Boolean external) {
-      return external;
-    }
-    @Override
-    public Boolean getExternal(Boolean internal) {
-      return internal;
-    }
-    @Override
-    public Boolean fromString(String s) {
-      return Boolean.parseBoolean(s);
-    }
-    @Override
-    public String toString(Boolean aBoolean) throws TypeConversionException {
-      return aBoolean.toString();
-    }
-    @Override
-    public Class<Boolean> getExternalType() {
-      return Boolean.class;
-    }
-  }
-
-  public static final class PRIMITIVE_BOOLEAN extends SimpleTypeProvider.BOOLEAN<Boolean> {
     @Override
     public Boolean getInternal(Boolean external) {
       return external;
