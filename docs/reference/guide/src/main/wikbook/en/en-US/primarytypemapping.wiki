@@ -70,9 +70,16 @@ For each of those types, there is the choice between either the Java primitive t
 
 === Temporal type ===
 
-JCR defines a ##DATE## type exposed by Chromattic as the ##java.util.Date## type. Date
-objects are mutable by nature and Chromattic on read or on write. A data object returned by Chromattic can be
-modified without changing mapped JCR value, likewise a property update will read the value once and copy it.
+JCR defines a ##DATE## type that represents a date. Chromattic provides three different mappings for this type:
+
+1. Java date objects
+11. ##java.util.Calendar## mapping, the same type exposed by the native JCR API.
+11. ##java.util.Date## mapping
+1. ##java.lang.Long## or ##long## mapping exposing the value returned by ##Calendar#getTimeMillis()##
+
+Date objects objects are mutable by nature and Chromattic clones them when it is necessary to preserve the data.
+A date object returned by Chromattic can be modified without changing mapped JCR value, likewise a property update will
+read the value once and copy it.
 
 == Property mapping ==
 
@@ -160,9 +167,9 @@ copied to the corresponding JCR property. If the list is null, it simply delete 
 It can be convenient to map a single valued property to a multi valued property. For instance a multi valued JCR
  property exposed as a single valued property provides access to the first value of the values.
 
-|                  |JCR single valued|JCR multi valued
-|Java single valued|trivial mapping  |access the first element
-|Java multi valued |a list of size 1 |trivial mapping
+|=                 |=JCR single valued|=JCR multi valued
+|Java single valued| trivial mapping  |access the first element
+|Java multi valued | a list of size 1 |trivial mapping
 
 The same multi valued JCR property can be exposed both as a single and multi valued property. The multi valued property
 gives access to the complete list of values and the single valued property is useful when the first value needs to be

@@ -33,7 +33,7 @@
   <description>Chromattic Framework Reference Guide</description>
 
   <properties>
-    <wikbook.version>0.9.19</wikbook.version>
+    <wikbook.version>0.9.20</wikbook.version>
   </properties>
 
   <dependencies>
