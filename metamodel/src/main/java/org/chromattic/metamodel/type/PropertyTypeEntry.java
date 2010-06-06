@@ -20,8 +20,6 @@
 package org.chromattic.metamodel.type;
 
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
-import org.chromattic.spi.type.SimpleTypeProvider;
-import org.reflext.api.TypeInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,35 +39,20 @@ class PropertyTypeEntry {
   /** . */
   private final Map<PropertyMetaType<?>, ValueTypeInfoImpl<?>> metaTypeMapping = new HashMap<PropertyMetaType<?>, ValueTypeInfoImpl<?>>();
 
-  <E, I> PropertyTypeEntry(Class<? extends SimpleTypeProvider<I, E>> provider, PropertyMetaType<I> propertyMT) {
-    ValueTypeInfoImpl<I> vti = new ValueTypeInfoImpl<I>(provider, propertyMT);
-
-    //
-    this.defaultValueTypeInfo = vti;
-    this.metaTypeMapping.put(propertyMT, vti);
-  }
-
   PropertyTypeEntry(ValueTypeInfoImpl<?> defaultValueTypeInfo) {
-    this.defaultValueTypeInfo = add(defaultValueTypeInfo);
-    this.metaTypeMapping.put(defaultValueTypeInfo.getJCRPropertyType(), defaultValueTypeInfo);
+    this.defaultValueTypeInfo = defaultValueTypeInfo;
+    this.metaTypeMapping.put(defaultValueTypeInfo.getPropertyMetaType(), defaultValueTypeInfo);
   }
 
   public ValueTypeInfoImpl<?> getDefault() {
     return defaultValueTypeInfo;
   }
 
-  public synchronized <E, I> ValueTypeInfoImpl<I> add(Class<E> classType, Class<? extends SimpleTypeProvider<I, E>> provider, PropertyMetaType<I> propertyMT) {
-    TypeInfo typeInfo = PropertyTypeResolver.typeDomain.resolve(classType);
-    if (!typeInfo.equals(defaultValueTypeInfo.typeInfo)) {
-      throw new IllegalArgumentException();
-    }
-    ValueTypeInfoImpl<I> vti = new ValueTypeInfoImpl<I>(provider, propertyMT);
-    metaTypeMapping.put(propertyMT, vti);
-    return vti;
-  }
-
   public synchronized <I> ValueTypeInfoImpl<I> add(ValueTypeInfoImpl<I> valueType) {
-    metaTypeMapping.put(valueType.getJCRPropertyType(), valueType);
+    if (!valueType.external.equals(defaultValueTypeInfo.external)) {
+      throw new IllegalArgumentException("Was expecting those types to be equals " + valueType.external + " " + defaultValueTypeInfo.external);
+    }
+    metaTypeMapping.put(valueType.getPropertyMetaType(), valueType);
     return valueType;
   }
 

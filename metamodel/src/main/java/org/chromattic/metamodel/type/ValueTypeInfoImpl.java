@@ -104,7 +104,7 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
     this((ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(type), propertyMetaType);
   }
 
-  public PropertyMetaType<I> getJCRPropertyType() {
+  public PropertyMetaType<I> getPropertyMetaType() {
     return propertyMetaType;
   }
 

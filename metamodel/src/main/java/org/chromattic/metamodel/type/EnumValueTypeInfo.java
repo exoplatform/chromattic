@@ -36,7 +36,7 @@ public class EnumValueTypeInfo implements ValueTypeInfo {
     this.enumInfo = enumInfo;
   }
 
-  public PropertyMetaType<String> getJCRPropertyType() {
+  public PropertyMetaType<String> getPropertyMetaType() {
     return PropertyMetaType.STRING;
   }
 

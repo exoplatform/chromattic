@@ -45,22 +45,49 @@ public class PropertyTypeResolver {
 
   private static final PropertyTypeResolver base;
 
+  private static final EnumMap<LiteralType, TypeInfo> literalWrappers;
+
   static {
 
     // The base mappings
     PropertyTypeResolver _base = new PropertyTypeResolver(new HashMap<TypeInfo, PropertyTypeEntry>());
+
+    // Numeric
     _base.add(SimpleTypeProviders.INTEGER.class);
     _base.add(SimpleTypeProviders.LONG.class);
     _base.add(SimpleTypeProviders.BOOLEAN.class);
     _base.add(SimpleTypeProviders.FLOAT.class);
     _base.add(SimpleTypeProviders.DOUBLE.class);
+
+    // String
     _base.add(SimpleTypeProviders.STRING.class);
+
+    // Path
+    _base.add(SimpleTypeProviders.PATH.class);
+
+    // Name
+    _base.add(SimpleTypeProviders.NAME.class);
+
+    // Binary
     _base.add(SimpleTypeProviders.BINARY.class);
     _base.add(SimpleTypeProviders.BYTE_ARRAY.class);
+
+    // Date
     _base.add(SimpleTypeProviders.DATE.class);
+    _base.add(SimpleTypeProviders.CALENDAR.class);
+    _base.add(SimpleTypeProviders.TIMESTAMP.class);
+
+    // Primitive unwrapping
+    EnumMap<LiteralType, TypeInfo> _literalWrappers = new EnumMap<LiteralType, TypeInfo>(LiteralType.class);
+    _literalWrappers.put(LiteralType.BOOLEAN, typeDomain.resolve(Boolean.class));
+    _literalWrappers.put(LiteralType.INT, typeDomain.resolve(Integer.class));
+    _literalWrappers.put(LiteralType.LONG, typeDomain.resolve(Long.class));
+    _literalWrappers.put(LiteralType.FLOAT, typeDomain.resolve(Float.class));
+    _literalWrappers.put(LiteralType.DOUBLE, typeDomain.resolve(Double.class));
 
     //
     base = _base;
+    literalWrappers = _literalWrappers;
   }
 
   /** . */
@@ -74,37 +101,24 @@ public class PropertyTypeResolver {
     this(base.typeMappings);
   }
 
-  public PropertyMetaType<?> resolveJCRPropertyType(TypeInfo cti) {
-    ValueTypeInfo vti = resolveType(cti);
-    return vti != null ? vti.getJCRPropertyType() : null;
-  }
-
-  public SimpleTypeProvider<?, ?> resolveValueType(TypeInfo cti) {
-    ValueTypeInfo vti = resolveType(cti);
-    return vti != null ? vti.create() : null;
-  }
-
   private synchronized <I, E> void add(Class<? extends SimpleTypeProvider<I, E>> provider) {
     ClassTypeInfo bilto = (ClassTypeInfo)typeDomain.resolve(provider);
-    ValueTypeInfoImpl a = new ValueTypeInfoImpl(bilto);
-    typeMappings.put(a.external, new PropertyTypeEntry(a));
-  }
-
-  private static final EnumMap<LiteralType, TypeInfo> aty;
-
-  static {
-    EnumMap<LiteralType, TypeInfo> _aty = new EnumMap<LiteralType, TypeInfo>(LiteralType.class);
-
-    _aty.put(LiteralType.BOOLEAN, typeDomain.resolve(Boolean.class));
-    _aty.put(LiteralType.INT, typeDomain.resolve(Integer.class));
-    _aty.put(LiteralType.LONG, typeDomain.resolve(Long.class));
-    _aty.put(LiteralType.FLOAT, typeDomain.resolve(Float.class));
-    _aty.put(LiteralType.DOUBLE, typeDomain.resolve(Double.class));
-
-    aty = _aty;
+    ValueTypeInfoImpl<I> a = new ValueTypeInfoImpl<I>(bilto);
+    PropertyTypeEntry existing = typeMappings.get(a.external);
+    if (existing == null) {
+      typeMappings.put(a.external, new PropertyTypeEntry(a));
+    } else {
+      existing.add(a);
+    }
   }
 
   public synchronized ValueTypeInfo resolveType(TypeInfo typeInfo) {
+    return resolveType(typeInfo, null);
+  }
+
+  public synchronized ValueTypeInfo resolveType(
+    TypeInfo typeInfo,
+    PropertyMetaType<?> propertyMT) {
     ValueTypeInfo jcrType = null;
     if (typeInfo instanceof ClassTypeInfo) {
       ClassTypeInfo cti = (ClassTypeInfo)typeInfo;
@@ -118,12 +132,16 @@ public class PropertyTypeResolver {
       if (typeInfo instanceof SimpleTypeInfo) {
         SimpleTypeInfo sti = (SimpleTypeInfo)typeInfo;
         if (sti.isPrimitive()) {
-          typeInfo = aty.get(sti.getLiteralType());
+          typeInfo = literalWrappers.get(sti.getLiteralType());
         }
       }
       PropertyTypeEntry entry = typeMappings.get(typeInfo);
       if (entry != null) {
-        jcrType = entry.getDefault();
+        if (propertyMT != null) {
+          jcrType = entry.get(propertyMT);
+        } else {
+          jcrType = entry.getDefault();
+        }
       }
     }
 
@@ -137,6 +155,9 @@ public class PropertyTypeResolver {
           AnnotationParameterInfo param = ai.getParameter("value");
           ClassTypeInfo abc = (ClassTypeInfo)param.getValue();
           ValueTypeInfoImpl vtii = new ValueTypeInfoImpl(abc);
+          if (propertyMT != null && propertyMT != vtii.getPropertyMetaType()) {
+            throw new UnsupportedOperationException("todo " + vtii.getPropertyMetaType() + " " + propertyMT);
+          }
           typeMappings.put(typeInfo, new PropertyTypeEntry(vtii));
           jcrType = vtii;
         }

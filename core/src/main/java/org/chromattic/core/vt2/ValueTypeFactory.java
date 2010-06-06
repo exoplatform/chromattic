@@ -21,6 +21,7 @@ package org.chromattic.core.vt2;
 
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.type.PropertyTypeResolver;
+import org.chromattic.metamodel.type.ValueTypeInfo;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.TypeInfo;
 
@@ -34,12 +35,13 @@ public class ValueTypeFactory {
     PropertyTypeResolver resolver = new PropertyTypeResolver();
 
     //
-    SimpleTypeProvider vt = resolver.resolveValueType(type);
-
-    //
-    if (vt == null) {
+    ValueTypeInfo vti = resolver.resolveType(type, jcrType);
+    if (vti == null) {
       throw new IllegalArgumentException("could not find type provider for " + type);
     }
+
+    //
+    SimpleTypeProvider vt = vti.create();
 
     //
     if (!vt.getInternalType().equals(jcrType.getJavaType())) {

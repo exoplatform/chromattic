@@ -33,6 +33,7 @@ import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.metamodel.type.PropertyTypeResolver;
+import org.chromattic.metamodel.type.ValueTypeInfo;
 import org.reflext.api.*;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
@@ -268,8 +269,16 @@ public class TypeMappingDomain {
         // Determine mapping
         PropertyTypeResolver resolver = new PropertyTypeResolver();
         PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(roleProperty.type);
+
+        //
+        ValueTypeInfo abc = resolver.resolveType(value.getTypeInfo(), propertyMetaType);
+        if (abc == null) {
+          throw new InvalidMappingException(javaClass, "No simple type mapping for " + value.getTypeInfo());
+        }
+
+        //
         if (propertyMetaType == null) {
-          propertyMetaType = resolver.resolveJCRPropertyType(value.getTypeInfo());
+          propertyMetaType = abc.getPropertyMetaType();
         }
 
         //
@@ -277,7 +286,7 @@ public class TypeMappingDomain {
           roleProperty.name,
           propertyMetaType,
           defaultValues);
-      SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(role.getDeclaringType(), memberMapping);
+        SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(role.getDeclaringType(), memberMapping);
         PropertyMapping<SimpleMapping<JCRPropertyMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRPropertyMapping>>(propertyInfo, simpleMapping);
         propertyMappings.add(propertyMapping);
       } else if (role instanceof PropertyRole.Properties) {

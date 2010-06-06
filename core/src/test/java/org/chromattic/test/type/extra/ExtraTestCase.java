@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.type.bytearray;
+package org.chromattic.test.type.extra;
 
 import org.chromattic.common.IO;
 import org.chromattic.core.api.ChromatticSessionImpl;
@@ -29,19 +29,22 @@ import javax.jcr.PropertyType;
 import javax.jcr.Value;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Calendar;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ByteArrayTestCase extends AbstractTestCase {
+public class ExtraTestCase extends AbstractTestCase {
 
   @Override
   protected void createDomain() {
     addClass(A.class);
   }
 
-  public void testMapping() throws Exception {
+  // todo : write an abstraction for the 3 same test using generics
+
+  public void testByteArray() throws Exception {
     ChromatticSessionImpl session = login();
     A a = session.insert(A.class, "a");
     Node node = session.getNode(a);
@@ -59,6 +62,48 @@ public class ByteArrayTestCase extends AbstractTestCase {
       assertEquals(null, a.getBytes());
     } else {
       assertTrue(Arrays.equals(new byte[]{0,1,2}, a.getBytes()));
+    }
+  }
+
+  public void testCalendar() throws Exception {
+    ChromatticSessionImpl session = login();
+    A a = session.insert(A.class, "a");
+    Node node = session.getNode(a);
+    assertFalse(node.hasProperty("calendar"));
+    assertEquals(null, a.getCalendar());
+    Calendar now = Calendar.getInstance();
+    a.setCalendar(now);
+    assertEquals(now, a.getCalendar());
+    assertTrue(node.hasProperty("calendar"));
+    Property calendar = node.getProperty("calendar");
+    assertEquals(PropertyType.DATE, calendar.getType());
+    assertEquals(now, calendar.getDate());
+    node.setProperty("calendar", (Value)null);
+    if (getConfig().isStateCacheDisabled()) {
+      assertEquals(null, a.getCalendar());
+    } else {
+      assertEquals(now, a.getCalendar());
+    }
+  }
+
+  public void testTimestamp() throws Exception {
+    ChromatticSessionImpl session = login();
+    A a = session.insert(A.class, "a");
+    Node node = session.getNode(a);
+    assertFalse(node.hasProperty("timestamp"));
+    assertEquals(null, a.getTimestamp());
+    Calendar now = Calendar.getInstance();
+    a.setTimestamp(now.getTimeInMillis());
+    assertEquals((Long)now.getTimeInMillis(), a.getTimestamp());
+    assertTrue(node.hasProperty("timestamp"));
+    Property timestamp = node.getProperty("timestamp");
+    assertEquals(PropertyType.DATE, timestamp.getType());
+    assertEquals(now, timestamp.getDate());
+    node.setProperty("timestamp", (Value)null);
+    if (getConfig().isStateCacheDisabled()) {
+      assertEquals(null, a.getTimestamp());
+    } else {
+      assertEquals((Long)now.getTimeInMillis(), a.getTimestamp());
     }
   }
 

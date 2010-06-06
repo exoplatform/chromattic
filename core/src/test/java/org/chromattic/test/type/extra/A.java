@@ -17,11 +17,13 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.type.bytearray;
+package org.chromattic.test.type.extra;
 
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.test.type.stringenum.Currency;
+
+import javax.jcr.PropertyType;
+import java.util.Calendar;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -34,5 +36,15 @@ public abstract class A {
   public abstract byte[] getBytes();
 
   public abstract void setBytes(byte[] te);
+
+  @Property(name = "calendar")
+  public abstract Calendar getCalendar();
+
+  public abstract void setCalendar(Calendar te);
+
+  @Property(name = "timestamp", type = PropertyType.DATE)
+  public abstract Long getTimestamp();
+
+  public abstract void setTimestamp(Long te);
 
 }

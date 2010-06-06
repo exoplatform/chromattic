@@ -28,7 +28,7 @@ import org.chromattic.spi.type.SimpleTypeProvider;
  */
 public interface ValueTypeInfo {
 
-  PropertyMetaType<?> getJCRPropertyType();
+  PropertyMetaType<?> getPropertyMetaType();
 
   SimpleTypeProvider<?, ?> create();
 
