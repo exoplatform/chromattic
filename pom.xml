@@ -59,7 +59,7 @@
 
   <properties>
     <!-- Repositories URLs -->
-    <chromattic.releases.repo.url>http://repository.exoplatform.org/content/repositories/chromattic-releases/</chromattic.releases.repo.url>
+    <chromattic.releases.repo.url>http://repository.exoplatform.org/service/local/staging/deploy/maven2/</chromattic.releases.repo.url>
     <chromattic.snapshots.repo.url>http://repository.exoplatform.org/content/repositories/chromattic-snapshots/</chromattic.snapshots.repo.url>
   
     <!-- Dependencies versions -->
