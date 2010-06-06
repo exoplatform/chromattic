@@ -27,7 +27,7 @@ import org.chromattic.metamodel.bean.PropertyQualifier;
 import org.chromattic.metamodel.bean.value.CollectionValueInfo;
 import org.chromattic.metamodel.bean.value.SimpleValueInfo;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I>
     Class<O> contextType,
     PropertyQualifier<CollectionValueInfo<SimpleValueInfo>> info,
     String jcrPropertyName,
-    JCRPropertyType<I> propertyType,
+    PropertyMetaType<I> propertyType,
     List<String> defaultValue) {
     super(contextType, info);
 

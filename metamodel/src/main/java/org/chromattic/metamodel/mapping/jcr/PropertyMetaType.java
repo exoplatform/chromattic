@@ -28,14 +28,16 @@ import java.io.InputStream;
 import java.util.Calendar;
 
 /**
+ * A property meta type is a representation of the various JCR types defined by {@link javax.jcr.PropertyType}.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
- * @param <T> the java type modeling the JCR type
+ * @param <T> the java type modeling the simple type
  */
-public abstract class JCRPropertyType<T> {
+public abstract class PropertyMetaType<T> {
 
   /** . */
-  public static final JCRPropertyType<String> STRING = new JCRPropertyType<String>(String.class, PropertyType.STRING) {
+  public static final PropertyMetaType<String> STRING = new PropertyMetaType<String>(String.class, PropertyType.STRING) {
     @Override
     public Value getValue(ValueFactory factory, String s) throws ValueFormatException {
       return factory.createValue(s, PropertyType.STRING);
@@ -47,7 +49,7 @@ public abstract class JCRPropertyType<T> {
   };
 
   /** . */
-  public static final JCRPropertyType<String> PATH = new JCRPropertyType<String>(String.class, PropertyType.PATH) {
+  public static final PropertyMetaType<String> PATH = new PropertyMetaType<String>(String.class, PropertyType.PATH) {
     @Override
     public Value getValue(ValueFactory factory, String s) throws ValueFormatException {
       return factory.createValue(s, PropertyType.PATH);
@@ -59,7 +61,7 @@ public abstract class JCRPropertyType<T> {
   };
 
   /** . */
-  public static final JCRPropertyType<String> NAME = new JCRPropertyType<String>(String.class, PropertyType.NAME) {
+  public static final PropertyMetaType<String> NAME = new PropertyMetaType<String>(String.class, PropertyType.NAME) {
     @Override
     public Value getValue(ValueFactory factory, String s) throws ValueFormatException {
       return factory.createValue(s, PropertyType.NAME);
@@ -71,7 +73,7 @@ public abstract class JCRPropertyType<T> {
   };
 
   /** . */
-  public static final JCRPropertyType<Long> LONG = new JCRPropertyType<Long>(Long.class, PropertyType.LONG) {
+  public static final PropertyMetaType<Long> LONG = new PropertyMetaType<Long>(Long.class, PropertyType.LONG) {
     @Override
     public Value getValue(ValueFactory factory, Long aLong) throws ValueFormatException {
       return factory.createValue(aLong);
@@ -83,7 +85,7 @@ public abstract class JCRPropertyType<T> {
   };
 
   /** . */
-  public static final JCRPropertyType<Double> DOUBLE = new JCRPropertyType<Double>(Double.class, PropertyType.DOUBLE) {
+  public static final PropertyMetaType<Double> DOUBLE = new PropertyMetaType<Double>(Double.class, PropertyType.DOUBLE) {
     @Override
     public Value getValue(ValueFactory factory, Double aDouble) throws ValueFormatException {
       return factory.createValue(aDouble);
@@ -95,7 +97,7 @@ public abstract class JCRPropertyType<T> {
   };
 
   /** . */
-  public static final JCRPropertyType<Boolean> BOOLEAN = new JCRPropertyType<Boolean>(Boolean.class, PropertyType.BOOLEAN) {
+  public static final PropertyMetaType<Boolean> BOOLEAN = new PropertyMetaType<Boolean>(Boolean.class, PropertyType.BOOLEAN) {
     @Override
     public Value getValue(ValueFactory factory, Boolean aBoolean) throws ValueFormatException {
       return factory.createValue(aBoolean);
@@ -107,7 +109,7 @@ public abstract class JCRPropertyType<T> {
   };
 
   /** . */
-  public static final JCRPropertyType<InputStream> BINARY = new JCRPropertyType<InputStream>(InputStream.class, PropertyType.BINARY) {
+  public static final PropertyMetaType<InputStream> BINARY = new PropertyMetaType<InputStream>(InputStream.class, PropertyType.BINARY) {
     @Override
     public Value getValue(ValueFactory factory, InputStream inputStream) throws ValueFormatException {
       return factory.createValue(inputStream);
@@ -119,7 +121,7 @@ public abstract class JCRPropertyType<T> {
   };
 
   /** . */
-  public static final JCRPropertyType<Calendar> DATE = new JCRPropertyType<Calendar>(Calendar.class, PropertyType.DATE) {
+  public static final PropertyMetaType<Calendar> DATE = new PropertyMetaType<Calendar>(Calendar.class, PropertyType.DATE) {
     @Override
     public Value getValue(ValueFactory factory, Calendar date) throws ValueFormatException {
       return factory.createValue(date);
@@ -130,7 +132,7 @@ public abstract class JCRPropertyType<T> {
     }
   };
 
-  private static final JCRPropertyType<?>[] ALL = {
+  private static final PropertyMetaType<?>[] ALL = {
     STRING,
     PATH,
     NAME,
@@ -141,8 +143,8 @@ public abstract class JCRPropertyType<T> {
     DATE
   };
 
-  public static JCRPropertyType<?> get(int code) {
-    for (JCRPropertyType<?> pt : ALL) {
+  public static PropertyMetaType<?> get(int code) {
+    for (PropertyMetaType<?> pt : ALL) {
       if (pt.code == code) {
         return pt;
       }
@@ -156,7 +158,7 @@ public abstract class JCRPropertyType<T> {
   /** . */
   private final int code;
 
-  private JCRPropertyType(Class<T> javaType, int code) {
+  private PropertyMetaType(Class<T> javaType, int code) {
     this.javaType = javaType;
     this.code = code;
   }
@@ -165,10 +167,20 @@ public abstract class JCRPropertyType<T> {
 
   public abstract T getValue(Value value) throws RepositoryException;
 
+  /**
+   * Returns the Java type modelling the property type.
+   *
+   * @return the Java type modelling the property type
+   */
   public Class<T> getJavaType() {
     return javaType;
   }
 
+  /**
+   * Returns the JCR property type as defined by {@link PropertyType}
+   *
+   * @return the JCR property type
+   */
   public int getCode() {
     return code;
   }

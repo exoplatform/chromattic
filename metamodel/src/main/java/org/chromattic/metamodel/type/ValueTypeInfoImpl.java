@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.type;
 
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.ClassTypeInfo;
 
@@ -33,23 +33,23 @@ class ValueTypeInfoImpl<I> implements ValueTypeInfo {
   private SimpleTypeProvider<I, ?> instance;
 
   /** . */
-  private final JCRPropertyType<I> propertyType;
+  private final PropertyMetaType<I> propertyMetaType;
 
   /** . */
   private final ClassTypeInfo typeInfo;
 
-  ValueTypeInfoImpl(ClassTypeInfo typeInfo, JCRPropertyType<I> propertyType) {
-    this.propertyType = propertyType;
+  ValueTypeInfoImpl(ClassTypeInfo typeInfo, PropertyMetaType<I> propertyMetaType) {
+    this.propertyMetaType = propertyMetaType;
     this.typeInfo = typeInfo;
   }
 
-  ValueTypeInfoImpl(Class<? extends SimpleTypeProvider<I, ?>> type, JCRPropertyType<I> propertyType) {
-    this.propertyType = propertyType;
+  ValueTypeInfoImpl(Class<? extends SimpleTypeProvider<I, ?>> type, PropertyMetaType<I> propertyMetaType) {
+    this.propertyMetaType = propertyMetaType;
     this.typeInfo = (ClassTypeInfo)PropertyTypeResolver.typeDomain.resolve(type);
   }
 
-  public JCRPropertyType<I> getJCRPropertyType() {
-    return propertyType;
+  public PropertyMetaType<I> getJCRPropertyType() {
+    return propertyMetaType;
   }
 
   public SimpleTypeProvider<I, ?> create() {

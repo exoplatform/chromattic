@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.type;
 
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.ClassTypeInfo;
 
@@ -36,8 +36,8 @@ public class EnumValueTypeInfo implements ValueTypeInfo {
     this.enumInfo = enumInfo;
   }
 
-  public JCRPropertyType<String> getJCRPropertyType() {
-    return JCRPropertyType.STRING;
+  public PropertyMetaType<String> getJCRPropertyType() {
+    return PropertyMetaType.STRING;
   }
 
   public SimpleTypeProvider<?, ?> create() {

@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.type;
 
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.spi.type.SimpleType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.*;
@@ -49,37 +49,37 @@ public class PropertyTypeResolver {
   private static final Map<TypeInfo, ValueTypeInfoImpl> defaultTypeMappings;
 
   /** . */
-  private static final Map<ClassTypeInfo, JCRPropertyType<?>> jcrTypes;
+  private static final Map<ClassTypeInfo, PropertyMetaType<?>> jcrTypes;
 
   static {
 
     // The base mappings
     Map<TypeInfo, ValueTypeInfoImpl> _typeMapping = new HashMap<TypeInfo, ValueTypeInfoImpl>();
-    _typeMapping.put(typeDomain.resolve(int.class), new ValueTypeInfoImpl<Long>(SimpleTypeProviders.PRIMITIVE_INTEGER.class, JCRPropertyType.LONG));
-    _typeMapping.put(typeDomain.resolve(Integer.class), new ValueTypeInfoImpl<Long>(SimpleTypeProviders.INTEGER.class, JCRPropertyType.LONG));
-    _typeMapping.put(typeDomain.resolve(long.class), new ValueTypeInfoImpl<Long>(SimpleTypeProviders.PRIMITIVE_LONG.class, JCRPropertyType.LONG));
-    _typeMapping.put(typeDomain.resolve(Long.class), new ValueTypeInfoImpl<Long>(SimpleTypeProviders.LONG.class, JCRPropertyType.LONG));
-    _typeMapping.put(typeDomain.resolve(boolean.class), new ValueTypeInfoImpl<Boolean>(SimpleTypeProviders.PRIMITIVE_BOOLEAN.class, JCRPropertyType.BOOLEAN));
-    _typeMapping.put(typeDomain.resolve(Boolean.class), new ValueTypeInfoImpl<Boolean>(SimpleTypeProviders.BOOLEAN.class, JCRPropertyType.BOOLEAN));
-    _typeMapping.put(typeDomain.resolve(float.class), new ValueTypeInfoImpl<Double>(SimpleTypeProviders.PRIMITIVE_FLOAT.class, JCRPropertyType.DOUBLE));
-    _typeMapping.put(typeDomain.resolve(Float.class), new ValueTypeInfoImpl<Double>(SimpleTypeProviders.FLOAT.class, JCRPropertyType.DOUBLE));
-    _typeMapping.put(typeDomain.resolve(double.class), new ValueTypeInfoImpl<Double>(SimpleTypeProviders.PRIMITIVE_DOUBLE.class, JCRPropertyType.DOUBLE));
-    _typeMapping.put(typeDomain.resolve(Double.class), new ValueTypeInfoImpl<Double>(SimpleTypeProviders.DOUBLE.class, JCRPropertyType.DOUBLE));
-    _typeMapping.put(typeDomain.resolve(String.class), new ValueTypeInfoImpl<String>(SimpleTypeProviders.STRING.class, JCRPropertyType.STRING));
-    _typeMapping.put(typeDomain.resolve(InputStream.class), new ValueTypeInfoImpl<InputStream>(SimpleTypeProviders.BINARY.class, JCRPropertyType.BINARY));
-    _typeMapping.put(typeDomain.resolve(byte[].class), new ValueTypeInfoImpl<InputStream>(SimpleTypeProviders.BYTE_ARRAY.class, JCRPropertyType.BINARY));
-    _typeMapping.put(typeDomain.resolve(Date.class), new ValueTypeInfoImpl<Calendar>(SimpleTypeProviders.DATE.class, JCRPropertyType.DATE));
+    _typeMapping.put(typeDomain.resolve(int.class), new ValueTypeInfoImpl<Long>(SimpleTypeProviders.PRIMITIVE_INTEGER.class, PropertyMetaType.LONG));
+    _typeMapping.put(typeDomain.resolve(Integer.class), new ValueTypeInfoImpl<Long>(SimpleTypeProviders.INTEGER.class, PropertyMetaType.LONG));
+    _typeMapping.put(typeDomain.resolve(long.class), new ValueTypeInfoImpl<Long>(SimpleTypeProviders.PRIMITIVE_LONG.class, PropertyMetaType.LONG));
+    _typeMapping.put(typeDomain.resolve(Long.class), new ValueTypeInfoImpl<Long>(SimpleTypeProviders.LONG.class, PropertyMetaType.LONG));
+    _typeMapping.put(typeDomain.resolve(boolean.class), new ValueTypeInfoImpl<Boolean>(SimpleTypeProviders.PRIMITIVE_BOOLEAN.class, PropertyMetaType.BOOLEAN));
+    _typeMapping.put(typeDomain.resolve(Boolean.class), new ValueTypeInfoImpl<Boolean>(SimpleTypeProviders.BOOLEAN.class, PropertyMetaType.BOOLEAN));
+    _typeMapping.put(typeDomain.resolve(float.class), new ValueTypeInfoImpl<Double>(SimpleTypeProviders.PRIMITIVE_FLOAT.class, PropertyMetaType.DOUBLE));
+    _typeMapping.put(typeDomain.resolve(Float.class), new ValueTypeInfoImpl<Double>(SimpleTypeProviders.FLOAT.class, PropertyMetaType.DOUBLE));
+    _typeMapping.put(typeDomain.resolve(double.class), new ValueTypeInfoImpl<Double>(SimpleTypeProviders.PRIMITIVE_DOUBLE.class, PropertyMetaType.DOUBLE));
+    _typeMapping.put(typeDomain.resolve(Double.class), new ValueTypeInfoImpl<Double>(SimpleTypeProviders.DOUBLE.class, PropertyMetaType.DOUBLE));
+    _typeMapping.put(typeDomain.resolve(String.class), new ValueTypeInfoImpl<String>(SimpleTypeProviders.STRING.class, PropertyMetaType.STRING));
+    _typeMapping.put(typeDomain.resolve(InputStream.class), new ValueTypeInfoImpl<InputStream>(SimpleTypeProviders.BINARY.class, PropertyMetaType.BINARY));
+    _typeMapping.put(typeDomain.resolve(byte[].class), new ValueTypeInfoImpl<InputStream>(SimpleTypeProviders.BYTE_ARRAY.class, PropertyMetaType.BINARY));
+    _typeMapping.put(typeDomain.resolve(Date.class), new ValueTypeInfoImpl<Calendar>(SimpleTypeProviders.DATE.class, PropertyMetaType.DATE));
 
     //
-    Map<ClassTypeInfo, JCRPropertyType<?>> _jcrTypes = new HashMap<ClassTypeInfo, JCRPropertyType<?>>();
-    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.STRING.class), JCRPropertyType.STRING);
-    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.PATH.class), JCRPropertyType.PATH);
-    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.NAME.class), JCRPropertyType.NAME);
-    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.LONG.class), JCRPropertyType.LONG);
-    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.DOUBLE.class), JCRPropertyType.DOUBLE);
-    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.BOOLEAN.class), JCRPropertyType.BOOLEAN);
-    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.BINARY.class), JCRPropertyType.BINARY);
-    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.DATE.class), JCRPropertyType.DATE);
+    Map<ClassTypeInfo, PropertyMetaType<?>> _jcrTypes = new HashMap<ClassTypeInfo, PropertyMetaType<?>>();
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.STRING.class), PropertyMetaType.STRING);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.PATH.class), PropertyMetaType.PATH);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.NAME.class), PropertyMetaType.NAME);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.LONG.class), PropertyMetaType.LONG);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.DOUBLE.class), PropertyMetaType.DOUBLE);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.BOOLEAN.class), PropertyMetaType.BOOLEAN);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.BINARY.class), PropertyMetaType.BINARY);
+    _jcrTypes.put((ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.DATE.class), PropertyMetaType.DATE);
 
     //
     defaultTypeMappings = _typeMapping;
@@ -93,7 +93,7 @@ public class PropertyTypeResolver {
     typeMappings = new HashMap<TypeInfo, ValueTypeInfoImpl>(defaultTypeMappings);
   }
 
-  public JCRPropertyType<?> resolveJCRPropertyType(TypeInfo cti) {
+  public PropertyMetaType<?> resolveJCRPropertyType(TypeInfo cti) {
     ValueTypeInfo vti = resolveType(cti);
     return vti != null ? vti.getJCRPropertyType() : null;
   }
@@ -131,7 +131,7 @@ public class PropertyTypeResolver {
           while (!current.getSuperClass().getName().equals(SimpleTypeProvider.class.getName())) {
             current = current.getSuperClass();
           }
-          JCRPropertyType aaaaa = jcrTypes.get(current);
+          PropertyMetaType aaaaa = jcrTypes.get(current);
 
           //
           ClassTypeInfo stp = (ClassTypeInfo)typeDomain.resolve(SimpleTypeProvider.class);

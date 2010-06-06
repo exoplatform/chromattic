@@ -19,7 +19,7 @@
 
 package org.chromattic.core.vt2;
 
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.TypeInfo;
@@ -30,7 +30,7 @@ import org.reflext.api.TypeInfo;
  */
 public class ValueTypeFactory {
 
-  public static <I> SimpleTypeProvider<I, ?> create(TypeInfo type, JCRPropertyType<I> jcrType) {
+  public static <I> SimpleTypeProvider<I, ?> create(TypeInfo type, PropertyMetaType<I> jcrType) {
     PropertyTypeResolver resolver = new PropertyTypeResolver();
 
     //

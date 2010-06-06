@@ -19,7 +19,7 @@
 
 package org.chromattic.core.vt2;
 
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.type.SimpleTypeProviders;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
@@ -67,49 +67,49 @@ public class ValueDefinition<I, E> {
       case PropertyType.STRING:
         return new ValueDefinition<String, String>(
           String.class,
-          JCRPropertyType.STRING,
+          PropertyMetaType.STRING,
           new SimpleTypeProviders.STRING(),
           null
         );
       case PropertyType.PATH:
         return new ValueDefinition<String, String>(
           String.class,
-          JCRPropertyType.PATH,
+          PropertyMetaType.PATH,
           new SimpleTypeProviders.PATH(),
           null
         );
       case PropertyType.NAME:
         return new ValueDefinition<String, String>(
           String.class,
-          JCRPropertyType.NAME,
+          PropertyMetaType.NAME,
           new SimpleTypeProviders.NAME(),
           null
         );
       case PropertyType.LONG:
         return new ValueDefinition<Long, Long>(
           Long.class,
-          JCRPropertyType.LONG,
+          PropertyMetaType.LONG,
           new SimpleTypeProviders.LONG(),
           null
         );
       case PropertyType.BOOLEAN:
         return new ValueDefinition<Boolean, Boolean>(
           Boolean.class,
-          JCRPropertyType.BOOLEAN,
+          PropertyMetaType.BOOLEAN,
           new SimpleTypeProviders.BOOLEAN(),
           null
         );
       case PropertyType.DOUBLE:
         return new ValueDefinition<Double, Double>(
           Double.class,
-          JCRPropertyType.DOUBLE,
+          PropertyMetaType.DOUBLE,
           new SimpleTypeProviders.DOUBLE(),
           null
         );
       case PropertyType.BINARY:
         return new ValueDefinition<InputStream, InputStream>(
           InputStream.class,
-          JCRPropertyType.BINARY,
+          PropertyMetaType.BINARY,
           new SimpleTypeProviders.BINARY(),
           null
         );
@@ -130,17 +130,17 @@ public class ValueDefinition<I, E> {
   private final List<String> defaultValue;
 
   /** . */
-  private final JCRPropertyType<I> jcrType;
+  private final PropertyMetaType<I> propertyMetaType;
 
   public ValueDefinition(
     Class realType,
-    JCRPropertyType<I> jcrType,
+    PropertyMetaType<I> propertyMetaType,
     SimpleTypeProvider<I, E> valueType,
     List<String> defaultValue) {
     this.realType = realType;
     this.valueType = valueType;
     this.defaultValue = defaultValue;
-    this.jcrType = jcrType;
+    this.propertyMetaType = propertyMetaType;
   }
 
   public boolean isPrimitive() {
@@ -172,11 +172,11 @@ public class ValueDefinition<I, E> {
    * @throws ClassCastException if the value does not meet the expected type
    */
   public Value get(ValueFactory factory, int expectedType, E value) throws RepositoryException, ClassCastException {
-    if (expectedType != PropertyType.UNDEFINED && expectedType != jcrType.getCode()) {
+    if (expectedType != PropertyType.UNDEFINED && expectedType != propertyMetaType.getCode()) {
       throw new ClassCastException("Cannot cast type " + valueType.getExternalType() + " to type " + expectedType);
     } else {
       I internal = valueType.getInternal(value);
-      return jcrType.getValue(factory, internal);
+      return propertyMetaType.getValue(factory, internal);
     }
   }
 
@@ -189,8 +189,8 @@ public class ValueDefinition<I, E> {
    * @throws ClassCastException if the value type is not the expected type
    */
   public E get(Value value) throws RepositoryException, ClassCastException {
-    if (value.getType() == jcrType.getCode()) {
-      I internal = jcrType.getValue(value);
+    if (value.getType() == propertyMetaType.getCode()) {
+      I internal = propertyMetaType.getValue(value);
       return valueType.getExternal(internal);
     } else {
       throw new ClassCastException();

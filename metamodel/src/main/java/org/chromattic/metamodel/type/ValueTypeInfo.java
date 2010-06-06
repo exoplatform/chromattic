@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.type;
 
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
 /**
@@ -28,7 +28,7 @@ import org.chromattic.spi.type.SimpleTypeProvider;
  */
 public interface ValueTypeInfo {
 
-  JCRPropertyType<?> getJCRPropertyType();
+  PropertyMetaType<?> getJCRPropertyType();
 
   SimpleTypeProvider<?, ?> create();
 

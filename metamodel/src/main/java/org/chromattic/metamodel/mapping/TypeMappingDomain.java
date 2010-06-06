@@ -30,7 +30,7 @@ import org.chromattic.metamodel.bean.value.TypeKind;
 import org.chromattic.metamodel.bean.value.ValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyType;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.metamodel.type.PropertyTypeResolver;
 import org.reflext.api.*;
@@ -139,7 +139,7 @@ public class TypeMappingDomain {
 
   private static <V> JCRPropertyMapping createProperty(
     String name,
-    JCRPropertyType jcrType,
+    PropertyMetaType jcrType,
     String[] defaultValue) {
 
     //
@@ -267,15 +267,15 @@ public class TypeMappingDomain {
 
         // Determine mapping
         PropertyTypeResolver resolver = new PropertyTypeResolver();
-        JCRPropertyType<?> jcrType = JCRPropertyType.get(roleProperty.type);
-        if (jcrType == null) {
-          jcrType = resolver.resolveJCRPropertyType(value.getTypeInfo());
+        PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(roleProperty.type);
+        if (propertyMetaType == null) {
+          propertyMetaType = resolver.resolveJCRPropertyType(value.getTypeInfo());
         }
 
         //
         JCRPropertyMapping memberMapping = createProperty(
           roleProperty.name,
-          jcrType,
+          propertyMetaType,
           defaultValues);
       SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(role.getDeclaringType(), memberMapping);
         PropertyMapping<SimpleMapping<JCRPropertyMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRPropertyMapping>>(propertyInfo, simpleMapping);
