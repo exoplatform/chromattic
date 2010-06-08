@@ -50,7 +50,7 @@ public class NodeAttributeTestCase extends AbstractTestCase {
   public void testPersistent() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("tna_a_a", "tna_a");
+    Node aNode = rootNode.addNode("tna_a_a", "nodeattribute:a");
     String aName = aNode.getName();
     String aId = aNode.getUUID();
     String aPath = aNode.getPath();
@@ -122,7 +122,7 @@ public class NodeAttributeTestCase extends AbstractTestCase {
   public void testRemoved() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("tna_a_a", "tna_a");
+    Node aNode = rootNode.addNode("tna_a_a", "nodeattribute:a");
     String aId = aNode.getUUID();
     session.save();
 

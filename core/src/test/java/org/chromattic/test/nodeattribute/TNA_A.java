@@ -29,7 +29,7 @@ import org.chromattic.api.annotations.WorkspaceName;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tna_a")
+@PrimaryType(name = "nodeattribute:a")
 public abstract class TNA_A {
 
   @Name

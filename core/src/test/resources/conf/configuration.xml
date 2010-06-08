@@ -39,6 +39,7 @@
  		      <value>jar:/org/chromattic/test/inheritance/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/lifecycle/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/methodinvocation/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/nodeattribute/nodetypes.xml</value>
  		      <value>jar:/conf/test-nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
@@ -57,6 +58,7 @@
           <property name="inheritance" value="inheritance"/>
           <property name="lifecycle" value="lifecycle"/>
           <property name="methodinvocation" value="methodinvocation"/>
+          <property name="nodeattribute" value="nodeattribute"/>
         </properties-param>
       </init-params>
     </component-plugin>
