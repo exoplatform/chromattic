@@ -16,26 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.methodinvocation.visibility;
 
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Property;
+@NodeTypeDefs package org.chromattic.test.methodinvocation;
 
-/**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- */
-@PrimaryType(name = "methodinvocation:a")
-public abstract class A {
-
-  @Property(name = "protectedproperty")
-  protected abstract String getProtectedProperty();
-
-  protected abstract void setProtectedProperty(String p);
-
-  @Property(name = "packageprotectedproperty")
-  abstract String getPackageProtectedProperty();
-
-  abstract void setPackageProtectedProperty(String p);
-
-}
+import org.chromattic.api.annotations.NodeTypeDefs;

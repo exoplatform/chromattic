@@ -27,7 +27,7 @@ import java.io.IOException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tmi_a")
+@PrimaryType(name = "methodinvocation:c")
 public abstract class C extends B {
 
   /** . */
