@@ -57,7 +57,7 @@ public class TypeGen {
       builder.writeTo(sw);
       System.out.println("sw = " + sw);
     }
-    catch (IOException e) {
+    catch (Exception e) {
       e.printStackTrace();
     }
   }

@@ -19,9 +19,6 @@
 
 package org.chromattic.metamodel.typegen;
 
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
@@ -41,9 +38,9 @@ public abstract class NodeTypeSerializer {
     this.nodeTypes = nodeTypes;
   }
 
-  public abstract void writeTo(Writer writer) throws IOException;
+  public abstract void writeTo(Writer writer) throws Exception;
 
-  public void writeTo() throws SAXException {
+  public final void writeTo() throws Exception {
     startNodeTypes();
 
     //
@@ -107,7 +104,7 @@ public abstract class NodeTypeSerializer {
     endNodeTypes();
   }
 
-  public void startNodeTypes() throws SAXException {
+  public void startNodeTypes() throws Exception {
   }
 
   public void startNodeType(
@@ -115,36 +112,36 @@ public abstract class NodeTypeSerializer {
     String name,
     boolean mixin,
     boolean orderableChildNodes,
-    Collection<String> superTypeNames) throws SAXException {
+    Collection<String> superTypeNames) throws Exception {
   }
 
-  public void startProperties() throws SAXException {
+  public void startProperties() throws Exception {
   }
 
   public void property(
     String name,
     int requiredType,
     boolean multiple,
-    Collection<String> defaultValues) throws SAXException {
+    Collection<String> defaultValues) throws Exception {
   }
 
-  public void endProperties() throws SAXException {
+  public void endProperties() throws Exception {
   }
 
-  public void startChildNodes() throws SAXException {
+  public void startChildNodes() throws Exception {
   }
 
   public void childNode(
     String name,
-    String nodeTypeName) throws SAXException {
+    String nodeTypeName) throws Exception {
   }
 
-  public void endChildNodes() throws SAXException {
+  public void endChildNodes() throws Exception {
   }
 
-  public void endNodeType() throws SAXException {
+  public void endNodeType() throws Exception {
   }
 
-  public void endNodeTypes() throws SAXException {
+  public void endNodeTypes() throws Exception {
   }
 }

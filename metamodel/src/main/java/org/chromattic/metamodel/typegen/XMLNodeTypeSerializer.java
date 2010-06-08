@@ -60,31 +60,26 @@ public class XMLNodeTypeSerializer extends NodeTypeSerializer {
   }
 
   @Override
-  public void writeTo(Writer writer) throws IOException {
-    try {
-      SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
-      TransformerHandler handler = factory.newTransformerHandler();
-      handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
-      handler.getTransformer().setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-      handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
+  public void writeTo(Writer writer) throws Exception {
+    SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+    TransformerHandler handler = factory.newTransformerHandler();
+    handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
+    handler.getTransformer().setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
 
-      // This is proprietary, so it's a best effort
-      handler.getTransformer().setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+    // This is proprietary, so it's a best effort
+    handler.getTransformer().setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
-      //
-      handler.setResult(new StreamResult(writer));
+    //
+    handler.setResult(new StreamResult(writer));
 
-      //
-      docXML = new DocumentEmitter(handler, handler);
-      docXML.comment("Node type generation prototype");
-      nodeTypesXML = docXML.documentElement("nodeTypes");
+    //
+    docXML = new DocumentEmitter(handler, handler);
+    docXML.comment("Node type generation prototype");
+    nodeTypesXML = docXML.documentElement("nodeTypes");
 
-      //
-      writeTo();
-    }
-    catch (Exception e) {
-      throw new UndeclaredThrowableException(e);
-    }
+    //
+    writeTo();
   }
 
   public void startNodeTypes() throws SAXException {

@@ -168,7 +168,8 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
     }
   }
 
-  public void writeTo(Writer writer) throws IOException {
+  public void writeTo(Writer writer) throws Exception {
     new XMLNodeTypeSerializer(new ArrayList<NodeType>(nodeTypes.values())).writeTo(writer);
+    new CNDNodeTypeSerializer(new ArrayList<NodeType>(nodeTypes.values())).writeTo(writer);
   }
 }
