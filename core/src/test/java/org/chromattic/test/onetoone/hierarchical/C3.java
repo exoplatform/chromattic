@@ -27,7 +27,7 @@ import org.chromattic.api.annotations.PrimaryType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "toto_c3")
+@PrimaryType(name = "onetoone_h:c3")
 public abstract class C3 extends C1 {
 
 //  @OneToOne

@@ -27,19 +27,19 @@ import org.chromattic.api.annotations.MappedBy;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "toto_c4")
+@PrimaryType(name = "onetoone_h:c4")
 public abstract class C4 {
 
   @OneToOne
   @MappedBy("c2")
-  public abstract C1 getParent1();
+  public abstract C2 getParent1();
 
-  public abstract void setParent1(C1 c1);
+  public abstract void setParent1(C2 c1);
 
   @OneToOne
   @MappedBy("c3")
-  public abstract C1 getParent2();
+  public abstract C3 getParent2();
 
-  public abstract void setParent2(C1 c1);
+  public abstract void setParent2(C3 c1);
 
 }

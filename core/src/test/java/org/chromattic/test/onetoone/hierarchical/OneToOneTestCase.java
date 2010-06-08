@@ -40,13 +40,13 @@ public class OneToOneTestCase extends AbstractTestCase {
     Node rootNode = session.getRoot();
 
     //
-    Node aNode = rootNode.addNode("toto_a_a", "toto_a");
+    Node aNode = rootNode.addNode("toto_a_a", getNodeTypeName(TOTO_A_3.class));
     TOTO_A_3 a = session.findByNode(TOTO_A_3.class, aNode);
     assertNotNull(a);
     assertNull(a.getB());
 
     //
-    Node bNode = aNode.addNode("b", "toto_b");
+    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_3.class));
     TOTO_B_3 b = session.findByNode(TOTO_B_3.class, bNode);
     assertNotNull(b);
     assertSame(a, b.getA());
@@ -56,9 +56,9 @@ public class OneToOneTestCase extends AbstractTestCase {
   public void testChildAndParentLoad() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("toto_a_b", "toto_a");
+    Node aNode = rootNode.addNode("toto_a_b", getNodeTypeName(TOTO_A_3.class));
     String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "toto_b");
+    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_3.class));
     String bId = bNode.getUUID();
     rootNode.save();
 

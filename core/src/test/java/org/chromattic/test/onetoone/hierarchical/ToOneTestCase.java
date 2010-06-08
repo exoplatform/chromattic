@@ -41,12 +41,12 @@ public class ToOneTestCase extends AbstractTestCase {
     Node rootNode = session.getRoot();
 
     //
-    Node aNode = rootNode.addNode("toto_a_a", "toto_a");
+    Node aNode = rootNode.addNode("toto_a_a", getNodeTypeName(TOTO_A_2.class));
     TOTO_A_2 a = session.findByNode(TOTO_A_2.class, aNode);
     assertNotNull(a);
 
     //
-    Node bNode = aNode.addNode("b", "toto_b");
+    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_2.class));
     TOTO_B_2 b = session.findByNode(TOTO_B_2.class, bNode);
     assertNotNull(b);
     assertSame(a, b.getA());
@@ -55,9 +55,9 @@ public class ToOneTestCase extends AbstractTestCase {
   public void testChildToParentLoad() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("toto_a_b", "toto_a");
+    Node aNode = rootNode.addNode("toto_a_b", getNodeTypeName(TOTO_A_2.class));
     String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "toto_b");
+    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_2.class));
     String bId = bNode.getUUID();
     rootNode.save();
 
@@ -74,7 +74,7 @@ public class ToOneTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    TOTO_A_2 a = session.create(TOTO_A_2.class, "toto_a_a");
+    TOTO_A_2 a = session.create(TOTO_A_2.class, getNodeTypeName(TOTO_A_2.class));
     String aId = session.persist(a);
     Node aNode = session.getJCRSession().getNodeByUUID(aId);
     assertNotNull(aNode);

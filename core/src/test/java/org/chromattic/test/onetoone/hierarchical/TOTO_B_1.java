@@ -25,6 +25,6 @@ import org.chromattic.api.annotations.PrimaryType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "toto_b")
+@PrimaryType(name = "onetoone_h:b1")
 public class TOTO_B_1 {
 }

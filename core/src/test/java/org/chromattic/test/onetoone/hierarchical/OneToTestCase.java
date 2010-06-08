@@ -44,14 +44,14 @@ public class OneToTestCase extends AbstractTestCase {
 
     //
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("toto_a_a", "toto_a");
+    Node aNode = rootNode.addNode("toto_a_a", getNodeTypeName(TOTO_A_1.class));
     String aId = aNode.getUUID();
     TOTO_A_1 a = session.findByNode(TOTO_A_1.class, aNode);
     assertNotNull(a);
     assertNull(a.getB());
 
     //
-    Node bNode = aNode.addNode("b", "toto_b");
+    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_1.class));
     String bId = bNode.getUUID();
     TOTO_B_1 b = a.getB();
     assertNotNull(b);
@@ -85,7 +85,7 @@ public class OneToTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    TOTO_A_1 a = session.create(TOTO_A_1.class, "toto_a_a");
+    TOTO_A_1 a = session.create(TOTO_A_1.class, getNodeTypeName(TOTO_A_1.class));
     String aId = session.persist(a);
     Node aNode = session.getJCRSession().getNodeByUUID(aId);
     assertNotNull(aNode);
