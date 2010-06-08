@@ -18,9 +18,7 @@
  */
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.ChromatticException;
 import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.core.DomainSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.EventQueue;
 import org.chromattic.test.support.LifeCycleEventType;
@@ -36,18 +34,18 @@ import javax.jcr.nodetype.ConstraintViolationException;
 public class DestroyTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TLF_A.class);
+    addClass(A.class);
     addClass(M1.class);
     addClass(M2.class);
   }
 
   public void testTransitiveDestroy() throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.insert(TLF_A.class, "bar");
+    A a = session.insert(A.class, "bar");
     String aId = session.getId(a);
     String aPath = session.getPath(a);
     String aName = session.getName(a);
-    TLF_A b = session.insert(a, TLF_A.class, "foo");
+    A b = session.insert(a, A.class, "foo");
     String bId = session.getId(b);
     String bPath = session.getPath(b);
     String bName = session.getName(b);
@@ -64,16 +62,16 @@ public class DestroyTestCase extends AbstractTestCase {
 
   public void testDestroyTransitiveAbsentChild() throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.insert(TLF_A.class, "bar");
+    A a = session.insert(A.class, "bar");
     String aId = session.getId(a);
     String aPath = session.getPath(a);
     String aName = session.getName(a);
-    TLF_A b = session.insert(a, TLF_A.class, "foo");
+    A b = session.insert(a, A.class, "foo");
     session.save();
     session.close();
 
     session = login();
-    a = session.findByPath(TLF_A.class, "bar");
+    a = session.findByPath(A.class, "bar");
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     session.remove(a);
@@ -84,12 +82,12 @@ public class DestroyTestCase extends AbstractTestCase {
 
   public void testDestroyTransitiveLoadedDescendantWithAbsentParent() throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.insert(TLF_A.class, "bar");
+    A a = session.insert(A.class, "bar");
     String aId = session.getId(a);
     String aPath = session.getPath(a);
     String aName = session.getName(a);
-    TLF_A b = session.insert(a, TLF_A.class, "foo");
-    TLF_A c = session.insert(b, TLF_A.class, "foo");
+    A b = session.insert(a, A.class, "foo");
+    A c = session.insert(b, A.class, "foo");
     String cId = session.getId(c);
     String cPath = session.getPath(c);
     String cName = session.getName(c);
@@ -97,8 +95,8 @@ public class DestroyTestCase extends AbstractTestCase {
     session.close();
 
     session = login();
-    a = session.findByPath(TLF_A.class, "bar");
-    c = session.findById(TLF_A.class, cId);
+    a = session.findByPath(A.class, "bar");
+    c = session.findById(A.class, cId);
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     session.remove(a);

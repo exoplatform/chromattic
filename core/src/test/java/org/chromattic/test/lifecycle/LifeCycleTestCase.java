@@ -37,20 +37,20 @@ import javax.jcr.ItemNotFoundException;
 public class LifeCycleTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TLF_A.class);
+    addClass(A.class);
   }
 
   public void testSameClass() throws RepositoryException {
     ChromatticSession session = login();
-    TLF_A a = session.create(TLF_A.class, "tlf_a_c");
-    TLF_A b = session.create(TLF_A.class, "tlf_a_d");
+    A a = session.create(A.class, "tlf_a_c");
+    A b = session.create(A.class, "tlf_a_d");
     assertSame(a.getClass(), b.getClass());
   }
 
   public void testLoad() throws RepositoryException {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    String id = rootNode.addNode("tlf_a_a", "tlf_a").getUUID();
+    String id = rootNode.addNode("tlf_a_a", "lifecycle:a").getUUID();
     rootNode.save();
 
     //
@@ -58,12 +58,12 @@ public class LifeCycleTestCase extends AbstractTestCase {
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
-    TLF_A.constructed = 0;
-    TLF_A a = session.findById(TLF_A.class, id);
+    A.constructed = 0;
+    A a = session.findById(A.class, id);
     listener.assertLifeCycleEvent(LifeCycleEventType.LOADED, session.getId(a), session.getPath(a), session.getName(a), a);
     listener.assertEmpty();
     assertEquals(Status.PERSISTENT, session.getStatus(a));
-    assertEquals(1, TLF_A.constructed);
+    assertEquals(1, A.constructed);
     assertNotNull(a);
   }
 
@@ -72,17 +72,17 @@ public class LifeCycleTestCase extends AbstractTestCase {
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
-    TLF_A.constructed = 0;
-    TLF_A a = session.insert(TLF_A.class, "tlf_a_b");
+    A.constructed = 0;
+    A a = session.insert(A.class, "tlf_a_b");
     listener.assertLifeCycleEvent(LifeCycleEventType.CREATED, null, null, null, a);
     listener.assertLifeCycleEvent(LifeCycleEventType.ADDED, session.getId(a), session.getPath(a), session.getName(a), a);
     listener.assertEmpty();
-    assertEquals(1, TLF_A.constructed);
+    assertEquals(1, A.constructed);
     String id = session.getId(a);
-    TLF_A b = session.findById(TLF_A.class, id);
+    A b = session.findById(A.class, id);
     listener.assertEmpty();
     assertNotNull(b);
-    assertEquals(1, TLF_A.constructed);
+    assertEquals(1, A.constructed);
     assertEquals(Status.PERSISTENT, session.getStatus(b));
   }
 
@@ -91,7 +91,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
-    TLF_A a = session.create(TLF_A.class, "tlf_a_c");
+    A a = session.create(A.class, "tlf_a_c");
     listener.assertLifeCycleEvent(LifeCycleEventType.CREATED, null, null, null, a);
     listener.assertEmpty();
     assertEquals(Status.TRANSIENT, session.getStatus(a));
@@ -99,7 +99,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
     listener.assertLifeCycleEvent(LifeCycleEventType.ADDED, session.getId(a), session.getPath(a), session.getName(a), a);
     listener.assertEmpty();
     assertEquals(Status.PERSISTENT, session.getStatus(a));
-    TLF_A a2 = session.findById(TLF_A.class, id);
+    A a2 = session.findById(A.class, id);
     assertSame(a2, a);
   }
 
@@ -129,7 +129,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
 
   private void testRemoveTransient(boolean withMethod) throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.create(TLF_A.class, "tlf_a_c");
+    A a = session.create(A.class, "tlf_a_c");
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
@@ -147,7 +147,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
 
   private void testRemovePersistentUnsaved(boolean withMethod) throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.create(TLF_A.class, "tlf_a_c");
+    A a = session.create(A.class, "tlf_a_c");
     String aId = session.persist(a);
     String aPath = session.getPath(a);
     String aName = session.getName(a);
@@ -162,7 +162,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
     listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, aId, aPath, aName, a);
     listener.assertEmpty();
     assertEquals(Status.REMOVED, session.getStatus(a));
-    assertNull(session.findById(TLF_A.class, aId));
+    assertNull(session.findById(A.class, aId));
     try {
       session.getJCRSession().getNodeByUUID(aId);
       fail();
@@ -177,7 +177,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
 
   private void testRemovePersistentSaved(boolean withMethod) throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.create(TLF_A.class, "tlf_a_c");
+    A a = session.create(A.class, "tlf_a_c");
     String aId = session.persist(a);
     String aPath = session.getPath(a);
     String aName = session.getName(a);
@@ -185,7 +185,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
 
     //
     session = login() ;
-    a = session.findById(TLF_A.class, aId);
+    a = session.findById(A.class, aId);
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
@@ -197,7 +197,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
     listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, aId, aPath, aName, a);
     listener.assertEmpty();
     assertEquals(Status.REMOVED, session.getStatus(a));
-    assertNull(session.findById(TLF_A.class, aId));
+    assertNull(session.findById(A.class, aId));
     try {
       session.getJCRSession().getNodeByUUID(aId);
       fail();

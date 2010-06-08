@@ -34,15 +34,23 @@ public class NodeDefinition {
   private final String name;
 
   /** . */
+  private final boolean mandatory;
+
+  /** . */
   final Set<NodeTypeMapping> mappings;
 
-  public NodeDefinition(String name) {
+  public NodeDefinition(String name, boolean mandatory) {
     this.name = name;
+    this.mandatory = mandatory;
     this.mappings = new HashSet<NodeTypeMapping>();
   }
 
   public String getName() {
     return name;
+  }
+
+  public boolean isMandatory() {
+    return mandatory;
   }
 
   public String getNodeTypeName() {

@@ -33,14 +33,14 @@ import javax.jcr.Node;
 public class InsertTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TLF_A.class);
+    addClass(A.class);
   }
 
   public void testFromRoot() throws Exception {
     ChromatticSessionImpl session = login();
 
     //
-    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    A a = session.insert(A.class, "tlf_a");
     assertNotNull(a);
     assertEquals("tlf_a", session.getName(a));
     assertEquals(Status.PERSISTENT, session.getStatus(a));
@@ -49,7 +49,7 @@ public class InsertTestCase extends AbstractTestCase {
 
     //
     try {
-      session.insert(TLF_A.class, "/");
+      session.insert(A.class, "/");
       fail();
     }
     catch (IllegalArgumentException ignore) {
@@ -57,7 +57,7 @@ public class InsertTestCase extends AbstractTestCase {
 
     //
     try {
-      session.insert(TLF_A.class, ".");
+      session.insert(A.class, ".");
       fail();
     }
     catch (IllegalArgumentException ignore) {
@@ -68,13 +68,13 @@ public class InsertTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
 
     //
-    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    A a = session.insert(A.class, "tlf_a");
     assertNotNull(a);
     assertEquals("tlf_a", session.getName(a));
     assertEquals(Status.PERSISTENT, session.getStatus(a));
 
     //
-    TLF_A b = session.insert(a, TLF_A.class, "b");
+    A b = session.insert(a, A.class, "b");
     assertNotNull(b);
     assertEquals("b", session.getName(b));
     assertEquals(Status.PERSISTENT, session.getStatus(b));
@@ -83,7 +83,7 @@ public class InsertTestCase extends AbstractTestCase {
 
     //
     try {
-      session.insert(a, TLF_A.class, "/");
+      session.insert(a, A.class, "/");
       fail();
     }
     catch (IllegalArgumentException ignore) {
@@ -91,7 +91,7 @@ public class InsertTestCase extends AbstractTestCase {
 
     //
     try {
-      session.insert(a, TLF_A.class, ".");
+      session.insert(a, A.class, ".");
       fail();
     }
     catch (IllegalArgumentException ignore) {
@@ -105,13 +105,13 @@ public class InsertTestCase extends AbstractTestCase {
 
   public void testNonPersistentParent() throws Exception {
     ChromatticSessionImpl session = login();
-    TLF_A a = session.create(TLF_A.class);
+    A a = session.create(A.class);
     assertThrowsIAE(session, a, Object.class, "a");
   }
 
   public void testNonChromatticObject() throws Exception {
     ChromatticSessionImpl session = login();
-    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    A a = session.insert(A.class, "tlf_a");
     assertThrowsIAE(session, Object.class, "a");
     assertThrowsIAE(session, a, Object.class, "a");
   }

@@ -89,7 +89,8 @@ public abstract class NodeTypeSerializer {
       for (NodeDefinition childNodeDefinition : nodeType.getChildNodeDefinitions().values()) {
         childNode(
           childNodeDefinition.getName(),
-          childNodeDefinition.getNodeTypeName()
+          childNodeDefinition.getNodeTypeName(),
+          childNodeDefinition.isMandatory()
         );
       }
 
@@ -133,7 +134,8 @@ public abstract class NodeTypeSerializer {
 
   public void childNode(
     String name,
-    String nodeTypeName) throws Exception {
+    String nodeTypeName,
+    boolean mandatory) throws Exception {
   }
 
   public void endChildNodes() throws Exception {

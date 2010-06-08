@@ -43,8 +43,26 @@ public class OneToOneTestCase extends TestCase {
     assertEquals(Collections.set("child"), a1NT.getChildNodeDefinitions().keySet());
     assertEquals(0, a1NT.getPropertyDefinitions().size());
     assertEquals("a2", a1NT.getChildNodeDefinition("child").getNodeTypeName());
+    assertEquals(false, a1NT.getChildNodeDefinition("child").isMandatory());
     assertEquals(Collections.<String>set(), a2NT.getChildNodeDefinitions().keySet());
     assertEquals(0, a2NT.getPropertyDefinitions().size());
+  }
+
+  public void testMandatoryMappedBy() throws Exception {
+    TypeGen gen = new TypeGen();
+    ClassTypeInfo c1 = gen.addType(C1.class);
+    ClassTypeInfo c2 = gen.addType(C2.class);
+    gen.generate();
+    NodeType c1NT = gen.getNodeType(c1);
+    assertEquals("c1", c1NT.getName());
+    NodeType c2NT = gen.getNodeType(c2);
+    assertEquals("c2", c2NT.getName());
+    assertEquals(Collections.set("child"), c1NT.getChildNodeDefinitions().keySet());
+    assertEquals(0, c1NT.getPropertyDefinitions().size());
+    assertEquals("c2", c1NT.getChildNodeDefinition("child").getNodeTypeName());
+    assertEquals(true, c1NT.getChildNodeDefinition("child").isMandatory());
+    assertEquals(Collections.<String>set(), c2NT.getChildNodeDefinitions().keySet());
+    assertEquals(0, c2NT.getPropertyDefinitions().size());
   }
 
   public void testRelatedMappedBy() throws Exception {
@@ -59,6 +77,7 @@ public class OneToOneTestCase extends TestCase {
     assertEquals(Collections.set("child"), b1NT.getChildNodeDefinitions().keySet());
     assertEquals(0, b1NT.getPropertyDefinitions().size());
     assertEquals("b2", b1NT.getChildNodeDefinition("child").getNodeTypeName());
+    assertEquals(false, b1NT.getChildNodeDefinition("child").isMandatory());
     assertEquals(0, b2NT.getChildNodeDefinitions().size());
     assertEquals(0, b2NT.getPropertyDefinitions().size());
   }
@@ -72,5 +91,6 @@ public class OneToOneTestCase extends TestCase {
     assertEquals(Collections.set("child"), cNT.getChildNodeDefinitions().keySet());
     assertEquals(0, cNT.getPropertyDefinitions().size());
     assertEquals("c", cNT.getChildNodeDefinition("child").getNodeTypeName());
+    assertEquals(false, cNT.getChildNodeDefinition("child").isMandatory());
   }
 }

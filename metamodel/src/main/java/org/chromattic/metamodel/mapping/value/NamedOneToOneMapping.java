@@ -30,13 +30,39 @@ import org.chromattic.api.RelationshipType;
 public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneMapping> {
 
   /** . */
+  public static final int MODE_OWNER = 0;
+
+  /** . */
+  public static final int MODE_MANDATORY_OWNER = 1;
+
+  /** . */
+  public static final int MODE_OWNED = 2;
+
+  /** . */
   private final String name;
 
-  public NamedOneToOneMapping(NodeTypeMapping definer, NodeTypeMapping owner, NodeTypeMapping relatedType, String name, RelationshipType type, boolean owning) {
-    super(definer, owner, relatedType, type, owning);
+  /** . */
+  private final int mode;
+
+  public NamedOneToOneMapping(NodeTypeMapping definer, NodeTypeMapping owner, NodeTypeMapping relatedType, String name, RelationshipType type, int mode) {
+    super(definer, owner, relatedType, type);
+
+    //
+    if (mode < 0 || mode > 2) {
+      throw new IllegalArgumentException();
+    }
 
     //
     this.name = name;
+    this.mode = mode;
+  }
+
+  public boolean isOwning() {
+    return mode != MODE_OWNED;
+  }
+
+  public int getMode() {
+    return mode;
   }
 
   public String getName() {

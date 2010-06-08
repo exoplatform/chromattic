@@ -33,14 +33,14 @@ import javax.jcr.Node;
 public class PersistTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TLF_A.class);
+    addClass(A.class);
   }
 
   public void testFromRoot() throws Exception {
     ChromatticSessionImpl session = login();
 
     //
-    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    A a = session.insert(A.class, "tlf_a");
     assertNotNull(a);
     assertEquals("tlf_a", session.getName(a));
     assertEquals(Status.PERSISTENT, session.getStatus(a));
@@ -48,7 +48,7 @@ public class PersistTestCase extends AbstractTestCase {
     assertEquals(session.getId(a), aNode.getUUID());
 
     //
-    TLF_A b = session.create(TLF_A.class, "foo");
+    A b = session.create(A.class, "foo");
 
     //
     try {
@@ -71,13 +71,13 @@ public class PersistTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
 
     //
-    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    A a = session.insert(A.class, "tlf_a");
     assertNotNull(a);
     assertEquals("tlf_a", session.getName(a));
     assertEquals(Status.PERSISTENT, session.getStatus(a));
 
     //
-    TLF_A b = session.create(TLF_A.class);
+    A b = session.create(A.class);
     session.persist(a, b, "b");
     assertNotNull(b);
     assertEquals("b", session.getName(b));
@@ -86,7 +86,7 @@ public class PersistTestCase extends AbstractTestCase {
     assertEquals(session.getId(b), bNode.getUUID());
 
     //
-    TLF_A c = session.create(TLF_A.class);
+    A c = session.create(A.class);
 
     //
     try {
@@ -109,11 +109,11 @@ public class PersistTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
 
     //
-    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    A a = session.insert(A.class, "tlf_a");
     assertNotNull(a);
     assertEquals("tlf_a", session.getName(a));
     assertEquals(Status.PERSISTENT, session.getStatus(a));
-    TLF_A b = session.create(TLF_A.class, "b");
+    A b = session.create(A.class, "b");
     assertEquals("b", session.getName(b));
     assertEquals(Status.TRANSIENT, session.getStatus(b));
     String bId = session.persist(a, b);
@@ -135,7 +135,7 @@ public class PersistTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
 
     //
-    TLF_A a = session.create(TLF_A.class, "tlf_a");
+    A a = session.create(A.class, "tlf_a");
     assertNotNull(a);
     assertEquals("tlf_a", session.getName(a));
     assertEquals(Status.TRANSIENT, session.getStatus(a));
@@ -155,7 +155,7 @@ public class PersistTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    TLF_A a = session.create(TLF_A.class);
+    A a = session.create(A.class);
     assertNotNull(a);
     assertEquals(null, session.getName(a));
     assertEquals(Status.TRANSIENT, session.getStatus(a));
@@ -173,11 +173,11 @@ public class PersistTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    A a = session.insert(A.class, "tlf_a");
     assertNotNull(a);
     assertEquals("tlf_a", session.getName(a));
     assertEquals(Status.PERSISTENT, session.getStatus(a));
-    TLF_A b = session.create(TLF_A.class);
+    A b = session.create(A.class);
     assertEquals(null, session.getName(b));
     assertEquals(Status.TRANSIENT, session.getStatus(b));
     try {
@@ -194,30 +194,30 @@ public class PersistTestCase extends AbstractTestCase {
 
   public void testNonChromatticParent() throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.create(TLF_A.class);
+    A a = session.create(A.class);
     assertThrowsIAE(session, new Object(), a);
     assertThrowsIAE(session, new Object(), a, "a");
   }
 
   public void testTransientParent() throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.create(TLF_A.class);
-    TLF_A b = session.create(TLF_A.class);
+    A a = session.create(A.class);
+    A b = session.create(A.class);
     assertThrowsIAE(session, a, b);
     assertThrowsIAE(session, a, b, "a");
   }
 
   public void testPersistentObject() throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.insert(TLF_A.class, "a");
-    TLF_A b = session.insert(TLF_A.class, "b");
+    A a = session.insert(A.class, "a");
+    A b = session.insert(A.class, "b");
     assertThrowsIAE(session, a, b);
     assertThrowsIAE(session, a, b, "a");
   }
 
   public void testNonChromatticObject() throws Exception {
     ChromatticSession session = login();
-    TLF_A a = session.insert(TLF_A.class, "tlf_a");
+    A a = session.insert(A.class, "tlf_a");
     assertThrowsIAE(session, new Object());
     assertThrowsIAE(session, new Object(), "a");
     assertThrowsIAE(session, a, new Object());

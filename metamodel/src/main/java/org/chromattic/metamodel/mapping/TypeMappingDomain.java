@@ -352,10 +352,11 @@ public class TypeMappingDomain {
                   AnnotatedPropertyQualifier<Owner> owner = propertyInfo.getAnnotated(Owner.class);
                   if (owner != null) {
                     NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-                    hierarchyMapping = new NamedOneToOneMapping(definer, nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, true);
+                    int mode = propertyInfo.getAnnotated(Mandatory.class) != null ? NamedOneToOneMapping.MODE_MANDATORY_OWNER : NamedOneToOneMapping.MODE_OWNER;
+                    hierarchyMapping = new NamedOneToOneMapping(definer, nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, mode);
                   } else {
                     NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-                    hierarchyMapping = new NamedOneToOneMapping(definer, nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, false);
+                    hierarchyMapping = new NamedOneToOneMapping(definer, nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), RelationshipType.HIERARCHIC, NamedOneToOneMapping.MODE_OWNED);
                   }
                   oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
                   propertyMappings.add(oneToOneMapping);

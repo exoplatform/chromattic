@@ -56,7 +56,7 @@ public final class ChromatticSessionImpl implements ChromatticSession {
 
   public String getId(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
-      throw new NullPointerException();
+      throw new NullPointerException("Cannot obtain id from null parameter");
     }
 
     //

@@ -22,10 +22,10 @@ package org.chromattic.metamodel.typegen;
 import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.metamodel.mapping.value.NamedOneToOneMapping;
 import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
-import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -99,7 +99,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   @Override
   protected void oneToManyHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {
     if (definer.equals(current.mapping.getType())) {
-      current.addChildNodeType("*", relatedMapping);
+      current.addChildNodeType("*", false, relatedMapping);
     }
   }
 
@@ -120,17 +120,25 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   @Override
   protected void manyToOneHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {
     if (definer.equals(current.mapping.getType())) {
-      resolve(relatedMapping).addChildNodeType("*", current.mapping);
+      resolve(relatedMapping).addChildNodeType("*", false, current.mapping);
     }
   }
 
   @Override
-  protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean owner) {
+  protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, int mode) {
     if (definer.equals(current.mapping.getType())) {
-      if (owner) {
-        current.addChildNodeType(name, relatedMapping);
-      } else {
-        resolve(relatedMapping).addChildNodeType(name, current.mapping);
+      switch (mode) {
+        case NamedOneToOneMapping.MODE_OWNER:
+          current.addChildNodeType(name, false, relatedMapping);
+          break;
+        case NamedOneToOneMapping.MODE_MANDATORY_OWNER:
+          current.addChildNodeType(name, true, relatedMapping);
+          break;
+        case NamedOneToOneMapping.MODE_OWNED:
+          resolve(relatedMapping).addChildNodeType(name, false, current.mapping);
+          break;
+        default:
+          throw new AssertionError();
       }
     }
   }

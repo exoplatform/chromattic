@@ -28,17 +28,9 @@ import org.chromattic.metamodel.mapping.NodeTypeMapping;
  */
 public abstract class AbstractOneToOneMapping<T extends AbstractOneToOneMapping<T>> extends RelationshipMapping<T, T> {
 
-  /** . */
-  private final boolean owning;
 
-  public AbstractOneToOneMapping(NodeTypeMapping definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type, boolean owning) {
+  public AbstractOneToOneMapping(NodeTypeMapping definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
     super(definer, owner, relatedType, Multiplicity.ONE, Multiplicity.ONE, type);
-
-    //
-    this.owning = owning;
   }
 
-  public boolean isOwning() {
-    return owning;
-  }
 }

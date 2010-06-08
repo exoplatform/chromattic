@@ -31,14 +31,14 @@ import org.chromattic.api.Status;
 public class CreateTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TLF_A.class);
+    addClass(A.class);
   }
 
   public void testCreateWithWrongName() throws Exception {
     ChromatticSession session = login();
 
     //
-    TLF_A a = session.create(TLF_A.class, "./foo");
+    A a = session.create(A.class, "./foo");
     assertEquals(Status.TRANSIENT, session.getStatus(a));
     assertEquals("./foo", session.getName(a));
   }
@@ -47,7 +47,7 @@ public class CreateTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    TLF_A a = session.create(TLF_A.class, "foo");
+    A a = session.create(A.class, "foo");
     assertEquals(Status.TRANSIENT, session.getStatus(a));
     assertEquals("foo", session.getName(a));
   }
@@ -56,7 +56,7 @@ public class CreateTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    TLF_A a = session.create(TLF_A.class);
+    A a = session.create(A.class);
     assertEquals(Status.TRANSIENT, session.getStatus(a));
     assertEquals(null, session.getName(a));
   }

@@ -147,12 +147,13 @@ public class XMLNodeTypeSerializer extends NodeTypeSerializer {
 
   public void childNode(
     String name,
-    String nodeTypeName) throws SAXException {
+    String nodeTypeName,
+    boolean mandatory) throws SAXException {
     childNodeDefinitionsXML.element("childNodeDefinition").
       withAttribute("name", name).
       withAttribute("defaultPrimaryType", "").
       withAttribute("autoCreated", "false").
-      withAttribute("mandatory", "false").
+      withAttribute("mandatory", Boolean.valueOf(mandatory).toString()).
       withAttribute("onParentVersion", "COPY").
       withAttribute("protected", "false").
       withAttribute("sameNameSiblings", "false").

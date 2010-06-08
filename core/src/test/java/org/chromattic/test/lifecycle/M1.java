@@ -18,19 +18,17 @@
  */
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.Owner;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "mandatory_1")
+@PrimaryType(name = "lifecycle:m1")
 public abstract class M1 {
 
   @OneToOne
+  @Mandatory
   @Owner
   @MappedBy("mandatory")
   public abstract M2 getMandatory();

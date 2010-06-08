@@ -37,6 +37,7 @@
  		      <value>jar:/org/chromattic/test/factory/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/find/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/inheritance/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/lifecycle/nodetypes.xml</value>
  		      <value>jar:/conf/test-nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
@@ -53,6 +54,7 @@
           <property name="factory" value="factory"/>
           <property name="find" value="find"/>
           <property name="inheritance" value="inheritance"/>
+          <property name="lifecycle" value="lifecycle"/>
         </properties-param>
       </init-params>
     </component-plugin>

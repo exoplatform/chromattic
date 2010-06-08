@@ -17,25 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.lifecycle;
+package org.chromattic.metamodel.typegen.onetoone.hierarchical;
 
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Destroy;
+import org.chromattic.api.annotations.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tlf_a")
-public abstract class TLF_A {
+@PrimaryType(name = "c1")
+public abstract class C1 {
 
-  /** . */
-  public static int constructed = 0;
+  @MappedBy("child")
+  @Mandatory
+  @Owner
+  @OneToOne
+  public abstract C2 getChild();
 
-  public TLF_A() {
-    constructed++;
-  }
-
-  @Destroy
-  public abstract void destroy();
 }
