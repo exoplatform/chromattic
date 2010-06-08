@@ -41,9 +41,9 @@ public class MapTestCase extends AbstractTestCase {
   public void testLoad() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("totm_a_b", "totm_a");
+    Node aNode = rootNode.addNode("totm_a_b", getNodeTypeName(A3.class));
     String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "totm_b");
+    Node bNode = aNode.addNode("b", getNodeTypeName(B3.class));
     String bId = bNode.getUUID();
     rootNode.save();
 

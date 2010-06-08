@@ -86,9 +86,9 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
   public final void testLoad() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node oNode = rootNode.addNode("o", "totm_a");
+    Node oNode = rootNode.addNode("o", getNodeTypeName(oneSide));
     String oId = oNode.getUUID();
-    Node mNode = oNode.addNode("m", "totm_b");
+    Node mNode = oNode.addNode("m", getNodeTypeName(manySide));
     String mId = mNode.getUUID();
     rootNode.save();
 

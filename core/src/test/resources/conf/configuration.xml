@@ -40,6 +40,7 @@
  		      <value>jar:/org/chromattic/test/lifecycle/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/methodinvocation/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/nodeattribute/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/onetomany/hierarchical/nodetypes.xml</value>
  		      <value>jar:/conf/test-nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
@@ -59,6 +60,10 @@
           <property name="lifecycle" value="lifecycle"/>
           <property name="methodinvocation" value="methodinvocation"/>
           <property name="nodeattribute" value="nodeattribute"/>
+          <property name="onetomany_h" value="onetomany_h"/>
+          <property name="onetomany_h_collection" value="onetomany_h_collection"/>
+          <property name="onetomany_h_list" value="onetomany_h_list"/>
+          <property name="onetomany_h_map" value="onetomany_h_map"/>
         </properties-param>
       </init-params>
     </component-plugin>

@@ -28,7 +28,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "totm_a")
+@PrimaryType(name = "onetomany_h_list:a3", orderable = true)
 public abstract class A3 {
 
   @OneToMany

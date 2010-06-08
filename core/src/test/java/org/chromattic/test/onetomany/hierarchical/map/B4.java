@@ -25,7 +25,7 @@ import org.chromattic.api.annotations.PrimaryType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "totm_b")
+@PrimaryType(name = "onetomany_h_map:b4")
 public abstract class B4 {
 
   @ManyToOne

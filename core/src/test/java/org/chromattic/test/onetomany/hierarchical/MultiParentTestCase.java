@@ -38,11 +38,11 @@ public class MultiParentTestCase extends AbstractTestCase {
   public void testLoad() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("parents_a", "parents_a");
+    Node aNode = rootNode.addNode("parents_a", getNodeTypeName(A.class));
     String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", "parents_b");
+    Node bNode = aNode.addNode("b", getNodeTypeName(B.class));
     String bId = bNode.getUUID();
-    Node cNode = bNode.addNode("c", "parents_b");
+    Node cNode = bNode.addNode("c", getNodeTypeName(B.class));
     String cId = cNode.getUUID();
     rootNode.save();
 

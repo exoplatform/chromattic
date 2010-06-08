@@ -28,7 +28,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "multichildren_list_a")
+@PrimaryType(name = "onetomany_h_list:m1", orderable = true)
 public abstract class M1 {
 
   @OneToMany

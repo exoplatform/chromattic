@@ -17,14 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.hierarchical.map;
+@NodeTypeDefs package org.chromattic.test.onetomany.hierarchical;
 
-import org.chromattic.api.annotations.PrimaryType;
-
-/**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- */
-@PrimaryType(name = "onetomany_h_map:m3")
-public abstract class M3 extends M2 {
-}
+import org.chromattic.api.annotations.NodeTypeDefs;

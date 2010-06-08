@@ -28,7 +28,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "totm_a")
+@PrimaryType(name = "onetomany_h_collection:a3")
 public abstract class A3 {
 
   @OneToMany

@@ -19,6 +19,8 @@
 
 package org.chromattic.test;
 
+import org.chromattic.api.annotations.MixinType;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.Chromattic;
@@ -229,6 +231,19 @@ public abstract class AbstractTestCase extends TestCase {
 
   protected final void addClass(Class<?> clazz) {
     builder.add(clazz);
+  }
+
+  protected final String getNodeTypeName(Class<?> clazz) {
+    PrimaryType primaryType = clazz.getAnnotation(PrimaryType.class);
+    if (primaryType != null) {
+      return primaryType.name();
+    } else {
+      MixinType mixinType = clazz.getAnnotation(MixinType.class);
+      if (mixinType != null) {
+        return mixinType.name();
+      }
+    }
+    return null;
   }
 
   /**
