@@ -28,7 +28,7 @@ import org.chromattic.api.RelationshipType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "totmp_b")
+@PrimaryType(name = "onetomany_r:b3")
 public abstract class TOTMP_B_3 {
 
   @ManyToOne(type = RelationshipType.PATH)

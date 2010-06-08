@@ -50,9 +50,13 @@ public abstract class AbstractLinkTestCase<O, M> extends AbstractTestCase {
 
   protected abstract Class<M> getManySideClass();
 
-  protected abstract String getOneNodeType();
+  protected final String getOneNodeType() {
+    return getNodeTypeName(getOneSideClass());
+  }
 
-  protected abstract String getManyNodeType();
+  protected final String getManyNodeType() {
+    return getNodeTypeName(getManySideClass());
+  }
 
   protected abstract void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException;
 }

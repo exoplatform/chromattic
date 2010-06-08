@@ -30,7 +30,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "totmrp_a")
+@PrimaryType(name = "onetomany_r_p:a")
 public abstract class TOTMRP_A {
 
   @OneToMany(type = RelationshipType.REFERENCE)

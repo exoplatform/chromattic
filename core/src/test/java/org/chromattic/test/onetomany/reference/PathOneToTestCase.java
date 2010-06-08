@@ -54,12 +54,4 @@ public class PathOneToTestCase extends AbstractOneToTestCase<TOTMP_A_1, TOTMP_B_
   protected Collection<TOTMP_B_1> getMany(TOTMP_A_1 one) {
     return one.getBs();
   }
-
-  protected String getOneNodeType() {
-    return "totmp_a";
-  }
-
-  protected String getManyNodeType() {
-    return "totmp_b";
-  }
 }

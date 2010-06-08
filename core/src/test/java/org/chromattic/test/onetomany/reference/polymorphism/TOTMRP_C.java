@@ -25,6 +25,6 @@ import org.chromattic.api.annotations.PrimaryType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "totmrp_c")
+@PrimaryType(name = "onetomany_r_p:c")
 public abstract class TOTMRP_C extends TOTMRP_B {
 }

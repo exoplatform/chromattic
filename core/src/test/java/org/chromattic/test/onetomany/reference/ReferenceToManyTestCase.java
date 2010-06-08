@@ -43,14 +43,6 @@ public class ReferenceToManyTestCase extends AbstractToManyTestCase<TOTMR_A_2, T
     many.setA(one);
   }
 
-  protected String getOneNodeType() {
-    return "totmr_a";
-  }
-
-  protected String getManyNodeType() {
-    return "totmr_b";
-  }
-
   protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
     referent.setProperty(propertyName, referenced);
   }

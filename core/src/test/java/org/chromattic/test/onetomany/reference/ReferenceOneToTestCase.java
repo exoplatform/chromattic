@@ -43,12 +43,4 @@ public class ReferenceOneToTestCase extends AbstractOneToTestCase<TOTMR_A_1, TOT
   protected Collection<TOTMR_B_1> getMany(TOTMR_A_1 one) {
     return one.getBs();
   }
-
-  protected String getOneNodeType() {
-    return "totmr_a";
-  }
-
-  protected String getManyNodeType() {
-    return "totmr_b";
-  }
 }
