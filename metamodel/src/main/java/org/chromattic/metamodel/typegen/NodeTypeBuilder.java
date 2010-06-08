@@ -23,9 +23,6 @@ import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
 import org.reflext.api.ClassTypeInfo;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.ext.LexicalHandler;
 
 import javax.jcr.PropertyType;
 import java.io.IOException;
@@ -172,10 +169,6 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   public void writeTo(Writer writer) throws IOException {
-    new NodeTypeSerializer(new ArrayList<NodeType>(nodeTypes.values())).writeTo(writer);
-  }
-
-  public void writeTo(ContentHandler contentHandler, LexicalHandler lexicalHandler) throws SAXException {
-    new NodeTypeSerializer(new ArrayList<NodeType>(nodeTypes.values())).writeTo(contentHandler, lexicalHandler);
+    new XMLNodeTypeSerializer(new ArrayList<NodeType>(nodeTypes.values())).writeTo(writer);
   }
 }

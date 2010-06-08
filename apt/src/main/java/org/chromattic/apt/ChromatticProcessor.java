@@ -26,6 +26,7 @@ import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.NodeTypeBuilder;
 import org.chromattic.metamodel.typegen.NodeTypeSerializer;
+import org.chromattic.metamodel.typegen.XMLNodeTypeSerializer;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.reflext.api.*;
 import org.reflext.api.introspection.MethodIntrospector;
@@ -164,7 +165,7 @@ public class ChromatticProcessor extends AbstractProcessor {
         nodeTypes.add(visitor.getNodeType(cti));
       }
       FileObject file = filer.createResource(StandardLocation.SOURCE_OUTPUT, packageName, "nodetypes.xml");
-      NodeTypeSerializer serializer = new NodeTypeSerializer(nodeTypes);
+      NodeTypeSerializer serializer = new XMLNodeTypeSerializer(nodeTypes);
       Writer writer = file.openWriter();
       serializer.writeTo(writer);
       writer.close();

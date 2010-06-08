@@ -72,12 +72,12 @@ public class Emitter {
         status = OPEN;
         break;
       case OPEN:
-        if (currentChild != null) {
+        if (currentChild != null && currentChild.status != CLOSED) {
           currentChild.close();
         }
         break;
       default:
-        throw new IllegalStateException();
+        throw new IllegalStateException("Illegal transition:" + status);
     }
     currentChild = child;
   }
@@ -90,14 +90,14 @@ public class Emitter {
         status = CLOSED;
         break;
       case OPEN:
-        if (currentChild != null) {
+        if (currentChild != null && currentChild.status != CLOSED) {
           currentChild.close();
         }
         emmitEnd();
         status = CLOSED;
         break;
       default:
-        throw new IllegalStateException();
+        throw new IllegalStateException("Illegal transition:" + status);
     }
   }
 }
