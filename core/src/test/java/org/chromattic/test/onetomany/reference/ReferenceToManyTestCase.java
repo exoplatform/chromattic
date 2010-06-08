@@ -25,21 +25,21 @@ import javax.jcr.RepositoryException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReferenceToManyTestCase extends AbstractToManyTestCase<TOTMR_A_2, TOTMR_B_2> {
+public class ReferenceToManyTestCase extends AbstractToManyTestCase<C2, D2> {
 
-  protected Class<TOTMR_A_2> getOneSideClass() {
-    return TOTMR_A_2.class;
+  protected Class<C2> getOneSideClass() {
+    return C2.class;
   }
 
-  protected Class<TOTMR_B_2> getManySideClass() {
-    return TOTMR_B_2.class;
+  protected Class<D2> getManySideClass() {
+    return D2.class;
   }
 
-  protected TOTMR_A_2 getOne(TOTMR_B_2 many) {
+  protected C2 getOne(D2 many) {
     return many.getA();
   }
 
-  protected void setOne(TOTMR_B_2 many, TOTMR_A_2 one) {
+  protected void setOne(D2 many, C2 one) {
     many.setA(one);
   }
 

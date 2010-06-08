@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.reference.polymorphism;
+package org.chromattic.test.onetomany.reference;
 
 import org.chromattic.api.annotations.PrimaryType;
 
@@ -25,6 +25,6 @@ import org.chromattic.api.annotations.PrimaryType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "onetomany_r_p:c")
-public abstract class TOTMRP_C extends TOTMRP_B {
+@PrimaryType(name = "onetomany_r:c2")
+public abstract class C2 {
 }

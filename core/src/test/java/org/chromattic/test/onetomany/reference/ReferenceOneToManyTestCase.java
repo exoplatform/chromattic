@@ -26,26 +26,26 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReferenceOneToManyTestCase extends AbstractOneToManyTestCase<TOTMR_A_3, TOTMR_B_3> {
+public class ReferenceOneToManyTestCase extends AbstractOneToManyTestCase<C3, D3> {
 
-  protected TOTMR_A_3 getOne(TOTMR_B_3 many) {
+  protected C3 getOne(D3 many) {
     return many.getA();
   }
 
-  protected void setOne(TOTMR_B_3 many, TOTMR_A_3 one) {
+  protected void setOne(D3 many, C3 one) {
     many.setA(one);
   }
 
-  protected Collection<TOTMR_B_3> getMany(TOTMR_A_3 one) {
+  protected Collection<D3> getMany(C3 one) {
     return one.getBs();
   }
 
-  protected Class<TOTMR_A_3> getOneSideClass() {
-    return TOTMR_A_3.class;
+  protected Class<C3> getOneSideClass() {
+    return C3.class;
   }
 
-  protected Class<TOTMR_B_3> getManySideClass() {
-    return TOTMR_B_3.class;
+  protected Class<D3> getManySideClass() {
+    return D3.class;
   }
 
   protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {

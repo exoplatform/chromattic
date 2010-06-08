@@ -32,34 +32,34 @@ import java.util.ArrayList;
 public class PolymorphicTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TOTMRP_A.class);
-    addClass(TOTMRP_C.class);
-    addClass(TOTMRP_D.class);
+    addClass(A.class);
+    addClass(C.class);
+    addClass(D.class);
   }
 
   public void testFoo() throws Exception {
 
     ChromatticSession session = login();
 
-    TOTMRP_A a = session.create(TOTMRP_A.class, "a");
+    A a = session.create(A.class, "a");
     String aId = session.persist(a);
-    TOTMRP_C c = session.create(TOTMRP_C.class, "c");
+    C c = session.create(C.class, "c");
     String cId = session.persist(c);
-    TOTMRP_D d = session.create(TOTMRP_D.class, "d");
+    D d = session.create(D.class, "d");
     String dId = session.persist(d);
     a.getBs().add(d);
     a.getBs().add(c);
     session.save();
 
     session = login();
-    a = session.findById(TOTMRP_A.class, aId);
-    c = session.findById(TOTMRP_C.class, cId);
-    d = session.findById(TOTMRP_D.class, dId);
-    Collection<TOTMRP_B> bs =  a.getBs();
+    a = session.findById(A.class, aId);
+    c = session.findById(C.class, cId);
+    d = session.findById(D.class, dId);
+    Collection<B> bs =  a.getBs();
     assertTrue(bs.contains(c));
     assertTrue(bs.contains(d));
     assertEquals(2, bs.size());
-    Collection<TOTMRP_B> copy = new ArrayList<TOTMRP_B>(bs);
+    Collection<B> copy = new ArrayList<B>(bs);
     assertTrue(copy.contains(c));
     assertTrue(copy.contains(d));
     assertEquals(2, copy.size());
@@ -68,21 +68,21 @@ public class PolymorphicTestCase extends AbstractTestCase {
   public void testTyped() throws Exception {
 
     ChromatticSession session = login();
-    TOTMRP_A a = session.insert(TOTMRP_A.class, "a");
-    TOTMRP_C c = session.insert(TOTMRP_C.class, "c");
-    TOTMRP_D d = session.insert(TOTMRP_D.class, "d");
+    A a = session.insert(A.class, "a");
+    C c = session.insert(C.class, "c");
+    D d = session.insert(D.class, "d");
 
-    Collection<TOTMRP_B> bs = a.getBs();
+    Collection<B> bs = a.getBs();
     bs.add(c);
     bs.add(d);
 
-    Collection<TOTMRP_B> copy = new ArrayList<TOTMRP_B>(bs);
+    Collection<B> copy = new ArrayList<B>(bs);
     assertTrue(copy.contains(c));
     assertTrue(copy.contains(d));
     assertEquals(2, copy.size());
 
     bs.remove(c);
-    copy = new ArrayList<TOTMRP_B>(bs);
+    copy = new ArrayList<B>(bs);
     assertFalse(copy.contains(c));
     assertTrue(copy.contains(d));
     assertEquals(1, copy.size());

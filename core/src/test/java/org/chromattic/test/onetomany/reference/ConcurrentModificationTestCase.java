@@ -32,21 +32,21 @@ import java.util.ConcurrentModificationException;
 public class ConcurrentModificationTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TOTMR_A_3.class);
-    addClass(TOTMR_B_3.class);
+    addClass(C3.class);
+    addClass(D3.class);
   }
 
   public void testFoo() throws Exception {
 
     ChromatticSession session = login();
 
-    TOTMR_A_3 a = session.insert(TOTMR_A_3.class, "totmr_a_25");
-    TOTMR_B_3 b1 = session.insert(TOTMR_B_3.class, "totmr_b_25");
+    C3 a = session.insert(C3.class, "totmr_a_25");
+    D3 b1 = session.insert(D3.class, "totmr_b_25");
 
     a.getBs().add(b1);
 
-    Iterator<TOTMR_B_3> i1 = a.getBs().iterator();
-    Iterator<TOTMR_B_3> i2 = a.getBs().iterator();
+    Iterator<D3> i1 = a.getBs().iterator();
+    Iterator<D3> i2 = a.getBs().iterator();
 
     assertTrue(i1.hasNext());
     assertTrue(i2.hasNext());

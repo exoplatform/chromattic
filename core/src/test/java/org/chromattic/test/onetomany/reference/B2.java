@@ -28,13 +28,13 @@ import org.chromattic.api.RelationshipType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "onetomany_r:d2")
-public abstract class TOTMR_B_2 {
+@PrimaryType(name = "onetomany_r:b2")
+public abstract class B2 {
 
-  @ManyToOne(type = RelationshipType.REFERENCE)
+  @ManyToOne(type = RelationshipType.PATH)
   @MappedBy("ref")
-  public abstract TOTMR_A_2 getA();
+  public abstract A2 getA();
 
-  public abstract void setA(TOTMR_A_2 a);
+  public abstract void setA(A2 a);
 
 }

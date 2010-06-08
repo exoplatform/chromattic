@@ -17,14 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.reference.polymorphism;
+package org.chromattic.test.onetomany.reference;
 
 import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.OneToMany;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.RelationshipType;
+
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "onetomany_r_p:b")
-public abstract class TOTMRP_B {
+@PrimaryType(name = "onetomany_r:c1")
+public abstract class C1 {
+
+  @OneToMany(type = RelationshipType.REFERENCE)
+  @MappedBy("ref")
+  public abstract Collection<D1> getBs();
+
 }

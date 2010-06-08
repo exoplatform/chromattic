@@ -30,14 +30,14 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PathOneToManyTestCase extends AbstractOneToManyTestCase<TOTMP_A_3, TOTMP_B_3> {
+public class PathOneToManyTestCase extends AbstractOneToManyTestCase<A3, B3> {
 
-  protected Class<TOTMP_A_3> getOneSideClass() {
-    return TOTMP_A_3.class;
+  protected Class<A3> getOneSideClass() {
+    return A3.class;
   }
 
-  protected Class<TOTMP_B_3> getManySideClass() {
-    return TOTMP_B_3.class;
+  protected Class<B3> getManySideClass() {
+    return B3.class;
   }
 
   protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
@@ -51,15 +51,15 @@ public class PathOneToManyTestCase extends AbstractOneToManyTestCase<TOTMP_A_3, 
     }
   }
 
-  protected Collection<TOTMP_B_3> getMany(TOTMP_A_3 one) {
+  protected Collection<B3> getMany(A3 one) {
     return one.getBs();
   }
 
-  protected TOTMP_A_3 getOne(TOTMP_B_3 many) {
+  protected A3 getOne(B3 many) {
     return many.getA();
   }
 
-  protected void setOne(TOTMP_B_3 many, TOTMP_A_3 one) {
+  protected void setOne(B3 many, A3 one) {
     many.setA(one);
   }
 }

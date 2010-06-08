@@ -26,21 +26,21 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReferenceOneToTestCase extends AbstractOneToTestCase<TOTMR_A_1, TOTMR_B_1> {
+public class ReferenceOneToTestCase extends AbstractOneToTestCase<C1, D1> {
 
-  protected Class<TOTMR_A_1> getOneSideClass() {
-    return TOTMR_A_1.class;
+  protected Class<C1> getOneSideClass() {
+    return C1.class;
   }
 
-  protected Class<TOTMR_B_1> getManySideClass() {
-    return TOTMR_B_1.class;
+  protected Class<D1> getManySideClass() {
+    return D1.class;
   }
 
   protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
     referent.setProperty(propertyName, referenced);
   }
 
-  protected Collection<TOTMR_B_1> getMany(TOTMR_A_1 one) {
+  protected Collection<D1> getMany(C1 one) {
     return one.getBs();
   }
 }

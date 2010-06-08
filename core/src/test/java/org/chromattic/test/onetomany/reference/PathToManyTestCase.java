@@ -29,14 +29,14 @@ import javax.jcr.PropertyType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PathToManyTestCase extends AbstractToManyTestCase<TOTMP_A_2, TOTMP_B_2> {
+public class PathToManyTestCase extends AbstractToManyTestCase<A2, B2> {
 
-  protected Class<TOTMP_A_2> getOneSideClass() {
-    return TOTMP_A_2.class;
+  protected Class<A2> getOneSideClass() {
+    return A2.class;
   }
 
-  protected Class<TOTMP_B_2> getManySideClass() {
-    return TOTMP_B_2.class;
+  protected Class<B2> getManySideClass() {
+    return B2.class;
   }
 
   protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
@@ -50,11 +50,11 @@ public class PathToManyTestCase extends AbstractToManyTestCase<TOTMP_A_2, TOTMP_
     }
   }
 
-  protected TOTMP_A_2 getOne(TOTMP_B_2 many) {
+  protected A2 getOne(B2 many) {
     return many.getA();
   }
 
-  protected void setOne(TOTMP_B_2 many, TOTMP_A_2 one) {
+  protected void setOne(B2 many, A2 one) {
     many.setA(one);
   }
 }

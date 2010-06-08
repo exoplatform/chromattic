@@ -30,14 +30,14 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PathOneToTestCase extends AbstractOneToTestCase<TOTMP_A_1, TOTMP_B_1> {
+public class PathOneToTestCase extends AbstractOneToTestCase<A1, B1> {
 
-  protected Class<TOTMP_A_1> getOneSideClass() {
-    return TOTMP_A_1.class;
+  protected Class<A1> getOneSideClass() {
+    return A1.class;
   }
 
-  protected Class<TOTMP_B_1> getManySideClass() {
-    return TOTMP_B_1.class;
+  protected Class<B1> getManySideClass() {
+    return B1.class;
   }
 
   protected void createLink(Node referent, String propertyName, Node referenced) throws RepositoryException {
@@ -51,7 +51,7 @@ public class PathOneToTestCase extends AbstractOneToTestCase<TOTMP_A_1, TOTMP_B_
     }
   }
 
-  protected Collection<TOTMP_B_1> getMany(TOTMP_A_1 one) {
+  protected Collection<B1> getMany(A1 one) {
     return one.getBs();
   }
 }

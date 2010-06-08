@@ -28,14 +28,14 @@ import org.chromattic.api.ChromatticSession;
 public class PathTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TOTMP_A_3.class);
-    addClass(TOTMP_B_3.class);
+    addClass(A3.class);
+    addClass(B3.class);
   }
 
   public void testRemoveWithNonExistingReference() {
     ChromatticSession session = login();
-    TOTMP_A_3 a = session.insert(TOTMP_A_3.class, "totmp_a_25");
-    TOTMP_B_3 b = session.insert(TOTMP_B_3.class, "totmp_b_25");
+    A3 a = session.insert(A3.class, "totmp_a_25");
+    B3 b = session.insert(B3.class, "totmp_b_25");
     a.getBs().add(b);
     session.remove(a);
     session.remove(b);

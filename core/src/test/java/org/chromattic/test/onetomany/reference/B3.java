@@ -20,21 +20,21 @@
 package org.chromattic.test.onetomany.reference;
 
 import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.OneToMany;
+import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.RelationshipType;
-
-import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "onetomany_r:a3")
-public abstract class TOTMP_A_3 {
+@PrimaryType(name = "onetomany_r:b3")
+public abstract class B3 {
 
-  @OneToMany(type = RelationshipType.PATH)
-  @MappedBy("ref")
-  public abstract Collection<TOTMP_B_3> getBs();
+  @ManyToOne(type = RelationshipType.PATH)
+  @MappedBy(value = "ref")
+  public abstract A3 getA();
+
+  public abstract void setA(A3 a);
 
 }
