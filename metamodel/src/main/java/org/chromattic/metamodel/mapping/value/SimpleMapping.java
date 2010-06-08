@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.mapping.value;
 
+import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
 import org.reflext.api.ClassTypeInfo;
 
@@ -31,7 +32,7 @@ public class SimpleMapping<M extends JCRMemberMapping> extends ValueMapping {
   /** . */
   private final M jcrMember;
 
-  public SimpleMapping(ClassTypeInfo definer, M jcrMember) {
+  public SimpleMapping(NodeTypeMapping definer, M jcrMember) {
     super(definer);
 
     //

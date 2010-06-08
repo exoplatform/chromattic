@@ -22,6 +22,7 @@ package org.chromattic.test.pom;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Create;
+import org.chromattic.api.annotations.PrimaryType;
 
 import java.util.Collection;
 
@@ -29,12 +30,12 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@PrimaryType(name = "exo:sites", abstract_ = true)
 public abstract class Sites<T extends SiteImpl> {
 
   @OneToMany
   public abstract Collection<T> getSites();
 
-  @OneToOne
   public abstract WorkspaceImpl getWorkspace();
 
   public T createSite(String siteName) {

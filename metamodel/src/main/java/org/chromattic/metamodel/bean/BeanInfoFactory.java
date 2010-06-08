@@ -21,7 +21,7 @@ package org.chromattic.metamodel.bean;
 
 import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.*;
-import org.reflext.api.introspection.MethodIntrospector;
+import org.reflext.api.introspection.MethodIntrospector2;
 import org.reflext.api.visit.HierarchyScope;
 
 import java.util.*;
@@ -52,7 +52,7 @@ public class BeanInfoFactory {
     ClassTypeInfo type = qualifier.beanType;
 
     //
-    MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL, true);
+    MethodIntrospector2 introspector = new MethodIntrospector2(HierarchyScope.ALL, true);
     Map<String, MethodInfo> getterMap = introspector.getGetterMap(type);
     Map<String, Set<MethodInfo>> setterMap = introspector.getSetterMap(type);
 

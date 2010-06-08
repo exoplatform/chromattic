@@ -21,7 +21,6 @@ package org.chromattic.metamodel.mapping.value;
 
 import org.chromattic.api.RelationshipType;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.reflext.api.ClassTypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -44,7 +43,7 @@ public abstract class RelationshipMapping<T extends RelationshipMapping<U, T>, U
   /** . */
   private final RelationshipType type;
 
-  public RelationshipMapping(ClassTypeInfo definer, NodeTypeMapping owner, NodeTypeMapping relatedMapping, Multiplicity multiplicity, Multiplicity relatedMultiplicity, RelationshipType type) {
+  public RelationshipMapping(NodeTypeMapping definer, NodeTypeMapping owner, NodeTypeMapping relatedMapping, Multiplicity multiplicity, Multiplicity relatedMultiplicity, RelationshipType type) {
     super(definer);
 
     //

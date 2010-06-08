@@ -25,7 +25,7 @@ import org.chromattic.api.annotations.PrimaryType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tii_a")
+@PrimaryType(name = "inheritance:bimpl")
 public abstract class BImpl extends B {
 
   public abstract String getString2();

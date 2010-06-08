@@ -53,7 +53,8 @@ public class NodeTypeMapping
       mixinTypeName,
       null,
       NodeTypeKind.MIXIN,
-      orderable);
+      orderable,
+      true);
   }
 
   public static NodeTypeMapping createPrimaryType(
@@ -64,7 +65,8 @@ public class NodeTypeMapping
     NameConflictResolution onDuplicate,
     String nodeTypeName,
     Class<? extends ObjectFormatter> formatterClass,
-    boolean orderable) {
+    boolean orderable,
+    boolean _abstract) {
     return new NodeTypeMapping(
       domain,
       objectClass,
@@ -74,7 +76,8 @@ public class NodeTypeMapping
       nodeTypeName,
       formatterClass,
       NodeTypeKind.PRIMARY,
-      orderable);
+      orderable,
+      _abstract);
   }
 
   /** . */
@@ -104,6 +107,9 @@ public class NodeTypeMapping
   /** . */
   private final boolean orderable;
 
+  /** . */
+  private final boolean _abstract;
+
   public NodeTypeMapping(
     TypeMappingDomain domain,
     ClassTypeInfo type,
@@ -113,7 +119,8 @@ public class NodeTypeMapping
     String typeName,
     Class<? extends ObjectFormatter> formatterClass,
     NodeTypeKind kind,
-    boolean orderable) {
+    boolean orderable,
+    boolean _abstract) {
 
     //
     this.domain = domain;
@@ -125,6 +132,11 @@ public class NodeTypeMapping
     this.typeName = typeName;
     this.kind = kind;
     this.orderable = orderable;
+    this._abstract = _abstract;
+  }
+
+  public boolean isAbstract() {
+    return _abstract;
   }
 
   public boolean isOrderable() {

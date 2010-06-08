@@ -26,7 +26,7 @@ import org.chromattic.api.annotations.Create;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tf_a")
+@PrimaryType(name = "factory:a")
 public abstract class TF_A {
 
   @Create

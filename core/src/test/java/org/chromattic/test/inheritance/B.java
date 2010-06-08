@@ -19,12 +19,14 @@
 
 package org.chromattic.test.inheritance;
 
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@PrimaryType(name = "inheritance:b", abstract_ = true)
 public abstract class B {
 
   @Property(name = "string1")

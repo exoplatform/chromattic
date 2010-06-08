@@ -94,7 +94,7 @@ public class BaseTypeMappingVisitor {
 
         ValueMapping valueMapping = propertyMapping.getValueMapping();
 
-        ClassTypeInfo definer = valueMapping.getDefiner();
+        ClassTypeInfo definer = valueMapping.getDefiner().getType();
         if (valueMapping instanceof SimpleMapping) {
           SimpleMapping<?> simpleMapping = (SimpleMapping)valueMapping;
           PropertyQualifier<? extends ValueInfo> propertyInfo = propertyMapping.getInfo();

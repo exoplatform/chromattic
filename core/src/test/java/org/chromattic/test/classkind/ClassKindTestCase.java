@@ -35,8 +35,8 @@ public class ClassKindTestCase extends AbstractTestCase {
 
   public void testFoo() throws Exception {
     ChromatticSessionImpl session = login();
-    TCK_A a =  session.insert(TCK_A.class, "tck_a");
+    TCK_A a =  session.insert(TCK_A.class, "a");
     assertNotNull(a);
-    assertTrue(session.getRoot().hasNode("tck_a"));
+    assertTrue(session.getRoot().hasNode("a"));
   }
 }

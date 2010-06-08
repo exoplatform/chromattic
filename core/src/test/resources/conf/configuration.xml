@@ -33,9 +33,28 @@
  		    <values-param>
  		      <name>autoCreatedInNewRepository</name>
  		      <description>Node types configuration file</description>
+ 		      <value>jar:/org/chromattic/test/classkind/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/factory/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/find/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/inheritance/nodetypes.xml</value>
  		      <value>jar:/conf/test-nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
  		</component-plugin>
+
+    <component-plugin>
+      <name>add.namespaces</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
+      <init-params>
+        <properties-param>
+          <name>namespaces</name>
+          <property name="classkind" value="classkind"/>
+          <property name="factory" value="factory"/>
+          <property name="find" value="find"/>
+          <property name="inheritance" value="inheritance"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
   </external-component-plugins>
 </configuration>

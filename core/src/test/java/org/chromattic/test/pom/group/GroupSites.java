@@ -19,6 +19,7 @@
 
 package org.chromattic.test.pom.group;
 
+import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.test.pom.Sites;
@@ -31,6 +32,7 @@ import org.chromattic.test.pom.WorkspaceImpl;
 @PrimaryType(name = "exo:groups")
 public abstract class GroupSites extends Sites<GroupSite> {
 
+  @OneToOne
   @MappedBy("groups")
   public abstract WorkspaceImpl getWorkspace();
 

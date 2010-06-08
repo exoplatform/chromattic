@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.mapping.value;
 
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.metamodel.mapping.NodeTypeMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -28,9 +28,9 @@ import org.reflext.api.ClassTypeInfo;
 public abstract class ValueMapping {
 
   /** . */
-  private final ClassTypeInfo definer;
+  private final NodeTypeMapping definer;
 
-  protected ValueMapping(ClassTypeInfo definer) {
+  protected ValueMapping(NodeTypeMapping definer) {
     this.definer = definer;
   }
 
@@ -38,7 +38,7 @@ public abstract class ValueMapping {
     this.definer = null;
   }
 
-  public ClassTypeInfo getDefiner() {
+  public NodeTypeMapping getDefiner() {
     return definer;
   }
 }

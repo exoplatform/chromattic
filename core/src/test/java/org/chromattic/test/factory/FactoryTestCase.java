@@ -40,7 +40,7 @@ public class FactoryTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
 
     //
-    Node aNode = session.getRoot().addNode("tf_a_a", "tf_a");
+    Node aNode = session.getRoot().addNode("a", "factory:a");
     TF_A a = session.findByNode(TF_A.class, aNode);
     TF_B.constructed = 0;
     TF_B b = a.create();
@@ -53,7 +53,7 @@ public class FactoryTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
 
     //
-    Node aNode = session.getRoot().addNode("tf_a_a", "tf_a");
+    Node aNode = session.getRoot().addNode("a", "factory:a");
     TF_A a = session.findByNode(TF_A.class, aNode);
     TF_B.constructed = 0;
     TF_B b = a.create("b");
