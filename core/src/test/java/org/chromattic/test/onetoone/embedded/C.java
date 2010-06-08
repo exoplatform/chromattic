@@ -26,7 +26,7 @@ import org.chromattic.api.annotations.*;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@MixinType(name = "otoe_c")
+@MixinType(name = "onetoone_e:c")
 public abstract class C {
 
   @OneToOne(type = RelationshipType.EMBEDDED)

@@ -52,7 +52,7 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     assertSame(c, b.getMixin());
     assertSame(b, c.getEntity());
     Node node = session.getNode(b);
-    assertTrue(JCR.hasMixin(node, "otoe_c"));
+    assertTrue(JCR.hasMixin(node, getNodeTypeName(C.class)));
     session.save();
     session.close();
     session = login();
@@ -71,7 +71,7 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     assertSame(c, b.getMixin());
     assertSame(b, c.getEntity());
     Node node = session.getNode(b);
-    assertTrue(JCR.hasMixin(node, "otoe_c"));
+    assertTrue(JCR.hasMixin(node, getNodeTypeName(C.class)));
     session.save();
     session.close();
     session = login();

@@ -77,6 +77,8 @@ public class BaseTypeMappingVisitor {
 
   protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, int mode) {}
 
+  protected void oneToOneEmbedded(ClassTypeInfo definer, NodeTypeMapping relatedMapping, boolean owner) {}
+
   protected void endMapping() {}
 
   protected void end() {}
@@ -194,7 +196,8 @@ public class BaseTypeMappingVisitor {
             } else {
               switch (type) {
                 case EMBEDDED:
-                  // Nothing to do
+                  OneToOneMapping oneToOneMapping = (OneToOneMapping)valueMapping;
+                  oneToOneEmbedded(definer, relationshipMapping.getRelatedMapping(), oneToOneMapping.isOwning());
                   break;
                 default:
                   throw new AssertionError();

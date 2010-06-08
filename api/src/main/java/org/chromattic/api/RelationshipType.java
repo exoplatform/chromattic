@@ -48,7 +48,19 @@ public enum RelationshipType {
   PATH,
 
   /**
-   * An embedded relationship.
+   * <p>An embedded relationship defines a relationship between two types that are have a relationship between their
+   * node types.</p>
+   *
+   * <p>The owner side of the relationship must be a primary node type, the owned side of the relationship can be any
+   * node type. Embedded relationship only exist for {@link org.chromattic.api.annotations.OneToOne} relationships</p>
+   *
+   * <p>When the owned side is a primary node type, the owned node type must be super node type of the owner node type. The
+   * relationship is thereby statically defined.</p>
+   *
+   * <p>When the owned side is a mixin type, the relationship exists when the owner side has the mixin of the owned side.
+   * The relationship is static when the owner node type defines the owned mixin type has a super node type directly or
+   * indirectly. The relationship is dynamic when the owner node type does not define the owned mixin type has a super node
+   * type directly and indirectly, therefore the relationship can be created or destroyed at runtime.</p>
    */
   EMBEDDED
 

@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.typegen;
 
+import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
@@ -29,6 +30,7 @@ import javax.jcr.PropertyType;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -42,8 +44,12 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   /** . */
   private NodeType current;
 
+  /** . */
+  private final SetMap<ClassTypeInfo, ClassTypeInfo> embeddedSuperTypesMap;
+
   public NodeTypeBuilder() {
     this.nodeTypes = new LinkedHashMap<ClassTypeInfo, NodeType>();
+    this.embeddedSuperTypesMap = new SetMap<ClassTypeInfo, ClassTypeInfo>();
   }
 
   public NodeType getNodeType(ClassTypeInfo type) {
@@ -111,6 +117,19 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
+  protected void oneToOneEmbedded(ClassTypeInfo definer, NodeTypeMapping relatedMapping, boolean owner) {
+    if (owner) {
+      if (relatedMapping.isPrimary()) {
+        embeddedSuperTypesMap.get(current.mapping.getType()).add(relatedMapping.getType());
+      }
+    } else {
+      if (current.mapping.isPrimary()) {
+        embeddedSuperTypesMap.get(relatedMapping.getType()).add(current.mapping.getType());
+      }
+    }
+  }
+
+  @Override
   protected void manyToOneByPath(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping) {
     if (definer.equals(current.mapping.getType())) {
       current.properties.put(name, new PropertyDefinition(name, false, PropertyType.PATH));
@@ -152,9 +171,10 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
 
     // Resolve super types
     for (NodeType nodeType : nodeTypes.values()) {
-
-      //
       ClassTypeInfo cti = nodeType.mapping.getType();
+
+      // Take all delcared node types and find out which are the super types
+      // based on the relationship between the java types
       for (NodeType otherNodeType : nodeTypes.values()) {
         if (otherNodeType != nodeType) {
           if (cti.isSubType(otherNodeType.mapping.getType())) {
@@ -163,7 +183,12 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
         }
       }
 
-      //
+      // Add the embedded super types
+      for (ClassTypeInfo embeddedSuperTypeInfo : embeddedSuperTypesMap.get(cti)) {
+        nodeType.superTypes.add(nodeTypes.get(embeddedSuperTypeInfo));
+      }
+
+      // Now resolve the minimum set of declared super types
       foo:
       for (NodeType superNodeType : nodeType.superTypes) {
         for (NodeType otherSuperNodeType : nodeType.superTypes) {

@@ -65,22 +65,26 @@ public class SetMap<K, V> {
     /** . */
     private HashSet<V> set;
 
+    /** . */
+    private boolean added;
+
     private SetImpl(K key) {
       this.key = key;
+      this.set = new HashSet<V>();
+      this.added = false;
     }
 
     @Override
     public boolean add(V e) {
-      if (set == null) {
-        set = new HashSet<V>();
+      if (!added) {
         if (map.containsKey(key)) {
           throw new IllegalStateException();
         } else {
           map.put(key, this);
+          added = true;
         }
       }
-      boolean b = set.add(e);
-      return b;
+      return set.add(e);
     }
 
     public Iterator<V> iterator() {
