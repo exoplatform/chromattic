@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.mapping;
 
 import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.metamodel.mapping.jcr.NodeTypeDefinitionMapping;
 import org.chromattic.metamodel.mapping.value.ValueMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.chromattic.api.NameConflictResolution;
@@ -42,19 +43,15 @@ public class NodeTypeMapping
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
-    String mixinTypeName,
-    boolean orderable) {
+    NodeTypeDefinitionMapping nodeTypeDefinitionMapping) {
     return new NodeTypeMapping(
       domain,
       objectClass,
       propertyMappings,
       methodMappings,
       onDuplicate,
-      mixinTypeName,
       null,
-      NodeTypeKind.MIXIN,
-      orderable,
-      true);
+      nodeTypeDefinitionMapping);
   }
 
   public static NodeTypeMapping createPrimaryType(
@@ -63,28 +60,20 @@ public class NodeTypeMapping
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
-    String nodeTypeName,
     Class<? extends ObjectFormatter> formatterClass,
-    boolean orderable,
-    boolean _abstract) {
+    NodeTypeDefinitionMapping nodeTypeDefinitionMapping) {
     return new NodeTypeMapping(
       domain,
       objectClass,
       propertyMappings,
       methodMappings,
       onDuplicate,
-      nodeTypeName,
       formatterClass,
-      NodeTypeKind.PRIMARY,
-      orderable,
-      _abstract);
+      nodeTypeDefinitionMapping);
   }
 
   /** . */
   private final TypeMappingDomain domain;
-
-  /** . */
-  private final String typeName;
 
   /** . */
   protected final ClassTypeInfo type;
@@ -102,13 +91,7 @@ public class NodeTypeMapping
   private Class<? extends ObjectFormatter> formatterClass;
 
   /** . */
-  private final NodeTypeKind kind;
-
-  /** . */
-  private final boolean orderable;
-
-  /** . */
-  private final boolean _abstract;
+  private final NodeTypeDefinitionMapping nodeTypeDefinitionMapping;
 
   public NodeTypeMapping(
     TypeMappingDomain domain,
@@ -116,11 +99,8 @@ public class NodeTypeMapping
     Set<PropertyMapping<? extends ValueMapping>> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
-    String typeName,
     Class<? extends ObjectFormatter> formatterClass,
-    NodeTypeKind kind,
-    boolean orderable,
-    boolean _abstract) {
+    NodeTypeDefinitionMapping nodeTypeDefinitionMapping) {
 
     //
     this.domain = domain;
@@ -129,18 +109,15 @@ public class NodeTypeMapping
     this.methodMappings = Collections.unmodifiableSet(methodMappings);
     this.onDuplicate = onDuplicate;
     this.formatterClass = formatterClass;
-    this.typeName = typeName;
-    this.kind = kind;
-    this.orderable = orderable;
-    this._abstract = _abstract;
+    this.nodeTypeDefinitionMapping = nodeTypeDefinitionMapping;
   }
 
   public boolean isAbstract() {
-    return _abstract;
+    return nodeTypeDefinitionMapping.isAbstract();
   }
 
   public boolean isOrderable() {
-    return orderable;
+    return nodeTypeDefinitionMapping.isOrderable();
   }
 
   public TypeMappingDomain getDomain() {
@@ -148,19 +125,19 @@ public class NodeTypeMapping
   }
 
   public boolean isPrimary() {
-    return kind == NodeTypeKind.PRIMARY;
+    return getKind() == NodeTypeKind.PRIMARY;
   }
 
   public boolean isMixin() {
-    return kind == NodeTypeKind.MIXIN;
+    return getKind() == NodeTypeKind.MIXIN;
   }
 
   public NodeTypeKind getKind() {
-    return kind;
+    return nodeTypeDefinitionMapping.getKind();
   }
 
   public String getTypeName() {
-    return typeName;
+    return nodeTypeDefinitionMapping.getTypeName();
   }
 
   public ClassTypeInfo getType() {

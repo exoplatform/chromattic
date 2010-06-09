@@ -29,6 +29,7 @@ import org.chromattic.metamodel.bean.value.MultiValueInfo;
 import org.chromattic.metamodel.bean.value.TypeKind;
 import org.chromattic.metamodel.bean.value.ValueInfo;
 import org.chromattic.metamodel.mapping.jcr.NodeDefinitionMapping;
+import org.chromattic.metamodel.mapping.jcr.NodeTypeDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.*;
@@ -172,11 +173,8 @@ public class TypeMappingDomain {
         Collections.<PropertyMapping<? extends ValueMapping>>emptySet(),
         Collections.<MethodMapping>emptySet(),
         NameConflictResolution.FAIL,
-        "nt:base",
         null,
-        NodeTypeKind.PRIMARY,
-        false,
-        true);
+        new NodeTypeDefinitionMapping("nt:base", NodeTypeKind.PRIMARY, false, true));
       addedMappings.put(javaClass.getName(), objectMapping);
       return objectMapping;
     }
@@ -220,8 +218,7 @@ public class TypeMappingDomain {
         propertyMappings,
         methodMappings,
         onDuplicate,
-        mixinName,
-        false);
+        new NodeTypeDefinitionMapping(mixinName, NodeTypeKind.MIXIN, false, true));
     } else {
       String nodeTypeName = primaryType.name();
       boolean orderable = primaryType.orderable();
@@ -240,10 +237,8 @@ public class TypeMappingDomain {
         propertyMappings,
         methodMappings,
         onDuplicate,
-        nodeTypeName,
         formatter,
-        orderable,
-        primaryType.abstract_());
+        new NodeTypeDefinitionMapping(nodeTypeName, NodeTypeKind.PRIMARY, orderable, primaryType.abstract_()));
     }
 
     // Add it to added map
