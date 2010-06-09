@@ -19,9 +19,12 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.chromattic.api.AttributeOption;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.reflext.api.ClassTypeInfo;
+
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -61,8 +64,19 @@ public abstract class PropertyRole {
   }
 
   public static class OneToOne extends Relationship {
-    public OneToOne(ClassTypeInfo declaringType, RelationshipType type) {
+
+    /** . */
+    private final Set<AttributeOption> options;
+
+    public OneToOne(ClassTypeInfo declaringType, Set<AttributeOption> options, RelationshipType type) {
       super(declaringType, type);
+
+      //
+      this.options = options;
+    }
+
+    public Set<AttributeOption> getOptions() {
+      return options;
     }
   }
 

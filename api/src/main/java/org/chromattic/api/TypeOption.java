@@ -16,24 +16,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.AttributeOption;
-import org.chromattic.api.annotations.*;
-import org.chromattic.metamodel.bean.PropertyRole;
+package org.chromattic.api;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "lifecycle:m1")
-public abstract class M1 {
+public enum TypeOption {
 
-  @OneToOne(options = AttributeOption.MANDATORY)
-  @Owner
-  @MappedBy("mandatory")
-  public abstract M2 getMandatory();
-  
-  public abstract void setMandatory(M2 mandatory);
+  ABSTRACT, ORDERABLE
 
 }

@@ -27,7 +27,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:navigation")
+@PrimaryType(name = "pom:navigation")
 public abstract class NavigationImpl {
 
   public abstract SiteImpl getSite();

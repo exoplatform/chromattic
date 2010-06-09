@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.typegen.onetoone.embedded;
 
 import junit.framework.TestCase;
+import org.chromattic.common.collection.Collections;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.TypeGen;
 import org.reflext.api.ClassTypeInfo;
@@ -28,7 +29,22 @@ import org.reflext.api.ClassTypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SuperTypeTestCase extends TestCase {
+public class EmbeddedTypeTestCase extends TestCase {
+
+  public void testOwnerMixinType() {
+    TypeGen gen = new TypeGen();
+    ClassTypeInfo b1 = gen.addType(B1.class);
+    ClassTypeInfo b2 = gen.addType(B2.class);
+    gen.generate();
+    NodeType b1NT = gen.getNodeType(b1);
+    assertEquals("b1", b1NT.getName());
+    assertEquals(Collections.<String>set(), b1NT.getPropertyDefinitions().keySet());
+    NodeType b2NT = gen.getNodeType(b2);
+    assertEquals("b2", b2NT.getName());
+    assertEquals(Collections.<String>set("foo"), b2NT.getPropertyDefinitions().keySet());
+    assertFalse(b2NT.getDeclaredSuperTypes().contains(b1NT));
+    assertFalse(b1NT.getDeclaredSuperTypes().contains(b2NT));
+  }
 
   public void testOwnerSuperType() {
     TypeGen gen = new TypeGen();

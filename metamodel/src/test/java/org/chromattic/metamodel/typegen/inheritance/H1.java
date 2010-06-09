@@ -16,24 +16,22 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.AttributeOption;
-import org.chromattic.api.annotations.*;
-import org.chromattic.metamodel.bean.PropertyRole;
+package org.chromattic.metamodel.typegen.inheritance;
+
+import org.chromattic.api.annotations.OneToMany;
+import org.chromattic.api.annotations.PrimaryType;
+
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "lifecycle:m1")
-public abstract class M1 {
+@PrimaryType(name = "h1")
+public abstract class H1<T> {
 
-  @OneToOne(options = AttributeOption.MANDATORY)
-  @Owner
-  @MappedBy("mandatory")
-  public abstract M2 getMandatory();
-  
-  public abstract void setMandatory(M2 mandatory);
+  @OneToMany
+  public abstract Collection<T> getChildren();
 
 }

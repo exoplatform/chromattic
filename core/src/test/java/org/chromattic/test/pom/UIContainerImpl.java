@@ -30,7 +30,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:uicontainer")
+@PrimaryType(name = "pom:uicontainer")
 public abstract class UIContainerImpl extends UIComponentImpl {
 
   @OneToMany

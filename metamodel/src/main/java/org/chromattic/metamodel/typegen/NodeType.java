@@ -101,10 +101,10 @@ public class NodeType {
     return children.get(childNodeName);
   }
 
-  void addChildNodeType(String childNodeName, boolean mandatory, NodeTypeMapping childNodeTypeMapping) {
+  void addChildNodeType(String childNodeName, boolean mandatory, boolean autocreated, NodeTypeMapping childNodeTypeMapping) {
     NodeDefinition nodeDefinition = children.get(childNodeName);
     if (nodeDefinition == null) {
-      nodeDefinition = new NodeDefinition(childNodeName, mandatory);
+      nodeDefinition = new NodeDefinition(childNodeName, mandatory, autocreated);
       children.put(childNodeName, nodeDefinition);
     }
     nodeDefinition.mappings.add(childNodeTypeMapping);

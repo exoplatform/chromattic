@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.typegen.onetoone.hierarchical;
 
+import org.chromattic.api.AttributeOption;
 import org.chromattic.api.annotations.*;
 
 /**
@@ -28,10 +29,14 @@ import org.chromattic.api.annotations.*;
 @PrimaryType(name = "c1")
 public abstract class C1 {
 
-  @MappedBy("child")
-  @Mandatory
+  @MappedBy("child1")
   @Owner
-  @OneToOne
-  public abstract C2 getChild();
+  @OneToOne(options = AttributeOption.MANDATORY)
+  public abstract C2 getChild1();
+
+  @MappedBy("child2")
+  @Owner
+  @OneToOne(options = AttributeOption.AUTOCREATED)
+  public abstract C2 getChild2();
 
 }

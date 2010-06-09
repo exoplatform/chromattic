@@ -29,11 +29,11 @@ import org.chromattic.test.pom.Templatized;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:portal")
+@PrimaryType(name = "pom:portal")
 public abstract class PortalSite extends SiteImpl<PortalSites> {
 
-  @OneToOne(type = RelationshipType.EMBEDDED)
   @Owner
+  @OneToOne(type = RelationshipType.EMBEDDED)
   public abstract Templatized getTemplatized();
 
 }

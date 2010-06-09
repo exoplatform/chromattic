@@ -30,3 +30,4 @@ import org.chromattic.api.annotations.PrimaryType;
 @PrimaryType(name = "a1")
 public abstract class A1 {
 }
+

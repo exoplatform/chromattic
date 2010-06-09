@@ -171,6 +171,15 @@ public class NodeTypeMapping
     return formatterClass;
   }
 
+  public PropertyMapping<? extends ValueMapping> getPropertyMapping(String propertyName) {
+    for (PropertyMapping<? extends ValueMapping> propertyMapping : propertyMappings) {
+      if (propertyMapping.getName().equals(propertyName)) {
+        return propertyMapping;
+      }
+    }
+    return null;
+  }
+
   public Set<PropertyMapping<? extends ValueMapping>> getPropertyMappings() {
     return propertyMappings;
   }

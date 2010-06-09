@@ -21,6 +21,7 @@ package org.chromattic.metamodel.typegen.inheritance;
 
 import junit.framework.TestCase;
 import org.chromattic.metamodel.mapping.InvalidMappingException;
+import org.chromattic.metamodel.typegen.NodeDefinition;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
 import org.chromattic.metamodel.typegen.TypeGen;
@@ -42,9 +43,7 @@ public class InheritanceTestCase extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    TypeGen gen = new TypeGen();
     Map<Class<?>, NodeType> a = assertValid(A1.class, A3.class, A4.class, A5.class);
-    gen.generate();
     a1NT = a.get(A1.class);
     a3NT = a.get(A3.class);
     a4NT = a.get(A4.class);
@@ -82,6 +81,28 @@ public class InheritanceTestCase extends TestCase {
     assertEquals(2, a1NT.getChildNodeDefinitions().size());
     assertEquals(0, a3NT.getChildNodeDefinitions().size());
     assertEquals(0, a5NT.getChildNodeDefinitions().size());
+  }
+
+  public void testRelationshipOverride() {
+    Map<Class<?>, NodeType> a = assertValid(G1.class, G2.class, G3.class);
+    NodeType g1 = a.get(H1.class);
+    NodeType g2 = a.get(H2.class);
+    NodeType g3 = a.get(H3.class);
+//    NodeDefinition g2Def = g3.getChildNodeDefinition("g2");
+//    assertNotNull(g2Def);
+  }
+
+  public void testGenericRelationship() {
+    Map<Class<?>, NodeType> a = assertValid(H1.class, H2.class, H3.class);
+    NodeType h1 = a.get(H1.class);
+    NodeType h2 = a.get(H2.class);
+    NodeType h3 = a.get(H3.class);
+    NodeDefinition h1AnyDef = h1.getChildNodeDefinition("*");
+    assertNotNull(h1AnyDef);
+    assertEquals("nt:base", h1AnyDef.getNodeTypeName());
+    NodeDefinition h2AnyDef = h2.getChildNodeDefinition("*");
+    assertNotNull(h2AnyDef);
+    assertEquals("h3", h2AnyDef.getNodeTypeName());
   }
 
   public void testInvalidAbstractManyToOne() {

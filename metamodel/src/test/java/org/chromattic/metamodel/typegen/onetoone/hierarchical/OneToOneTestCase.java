@@ -48,23 +48,6 @@ public class OneToOneTestCase extends TestCase {
     assertEquals(0, a2NT.getPropertyDefinitions().size());
   }
 
-  public void testMandatoryMappedBy() throws Exception {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo c1 = gen.addType(C1.class);
-    ClassTypeInfo c2 = gen.addType(C2.class);
-    gen.generate();
-    NodeType c1NT = gen.getNodeType(c1);
-    assertEquals("c1", c1NT.getName());
-    NodeType c2NT = gen.getNodeType(c2);
-    assertEquals("c2", c2NT.getName());
-    assertEquals(Collections.set("child"), c1NT.getChildNodeDefinitions().keySet());
-    assertEquals(0, c1NT.getPropertyDefinitions().size());
-    assertEquals("c2", c1NT.getChildNodeDefinition("child").getNodeTypeName());
-    assertEquals(true, c1NT.getChildNodeDefinition("child").isMandatory());
-    assertEquals(Collections.<String>set(), c2NT.getChildNodeDefinitions().keySet());
-    assertEquals(0, c2NT.getPropertyDefinitions().size());
-  }
-
   public void testRelatedMappedBy() throws Exception {
     TypeGen gen = new TypeGen();
     ClassTypeInfo b1 = gen.addType(B1.class);
@@ -80,6 +63,31 @@ public class OneToOneTestCase extends TestCase {
     assertEquals(false, b1NT.getChildNodeDefinition("child").isMandatory());
     assertEquals(0, b2NT.getChildNodeDefinitions().size());
     assertEquals(0, b2NT.getPropertyDefinitions().size());
+  }
+
+  public void testOptions() throws Exception {
+    TypeGen gen = new TypeGen();
+    ClassTypeInfo c1 = gen.addType(C1.class);
+    ClassTypeInfo c2 = gen.addType(C2.class);
+    gen.generate();
+    NodeType c1NT = gen.getNodeType(c1);
+    assertEquals("c1", c1NT.getName());
+    NodeType c2NT = gen.getNodeType(c2);
+    assertEquals("c2", c2NT.getName());
+
+    //
+    assertEquals(Collections.<String>set(), c1NT.getPropertyDefinitions().keySet());
+    assertEquals(Collections.set("child1", "child2"), c1NT.getChildNodeDefinitions().keySet());
+    assertEquals("c2", c1NT.getChildNodeDefinition("child1").getNodeTypeName());
+    assertEquals(true, c1NT.getChildNodeDefinition("child1").isMandatory());
+    assertEquals(false, c1NT.getChildNodeDefinition("child1").isAutocreated());
+    assertEquals("c2", c1NT.getChildNodeDefinition("child2").getNodeTypeName());
+    assertEquals(false, c1NT.getChildNodeDefinition("child2").isMandatory());
+    assertEquals(true, c1NT.getChildNodeDefinition("child2").isAutocreated());
+
+    //
+    assertEquals(Collections.<String>set(), c2NT.getPropertyDefinitions().keySet());
+    assertEquals(Collections.<String>set(), c2NT.getChildNodeDefinitions().keySet());
   }
 
   public void testSelf() throws Exception {

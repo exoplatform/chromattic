@@ -22,14 +22,20 @@ package org.chromattic.test.pom;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:templatized")
+@PrimaryType(name = "pom:templatized")
 public abstract class Templatized {
+
+/*
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  public abstract Object getOwner();
+*/
 
   @ManyToOne(type = RelationshipType.REFERENCE)
   @MappedBy("template")

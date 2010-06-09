@@ -19,6 +19,7 @@
 
 package org.chromattic.test.pom;
 
+import org.chromattic.api.AttributeOption;
 import org.chromattic.api.annotations.*;
 import org.chromattic.test.pom.group.GroupSites;
 import org.chromattic.test.pom.portal.PortalSites;
@@ -27,7 +28,7 @@ import org.chromattic.test.pom.portal.PortalSites;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:workspace")
+@PrimaryType(name = "pom:workspace")
 public abstract class WorkspaceImpl {
 
   @Id
@@ -36,12 +37,12 @@ public abstract class WorkspaceImpl {
   @Name
   public abstract String getName();
 
-  @OneToOne
+  @OneToOne(options = AttributeOption.AUTOCREATED)
   @Owner
   @MappedBy("groups")
   public abstract GroupSites getGroups();
 
-  @OneToOne
+  @OneToOne(options = AttributeOption.AUTOCREATED)
   @Owner
   @MappedBy("portals")
   public abstract PortalSites getPortals();

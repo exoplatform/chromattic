@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.mapping;
 
+import org.chromattic.api.AttributeOption;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.bean.value.MultiValueInfo;
@@ -33,6 +34,8 @@ import org.chromattic.metamodel.bean.*;
 import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeInfo;
+
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -67,7 +70,7 @@ public class BaseTypeMappingVisitor {
 
   protected void oneToManyByPath(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping, boolean skip) {}
 
-  protected void oneToManyHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {}
+  protected void oneToManyHierarchic(NodeTypeMapping definer, String propertyName, NodeTypeMapping relatedMapping) {}
 
   protected void manyToOneByReference(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean skip) {}
 
@@ -75,7 +78,7 @@ public class BaseTypeMappingVisitor {
 
   protected void manyToOneHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {}
 
-  protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, int mode) {}
+  protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean owning, Set<AttributeOption> attributes) {}
 
   protected void oneToOneEmbedded(ClassTypeInfo definer, NodeTypeMapping relatedMapping, boolean owner) {}
 
@@ -99,7 +102,8 @@ public class BaseTypeMappingVisitor {
         //
         boolean skip = propertyMapping.getInfo().getProperty().getAnnotated(Skip.class) != null;
 
-        ClassTypeInfo definer = valueMapping.getDefiner().getType();
+        NodeTypeMapping definerMapping = valueMapping.getDefiner();
+        ClassTypeInfo definer = definerMapping.getType();
         if (valueMapping instanceof SimpleMapping) {
           SimpleMapping<?> simpleMapping = (SimpleMapping)valueMapping;
           PropertyQualifier<? extends ValueInfo> propertyInfo = propertyMapping.getInfo();
@@ -156,7 +160,7 @@ public class BaseTypeMappingVisitor {
             } else {
               switch (type) {
                 case HIERARCHIC:
-                  oneToManyHierarchic(definer, relationshipMapping.getRelatedMapping());
+                  oneToManyHierarchic(definerMapping, propertyMapping.getInfo().getProperty().getName(), relationshipMapping.getRelatedMapping());
                   break;
                 default:
                   throw new AssertionError();
@@ -191,7 +195,7 @@ public class BaseTypeMappingVisitor {
               String name = namedOneToOneMapping.getName();
               switch (type) {
                 case HIERARCHIC:
-                  oneToOneHierarchic(definer, name, relationshipMapping.getRelatedMapping(), namedOneToOneMapping.getMode());
+                  oneToOneHierarchic(definer, name, relationshipMapping.getRelatedMapping(), namedOneToOneMapping.isOwning(), namedOneToOneMapping.getJCRMapping().getAttributes());
                   break;
                 default:
                   throw new AssertionError();

@@ -22,6 +22,7 @@ package org.chromattic.metamodel.mapping.value;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.api.RelationshipType;
+import org.chromattic.metamodel.mapping.jcr.JCRChildNodeMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -29,40 +30,53 @@ import org.chromattic.api.RelationshipType;
  */
 public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneMapping> {
 
-  /** . */
+/*
+  */
+/** . *//*
+
   public static final int MODE_OWNER = 0;
 
-  /** . */
+  */
+/** . *//*
+
   public static final int MODE_MANDATORY_OWNER = 1;
 
-  /** . */
+  */
+/** . *//*
+
   public static final int MODE_OWNED = 2;
+*/
 
   /** . */
   private final String name;
 
   /** . */
-  private final int mode;
+  private final boolean owning;
 
-  public NamedOneToOneMapping(NodeTypeMapping definer, NodeTypeMapping owner, NodeTypeMapping relatedType, String name, RelationshipType type, int mode) {
-    super(definer, owner, relatedType, type);
+  /** . */
+  private final JCRChildNodeMapping jcrMapping;
 
-    //
-    if (mode < 0 || mode > 2) {
-      throw new IllegalArgumentException();
-    }
+  public NamedOneToOneMapping(
+    NodeTypeMapping definer,
+    NodeTypeMapping owner,
+    NodeTypeMapping relatedType,
+    String name,
+    boolean owning,
+    JCRChildNodeMapping jcrMapping) {
+    super(definer, owner, relatedType, RelationshipType.HIERARCHIC);
 
     //
     this.name = name;
-    this.mode = mode;
+    this.owning = owning;
+    this.jcrMapping = jcrMapping;
   }
 
   public boolean isOwning() {
-    return mode != MODE_OWNED;
+    return owning;
   }
 
-  public int getMode() {
-    return mode;
+  public JCRChildNodeMapping getJCRMapping() {
+    return jcrMapping;
   }
 
   public String getName() {

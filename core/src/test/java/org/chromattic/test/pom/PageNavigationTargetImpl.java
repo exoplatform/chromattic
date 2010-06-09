@@ -28,7 +28,7 @@ import org.chromattic.api.RelationshipType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:pagenavigationtarget")
+@PrimaryType(name = "pom:pagenavigationtarget")
 public abstract class PageNavigationTargetImpl extends NavigationTargetImpl {
 
   @ManyToOne(type = RelationshipType.REFERENCE)

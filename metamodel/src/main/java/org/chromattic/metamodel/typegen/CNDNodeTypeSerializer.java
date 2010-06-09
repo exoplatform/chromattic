@@ -108,16 +108,21 @@ public class CNDNodeTypeSerializer extends NodeTypeSerializer {
   }
 
   @Override
-  public void childNode(String name, String nodeTypeName, boolean mandatory) throws Exception {
+  public void childNode(String name, String nodeTypeName, boolean mandatory, boolean autocreated) throws Exception {
     writer.print("+ ");
     writer.print(name);
     writer.print(" (");
     writer.print(nodeTypeName);
     writer.print(")");
+    writer.print(" =");
+    writer.print(nodeTypeName);
 
     //
     if (mandatory) {
       writer.print(" mandatory");
+    }
+    if (autocreated) {
+      writer.print(" autocreated");
     }
 
     //

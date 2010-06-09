@@ -48,6 +48,7 @@
  		      <value>jar:/org/chromattic/test/session/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/type/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/format/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/pom/nodetypes.xml</value>
  		      <value>jar:/conf/test-nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
@@ -89,6 +90,7 @@
           <property name="format" value="format"/>
           <property name="format_property" value="format_property"/>
           <property name="format_object" value="format_object"/>
+          <property name="pom" value="pom"/>
         </properties-param>
       </init-params>
     </component-plugin>

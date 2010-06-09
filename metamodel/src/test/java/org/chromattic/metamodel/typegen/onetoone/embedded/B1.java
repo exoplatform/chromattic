@@ -16,24 +16,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.AttributeOption;
-import org.chromattic.api.annotations.*;
-import org.chromattic.metamodel.bean.PropertyRole;
+package org.chromattic.metamodel.typegen.onetoone.embedded;
+
+import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "lifecycle:m1")
-public abstract class M1 {
+@PrimaryType(name = "b1")
+public abstract class B1 {
 
-  @OneToOne(options = AttributeOption.MANDATORY)
   @Owner
-  @MappedBy("mandatory")
-  public abstract M2 getMandatory();
-  
-  public abstract void setMandatory(M2 mandatory);
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  public abstract B2 getB2();
+
+  public abstract void setB2(B2 b2);
 
 }

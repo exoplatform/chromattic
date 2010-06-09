@@ -19,17 +19,17 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.chromattic.api.AttributeOption;
 import org.chromattic.api.BuilderException;
 import org.chromattic.api.annotations.*;
+import org.chromattic.api.annotations.Properties;
 import org.chromattic.metamodel.bean.value.*;
 import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.chromattic.metamodel.type.*;
 import org.reflext.api.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -84,7 +84,8 @@ public class PropertyQualifierResolver {
     //
     AnnotatedProperty<OneToOne> oneToOneAnnotation = propertyInfo.getAnnotated(OneToOne.class);
     if (oneToOneAnnotation != null) {
-      roles.add(new PropertyRole.OneToOne(oneToOneAnnotation.getOwner(), oneToOneAnnotation.getAnnotation().type()));
+      Set<AttributeOption> options = org.chromattic.common.collection.Collections.set(oneToOneAnnotation.getAnnotation().options());
+      roles.add(new PropertyRole.OneToOne(oneToOneAnnotation.getOwner(), options, oneToOneAnnotation.getAnnotation().type()));
     }
 
     //
@@ -220,6 +221,12 @@ public class PropertyQualifierResolver {
 
   private ClassTypeInfo resolveClass(ClassTypeInfo baseType, TypeInfo type) {
     TypeInfo resolvedType = baseType.resolve(type);
-    return resolvedType instanceof ClassTypeInfo ? (ClassTypeInfo)resolvedType : null;
+    if (resolvedType instanceof ClassTypeInfo) {
+      return (ClassTypeInfo)resolvedType;
+    } else if (resolvedType instanceof TypeVariableInfo) {
+      return resolveClass(baseType, ((TypeVariableInfo)resolvedType).getBounds().get(0));
+    } else {
+      return null;
+    }
   }
 }

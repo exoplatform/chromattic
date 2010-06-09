@@ -19,6 +19,7 @@
 
 package org.chromattic.test.pom.group;
 
+import org.chromattic.api.AttributeOption;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.MappedBy;
@@ -29,10 +30,10 @@ import org.chromattic.test.pom.WorkspaceImpl;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:groups")
+@PrimaryType(name = "pom:groups")
 public abstract class GroupSites extends Sites<GroupSite> {
 
-  @OneToOne
+  @OneToOne(options = AttributeOption.AUTOCREATED)
   @MappedBy("groups")
   public abstract WorkspaceImpl getWorkspace();
 

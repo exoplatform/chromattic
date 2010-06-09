@@ -37,11 +37,15 @@ public class NodeDefinition {
   private final boolean mandatory;
 
   /** . */
+  private final boolean autocreated;
+
+  /** . */
   final Set<NodeTypeMapping> mappings;
 
-  public NodeDefinition(String name, boolean mandatory) {
+  public NodeDefinition(String name, boolean mandatory, boolean autocreated) {
     this.name = name;
     this.mandatory = mandatory;
+    this.autocreated = autocreated;
     this.mappings = new HashSet<NodeTypeMapping>();
   }
 
@@ -51,6 +55,10 @@ public class NodeDefinition {
 
   public boolean isMandatory() {
     return mandatory;
+  }
+
+  public boolean isAutocreated() {
+    return autocreated;
   }
 
   public String getNodeTypeName() {

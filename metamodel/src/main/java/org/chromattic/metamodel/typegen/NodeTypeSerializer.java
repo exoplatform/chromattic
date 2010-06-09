@@ -91,8 +91,8 @@ public abstract class NodeTypeSerializer {
           childNode(
             childNodeDefinition.getName(),
             childNodeDefinition.getNodeTypeName(),
-            childNodeDefinition.isMandatory()
-          );
+            childNodeDefinition.isMandatory(),
+            childNodeDefinition.isAutocreated());
         }
 
         //
@@ -137,7 +137,8 @@ public abstract class NodeTypeSerializer {
   public void childNode(
     String name,
     String nodeTypeName,
-    boolean mandatory) throws Exception {
+    boolean mandatory,
+    boolean autocreated) throws Exception {
   }
 
   public void endChildNodes() throws Exception {

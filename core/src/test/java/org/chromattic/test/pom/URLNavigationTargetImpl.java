@@ -26,7 +26,7 @@ import org.chromattic.api.annotations.Property;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:urlnavigationtarget")
+@PrimaryType(name = "pom:urlnavigationtarget")
 public abstract class URLNavigationTargetImpl extends NavigationTargetImpl {
 
   @Property(name = "url")

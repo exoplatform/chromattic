@@ -19,13 +19,14 @@
 
 package org.chromattic.test.pom;
 
+import org.chromattic.api.AttributeOption;
 import org.chromattic.api.annotations.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:siteimpl")
+@PrimaryType(name = "pom:site")
 public abstract class SiteImpl<T extends Sites> {
 
   @Name
@@ -36,12 +37,12 @@ public abstract class SiteImpl<T extends Sites> {
   @ManyToOne
   public abstract T getSites();
 
-  @OneToOne
+  @OneToOne(options = AttributeOption.AUTOCREATED)
   @Owner
   @MappedBy("root")
   public abstract PageImpl getRoot();
 
-  @OneToOne
+  @OneToOne(options = AttributeOption.AUTOCREATED)
   @Owner
   @MappedBy("navigation")
   public abstract NavigationImpl getNavigation();

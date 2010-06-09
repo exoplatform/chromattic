@@ -19,9 +19,9 @@
 
 package org.chromattic.test.pom;
 
+import org.chromattic.api.AttributeOption;
 import org.chromattic.api.annotations.*;
 import org.chromattic.api.RelationshipType;
-import org.chromattic.test.pom.portal.PortalSite;
 
 import java.util.Collection;
 
@@ -29,7 +29,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:page")
+@PrimaryType(name = "pom:page")
 public abstract class PageImpl {
 
   @OneToOne(type = RelationshipType.EMBEDDED)
@@ -39,19 +39,28 @@ public abstract class PageImpl {
   @Name
   public abstract String getName();
 
-  @ManyToOne(type = RelationshipType.REFERENCE)
-  @MappedBy("template")
-  public abstract PageImpl getTemplate();
+/*
+  public Collection<PortalSite> getTemplatizedPortals() {
+    return getTemplatized(PortalSite.class);
+  }
 
-  public abstract void setTemplate(PageImpl template);
+  public Collection<PageImpl> getTemplatizedPages() {
+    return getTemplatized(PageImpl.class);
+  }
+*/
 
-  @OneToMany(type = RelationshipType.REFERENCE)
-  @MappedBy("template")
-  public abstract Collection<PortalSite> getTemplatizedPortals();
-
-  @OneToMany(type = RelationshipType.REFERENCE)
-  @MappedBy("template")
-  public abstract Collection<PageImpl> getTemplatizedPages();
+/*
+  public <T> Collection<T> getTemplatized(Class<T> type) {
+    ArrayList<T> portals = new ArrayList<T>();
+    for (Templatized templatized : getTemplatizedObjects()) {
+      Object owner = templatized.getOwner();
+      if (type.isInstance(owner)) {
+        portals.add(type.cast(owner));
+      }
+    }
+    return portals;
+  }
+*/
 
   @OneToMany(type = RelationshipType.REFERENCE)
   @MappedBy("template")
@@ -67,7 +76,7 @@ public abstract class PageImpl {
   @MappedBy("root")
   public abstract SiteImpl getSiteParent();
 
-  @OneToOne
+  @OneToOne(options = AttributeOption.AUTOCREATED)
   @Owner
   @MappedBy("container")
   public abstract UIContainerImpl getContainer();

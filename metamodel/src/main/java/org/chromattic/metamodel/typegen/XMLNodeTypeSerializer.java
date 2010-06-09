@@ -28,9 +28,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
 import java.util.List;
 
@@ -148,11 +146,12 @@ public class XMLNodeTypeSerializer extends NodeTypeSerializer {
   public void childNode(
     String name,
     String nodeTypeName,
-    boolean mandatory) throws SAXException {
+    boolean mandatory,
+    boolean autocreated) throws SAXException {
     childNodeDefinitionsXML.element("childNodeDefinition").
       withAttribute("name", name).
-      withAttribute("defaultPrimaryType", "").
-      withAttribute("autoCreated", "false").
+      withAttribute("defaultPrimaryType", nodeTypeName).
+      withAttribute("autoCreated", Boolean.valueOf(autocreated).toString()).
       withAttribute("mandatory", Boolean.valueOf(mandatory).toString()).
       withAttribute("onParentVersion", "COPY").
       withAttribute("protected", "false").

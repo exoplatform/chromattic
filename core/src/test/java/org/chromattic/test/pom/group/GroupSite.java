@@ -26,6 +26,6 @@ import org.chromattic.test.pom.SiteImpl;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:group")
+@PrimaryType(name = "pom:group")
 public abstract class GroupSite extends SiteImpl<GroupSites> {
 }

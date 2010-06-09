@@ -30,7 +30,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "exo:sites", abstract_ = true)
+@PrimaryType(name = "pom:sites", abstract_ = true)
 public abstract class Sites<T extends SiteImpl> {
 
   @OneToMany
