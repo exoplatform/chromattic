@@ -77,11 +77,10 @@ public class MotivationTestCase extends TestCase {
   }
 
   private void list(Node node) throws RepositoryException {
-    String typeName = node.getPrimaryNodeType().getName();
-    if ("nt:hierarchyNode".equals(typeName)) {
+    if (!node.isNodeType("nt:hierarchyNode")) {
       throw new IllegalArgumentException("The provided node is not a hierarchy node");
     }
-    if ("nt:file".equals(typeName)) {
+    if (node.isNodeType("nt:file")) {
       if (node.hasNode("jcr:content")) {
         Node content = node.getNode("jcr:content");
         String encoding = null;
@@ -92,7 +91,7 @@ public class MotivationTestCase extends TestCase {
         System.out.println("File[name=" + node.getName() + ",mime-type=" + mimeType +
           ",encoding=" + encoding +  "]");
       }
-    } else if ("nt:folder".equals(typeName)) {
+    } else if (node.isNodeType("nt:folder")) {
       System.out.println("Folder[" + node.getName() + "]");
       for (NodeIterator i = node.getNodes();i.hasNext();) {
         list(i.nextNode());
