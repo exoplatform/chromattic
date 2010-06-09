@@ -20,14 +20,13 @@
 package org.chromattic.metamodel.mapping.value;
 
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.metamodel.mapping.jcr.ItemDefinitionMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleMapping<M extends JCRMemberMapping> extends ValueMapping {
+public class SimpleMapping<M extends ItemDefinitionMapping> extends ValueMapping {
 
   /** . */
   private final M jcrMember;

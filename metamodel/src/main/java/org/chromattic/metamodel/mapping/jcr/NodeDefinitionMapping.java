@@ -19,38 +19,24 @@
 
 package org.chromattic.metamodel.mapping.jcr;
 
-import java.util.List;
+import org.chromattic.api.AttributeOption;
+
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMapping<I> extends JCRMemberMapping {
+public class NodeDefinitionMapping extends ItemDefinitionMapping {
 
   /** . */
-  private final String name;
+  private final Set<AttributeOption> attributes;
 
-  /** . */
-  private final List<String> defaultValue;
-
-  /** . */
-  private final PropertyMetaType<I> metaType;
-
-  public JCRPropertyMapping(String name, PropertyMetaType<I> metaType, List<String> defaultValue) {
-    this.name = name;
-    this.metaType = metaType;
-    this.defaultValue = defaultValue;
+  public NodeDefinitionMapping(Set<AttributeOption> attributes) {
+    this.attributes = attributes;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public PropertyMetaType<I> getMetaType() {
-    return metaType;
-  }
-
-  public List<String> getDefaultValue() {
-    return defaultValue;
+  public Set<AttributeOption> getAttributes() {
+    return attributes;
   }
 }

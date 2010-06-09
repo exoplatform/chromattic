@@ -25,7 +25,7 @@ import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.OneToManyMapping;
 import org.reflext.api.ClassTypeInfo;
@@ -81,7 +81,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping propertyMapping, boolean multiple, boolean skip) {
+  protected <V> void propertyMapping(ClassTypeInfo definer, PropertyDefinitionMapping propertyMapping, boolean multiple, boolean skip) {
     if (!skip) {
       if (definer.equals(current.mapping.getType())) {
         current.properties.put(propertyMapping.getName(), new PropertyDefinition(propertyMapping, multiple));

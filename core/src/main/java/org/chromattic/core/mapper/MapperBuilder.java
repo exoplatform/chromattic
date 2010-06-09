@@ -37,9 +37,8 @@ import org.chromattic.metamodel.mapping.MethodMapping;
 import org.chromattic.metamodel.mapping.CreateMapping;
 import org.chromattic.metamodel.mapping.DestroyMapping;
 import org.chromattic.metamodel.mapping.FindByIdMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
+import org.chromattic.metamodel.mapping.jcr.ItemDefinitionMapping;
+import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.common.collection.SetMap;
 import org.chromattic.core.mapper.onetomany.reference.JCRReferentCollectionPropertyMapper;
@@ -218,26 +217,21 @@ public class MapperBuilder {
         ValueMapping pmvm = pm.getValueMapping();
 
         //
-//        SingleValuedPropertyQualifier<BeanValueInfo> propertyInfo = (SingleValuedPropertyQualifier<BeanValueInfo>)pm.getInfo();
-
-        //
-        if (pmvm instanceof SimpleMapping) {
+        if (pmvm instanceof AttributeValueMapping) {
+          AttributeValueMapping avm = (AttributeValueMapping)pmvm;
+          JCRNodeAttributePropertyMapper bilto = new JCRNodeAttributePropertyMapper((PropertyQualifier<SimpleValueInfo>)pm.getInfo(), avm.getAttributeType());
+          if (contextType == EntityContext.class) {
+            propertyMappersForEntity.add(bilto);
+          } else {
+            throw new UnsupportedOperationException("todo");
+          }
+        } else if (pmvm instanceof SimpleMapping) {
           SimpleMapping pmdm = (SimpleMapping)pmvm;
-          JCRMemberMapping jcrMember = pmdm.getJCRMember();
-
-          //
-          if (jcrMember instanceof JCRPropertyMapping) {
-            JCRPropertyMapping jcrProperty = (JCRPropertyMapping)jcrMember;
+          ItemDefinitionMapping jcrMember = pmdm.getJCRMember();
+          if (jcrMember instanceof PropertyDefinitionMapping) {
+            PropertyDefinitionMapping jcrProperty = (PropertyDefinitionMapping)jcrMember;
             JCRPropertyPropertyMapper<C, ?, ?> mapper = createPropertyPM(contextType, pm, jcrProperty);
             propertyMappers.add(mapper);
-          } else if (jcrMember instanceof JCRNodeAttributeMapping) {
-            JCRNodeAttributeMapping nam = (JCRNodeAttributeMapping)jcrMember;
-            JCRNodeAttributePropertyMapper bilto = new JCRNodeAttributePropertyMapper((PropertyQualifier<SimpleValueInfo>)pm.getInfo(), nam.getType());
-            if (contextType == EntityContext.class) {
-              propertyMappersForEntity.add(bilto);
-            } else {
-              throw new UnsupportedOperationException("todo");
-            }
           }
         } else if (pmvm instanceof RelationshipMapping) {
           RelationshipMapping pmhm = (RelationshipMapping<?, ?>)pmvm;
@@ -355,11 +349,11 @@ public class MapperBuilder {
           }
         } else if (pmvm instanceof SimpleMapping) {
           SimpleMapping sm = (SimpleMapping)pmvm;
-          JCRMemberMapping jcrMember = sm.getJCRMember();
+          ItemDefinitionMapping jcrMember = sm.getJCRMember();
 
           //
-          if (jcrMember instanceof JCRPropertyMapping) {
-            JCRPropertyMapping jcrProperty = (JCRPropertyMapping)jcrMember;
+          if (jcrMember instanceof PropertyDefinitionMapping) {
+            PropertyDefinitionMapping jcrProperty = (PropertyDefinitionMapping)jcrMember;
             JCRPropertyListPropertyMapper<C, ?, ?> mapper = createPropertyListPM(contextType, pm, jcrProperty);
             propertyMappers.add(mapper);
           }
@@ -492,7 +486,7 @@ public class MapperBuilder {
   private <C extends ObjectContext, V, I> JCRPropertyPropertyMapper<C, V, I> createPropertyPM(
     Class<C> contextType,
     PropertyMapping<?> pm,
-    JCRPropertyMapping<I> jcrProperty) {
+    PropertyDefinitionMapping<I> jcrProperty) {
 
     SimpleTypeProvider<I, V> vt = (SimpleTypeProvider<I, V>)valueTypeFactory.create(pm.getInfo().getValue().getTypeInfo(), jcrProperty.getMetaType());
 
@@ -508,7 +502,7 @@ public class MapperBuilder {
   private <C extends ObjectContext, V, I> JCRPropertyListPropertyMapper<C, V, I> createPropertyListPM(
     Class<C> contextType,
     PropertyMapping<?> pm,
-    JCRPropertyMapping<I> jcrProperty) {
+    PropertyDefinitionMapping<I> jcrProperty) {
 
     //
     PropertyQualifier<CollectionValueInfo<SimpleValueInfo>> a = (PropertyQualifier<CollectionValueInfo<SimpleValueInfo>>)pm.getInfo();

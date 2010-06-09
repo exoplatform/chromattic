@@ -25,15 +25,13 @@ import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.bean.value.MultiValueInfo;
 import org.chromattic.metamodel.bean.value.TypeKind;
 import org.chromattic.metamodel.bean.value.ValueInfo;
-import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.metamodel.mapping.jcr.ItemDefinitionMapping;
+import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.metamodel.bean.*;
 import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.TypeInfo;
 
 import java.util.Set;
 
@@ -62,7 +60,7 @@ public class BaseTypeMappingVisitor {
 
   protected void startMapping(NodeTypeMapping mapping) {}
 
-  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping propertyMapping, boolean multiple, boolean skip) {}
+  protected <V> void propertyMapping(ClassTypeInfo definer, PropertyDefinitionMapping propertyMapping, boolean multiple, boolean skip) {}
 
   protected void propertyMapMapping(ClassTypeInfo definer, PropertyMetaType metaType, boolean skip) {}
 
@@ -104,12 +102,14 @@ public class BaseTypeMappingVisitor {
 
         NodeTypeMapping definerMapping = valueMapping.getDefiner();
         ClassTypeInfo definer = definerMapping.getType();
-        if (valueMapping instanceof SimpleMapping) {
+        if (valueMapping instanceof AttributeValueMapping) {
+          // Nothing to do
+        } else if (valueMapping instanceof SimpleMapping) {
           SimpleMapping<?> simpleMapping = (SimpleMapping)valueMapping;
           PropertyQualifier<? extends ValueInfo> propertyInfo = propertyMapping.getInfo();
-          JCRMemberMapping memberMapping = simpleMapping.getJCRMember();
+          ItemDefinitionMapping memberMapping = simpleMapping.getJCRMember();
           ValueInfo valueInfo = propertyInfo.getValue();
-          if (memberMapping instanceof JCRPropertyMapping) {
+          if (memberMapping instanceof PropertyDefinitionMapping) {
             boolean multiple;
             if (valueInfo instanceof MultiValueInfo) {
               valueInfo = ((MultiValueInfo<?>)valueInfo).getElement();
@@ -120,21 +120,10 @@ public class BaseTypeMappingVisitor {
             if (valueInfo.getKind() == TypeKind.SIMPLE) {
               propertyMapping(
                 definer,
-                (JCRPropertyMapping)memberMapping,
+                (PropertyDefinitionMapping)memberMapping,
                 multiple, skip);
             } else {
               // WTF ?
-              throw new AssertionError();
-            }
-          } else if (memberMapping instanceof JCRNodeAttributeMapping) {
-            if (valueInfo.getKind() == TypeKind.SIMPLE) {
-              TypeInfo simpleType = valueInfo.getTypeInfo();
-              if (simpleType instanceof ClassTypeInfo && ((ClassTypeInfo)simpleType).getName().equals(String.class.getName())) {
-                // OK
-              } else {
-                throw new AssertionError(mapping.getType().toString() + " wrong simple type "+ simpleType);
-              }
-            } else {
               throw new AssertionError();
             }
           } else {

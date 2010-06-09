@@ -19,22 +19,11 @@
 
 package org.chromattic.metamodel.mapping.jcr;
 
-import org.chromattic.metamodel.mapping.NodeAttributeType;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRNodeAttributeMapping extends JCRMemberMapping {
-
-  /** . */
-  private final NodeAttributeType type;
-
-  public JCRNodeAttributeMapping(NodeAttributeType type) {
-    this.type = type;
-  }
-
-  public NodeAttributeType getType() {
-    return type;
+public class ItemDefinitionMapping {
+  ItemDefinitionMapping() {
   }
 }

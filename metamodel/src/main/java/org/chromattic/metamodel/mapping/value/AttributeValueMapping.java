@@ -17,26 +17,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping.jcr;
+package org.chromattic.metamodel.mapping.value;
 
-import org.chromattic.api.AttributeOption;
-
-import java.util.Set;
+import org.chromattic.metamodel.mapping.NodeAttributeType;
+import org.chromattic.metamodel.mapping.NodeTypeMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRChildNodeMapping extends JCRMemberMapping {
+public class AttributeValueMapping extends ValueMapping {
 
   /** . */
-  private final Set<AttributeOption> attributes;
+  private final NodeAttributeType attributeType;
 
-  public JCRChildNodeMapping(Set<AttributeOption> attributes) {
-    this.attributes = attributes;
+  public AttributeValueMapping(NodeTypeMapping definer, NodeAttributeType attributeType) {
+    super(definer);
+
+    //
+    this.attributeType = attributeType;
   }
 
-  public Set<AttributeOption> getAttributes() {
-    return attributes;
+  public NodeAttributeType getAttributeType() {
+    return attributeType;
   }
 }

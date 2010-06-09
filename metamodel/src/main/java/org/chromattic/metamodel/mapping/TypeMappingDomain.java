@@ -19,7 +19,6 @@
 
 package org.chromattic.metamodel.mapping;
 
-import org.chromattic.api.AttributeOption;
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.*;
@@ -29,9 +28,8 @@ import org.chromattic.metamodel.bean.value.MapValueInfo;
 import org.chromattic.metamodel.bean.value.MultiValueInfo;
 import org.chromattic.metamodel.bean.value.TypeKind;
 import org.chromattic.metamodel.bean.value.ValueInfo;
-import org.chromattic.metamodel.mapping.jcr.JCRChildNodeMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.metamodel.mapping.jcr.NodeDefinitionMapping;
+import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
@@ -149,7 +147,7 @@ public class TypeMappingDomain {
     }
   }
 
-  private static <V> JCRPropertyMapping createProperty(
+  private static <V> PropertyDefinitionMapping createProperty(
     String name,
     PropertyMetaType jcrType,
     String[] defaultValue) {
@@ -163,7 +161,7 @@ public class TypeMappingDomain {
     }
 
     //
-    return new JCRPropertyMapping(name, jcrType, defaultValueList);
+    return new PropertyDefinitionMapping(name, jcrType, defaultValueList);
   }
 
   private NodeTypeMapping resolve(ClassTypeInfo javaClass, Map<String, NodeTypeMapping> addedMappings) {
@@ -299,12 +297,12 @@ public class TypeMappingDomain {
           }
 
           //
-          JCRPropertyMapping memberMapping = createProperty(
+          PropertyDefinitionMapping memberMapping = createProperty(
             roleProperty.name,
             propertyMetaType,
             defaultValues);
-          SimpleMapping<JCRPropertyMapping> simpleMapping = new SimpleMapping<JCRPropertyMapping>(definer, memberMapping);
-          PropertyMapping<SimpleMapping<JCRPropertyMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRPropertyMapping>>(propertyInfo, simpleMapping);
+          SimpleMapping<PropertyDefinitionMapping> simpleMapping = new SimpleMapping<PropertyDefinitionMapping>(definer, memberMapping);
+          PropertyMapping<SimpleMapping<PropertyDefinitionMapping>> propertyMapping = new PropertyMapping<SimpleMapping<PropertyDefinitionMapping>>(propertyInfo, simpleMapping);
           propertyMappings.add(propertyMapping);
         } else if (role instanceof PropertyRole.Properties) {
           if (value instanceof MapValueInfo) {
@@ -328,11 +326,11 @@ public class TypeMappingDomain {
         } else if (role instanceof PropertyRole.Attribute) {
           PropertyRole.Attribute attributeRole = (PropertyRole.Attribute)role;
           if (value.getKind() == TypeKind.SIMPLE) {
-            JCRNodeAttributeMapping memberMapping = new JCRNodeAttributeMapping(attributeRole.type);
             TypeInfo simpleType = value.getTypeInfo();
             if (simpleType instanceof ClassTypeInfo && ((ClassTypeInfo)simpleType).getName().equals(String.class.getName())) {
-              SimpleMapping<JCRNodeAttributeMapping> simpleMapping = new SimpleMapping<JCRNodeAttributeMapping>(definer, memberMapping);
-              PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>>(propertyInfo, simpleMapping);
+              PropertyMapping<AttributeValueMapping> propertyMapping = new PropertyMapping<AttributeValueMapping>(
+                propertyInfo,
+                new AttributeValueMapping(definer, attributeRole.type));
               propertyMappings.add(propertyMapping);
             } else {
               throw new InvalidMappingException(javaClass, "Type " + simpleType + " is not accepted for path attribute mapping");
@@ -363,7 +361,7 @@ public class TypeMappingDomain {
                 }
 
                 //
-                JCRChildNodeMapping jcrMapping = new JCRChildNodeMapping(oneToOneRole.getOptions());
+                NodeDefinitionMapping jcrMapping = new NodeDefinitionMapping(oneToOneRole.getOptions());
                 AnnotatedPropertyQualifier<Owner> owner = propertyInfo.getAnnotated(Owner.class);
                 if (owner != null) {
                   NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);

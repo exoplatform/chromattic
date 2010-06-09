@@ -22,7 +22,7 @@ package org.chromattic.metamodel.mapping.value;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.mapping.jcr.JCRChildNodeMapping;
+import org.chromattic.metamodel.mapping.jcr.NodeDefinitionMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -54,7 +54,7 @@ public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneM
   private final boolean owning;
 
   /** . */
-  private final JCRChildNodeMapping jcrMapping;
+  private final NodeDefinitionMapping jcrMapping;
 
   public NamedOneToOneMapping(
     NodeTypeMapping definer,
@@ -62,7 +62,7 @@ public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneM
     NodeTypeMapping relatedType,
     String name,
     boolean owning,
-    JCRChildNodeMapping jcrMapping) {
+    NodeDefinitionMapping jcrMapping) {
     super(definer, owner, relatedType, RelationshipType.HIERARCHIC);
 
     //
@@ -75,7 +75,7 @@ public class NamedOneToOneMapping extends AbstractOneToOneMapping<NamedOneToOneM
     return owning;
   }
 
-  public JCRChildNodeMapping getJCRMapping() {
+  public NodeDefinitionMapping getJCRMapping() {
     return jcrMapping;
   }
 

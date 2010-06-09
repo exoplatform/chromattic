@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.typegen;
 
-import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class PropertyDefinition {
     this.defaultValues = null;
   }
 
-  PropertyDefinition(JCRPropertyMapping mapping, boolean multiple) {
+  PropertyDefinition(PropertyDefinitionMapping mapping, boolean multiple) {
     this.multiple = multiple;
     this.name = mapping.getName();
     this.type = mapping.getMetaType().getCode();
