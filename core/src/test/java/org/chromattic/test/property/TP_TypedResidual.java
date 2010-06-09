@@ -21,6 +21,7 @@ package org.chromattic.test.property;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.metamodel.annotations.Skip;
 
 import java.util.Map;
 
@@ -28,17 +29,24 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_e")
+@PrimaryType(name = "property:c")
 public abstract class TP_TypedResidual {
 
+  // Just used for defining the properties
+  @Properties
+  public abstract Map<String, String> getStringProperties();
+
+  @Skip
   @Properties
   public abstract Map<String, Object> getProperties();
 
+  @Skip
   @Property(name = "string_property")
   public abstract String getString();
 
   public abstract void setString(String s);
 
+  @Skip
   @Property(name = "integer_property")
   public abstract Integer getInteger();
 

@@ -45,60 +45,62 @@ public abstract class NodeTypeSerializer {
 
     //
     for (NodeType nodeType : nodeTypes) {
-      LinkedHashSet<String> superTypeNames = new LinkedHashSet<String>();
+      if (!nodeType.getSkip()) {
+        LinkedHashSet<String> superTypeNames = new LinkedHashSet<String>();
 
-      //
-      if (nodeType.declaredSuperTypes.isEmpty()) {
-        superTypeNames.add("nt:base");
-      }
-      for (NodeType superType : nodeType.declaredSuperTypes) {
-        superTypeNames.add(superType.getName());
-      }
-      // Add nt:base and mix:referenceable
-      superTypeNames.add("mix:referenceable");
+        //
+        if (nodeType.declaredSuperTypes.isEmpty()) {
+          superTypeNames.add("nt:base");
+        }
+        for (NodeType superType : nodeType.declaredSuperTypes) {
+          superTypeNames.add(superType.getName());
+        }
+        // Add nt:base and mix:referenceable
+        superTypeNames.add("mix:referenceable");
 
-      //
-      startNodeType(
-        nodeType.mapping.getType().getName(),
-        nodeType.getName(),
-        nodeType.isMixin(),
-        nodeType.isOrderable(),
-        superTypeNames
-      );
-
-      //
-      startProperties();
-
-      //
-      for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions().values()) {
-        property(
-          propertyDefinition.getName(),
-          propertyDefinition.getType(),
-          propertyDefinition.isMultiple(),
-          propertyDefinition.getDefaultValues()
+        //
+        startNodeType(
+          nodeType.mapping.getType().getName(),
+          nodeType.getName(),
+          nodeType.isMixin(),
+          nodeType.isOrderable(),
+          superTypeNames
         );
+
+        //
+        startProperties();
+
+        //
+        for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions().values()) {
+          property(
+            propertyDefinition.getName(),
+            propertyDefinition.getType(),
+            propertyDefinition.isMultiple(),
+            propertyDefinition.getDefaultValues()
+          );
+        }
+
+        //
+        endProperties();
+
+        //
+        startChildNodes();
+
+        //
+        for (NodeDefinition childNodeDefinition : nodeType.getChildNodeDefinitions().values()) {
+          childNode(
+            childNodeDefinition.getName(),
+            childNodeDefinition.getNodeTypeName(),
+            childNodeDefinition.isMandatory()
+          );
+        }
+
+        //
+        endChildNodes();
+
+        //
+        endNodeType();
       }
-
-      //
-      endProperties();
-
-      //
-      startChildNodes();
-
-      //
-      for (NodeDefinition childNodeDefinition : nodeType.getChildNodeDefinitions().values()) {
-        childNode(
-          childNodeDefinition.getName(),
-          childNodeDefinition.getNodeTypeName(),
-          childNodeDefinition.isMandatory()
-        );
-      }
-
-      //
-      endChildNodes();
-
-      //
-      endNodeType();
     }
 
     //

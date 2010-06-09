@@ -494,7 +494,7 @@ public class MapperBuilder {
     PropertyMapping<?> pm,
     JCRPropertyMapping<I> jcrProperty) {
 
-    SimpleTypeProvider<I, V> vt = (SimpleTypeProvider<I, V>)valueTypeFactory.create(pm.getInfo().getValue().getTypeInfo(), jcrProperty.getJCRType());
+    SimpleTypeProvider<I, V> vt = (SimpleTypeProvider<I, V>)valueTypeFactory.create(pm.getInfo().getValue().getTypeInfo(), jcrProperty.getMetaType());
 
     return new JCRPropertyPropertyMapper<C, V, I>(
       contextType,
@@ -502,7 +502,7 @@ public class MapperBuilder {
       (PropertyQualifier<SimpleValueInfo>)pm.getInfo(),
       jcrProperty.getName(),
       jcrProperty.getDefaultValue(),
-      jcrProperty.getJCRType());
+      jcrProperty.getMetaType());
   }
 
   private <C extends ObjectContext, V, I> JCRPropertyListPropertyMapper<C, V, I> createPropertyListPM(
@@ -514,7 +514,7 @@ public class MapperBuilder {
     PropertyQualifier<CollectionValueInfo<SimpleValueInfo>> a = (PropertyQualifier<CollectionValueInfo<SimpleValueInfo>>)pm.getInfo();
 
     //
-    SimpleTypeProvider<I, V> vt = (SimpleTypeProvider<I, V>)valueTypeFactory.create(a.getValue().getElement().getTypeInfo(), jcrProperty.getJCRType());
+    SimpleTypeProvider<I, V> vt = (SimpleTypeProvider<I, V>)valueTypeFactory.create(a.getValue().getElement().getTypeInfo(), jcrProperty.getMetaType());
 
     //
     return new JCRPropertyListPropertyMapper<C, V, I>(
@@ -522,7 +522,7 @@ public class MapperBuilder {
       vt,
       a,
       jcrProperty.getName(),
-      jcrProperty.getJCRType(),
+      jcrProperty.getMetaType(),
       jcrProperty.getDefaultValue());
   }
 }

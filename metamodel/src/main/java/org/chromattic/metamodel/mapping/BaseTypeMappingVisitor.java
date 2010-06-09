@@ -20,14 +20,17 @@
 package org.chromattic.metamodel.mapping;
 
 import org.chromattic.api.RelationshipType;
+import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.bean.value.MultiValueInfo;
 import org.chromattic.metamodel.bean.value.TypeKind;
 import org.chromattic.metamodel.bean.value.ValueInfo;
 import org.chromattic.metamodel.mapping.jcr.JCRMemberMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.*;
 import org.chromattic.metamodel.bean.*;
+import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeInfo;
 
@@ -56,22 +59,19 @@ public class BaseTypeMappingVisitor {
 
   protected void startMapping(NodeTypeMapping mapping) {}
 
-  protected <V> void propertyMapping(
-    ClassTypeInfo definer,
-    JCRPropertyMapping propertyMapping,
-    boolean multiple) {}
+  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping propertyMapping, boolean multiple, boolean skip) {}
 
-  protected void propertyMapMapping(ClassTypeInfo definer) {}
+  protected void propertyMapMapping(ClassTypeInfo definer, PropertyMetaType metaType, boolean skip) {}
 
-  protected void oneToManyByReference(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping) {}
+  protected void oneToManyByReference(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping, boolean skip) {}
 
-  protected void oneToManyByPath(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping) {}
+  protected void oneToManyByPath(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping, boolean skip) {}
 
   protected void oneToManyHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {}
 
-  protected void manyToOneByReference(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping) {}
+  protected void manyToOneByReference(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean skip) {}
 
-  protected void manyToOneByPath(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping) {}
+  protected void manyToOneByPath(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean skip) {}
 
   protected void manyToOneHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {}
 
@@ -96,6 +96,9 @@ public class BaseTypeMappingVisitor {
 
         ValueMapping valueMapping = propertyMapping.getValueMapping();
 
+        //
+        boolean skip = propertyMapping.getInfo().getProperty().getAnnotated(Skip.class) != null;
+
         ClassTypeInfo definer = valueMapping.getDefiner().getType();
         if (valueMapping instanceof SimpleMapping) {
           SimpleMapping<?> simpleMapping = (SimpleMapping)valueMapping;
@@ -114,7 +117,7 @@ public class BaseTypeMappingVisitor {
               propertyMapping(
                 definer,
                 (JCRPropertyMapping)memberMapping,
-                multiple);
+                multiple, skip);
             } else {
               // WTF ?
               throw new AssertionError();
@@ -142,10 +145,10 @@ public class BaseTypeMappingVisitor {
               NamedOneToManyMapping namedOneToManyMapping = (NamedOneToManyMapping)valueMapping;
               switch (type) {
                 case REFERENCE:
-                  oneToManyByReference(definer, namedOneToManyMapping.getName(), relatedMapping);
+                  oneToManyByReference(definer, namedOneToManyMapping.getName(), relatedMapping, skip);
                   break;
                 case PATH:
-                  oneToManyByPath(definer, namedOneToManyMapping.getName(), relatedMapping);
+                  oneToManyByPath(definer, namedOneToManyMapping.getName(), relatedMapping, skip);
                   break;
                 default:
                   throw new AssertionError();
@@ -165,10 +168,10 @@ public class BaseTypeMappingVisitor {
               String name = namedManyToOneMapping.getRelatedName();
               switch (type) {
                 case REFERENCE:
-                  manyToOneByReference(definer, name, relatedMapping);
+                  manyToOneByReference(definer, name, relatedMapping, skip);
                   break;
                 case PATH:
-                  manyToOneByPath(definer, name, relatedMapping);
+                  manyToOneByPath(definer, name, relatedMapping, skip);
                   break;
                 default:
                   throw new AssertionError();
@@ -207,7 +210,10 @@ public class BaseTypeMappingVisitor {
             throw new AssertionError();
           }
         } else if (valueMapping instanceof PropertyMapMapping) {
-          propertyMapMapping(definer);
+          PropertyMapMapping pmm = (PropertyMapMapping)valueMapping;
+          SimpleTypeMapping mapValueMapping = pmm.getValueMapping();
+          PropertyMetaType<?> valueMetaType = mapValueMapping != null ? mapValueMapping.getPropertyMetaType() : null;
+          propertyMapMapping(definer, valueMetaType, skip);
         } else {
           // WTF ?
           throw new AssertionError();

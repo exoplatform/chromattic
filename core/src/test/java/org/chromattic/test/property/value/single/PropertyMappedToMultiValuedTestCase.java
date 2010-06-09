@@ -58,7 +58,7 @@ public class PropertyMappedToMultiValuedTestCase extends AbstractTestCase {
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    eNode = rootNode.addNode("tp_a_a", "tp_c");
+    eNode = rootNode.addNode("tp_a_a", getNodeTypeName(C1.class));
     factory = session.getJCRSession().getValueFactory();
     e = session.findByNode(C1.class, eNode);
     events = new EventQueue();

@@ -44,6 +44,7 @@
  		      <value>jar:/org/chromattic/test/onetomany/reference/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/onetoone/hierarchical/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/onetoone/embedded/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/property/nodetypes.xml</value>
  		      <value>jar:/conf/test-nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
@@ -71,6 +72,12 @@
           <property name="onetomany_r_p" value="onetomany_r_p"/>
           <property name="onetoone_h" value="onetoone_h"/>
           <property name="onetoone_e" value="onetoone_e"/>
+          <property name="property" value="property"/>
+          <property name="property_defaultvalue" value="property_defaultvalue"/>
+          <property name="property_map" value="property_map"/>
+          <property name="property_single" value="property_single"/>
+          <property name="property_list" value="property_list"/>
+          <property name="property_array" value="property_array"/>
         </properties-param>
       </init-params>
     </component-plugin>

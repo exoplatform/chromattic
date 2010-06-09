@@ -44,7 +44,7 @@ public class UndefinedPropertyTypeTestCase extends AbstractTestCase {
   public void testUndefinedType() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node node = rootNode.addNode("tp_undefined", "tp_b");
+    Node node = rootNode.addNode("tp_undefined", getNodeTypeName(TP_Undefined.class));
     TP_Undefined o = session.findByNode(TP_Undefined.class, node);
     assertNull(o.getUndefinedType());
     o.setUndefinedType("foo");

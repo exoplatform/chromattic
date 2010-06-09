@@ -29,7 +29,7 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_c")
+@PrimaryType(name = "property_array:c1")
 public abstract class C1 {
 
   @Property(name = "string_array_property")

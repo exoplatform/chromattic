@@ -19,10 +19,7 @@
 
 package org.chromattic.core;
 
-import org.chromattic.api.ChromatticIOException;
-import org.chromattic.api.Status;
-import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.api.NoSuchPropertyException;
+import org.chromattic.api.*;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
@@ -312,6 +309,11 @@ class PersistentEntityContextState extends EntityContextState {
           // We had a undefined type so we are going to use a type based on the provided value
           if (vt == null) {
             vt = (ValueDefinition<?, V>)ValueDefinition.get(propertyValue);
+          }
+
+          //
+          if (vt == null) {
+            throw new TypeConversionException("Cannot convert object " + propertyValue + " no converter found");
           }
         }
 

@@ -42,12 +42,12 @@ public class JCRPropertyMapping<I> extends JCRMemberMapping {
     this.defaultValue = defaultValue;
   }
 
-  public PropertyMetaType<I> getJCRType() {
-    return metaType;
-  }
-
   public String getName() {
     return name;
+  }
+
+  public PropertyMetaType<I> getMetaType() {
+    return metaType;
   }
 
   public List<String> getDefaultValue() {

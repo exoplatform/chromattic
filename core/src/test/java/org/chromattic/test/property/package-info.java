@@ -17,29 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.map;
+@NodeTypeDefs package org.chromattic.test.property;
 
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Properties;
-import org.chromattic.api.annotations.Property;
-import org.chromattic.metamodel.annotations.Skip;
-
-import java.util.Map;
-
-/**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- */
-@PrimaryType(name = "property_map:b")
-public abstract class B {
-
-  @Skip
-  @Properties
-  public abstract Map<String, Object> getProperties();
-
-  @Property(name = "string_array_property")
-  public abstract String[] getString();
-
-  public abstract void setString(String[] s);
-
-}
+import org.chromattic.api.annotations.NodeTypeDefs;

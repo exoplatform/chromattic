@@ -29,7 +29,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_c")
+@PrimaryType(name = "property_list:c2")
 public abstract class C2 {
 
   @Property(name = "string_array_property")

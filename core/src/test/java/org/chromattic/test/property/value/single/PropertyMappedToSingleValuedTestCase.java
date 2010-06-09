@@ -60,7 +60,7 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    aNode = rootNode.addNode("tp_a_a", "tp_a");
+    aNode = rootNode.addNode("tp_a_a", getNodeTypeName(A1.class));
     a = session.findByNode(A1.class, aNode);
     factory = session.getJCRSession().getValueFactory();
     events = new EventQueue();

@@ -306,7 +306,18 @@ public class TypeMappingDomain {
             propertyMappings.add(propertyMapping);
           } else if (role instanceof PropertyRole.Properties) {
             if (value instanceof MapValueInfo) {
-              PropertyMapMapping simpleMapping = new PropertyMapMapping(definer);
+              MapValueInfo mvi = (MapValueInfo)value;
+              ValueInfo keyVI = mvi.getKey();
+              SimpleTypeMapping keyTM = typeResolver.resolveType(keyVI.getTypeInfo());
+              if (keyTM == null) {
+                throw new InvalidMappingException(javaClass, "No simple type mapping for map key " + keyVI.getTypeInfo());
+              }
+              if (keyTM.getPropertyMetaType() != PropertyMetaType.STRING) {
+                throw new InvalidMappingException(javaClass, "Map key " + keyVI.getTypeInfo() + " is not mapped to string type");
+              }
+              ValueInfo valueVI = mvi.getElement();
+              SimpleTypeMapping valueTM = typeResolver.resolveType(valueVI.getTypeInfo());
+              PropertyMapMapping simpleMapping = new PropertyMapMapping(definer, keyTM, valueTM);
               PropertyMapping<PropertyMapMapping> propertyMapping = new PropertyMapping<PropertyMapMapping>(propertyInfo, simpleMapping);
               propertyMappings.add(propertyMapping);
             } else {

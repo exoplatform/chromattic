@@ -54,8 +54,8 @@ public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    gNode = rootNode.addNode("tp_d_a", "tp_a");
-    g = session.findByNode(org.chromattic.test.property.value.multi.list.A1.class, gNode);
+    gNode = rootNode.addNode("tp_d_a", getNodeTypeName(A1.class));
+    g = session.findByNode(A1.class, gNode);
     assertNotNull(g);
     factory = session.getJCRSession().getValueFactory();
   }

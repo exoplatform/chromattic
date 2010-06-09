@@ -54,7 +54,7 @@ public class NullablePropertyListMappedToSingleValuedTestCase extends AbstractTe
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    gNode = rootNode.addNode("tp_d_a", "tp_a");
+    gNode = rootNode.addNode("tp_d_a", getNodeTypeName(A2.class));
     g = session.findByNode(A2.class, gNode);
     assertNotNull(g);
     factory = session.getJCRSession().getValueFactory();

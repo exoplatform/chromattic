@@ -36,10 +36,10 @@ public class PropertyDefinition {
     this.defaultValues = null;
   }
 
-  <V> PropertyDefinition(JCRPropertyMapping mapping, boolean multiple) {
+  PropertyDefinition(JCRPropertyMapping mapping, boolean multiple) {
     this.multiple = multiple;
     this.name = mapping.getName();
-    this.type = mapping.getJCRType().getCode();
+    this.type = mapping.getMetaType().getCode();
     this.defaultValues = mapping.getDefaultValue();
   }
 

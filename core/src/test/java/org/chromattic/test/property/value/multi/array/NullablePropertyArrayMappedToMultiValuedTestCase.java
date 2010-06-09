@@ -54,7 +54,7 @@ public class NullablePropertyArrayMappedToMultiValuedTestCase extends AbstractTe
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    cNode = rootNode.addNode("tp_c_a", "tp_c");
+    cNode = rootNode.addNode("tp_c_a", getNodeTypeName(C2.class));
     c = session.findByNode(C2.class, cNode);
     factory = session.getJCRSession().getValueFactory();
   }

@@ -45,12 +45,20 @@ public class NodeType {
   /** . */
   final Set<NodeType> declaredSuperTypes;
 
-  NodeType(NodeTypeMapping mapping) {
+  /** . */
+  final boolean skip;
+
+  NodeType(NodeTypeMapping mapping, boolean skip) {
     this.mapping = mapping;
     this.children = new HashMap<String, NodeDefinition>();
     this.properties = new HashMap<String, PropertyDefinition>();
     this.superTypes = new HashSet<NodeType>();
     this.declaredSuperTypes = new HashSet<NodeType>();
+    this.skip = skip;
+  }
+
+  public boolean getSkip() {
+    return skip;
   }
 
   public boolean isOrderable() {

@@ -20,17 +20,19 @@
 package org.chromattic.metamodel.typegen;
 
 import org.chromattic.common.collection.SetMap;
+import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.jcr.JCRPropertyMapping;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.NamedOneToOneMapping;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.annotation.AnnotationType;
 
 import javax.jcr.PropertyType;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -59,7 +61,8 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   private NodeType resolve(NodeTypeMapping mapping) {
     NodeType nodeType = nodeTypes.get(mapping.getType());
     if (nodeType == null) {
-      nodeType = new NodeType(mapping);
+      boolean skip = mapping.getType().getDeclaredAnnotation(AnnotationType.get(Skip.class)) != null;
+      nodeType = new NodeType(mapping, skip);
       nodeTypes.put(mapping.getType(), nodeType);
     }
     return nodeType;
@@ -75,30 +78,46 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping propertyMapping, boolean multiple) {
-    if (definer.equals(current.mapping.getType())) {
-      current.properties.put(propertyMapping.getName(), new PropertyDefinition(propertyMapping, multiple));
+  protected <V> void propertyMapping(ClassTypeInfo definer, JCRPropertyMapping propertyMapping, boolean multiple, boolean skip) {
+    if (!skip) {
+      if (definer.equals(current.mapping.getType())) {
+        current.properties.put(propertyMapping.getName(), new PropertyDefinition(propertyMapping, multiple));
+      }
     }
   }
 
   @Override
-  protected void propertyMapMapping(ClassTypeInfo definer) {
-    if (definer.equals(current.mapping.getType())) {
-      current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));
+  protected void propertyMapMapping(ClassTypeInfo definer, PropertyMetaType metaType, boolean skip) {
+    if (!skip) {
+      if (definer.equals(current.mapping.getType())) {
+        int jcrType = metaType != null ? metaType.getCode() : PropertyType.UNDEFINED;
+         PropertyDefinition pd = current.properties.get("*");
+        if (pd != null) {
+          if (pd.getType() != jcrType) {
+            current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));
+          }
+        } else {
+          current.properties.put("*", new PropertyDefinition("*", false, jcrType));
+        }
+      }
     }
   }
 
   @Override
-  protected void oneToManyByReference(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping) {
-    if (definer.equals(current.mapping.getType())) {
-      resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.REFERENCE));
+  protected void oneToManyByReference(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping, boolean skip) {
+    if (!skip) {
+      if (definer.equals(current.mapping.getType())) {
+        resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.REFERENCE));
+      }
     }
   }
 
   @Override
-  protected void oneToManyByPath(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping) {
-    if (definer.equals(current.mapping.getType())) {
-      resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.PATH));
+  protected void oneToManyByPath(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping, boolean skip) {
+    if (!skip) {
+      if (definer.equals(current.mapping.getType())) {
+        resolve(relatedMapping).properties.put(relatedName, new PropertyDefinition(relatedName, false, PropertyType.PATH));
+      }
     }
   }
 
@@ -110,9 +129,11 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected void manyToOneByReference(ClassTypeInfo definer, String name, NodeTypeMapping relatedType) {
-    if (definer.equals(current.mapping.getType())) {
-      current.properties.put(name, new PropertyDefinition(name, false, PropertyType.REFERENCE));
+  protected void manyToOneByReference(ClassTypeInfo definer, String name, NodeTypeMapping relatedType, boolean skip) {
+    if (!skip) {
+      if (definer.equals(current.mapping.getType())) {
+        current.properties.put(name, new PropertyDefinition(name, false, PropertyType.REFERENCE));
+      }
     }
   }
 
@@ -130,9 +151,11 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected void manyToOneByPath(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping) {
-    if (definer.equals(current.mapping.getType())) {
-      current.properties.put(name, new PropertyDefinition(name, false, PropertyType.PATH));
+  protected void manyToOneByPath(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean skip) {
+    if (!skip) {
+      if (definer.equals(current.mapping.getType())) {
+        current.properties.put(name, new PropertyDefinition(name, false, PropertyType.PATH));
+      }
     }
   }
 

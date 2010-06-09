@@ -26,7 +26,7 @@ import org.chromattic.api.annotations.Property;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_a")
+@PrimaryType(name = "property_defaultvalue:a")
 public abstract class A {
 
   @Property(name = "primitive_int_property")

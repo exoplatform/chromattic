@@ -22,6 +22,7 @@ package org.chromattic.test.property.value.multi.list;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.metamodel.annotations.Skip;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@Skip
 @PrimaryType(name = "tp_a")
 public abstract class A1 {
 

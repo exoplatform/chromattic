@@ -31,7 +31,7 @@ import java.io.InputStream;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_a")
+@PrimaryType(name = "property_single:a")
 public abstract class A1 {
 
   @Property(name = "string_property")

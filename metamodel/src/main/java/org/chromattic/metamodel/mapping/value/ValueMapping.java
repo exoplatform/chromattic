@@ -34,10 +34,6 @@ public abstract class ValueMapping {
     this.definer = definer;
   }
 
-  protected ValueMapping() {
-    this.definer = null;
-  }
-
   public NodeTypeMapping getDefiner() {
     return definer;
   }

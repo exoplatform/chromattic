@@ -20,26 +20,30 @@ package org.chromattic.test.property;
 
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.metamodel.annotations.Skip;
 
+import javax.jcr.PropertyType;
 import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_b")
+@PrimaryType(name = "property:b")
 public abstract class TP_Undefined {
 
-  @Property(name = "undefined_type")
+  @Property(name = "undefined_type", type = PropertyType.UNDEFINED)
   public abstract String getUndefinedType();
 
   public abstract void setUndefinedType(String undefinedType);
 
-  @Property(name = "undefined_property")
+  @Skip
+  @Property(name = "undefined_property", type = PropertyType.UNDEFINED)
   public abstract String getUndefinedProperty();
 
   public abstract void setUndefinedProperty(String undefinedProperty);
 
+  @Skip
   @Property(name = "undefined_multivalued_property")
   public abstract List<String> getUndefinedMultivaluedProperty();
 

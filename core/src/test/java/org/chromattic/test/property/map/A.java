@@ -22,6 +22,7 @@ package org.chromattic.test.property.map;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.metamodel.annotations.Skip;
 
 import java.util.Map;
 
@@ -29,9 +30,10 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tp_a")
+@PrimaryType(name = "property_map:a")
 public abstract class A {
 
+  @Skip
   @Properties
   public abstract Map<String, Object> getProperties();
 

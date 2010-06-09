@@ -49,7 +49,7 @@ public class ResidualPropertyTestCase extends AbstractTestCase {
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    node = rootNode.addNode("tp_typedresidual", "tp_e");
+    node = rootNode.addNode("tp_typedresidual", getNodeTypeName(TP_TypedResidual.class));
     o = session.findByNode(TP_TypedResidual.class, node);
   }
 
@@ -109,7 +109,7 @@ public class ResidualPropertyTestCase extends AbstractTestCase {
   public void testUndefinedResidualPropertyForString() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node node = rootNode.addNode("tp_undefinedresidual", "tp_d");
+    Node node = rootNode.addNode("tp_undefinedresidual", getNodeTypeName(TP_UndefinedResidual.class));
     TP_UndefinedResidual o = session.findByNode(TP_UndefinedResidual.class, node);
     assertNull(o.getString());
     o.setString("foo");
@@ -125,7 +125,7 @@ public class ResidualPropertyTestCase extends AbstractTestCase {
   public void testUndefinedResidualPropertyForMap() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node node = rootNode.addNode("tp_undefinedresidual", "tp_d");
+    Node node = rootNode.addNode("tp_undefinedresidual", getNodeTypeName(TP_UndefinedResidual.class));
     TP_UndefinedResidual o = session.findByNode(TP_UndefinedResidual.class, node);
     assertNull(o.getString());
     Map<String, Object> map = o.getProperties();

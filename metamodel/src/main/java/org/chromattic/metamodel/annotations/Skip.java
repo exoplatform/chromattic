@@ -17,29 +17,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.map;
+package org.chromattic.metamodel.annotations;
 
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Properties;
-import org.chromattic.api.annotations.Property;
-import org.chromattic.metamodel.annotations.Skip;
-
-import java.util.Map;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * An internal annotation to control the generation of node type definitions and skip the creation of some parts of it.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_map:b")
-public abstract class B {
-
-  @Skip
-  @Properties
-  public abstract Map<String, Object> getProperties();
-
-  @Property(name = "string_array_property")
-  public abstract String[] getString();
-
-  public abstract void setString(String[] s);
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD,ElementType.TYPE})
+public @interface Skip {
 }

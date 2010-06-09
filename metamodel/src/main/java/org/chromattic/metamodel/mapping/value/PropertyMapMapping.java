@@ -20,13 +20,33 @@
 package org.chromattic.metamodel.mapping.value;
 
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
+import org.chromattic.metamodel.type.SimpleTypeMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class PropertyMapMapping extends ValueMapping {
-  public PropertyMapMapping(NodeTypeMapping definer) {
+
+  /** . */
+  private final SimpleTypeMapping keyMapping;
+
+  /** . */
+  private final SimpleTypeMapping valueMapping;
+
+  public PropertyMapMapping(NodeTypeMapping definer, SimpleTypeMapping keyMapping, SimpleTypeMapping valueMapping) {
     super(definer);
+
+    //
+    this.keyMapping = keyMapping;
+    this.valueMapping = valueMapping;
+  }
+
+  public SimpleTypeMapping getKeyMapping() {
+    return keyMapping;
+  }
+
+  public SimpleTypeMapping getValueMapping() {
+    return valueMapping;
   }
 }
