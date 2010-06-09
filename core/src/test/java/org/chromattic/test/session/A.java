@@ -28,7 +28,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "copy_a")
+@PrimaryType(name = "session:a")
 public abstract class A {
 
   @Property(name = "string")

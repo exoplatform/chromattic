@@ -17,14 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.session;
+@NodeTypeDefs package org.chromattic.test.session;
 
-import org.chromattic.api.annotations.MixinType;
-
-/**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- */
-@MixinType(name = "session:b")
-public class B {
-}
+import org.chromattic.api.annotations.NodeTypeDefs;
