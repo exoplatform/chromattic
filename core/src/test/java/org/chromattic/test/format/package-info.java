@@ -16,18 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.format;
 
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Name;
+@NodeTypeDefs package org.chromattic.test.format;
 
-/**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- */
-@PrimaryType(name = "format:b")
-public abstract class B {
-  @Name
-  public abstract String getName();
-  public abstract void setName(String name);
-}
+import org.chromattic.api.annotations.NodeTypeDefs;

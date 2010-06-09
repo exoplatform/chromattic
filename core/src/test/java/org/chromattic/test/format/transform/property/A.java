@@ -29,7 +29,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "format_property_a")
+@PrimaryType(name = "format_property:a")
 public abstract class A {
 
   @Property(name = "a")

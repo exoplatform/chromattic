@@ -145,7 +145,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
         return null;
       }
     };
-    Node aNode = session.getRoot().addNode("a", "format_a");
+    Node aNode = session.getRoot().addNode("a", getNodeTypeName(A.class));
     A a = session.findByNode(A.class, aNode);
     try {
       a.getName();
@@ -163,7 +163,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
         throw new RuntimeException();
       }
     };
-    Node aNode = session.getRoot().addNode("a", "format_a");
+    Node aNode = session.getRoot().addNode("a", getNodeTypeName(A.class));
     A a = session.findByNode(A.class, aNode);
     try {
       a.getName();
@@ -182,7 +182,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
         throw new Error();
       }
     };
-    Node aNode = session.getRoot().addNode("a", "format_a");
+    Node aNode = session.getRoot().addNode("a", getNodeTypeName(A.class));
     A a = session.findByNode(A.class, aNode);
     try {
       a.getName();
@@ -200,7 +200,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
         throw new IllegalStateException();
       }
     };
-    Node aNode = session.getRoot().addNode("a", "format_a");
+    Node aNode = session.getRoot().addNode("a", getNodeTypeName(A.class));
     A a = session.findByNode(A.class, aNode);
     try {
       a.getName();

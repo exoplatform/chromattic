@@ -47,6 +47,7 @@
  		      <value>jar:/org/chromattic/test/property/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/session/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/type/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/format/nodetypes.xml</value>
  		      <value>jar:/conf/test-nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
@@ -85,6 +86,9 @@
           <property name="type_stringenum" value="type_stringenum"/>
           <property name="type_extra" value="type_extra"/>
           <property name="type_annotated" value="type_annotated"/>
+          <property name="format" value="format"/>
+          <property name="format_property" value="format_property"/>
+          <property name="format_object" value="format_object"/>
         </properties-param>
       </init-params>
     </component-plugin>

@@ -27,7 +27,7 @@ import org.chromattic.api.annotations.MappedBy;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "format_d2")
+@PrimaryType(name = "format_object:d2")
 public abstract class D2 {
 
   @OneToOne

@@ -28,7 +28,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "format_c")
+@PrimaryType(name = "format:c")
 @FormattedBy(BarPrefixerFormatter.class)
 public abstract class C {
 

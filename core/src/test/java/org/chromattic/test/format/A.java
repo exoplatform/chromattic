@@ -28,7 +28,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "format_a")
+@PrimaryType(name = "format:a")
 public abstract class A {
   @Name
   public abstract String getName();
