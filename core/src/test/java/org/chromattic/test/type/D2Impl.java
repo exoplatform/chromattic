@@ -24,7 +24,7 @@ import org.chromattic.api.annotations.PrimaryType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tt_c")
+@PrimaryType(name = "type:d2")
 public class D2Impl extends D1Impl implements D2 {
 
   public int value;

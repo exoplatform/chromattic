@@ -29,7 +29,7 @@ import java.util.Calendar;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tts_b")
+@PrimaryType(name = "type_extra:a")
 public abstract class A {
 
   @Property(name = "bytes")

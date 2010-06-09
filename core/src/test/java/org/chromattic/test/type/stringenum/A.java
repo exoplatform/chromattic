@@ -25,7 +25,7 @@ import org.chromattic.api.annotations.Property;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tts_a")
+@PrimaryType(name = "type_stringenum:a")
 public abstract class A {
 
   @Property(name = "currency")

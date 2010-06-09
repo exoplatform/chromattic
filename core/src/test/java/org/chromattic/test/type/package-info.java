@@ -16,20 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.type;
 
-import org.chromattic.api.annotations.PrimaryType;
+@NodeTypeDefs package org.chromattic.test.type;
 
-/**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- */
-@PrimaryType(name = "type:c")
-public class C implements B<String> {
-
-  public String value;
-
-  public void m1(String s) {
-    value = s;
-  }
-}
+import org.chromattic.api.annotations.NodeTypeDefs;

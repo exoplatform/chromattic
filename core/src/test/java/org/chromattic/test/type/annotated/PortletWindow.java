@@ -26,7 +26,7 @@ import org.chromattic.api.annotations.Property;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tfi_a")
+@PrimaryType(name = "type_annotated:portletwindow")
 public abstract class PortletWindow {
 
   @Property(name = "foo")

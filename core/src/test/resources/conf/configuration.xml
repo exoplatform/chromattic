@@ -46,6 +46,7 @@
  		      <value>jar:/org/chromattic/test/onetoone/embedded/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/property/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/session/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/type/nodetypes.xml</value>
  		      <value>jar:/conf/test-nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
@@ -80,6 +81,10 @@
           <property name="property_list" value="property_list"/>
           <property name="property_array" value="property_array"/>
           <property name="session" value="session"/>
+          <property name="type" value="type"/>
+          <property name="type_stringenum" value="type_stringenum"/>
+          <property name="type_extra" value="type_extra"/>
+          <property name="type_annotated" value="type_annotated"/>
         </properties-param>
       </init-params>
     </component-plugin>

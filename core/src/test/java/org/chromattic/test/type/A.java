@@ -26,7 +26,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "tt_a")
+@PrimaryType(name = "type:a")
 public interface A<X, Y extends Number> {
 
   Collection<?> getWildcard();
