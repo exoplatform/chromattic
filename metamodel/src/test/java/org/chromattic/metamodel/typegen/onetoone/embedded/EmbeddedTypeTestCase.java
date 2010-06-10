@@ -19,27 +19,27 @@
 
 package org.chromattic.metamodel.typegen.onetoone.embedded;
 
-import junit.framework.TestCase;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.TypeGen;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.metamodel.typegen.TypeGenTestCase;
+
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class EmbeddedTypeTestCase extends TestCase {
+public class EmbeddedTypeTestCase extends TypeGenTestCase {
 
   public void testOwnerMixinType() {
+    Map<Class<?>, NodeType> a = assertValid(B1.class, B2.class);
     TypeGen gen = new TypeGen();
-    ClassTypeInfo b1 = gen.addType(B1.class);
-    ClassTypeInfo b2 = gen.addType(B2.class);
     gen.generate();
-    NodeType b1NT = gen.getNodeType(b1);
+    NodeType b1NT = a.get(B1.class);
     assertEquals("b1", b1NT.getName());
     assertEquals(Collections.<String>set(), b1NT.getPropertyDefinitions().keySet());
-    NodeType b2NT = gen.getNodeType(b2);
+    NodeType b2NT = a.get(B2.class);
     assertEquals("b2", b2NT.getName());
     assertEquals(Collections.<String>set("foo"), b2NT.getPropertyDefinitions().keySet());
     assertFalse(b2NT.getDeclaredSuperTypes().contains(b1NT));
@@ -47,26 +47,20 @@ public class EmbeddedTypeTestCase extends TestCase {
   }
 
   public void testOwnerSuperType() {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo a1 = gen.addType(A1.class);
-    ClassTypeInfo a2 = gen.addType(A2.class);
-    gen.generate();
-    NodeType a1NT = gen.getNodeType(a1);
+    Map<Class<?>, NodeType> a = assertValid(A1.class, A2.class);
+    NodeType a1NT = a.get(A1.class);
     assertEquals("a1", a1NT.getName());
-    NodeType a2NT = gen.getNodeType(a2);
+    NodeType a2NT = a.get(A2.class);
     assertEquals("a2", a2NT.getName());
     assertTrue(a2NT.getDeclaredSuperTypes().contains(a1NT));
     assertFalse(a1NT.getDeclaredSuperTypes().contains(a2NT));
   }
 
   public void testOwnedSuperType() {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo a3 = gen.addType(A3.class);
-    ClassTypeInfo a4 = gen.addType(A4.class);
-    gen.generate();
-    NodeType a3NT = gen.getNodeType(a3);
+    Map<Class<?>, NodeType> a = assertValid(A3.class, A4.class);
+    NodeType a3NT = a.get(A3.class);
     assertEquals("a3", a3NT.getName());
-    NodeType a4NT = gen.getNodeType(a4);
+    NodeType a4NT = a.get(A4.class);
     assertEquals("a4", a4NT.getName());
     assertFalse(a4NT.getDeclaredSuperTypes().contains(a3NT));
     assertTrue(a3NT.getDeclaredSuperTypes().contains(a4NT));

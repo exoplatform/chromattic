@@ -21,10 +21,7 @@ package org.chromattic.metamodel.typegen.inheritance;
 
 import junit.framework.TestCase;
 import org.chromattic.metamodel.mapping.InvalidMappingException;
-import org.chromattic.metamodel.typegen.NodeDefinition;
-import org.chromattic.metamodel.typegen.NodeType;
-import org.chromattic.metamodel.typegen.PropertyDefinition;
-import org.chromattic.metamodel.typegen.TypeGen;
+import org.chromattic.metamodel.typegen.*;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.HashMap;
@@ -34,7 +31,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class InheritanceTestCase extends TestCase {
+public class InheritanceTestCase extends TypeGenTestCase {
 
   private NodeType a1NT;
   private NodeType a3NT;
@@ -123,30 +120,5 @@ public class InheritanceTestCase extends TestCase {
 
   public void testInvalidAbstractOneToMany() {
     assertInvalid(F2.class);
-  }
-
-  private Map<Class<?>, NodeType> assertValid(Class<?>... classTypes) {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo[] ctis = new ClassTypeInfo[classTypes.length];
-    for (int i = 0;i < classTypes.length;i++) {
-      ctis[i] = gen.addType(classTypes[i]);
-    }
-    gen.generate();
-    Map<Class<?>, NodeType> types = new HashMap<Class<?>, NodeType>();
-    for (int i = 0; i < ctis.length; i++) {
-      types.put(classTypes[i], gen.getNodeType(ctis[i]));
-    }
-    return types;
-  }
-
-  private void assertInvalid(Class<?> classType) {
-    TypeGen gen = new TypeGen();
-    gen.addType(classType);
-    try {
-      gen.generate();
-      fail();
-    }
-    catch (InvalidMappingException ignore) {
-    }
   }
 }

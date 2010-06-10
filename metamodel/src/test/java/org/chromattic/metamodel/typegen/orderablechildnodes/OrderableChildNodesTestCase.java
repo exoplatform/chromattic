@@ -22,19 +22,20 @@ package org.chromattic.metamodel.typegen.orderablechildnodes;
 import junit.framework.TestCase;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.TypeGen;
+import org.chromattic.metamodel.typegen.TypeGenTestCase;
 import org.reflext.api.ClassTypeInfo;
+
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OrderableChildNodesTestCase extends TestCase {
+public class OrderableChildNodesTestCase extends TypeGenTestCase {
 
   public void testOrderable() throws Exception {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo a = gen.addType(A.class);
-    gen.generate();
-    NodeType aNT = gen.getNodeType(a);
+    Map<Class<?>, NodeType> a = assertValid(A.class);
+    NodeType aNT = a.get(A.class);
     assertEquals("a", aNT.getName());
     assertEquals(true, aNT.isOrderable());
   }

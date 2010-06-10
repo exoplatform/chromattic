@@ -19,26 +19,25 @@
 
 package org.chromattic.metamodel.typegen.properties;
 
-import junit.framework.TestCase;
-import org.chromattic.common.collection.Collections;
+import junit.framework.TestCase;import org.chromattic.common.collection.Collections;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
 import org.chromattic.metamodel.typegen.TypeGen;
+import org.chromattic.metamodel.typegen.TypeGenTestCase;
 import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertiesTestCase extends TestCase {
+public class PropertiesTestCase extends TypeGenTestCase {
 
   public void testStringProperties() throws Exception {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo a = gen.addType(A.class);
-    gen.generate();
-    NodeType aNT = gen.getNodeType(a);
+    Map<Class<?>, NodeType> a = assertValid(A.class);
+    NodeType aNT = a.get(A.class);
     assertEquals(Collections.<String>set("*"), aNT.getPropertyDefinitions().keySet());
     PropertyDefinition pd = aNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());
@@ -47,10 +46,8 @@ public class PropertiesTestCase extends TestCase {
   }
 
   public void testObjectProperties() throws Exception {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo b = gen.addType(B.class);
-    gen.generate();
-    NodeType bNT = gen.getNodeType(b);
+    Map<Class<?>, NodeType> a = assertValid(B.class);
+    NodeType bNT = a.get(B.class);
     assertEquals(Collections.<String>set("*"), bNT.getPropertyDefinitions().keySet());
     PropertyDefinition pd = bNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());
@@ -59,10 +56,8 @@ public class PropertiesTestCase extends TestCase {
   }
 
   public void testAnyProperties() throws Exception {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo c = gen.addType(C.class);
-    gen.generate();
-    NodeType cNT = gen.getNodeType(c);
+    Map<Class<?>, NodeType> a = assertValid(C.class);
+    NodeType cNT = a.get(C.class);
     assertEquals(Collections.<String>set("*"), cNT.getPropertyDefinitions().keySet());
     PropertyDefinition pd = cNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());

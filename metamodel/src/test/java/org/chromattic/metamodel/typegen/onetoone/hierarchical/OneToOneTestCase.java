@@ -19,26 +19,25 @@
 
 package org.chromattic.metamodel.typegen.onetoone.hierarchical;
 
-import junit.framework.TestCase;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.TypeGen;
+import org.chromattic.metamodel.typegen.TypeGenTestCase;
 import org.reflext.api.ClassTypeInfo;
+
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToOneTestCase extends TestCase {
+public class OneToOneTestCase extends TypeGenTestCase {
 
   public void testMappedBy() throws Exception {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo a1 = gen.addType(A1.class);
-    ClassTypeInfo a2 = gen.addType(A2.class);
-    gen.generate();
-    NodeType a1NT = gen.getNodeType(a1);
+    Map<Class<?>, NodeType> a = assertValid(A1.class, A2.class);
+    NodeType a1NT = a.get(A1.class);
     assertEquals("a1", a1NT.getName());
-    NodeType a2NT = gen.getNodeType(a2);
+    NodeType a2NT = a.get(A2.class);
     assertEquals("a2", a2NT.getName());
     assertEquals(Collections.set("child"), a1NT.getChildNodeDefinitions().keySet());
     assertEquals(0, a1NT.getPropertyDefinitions().size());
@@ -49,13 +48,10 @@ public class OneToOneTestCase extends TestCase {
   }
 
   public void testRelatedMappedBy() throws Exception {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo b1 = gen.addType(B1.class);
-    ClassTypeInfo b2 = gen.addType(B2.class);
-    gen.generate();
-    NodeType b1NT = gen.getNodeType(b1);
+    Map<Class<?>, NodeType> a = assertValid(B1.class, B2.class);
+    NodeType b1NT = a.get(B1.class);
     assertEquals("b1", b1NT.getName());
-    NodeType b2NT = gen.getNodeType(b2);
+    NodeType b2NT = a.get(B2.class);
     assertEquals("b2", b2NT.getName());
     assertEquals(Collections.set("child"), b1NT.getChildNodeDefinitions().keySet());
     assertEquals(0, b1NT.getPropertyDefinitions().size());
@@ -66,13 +62,10 @@ public class OneToOneTestCase extends TestCase {
   }
 
   public void testOptions() throws Exception {
-    TypeGen gen = new TypeGen();
-    ClassTypeInfo c1 = gen.addType(C1.class);
-    ClassTypeInfo c2 = gen.addType(C2.class);
-    gen.generate();
-    NodeType c1NT = gen.getNodeType(c1);
+    Map<Class<?>, NodeType> a = assertValid(C1.class, C2.class);
+    NodeType c1NT = a.get(C1.class);
     assertEquals("c1", c1NT.getName());
-    NodeType c2NT = gen.getNodeType(c2);
+    NodeType c2NT = a.get(C2.class);
     assertEquals("c2", c2NT.getName());
 
     //
