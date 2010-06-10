@@ -30,10 +30,10 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@Skip
 @PrimaryType(name = "property_map:b")
 public abstract class B {
 
-  @Skip
   @Properties
   public abstract Map<String, Object> getProperties();
 

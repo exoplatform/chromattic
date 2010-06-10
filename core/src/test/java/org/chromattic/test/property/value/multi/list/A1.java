@@ -32,7 +32,7 @@ import java.util.List;
  * @version $Revision$
  */
 @Skip
-@PrimaryType(name = "tp_a")
+@PrimaryType(name = "property_list:a1")
 public abstract class A1 {
 
   @Property(name = "string_property")

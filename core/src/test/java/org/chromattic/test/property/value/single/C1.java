@@ -30,7 +30,7 @@ import java.util.Date;
  * @version $Revision$
  */
 @Skip
-@PrimaryType(name = "tp_c")
+@PrimaryType(name = "property_single:c")
 public abstract class C1 {
 
   @Property(name = "string_array_property")
