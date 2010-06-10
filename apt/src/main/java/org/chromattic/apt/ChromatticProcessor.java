@@ -29,7 +29,7 @@ import org.chromattic.metamodel.typegen.NodeTypeSerializer;
 import org.chromattic.metamodel.typegen.XMLNodeTypeSerializer;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.reflext.api.*;
-import org.reflext.api.introspection.MethodIntrospector2;
+import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
 import org.reflext.apt.JavaxLangReflectionModel;
 import org.reflext.core.TypeResolverImpl;
@@ -213,7 +213,7 @@ public class ChromatticProcessor extends AbstractProcessor {
 
   private Iterable<MethodInfo> getMethodsToImplement(ClassTypeInfo cti) {
     List<MethodInfo> methods = new ArrayList<MethodInfo>();
-    MethodIntrospector2 introspector = new MethodIntrospector2(HierarchyScope.ALL, true);
+    MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL, true);
     for (MethodInfo method : introspector.getMethods(cti)) {
       if (method.isAbstract()) {
         methods.add(method);

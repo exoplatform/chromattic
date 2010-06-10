@@ -39,7 +39,7 @@ import org.reflext.api.*;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.AnnotationTarget;
-import org.reflext.api.introspection.MethodIntrospector2;
+import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
 
 import java.util.*;
@@ -191,9 +191,9 @@ public class TypeMappingDomain {
 
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
-    NamingPolicy namingPolicy = new AnnotationIntrospector<NamingPolicy>(NAMING_POLICY).resolve(javaClass);
+    AnnotationTarget<?, NamingPolicy> namingPolicy = new AnnotationIntrospector<NamingPolicy>(NAMING_POLICY).resolve(javaClass);
     if (namingPolicy != null) {
-      onDuplicate = namingPolicy.onDuplicate();
+      onDuplicate = namingPolicy.getAnnotation().onDuplicate();
     }
 
     //
@@ -452,7 +452,7 @@ public class TypeMappingDomain {
 
     //
     if (!nodeTypeMapping.isAbstract()) {
-      MethodIntrospector2 introspector = new MethodIntrospector2(HierarchyScope.ALL);
+      MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL);
 
       // Create
       for (AnnotationTarget<MethodInfo, Create> annotatedMethods : introspector.resolveMethods(javaClass, CREATE)) {

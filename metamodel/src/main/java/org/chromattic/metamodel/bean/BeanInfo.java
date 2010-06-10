@@ -22,6 +22,7 @@ package org.chromattic.metamodel.bean;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
+import org.reflext.api.introspection.AnnotationTarget;
 
 import java.util.Map;
 import java.util.Set;
@@ -78,14 +79,9 @@ public class BeanInfo {
     if (annotationClass == null) {
       throw new NullPointerException();
     }
-
-    //
     AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
-
-    //
     AnnotationIntrospector<A> introspector = new AnnotationIntrospector<A>(annotationType);
-
-    //
-    return introspector.resolve(typeInfo);
+    AnnotationTarget<ClassTypeInfo,A> annotationTarget = introspector.resolve(typeInfo);
+    return annotationTarget != null ? annotationTarget.getAnnotation() : null;
   }
 }

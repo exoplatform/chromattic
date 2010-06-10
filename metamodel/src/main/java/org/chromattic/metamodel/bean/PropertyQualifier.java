@@ -21,8 +21,10 @@ package org.chromattic.metamodel.bean;
 
 import org.chromattic.metamodel.bean.value.ValueInfo;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.MethodInfo;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
+import org.reflext.api.introspection.AnnotationTarget;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -79,8 +81,7 @@ public class PropertyQualifier<V extends ValueInfo> {
     }
 
     //
-    A annotation = null;
-    ClassTypeInfo owner = null;
+    AnnotationTarget<MethodInfo, A> annotation = null;
 
     //
     AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
@@ -88,27 +89,23 @@ public class PropertyQualifier<V extends ValueInfo> {
     //
     if (property.getGetter() != null) {
       annotation = new AnnotationIntrospector<A>(annotationType).resolve(property.getGetter());
-      if (annotation != null) {
-        owner = property.getGetter().getOwner();
-      }
     }
 
     //
     if (property.getSetter() != null) {
-      A setterAnnotation = new AnnotationIntrospector<A>(annotationType).resolve(property.getSetter());
+      AnnotationTarget<MethodInfo, A> setterAnnotation = new AnnotationIntrospector<A>(annotationType).resolve(property.getSetter());
       if (setterAnnotation != null) {
         if (annotation != null) {
           throw new IllegalStateException("The same annotation " + annotation + " is present on a getter " +
             property.getGetter() + " and setter" + property.getSetter());
         }
         annotation = setterAnnotation;
-        owner = property.getSetter().getOwner();
       }
     }
 
     //
     if (annotation != null) {
-      return new AnnotatedPropertyQualifier<A>(annotation, owner, this);
+      return new AnnotatedPropertyQualifier<A>(annotation.getAnnotation(), annotation.getTarget().getOwner(), this);
     } else {
       return null;
     }
