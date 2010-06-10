@@ -19,6 +19,92 @@
 
 <nodeTypes xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
 
+  <nodeType name="tp_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="string_property" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="path_property" requiredType="Path" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="primitive_int_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="int_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="primitive_long_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="long_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="primitive_double_property" requiredType="Double" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="double_property" requiredType="Double" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="primitive_boolean_property" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="boolean_property" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="date_property" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="bytes_property" requiredType="Binary" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+    </propertyDefinitions>
+  </nodeType>
+
+  <nodeType name="tp_c" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="string_array_property" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="primitive_int_array_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="int_array_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="primitive_long_array_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="long_array_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="primitive_boolean_array_property" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="boolean_array_property" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="date_array_property" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="date_array_property" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+    </propertyDefinitions>
+  </nodeType>
+
+
+<!--
+
+
+
   <nodeType name="petowner" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>nt:base</supertype>
@@ -519,50 +605,6 @@
     </supertypes>
   </nodeType>
 
-  <nodeType name="tp_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-    <supertypes>
-      <supertype>nt:base</supertype>
-      <supertype>mix:referenceable</supertype>
-    </supertypes>
-    <propertyDefinitions>
-      <propertyDefinition name="string_property" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="path_property" requiredType="Path" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="primitive_int_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="int_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="primitive_long_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="long_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="primitive_double_property" requiredType="Double" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="double_property" requiredType="Double" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="primitive_boolean_property" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="boolean_property" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="date_property" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="bytes_property" requiredType="Binary" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-    </propertyDefinitions>
-  </nodeType>
 
   <nodeType name="tp_b" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
@@ -571,42 +613,6 @@
     </supertypes>
     <propertyDefinitions>
       <propertyDefinition name="undefined_type" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-    </propertyDefinitions>
-  </nodeType>
-
-  <nodeType name="tp_c" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-    <supertypes>
-      <supertype>nt:base</supertype>
-      <supertype>mix:referenceable</supertype>
-    </supertypes>
-    <propertyDefinitions>
-      <propertyDefinition name="string_array_property" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="primitive_int_array_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="int_array_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="primitive_long_array_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="long_array_property" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="primitive_boolean_array_property" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="boolean_array_property" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="date_array_property" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="date_array_property" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
         <valueConstraints/>
       </propertyDefinition>
     </propertyDefinitions>
@@ -981,14 +987,14 @@
           <requiredPrimaryType>otoe_b</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
-      <!--
+      &lt;!&ndash;
       <childNodeDefinition name="b" defaultPrimaryType="otom_b" autoCreated="false" mandatory="false"
         onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
           <requiredPrimaryType>otom_b</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
--->
+&ndash;&gt;
     </childNodeDefinitions>
   </nodeType>
 
@@ -1021,6 +1027,7 @@
       <supertype>mix:referenceable</supertype>
     </supertypes>
   </nodeType>
+-->
 
 </nodeTypes>
   
