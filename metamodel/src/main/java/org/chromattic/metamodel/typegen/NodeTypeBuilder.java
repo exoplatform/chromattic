@@ -21,7 +21,6 @@ package org.chromattic.metamodel.typegen;
 
 import org.chromattic.api.AttributeOption;
 import org.chromattic.common.collection.SetMap;
-import org.chromattic.common.logging.Logger;
 import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
@@ -202,12 +201,13 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
           // It redefines but with the same type
         }
       } else {
-        log.warn("Generation of one to one named property " + name + " not owned not yet implemented");
+        // log.warn("Generation of one to one named property " + name + " not owned not yet implemented");
       }
     }
   }
 
-  private static final Logger log = Logger.getLogger(NodeTypeBuilder.class);
+  // no logger for now as in APT there won't be any log 4j
+  // private static final Logger log = Logger.getLogger(NodeTypeBuilder.class);
 
   @Override
   protected void endMapping() {
