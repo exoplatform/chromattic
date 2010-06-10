@@ -23,10 +23,7 @@ import org.chromattic.api.annotations.NodeTypeDefs;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.common.collection.SetMap;
-import org.chromattic.metamodel.typegen.NodeType;
-import org.chromattic.metamodel.typegen.NodeTypeBuilder;
-import org.chromattic.metamodel.typegen.NodeTypeSerializer;
-import org.chromattic.metamodel.typegen.XMLNodeTypeSerializer;
+import org.chromattic.metamodel.typegen.*;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.reflext.api.*;
 import org.reflext.api.introspection.MethodIntrospector;
@@ -88,14 +85,16 @@ public class ChromatticProcessor extends AbstractProcessor {
 
   private boolean _process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
-    Set<String> packageMetaData = new HashSet<String>();
+    Map<String, PackageMetaData> packageMetaData = new HashMap<String, PackageMetaData>();
+
 
     Set<? extends Element> a = roundEnv.getElementsAnnotatedWith(NodeTypeDefs.class);
     for (Element e : a)
     {
       PackageElement pkgElt = (PackageElement)e;
       String s = new StringBuilder().append(pkgElt.getQualifiedName()).toString();
-      packageMetaData.add(s);
+      NodeTypeDefs ntDefs = pkgElt.getAnnotation(NodeTypeDefs.class);
+      packageMetaData.put(s, new PackageMetaData(ntDefs.namespacePrefix(), ntDefs.namespaceValue()));
     }
 
     Set<Element> elts = new HashSet<Element>();
@@ -115,13 +114,14 @@ public class ChromatticProcessor extends AbstractProcessor {
   private void process(
     RoundEnvironment roundEnv,
     Set<Element> elts,
-    Set<String> packageMetaData) throws Exception {
+    Map<String, PackageMetaData> packageMetaDatas) throws Exception {
 
     Filer filer = processingEnv.getFiler();
 
     NodeTypeBuilder visitor = new NodeTypeBuilder();
 
-    SetMap<String, ClassTypeInfo> bilto = new SetMap<String, ClassTypeInfo>();
+    SetMap<String, ClassTypeInfo> packageToClassTypes = new SetMap<String, ClassTypeInfo>();
+
 
     for (Element elt : elts) {
       TypeElement typeElt = (TypeElement)elt;
@@ -132,8 +132,9 @@ public class ChromatticProcessor extends AbstractProcessor {
       //
       for (String packageName : PackageNameIterator.with(cti.getPackageName()))
       {
-        if (packageMetaData.contains(packageName)) {
-          Set<ClassTypeInfo> set = bilto.get(packageName);
+        PackageMetaData packageMetaData = packageMetaDatas.get(packageName);
+        if (packageMetaData != null) {
+          Set<ClassTypeInfo> set = packageToClassTypes.get(packageName);
           set.add(cti);
           break;
         }
@@ -158,17 +159,35 @@ public class ChromatticProcessor extends AbstractProcessor {
     visitor.generate();
 
     //
-    for (String packageName : bilto.keySet()) {
+    for (String packageName : packageToClassTypes.keySet()) {
       env.getMessager().printMessage(Diagnostic.Kind.NOTE, "Processing node type package " + packageName);
       List<NodeType> nodeTypes = new ArrayList<NodeType>();
-      for (ClassTypeInfo cti : bilto.get(packageName)) {
+
+      //
+      Map<String, String> mappings = Collections.emptyMap();
+
+      //
+      for (ClassTypeInfo cti : packageToClassTypes.get(packageName)) {
+        PackageMetaData packageMetaData = packageMetaDatas.get(packageName);
+        if (packageMetaData.namespacePrefix.length() > 0 || packageMetaData.namespaceURI.length() > 0) {
+          mappings = Collections.singletonMap(packageMetaData.namespacePrefix, packageMetaData.namespaceURI);
+        }
         nodeTypes.add(visitor.getNodeType(cti));
       }
-      FileObject file = filer.createResource(StandardLocation.SOURCE_OUTPUT, packageName, "nodetypes.xml");
-      NodeTypeSerializer serializer = new XMLNodeTypeSerializer(nodeTypes);
-      Writer writer = file.openWriter();
-      serializer.writeTo(writer);
-      writer.close();
+
+      //
+      FileObject cndFile = filer.createResource(StandardLocation.SOURCE_OUTPUT, packageName, "nodetypes.cnd");
+      NodeTypeSerializer cndSerializer = new CNDNodeTypeSerializer(nodeTypes, mappings);
+      Writer cndWriter = cndFile.openWriter();
+      cndSerializer.writeTo(cndWriter);
+      cndWriter.close();
+
+      //
+      FileObject xmlFile = filer.createResource(StandardLocation.SOURCE_OUTPUT, packageName, "nodetypes.xml");
+      NodeTypeSerializer xmlSerializer = new XMLNodeTypeSerializer(nodeTypes, mappings);
+      Writer xmlWriter = xmlFile.openWriter();
+      xmlSerializer.writeTo(xmlWriter);
+      xmlWriter.close();
     }
   }
 

@@ -17,6 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs package org.chromattic.test.onetomany.hierarchical;
+@NodeTypeDefs(namespacePrefix = "onetomany_hierarchical", namespaceValue = "onetomany_hierarchical") package org.chromattic.test.onetomany.hierarchical;
 
 import org.chromattic.api.annotations.NodeTypeDefs;

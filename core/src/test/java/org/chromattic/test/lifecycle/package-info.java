@@ -17,6 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs package org.chromattic.test.lifecycle;
+@NodeTypeDefs(namespacePrefix = "lifecycle", namespaceValue = "lifecycle") package org.chromattic.test.lifecycle;
 
 import org.chromattic.api.annotations.NodeTypeDefs;

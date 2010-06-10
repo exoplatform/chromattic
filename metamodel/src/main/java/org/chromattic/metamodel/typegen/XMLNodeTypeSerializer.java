@@ -31,6 +31,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -53,8 +54,19 @@ public class XMLNodeTypeSerializer extends NodeTypeSerializer {
   /** . */
   private ElementEmitter childNodeDefinitionsXML;
 
+  public XMLNodeTypeSerializer(List<NodeType> nodeTypes, Map<String, String> mappings) {
+    super(nodeTypes, mappings);
+  }
+
   public XMLNodeTypeSerializer(List<NodeType> nodeTypes) {
     super(nodeTypes);
+  }
+
+  public XMLNodeTypeSerializer(Map<String, String> mappings) {
+    super(mappings);
+  }
+
+  public XMLNodeTypeSerializer() {
   }
 
   @Override
@@ -74,13 +86,16 @@ public class XMLNodeTypeSerializer extends NodeTypeSerializer {
     //
     docXML = new DocumentEmitter(handler, handler);
     docXML.comment("Node type generation prototype");
-    nodeTypesXML = docXML.documentElement("nodeTypes");
 
     //
     writeTo();
   }
 
-  public void startNodeTypes() throws SAXException {
+  public void startNodeTypes(Map<String, String> mappings) throws SAXException {
+    nodeTypesXML = docXML.documentElement("nodeTypes");
+    for (Map.Entry<String, String> mapping : mappings.entrySet()) {
+      nodeTypesXML.withNamespace(mapping.getKey(), mapping.getValue());
+    }
   }
 
   public void startNodeType(

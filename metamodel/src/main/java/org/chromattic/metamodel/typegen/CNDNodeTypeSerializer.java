@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -38,12 +39,30 @@ public class CNDNodeTypeSerializer extends NodeTypeSerializer {
     super(nodeTypes);
   }
 
+  public CNDNodeTypeSerializer(List<NodeType> nodeTypes, Map<String, String> mappings) {
+    super(nodeTypes, mappings);
+  }
+
+  public CNDNodeTypeSerializer(Map<String, String> mappings) {
+    super(mappings);
+  }
+
+  public CNDNodeTypeSerializer() {
+  }
+
   @Override
   public void writeTo(Writer writer) throws Exception {
     this.writer = new PrintWriter(writer);
     
     //
     writeTo();
+  }
+
+  @Override
+  public void startNodeTypes(Map<String, String> mappings) throws Exception {
+    for (Map.Entry<String, String> mapping : mappings.entrySet()) {
+      writer.append('<').append(mapping.getKey()).append(" = ").append('\'').append(mapping.getValue()).append("'>\n");
+    }
   }
 
   @Override

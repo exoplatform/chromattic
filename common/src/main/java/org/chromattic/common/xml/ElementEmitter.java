@@ -22,6 +22,10 @@ package org.chromattic.common.xml;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -36,6 +40,9 @@ public class ElementEmitter extends XMLEmitter {
 
   /** . */
   private AttributesImpl attrs;
+
+  /** . */
+  private Map<String, String> namespaces;
 
   public ElementEmitter(Handler handler, String qName) {
     super(handler);
@@ -53,6 +60,13 @@ public class ElementEmitter extends XMLEmitter {
 
   @Override
   protected void emmitEnd() throws SAXException {
+    if (namespaces != null) {
+      for (String prefix : namespaces.keySet()) {
+        handler.content.endPrefixMapping(prefix);
+      }
+    }
+
+    //
     handler.content.endElement("", "", qName);
   }
 
@@ -70,6 +84,17 @@ public class ElementEmitter extends XMLEmitter {
     handler.content.characters(data.toCharArray(), 0, data.length());
   }
 
+  public void withNamespace(String prefix, String uri) throws SAXException {
+    if (namespaces == null) {
+      namespaces = new HashMap<String, String>();
+    }
+    if (namespaces.containsKey(prefix)) {
+      throw new IllegalStateException("Prefix " + prefix + " already bound to " + uri);
+    }
+    namespaces.put(prefix, uri);
+    handler.content.startPrefixMapping(prefix, uri);
+  }
+
   public ElementEmitter withAttribute(String qName, String value) {
     checkInitial();
     if (qName == null) {
@@ -84,4 +109,6 @@ public class ElementEmitter extends XMLEmitter {
     attrs.addAttribute("", "", qName, "", value);
     return this;
   }
+
+
 }

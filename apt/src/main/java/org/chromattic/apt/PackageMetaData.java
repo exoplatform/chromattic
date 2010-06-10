@@ -17,6 +17,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "find", namespaceValue = "find") package org.chromattic.test.find;
+package org.chromattic.apt;
 
-import org.chromattic.api.annotations.NodeTypeDefs;
+/**
+ * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
+ * @version $Revision$
+ */
+class PackageMetaData {
+
+  /** . */
+  final String namespacePrefix;
+
+  /** . */
+  final String namespaceURI;
+
+  public PackageMetaData(String namespacePrefix, String namespaceURI) {
+    this.namespacePrefix = namespacePrefix;
+    this.namespaceURI = namespaceURI;
+  }
+}

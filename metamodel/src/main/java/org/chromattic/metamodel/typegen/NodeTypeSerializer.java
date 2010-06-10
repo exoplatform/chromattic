@@ -31,17 +31,54 @@ public abstract class NodeTypeSerializer {
   /** . */
   private final List<NodeType> nodeTypes;
 
-  public NodeTypeSerializer(List<NodeType> nodeTypes) {
+  /** . */
+  private final Map<String, String> mappings;
+
+  public NodeTypeSerializer(List<NodeType> nodeTypes, Map<String, String> mappings) {
     if (nodeTypes == null) {
       throw new NullPointerException();
     }
-    this.nodeTypes = nodeTypes;
+
+    //
+    this.nodeTypes = new ArrayList<NodeType>(nodeTypes);
+    this.mappings = new HashMap<String, String>(mappings);
+  }
+
+  public NodeTypeSerializer(List<NodeType> nodeTypes) {
+    this(nodeTypes, Collections.<String, String>emptyMap());
+  }
+
+  public NodeTypeSerializer(Map<String, String> mappings) {
+    this(Collections.<NodeType>emptyList(), mappings);
+  }
+
+  protected NodeTypeSerializer() {
+    this(Collections.<NodeType>emptyList(), Collections.<String, String>emptyMap());
+  }
+
+  public void addNodeType(NodeType nodeType) {
+    if (nodeType == null) {
+      throw new NullPointerException("No node type provided");
+    }
+    nodeTypes.add(nodeType);
+  }
+
+  public void addPrefixMapping(String namespacePrefix, String namespaceURI) {
+    if (namespacePrefix == null) {
+      throw new NullPointerException("No null namespace prefix accepted");
+    }
+    if (namespaceURI == null) {
+      throw new NullPointerException("No null namespace uri accepted");
+    }
+
+    //
+    mappings.put(namespacePrefix, namespaceURI);
   }
 
   public abstract void writeTo(Writer writer) throws Exception;
 
   public final void writeTo() throws Exception {
-    startNodeTypes();
+    startNodeTypes(Collections.unmodifiableMap(mappings));
 
     //
     for (NodeType nodeType : nodeTypes) {
@@ -107,7 +144,7 @@ public abstract class NodeTypeSerializer {
     endNodeTypes();
   }
 
-  public void startNodeTypes() throws Exception {
+  public void startNodeTypes(Map<String, String> mappings) throws Exception {
   }
 
   public void startNodeType(

@@ -39,5 +39,4 @@ public abstract class XMLEmitter extends Emitter {
       handler.lexical.comment(data.toCharArray(), 0, data.length());
     }
   }
-
 }

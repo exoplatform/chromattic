@@ -17,6 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs package org.chromattic.test.session;
+@NodeTypeDefs(namespacePrefix = "session", namespaceValue = "session") package org.chromattic.test.session;
 
 import org.chromattic.api.annotations.NodeTypeDefs;
