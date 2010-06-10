@@ -17,25 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.petgallery;
+package org.chromattic.metamodel.typegen.inheritance;
 
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "petgallery:petowner")
-public abstract class PetOwner<P extends Pet> {
-
-  @OneToOne
-  @Owner
-  @MappedBy("pet")
-  public abstract P getPet();
-
-  public abstract void setPet(P pet);
-
+@PrimaryType(name = "i3")
+public class I3 {
 }

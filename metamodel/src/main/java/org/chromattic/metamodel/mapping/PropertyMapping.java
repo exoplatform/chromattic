@@ -56,7 +56,7 @@ public class PropertyMapping<V extends ValueMapping> {
   public boolean equals(Object obj) {
     if (obj instanceof PropertyMapping) {
       PropertyMapping that = (PropertyMapping)obj;
-      return info.getProperty().getName().equals(that.info.getProperty().getName());
+      return getName().equals(that.getName());
     }
     return false;
   }
@@ -64,5 +64,10 @@ public class PropertyMapping<V extends ValueMapping> {
   @Override
   public int hashCode() {
     return info.getProperty().getName().hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return "PropertyMapping[name=" + getName() + "]";
   }
 }

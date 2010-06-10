@@ -48,7 +48,7 @@ public class ReadOnlyPropertyTestCase extends AbstractBeanTestCase {
   public void testB() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(B.class);
     BeanInfo beanInfo = beanInfo(typeInfo);
-    assertEquals(new HashSet<String>(), beanInfo.getPropertyNames());
+    assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
   }
 
   public class C extends B<String> {

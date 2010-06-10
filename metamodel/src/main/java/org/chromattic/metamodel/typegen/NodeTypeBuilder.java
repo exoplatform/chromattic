@@ -21,13 +21,16 @@ package org.chromattic.metamodel.typegen;
 
 import org.chromattic.api.AttributeOption;
 import org.chromattic.common.collection.SetMap;
+import org.chromattic.common.logging.Logger;
 import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.mapping.BaseTypeMappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
+import org.chromattic.metamodel.mapping.value.NamedOneToOneMapping;
 import org.chromattic.metamodel.mapping.value.OneToManyMapping;
+import org.chromattic.metamodel.mapping.value.OneToOneMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 
@@ -125,18 +128,6 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected void oneToManyHierarchic(NodeTypeMapping definerMapping, String propertyName, NodeTypeMapping relatedMapping) {
-    if (definerMapping.equals(current.mapping)) {
-      current.addChildNodeType("*", false, false, relatedMapping);
-    } else {
-      PropertyMapping<OneToManyMapping> pm = (PropertyMapping<OneToManyMapping>)definerMapping.getPropertyMapping(propertyName);
-      if (pm.getValueMapping().getRelatedMapping() != relatedMapping) {
-        current.addChildNodeType("*", false, false, relatedMapping);
-      }
-    }
-  }
-
-  @Override
   protected void manyToOneByReference(ClassTypeInfo definer, String name, NodeTypeMapping relatedType, boolean skip) {
     if (!skip) {
       if (definer.equals(current.mapping.getType())) {
@@ -168,6 +159,18 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
+  protected void oneToManyHierarchic(NodeTypeMapping definerMapping, String propertyName, NodeTypeMapping relatedMapping) {
+    if (definerMapping.equals(current.mapping)) {
+      current.addChildNodeType("*", false, false, relatedMapping);
+    } else {
+      PropertyMapping<OneToManyMapping> pm = (PropertyMapping<OneToManyMapping>)definerMapping.getPropertyMapping(propertyName);
+      if (pm.getValueMapping().getRelatedMapping() != relatedMapping) {
+        current.addChildNodeType("*", false, false, relatedMapping);
+      }
+    }
+  }
+
+  @Override
   protected void manyToOneHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {
     if (definer.equals(current.mapping.getType())) {
       resolve(relatedMapping).addChildNodeType("*", false, false, current.mapping);
@@ -175,20 +178,36 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   }
 
   @Override
-  protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean owning, Set<AttributeOption> attributes) {
-    if (definer.equals(current.mapping.getType())) {
-      boolean autocreated = attributes.contains(AttributeOption.AUTOCREATED);
+  protected void oneToOneHierarchic(
+    NodeTypeMapping definerMapping,
+    String name,
+    NodeTypeMapping relatedMapping,
+    boolean owning,
+    Set<AttributeOption> attributes,
+    String propertyName) {
+    boolean autocreated = attributes.contains(AttributeOption.AUTOCREATED);
+    boolean mandatory = attributes.contains(AttributeOption.MANDATORY);
+    if (definerMapping.equals(current.mapping)) {
       if (owning) {
-        if (attributes.contains(AttributeOption.MANDATORY)) {
-          current.addChildNodeType(name, true, autocreated, relatedMapping);
-        } else {
-          current.addChildNodeType(name, false, autocreated, relatedMapping);
-        }
+        current.addChildNodeType(name, mandatory, autocreated, relatedMapping);
       } else {
         resolve(relatedMapping).addChildNodeType(name, false, autocreated, current.mapping);
       }
+    } else {
+      if (owning) {
+        PropertyMapping<NamedOneToOneMapping> pm = (PropertyMapping<NamedOneToOneMapping>)definerMapping.getPropertyMapping(propertyName);
+        if (pm.getValueMapping().getRelatedMapping() != relatedMapping) {
+          current.addChildNodeType(name, mandatory, autocreated, relatedMapping);
+        } else {
+          // It redefines but with the same type
+        }
+      } else {
+        log.warn("Generation of one to one named property " + name + " not owned not yet implemented");
+      }
     }
   }
+
+  private static final Logger log = Logger.getLogger(NodeTypeBuilder.class);
 
   @Override
   protected void endMapping() {

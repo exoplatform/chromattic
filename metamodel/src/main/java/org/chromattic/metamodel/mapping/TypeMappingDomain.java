@@ -358,13 +358,14 @@ public class TypeMappingDomain {
                 //
                 NodeDefinitionMapping jcrMapping = new NodeDefinitionMapping(oneToOneRole.getOptions());
                 AnnotatedPropertyQualifier<Owner> owner = propertyInfo.getAnnotated(Owner.class);
-                if (owner != null) {
-                  NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-                  hierarchyMapping = new NamedOneToOneMapping(definer, nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), true, jcrMapping);
-                } else {
-                  NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
-                  hierarchyMapping = new NamedOneToOneMapping(definer, nodeTypeMapping, relatedMapping, mappedBy.getAnnotation().value(), false, jcrMapping);
-                }
+                NodeTypeMapping relatedMapping = resolve(typeInfo, addedMappings);
+                hierarchyMapping = new NamedOneToOneMapping(
+                  definer,
+                  nodeTypeMapping,
+                  relatedMapping,
+                  mappedBy.getAnnotation().value(),
+                  owner != null,
+                  jcrMapping);
                 oneToOneMapping = new PropertyMapping<RelationshipMapping>(propertyInfo, hierarchyMapping);
                 propertyMappings.add(oneToOneMapping);
               } else if (type == RelationshipType.EMBEDDED) {

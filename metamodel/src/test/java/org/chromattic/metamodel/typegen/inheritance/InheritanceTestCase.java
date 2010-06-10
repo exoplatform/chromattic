@@ -77,7 +77,7 @@ public class InheritanceTestCase extends TypeGenTestCase {
   public void testChildNodeDefinitions() throws Exception {
     assertEquals(2, a1NT.getChildNodeDefinitions().size());
     assertEquals(0, a3NT.getChildNodeDefinitions().size());
-    assertEquals(0, a5NT.getChildNodeDefinitions().size());
+    assertEquals(1, a5NT.getChildNodeDefinitions().size());
   }
 
   public void testRelationshipOverride() {
@@ -100,6 +100,20 @@ public class InheritanceTestCase extends TypeGenTestCase {
     NodeDefinition h2AnyDef = h2.getChildNodeDefinition("*");
     assertNotNull(h2AnyDef);
     assertEquals("h3", h2AnyDef.getNodeTypeName());
+  }
+
+  public void testOneToOneGenericRelationship() {
+    Map<Class<?>, NodeType> a = assertValid(I1.class, I2.class, I3.class, I4.class);
+    NodeType i1 = a.get(I1.class);
+    NodeType i2 = a.get(I2.class);
+    NodeType i3 = a.get(I3.class);
+    NodeType i4 = a.get(I4.class);
+    NodeDefinition i1ChildDef = i1.getChildNodeDefinition("child");
+    assertNotNull(i1ChildDef);
+    assertEquals("i3", i1ChildDef.getNodeTypeName());
+    NodeDefinition i2ChildDef = i2.getChildNodeDefinition("child");
+    assertNotNull(i2ChildDef);
+    assertEquals("i4", i2ChildDef.getNodeTypeName());
   }
 
   public void testInvalidAbstractManyToOne() {

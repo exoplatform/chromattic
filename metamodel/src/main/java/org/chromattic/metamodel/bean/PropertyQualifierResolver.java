@@ -202,6 +202,14 @@ public class PropertyQualifierResolver {
           }
         }
       }
+    } else if (typeInfo instanceof TypeVariableInfo) {
+      TypeVariableInfo variableTI = (TypeVariableInfo)typeInfo;
+      ClassTypeInfo a = resolveClass(beanType, variableTI);
+      if (a != null) {
+        return createValue(a);
+      }
+    } else {
+      throw new UnsupportedOperationException();
     }
 
     //

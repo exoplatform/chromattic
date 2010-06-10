@@ -25,6 +25,6 @@ import org.chromattic.api.annotations.PrimaryType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "catowner")
+@PrimaryType(name = "petgallery:catowner")
 public abstract class CatOwner extends PetOwner<Cat> {
 }

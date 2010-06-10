@@ -76,7 +76,7 @@ public class BaseTypeMappingVisitor {
 
   protected void manyToOneHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) {}
 
-  protected void oneToOneHierarchic(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean owning, Set<AttributeOption> attributes) {}
+  protected void oneToOneHierarchic(NodeTypeMapping definerMapping, String name, NodeTypeMapping relatedMapping, boolean owning, Set<AttributeOption> attributes, String propertyName) {}
 
   protected void oneToOneEmbedded(ClassTypeInfo definer, NodeTypeMapping relatedMapping, boolean owner) {}
 
@@ -184,7 +184,10 @@ public class BaseTypeMappingVisitor {
               String name = namedOneToOneMapping.getName();
               switch (type) {
                 case HIERARCHIC:
-                  oneToOneHierarchic(definer, name, relationshipMapping.getRelatedMapping(), namedOneToOneMapping.isOwning(), namedOneToOneMapping.getJCRMapping().getAttributes());
+                  oneToOneHierarchic(
+                    definerMapping,
+                    name,
+                    relationshipMapping.getRelatedMapping(), namedOneToOneMapping.isOwning(), namedOneToOneMapping.getJCRMapping().getAttributes(), propertyMapping.getInfo().getProperty().getName());
                   break;
                 default:
                   throw new AssertionError();
