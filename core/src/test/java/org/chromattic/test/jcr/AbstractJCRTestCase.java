@@ -19,10 +19,13 @@
 
 package org.chromattic.test.jcr;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
-import org.chromattic.exo.ExoSessionLifeCycle;
+import org.chromattic.api.ChromatticBuilder;
+import org.chromattic.core.api.ChromatticImpl;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 /**
@@ -32,20 +35,48 @@ import javax.jcr.Session;
 public abstract class AbstractJCRTestCase extends TestCase {
 
   /** . */
-  protected Session session;
-
   protected SessionLifeCycle sessionLF;
+
+  /** . */
+  private Session session;
 
   @Override
   protected void setUp() throws Exception {
-    sessionLF = new ExoSessionLifeCycle();
-    session = sessionLF.login();
+    ChromatticBuilder builder = ChromatticBuilder.create();
+    builder.setOptionValue(ChromatticBuilder.USE_SYSTEM_PROPERTIES, true);
+    ChromatticImpl chromattic = (ChromatticImpl)builder.build();
+    sessionLF = chromattic.getSessionLifeCycle();
   }
 
   @Override
   protected void tearDown() throws Exception {
-    session.logout();
-    session = null;
+    if (session != null && session.isLive()) {
+      session.logout();
+    }
     sessionLF = null;
+  }
+
+  protected void logout() {
+    if (session == null) {
+      throw new IllegalStateException();
+    }
+    Session session = this.session;
+    this.session = null;
+    session.logout();
+  }
+
+  protected Session login() {
+    if (session != null) {
+      session.logout();
+      session = null;
+    }
+    try {
+      return sessionLF.login();
+    }
+    catch (RepositoryException e) {
+      AssertionFailedError afe = new AssertionFailedError();
+      afe.initCause(e);
+      throw afe;
+    }
   }
 }

@@ -30,28 +30,16 @@ import javax.jcr.Property;
 import javax.jcr.Repository;
 
 import junit.framework.TestCase;
+import org.chromattic.test.jcr.AbstractJCRTestCase;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyBehaviorTestCase extends TestCase {
-
-  /** . */
-  private Repository repo;
-
-  @Override
-  protected void setUp() throws Exception {
-    RepositoryBootstrap bootstrap = new RepositoryBootstrap();
-    bootstrap.bootstrap();
-    Repository repo = bootstrap.getRepository();
-
-    //
-    this.repo = repo;
-  }
+public class PropertyBehaviorTestCase extends AbstractJCRTestCase {
 
   public void testAddRef() throws Exception {
-    Session session = repo.login();
+    Session session = login();
 
     //
     Node root = session.getRootNode();
@@ -73,7 +61,7 @@ public class PropertyBehaviorTestCase extends TestCase {
   }
 
   public void testRemoveRef() throws Exception {
-    Session session = repo.login();
+    Session session = login();
 
     //
     Node root = session.getRootNode();
@@ -84,7 +72,7 @@ public class PropertyBehaviorTestCase extends TestCase {
     session.save();
 
     //
-    session = repo.login();
+    session = login();
     root = session.getRootNode();
     a = root.getNode("a2");
     b = root.getNode("b2");
@@ -107,7 +95,7 @@ public class PropertyBehaviorTestCase extends TestCase {
   }
 
   public void testReAddRef() throws Exception {
-    Session session = repo.login();
+    Session session = login();
 
     //
     Node root = session.getRootNode();
@@ -118,7 +106,7 @@ public class PropertyBehaviorTestCase extends TestCase {
     session.save();
 
     //
-    session = repo.login();
+    session = login();
     root = session.getRootNode();
     a = root.getNode("a3");
     b = root.getNode("b3");
@@ -140,7 +128,7 @@ public class PropertyBehaviorTestCase extends TestCase {
   }
 
   public void testUpdateRef() throws Exception {
-    Session session = repo.login();
+    Session session = login();
 
     //
     Node root = session.getRootNode();

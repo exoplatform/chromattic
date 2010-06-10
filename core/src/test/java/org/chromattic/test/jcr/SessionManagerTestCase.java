@@ -47,7 +47,7 @@ public class SessionManagerTestCase extends AbstractJCRTestCase {
     super.setUp();
 
     //
-    this.mgr = new SessionWrapperImpl(sessionLF, session, false, false);
+    this.mgr = new SessionWrapperImpl(sessionLF, login(), false, false);
   }
 
   public void testRemoveTransientReferent() throws Exception {

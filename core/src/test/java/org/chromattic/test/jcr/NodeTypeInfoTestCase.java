@@ -23,6 +23,7 @@ import org.chromattic.core.jcr.info.NodeInfoManager;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 
 import javax.jcr.Node;
+import javax.jcr.Session;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -39,6 +40,7 @@ public class NodeTypeInfoTestCase extends AbstractJCRTestCase {
   }
 
   public void testFoo() throws Exception {
+    Session session = login();
     Node a = session.getRootNode().addNode("a", "nt:unstructured");
     NodeInfo info = mgr.getInfo(a);
     PropertyDefinitionInfo pdi = info.findPropertyDefinition("jcr:primaryType");

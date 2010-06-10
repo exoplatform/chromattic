@@ -19,7 +19,6 @@
 
 package org.chromattic.exo;
 
-import org.chromattic.exo.RepositoryBootstrap;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
 import javax.jcr.Repository;
@@ -34,12 +33,20 @@ import javax.jcr.Credentials;
 public class ExoSessionLifeCycle implements SessionLifeCycle {
 
   /** . */
-  private Repository repo;
+  private static final Repository repo;
+
+  static {
+    try {
+      RepositoryBootstrap bootstrap = new RepositoryBootstrap();
+      bootstrap.bootstrap();
+      repo = bootstrap.getRepository();
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   public ExoSessionLifeCycle() throws Exception {
-    RepositoryBootstrap bootstrap = new RepositoryBootstrap();
-    bootstrap.bootstrap();
-    repo = bootstrap.getRepository();
   }
 
   public Session login() throws RepositoryException {

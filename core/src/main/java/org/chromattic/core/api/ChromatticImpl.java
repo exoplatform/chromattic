@@ -50,6 +50,10 @@ public class ChromatticImpl implements Chromattic {
     this.sessionLifeCycle = sessionLifeCycle;
   }
 
+  public SessionLifeCycle getSessionLifeCycle() {
+    return sessionLifeCycle;
+  }
+
   public ChromatticSession openSession() {
     try {
       Session session = sessionLifeCycle.login();

@@ -19,16 +19,13 @@
 
 package org.chromattic.test.spi.exo;
 
-import junit.framework.TestCase;
-
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Node;
 
 import org.chromattic.common.collection.Collections;
-import org.chromattic.exo.RepositoryBootstrap;
 import org.chromattic.core.jcr.AbstractLinkManager;
+import org.chromattic.test.jcr.AbstractJCRTestCase;
 
 import java.util.Iterator;
 import java.util.ConcurrentModificationException;
@@ -37,26 +34,12 @@ import java.util.ConcurrentModificationException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class LinkManagerTestCase extends TestCase {
+public abstract class LinkManagerTestCase extends AbstractJCRTestCase {
 
   protected abstract AbstractLinkManager createLinkManager(Session session);
 
-  /** . */
-  private Repository repo;
-
-
-  @Override
-  protected void setUp() throws Exception {
-    RepositoryBootstrap bootstrap = new RepositoryBootstrap();
-    bootstrap.bootstrap();
-    Repository repo = bootstrap.getRepository();
-
-    //
-    this.repo = repo;
-  }
-
   public void testAdd() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a5");
@@ -75,7 +58,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testRemoveTransient() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a6");
@@ -98,7 +81,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testRemovePersistent() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a7");
@@ -126,7 +109,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testReAddTransientlyRemovedPersistent() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a8");
@@ -158,7 +141,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testUpdate() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a9");
@@ -186,7 +169,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testPhantomConcurrentRemoveModification() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     Node root = session.getRootNode();
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
@@ -206,7 +189,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testPersistentConcurrentRemoveModification() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     Node root = session.getRootNode();
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
@@ -228,7 +211,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testPersistentConcurrentIteratorRemoveModification() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     Node root = session.getRootNode();
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
@@ -252,7 +235,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testPersistentConcurrentAddModification() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     Node root = session.getRootNode();
     Node a = root.addNode("a11");
     a.addMixin("mix:referenceable");
@@ -276,7 +259,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testPersistentConcurrentReAddModification() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     Node root = session.getRootNode();
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
@@ -299,7 +282,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testTransientConcurrentRemoveModification() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     Node root = session.getRootNode();
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
@@ -320,7 +303,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testTransientConcurrentIteratorRemoveModification() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     Node root = session.getRootNode();
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
@@ -343,7 +326,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testTransientConcurrentAddModification() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     Node root = session.getRootNode();
     Node a = root.addNode("a11");
     a.addMixin("mix:referenceable");
@@ -366,7 +349,7 @@ public abstract class LinkManagerTestCase extends TestCase {
   }
 
   public void testTransientConcurrentReAddModification() throws Exception {
-    Session session = repo.login();
+    Session session = login();
     Node root = session.getRootNode();
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
