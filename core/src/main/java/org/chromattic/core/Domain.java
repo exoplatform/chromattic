@@ -86,6 +86,9 @@ public class Domain {
   final List<String> rootNodePathSegments;
 
   /** . */
+  final String rootNodeType;
+
+  /** . */
   final int rootCreateMode;
 
   /** . */
@@ -104,7 +107,8 @@ public class Domain {
     boolean hasPropertyOptimized,
     boolean hasNodeOptimized,
     String rootNodePath,
-    int rootCreateMode) {
+    int rootCreateMode,
+    String rootNodeType) {
 
 
     //
@@ -151,6 +155,7 @@ public class Domain {
     this.nodeInfoManager = new NodeInfoManager();
     this.queryManager = new QueryManager(rootNodePath);
     this.rootCreateMode = rootCreateMode;
+    this.rootNodeType = rootNodeType;
   }
 
   public boolean isHasPropertyOptimized() {

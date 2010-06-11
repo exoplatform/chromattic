@@ -421,6 +421,8 @@
            <module>metamodel</module>
            <module>cglib</module>
            <module>exo</module>
+           <module>jack</module>
+           <module>ms</module>
            <module>core</module>
            <module>ext</module>
         </modules>
@@ -439,6 +441,8 @@
            <module>apt</module>
            <module>cglib</module>
            <module>exo</module>
+           <module>jack</module>
+           <module>ms</module>
            <module>core</module>
            <module>ext</module>
            <module>docs</module>

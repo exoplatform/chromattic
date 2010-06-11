@@ -19,9 +19,7 @@
 
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Destroy;
+import org.chromattic.api.annotations.*;
 
 import java.util.Collection;
 

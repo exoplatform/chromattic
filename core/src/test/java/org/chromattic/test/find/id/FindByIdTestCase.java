@@ -65,7 +65,11 @@ public class FindByIdTestCase extends AbstractTestCase {
 
   public void testNotFound() throws RepositoryException {
     ChromatticSession session = login();
-    TFI_A a = session.findById(TFI_A.class, "foo");
+    TFI_A a = session.insert(TFI_A.class, "a");
+    assertNotNull(a);
+    String id = session.getId(a);
+    session.remove(a);
+    a = session.findById(TFI_A.class, id);
     assertNull(a);
   }
 

@@ -45,6 +45,8 @@ public @interface NodeTypeDefs {
    */
   String name() default "nodetypes.xml";
 
+  boolean deep() default false;
+
   String namespacePrefix() default "";
 
   String namespaceValue() default "";

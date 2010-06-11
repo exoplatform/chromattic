@@ -20,16 +20,13 @@ package org.chromattic.test.spi.exo;
 
 import org.chromattic.common.collection.Collections;
 import org.chromattic.common.JCR;
-import org.chromattic.exo.RepositoryBootstrap;
 
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.jcr.Repository;
 
-import junit.framework.TestCase;
 import org.chromattic.test.jcr.AbstractJCRTestCase;
 
 /**

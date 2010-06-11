@@ -22,11 +22,16 @@ package org.chromattic.test.jcr;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import org.chromattic.api.ChromatticBuilder;
+import org.chromattic.common.JCR;
 import org.chromattic.core.api.ChromatticImpl;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -43,7 +48,6 @@ public abstract class AbstractJCRTestCase extends TestCase {
   @Override
   protected void setUp() throws Exception {
     ChromatticBuilder builder = ChromatticBuilder.create();
-    builder.setOptionValue(ChromatticBuilder.USE_SYSTEM_PROPERTIES, true);
     ChromatticImpl chromattic = (ChromatticImpl)builder.build();
     sessionLF = chromattic.getSessionLifeCycle();
   }
@@ -54,6 +58,43 @@ public abstract class AbstractJCRTestCase extends TestCase {
       session.logout();
     }
     sessionLF = null;
+  }
+
+  protected final void assertEquals(Node expected, Node actual) {
+    try {
+      assertTrue("Was expected to have node " + actual + " equals to " + expected, JCR.equals(actual, expected));
+    } catch (RepositoryException e) {
+      AssertionFailedError afe = new AssertionFailedError();
+      afe.initCause(e);
+      throw afe;
+    }
+  }
+
+  private static final Comparator<Node> comparator = new Comparator<Node>() {
+    public int compare(Node a, Node b) {
+      boolean equals;
+      try {
+        equals = JCR.equals(a, b);
+      }
+      catch (RepositoryException e) {
+        AssertionFailedError afe = new AssertionFailedError();
+        afe.initCause(e);
+        throw afe;
+      }
+      if (equals) {
+        return 0;
+      } else {
+        return System.identityHashCode(a) - System.identityHashCode(b);
+      }
+    }
+  };
+
+  protected final void assertEquals(Set<Node> expected, Set<Node> actual) {
+    TreeSet<Node> expectedSet = new TreeSet<Node>(comparator);
+    expectedSet.addAll(expected);
+    TreeSet<Node> actualSet = new TreeSet<Node>(comparator);
+    actualSet.addAll(actual);
+    assertTrue("Was expected to have " + actual + " equals to " + expected, expectedSet.equals(actualSet)); 
   }
 
   protected void logout() {

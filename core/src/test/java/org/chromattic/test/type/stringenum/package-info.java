@@ -17,6 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "onetomany_r", namespaceValue = "onetomany_r", deep = true) package org.chromattic.test.onetomany.reference;
+@NodeTypeDefs(namespacePrefix = "type_stringenum", namespaceValue = "type_stringenum") package org.chromattic.test.type.stringenum;
 
 import org.chromattic.api.annotations.NodeTypeDefs;

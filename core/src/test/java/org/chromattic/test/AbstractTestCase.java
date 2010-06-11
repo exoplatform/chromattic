@@ -19,6 +19,7 @@
 
 package org.chromattic.test;
 
+import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.core.api.ChromatticSessionImpl;
@@ -34,6 +35,7 @@ import junit.framework.TestListener;
 import junit.framework.Test;
 import junit.framework.AssertionFailedError;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -128,6 +130,7 @@ public abstract class AbstractTestCase extends TestCase {
 
     //
     builder.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
+    builder.setOptionValue(ChromatticBuilder.ROOT_NODE_TYPE, "nt:unstructured");
     builder.setOptionValue(ChromatticBuilder.PROPERTY_CACHE_ENABLED, config.propertyCacheEnabled);
     builder.setOptionValue(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
     builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, config.optimizeHasPropertyEnabled);
@@ -205,16 +208,31 @@ public abstract class AbstractTestCase extends TestCase {
     //
     for (Config config : configs) {
       this.config = config;
-      super.run(result);
+      try {
+        super.run(result);
+      }
+      finally {
+        ArrayList<ChromatticSessionImpl> copy = new ArrayList<ChromatticSessionImpl>(sessions);
+        sessions.clear();
+        for (ChromatticSession session : copy) {
+          if (!session.isClosed()) {
+            session.close();
+          }
+        }
+      }
     }
 
     //
     result.removeListener(listener);
   }
 
+  /** The session opened during the test. */
+  private List<ChromatticSessionImpl> sessions = new ArrayList<ChromatticSessionImpl>();
+
   public final ChromatticSessionImpl login() {
-    SimpleCredentials credentials = new SimpleCredentials("exo", "exo".toCharArray());
-    return (ChromatticSessionImpl)chromattic.openSession(credentials);
+    ChromatticSessionImpl session = (ChromatticSessionImpl)chromattic.openSession();
+    sessions.add(session);
+    return session;
   }
 
   protected final <D> void setOptionValue(ChromatticBuilder.Option<D> option, D value) throws NullPointerException {

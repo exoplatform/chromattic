@@ -112,6 +112,9 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     }
 
     //
+    String rootNodeType = options.getValue(ROOT_NODE_TYPE);
+
+    //
     boolean propertyCacheEnabled = options.getValue(PROPERTY_CACHE_ENABLED);
     boolean propertyReadAheadEnabled = options.getValue(PROPERTY_READ_AHEAD_ENABLED);
 
@@ -135,7 +138,8 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       hasPropertyOptimized,
       hasNodeOptimized,
       rootNodePath,
-      rootCreateMode);
+      rootCreateMode,
+      rootNodeType);
 
     //
     return new ChromatticImpl(domain, sessionLifeCycle);

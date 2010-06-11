@@ -150,19 +150,7 @@ public class SessionWrapperImpl implements SessionWrapper {
   }
 
   public void orderBefore(Node parentNode, Node srcNode, Node dstNode) throws RepositoryException {
-    Node srcParentNode = srcNode.getParent();
-    if (!srcParentNode.equals(parentNode)) {
-      throw new IllegalArgumentException("Node must have the same prent");
-    }
-
-    //
     if (dstNode != null) {
-      Node dstParentNode = dstNode.getParent();
-      if (!dstParentNode.equals(parentNode)) {
-        throw new IllegalArgumentException("Node must have the same prent");
-      }
-
-      //
       parentNode.orderBefore(srcNode.getName(), dstNode.getName());
     } else {
       long size = parentNode.getNodes().getSize();

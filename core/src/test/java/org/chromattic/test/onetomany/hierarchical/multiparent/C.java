@@ -17,6 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "onetomany_r", namespaceValue = "onetomany_r", deep = true) package org.chromattic.test.onetomany.reference;
+package org.chromattic.test.onetomany.hierarchical.multiparent;
 
-import org.chromattic.api.annotations.NodeTypeDefs;
+import org.chromattic.api.annotations.PrimaryType;
+
+/**
+ * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
+ * @version $Revision$
+ */
+@PrimaryType(name = "onetomany_h_multiparent:c")
+public class C {
+}

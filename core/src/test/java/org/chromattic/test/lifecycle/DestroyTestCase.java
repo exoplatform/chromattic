@@ -118,7 +118,9 @@ public class DestroyTestCase extends AbstractTestCase {
     session.save();
 
     try {
+      // One of th two following statements must fail we don't know which one
       session.remove(m2);
+      session.save();
       fail();
     }
     catch (UndeclaredRepositoryException e) {

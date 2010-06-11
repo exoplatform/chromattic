@@ -17,6 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "onetoone_embedded", namespaceValue = "onetoone_embedded") package org.chromattic.test.onetoone.embedded;
+@NodeTypeDefs(namespacePrefix = "onetoone_e", namespaceValue = "onetoone_e") package org.chromattic.test.onetoone.embedded;
 
 import org.chromattic.api.annotations.NodeTypeDefs;

@@ -17,6 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "onetoone_hierarchical", namespaceValue = "onetoone_hierarchical") package org.chromattic.test.onetoone.hierarchical;
+@NodeTypeDefs(namespacePrefix = "onetoone_h", namespaceValue = "onetoone_h") package org.chromattic.test.onetoone.hierarchical;
 
 import org.chromattic.api.annotations.NodeTypeDefs;

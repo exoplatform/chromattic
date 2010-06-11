@@ -20,11 +20,13 @@
 package org.chromattic.test.builder;
 
 import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.metamodel.annotations.Skip;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@Skip
 @PrimaryType(name = "nt:base")
 public class A {
 }

@@ -151,6 +151,15 @@ public abstract class ChromatticBuilder {
       "when root node is created it is done in a lazy manner");
 
   /**
+   * A string value that is the root node type when Chromattic has to build the path to the root node.
+   */
+  public static final Option<String> ROOT_NODE_TYPE =
+    new Option<String>(
+      Option.Type.STRING,
+      "org.chromattic.api.Option.root_node.root_node_type",
+      "the root node type when it is created by Chromattic");
+
+  /**
    * Options configurable via system properties.
    */
   private final static Set<Option> systemOptions = Collections.unmodifiableSet(new HashSet<Option>(Arrays.asList(
@@ -158,7 +167,8 @@ public abstract class ChromatticBuilder {
     PROPERTY_READ_AHEAD_ENABLED,
     JCR_OPTIMIZE_ENABLED,
     JCR_OPTIMIZE_HAS_PROPERTY_ENABLED,
-    JCR_OPTIMIZE_HAS_NODE_ENABLED
+    JCR_OPTIMIZE_HAS_NODE_ENABLED,
+    SESSION_LIFECYCLE_CLASSNAME
   )));
 
   public static Set<Option> getSystemOptions() {

@@ -19,6 +19,8 @@
 
 package org.chromattic.apt;
 
+import org.reflext.api.ClassTypeInfo;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -26,13 +28,46 @@ package org.chromattic.apt;
 class PackageMetaData {
 
   /** . */
+  final String packageName;
+
+  /** . */
   final String namespacePrefix;
 
   /** . */
   final String namespaceURI;
 
-  public PackageMetaData(String namespacePrefix, String namespaceURI) {
+  /** . */
+  final boolean deep;
+
+  public PackageMetaData(
+    String packageName,
+    String namespacePrefix,
+    String namespaceURI,
+    boolean deep) {
+    this.packageName = packageName;
     this.namespacePrefix = namespacePrefix;
     this.namespaceURI = namespaceURI;
+    this.deep = deep;
+  }
+
+  int distance(ClassTypeInfo cti) {
+    int distance;
+    if (deep) {
+      if (cti.getPackageName().startsWith(packageName)) {
+        distance = 0;
+        for (String packageName : PackageNameIterator.with(cti.getPackageName())) {
+          if (cti.getPackageName().equals(packageName)) {
+            break;
+          } else {
+            distance++;
+          }
+        }
+      } else {
+        distance = -1;
+      }
+    } else {
+      distance = cti.getPackageName().equals(packageName) ? 0 : -1;
+    }
+    return distance;
   }
 }

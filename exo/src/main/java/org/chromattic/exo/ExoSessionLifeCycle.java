@@ -21,10 +21,7 @@ package org.chromattic.exo;
 
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
-import javax.jcr.Repository;
-import javax.jcr.Session;
-import javax.jcr.RepositoryException;
-import javax.jcr.Credentials;
+import javax.jcr.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -50,11 +47,11 @@ public class ExoSessionLifeCycle implements SessionLifeCycle {
   }
 
   public Session login() throws RepositoryException {
-    return repo.login();
+    return repo.login(new SimpleCredentials("exo", "exo".toCharArray()));
   }
 
   public Session login(String workspace) throws RepositoryException {
-    return repo.login(workspace);
+    return repo.login(new SimpleCredentials("exo", "exo".toCharArray()), workspace);
   }
 
   public Session login(Credentials credentials, String workspace) throws RepositoryException {

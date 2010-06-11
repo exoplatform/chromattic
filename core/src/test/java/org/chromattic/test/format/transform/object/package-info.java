@@ -17,24 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.hierarchical;
+@NodeTypeDefs(namespacePrefix = "format_object", namespaceValue = "format_object") package org.chromattic.test.format.transform.object;
 
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.ManyToOne;
-
-/**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- */
-@PrimaryType(name = "onetomany_h:b")
-public abstract class B {
-
-  @ManyToOne
-  public abstract A getAParent();
-
-  @ManyToOne
-  public abstract B getBParent();
-
-  @ManyToOne
-  public abstract C getCParent();
-}
+import org.chromattic.api.annotations.NodeTypeDefs;

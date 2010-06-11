@@ -17,14 +17,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetomany.hierarchical;
+@NodeTypeDefs(namespacePrefix = "type_extra", namespaceValue = "type_extra") package org.chromattic.test.type.extra;
 
-import org.chromattic.api.annotations.PrimaryType;
-
-/**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- */
-@PrimaryType(name = "onetomany_h:a")
-public abstract class A {
-}
+import org.chromattic.api.annotations.NodeTypeDefs;

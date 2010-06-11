@@ -675,7 +675,16 @@ public class DomainSessionImpl extends DomainSession {
       Node referenced = referencedCtx.state.getNode();
 
       //
-      return referenced != sessionWrapper.setReferenced(referent, name, referenced, linkType);
+      Node previouslyReferenced = sessionWrapper.setReferenced(referent, name, referenced, linkType);
+
+      // OK the nodes are referenceable, they always have an UUID
+      if (previouslyReferenced != null) {
+        String previousReferencedId = previouslyReferenced.getUUID();
+        String referencedId = referenced.getUUID();
+        return !referencedId.equals(previousReferencedId);
+      } else {
+        return true;
+      }
     } else {
       return null != sessionWrapper.setReferenced(referent, name, null, linkType);
     }
@@ -729,6 +738,7 @@ public class DomainSessionImpl extends DomainSession {
     Session session = sessionWrapper.getSession();
     List<String> pathSegments = domain.rootNodePathSegments;
     Node current = session.getRootNode();
+    String rootNodeType = domain.rootNodeType;
     boolean created = false;
     if (!pathSegments.isEmpty()) {
       // We use that kind of loop to avoid object creation
@@ -740,7 +750,11 @@ public class DomainSessionImpl extends DomainSession {
           if (domain.rootCreateMode == Domain.NO_CREATE_MODE) {
             throw new NoSuchNodeException("No existing root node " + domain.rootNodePath);
           } else {
-            current = current.addNode(pathSegment);
+            if (rootNodeType != null) {
+              current = current.addNode(pathSegment, rootNodeType);
+            } else {
+              current = current.addNode(pathSegment);
+            }
             created = true;
           }
         }

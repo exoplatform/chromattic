@@ -40,14 +40,27 @@
  		      <value>jar:/org/chromattic/test/lifecycle/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/methodinvocation/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/nodeattribute/nodetypes.xml</value>
- 		      <value>jar:/org/chromattic/test/onetomany/hierarchical/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/onetomany/hierarchical/multiparent/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/onetomany/hierarchical/map/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/onetomany/hierarchical/list/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/onetomany/hierarchical/collection/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/onetomany/reference/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/onetoone/hierarchical/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/onetoone/embedded/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/property/value/multi/array/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/property/value/multi/list/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/property/value/single/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/property/map/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/property/defaultvalue/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/property/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/session/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/type/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/type/annotated/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/type/extra/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/type/stringenum/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/format/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/format/transform/property/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/format/transform/object/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/pom/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/petgallery/nodetypes.xml</value>
  		    </values-param>
@@ -68,12 +81,11 @@
           <property name="lifecycle" value="lifecycle"/>
           <property name="methodinvocation" value="methodinvocation"/>
           <property name="nodeattribute" value="nodeattribute"/>
-          <property name="onetomany_h" value="onetomany_h"/>
+          <property name="onetomany_h_multiparent" value="onetomany_h_multiparent"/>
           <property name="onetomany_h_collection" value="onetomany_h_collection"/>
           <property name="onetomany_h_list" value="onetomany_h_list"/>
           <property name="onetomany_h_map" value="onetomany_h_map"/>
           <property name="onetomany_r" value="onetomany_r"/>
-          <property name="onetomany_r_p" value="onetomany_r_p"/>
           <property name="onetoone_h" value="onetoone_h"/>
           <property name="onetoone_e" value="onetoone_e"/>
           <property name="property" value="property"/>

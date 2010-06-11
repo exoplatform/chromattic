@@ -92,9 +92,13 @@ public class ChromatticProcessor extends AbstractProcessor {
     for (Element e : a)
     {
       PackageElement pkgElt = (PackageElement)e;
-      String s = new StringBuilder().append(pkgElt.getQualifiedName()).toString();
+      String packageName = new StringBuilder().append(pkgElt.getQualifiedName()).toString();
       NodeTypeDefs ntDefs = pkgElt.getAnnotation(NodeTypeDefs.class);
-      packageMetaData.put(s, new PackageMetaData(ntDefs.namespacePrefix(), ntDefs.namespaceValue()));
+      packageMetaData.put(packageName, new PackageMetaData(
+        packageName,
+        ntDefs.namespacePrefix(),
+        ntDefs.namespaceValue(),
+        ntDefs.deep()));
     }
 
     Set<Element> elts = new HashSet<Element>();
@@ -130,14 +134,19 @@ public class ChromatticProcessor extends AbstractProcessor {
       ClassTypeInfo cti = (ClassTypeInfo)domain.resolve(typeElt);
 
       //
-      for (String packageName : PackageNameIterator.with(cti.getPackageName()))
-      {
-        PackageMetaData packageMetaData = packageMetaDatas.get(packageName);
-        if (packageMetaData != null) {
-          Set<ClassTypeInfo> set = packageToClassTypes.get(packageName);
-          set.add(cti);
-          break;
+      TreeMap<Integer, PackageMetaData> packageSorter = new TreeMap<Integer, PackageMetaData>();
+      for (PackageMetaData packageMetaData : packageMetaDatas.values()) {
+        int dist = packageMetaData.distance(cti);
+        if (dist >= 0) {
+          packageSorter.put(dist, packageMetaData);
         }
+      }
+
+      // Find the most appropriate package in those which are declared
+      if (packageSorter.size() > 0) {
+        PackageMetaData packageMetaData = packageSorter.values().iterator().next();
+        Set<ClassTypeInfo> set = packageToClassTypes.get(packageMetaData.packageName);
+        set.add(cti);
       }
 
       processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "About to process the type " + cti.getName());
