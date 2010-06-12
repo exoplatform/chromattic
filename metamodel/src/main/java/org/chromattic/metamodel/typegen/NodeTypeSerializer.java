@@ -28,6 +28,20 @@ import java.util.*;
  */
 public abstract class NodeTypeSerializer {
 
+  private static final Map<String, String> DEFAULT_MAPPINGS;
+
+  static {
+    HashMap<String, String> def = new HashMap<String, String>();
+
+    //
+    def.put("nt", "http://www.jcp.org/jcr/nt/1.0");
+    def.put("mix", "http://www.jcp.org/jcr/mix/1.0");
+    def.put("jcr", "http://www.jcp.org/jcr/1.0");
+
+    //
+    DEFAULT_MAPPINGS = Collections.unmodifiableMap(def);
+  }
+
   /** . */
   private final LinkedHashMap<String, NodeType> nodeTypes;
 
@@ -40,8 +54,12 @@ public abstract class NodeTypeSerializer {
     }
 
     //
+    mappings = new HashMap<String, String>(mappings);
+    mappings.putAll(DEFAULT_MAPPINGS);
+
+    //
     this.nodeTypes = new LinkedHashMap<String, NodeType>();
-    this.mappings = new HashMap<String, String>(mappings);
+    this.mappings = mappings;
 
     //
     for (NodeType nodeType : nodeTypes) {
