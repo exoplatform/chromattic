@@ -29,7 +29,7 @@ import java.util.*;
 public abstract class NodeTypeSerializer {
 
   /** . */
-  private final List<NodeType> nodeTypes;
+  private final LinkedHashMap<String, NodeType> nodeTypes;
 
   /** . */
   private final Map<String, String> mappings;
@@ -40,8 +40,13 @@ public abstract class NodeTypeSerializer {
     }
 
     //
-    this.nodeTypes = new ArrayList<NodeType>(nodeTypes);
+    this.nodeTypes = new LinkedHashMap<String, NodeType>();
     this.mappings = new HashMap<String, String>(mappings);
+
+    //
+    for (NodeType nodeType : nodeTypes) {
+      addNodeType(nodeType);
+    }
   }
 
   public NodeTypeSerializer(List<NodeType> nodeTypes) {
@@ -60,7 +65,9 @@ public abstract class NodeTypeSerializer {
     if (nodeType == null) {
       throw new NullPointerException("No node type provided");
     }
-    nodeTypes.add(nodeType);
+    if (!nodeType.getSkip()) {
+      nodeTypes.put(nodeType.getName(), nodeType);
+    }
   }
 
   public void addPrefixMapping(String namespacePrefix, String namespaceURI) {
@@ -81,67 +88,110 @@ public abstract class NodeTypeSerializer {
     startNodeTypes(Collections.unmodifiableMap(mappings));
 
     //
-    for (NodeType nodeType : nodeTypes) {
-      if (!nodeType.getSkip()) {
-        LinkedHashSet<String> superTypeNames = new LinkedHashSet<String>();
+    Set<String> done = new HashSet<String>();
+    Set<String> queued = new HashSet<String>();
 
-        //
-        if (nodeType.declaredSuperTypes.isEmpty()) {
-          superTypeNames.add("nt:base");
-        }
-        for (NodeType superType : nodeType.declaredSuperTypes) {
-          superTypeNames.add(superType.getName());
-        }
-        // Add nt:base and mix:referenceable
-        superTypeNames.add("mix:referenceable");
-
-        //
-        startNodeType(
-          nodeType.mapping.getType().getName(),
-          nodeType.getName(),
-          nodeType.isMixin(),
-          nodeType.isOrderable(),
-          superTypeNames
-        );
-
-        //
-        startProperties();
-
-        //
-        for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions().values()) {
-          property(
-            propertyDefinition.getName(),
-            propertyDefinition.getType(),
-            propertyDefinition.isMultiple(),
-            propertyDefinition.getDefaultValues()
-          );
-        }
-
-        //
-        endProperties();
-
-        //
-        startChildNodes();
-
-        //
-        for (NodeDefinition childNodeDefinition : nodeType.getChildNodeDefinitions().values()) {
-          childNode(
-            childNodeDefinition.getName(),
-            childNodeDefinition.getNodeTypeName(),
-            childNodeDefinition.isMandatory(),
-            childNodeDefinition.isAutocreated());
-        }
-
-        //
-        endChildNodes();
-
-        //
-        endNodeType();
-      }
+    //
+    for (NodeType nodeType : nodeTypes.values()) {
+      write(nodeType, done, queued);
     }
 
     //
     endNodeTypes();
+  }
+
+  public void write(NodeType nodeType, Set<String> done, Set<String> queued) throws Exception {
+    // We are already done
+    if (done.contains(nodeType.getName())) {
+      return;
+    }
+
+    // This means a cycle
+    if (queued.contains(nodeType.getName())) {
+      throw new AssertionError();
+    }
+
+    // Update context : -> queued
+    queued.add(nodeType.getName());
+
+    // Take care of super types as dependencies
+    for (NodeType superType : nodeType.getSuperTypes()) {
+      write(superType, done, queued);
+    }
+
+    // Take care of children as dependencies
+    for (NodeDefinition childDef : nodeType.getChildNodeDefinitions().values()) {
+      NodeType childDefNodeType = nodeTypes.get(childDef.getNodeTypeName());
+      if (childDefNodeType == nodeType) {
+        // Recursive / do nothing
+      } else if (childDefNodeType != null) {
+        write(childDefNodeType, done, queued);
+      }
+    }
+
+    // Now process output
+    write(nodeType);
+
+    // Update context : queued -> done
+    queued.remove(nodeType.getName());
+    done.add(nodeType.getName());
+  }
+
+  private void write(NodeType nodeType) throws Exception {
+    LinkedHashSet<String> superTypeNames = new LinkedHashSet<String>();
+
+    //
+    if (nodeType.declaredSuperTypes.isEmpty()) {
+      superTypeNames.add("nt:base");
+    }
+    for (NodeType superType : nodeType.declaredSuperTypes) {
+      superTypeNames.add(superType.getName());
+    }
+    // Add nt:base and mix:referenceable
+    superTypeNames.add("mix:referenceable");
+
+    //
+    startNodeType(
+      nodeType.mapping.getType().getName(),
+      nodeType.getName(),
+      nodeType.isMixin(),
+      nodeType.isOrderable(),
+      superTypeNames
+    );
+
+    //
+    startProperties();
+
+    //
+    for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions().values()) {
+      property(
+        propertyDefinition.getName(),
+        propertyDefinition.getType(),
+        propertyDefinition.isMultiple(),
+        propertyDefinition.getDefaultValues()
+      );
+    }
+
+    //
+    endProperties();
+
+    //
+    startChildNodes();
+
+    //
+    for (NodeDefinition childNodeDefinition : nodeType.getChildNodeDefinitions().values()) {
+      childNode(
+        childNodeDefinition.getName(),
+        childNodeDefinition.getNodeTypeName(),
+        childNodeDefinition.isMandatory(),
+        childNodeDefinition.isAutocreated());
+    }
+
+    //
+    endChildNodes();
+
+    //
+    endNodeType();
   }
 
   public void startNodeTypes(Map<String, String> mappings) throws Exception {
