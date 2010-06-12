@@ -40,6 +40,25 @@
     </license>
   </licenses>
 
+  <developers>
+    <developer>
+      <id>julien.viet</id>
+      <name>Julien Viet</name>
+      <email>julien.viet@exoplatform.com</email>
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>aheritier</id>
+      <name>Arnaud Heritier</name>
+      <email>arnaud.heritier@exoplatform.com</email>
+      <roles>
+        <role>Committer</role>
+      </roles>
+    </developer>
+  </developers>
+  
   <scm>
     <connection>scm:git:git://github.com/vietj/chromattic.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/vietj/chromattic.git</developerConnection>
@@ -59,7 +78,7 @@
 
   <properties>
     <!-- Repositories URLs -->
-    <chromattic.releases.repo.url>http://repository.exoplatform.org/content/repositories/chromattic-releases/</chromattic.releases.repo.url>
+    <chromattic.releases.repo.url>http://repository.exoplatform.org/service/local/staging/deploy/maven2/</chromattic.releases.repo.url>
     <chromattic.snapshots.repo.url>http://repository.exoplatform.org/content/repositories/chromattic-snapshots/</chromattic.snapshots.repo.url>
   
     <!-- Dependencies versions -->
@@ -304,7 +323,12 @@
           <groupId>org.codehaus.mojo</groupId>		
           <artifactId>findbugs-maven-plugin</artifactId>		
           <version>2.3</version>		
-        </plugin>		
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.1</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
@@ -506,7 +530,27 @@
         </plugins>
       </build>
     </profile>
-    
+
+    <profile>
+      <id>sign-artifacts</id>
+      <build>
+        <plugins>
+          <!-- We want to sign the artifact, the POM, and all attached artifacts -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
 
 </project>
