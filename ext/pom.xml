@@ -24,13 +24,21 @@
   <parent>
     <groupId>org.chromattic</groupId>
     <artifactId>chromattic.parent</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>chromattic.ext</artifactId>
 
   <name>Chromattic Framework Extensions</name>
   <description>Chromattic Framework Extensions</description>
+
+  <repositories>
+    <repository>
+      <id>exo-central</id>
+      <name>exoplatform.org dependencies</name>
+      <url>http://repository.exoplatform.org/content/groups/all/</url>
+    </repository>
+  </repositories>
 
   <dependencies>
 
