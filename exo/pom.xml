@@ -32,14 +32,6 @@
   <name>Chromattic Framework eXo JCR Plugin</name>
   <description>Chromattic Framework eXo JCR Plugin</description>
 
-  <repositories>
-    <repository>
-      <id>exo-central</id>
-      <name>exoplatform.org dependencies</name>
-      <url>http://repository.exoplatform.org/content/groups/all/</url>
-    </repository>
-  </repositories>
-
   <dependencies>
 
     <dependency>
