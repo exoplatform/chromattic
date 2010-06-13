@@ -337,4 +337,56 @@ public class BuilderTestCase extends TestCase {
     assertNotNull(ap.getGetter());
     assertNull(ap.getSetter());
   }
+
+  public void testBeanProperty() throws Exception {
+
+    class A {
+    }
+    class B {
+      public A getA() { return null; }
+    }
+
+    //
+    BeanInfoBuilder builder = new BeanInfoBuilder();
+    ClassTypeInfo a = (ClassTypeInfo) domain.resolve(A.class);
+    ClassTypeInfo b = (ClassTypeInfo) domain.resolve(B.class);
+    Map<ClassTypeInfo, BeanInfo> beans = builder.build(Collections.set(a, b));
+    BeanInfo ai = beans.get(a);
+    BeanInfo bi = beans.get(b);
+
+    //
+    BeanPropertyInfo bp = (BeanPropertyInfo) bi.getProperty("a");
+    assertNotNull(bp);
+    assertEquals(domain.resolve(A.class), bp.getType());
+    assertEquals(domain.resolve(A.class), bp.getClassType());
+    assertSame(ai, bp.getRelatedBean());
+    assertSame(null, bp.getParent());
+    assertNotNull(bp.getGetter());
+    assertEquals(bi.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter()); // Should be SAME and not EQUALS
+    assertNull(bp.getSetter());
+  }
+
+  public void testSelfBeanProperty() throws Exception {
+
+    class A {
+      public A getA() { return null; }
+    }
+
+    //
+    BeanInfoBuilder builder = new BeanInfoBuilder();
+    ClassTypeInfo a = (ClassTypeInfo) domain.resolve(A.class);
+    Map<ClassTypeInfo, BeanInfo> beans = builder.build(Collections.set(a));
+    BeanInfo ai = beans.get(a);
+
+    //
+    BeanPropertyInfo ap = (BeanPropertyInfo) ai.getProperty("a");
+    assertNotNull(ap);
+    assertEquals(domain.resolve(A.class), ap.getType());
+    assertEquals(domain.resolve(A.class), ap.getClassType());
+    assertSame(ai, ap.getRelatedBean());
+    assertSame(null, ap.getParent());
+    assertNotNull(ap.getGetter());
+    assertEquals(ai.classType.getDeclaredMethod(new MethodSignature("getA")), ap.getGetter()); // Should be SAME and not EQUALS
+    assertNull(ap.getSetter());
+  }
 }

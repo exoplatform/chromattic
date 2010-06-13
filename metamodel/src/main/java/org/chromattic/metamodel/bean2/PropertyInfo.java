@@ -27,7 +27,7 @@ import org.reflext.api.TypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyInfo {
+public abstract class PropertyInfo {
 
   /** The bean this property is declared on. */
   private final BeanInfo bean;

@@ -152,61 +152,92 @@ public class BeanInfoBuilder {
      * @param bean the bean to build properties.
      */
     private void buildProperties(BeanInfo bean) {
+
+      class ToBuild {
+        final TypeInfo type;
+        final MethodInfo getter;
+        final MethodInfo setter;
+        ToBuild(TypeInfo type, MethodInfo getter, MethodInfo setter) {
+          this.type = type;
+          this.getter = getter;
+          this.setter = setter;
+        }
+      }
+
       BeanHierarchyVisitorStrategy strategy = new BeanHierarchyVisitorStrategy(bean.classType);
       MethodIntrospector introspector = new MethodIntrospector(strategy, true);
       Map<String, MethodInfo> getterMap = introspector.getGetterMap(bean.classType);
       Map<String, Set<MethodInfo>> setterMap = introspector.getSetterMap(bean.classType);
 
-      Map<String, PropertyInfo> properties = new HashMap<String, PropertyInfo>();
-
+      // Gather all properties on the bean
+      Map<String, ToBuild> toBuilds = new HashMap<String,ToBuild>();
       for (Map.Entry<String, MethodInfo> getterEntry : getterMap.entrySet()) {
         String name = getterEntry.getKey();
         MethodInfo getter = getterEntry.getValue();
         TypeInfo getterTypeInfo = getter.getReturnType();
 
         //
-        PropertyInfo parentProperty = resolveProperty(bean.parent, name);
-
-        //
-        PropertyInfo property = null;
+        ToBuild toBuild = null;
         Set<MethodInfo> setters = setterMap.get(name);
         if (setters != null) {
           for (MethodInfo setter : setters) {
             TypeInfo setterTypeInfo = setter.getParameterTypes().get(0);
             if (getterTypeInfo.equals(setterTypeInfo)) {
-              TypeInfo resolvedTI = bean.classType.resolve(getterTypeInfo);
-              property = new PropertyInfo(bean, parentProperty, name, resolvedTI, getter, setter);
+              toBuild = new ToBuild(getterTypeInfo, getter, setter);
               break;
             }
           }
         }
 
         //
-        if (property == null) {
-          TypeInfo resolvedTI = bean.classType.resolve(getterTypeInfo);
-          property = new PropertyInfo(bean, parentProperty, name, resolvedTI, getter, null);
+        if (toBuild == null) {
+          toBuild = new ToBuild(getterTypeInfo, getter, null);
         }
 
         //
-        if (property != null) {
-          properties.put(name, property);
+        if (toBuild != null) {
+          toBuilds.put(name, toBuild);
         }
       }
 
       //
-      setterMap.keySet().removeAll(properties.keySet());
+      setterMap.keySet().removeAll(toBuilds.keySet());
       for (Map.Entry<String, Set<MethodInfo>> setterEntry : setterMap.entrySet()) {
         String name = setterEntry.getKey();
         for (MethodInfo setter : setterEntry.getValue()) {
           TypeInfo setterTypeInfo = setter.getParameterTypes().get(0);
-          TypeInfo resolvedTI = bean.classType.resolve(setterTypeInfo);
-          PropertyInfo parentProperty = resolveProperty(bean.parent, name);
-          PropertyInfo property = new PropertyInfo(bean, parentProperty, name, resolvedTI, null, setter);
-          if (property != null) {
-            properties.put(name, property);
-            break;
-          }
+          toBuilds.put(name, new ToBuild(setterTypeInfo, null, setter));
         }
+      }
+
+      // Now we have all the info to build each property correctly
+      Map<String, PropertyInfo> properties = new HashMap<String, PropertyInfo>();
+      for (Map.Entry<String, ToBuild> tobuild : toBuilds.entrySet()) {
+        TypeInfo resolvedTI = bean.classType.resolve(tobuild.getValue().type);
+        ClassTypeInfo resolvedClassTI = Utils.resolveToClassType(bean.classType, resolvedTI);
+        PropertyInfo parentProperty = resolveProperty(bean.parent, tobuild.getKey());
+        PropertyInfo property;
+        BeanInfo related = resolve(resolvedClassTI);
+        if (related != null) {
+          property = new BeanPropertyInfo(
+              bean,
+              parentProperty,
+              tobuild.getKey(),
+              resolvedTI,
+              tobuild.getValue().getter,
+              tobuild.getValue().setter,
+              related);
+
+        } else {
+          property = new SimplePropertyInfo(
+              bean,
+              parentProperty,
+              tobuild.getKey(),
+              resolvedTI,
+              tobuild.getValue().getter,
+              tobuild.getValue().setter);
+        }
+        properties.put(property.getName(), property);
       }
 
       // Update properties

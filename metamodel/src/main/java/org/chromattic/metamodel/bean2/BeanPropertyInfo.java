@@ -19,42 +19,33 @@
 
 package org.chromattic.metamodel.bean2;
 
-import org.reflext.api.ClassTypeInfo;
-
-import java.util.Map;
+import org.reflext.api.MethodInfo;
+import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class BeanInfo {
+public class BeanPropertyInfo extends PropertyInfo {
 
   /** . */
-  BeanInfo parent;
+  private BeanInfo relatedBean;
 
-  /** . */
-  final ClassTypeInfo classType;
+  public BeanPropertyInfo(
+      BeanInfo bean,
+      PropertyInfo parent,
+      String name,
+      TypeInfo type,
+      MethodInfo getter,
+      MethodInfo setter,
+      BeanInfo relatedBean) {
+    super(bean, parent, name, type, getter, setter);
 
-  /** . */
-  Map<String, PropertyInfo> properties;
-
-  public BeanInfo(ClassTypeInfo classType) {
-    this.classType = classType;
+    //
+    this.relatedBean = relatedBean;
   }
 
-  public BeanInfo getParent() {
-    return parent;
-  }
-
-  public ClassTypeInfo getClassType() {
-    return classType;
-  }
-
-  public PropertyInfo getProperty(String name) {
-    return properties.get(name);
-  }
-
-  public Map<String, PropertyInfo> getProperties() {
-    return properties;
+  public BeanInfo getRelatedBean() {
+    return relatedBean;
   }
 }
