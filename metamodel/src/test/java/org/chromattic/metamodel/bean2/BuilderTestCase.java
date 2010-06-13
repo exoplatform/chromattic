@@ -37,7 +37,17 @@ import java.util.Map;
 public class BuilderTestCase extends TestCase {
 
   /** . */
-  protected final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
+  protected TypeResolver<Type> domain;
+
+  @Override
+  protected void setUp() throws Exception {
+    domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    domain = null;
+  }
 
   public void testClassInheritance() throws Exception {
 
@@ -85,7 +95,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo ap = ai.getProperty("a");
     assertNotNull(ap);
-    assertEquals(domain.resolve(String.class), ap.getType());
+    assertSame(domain.resolve(String.class), ap.getType());
     assertNull(ap.getParent());
     assertNotNull(ap.getGetter());
     assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), ap.getGetter());
@@ -94,7 +104,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo bp = bi.getProperty("a");
     assertNotNull(bp);
-    assertEquals(domain.resolve(String.class), bp.getType());
+    assertSame(domain.resolve(String.class), bp.getType());
     assertSame(ap, bp.getParent());
     assertNotNull(bp.getGetter());
     assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
@@ -103,7 +113,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo cp = ci.getProperty("a");
     assertNotNull(cp);
-    assertEquals(domain.resolve(String.class), cp.getType());
+    assertSame(domain.resolve(String.class), cp.getType());
     assertSame(ap, cp.getParent());
     assertNotNull(cp.getGetter());
     assertSame(ci.classType.getDeclaredMethod(new MethodSignature("getA")), cp.getGetter());
@@ -134,7 +144,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo ap = ai.getProperty("a");
     assertNotNull(ap);
-    assertEquals(domain.resolve(String.class), ap.getType());
+    assertSame(domain.resolve(String.class), ap.getType());
     assertNull(ap.getParent());
     assertNull(ap.getGetter());
     assertNotNull(ap.getSetter());
@@ -143,7 +153,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo bp = bi.getProperty("a");
     assertNotNull(bp);
-    assertEquals(domain.resolve(String.class), bp.getType());
+    assertSame(domain.resolve(String.class), bp.getType());
     assertSame(ap, bp.getParent());
     assertNull(bp.getGetter());
     assertNotNull(bp.getSetter());
@@ -152,7 +162,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo cp = ci.getProperty("a");
     assertNotNull(cp);
-    assertEquals(domain.resolve(String.class), cp.getType());
+    assertSame(domain.resolve(String.class), cp.getType());
     assertSame(ap, cp.getParent());
     assertNull(cp.getGetter());
     assertNotNull(cp.getSetter());
@@ -185,7 +195,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo ap = ai.getProperty("a");
     assertNotNull(ap);
-    assertEquals(domain.resolve(String.class), ap.getType());
+    assertSame(domain.resolve(String.class), ap.getType());
     assertNull(ap.getParent());
     assertNotNull(ap.getGetter());
     assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), ap.getGetter());
@@ -195,7 +205,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo bp = bi.getProperty("a");
     assertNotNull(bp);
-    assertEquals(domain.resolve(String.class), bp.getType());
+    assertSame(domain.resolve(String.class), bp.getType());
     assertSame(ap, bp.getParent());
     assertNotNull(bp.getGetter());
     assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
@@ -205,7 +215,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo cp = ci.getProperty("a");
     assertNotNull(cp);
-    assertEquals(domain.resolve(String.class), cp.getType());
+    assertSame(domain.resolve(String.class), cp.getType());
     assertSame(ap, cp.getParent());
     assertNotNull(cp.getGetter());
     assertSame(ci.classType.getDeclaredMethod(new MethodSignature("getA")), cp.getGetter());
@@ -236,7 +246,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo bp = bi.getProperty("a");
     assertNotNull(bp);
-    assertEquals(domain.resolve(String.class), bp.getType());
+    assertSame(domain.resolve(String.class), bp.getType());
     assertSame(ap, bp.getParent());
     assertNotNull(bp.getGetter());
     assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
@@ -270,7 +280,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo bp = bi.getProperty("a");
     assertNotNull(bp);
-    assertEquals(domain.resolve(String.class), bp.getType());
+    assertSame(domain.resolve(String.class), bp.getType());
     assertSame(ap, bp.getParent());
     assertNotNull(bp.getGetter());
     assertSame(bi.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
@@ -296,7 +306,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo ap = ai.getProperty("a");
     assertNotNull(ap);
-    assertEquals(domain.resolve(Number.class), ap.getClassType());
+    assertSame(domain.resolve(Number.class), ap.getClassType()); // Should be SAME
     assertNull(ap.getParent());
     assertNotNull(ap.getGetter());
     assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), ap.getGetter());
@@ -305,11 +315,11 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo bp = bi.getProperty("a");
     assertNotNull(bp);
-    assertEquals(domain.resolve(Integer.class), bp.getType());
-    assertEquals(domain.resolve(Integer.class), bp.getClassType());
+    assertSame(domain.resolve(Integer.class), bp.getType());
+    assertSame(domain.resolve(Integer.class), bp.getClassType());
     assertSame(ap, bp.getParent());
     assertNotNull(bp.getGetter());
-    assertEquals(ai.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter()); // Should be SAME and not EQUALS
+    assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter()); 
     assertNull(bp.getSetter());
   }
 
@@ -332,7 +342,7 @@ public class BuilderTestCase extends TestCase {
     //
     PropertyInfo ap = ai.getProperty("a");
     assertNotNull(ap);
-    assertEquals(domain.resolve(String.class), ai.getProperty("a").getType());
+    assertSame(domain.resolve(String.class), ai.getProperty("a").getType());
     assertSame(null, ap.getParent());
     assertNotNull(ap.getGetter());
     assertNull(ap.getSetter());
@@ -357,12 +367,12 @@ public class BuilderTestCase extends TestCase {
     //
     BeanPropertyInfo bp = (BeanPropertyInfo) bi.getProperty("a");
     assertNotNull(bp);
-    assertEquals(domain.resolve(A.class), bp.getType());
-    assertEquals(domain.resolve(A.class), bp.getClassType());
+    assertSame(domain.resolve(A.class), bp.getType());
+    assertSame(domain.resolve(A.class), bp.getClassType());
     assertSame(ai, bp.getRelatedBean());
     assertSame(null, bp.getParent());
     assertNotNull(bp.getGetter());
-    assertEquals(bi.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter()); // Should be SAME and not EQUALS
+    assertSame(bi.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
     assertNull(bp.getSetter());
   }
 
@@ -381,12 +391,54 @@ public class BuilderTestCase extends TestCase {
     //
     BeanPropertyInfo ap = (BeanPropertyInfo) ai.getProperty("a");
     assertNotNull(ap);
-    assertEquals(domain.resolve(A.class), ap.getType());
-    assertEquals(domain.resolve(A.class), ap.getClassType());
+    assertSame(domain.resolve(A.class), ap.getType());
+    assertSame(domain.resolve(A.class), ap.getClassType());
     assertSame(ai, ap.getRelatedBean());
     assertSame(null, ap.getParent());
     assertNotNull(ap.getGetter());
-    assertEquals(ai.classType.getDeclaredMethod(new MethodSignature("getA")), ap.getGetter()); // Should be SAME and not EQUALS
+    assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), ap.getGetter());
     assertNull(ap.getSetter());
+  }
+
+  public void testGenericSelfBeanProperty() throws Exception {
+
+    class A<X> {
+      public X getA() { return null; }
+    }
+
+    class B extends A<B> {
+    }
+
+    //
+    BeanInfoBuilder builder = new BeanInfoBuilder();
+    ClassTypeInfo o = (ClassTypeInfo) domain.resolve(Object.class);
+    ClassTypeInfo a = (ClassTypeInfo) domain.resolve(A.class);
+    ClassTypeInfo b = (ClassTypeInfo) domain.resolve(B.class);
+    Map<ClassTypeInfo, BeanInfo> beans = builder.build(Collections.set(o, a, b));
+    BeanInfo oi = beans.get(o);
+    BeanInfo ai = beans.get(a);
+    BeanInfo bi = beans.get(b);
+
+    //
+    BeanPropertyInfo ap = (BeanPropertyInfo)ai.getProperty("a");
+    assertNotNull(ap);
+    // assertSame(o, ap.getType()); <X>
+    assertSame(o, ap.getClassType());
+    assertSame(oi, ap.getRelatedBean());
+    assertSame(null, ap.getParent());
+    assertNotNull(ap.getGetter());
+    assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), ap.getGetter());
+    assertNull(ap.getSetter());
+
+    //
+    BeanPropertyInfo bp = (BeanPropertyInfo)bi.getProperty("a");
+    assertNotNull(bp);
+    assertSame(domain.resolve(B.class), bp.getType());
+    assertSame(domain.resolve(B.class), bp.getClassType());
+    assertSame(bi, bp.getRelatedBean());
+    assertSame(ap, bp.getParent());
+    assertNotNull(bp.getGetter());
+    assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
+    assertNull(bp.getSetter());
   }
 }
