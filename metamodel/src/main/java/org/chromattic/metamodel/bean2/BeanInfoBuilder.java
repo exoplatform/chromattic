@@ -19,9 +19,7 @@
 
 package org.chromattic.metamodel.bean2;
 
-import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.MethodInfo;
-import org.reflext.api.TypeInfo;
+import org.reflext.api.*;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyVisitor;
 import org.reflext.api.visit.HierarchyVisitorStrategy;
@@ -146,23 +144,23 @@ public class BeanInfoBuilder {
       return property;
     }
 
+    class ToBuild {
+      final TypeInfo type;
+      final MethodInfo getter;
+      final MethodInfo setter;
+      ToBuild(TypeInfo type, MethodInfo getter, MethodInfo setter) {
+        this.type = type;
+        this.getter = getter;
+        this.setter = setter;
+      }
+    }
+
     /**
      * Build properties of a bean.
      *
      * @param bean the bean to build properties.
      */
     private void buildProperties(BeanInfo bean) {
-
-      class ToBuild {
-        final TypeInfo type;
-        final MethodInfo getter;
-        final MethodInfo setter;
-        ToBuild(TypeInfo type, MethodInfo getter, MethodInfo setter) {
-          this.type = type;
-          this.getter = getter;
-          this.setter = setter;
-        }
-      }
 
       BeanHierarchyVisitorStrategy strategy = new BeanHierarchyVisitorStrategy(bean.classType);
       MethodIntrospector introspector = new MethodIntrospector(strategy, true);
@@ -212,36 +210,116 @@ public class BeanInfoBuilder {
 
       // Now we have all the info to build each property correctly
       Map<String, PropertyInfo> properties = new HashMap<String, PropertyInfo>();
-      for (Map.Entry<String, ToBuild> tobuild : toBuilds.entrySet()) {
-        TypeInfo resolvedTI = bean.classType.resolve(tobuild.getValue().type);
-        ClassTypeInfo resolvedClassTI = Utils.resolveToClassType(bean.classType, resolvedTI);
-        PropertyInfo parentProperty = resolveProperty(bean.parent, tobuild.getKey());
-        PropertyInfo property;
-        BeanInfo related = resolve(resolvedClassTI);
-        if (related != null) {
-          property = new BeanPropertyInfo(
-              bean,
-              parentProperty,
-              tobuild.getKey(),
-              resolvedTI,
-              tobuild.getValue().getter,
-              tobuild.getValue().setter,
-              related);
+      for (Map.Entry<String, ToBuild> toBuildEntry : toBuilds.entrySet()) {
 
-        } else {
-          property = new SimplePropertyInfo(
+        // Get parent property if any
+        PropertyInfo parentProperty = resolveProperty(bean.parent, toBuildEntry.getKey());
+
+        //
+        TypeInfo type = toBuildEntry.getValue().type;
+
+        // First resolve as much as we can
+        TypeInfo resolvedType = bean.classType.resolve(type);
+
+        //
+        PropertyInfo property = null;
+
+        // We could not resolve it, get the upper bound
+        if (resolvedType instanceof TypeVariableInfo) {
+          resolvedType = ((TypeVariableInfo)resolvedType).getBounds().get(0);
+          resolvedType = bean.classType.resolve(resolvedType);
+          // is it really enough ? for now it should be OK but we should check
+        }
+
+        // Now let's analyse
+        if (resolvedType instanceof ParameterizedTypeInfo) {
+          ParameterizedTypeInfo parameterizedType = (ParameterizedTypeInfo) resolvedType;
+          TypeInfo rawType = parameterizedType.getRawType();
+          if (rawType instanceof ClassTypeInfo) {
+            ClassTypeInfo rawClassType = (ClassTypeInfo)rawType;
+            String rawClassName = rawClassType.getName();
+            MultiValueKind collectionKind = null;
+            TypeInfo elementType = null;
+            if (rawClassName.equals("java.util.Collection")) {
+              collectionKind = MultiValueKind.COLLECTION;
+              elementType = parameterizedType.getTypeArguments().get(0);
+            } else if (rawClassName.equals("java.util.List")) {
+              collectionKind = MultiValueKind.LIST;
+              elementType = parameterizedType.getTypeArguments().get(0);
+            } else if (rawClassName.equals("java.util.Map")) {
+              TypeInfo keyType = parameterizedType.getTypeArguments().get(0);
+              TypeInfo resolvedKeyType = bean.classType.resolve(keyType);
+              if (resolvedKeyType instanceof ClassTypeInfo && ((ClassTypeInfo)resolvedKeyType).getName().equals("java.lang.String")) {
+                elementType = parameterizedType.getTypeArguments().get(1);
+                collectionKind = MultiValueKind.MAP;
+              }
+            }
+            if (collectionKind != null) {
+              ClassTypeInfo elementClassType = Utils.resolveToClassType(bean.classType, elementType);
+              if (elementClassType != null) {
+                BeanInfo relatedBean = resolve(elementClassType);
+                if (relatedBean != null) {
+                  property = new MultiValuedProperty<BeanValueInfo>(
+                      bean,
+                      parentProperty,
+                      toBuildEntry.getKey(),
+                      type,
+                      toBuildEntry.getValue().getter,
+                      toBuildEntry.getValue().setter,
+                      collectionKind,
+                      new BeanValueInfo(relatedBean));
+                }
+              }
+            }
+          }
+        } else if (resolvedType instanceof ArrayTypeInfo) {
+          TypeInfo componentType = ((ArrayTypeInfo)resolvedType).getComponentType();
+          if (componentType instanceof SimpleTypeInfo) {
+            SimpleTypeInfo componentSimpleType = (SimpleTypeInfo)componentType;
+            switch (componentSimpleType.getLiteralType()) {
+              case BOOLEAN:
+              case DOUBLE:
+              case FLOAT:
+              case LONG:
+              case INT:
+
+            }
+            throw new UnsupportedOperationException();
+          }
+        } else if (resolvedType instanceof ClassTypeInfo) {
+          BeanInfo related = resolve((ClassTypeInfo)resolvedType);
+          if (related != null) {
+            property = new SingleValuedProperty<BeanValueInfo>(
+                bean,
+                parentProperty,
+                toBuildEntry.getKey(),
+                type,
+                toBuildEntry.getValue().getter,
+                toBuildEntry.getValue().setter,
+                new BeanValueInfo(related));
+          }
+        }
+
+        // Otherwise consider everything as a single valued simple value
+        if (property == null) {
+          property = new SingleValuedProperty<SimpleValueInfo>(
               bean,
               parentProperty,
-              tobuild.getKey(),
-              resolvedTI,
-              tobuild.getValue().getter,
-              tobuild.getValue().setter);
+              toBuildEntry.getKey(),
+              type,
+              toBuildEntry.getValue().getter,
+              toBuildEntry.getValue().setter,
+              new SimpleValueInfo());
         }
+
+        //
         properties.put(property.getName(), property);
       }
 
       // Update properties
       bean.properties = Collections.unmodifiableMap(properties);
     }
+
+
   }
 }

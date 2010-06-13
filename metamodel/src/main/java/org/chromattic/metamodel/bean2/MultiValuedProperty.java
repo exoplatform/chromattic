@@ -26,9 +26,19 @@ import org.reflext.api.TypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimplePropertyInfo extends PropertyInfo {
+public class MultiValuedProperty<V extends ValueInfo> extends PropertyInfo<V> {
 
-  public SimplePropertyInfo(BeanInfo bean, PropertyInfo parent, String name, TypeInfo type, MethodInfo getter, MethodInfo setter) {
-    super(bean, parent, name, type, getter, setter);
+  /** . */
+  private final MultiValueKind kind;
+
+  public MultiValuedProperty(BeanInfo bean, PropertyInfo parent, String name, TypeInfo type, MethodInfo getter, MethodInfo setter, MultiValueKind kind, V value) {
+    super(bean, parent, name, type, getter, setter, value);
+
+    //
+    this.kind = kind;
+  }
+
+  public MultiValueKind getKind() {
+    return kind;
   }
 }

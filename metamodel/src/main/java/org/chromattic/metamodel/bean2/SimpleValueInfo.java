@@ -19,33 +19,9 @@
 
 package org.chromattic.metamodel.bean2;
 
-import org.reflext.api.MethodInfo;
-import org.reflext.api.TypeInfo;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class BeanPropertyInfo extends PropertyInfo {
-
-  /** . */
-  private BeanInfo relatedBean;
-
-  public BeanPropertyInfo(
-      BeanInfo bean,
-      PropertyInfo parent,
-      String name,
-      TypeInfo type,
-      MethodInfo getter,
-      MethodInfo setter,
-      BeanInfo relatedBean) {
-    super(bean, parent, name, type, getter, setter);
-
-    //
-    this.relatedBean = relatedBean;
-  }
-
-  public BeanInfo getRelatedBean() {
-    return relatedBean;
-  }
+public class SimpleValueInfo extends ValueInfo {
 }

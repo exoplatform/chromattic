@@ -27,7 +27,7 @@ import org.reflext.api.TypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyInfo {
+public abstract class PropertyInfo<V extends ValueInfo> {
 
   /** The bean this property is declared on. */
   private final BeanInfo bean;
@@ -50,7 +50,17 @@ public abstract class PropertyInfo {
   /** The the most adapted setter. */
   private final MethodInfo setter;
 
-  PropertyInfo(BeanInfo bean, PropertyInfo parent, String name, TypeInfo type, MethodInfo getter, MethodInfo setter) {
+  /** . */
+  private final V value;
+
+  PropertyInfo(
+      BeanInfo bean,
+      PropertyInfo parent,
+      String name,
+      TypeInfo type,
+      MethodInfo getter,
+      MethodInfo setter,
+      V value) {
     this.bean = bean;
     this.parent = parent;
     this.name = name;
@@ -58,6 +68,11 @@ public abstract class PropertyInfo {
     this.classType = Utils.resolveToClassType(bean.classType, type); // Need to check that more in depth
     this.getter = getter;
     this.setter = setter;
+    this.value = value;
+  }
+
+  public V getValue() {
+    return value;
   }
 
   public BeanInfo getBean() {
