@@ -31,8 +31,8 @@ public class MultiValuedProperty<V extends ValueInfo> extends PropertyInfo<V> {
   /** . */
   private final MultiValueKind kind;
 
-  public MultiValuedProperty(BeanInfo bean, PropertyInfo parent, String name, TypeInfo type, MethodInfo getter, MethodInfo setter, MultiValueKind kind, V value) {
-    super(bean, parent, name, type, getter, setter, value);
+  public MultiValuedProperty(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, MultiValueKind kind, V value) {
+    super(bean, parent, name, getter, setter, value);
 
     //
     this.kind = kind;

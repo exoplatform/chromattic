@@ -38,12 +38,6 @@ public abstract class PropertyInfo<V extends ValueInfo> {
   /** The property name. */
   private final String name;
 
-  /** The property type. */
-  private TypeInfo type;
-
-  /** The property class type. */
-  private ClassTypeInfo classType;
-
   /** The the most adapter getter. */
   private final MethodInfo getter;
 
@@ -57,15 +51,12 @@ public abstract class PropertyInfo<V extends ValueInfo> {
       BeanInfo bean,
       PropertyInfo parent,
       String name,
-      TypeInfo type,
       MethodInfo getter,
       MethodInfo setter,
       V value) {
     this.bean = bean;
     this.parent = parent;
     this.name = name;
-    this.type = type;
-    this.classType = Utils.resolveToClassType(bean.classType, type); // Need to check that more in depth
     this.getter = getter;
     this.setter = setter;
     this.value = value;
@@ -85,14 +76,6 @@ public abstract class PropertyInfo<V extends ValueInfo> {
 
   public String getName() {
     return name;
-  }
-
-  public TypeInfo getType() {
-    return type;
-  }
-
-  public ClassTypeInfo getClassType() {
-    return classType;
   }
 
   public MethodInfo getGetter() {

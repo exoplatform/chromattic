@@ -19,6 +19,9 @@
 
 package org.chromattic.metamodel.bean2;
 
+import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -28,7 +31,8 @@ public class BeanValueInfo extends ValueInfo {
   /** . */
   private final BeanInfo bean;
 
-  public BeanValueInfo(BeanInfo bean) {
+  public BeanValueInfo(TypeInfo type, ClassTypeInfo classType, BeanInfo bean) {
+    super(type, classType);
     this.bean = bean;
   }
 

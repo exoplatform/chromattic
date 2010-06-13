@@ -19,9 +19,16 @@
 
 package org.chromattic.metamodel.bean2;
 
+import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class SimpleValueInfo extends ValueInfo {
+
+  public SimpleValueInfo(TypeInfo type, ClassTypeInfo classType) {
+    super(type, classType);
+  }
 }

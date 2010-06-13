@@ -28,7 +28,7 @@ import org.reflext.api.TypeInfo;
  */
 public class SingleValuedProperty<V extends ValueInfo> extends PropertyInfo<V> {
 
-  public SingleValuedProperty(BeanInfo bean, PropertyInfo parent, String name, TypeInfo type, MethodInfo getter, MethodInfo setter, V value) {
-    super(bean, parent, name, type, getter, setter, value);
+  public SingleValuedProperty(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, V value) {
+    super(bean, parent, name, getter, setter, value);
   }
 }

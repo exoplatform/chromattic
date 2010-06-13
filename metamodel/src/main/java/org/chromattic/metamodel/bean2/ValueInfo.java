@@ -19,9 +19,31 @@
 
 package org.chromattic.metamodel.bean2;
 
+import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public abstract class ValueInfo {
+
+  /** The property type. */
+  private TypeInfo type;
+
+  /** The property class type. */
+  private ClassTypeInfo classType;
+
+  protected ValueInfo(TypeInfo type, ClassTypeInfo classType) {
+    this.type = type;
+    this.classType = classType;
+  }
+
+  public TypeInfo getType() {
+    return type;
+  }
+
+  public ClassTypeInfo getClassType() {
+    return classType;
+  }
 }

@@ -263,11 +263,10 @@ public class BeanInfoBuilder {
                       bean,
                       parentProperty,
                       toBuildEntry.getKey(),
-                      type,
                       toBuildEntry.getValue().getter,
                       toBuildEntry.getValue().setter,
                       collectionKind,
-                      new BeanValueInfo(relatedBean));
+                      new BeanValueInfo(type, Utils.resolveToClassType(bean.classType, type), relatedBean));
                 }
               }
             }
@@ -293,10 +292,9 @@ public class BeanInfoBuilder {
                 bean,
                 parentProperty,
                 toBuildEntry.getKey(),
-                type,
                 toBuildEntry.getValue().getter,
                 toBuildEntry.getValue().setter,
-                new BeanValueInfo(related));
+                new BeanValueInfo(type, Utils.resolveToClassType(bean.classType, type), related));
           }
         }
 
@@ -306,10 +304,9 @@ public class BeanInfoBuilder {
               bean,
               parentProperty,
               toBuildEntry.getKey(),
-              type,
               toBuildEntry.getValue().getter,
               toBuildEntry.getValue().setter,
-              new SimpleValueInfo());
+              new SimpleValueInfo(type, Utils.resolveToClassType(bean.classType, type)));
         }
 
         //
