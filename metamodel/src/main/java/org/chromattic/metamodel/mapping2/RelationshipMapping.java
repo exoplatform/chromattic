@@ -19,27 +19,39 @@
 
 package org.chromattic.metamodel.mapping2;
 
+import org.chromattic.metamodel.bean2.BeanInfo;
+import org.chromattic.metamodel.bean2.BeanValueInfo;
 import org.chromattic.metamodel.bean2.PropertyInfo;
-import org.chromattic.metamodel.bean2.SimpleValueInfo;
-import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimplePropertyMapping<P extends PropertyInfo<SimpleValueInfo>> extends PropertyMapping<P, SimpleValueInfo> {
+public class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>> extends PropertyMapping<P, BeanValueInfo> {
+
+
+  /** The related property if any. */
+  RelationshipMapping related;
 
   /** . */
-  final PropertyDefinitionMapping propertyDefinition;
+  private final Relationship<P> relationship;
 
-  public SimplePropertyMapping(P property, PropertyDefinitionMapping propertyDefinition) {
+  public RelationshipMapping(P property, Relationship<P> relationship) {
     super(property);
 
     //
-    this.propertyDefinition = propertyDefinition;
+    this.relationship = relationship;
   }
 
-  public PropertyDefinitionMapping getPropertyDefinition() {
-    return propertyDefinition;
+  public Relationship<P> getRelationship() {
+    return relationship;
+  }
+
+  public BeanInfo getRelatedBean() {
+    return property.getValue().getBean(); 
+  }
+
+  public RelationshipMapping getRelatedMapping() {
+    return related;
   }
 }

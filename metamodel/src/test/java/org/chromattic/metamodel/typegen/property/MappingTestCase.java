@@ -22,7 +22,7 @@ package org.chromattic.metamodel.typegen.property;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping2.BeanMapping;
-import org.chromattic.metamodel.mapping2.SimplePropertyMapping;
+import org.chromattic.metamodel.mapping2.ValueMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
 import java.util.Arrays;
@@ -38,7 +38,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
   public void testA() throws Exception {
     Map<Class<?>, BeanMapping> mappings = assertValid(A.class);
     BeanMapping mapping = mappings.get(A.class);
-    SimplePropertyMapping<?> stringMapping = (SimplePropertyMapping<?>) mapping.getPropertyMapping("string");
+    ValueMapping<?> stringMapping = (ValueMapping<?>) mapping.getPropertyMapping("string");
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
     assertEquals(null, propertyDefinition.getDefaultValue());
@@ -49,7 +49,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
   public void testB() throws Exception {
     Map<Class<?>, BeanMapping> mappings = assertValid(B.class);
     BeanMapping mapping = mappings.get(B.class);
-    SimplePropertyMapping<?> stringMapping = (SimplePropertyMapping<?>) mapping.getPropertyMapping("string");
+    ValueMapping<?> stringMapping = (ValueMapping<?>) mapping.getPropertyMapping("string");
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
     assertEquals(Arrays.asList("foo"), propertyDefinition.getDefaultValue());

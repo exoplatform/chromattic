@@ -76,17 +76,17 @@ public class ApplicationMappingBuilder {
     private void resolve() {
       for (BeanMapping beanMapping : beanMappings.values()) {
         for (PropertyMapping propertyMapping : beanMapping.getProperties().values()) {
-          if (propertyMapping instanceof RelationshipPropertyMapping<?>) {
-            RelationshipPropertyMapping<?> relationshipMapping = (RelationshipPropertyMapping<?>)propertyMapping;
+          if (propertyMapping instanceof RelationshipMapping<?>) {
+            RelationshipMapping<?> relationshipMapping = (RelationshipMapping<?>)propertyMapping;
             BeanInfo relatedBean = relationshipMapping.getRelatedBean();
             BeanMapping relatedBeanMapping = beanMappings.get(relatedBean);
             Relationship relationship = relationshipMapping.getRelationship();
             if (relationship instanceof Relationship.OneToOne.Hierarchic) {
               Relationship.OneToOne.Hierarchic oneToOneHierarchicRelationship = (Relationship.OneToOne.Hierarchic)relationship;
               for (PropertyMapping relatedBeanPropertyMapping : relatedBeanMapping.getProperties().values()) {
-                if (relatedBeanPropertyMapping instanceof RelationshipPropertyMapping) {
-                  RelationshipPropertyMapping<?> relatedBeanRelationshipMapping = (RelationshipPropertyMapping<?>)relatedBeanPropertyMapping;
-                  Relationship relatedBeanRelationship = ((RelationshipPropertyMapping) relatedBeanPropertyMapping).getRelationship();
+                if (relatedBeanPropertyMapping instanceof RelationshipMapping) {
+                  RelationshipMapping<?> relatedBeanRelationshipMapping = (RelationshipMapping<?>)relatedBeanPropertyMapping;
+                  Relationship relatedBeanRelationship = relatedBeanRelationshipMapping.getRelationship();
                   if (relatedBeanRelationship instanceof Relationship.OneToOne.Hierarchic) {
                     Relationship.OneToOne.Hierarchic relatedBeanOneToOneHierarchicRelationship = (Relationship.OneToOne.Hierarchic)relatedBeanRelationship;
                     if (relatedBeanOneToOneHierarchicRelationship.getMappedBy().equals(oneToOneHierarchicRelationship.getMappedBy())) {
@@ -293,50 +293,50 @@ public class ApplicationMappingBuilder {
 
       //
       PropertyMapping<P, SimpleValueInfo> mapping;
-      mapping = new SimplePropertyMapping<P>(property, propertyDefinition);
+      mapping = new ValueMapping<P>(property, propertyDefinition);
       return mapping;
     }
 
-    private RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>> createReferenceOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
-      RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Reference());
+    private RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> createReferenceOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
+      RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
+      mapping = new RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Reference());
       return mapping;
     }
 
-    private RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
-      RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Hierarchic());
+    private RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
+      RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
+      mapping = new RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Hierarchic());
       return mapping;
     }
 
-    private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createReferenceManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
-      RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Reference());
+    private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createReferenceManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+      RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
+      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Reference());
       return mapping;
     }
 
-    private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
-      RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Hierarchic());
+    private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+      RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
+      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Hierarchic());
       return mapping;
     }
 
-    private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createEmbeddedOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
-      RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToOne.Embedded());
+    private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createEmbeddedOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+      RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
+      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToOne.Embedded());
       return mapping;
     }
 
-    private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToOne(
+    private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToOne(
         SingleValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new UnsupportedOperationException();
       }
       boolean owner = property.getAnnotation(Owner.class) != null;
-      RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
+      RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
       Relationship.OneToOne.Hierarchic relationship = new Relationship.OneToOne.Hierarchic(owner, mappedBy.value());
-      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, relationship);
+      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, relationship);
       return mapping;
     }
   }
