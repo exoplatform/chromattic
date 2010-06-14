@@ -46,6 +46,25 @@ public class Relationship<P extends PropertyInfo<BeanValueInfo>> {
 
   public static abstract class OneToOne extends Relationship<SingleValuedPropertyInfo<BeanValueInfo>> {
     public static class Hierarchic extends OneToOne {
+
+      /** Owner / not owner. */
+      private final boolean owner;
+
+      /** Mapped by value. */
+      private final String mappedBy;
+
+      public Hierarchic(boolean owner, String mappedBy) {
+        this.owner = owner;
+        this.mappedBy = mappedBy;
+      }
+
+      public boolean isOwner() {
+        return owner;
+      }
+
+      public String getMappedBy() {
+        return mappedBy;
+      }
     }
     public static class Embedded extends OneToOne {
     }

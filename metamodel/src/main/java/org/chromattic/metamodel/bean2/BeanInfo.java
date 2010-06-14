@@ -57,4 +57,9 @@ public class BeanInfo {
   public Map<String, PropertyInfo> getProperties() {
     return properties;
   }
+
+  @Override
+  public String toString() {
+    return "BeanInfo[name=" + classType.getName() + "]";
+  }
 }

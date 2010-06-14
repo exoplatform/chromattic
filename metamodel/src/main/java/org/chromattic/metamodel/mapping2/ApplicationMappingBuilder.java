@@ -276,9 +276,16 @@ public class ApplicationMappingBuilder {
       return mapping;
     }
 
-    private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToOne(
+        SingleValuedPropertyInfo<BeanValueInfo> property) {
+      MappedBy mappedBy = property.getAnnotation(MappedBy.class);
+      if (mappedBy == null) {
+        throw new UnsupportedOperationException();
+      }
+      boolean owner = property.getAnnotation(Owner.class) != null;
       RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToOne.Hierarchic());
+      Relationship.OneToOne.Hierarchic relationship = new Relationship.OneToOne.Hierarchic(owner, mappedBy.value());
+      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, relationship);
       return mapping;
     }
   }

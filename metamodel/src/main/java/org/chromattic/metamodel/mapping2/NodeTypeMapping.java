@@ -42,6 +42,10 @@ public class NodeTypeMapping {
     this.bean = bean;
   }
 
+  public BeanInfo getBean() {
+    return bean;
+  }
+
   public Map<String, PropertyMapping<?, ?>> getProperties() {
     return properties;
   }
