@@ -27,16 +27,16 @@ import org.chromattic.api.annotations.*;
  * @version $Revision$
  */
 @PrimaryType(name = "1")
-public abstract class D1 {
+public abstract class E1 {
 
   @MappedBy("child1")
   @Owner
   @OneToOne(options = AttributeOption.MANDATORY)
-  public abstract D2 getChild1();
+  public abstract E2 getChild1();
 
   @MappedBy("child2")
   @Owner
   @OneToOne(options = AttributeOption.AUTOCREATED)
-  public abstract D2 getChild2();
+  public abstract E2 getChild2();
 
 }

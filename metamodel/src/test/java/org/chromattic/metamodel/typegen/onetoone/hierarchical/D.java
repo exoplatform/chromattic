@@ -19,12 +19,22 @@
 
 package org.chromattic.metamodel.typegen.onetoone.hierarchical;
 
-import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "2")
-public abstract class D2 {
+@PrimaryType(name = "1")
+public abstract class D {
+
+  @MappedBy("child")
+  @Owner
+  @OneToOne
+  public abstract D getChild();
+
+  @MappedBy("child")
+  @OneToOne
+  public abstract D getParent();
+
 }
