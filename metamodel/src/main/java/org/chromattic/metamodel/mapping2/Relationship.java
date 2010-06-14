@@ -17,14 +17,37 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2.relationship;
+package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.metamodel.bean2.BeanValueInfo;
+import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean2.PropertyInfo;
+import org.chromattic.metamodel.bean2.SingleValuedPropertyInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class Relationship<P extends PropertyInfo<BeanValueInfo>> {
+
+  public static abstract class ManyToOne extends Relationship<SingleValuedPropertyInfo<BeanValueInfo>> {
+    public static class Hierarchic extends ManyToOne {
+    }
+    public static class Reference extends ManyToOne {
+    }
+  }
+
+  public static abstract class OneToMany extends Relationship<MultiValuedPropertyInfo<BeanValueInfo>> {
+    public static class Hierarchic extends OneToMany {
+    }
+    public static class Reference extends OneToMany {
+    }
+  }
+
+  public static abstract class OneToOne extends Relationship<SingleValuedPropertyInfo<BeanValueInfo>> {
+    public static class Hierarchic extends OneToOne {
+    }
+    public static class Embedded extends OneToOne {
+    }
+  }
 }

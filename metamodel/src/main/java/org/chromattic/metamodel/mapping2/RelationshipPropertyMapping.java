@@ -21,7 +21,6 @@ package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.metamodel.bean2.BeanValueInfo;
 import org.chromattic.metamodel.bean2.PropertyInfo;
-import org.chromattic.metamodel.mapping2.relationship.Relationship;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

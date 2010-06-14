@@ -24,7 +24,6 @@ import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.metamodel.bean2.*;
-import org.chromattic.metamodel.mapping2.relationship.*;
 import org.reflext.api.ClassTypeInfo;
 
 import java.lang.annotation.Annotation;
@@ -216,37 +215,37 @@ public class ApplicationMappingBuilder {
 
     private RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>> createReferenceOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new ReferenceOneToMany());
+      mapping = new RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Reference());
       return mapping;
     }
 
     private RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new HierarchicOneToMany());
+      mapping = new RelationshipPropertyMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Hierarchic());
       return mapping;
     }
 
     private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createReferenceManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new ReferenceManyToOne());
+      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Reference());
       return mapping;
     }
 
     private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new HierarchicManyToOne());
+      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Hierarchic());
       return mapping;
     }
 
     private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createEmbeddedOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new EmbeddedOneToOne());
+      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToOne.Embedded());
       return mapping;
     }
 
     private RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new HierarchicOneToOne());
+      mapping = new RelationshipPropertyMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToOne.Hierarchic());
       return mapping;
     }
   }
