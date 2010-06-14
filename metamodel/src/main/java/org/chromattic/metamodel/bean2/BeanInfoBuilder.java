@@ -68,9 +68,6 @@ public class BeanInfoBuilder {
     }
 
     void build() {
-      if (classTypes.isEmpty()) {
-        return;
-      }
       while (true) {
         Iterator<ClassTypeInfo> iterator = classTypes.iterator();
         if (iterator.hasNext()) {
