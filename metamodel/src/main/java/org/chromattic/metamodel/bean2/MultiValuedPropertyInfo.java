@@ -26,12 +26,12 @@ import org.reflext.api.TypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MultiValuedProperty<V extends ValueInfo> extends PropertyInfo<V> {
+public class MultiValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo<V> {
 
   /** . */
   private final MultiValueKind kind;
 
-  public MultiValuedProperty(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, MultiValueKind kind, V value) {
+  public MultiValuedPropertyInfo(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, MultiValueKind kind, V value) {
     super(bean, parent, name, getter, setter, value);
 
     //

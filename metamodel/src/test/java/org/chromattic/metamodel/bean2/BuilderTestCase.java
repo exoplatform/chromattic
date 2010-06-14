@@ -28,6 +28,7 @@ import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -407,7 +408,6 @@ public class BuilderTestCase extends TestCase {
     class A<X> {
       public X getA() { return null; }
     }
-
     class B extends A<B> {
     }
 
@@ -444,5 +444,71 @@ public class BuilderTestCase extends TestCase {
     assertNotNull(bp.getGetter());
     assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
     assertNull(bp.getSetter());
+  }
+
+  public void testCollectionBeanProperty() throws Exception {
+
+    class A {
+    }
+    class B extends A {
+      public Collection<A> getA() { return null; }
+    }
+
+    //
+    BeanInfoBuilder builder = new BeanInfoBuilder();
+    ClassTypeInfo a = (ClassTypeInfo)domain.resolve(A.class);
+    ClassTypeInfo b = (ClassTypeInfo)domain.resolve(B.class);
+    Map<ClassTypeInfo, BeanInfo> beans = builder.build(Collections.set(a, b));
+    BeanInfo ai = beans.get(a);
+    BeanInfo bi = beans.get(b);
+
+    //
+    MultiValuedPropertyInfo bp = (MultiValuedPropertyInfo)bi.getProperty("a");
+    assertNotNull(bp);
+    assertEquals(MultiValueKind.COLLECTION, bp.getKind());
+    // assertSame(o, ap.getType()); <X>
+//    assertSame(o, ap.getValue().getClassType());
+    assertTrue(bp.getValue() instanceof BeanValueInfo);
+    assertEquals(ai, ((BeanValueInfo)bp.getValue()).getBean());
+    assertSame(null, bp.getParent());
+    assertNotNull(bp.getGetter());
+    assertSame(bi.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
+    assertNull(bp.getSetter());
+  }
+
+  public void testVariableResolveToBeanCollectionProperty() throws Exception {
+
+    class A {
+    }
+    class B<X> {
+      public Collection<X> getA() { return null; }
+    }
+    class C extends B<A> {
+    }
+
+    //
+    BeanInfoBuilder builder = new BeanInfoBuilder();
+    ClassTypeInfo o = (ClassTypeInfo)domain.resolve(Object.class);
+    ClassTypeInfo a = (ClassTypeInfo)domain.resolve(A.class);
+    ClassTypeInfo b = (ClassTypeInfo)domain.resolve(B.class);
+    ClassTypeInfo c = (ClassTypeInfo)domain.resolve(C.class);
+    Map<ClassTypeInfo, BeanInfo> beans = builder.build(Collections.set(o, a, b, c));
+    BeanInfo oi = beans.get(o);
+    BeanInfo ai = beans.get(a);
+    BeanInfo bi = beans.get(b);
+    BeanInfo ci = beans.get(c);
+
+    //
+    MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ci.getProperty("a");
+    assertNotNull(cp);
+    assertEquals(MultiValueKind.COLLECTION, cp.getKind());
+    // assertSame(o, ap.getType()); <X>
+//    assertSame(o, ap.getValue().getClassType());
+    assertTrue(cp.getValue() instanceof BeanValueInfo);
+    assertEquals(ai, ((BeanValueInfo)cp.getValue()).getBean());
+//    assertSame(null, cp.getParent());
+//    assertNotNull(bp.getGetter());
+//    assertSame(bi.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
+//    assertNull(bp.getSetter());
   }
 }

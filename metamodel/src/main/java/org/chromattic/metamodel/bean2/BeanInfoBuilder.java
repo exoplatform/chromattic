@@ -259,7 +259,7 @@ public class BeanInfoBuilder {
               if (elementClassType != null) {
                 BeanInfo relatedBean = resolve(elementClassType);
                 if (relatedBean != null) {
-                  property = new MultiValuedProperty<BeanValueInfo>(
+                  property = new MultiValuedPropertyInfo<BeanValueInfo>(
                       bean,
                       parentProperty,
                       toBuildEntry.getKey(),
@@ -288,7 +288,7 @@ public class BeanInfoBuilder {
         } else if (resolvedType instanceof ClassTypeInfo) {
           BeanInfo related = resolve((ClassTypeInfo)resolvedType);
           if (related != null) {
-            property = new SingleValuedProperty<BeanValueInfo>(
+            property = new SingleValuedPropertyInfo<BeanValueInfo>(
                 bean,
                 parentProperty,
                 toBuildEntry.getKey(),
@@ -300,7 +300,7 @@ public class BeanInfoBuilder {
 
         // Otherwise consider everything as a single valued simple value
         if (property == null) {
-          property = new SingleValuedProperty<SimpleValueInfo>(
+          property = new SingleValuedPropertyInfo<SimpleValueInfo>(
               bean,
               parentProperty,
               toBuildEntry.getKey(),
