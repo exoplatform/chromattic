@@ -38,9 +38,9 @@ public class ApplicationMappingBuilder {
 
 
 
-  public ApplicationMapping build(Set<ClassTypeInfo> classTypes) {
+  public Map<ClassTypeInfo, NodeTypeMapping> build(Set<ClassTypeInfo> classTypes) {
 
-    ApplicationMapping app = new ApplicationMapping();
+//    ApplicationMapping app = new ApplicationMapping();
 
     //
     Collection<BeanInfo> beans = new BeanInfoBuilder().build(classTypes).values();
@@ -49,10 +49,7 @@ public class ApplicationMappingBuilder {
     Context ctx = new Context(new SimpleTypeResolver(), new HashSet<BeanInfo>(beans));
 
     //
-    ctx.build();
-
-    //
-    return app;
+    return ctx.build();
   }
 
   private class Context {
@@ -64,35 +61,39 @@ public class ApplicationMappingBuilder {
     final Set<BeanInfo> beans;
 
     /** . */
-    final Map<BeanInfo, NodeTypeMapping> mappings;
+    final Map<BeanInfo, NodeTypeMapping> beanMappings;
 
     private Context(SimpleTypeResolver typeResolver, Set<BeanInfo> beans) {
       this.typeResolver = typeResolver;
       this.beans = beans;
-      this.mappings = new HashMap<BeanInfo, NodeTypeMapping>();
+      this.beanMappings = new HashMap<BeanInfo, NodeTypeMapping>();
     }
 
-    public void build() {
+    public Map<ClassTypeInfo, NodeTypeMapping> build() {
       while (true) {
         Iterator<BeanInfo> iterator = beans.iterator();
         if (iterator.hasNext()) {
           BeanInfo bean = iterator.next();
           resolve(bean);
         } else {
-          break;
+          Map<ClassTypeInfo, NodeTypeMapping> classTypeMappings = new HashMap<ClassTypeInfo, NodeTypeMapping>();
+          for (Map.Entry<BeanInfo, NodeTypeMapping> beanMapping : beanMappings.entrySet()) {
+            classTypeMappings.put(beanMapping.getKey().getClassType(), beanMapping.getValue());
+          }
+          return classTypeMappings;
         }
       }
     }
 
     private NodeTypeMapping resolve(BeanInfo bean) {
-      NodeTypeMapping mapping = mappings.get(bean);
+      NodeTypeMapping mapping = beanMappings.get(bean);
       if (mapping == null) {
         if (beans.remove(bean)) {
           mapping = new NodeTypeMapping(bean);
-          mappings.put(bean, mapping);
+          beanMappings.put(bean, mapping);
           build(mapping);
         } else {
-          throw new AssertionError();
+          // It does not resolve
         }
       }
       return mapping;
@@ -102,8 +103,10 @@ public class ApplicationMappingBuilder {
 
       BeanInfo bean = beanMapping.bean;
 
-      // First build the parent mapping
-      beanMapping.parent = resolve(bean.getParent());
+      // First build the parent mapping if any
+      if (bean.getParent() != null) {
+        beanMapping.parent = resolve(bean.getParent());
+      }
 
       //
       Map<String, PropertyMapping<?, ?>> properties = new HashMap<String, PropertyMapping<?, ?>>();
@@ -205,7 +208,7 @@ public class ApplicationMappingBuilder {
       }
 
       //
-      beanMapping.properties = properties;
+      beanMapping.properties = Collections.unmodifiableMap(properties);
     }
 
     private <P extends PropertyInfo<SimpleValueInfo>> PropertyMapping<P, SimpleValueInfo> createProperty(

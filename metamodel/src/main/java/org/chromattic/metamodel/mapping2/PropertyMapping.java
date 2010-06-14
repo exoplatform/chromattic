@@ -34,4 +34,16 @@ public abstract class PropertyMapping<P extends PropertyInfo<V>, V extends Value
   public PropertyMapping(P property) {
     this.property = property;
   }
+
+  public String getName() {
+    return property.getName();
+  }
+
+  public P getProperty() {
+    return property;
+  }
+
+  public V getValue() {
+    return property.getValue();
+  }
 }

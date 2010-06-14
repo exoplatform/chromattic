@@ -38,4 +38,8 @@ public class SimplePropertyMapping<P extends PropertyInfo<SimpleValueInfo>> exte
     //
     this.propertyDefinition = propertyDefinition;
   }
+
+  public PropertyDefinitionMapping getPropertyDefinition() {
+    return propertyDefinition;
+  }
 }
