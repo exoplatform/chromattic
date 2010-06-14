@@ -48,11 +48,8 @@ public class ApplicationMappingBuilder {
     //
     Map<BeanInfo, BeanMapping> beanMappings = ctx.build();
 
-    //
-    RelationshipResolver resolver = new RelationshipResolver(beanMappings);
-
-    //
-    resolver.resolve();
+    // Resolve one to one hierarchic relationships
+    new OneToOneHierarchicRelationshipResolver(beanMappings).resolve();
 
     //
     Map<ClassTypeInfo, BeanMapping> classTypeMappings = new HashMap<ClassTypeInfo, BeanMapping>();
@@ -64,16 +61,24 @@ public class ApplicationMappingBuilder {
     return classTypeMappings;
   }
 
-  private class RelationshipResolver {
+  private static abstract class RelationshipResolver<F extends Relationship, T extends Relationship> {
+
+    /** . */
+    final Class<F> fromClass;
+
+    /** . */
+    final Class<T> toClass;
 
     /** . */
     Map<BeanInfo, BeanMapping> beanMappings;
 
-    private RelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
+    protected RelationshipResolver(Class<F> fromClass, Class<T> toClass, Map<BeanInfo, BeanMapping> beanMappings) {
+      this.fromClass = fromClass;
+      this.toClass = toClass;
       this.beanMappings = beanMappings;
     }
 
-    private void resolve() {
+    void resolve() {
       for (BeanMapping beanMapping : beanMappings.values()) {
         for (PropertyMapping propertyMapping : beanMapping.getProperties().values()) {
           if (propertyMapping instanceof RelationshipMapping<?>) {
@@ -81,20 +86,21 @@ public class ApplicationMappingBuilder {
             BeanInfo relatedBean = relationshipMapping.getRelatedBean();
             BeanMapping relatedBeanMapping = beanMappings.get(relatedBean);
             Relationship relationship = relationshipMapping.getRelationship();
-            if (relationship instanceof Relationship.OneToOne.Hierarchic) {
-              Relationship.OneToOne.Hierarchic oneToOneHierarchicRelationship = (Relationship.OneToOne.Hierarchic)relationship;
+            if (fromClass.isInstance(relationship)) {
+              F fromRelationship = fromClass.cast(relationship);
               for (PropertyMapping relatedBeanPropertyMapping : relatedBeanMapping.getProperties().values()) {
                 if (relatedBeanPropertyMapping instanceof RelationshipMapping) {
                   RelationshipMapping<?> relatedBeanRelationshipMapping = (RelationshipMapping<?>)relatedBeanPropertyMapping;
                   Relationship relatedBeanRelationship = relatedBeanRelationshipMapping.getRelationship();
-                  if (relatedBeanRelationship instanceof Relationship.OneToOne.Hierarchic) {
-                    Relationship.OneToOne.Hierarchic relatedBeanOneToOneHierarchicRelationship = (Relationship.OneToOne.Hierarchic)relatedBeanRelationship;
-                    if (relatedBeanOneToOneHierarchicRelationship.getMappedBy().equals(oneToOneHierarchicRelationship.getMappedBy())) {
-                      if (relationshipMapping != relatedBeanRelationshipMapping) {
+                  if (toClass.isInstance(relatedBeanRelationship)) {
+                    T toRelationship = toClass.cast(relatedBeanRelationship);
+                    if (fromRelationship != toRelationship) {
+                      if (resolves(fromRelationship, toRelationship)) {
                         if (relationshipMapping.related != null) {
                           throw new UnsupportedOperationException();
                         }
                         relationshipMapping.related = relatedBeanRelationshipMapping;
+                        break;
                       }
                     }
                   }
@@ -104,6 +110,21 @@ public class ApplicationMappingBuilder {
           }
         }
       }
+    }
+
+    protected abstract boolean resolves(F from, T to);
+
+  }
+
+  private static class OneToOneHierarchicRelationshipResolver extends RelationshipResolver<Relationship.OneToOne.Hierarchic, Relationship.OneToOne.Hierarchic> {
+
+    private OneToOneHierarchicRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
+      super(Relationship.OneToOne.Hierarchic.class, Relationship.OneToOne.Hierarchic.class, beanMappings);
+    }
+
+    @Override
+    protected boolean resolves(Relationship.OneToOne.Hierarchic from, Relationship.OneToOne.Hierarchic to) {
+      return from.mappedBy.equals(to.mappedBy) && from.owner != to.owner;
     }
   }
 

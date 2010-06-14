@@ -48,10 +48,10 @@ public class Relationship<P extends PropertyInfo<BeanValueInfo>> {
     public static class Hierarchic extends OneToOne {
 
       /** Owner / not owner. */
-      private final boolean owner;
+      final boolean owner;
 
       /** Mapped by value. */
-      private final String mappedBy;
+      final String mappedBy;
 
       public Hierarchic(boolean owner, String mappedBy) {
         this.owner = owner;
