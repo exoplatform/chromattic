@@ -55,6 +55,24 @@ public class MappingTestCase extends AbstractMappingTestCase {
   }
 
   public void testC() {
+    Map<Class<?>, BeanMapping> mappings = assertValid(C1.class, C2.class);
+    BeanMapping _1 = mappings.get(C1.class);
+    BeanMapping _2 = mappings.get(C2.class);
+    RelationshipMapping child = (RelationshipMapping)_1.getPropertyMapping("child");
+    assertSame(_2.getBean(), child.getRelatedBean());
+    Relationship.OneToOne.Hierarchic childRelationship = (Relationship.OneToOne.Hierarchic)child.getRelationship();
+    assertEquals("child", childRelationship.getMappedBy());
+    assertEquals(true, childRelationship.isOwner());
+    RelationshipMapping parent = (RelationshipMapping)_2.getPropertyMapping("parent");
+    assertSame(_1.getBean(), parent.getRelatedBean());
+    assertSame(child, parent.getRelatedMapping());
+    Relationship.OneToOne.Hierarchic parentRelationship = (Relationship.OneToOne.Hierarchic)parent.getRelationship();
+    assertEquals("child", parentRelationship.getMappedBy());
+    assertEquals(false, parentRelationship.isOwner());
+    assertSame(parent, child.getRelatedMapping());
+  }
+
+  public void testD() {
     Map<Class<?>, BeanMapping> mappings = assertValid(D.class);
     BeanMapping _ = mappings.get(D.class);
     RelationshipMapping child = (RelationshipMapping)_.getPropertyMapping("child");
