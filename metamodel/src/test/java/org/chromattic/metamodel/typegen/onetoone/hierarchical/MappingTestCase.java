@@ -64,8 +64,10 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals(true, childRelationship.isOwner());
     RelationshipPropertyMapping parent = (RelationshipPropertyMapping)_.getPropertyMapping("parent");
     assertSame(_.getBean(), parent.getRelatedBean());
+    assertSame(child, parent.getRelatedMapping());
     Relationship.OneToOne.Hierarchic parentRelationship = (Relationship.OneToOne.Hierarchic)parent.getRelationship();
     assertEquals("child", parentRelationship.getMappedBy());
     assertEquals(false, parentRelationship.isOwner());
+    assertSame(parent, child.getRelatedMapping());
   }
 }

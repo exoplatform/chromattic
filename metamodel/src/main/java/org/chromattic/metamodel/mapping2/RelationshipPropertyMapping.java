@@ -22,13 +22,16 @@ package org.chromattic.metamodel.mapping2;
 import org.chromattic.metamodel.bean2.BeanInfo;
 import org.chromattic.metamodel.bean2.BeanValueInfo;
 import org.chromattic.metamodel.bean2.PropertyInfo;
-import org.chromattic.metamodel.mapping.value.RelationshipMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class RelationshipPropertyMapping<P extends PropertyInfo<BeanValueInfo>> extends PropertyMapping<P, BeanValueInfo> {
+
+
+  /** The related property if any. */
+  RelationshipPropertyMapping related;
 
   /** . */
   private final Relationship<P> relationship;
@@ -48,7 +51,7 @@ public class RelationshipPropertyMapping<P extends PropertyInfo<BeanValueInfo>> 
     return property.getValue().getBean(); 
   }
 
-  public RelationshipMapping getRelatedMapping() {
-    throw new UnsupportedOperationException();
+  public RelationshipPropertyMapping getRelatedMapping() {
+    return related;
   }
 }
