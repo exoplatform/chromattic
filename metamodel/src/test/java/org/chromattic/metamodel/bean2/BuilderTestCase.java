@@ -50,6 +50,22 @@ public class BuilderTestCase extends TestCase {
     domain = null;
   }
 
+  public void testDeadLock() throws Exception {
+    class A {
+      class B {
+        public A getA() {
+          return null;
+        }
+      }
+      public B getB() { return null; }
+    }
+
+    BeanInfoBuilder builder = new BeanInfoBuilder();
+    ClassTypeInfo a = (ClassTypeInfo) domain.resolve(A.class);
+    ClassTypeInfo b = (ClassTypeInfo) domain.resolve(A.B.class);
+    Map<ClassTypeInfo, BeanInfo> beans = builder.build(Collections.set(a, b));
+   }
+
   public void testClassInheritance() throws Exception {
 
     class A {}

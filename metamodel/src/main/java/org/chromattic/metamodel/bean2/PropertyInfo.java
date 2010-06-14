@@ -19,9 +19,18 @@
 
 package org.chromattic.metamodel.bean2;
 
+import org.chromattic.metamodel.bean.AnnotatedProperty;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
 import org.reflext.api.TypeInfo;
+import org.reflext.api.annotation.AnnotationType;
+import org.reflext.api.introspection.AnnotationIntrospector;
+import org.reflext.api.introspection.AnnotationTarget;
+
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -84,5 +93,52 @@ public abstract class PropertyInfo<V extends ValueInfo> {
 
   public MethodInfo getSetter() {
     return setter;
+  }
+
+  public Collection<? extends Annotation> getAnnotateds(Class<? extends Annotation>... annotationClassTypes) {
+    List<Annotation> props = new ArrayList<Annotation>();
+    for (Class<? extends Annotation> annotationClassType : annotationClassTypes) {
+      Annotation annotation = getAnnotation(annotationClassType);
+      if (annotation != null) {
+        props.add(annotation);
+      }
+    }
+    return props;
+  }
+
+  public <A extends Annotation> A getAnnotation(Class<A> annotationClassType) {
+    if (annotationClassType == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    AnnotationTarget<MethodInfo, A> annotation = null;
+
+    //
+    AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClassType);
+
+    //
+    if (getter != null) {
+      annotation = new AnnotationIntrospector<A>(annotationType).resolve(getter);
+    }
+
+    //
+    if (setter != null) {
+      AnnotationTarget<MethodInfo, A> setterAnnotation = new AnnotationIntrospector<A>(annotationType).resolve(setter);
+      if (setterAnnotation != null) {
+        if (annotation != null) {
+          throw new IllegalStateException("The same annotation " + annotation + " is present on a getter " +
+            getter + " and setter" + setter);
+        }
+        annotation = setterAnnotation;
+      }
+    }
+
+    //
+    if (annotation != null) {
+      return annotation.getAnnotation();
+    } else {
+      return null;
+    }
   }
 }
