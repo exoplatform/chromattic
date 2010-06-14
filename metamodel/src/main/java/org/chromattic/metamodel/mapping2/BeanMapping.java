@@ -27,18 +27,18 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeTypeMapping {
+public class BeanMapping {
 
   /** . */
   final BeanInfo bean;
 
   /** . */
-  NodeTypeMapping parent;
+  BeanMapping parent;
 
   /** . */
   Map<String, PropertyMapping<?, ?>> properties;
 
-  public NodeTypeMapping(BeanInfo bean) {
+  public BeanMapping(BeanInfo bean) {
     this.bean = bean;
   }
 

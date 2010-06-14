@@ -21,7 +21,7 @@ package org.chromattic.metamodel.typegen.property;
 
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
-import org.chromattic.metamodel.mapping2.NodeTypeMapping;
+import org.chromattic.metamodel.mapping2.BeanMapping;
 import org.chromattic.metamodel.mapping2.SimplePropertyMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
@@ -36,8 +36,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
 
 
   public void testA() throws Exception {
-    Map<Class<?>, NodeTypeMapping> mappings = assertValid(A.class);
-    NodeTypeMapping mapping = mappings.get(A.class);
+    Map<Class<?>, BeanMapping> mappings = assertValid(A.class);
+    BeanMapping mapping = mappings.get(A.class);
     SimplePropertyMapping<?> stringMapping = (SimplePropertyMapping<?>) mapping.getPropertyMapping("string");
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
@@ -47,8 +47,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
   }
 
   public void testB() throws Exception {
-    Map<Class<?>, NodeTypeMapping> mappings = assertValid(B.class);
-    NodeTypeMapping mapping = mappings.get(B.class);
+    Map<Class<?>, BeanMapping> mappings = assertValid(B.class);
+    BeanMapping mapping = mappings.get(B.class);
     SimplePropertyMapping<?> stringMapping = (SimplePropertyMapping<?>) mapping.getPropertyMapping("string");
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());

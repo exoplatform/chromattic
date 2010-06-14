@@ -38,7 +38,7 @@ public class ApplicationMappingBuilder {
 
 
 
-  public Map<ClassTypeInfo, NodeTypeMapping> build(Set<ClassTypeInfo> classTypes) {
+  public Map<ClassTypeInfo, BeanMapping> build(Set<ClassTypeInfo> classTypes) {
 
     Collection<BeanInfo> beans = new BeanInfoBuilder().build(classTypes).values();
 
@@ -46,7 +46,7 @@ public class ApplicationMappingBuilder {
     Context ctx = new Context(new SimpleTypeResolver(), new HashSet<BeanInfo>(beans));
 
     //
-    Map<BeanInfo, NodeTypeMapping> beanMappings = ctx.build();
+    Map<BeanInfo, BeanMapping> beanMappings = ctx.build();
 
     //
     RelationshipResolver resolver = new RelationshipResolver(beanMappings);
@@ -55,8 +55,8 @@ public class ApplicationMappingBuilder {
     resolver.resolve();
 
     //
-    Map<ClassTypeInfo, NodeTypeMapping> classTypeMappings = new HashMap<ClassTypeInfo, NodeTypeMapping>();
-    for (Map.Entry<BeanInfo, NodeTypeMapping> beanMapping : beanMappings.entrySet()) {
+    Map<ClassTypeInfo, BeanMapping> classTypeMappings = new HashMap<ClassTypeInfo, BeanMapping>();
+    for (Map.Entry<BeanInfo, BeanMapping> beanMapping : beanMappings.entrySet()) {
       classTypeMappings.put(beanMapping.getKey().getClassType(), beanMapping.getValue());
     }
 
@@ -67,19 +67,19 @@ public class ApplicationMappingBuilder {
   private class RelationshipResolver {
 
     /** . */
-    Map<BeanInfo, NodeTypeMapping> beanMappings;
+    Map<BeanInfo, BeanMapping> beanMappings;
 
-    private RelationshipResolver(Map<BeanInfo, NodeTypeMapping> beanMappings) {
+    private RelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
       this.beanMappings = beanMappings;
     }
 
     private void resolve() {
-      for (NodeTypeMapping beanMapping : beanMappings.values()) {
+      for (BeanMapping beanMapping : beanMappings.values()) {
         for (PropertyMapping propertyMapping : beanMapping.getProperties().values()) {
           if (propertyMapping instanceof RelationshipPropertyMapping<?>) {
             RelationshipPropertyMapping<?> relationshipMapping = (RelationshipPropertyMapping<?>)propertyMapping;
             BeanInfo relatedBean = relationshipMapping.getRelatedBean();
-            NodeTypeMapping relatedBeanMapping = beanMappings.get(relatedBean);
+            BeanMapping relatedBeanMapping = beanMappings.get(relatedBean);
             Relationship relationship = relationshipMapping.getRelationship();
             if (relationship instanceof Relationship.OneToOne.Hierarchic) {
               Relationship.OneToOne.Hierarchic oneToOneHierarchicRelationship = (Relationship.OneToOne.Hierarchic)relationship;
@@ -116,15 +116,15 @@ public class ApplicationMappingBuilder {
     final Set<BeanInfo> beans;
 
     /** . */
-    final Map<BeanInfo, NodeTypeMapping> beanMappings;
+    final Map<BeanInfo, BeanMapping> beanMappings;
 
     private Context(SimpleTypeResolver typeResolver, Set<BeanInfo> beans) {
       this.typeResolver = typeResolver;
       this.beans = beans;
-      this.beanMappings = new HashMap<BeanInfo, NodeTypeMapping>();
+      this.beanMappings = new HashMap<BeanInfo, BeanMapping>();
     }
 
-    public Map<BeanInfo, NodeTypeMapping> build() {
+    public Map<BeanInfo, BeanMapping> build() {
       while (true) {
         Iterator<BeanInfo> iterator = beans.iterator();
         if (iterator.hasNext()) {
@@ -136,11 +136,11 @@ public class ApplicationMappingBuilder {
       }
     }
 
-    private NodeTypeMapping resolve(BeanInfo bean) {
-      NodeTypeMapping mapping = beanMappings.get(bean);
+    private BeanMapping resolve(BeanInfo bean) {
+      BeanMapping mapping = beanMappings.get(bean);
       if (mapping == null) {
         if (beans.remove(bean)) {
-          mapping = new NodeTypeMapping(bean);
+          mapping = new BeanMapping(bean);
           beanMappings.put(bean, mapping);
           build(mapping);
         } else {
@@ -150,7 +150,7 @@ public class ApplicationMappingBuilder {
       return mapping;
     }
 
-    private void build(NodeTypeMapping beanMapping) {
+    private void build(BeanMapping beanMapping) {
 
       BeanInfo bean = beanMapping.bean;
 

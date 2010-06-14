@@ -21,7 +21,7 @@ package org.chromattic.metamodel.typegen;
 
 import junit.framework.TestCase;
 import org.chromattic.metamodel.mapping2.ApplicationMappingBuilder;
-import org.chromattic.metamodel.mapping2.NodeTypeMapping;
+import org.chromattic.metamodel.mapping2.BeanMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
@@ -41,14 +41,14 @@ public abstract class AbstractMappingTestCase extends TestCase {
   /** . */
   private final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
-  protected final Map<Class<?>, NodeTypeMapping> assertValid(Class<?>... classTypes) {
+  protected final Map<Class<?>, BeanMapping> assertValid(Class<?>... classTypes) {
     ApplicationMappingBuilder builder = new ApplicationMappingBuilder();
     HashSet<ClassTypeInfo> ctis = new HashSet<ClassTypeInfo>();
     for (Class<?> classType : classTypes) {
       ctis.add((ClassTypeInfo)domain.resolve(classType));
     }
-    Map<Class<?>, NodeTypeMapping> classMapping = new HashMap<Class<?>, NodeTypeMapping>();
-    for (Map.Entry<ClassTypeInfo, NodeTypeMapping> classTypeMapping : builder.build(ctis).entrySet()) {
+    Map<Class<?>, BeanMapping> classMapping = new HashMap<Class<?>, BeanMapping>();
+    for (Map.Entry<ClassTypeInfo, BeanMapping> classTypeMapping : builder.build(ctis).entrySet()) {
       classMapping.put((Class<?>)classTypeMapping.getKey().getType(), classTypeMapping.getValue());
     }
     return classMapping;

@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.typegen.onetoone.hierarchical;
 
-import org.chromattic.metamodel.mapping2.NodeTypeMapping;
+import org.chromattic.metamodel.mapping2.BeanMapping;
 import org.chromattic.metamodel.mapping2.Relationship;
 import org.chromattic.metamodel.mapping2.RelationshipPropertyMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
@@ -33,9 +33,9 @@ import java.util.Map;
 public class MappingTestCase extends AbstractMappingTestCase {
 
   public void testA() {
-    Map<Class<?>, NodeTypeMapping> mappings = assertValid(A1.class, A2.class);
-    NodeTypeMapping a1 = mappings.get(A1.class);
-    NodeTypeMapping a2 = mappings.get(A2.class);
+    Map<Class<?>, BeanMapping> mappings = assertValid(A1.class, A2.class);
+    BeanMapping a1 = mappings.get(A1.class);
+    BeanMapping a2 = mappings.get(A2.class);
     RelationshipPropertyMapping r1 = (RelationshipPropertyMapping)a1.getPropertyMapping("child");
     assertSame(a2.getBean(), r1.getRelatedBean());
     Relationship.OneToOne.Hierarchic relationship = (Relationship.OneToOne.Hierarchic)r1.getRelationship();
@@ -44,9 +44,9 @@ public class MappingTestCase extends AbstractMappingTestCase {
   }
 
   public void testB() {
-    Map<Class<?>, NodeTypeMapping> mappings = assertValid(B1.class, B2.class);
-    NodeTypeMapping _1 = mappings.get(B1.class);
-    NodeTypeMapping _2 = mappings.get(B2.class);
+    Map<Class<?>, BeanMapping> mappings = assertValid(B1.class, B2.class);
+    BeanMapping _1 = mappings.get(B1.class);
+    BeanMapping _2 = mappings.get(B2.class);
     RelationshipPropertyMapping r2 = (RelationshipPropertyMapping)_2.getPropertyMapping("parent");
     assertSame(_1.getBean(), r2.getRelatedBean());
     Relationship.OneToOne.Hierarchic relationship = (Relationship.OneToOne.Hierarchic)r2.getRelationship();
@@ -55,8 +55,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
   }
 
   public void testC() {
-    Map<Class<?>, NodeTypeMapping> mappings = assertValid(C.class);
-    NodeTypeMapping _ = mappings.get(C.class);
+    Map<Class<?>, BeanMapping> mappings = assertValid(C.class);
+    BeanMapping _ = mappings.get(C.class);
     RelationshipPropertyMapping child = (RelationshipPropertyMapping)_.getPropertyMapping("child");
     assertSame(_.getBean(), child.getRelatedBean());
     Relationship.OneToOne.Hierarchic childRelationship = (Relationship.OneToOne.Hierarchic)child.getRelationship();
