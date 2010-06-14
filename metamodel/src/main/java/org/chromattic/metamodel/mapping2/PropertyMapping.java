@@ -46,4 +46,7 @@ public abstract class PropertyMapping<P extends PropertyInfo<V>, V extends Value
   public V getValue() {
     return property.getValue();
   }
+
+  public abstract void accept(MappingVisitor visitor);
+
 }

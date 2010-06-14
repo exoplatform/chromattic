@@ -53,4 +53,12 @@ public class BeanMapping {
   public PropertyMapping<?, ?> getPropertyMapping(String name) {
     return properties.get(name);
   }
+
+  public void accept(MappingVisitor visitor) {
+    visitor.startMapping(this);
+    for (PropertyMapping<?, ?> property : properties.values()) {
+      property.accept(visitor);
+    }
+    visitor.endMapping();
+  }
 }

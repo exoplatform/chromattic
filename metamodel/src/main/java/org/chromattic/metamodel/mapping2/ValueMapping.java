@@ -42,4 +42,9 @@ public class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> extends Prope
   public PropertyDefinitionMapping getPropertyDefinition() {
     return propertyDefinition;
   }
+
+  @Override
+  public void accept(MappingVisitor visitor) {
+    visitor.valueMapping(property, propertyDefinition);
+  }
 }

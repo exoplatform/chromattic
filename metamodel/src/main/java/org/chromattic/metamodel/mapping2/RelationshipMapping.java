@@ -54,4 +54,12 @@ public class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>> extends 
   public RelationshipMapping getRelatedMapping() {
     return related;
   }
+
+  @Override
+  public void accept(MappingVisitor visitor) {
+    if (relationship instanceof Relationship.OneToOne.Hierarchic) {
+      Relationship.OneToOne.Hierarchic a = (Relationship.OneToOne.Hierarchic)relationship;
+      visitor.oneToOneHierarchic(property, a.mappedBy, a.owner);
+    }
+  }
 }
