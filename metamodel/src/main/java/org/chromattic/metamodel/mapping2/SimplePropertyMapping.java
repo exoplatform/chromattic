@@ -21,6 +21,7 @@ package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.metamodel.bean2.PropertyInfo;
 import org.chromattic.metamodel.bean2.SimpleValueInfo;
+import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -28,7 +29,13 @@ import org.chromattic.metamodel.bean2.SimpleValueInfo;
  */
 public class SimplePropertyMapping<P extends PropertyInfo<SimpleValueInfo>> extends PropertyMapping<P, SimpleValueInfo> {
 
-  public SimplePropertyMapping(P property) {
+  /** . */
+  final PropertyDefinitionMapping propertyDefinition;
+
+  public SimplePropertyMapping(P property, PropertyDefinitionMapping propertyDefinition) {
     super(property);
+
+    //
+    this.propertyDefinition = propertyDefinition;
   }
 }

@@ -20,7 +20,6 @@
 package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.metamodel.bean2.PropertyInfo;
-import org.chromattic.metamodel.bean2.SimpleValueInfo;
 import org.chromattic.metamodel.bean2.ValueInfo;
 
 /**

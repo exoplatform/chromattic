@@ -19,11 +19,14 @@
 
 package org.chromattic.metamodel.mapping2;
 
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Property;
+import org.chromattic.api.annotations.*;
+import org.chromattic.metamodel.bean.AnnotatedPropertyQualifier;
 import org.chromattic.metamodel.bean2.*;
+import org.chromattic.metamodel.mapping.InvalidMappingException;
+import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
+import org.chromattic.metamodel.type.SimpleTypeMapping;
+import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.ClassTypeInfo;
 
 import java.lang.annotation.Annotation;
@@ -45,7 +48,7 @@ public class ApplicationMappingBuilder {
     Collection<BeanInfo> beans = new BeanInfoBuilder().build(classTypes).values();
 
     //
-    Context ctx = new Context(new HashSet<BeanInfo>(beans));
+    Context ctx = new Context(new SimpleTypeResolver(), new HashSet<BeanInfo>(beans));
 
     //
     ctx.build();
@@ -57,12 +60,16 @@ public class ApplicationMappingBuilder {
   private class Context {
 
     /** . */
+    final SimpleTypeResolver typeResolver;
+
+    /** . */
     final Set<BeanInfo> beans;
 
     /** . */
     final Map<BeanInfo, NodeTypeMapping> mappings;
 
-    private Context(Set<BeanInfo> beans) {
+    private Context(SimpleTypeResolver typeResolver, Set<BeanInfo> beans) {
+      this.typeResolver = typeResolver;
       this.beans = beans;
       this.mappings = new HashMap<BeanInfo, NodeTypeMapping>();
     }
@@ -125,7 +132,8 @@ public class ApplicationMappingBuilder {
           if (property instanceof SingleValuedPropertyInfo<?>) {
             if (value instanceof SimpleValueInfo) {
               if (annotation instanceof Property) {
-                mapping = createProperty((SingleValuedPropertyInfo<SimpleValueInfo>)property);
+                Property propertyAnnotation = (Property)annotation;
+                mapping = createProperty(propertyAnnotation, (SingleValuedPropertyInfo<SimpleValueInfo>)property);
               } else {
                 throw new UnsupportedOperationException();
               }
@@ -201,15 +209,44 @@ public class ApplicationMappingBuilder {
       beanMapping.properties = properties;
     }
 
-    private PropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> createProperty(SingleValuedPropertyInfo<SimpleValueInfo> property) {
+    private PropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> createProperty(
+        Property propertyAnnotation,
+        SingleValuedPropertyInfo<SimpleValueInfo> property) {
+
+      //
+      PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(propertyAnnotation.type());
+
+      //
+      SimpleTypeMapping abc = typeResolver.resolveType(property.getValue().getType(), propertyMetaType);
+      if (abc == null) {
+        throw new UnsupportedOperationException("No simple type mapping for " + property.getValue().getType());
+      }
+
+      //
+      List<String> defaultValueList = null;
+      DefaultValue defaultValueAnnotation = property.getAnnotation(DefaultValue.class);
+      if (defaultValueAnnotation != null) {
+        String[] defaultValues = defaultValueAnnotation.value();
+        defaultValueList = new ArrayList<String>(defaultValues.length);
+        defaultValueList.addAll(Arrays.asList(defaultValues));
+        defaultValueList = Collections.unmodifiableList(defaultValueList);
+      }
+
+      //
+      PropertyDefinitionMapping propertyDefinition = new PropertyDefinitionMapping(
+          propertyAnnotation.name(),
+          abc.getPropertyMetaType(),
+          defaultValueList);
+
+      //
       PropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> mapping;
-      mapping = new SimplePropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>>(property);
+      mapping = new SimplePropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>>(property, propertyDefinition);
       return mapping;
     }
 
     private PropertyMapping<MultiValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> createProperty(MultiValuedPropertyInfo<SimpleValueInfo> property) {
       PropertyMapping<MultiValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> mapping;
-      mapping = new SimplePropertyMapping<MultiValuedPropertyInfo<SimpleValueInfo>>(property);
+      mapping = new SimplePropertyMapping<MultiValuedPropertyInfo<SimpleValueInfo>>(property, null);
       return mapping;
     }
 
