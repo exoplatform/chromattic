@@ -20,9 +20,7 @@
 package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.api.annotations.*;
-import org.chromattic.metamodel.bean.AnnotatedPropertyQualifier;
 import org.chromattic.metamodel.bean2.*;
-import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.type.SimpleTypeMapping;
@@ -172,7 +170,8 @@ public class ApplicationMappingBuilder {
           } else if (property instanceof MultiValuedPropertyInfo<?>) {
             if (value instanceof SimpleValueInfo) {
               if (annotation instanceof Property) {
-                mapping = createProperty((MultiValuedPropertyInfo<SimpleValueInfo>) property);
+                Property propertyAnnotation = (Property)annotation;
+                mapping = createProperty(propertyAnnotation, (MultiValuedPropertyInfo<SimpleValueInfo>)property);
               } else {
                 throw new UnsupportedOperationException();
               }
@@ -209,9 +208,9 @@ public class ApplicationMappingBuilder {
       beanMapping.properties = properties;
     }
 
-    private PropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> createProperty(
+    private <P extends PropertyInfo<SimpleValueInfo>> PropertyMapping<P, SimpleValueInfo> createProperty(
         Property propertyAnnotation,
-        SingleValuedPropertyInfo<SimpleValueInfo> property) {
+        P property) {
 
       //
       PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(propertyAnnotation.type());
@@ -239,14 +238,8 @@ public class ApplicationMappingBuilder {
           defaultValueList);
 
       //
-      PropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> mapping;
-      mapping = new SimplePropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>>(property, propertyDefinition);
-      return mapping;
-    }
-
-    private PropertyMapping<MultiValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> createProperty(MultiValuedPropertyInfo<SimpleValueInfo> property) {
-      PropertyMapping<MultiValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> mapping;
-      mapping = new SimplePropertyMapping<MultiValuedPropertyInfo<SimpleValueInfo>>(property, null);
+      PropertyMapping<P, SimpleValueInfo> mapping;
+      mapping = new SimplePropertyMapping<P>(property, propertyDefinition);
       return mapping;
     }
 
