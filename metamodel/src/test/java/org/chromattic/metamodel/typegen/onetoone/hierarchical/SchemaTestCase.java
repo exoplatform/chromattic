@@ -31,17 +31,17 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToOneTestCase extends TypeGenTestCase {
+public class SchemaTestCase extends TypeGenTestCase {
 
   public void testMappedBy() throws Exception {
     Map<Class<?>, NodeType> a = assertValid(A1.class, A2.class);
     NodeType a1NT = a.get(A1.class);
-    assertEquals("a1", a1NT.getName());
+    assertEquals("1", a1NT.getName());
     NodeType a2NT = a.get(A2.class);
-    assertEquals("a2", a2NT.getName());
+    assertEquals("2", a2NT.getName());
     assertEquals(Collections.set("child"), a1NT.getChildNodeDefinitions().keySet());
     assertEquals(0, a1NT.getPropertyDefinitions().size());
-    assertEquals("a2", a1NT.getChildNodeDefinition("child").getNodeTypeName());
+    assertEquals("2", a1NT.getChildNodeDefinition("child").getNodeTypeName());
     assertEquals(false, a1NT.getChildNodeDefinition("child").isMandatory());
     assertEquals(Collections.<String>set(), a2NT.getChildNodeDefinitions().keySet());
     assertEquals(0, a2NT.getPropertyDefinitions().size());
@@ -50,31 +50,31 @@ public class OneToOneTestCase extends TypeGenTestCase {
   public void testRelatedMappedBy() throws Exception {
     Map<Class<?>, NodeType> a = assertValid(B1.class, B2.class);
     NodeType b1NT = a.get(B1.class);
-    assertEquals("b1", b1NT.getName());
+    assertEquals("1", b1NT.getName());
     NodeType b2NT = a.get(B2.class);
-    assertEquals("b2", b2NT.getName());
+    assertEquals("2", b2NT.getName());
     assertEquals(Collections.set("child"), b1NT.getChildNodeDefinitions().keySet());
     assertEquals(0, b1NT.getPropertyDefinitions().size());
-    assertEquals("b2", b1NT.getChildNodeDefinition("child").getNodeTypeName());
+    assertEquals("2", b1NT.getChildNodeDefinition("child").getNodeTypeName());
     assertEquals(false, b1NT.getChildNodeDefinition("child").isMandatory());
     assertEquals(0, b2NT.getChildNodeDefinitions().size());
     assertEquals(0, b2NT.getPropertyDefinitions().size());
   }
 
   public void testOptions() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(C1.class, C2.class);
-    NodeType c1NT = a.get(C1.class);
-    assertEquals("c1", c1NT.getName());
-    NodeType c2NT = a.get(C2.class);
-    assertEquals("c2", c2NT.getName());
+    Map<Class<?>, NodeType> a = assertValid(D1.class, D2.class);
+    NodeType c1NT = a.get(D1.class);
+    assertEquals("1", c1NT.getName());
+    NodeType c2NT = a.get(D2.class);
+    assertEquals("2", c2NT.getName());
 
     //
     assertEquals(Collections.<String>set(), c1NT.getPropertyDefinitions().keySet());
     assertEquals(Collections.set("child1", "child2"), c1NT.getChildNodeDefinitions().keySet());
-    assertEquals("c2", c1NT.getChildNodeDefinition("child1").getNodeTypeName());
+    assertEquals("2", c1NT.getChildNodeDefinition("child1").getNodeTypeName());
     assertEquals(true, c1NT.getChildNodeDefinition("child1").isMandatory());
     assertEquals(false, c1NT.getChildNodeDefinition("child1").isAutocreated());
-    assertEquals("c2", c1NT.getChildNodeDefinition("child2").getNodeTypeName());
+    assertEquals("2", c1NT.getChildNodeDefinition("child2").getNodeTypeName());
     assertEquals(false, c1NT.getChildNodeDefinition("child2").isMandatory());
     assertEquals(true, c1NT.getChildNodeDefinition("child2").isAutocreated());
 

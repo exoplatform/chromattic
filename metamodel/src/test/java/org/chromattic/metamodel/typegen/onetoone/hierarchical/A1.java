@@ -28,7 +28,7 @@ import org.chromattic.api.annotations.PrimaryType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "a1")
+@PrimaryType(name = "1")
 public abstract class A1 {
 
   @MappedBy("child")

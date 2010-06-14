@@ -26,17 +26,17 @@ import org.chromattic.api.annotations.*;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "c1")
-public abstract class C1 {
+@PrimaryType(name = "1")
+public abstract class D1 {
 
   @MappedBy("child1")
   @Owner
   @OneToOne(options = AttributeOption.MANDATORY)
-  public abstract C2 getChild1();
+  public abstract D2 getChild1();
 
   @MappedBy("child2")
   @Owner
   @OneToOne(options = AttributeOption.AUTOCREATED)
-  public abstract C2 getChild2();
+  public abstract D2 getChild2();
 
 }
