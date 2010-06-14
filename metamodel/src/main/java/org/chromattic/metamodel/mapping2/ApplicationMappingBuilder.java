@@ -48,8 +48,10 @@ public class ApplicationMappingBuilder {
     //
     Map<BeanInfo, BeanMapping> beanMappings = ctx.build();
 
-    // Resolve one to one hierarchic relationships
+    // Resolve relationships
     new OneToOneHierarchicRelationshipResolver(beanMappings).resolve();
+    new OneToManyHierarchicRelationshipResolver(beanMappings).resolve();
+    new ManyToOneHierarchicRelationshipResolver(beanMappings).resolve();
 
     //
     Map<ClassTypeInfo, BeanMapping> classTypeMappings = new HashMap<ClassTypeInfo, BeanMapping>();
@@ -125,6 +127,30 @@ public class ApplicationMappingBuilder {
     @Override
     protected boolean resolves(Relationship.OneToOne.Hierarchic from, Relationship.OneToOne.Hierarchic to) {
       return from.mappedBy.equals(to.mappedBy) && from.owner != to.owner;
+    }
+  }
+
+  private static class OneToManyHierarchicRelationshipResolver extends RelationshipResolver<Relationship.OneToMany.Hierarchic, Relationship.ManyToOne.Hierarchic> {
+
+    private OneToManyHierarchicRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
+      super(Relationship.OneToMany.Hierarchic.class, Relationship.ManyToOne.Hierarchic.class, beanMappings);
+    }
+
+    @Override
+    protected boolean resolves(Relationship.OneToMany.Hierarchic from, Relationship.ManyToOne.Hierarchic to) {
+      return true;
+    }
+  }
+
+  private static class ManyToOneHierarchicRelationshipResolver extends RelationshipResolver<Relationship.ManyToOne.Hierarchic, Relationship.OneToMany.Hierarchic> {
+
+    private ManyToOneHierarchicRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
+      super(Relationship.ManyToOne.Hierarchic.class, Relationship.OneToMany.Hierarchic.class, beanMappings);
+    }
+
+    @Override
+    protected boolean resolves(Relationship.ManyToOne.Hierarchic from, Relationship.OneToMany.Hierarchic to) {
+      return true;
     }
   }
 
