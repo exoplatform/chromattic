@@ -34,6 +34,17 @@ public class Relationship<P extends PropertyInfo<BeanValueInfo>> {
     public static class Hierarchic extends ManyToOne {
     }
     public static class Reference extends ManyToOne {
+
+      /** Mapped by value. */
+      final String mappedBy;
+
+      public Reference(String mappedBy) {
+        this.mappedBy = mappedBy;
+      }
+
+      public String getMappedBy() {
+        return mappedBy;
+      }
     }
   }
 
@@ -41,6 +52,17 @@ public class Relationship<P extends PropertyInfo<BeanValueInfo>> {
     public static class Hierarchic extends OneToMany {
     }
     public static class Reference extends OneToMany {
+
+      /** Mapped by value. */
+      final String mappedBy;
+
+      public Reference(String mappedBy) {
+        this.mappedBy = mappedBy;
+      }
+
+      public String getMappedBy() {
+        return mappedBy;
+      }
     }
   }
 

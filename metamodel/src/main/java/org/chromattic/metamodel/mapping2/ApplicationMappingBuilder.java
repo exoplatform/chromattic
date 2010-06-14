@@ -345,8 +345,12 @@ public class ApplicationMappingBuilder {
     }
 
     private RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> createReferenceOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
+      MappedBy mappedBy = property.getAnnotation(MappedBy.class);
+      if (mappedBy == null) {
+        throw new UnsupportedOperationException();
+      }
       RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Reference());
+      mapping = new RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Reference(mappedBy.value()));
       return mapping;
     }
 
@@ -357,8 +361,12 @@ public class ApplicationMappingBuilder {
     }
 
     private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createReferenceManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+      MappedBy mappedBy = property.getAnnotation(MappedBy.class);
+      if (mappedBy == null) {
+        throw new UnsupportedOperationException();
+      }
       RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Reference());
+      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Reference(mappedBy.value()));
       return mapping;
     }
 
