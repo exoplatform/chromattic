@@ -81,8 +81,20 @@ public class BeanInfoBuilder {
 
     /**
      * Resolve the bean object from the specified class type. The returned bean
-     * won't be qualified, i.e it won't its state correct. The goal is just to
-     * ensure that we have a unique bean instance per class type.
+     * is in correct state. However it can trigger recursive resolving while the current
+     * bean is in an incorrect state, i.e not finished to be fully constructed.
+     *
+     * To ensure the fact that we have a unique bean created per class type we must relax
+     * the fact that objects are created in one step, i.e have:
+     *
+     * <ol>
+     * <li>Instantiate bean</li>
+     * <li>Make bean available for lookup</li>
+     * <li>Terminate bean initialization</li>
+     * </ol>
+     *
+     * Note: it could be possible to use future object to build the full state and leverage
+     * multi processors.
      *
      * @param classType the bean class type
      * @return the corresponding bean instance
