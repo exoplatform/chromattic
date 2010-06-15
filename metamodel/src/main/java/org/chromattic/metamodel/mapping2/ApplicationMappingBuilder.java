@@ -22,6 +22,7 @@ package org.chromattic.metamodel.mapping2;
 import org.chromattic.api.annotations.*;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.metamodel.bean2.*;
+import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.type.SimpleTypeMapping;
@@ -241,7 +242,10 @@ public class ApplicationMappingBuilder {
             Properties.class,
             OneToOne.class,
             OneToMany.class,
-            ManyToOne.class
+            ManyToOne.class,
+            Path.class,
+            Name.class,
+            WorkspaceName.class
         );
 
         //
@@ -259,6 +263,12 @@ public class ApplicationMappingBuilder {
               if (annotation instanceof Property) {
                 Property propertyAnnotation = (Property)annotation;
                 mapping = createProperty(propertyAnnotation, (SingleValuedPropertyInfo<SimpleValueInfo>)property);
+              } else if (annotation instanceof Path) {
+                mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>)property, NodeAttributeType.PATH);
+              } else if (annotation instanceof Name) {
+                mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>)property, NodeAttributeType.NAME);
+              } else if (annotation instanceof WorkspaceName) {
+                mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>)property, NodeAttributeType.WORKSPACE_NAME);
               } else {
                 throw new UnsupportedOperationException();
               }
@@ -337,11 +347,18 @@ public class ApplicationMappingBuilder {
       beanMapping.properties = Collections.unmodifiableMap(properties);
     }
 
+    private AttributeMapping createAttribute(SingleValuedPropertyInfo<SimpleValueInfo> property, NodeAttributeType type) {
+      if (!property.getValue().getClassType().getName().equals(String.class.getName())) {
+        throw new UnsupportedOperationException();
+      }
+      return new AttributeMapping(property, type);
+    }
+
     private <V extends SimpleValueInfo> PropertiesMapping<V> createProperties(MultiValuedPropertyInfo<V> property) {
       if (property.getKind() != MultiValueKind.MAP) {
         throw new UnsupportedOperationException();
       }
-      return new PropertiesMapping<V>(property); 
+      return new PropertiesMapping<V>(property);
     }
 
     private <P extends PropertyInfo<SimpleValueInfo>> PropertyMapping<P, SimpleValueInfo> createProperty(
