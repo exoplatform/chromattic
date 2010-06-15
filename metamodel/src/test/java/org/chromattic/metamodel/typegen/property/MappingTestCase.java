@@ -23,6 +23,7 @@ import org.chromattic.metamodel.bean2.MultiValueKind;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping2.BeanMapping;
+import org.chromattic.metamodel.mapping2.PropertiesMapping;
 import org.chromattic.metamodel.mapping2.ValueMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
@@ -104,5 +105,21 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals(Arrays.asList("foo","bar"), propertyDefinition.getDefaultValue());
     assertEquals(PropertyMetaType.STRING, propertyDefinition.getMetaType());
     assertEquals("strings", stringMapping.getName());
+  }
+
+  public void testD1() throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(D1.class);
+    BeanMapping mapping = mappings.get(D1.class);
+    PropertiesMapping<?> stringMapping = mapping.getPropertyMapping("properties", PropertiesMapping.class);
+    assertEquals(MultiValueKind.MAP, stringMapping.getProperty().getKind());
+    assertEquals(Object.class.getName(), stringMapping.getProperty().getValue().getClassType().getName());
+  }
+
+  public void testD2() throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(D2.class);
+    BeanMapping mapping = mappings.get(D2.class);
+    PropertiesMapping<?> stringMapping = mapping.getPropertyMapping("properties", PropertiesMapping.class);
+    assertEquals(MultiValueKind.MAP, stringMapping.getProperty().getKind());
+    assertEquals(String.class.getName(), stringMapping.getProperty().getValue().getClassType().getName());
   }
 }

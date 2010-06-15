@@ -31,7 +31,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class JLOTypeInfo implements ClassTypeInfo {
+public class JLOTypeInfo implements ClassTypeInfo {
 
   /** . */
   private static final JLOTypeInfo instance = new JLOTypeInfo();

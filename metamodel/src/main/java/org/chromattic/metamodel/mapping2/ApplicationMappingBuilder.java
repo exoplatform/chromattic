@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.api.annotations.*;
+import org.chromattic.api.annotations.Properties;
 import org.chromattic.metamodel.bean2.*;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
@@ -237,6 +238,7 @@ public class ApplicationMappingBuilder {
         // Determine kind
         Collection<? extends Annotation> annotations = property.getAnnotateds(
             Property.class,
+            Properties.class,
             OneToOne.class,
             OneToMany.class,
             ManyToOne.class
@@ -297,6 +299,8 @@ public class ApplicationMappingBuilder {
               if (annotation instanceof Property) {
                 Property propertyAnnotation = (Property)annotation;
                 mapping = createProperty(propertyAnnotation, (MultiValuedPropertyInfo<SimpleValueInfo>)property);
+              } else if (annotation instanceof Properties) {
+                mapping = createProperties((MultiValuedPropertyInfo<? extends SimpleValueInfo>)property);
               } else {
                 throw new UnsupportedOperationException();
               }
@@ -331,6 +335,13 @@ public class ApplicationMappingBuilder {
 
       //
       beanMapping.properties = Collections.unmodifiableMap(properties);
+    }
+
+    private <V extends SimpleValueInfo> PropertiesMapping<V> createProperties(MultiValuedPropertyInfo<V> property) {
+      if (property.getKind() != MultiValueKind.MAP) {
+        throw new UnsupportedOperationException();
+      }
+      return new PropertiesMapping<V>(property); 
     }
 
     private <P extends PropertyInfo<SimpleValueInfo>> PropertyMapping<P, SimpleValueInfo> createProperty(

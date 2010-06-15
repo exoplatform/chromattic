@@ -19,9 +19,13 @@
 
 package org.chromattic.metamodel.bean2;
 
+import org.chromattic.metamodel.mapping.JLOTypeInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeInfo;
 import org.reflext.api.TypeVariableInfo;
+import org.reflext.api.WildcardTypeInfo;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -40,6 +44,17 @@ class Utils {
       return (ClassTypeInfo)resolvedType;
     } else if (resolvedType instanceof TypeVariableInfo) {
       return resolveToClassType(baseType, ((TypeVariableInfo)resolvedType).getBounds().get(0));
+    } else if (resolvedType instanceof WildcardTypeInfo) {
+      WildcardTypeInfo wti = (WildcardTypeInfo) resolvedType;
+      List<TypeInfo> bounds = wti.getUpperBounds();
+      if (bounds.size() == 0) {
+        bounds = wti.getLowerBounds();
+      }
+      if (bounds.size() == 0) {
+        return JLOTypeInfo.get();
+      } else {
+        return resolveToClassType(baseType, bounds.get(0));
+      }
     } else {
       return null;
     }

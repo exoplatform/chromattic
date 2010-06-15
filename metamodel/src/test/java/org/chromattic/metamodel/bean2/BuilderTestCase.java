@@ -566,4 +566,23 @@ public class BuilderTestCase extends TestCase {
     SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
     assertEquals(domain.resolve(String.class), value.getType());
   }
+
+  public void testPropertyMap() throws Exception {
+
+    class A {
+      public Map<String, ?> getA() { return null; }
+    }
+
+    //
+    BeanInfoBuilder builder = new BeanInfoBuilder();
+    ClassTypeInfo a = (ClassTypeInfo)domain.resolve(A.class);
+    Map<ClassTypeInfo, BeanInfo> beans = builder.build(Collections.set(a));
+    BeanInfo ai = beans.get(a);
+
+    //
+    MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
+    assertEquals(MultiValueKind.MAP, cp.getKind());
+    SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
+    assertEquals(domain.resolve(Object.class), value.getClassType());
+  }
 }
