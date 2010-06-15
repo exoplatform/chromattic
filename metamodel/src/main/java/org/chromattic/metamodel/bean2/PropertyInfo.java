@@ -19,10 +19,7 @@
 
 package org.chromattic.metamodel.bean2;
 
-import org.chromattic.metamodel.bean.AnnotatedProperty;
-import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
-import org.reflext.api.TypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.AnnotationTarget;
@@ -38,8 +35,8 @@ import java.util.List;
  */
 public abstract class PropertyInfo<V extends ValueInfo> {
 
-  /** The bean this property is declared on. */
-  private final BeanInfo bean;
+  /** The owner bean. */
+  private final BeanInfo owner;
 
   /** The parent property. */
   private PropertyInfo parent;
@@ -57,13 +54,13 @@ public abstract class PropertyInfo<V extends ValueInfo> {
   private final V value;
 
   PropertyInfo(
-      BeanInfo bean,
+      BeanInfo owner,
       PropertyInfo parent,
       String name,
       MethodInfo getter,
       MethodInfo setter,
       V value) {
-    this.bean = bean;
+    this.owner = owner;
     this.parent = parent;
     this.name = name;
     this.getter = getter;
@@ -75,8 +72,8 @@ public abstract class PropertyInfo<V extends ValueInfo> {
     return value;
   }
 
-  public BeanInfo getBean() {
-    return bean;
+  public BeanInfo getOwner() {
+    return owner;
   }
 
   public PropertyInfo getParent() {

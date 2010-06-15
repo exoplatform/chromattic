@@ -17,43 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
-
-import org.chromattic.metamodel.bean2.PropertyInfo;
-import org.chromattic.metamodel.bean2.ValueInfo;
+package org.chromattic.metamodel.bean2;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyMapping<P extends PropertyInfo<V>, V extends ValueInfo> {
-
-  /** The optional parent. */
-  PropertyMapping parent;
-
-  /** . */
-  final P property;
-
-  public PropertyMapping(P property) {
-    this.property = property;
-  }
-
-  public PropertyMapping getParent() {
-    return parent;
-  }
-
-  public String getName() {
-    return property.getName();
-  }
-
-  public P getProperty() {
-    return property;
-  }
-
-  public V getValue() {
-    return property.getValue();
-  }
-
-  public abstract void accept(MappingVisitor visitor);
-
+public enum AccessMode {
+  READ_ONLY, READ_WRITE, WRITE_ONLY
 }

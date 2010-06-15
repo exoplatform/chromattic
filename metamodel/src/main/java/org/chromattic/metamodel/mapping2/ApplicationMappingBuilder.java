@@ -339,6 +339,14 @@ public class ApplicationMappingBuilder {
           }
         }
 
+        // Resolve parent property without any check for now
+        PropertyInfo parentProperty = property.getParent();
+        if (parentProperty != null) {
+          BeanInfo ancestor = parentProperty.getOwner();
+          BeanMapping ancestorMapping = resolve(ancestor);
+          mapping.parent = ancestorMapping.properties.get(parentProperty.getName());
+        }
+
         //
         properties.put(mapping.property.getName(), mapping);
       }
@@ -369,9 +377,9 @@ public class ApplicationMappingBuilder {
       PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(propertyAnnotation.type());
 
       //
-      SimpleTypeMapping abc = typeResolver.resolveType(property.getValue().getType(), propertyMetaType);
+      SimpleTypeMapping abc = typeResolver.resolveType(property.getValue().getDeclaredType(), propertyMetaType);
       if (abc == null) {
-        throw new UnsupportedOperationException("No simple type mapping for " + property.getValue().getType());
+        throw new UnsupportedOperationException("No simple type mapping for " + property.getValue().getDeclaredType());
       }
 
       //

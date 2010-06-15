@@ -28,7 +28,7 @@ import org.reflext.api.TypeInfo;
  */
 public class SimpleValueInfo extends ValueInfo {
 
-  public SimpleValueInfo(TypeInfo type, ClassTypeInfo classType) {
-    super(type, classType);
+  public SimpleValueInfo(TypeInfo declaredType, ClassTypeInfo classType) {
+    super(declaredType, classType);
   }
 }

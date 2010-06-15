@@ -31,8 +31,8 @@ public class BeanValueInfo extends ValueInfo {
   /** . */
   private final BeanInfo bean;
 
-  public BeanValueInfo(TypeInfo type, ClassTypeInfo classType, BeanInfo bean) {
-    super(type, classType);
+  public BeanValueInfo(TypeInfo declaredType, ClassTypeInfo classType, BeanInfo bean) {
+    super(declaredType, classType);
     this.bean = bean;
   }
 

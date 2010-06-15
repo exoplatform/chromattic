@@ -28,19 +28,19 @@ import org.reflext.api.TypeInfo;
  */
 public abstract class ValueInfo {
 
-  /** The property type. */
-  private TypeInfo type;
+  /** The property type as declared originally. */
+  private TypeInfo declaredType;
 
   /** The property class type. */
   private ClassTypeInfo classType;
 
-  protected ValueInfo(TypeInfo type, ClassTypeInfo classType) {
-    this.type = type;
+  protected ValueInfo(TypeInfo declaredType, ClassTypeInfo classType) {
+    this.declaredType = declaredType;
     this.classType = classType;
   }
 
-  public TypeInfo getType() {
-    return type;
+  public TypeInfo getDeclaredType() {
+    return declaredType;
   }
 
   public ClassTypeInfo getClassType() {
