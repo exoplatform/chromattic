@@ -29,6 +29,7 @@ import org.reflext.jlr.JavaLangReflectReflectionModel;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -526,5 +527,43 @@ public class BuilderTestCase extends TestCase {
 //    assertNotNull(bp.getGetter());
 //    assertSame(bi.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter());
 //    assertNull(bp.getSetter());
+  }
+
+  public void testSimplePropertyList() throws Exception {
+    
+    class A {
+      public List<String> getA() { return null; }
+    }
+
+    //
+    BeanInfoBuilder builder = new BeanInfoBuilder();
+    ClassTypeInfo a = (ClassTypeInfo)domain.resolve(A.class);
+    Map<ClassTypeInfo, BeanInfo> beans = builder.build(Collections.set(a));
+    BeanInfo ai = beans.get(a);
+
+    //
+    MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
+    assertEquals(MultiValueKind.LIST, cp.getKind());
+    SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
+    assertEquals(domain.resolve(String.class), value.getType());
+  }
+
+  public void testSimplePropertyArray() throws Exception {
+
+    class A {
+      public String[] getA() { return null; }
+    }
+
+    //
+    BeanInfoBuilder builder = new BeanInfoBuilder();
+    ClassTypeInfo a = (ClassTypeInfo)domain.resolve(A.class);
+    Map<ClassTypeInfo, BeanInfo> beans = builder.build(Collections.set(a));
+    BeanInfo ai = beans.get(a);
+
+    //
+    MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
+    assertEquals(MultiValueKind.ARRAY, cp.getKind());
+    SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
+    assertEquals(domain.resolve(String.class), value.getType());
   }
 }

@@ -19,17 +19,10 @@
 
 package org.chromattic.metamodel.typegen.property;
 
-import junit.framework.TestCase;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
-import org.chromattic.metamodel.typegen.TypeGen;
 import org.chromattic.metamodel.typegen.TypeGenTestCase;
-import org.chromattic.metamodel.typegen.onetoone.hierarchical.A1;
-import org.chromattic.metamodel.typegen.onetoone.hierarchical.A2;
-import org.chromattic.metamodel.typegen.onetoone.hierarchical.B1;
-import org.chromattic.metamodel.typegen.onetoone.hierarchical.B2;
-import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
 import java.util.Map;
@@ -41,8 +34,8 @@ import java.util.Map;
 public class PropertyTestCase extends TypeGenTestCase {
 
   public void testProperty() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(A.class);
-    NodeType aNT = a.get(A.class);
+    Map<Class<?>, NodeType> a = assertValid(A1.class);
+    NodeType aNT = a.get(A1.class);
     assertEquals(Collections.<String>set("string"), aNT.getPropertyDefinitions().keySet());
     PropertyDefinition stringPD = aNT.getPropertyDefinition("string");
     assertEquals("string", stringPD.getName());
@@ -51,8 +44,8 @@ public class PropertyTestCase extends TypeGenTestCase {
   }
 
   public void testDefaultValues() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(B.class);
-    NodeType bNT = a.get(B.class);
+    Map<Class<?>, NodeType> a = assertValid(A2.class);
+    NodeType bNT = a.get(A2.class);
     assertEquals(Collections.<String>set("string"), bNT.getPropertyDefinitions().keySet());
     PropertyDefinition stringPD = bNT.getPropertyDefinition("string");
     assertEquals("string", stringPD.getName());

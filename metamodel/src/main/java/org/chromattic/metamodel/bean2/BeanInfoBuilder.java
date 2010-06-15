@@ -276,6 +276,15 @@ public class BeanInfoBuilder {
                       toBuildEntry.getValue().setter,
                       collectionKind,
                       new BeanValueInfo(type, Utils.resolveToClassType(bean.classType, type), relatedBean));
+                } else {
+                  property = new MultiValuedPropertyInfo<SimpleValueInfo>(
+                      bean,
+                      parentProperty,
+                      toBuildEntry.getKey(),
+                      toBuildEntry.getValue().getter,
+                      toBuildEntry.getValue().setter,
+                      collectionKind,
+                      new SimpleValueInfo(elementType, Utils.resolveToClassType(bean.classType, elementType)));
                 }
               }
             }
@@ -290,9 +299,27 @@ public class BeanInfoBuilder {
               case FLOAT:
               case LONG:
               case INT:
-
+                property = new MultiValuedPropertyInfo<SimpleValueInfo>(
+                    bean,
+                    parentProperty,
+                    toBuildEntry.getKey(),
+                    toBuildEntry.getValue().getter,
+                    toBuildEntry.getValue().setter,
+                    MultiValueKind.ARRAY,
+                    new SimpleValueInfo(componentSimpleType, componentSimpleType));
+                break;
+              default:
+                break;
             }
-            throw new UnsupportedOperationException();
+          } else {
+            property = new MultiValuedPropertyInfo<SimpleValueInfo>(
+                bean,
+                parentProperty,
+                toBuildEntry.getKey(),
+                toBuildEntry.getValue().getter,
+                toBuildEntry.getValue().setter,
+                MultiValueKind.ARRAY,
+                new SimpleValueInfo(componentType, Utils.resolveToClassType(bean.classType, componentType)));
           }
         } else if (resolvedType instanceof ClassTypeInfo) {
           BeanInfo related = resolve((ClassTypeInfo)resolvedType);

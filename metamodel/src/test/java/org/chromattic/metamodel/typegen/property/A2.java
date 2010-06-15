@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.typegen.property;
 
+import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
@@ -26,10 +27,11 @@ import org.chromattic.api.annotations.Property;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "a")
-public abstract class A {
+@PrimaryType(name = "a2")
+public abstract class A2 {
 
   @Property(name = "string")
+  @DefaultValue("foo")
   public abstract String getString();
 
 }

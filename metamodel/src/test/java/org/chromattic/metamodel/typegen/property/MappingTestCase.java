@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.typegen.property;
 
+import org.chromattic.metamodel.bean2.MultiValueKind;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping2.BeanMapping;
@@ -35,9 +36,9 @@ import java.util.Map;
 public class MappingTestCase extends AbstractMappingTestCase {
 
 
-  public void testA() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(A.class);
-    BeanMapping mapping = mappings.get(A.class);
+  public void testA1() throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(A1.class);
+    BeanMapping mapping = mappings.get(A1.class);
     ValueMapping.Single stringMapping = mapping.getPropertyMapping("string", ValueMapping.Single.class);
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
@@ -46,14 +47,62 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("string", stringMapping.getName());
   }
 
-  public void testB() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(B.class);
-    BeanMapping mapping = mappings.get(B.class);
+  public void testA2() throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(A2.class);
+    BeanMapping mapping = mappings.get(A2.class);
     ValueMapping.Single stringMapping = mapping.getPropertyMapping("string", ValueMapping.Single.class);
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
     assertEquals(Arrays.asList("foo"), propertyDefinition.getDefaultValue());
     assertEquals(PropertyMetaType.STRING, propertyDefinition.getMetaType());
     assertEquals("string", stringMapping.getName());
+  }
+
+  public void testB1() throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(B1.class);
+    BeanMapping mapping = mappings.get(B1.class);
+    ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
+    assertEquals(MultiValueKind.LIST, stringMapping.getProperty().getKind());
+    PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
+    assertEquals("strings", propertyDefinition.getName());
+    assertEquals(null, propertyDefinition.getDefaultValue());
+    assertEquals(PropertyMetaType.STRING, propertyDefinition.getMetaType());
+    assertEquals("strings", stringMapping.getName());
+  }
+
+  public void testB2() throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(B2.class);
+    BeanMapping mapping = mappings.get(B2.class);
+    ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
+    assertEquals(MultiValueKind.LIST, stringMapping.getProperty().getKind());
+    PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
+    assertEquals("strings", propertyDefinition.getName());
+    assertEquals(Arrays.asList("foo","bar"), propertyDefinition.getDefaultValue());
+    assertEquals(PropertyMetaType.STRING, propertyDefinition.getMetaType());
+    assertEquals("strings", stringMapping.getName());
+  }
+
+  public void testC1() throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(C1.class);
+    BeanMapping mapping = mappings.get(C1.class);
+    ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
+    assertEquals(MultiValueKind.ARRAY, stringMapping.getProperty().getKind());
+    PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
+    assertEquals("strings", propertyDefinition.getName());
+    assertEquals(null, propertyDefinition.getDefaultValue());
+    assertEquals(PropertyMetaType.STRING, propertyDefinition.getMetaType());
+    assertEquals("strings", stringMapping.getName());
+  }
+
+  public void testC2() throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(C2.class);
+    BeanMapping mapping = mappings.get(C2.class);
+    ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
+    assertEquals(MultiValueKind.ARRAY, stringMapping.getProperty().getKind());
+    PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
+    assertEquals("strings", propertyDefinition.getName());
+    assertEquals(Arrays.asList("foo","bar"), propertyDefinition.getDefaultValue());
+    assertEquals(PropertyMetaType.STRING, propertyDefinition.getMetaType());
+    assertEquals("strings", stringMapping.getName());
   }
 }
