@@ -25,11 +25,11 @@ import org.chromattic.metamodel.bean2.*;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>> extends PropertyMapping<P, BeanValueInfo> {
+public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>, R extends RelationshipMapping> extends PropertyMapping<P, BeanValueInfo> {
 
 
   /** The related property if any. */
-  RelationshipMapping related;
+  R related;
 
   public RelationshipMapping(P property) {
     super(property);
@@ -53,13 +53,13 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>>
 */
   }
 
-  public abstract static class OneToOne extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> {
+  public abstract static class OneToOne<R extends OneToOne> extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>, R> {
 
     protected OneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       super(property);
     }
 
-    public static class Hierarchic extends OneToOne {
+    public static class Hierarchic extends OneToOne<Hierarchic> {
 
       /** Owner / not owner. */
       final boolean owner;
@@ -83,25 +83,25 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>>
         return mappedBy;
       }
     }
-    public static class Embedded extends OneToOne {
+    public static class Embedded extends OneToOne<Embedded> {
       public Embedded(SingleValuedPropertyInfo<BeanValueInfo> property) {
         super(property);
       }
     }
   }
 
-  public abstract static class ManyToOne extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> {
+  public abstract static class ManyToOne<R extends OneToMany> extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>, R> {
 
     protected ManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       super(property);
     }
 
-    public static class Hierarchic extends ManyToOne {
+    public static class Hierarchic extends ManyToOne<OneToMany.Hierarchic> {
       public Hierarchic(SingleValuedPropertyInfo<BeanValueInfo> property) {
         super(property);
       }
     }
-    public static class Reference extends ManyToOne {
+    public static class Reference extends ManyToOne<OneToMany.Reference> {
 
       /** Mapped by value. */
       final String mappedBy;
@@ -119,18 +119,18 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>>
     }
   }
 
-  public abstract static class OneToMany extends RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> {
+  public abstract static class OneToMany<R extends ManyToOne> extends RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>, R> {
 
     protected OneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
       super(property);
     }
 
-    public static class Hierarchic extends OneToMany {
+    public static class Hierarchic extends OneToMany<ManyToOne.Hierarchic> {
       public Hierarchic(MultiValuedPropertyInfo<BeanValueInfo> property) {
         super(property);
       }
     }
-    public static class Reference extends OneToMany {
+    public static class Reference extends OneToMany<ManyToOne.Reference> {
 
       /** Mapped by value. */
       final String mappedBy;

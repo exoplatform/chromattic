@@ -65,7 +65,7 @@ public class ApplicationMappingBuilder {
     return classTypeMappings;
   }
 
-  private static abstract class RelationshipResolver<F extends RelationshipMapping<?>, T extends RelationshipMapping<?>> {
+  private static abstract class RelationshipResolver<F extends RelationshipMapping<?, T>, T extends RelationshipMapping<?, F>> {
 
     /** . */
     final Class<F> fromClass;
@@ -85,15 +85,15 @@ public class ApplicationMappingBuilder {
     void resolve() {
       for (BeanMapping beanMapping : beanMappings.values()) {
         for (PropertyMapping propertyMapping : beanMapping.getProperties().values()) {
-          if (propertyMapping instanceof RelationshipMapping<?>) {
-            RelationshipMapping<?> relationshipMapping = (RelationshipMapping<?>)propertyMapping;
+          if (propertyMapping instanceof RelationshipMapping<?, ?>) {
+            RelationshipMapping<?, ?> relationshipMapping = (RelationshipMapping<?, ?>)propertyMapping;
             BeanInfo relatedBean = relationshipMapping.getRelatedBean();
             BeanMapping relatedBeanMapping = beanMappings.get(relatedBean);
             if (fromClass.isInstance(relationshipMapping)) {
               F fromRelationship = fromClass.cast(relationshipMapping);
               for (PropertyMapping relatedBeanPropertyMapping : relatedBeanMapping.getProperties().values()) {
                 if (relatedBeanPropertyMapping instanceof RelationshipMapping) {
-                  RelationshipMapping<?> relatedBeanRelationshipMapping = (RelationshipMapping<?>)relatedBeanPropertyMapping;
+                  RelationshipMapping<?, ?> relatedBeanRelationshipMapping = (RelationshipMapping<?, ?>)relatedBeanPropertyMapping;
                   if (toClass.isInstance(relatedBeanRelationshipMapping)) {
                     T toRelationship = toClass.cast(relatedBeanRelationshipMapping);
                     if (fromRelationship != toRelationship) {
@@ -101,7 +101,7 @@ public class ApplicationMappingBuilder {
                         if (relationshipMapping.related != null) {
                           throw new UnsupportedOperationException();
                         }
-                        relationshipMapping.related = relatedBeanRelationshipMapping;
+                        fromRelationship.related = toRelationship;
                         break;
                       }
                     }
@@ -368,52 +368,52 @@ public class ApplicationMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> createReferenceOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.OneToMany.Reference createReferenceOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new UnsupportedOperationException();
       }
-      RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
+      RelationshipMapping.OneToMany.Reference mapping;
       mapping = new RelationshipMapping.OneToMany.Reference(property, mappedBy.value());
       return mapping;
     }
 
-    private RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
-      RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
+    private RelationshipMapping.OneToMany.Hierarchic createHierarchicOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
+      RelationshipMapping.OneToMany.Hierarchic mapping;
       mapping = new RelationshipMapping.OneToMany.Hierarchic(property);
       return mapping;
     }
 
-    private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createReferenceManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.ManyToOne.Reference createReferenceManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new UnsupportedOperationException();
       }
-      RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
+      RelationshipMapping.ManyToOne.Reference mapping;
       mapping = new RelationshipMapping.ManyToOne.Reference(property, mappedBy.value());
       return mapping;
     }
 
-    private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
-      RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
+    private RelationshipMapping.ManyToOne.Hierarchic createHierarchicManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+      RelationshipMapping.ManyToOne.Hierarchic mapping;
       mapping = new RelationshipMapping.ManyToOne.Hierarchic(property);
       return mapping;
     }
 
-    private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createEmbeddedOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
-      RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
+    private RelationshipMapping.OneToOne.Embedded createEmbeddedOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+      RelationshipMapping.OneToOne.Embedded mapping;
       mapping = new RelationshipMapping.OneToOne.Embedded(property);
       return mapping;
     }
 
-    private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToOne(
+    private RelationshipMapping.OneToOne.Hierarchic createHierarchicOneToOne(
         SingleValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new UnsupportedOperationException();
       }
       boolean owner = property.getAnnotation(Owner.class) != null;
-      RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
+      RelationshipMapping.OneToOne.Hierarchic mapping;
       mapping = new RelationshipMapping.OneToOne.Hierarchic(property, owner, mappedBy.value());
       return mapping;
     }
