@@ -19,11 +19,6 @@
 
 package org.chromattic.metamodel.mapping2;
 
-import org.chromattic.metamodel.bean2.BeanValueInfo;
-import org.chromattic.metamodel.bean2.PropertyInfo;
-import org.chromattic.metamodel.bean2.SimpleValueInfo;
-import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -34,31 +29,26 @@ public class MappingVisitor {
 
   public void startMapping(BeanMapping mapping) { }
 
-  public void valueMapping(PropertyInfo<SimpleValueInfo> property, PropertyDefinitionMapping definition) { }
+  public void singleValueMapping(ValueMapping.Single mapping) { }
 
-  public void oneToOneHierarchic(PropertyInfo<BeanValueInfo> property, String mappedBy, boolean owner) { }
+  public void multiValueMapping(ValueMapping.Multi mapping) { }
 
+  public void oneToOneHierarchic(RelationshipMapping.OneToOne.Hierarchic mapping) { }
+
+  public void oneToManyHierarchic(RelationshipMapping.OneToMany.Hierarchic mapping) { }
+
+  public void manyToOneHierarchic(RelationshipMapping.ManyToOne.Hierarchic mapping) { }
+
+  public void oneToManyReference(RelationshipMapping.OneToMany.Reference mapping) { }
+
+  public void manyRoOneReference(RelationshipMapping.ManyToOne.Reference mapping) { }
+
+  public void oneToOneEmbedded(RelationshipMapping.OneToOne.Embedded mapping) { }
 
 /*
 
 
   public void propertyMapMapping(ClassTypeInfo definer, PropertyMetaType metaType, boolean skip) { }
-
-  public void oneToManyByReference(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping, boolean skip) { }
-
-  public void oneToManyByPath(ClassTypeInfo definer, String relatedName, NodeTypeMapping relatedMapping, boolean skip) { }
-
-  public void oneToManyHierarchic(NodeTypeMapping definer, String propertyName, NodeTypeMapping relatedMapping) { }
-
-  public void manyToOneByReference(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean skip) { }
-
-  public void manyToOneByPath(ClassTypeInfo definer, String name, NodeTypeMapping relatedMapping, boolean skip) { }
-
-  public void manyToOneHierarchic(ClassTypeInfo definer, NodeTypeMapping relatedMapping) { }
-
-  public void oneToOneHierarchic(NodeTypeMapping definerMapping, String name, NodeTypeMapping relatedMapping, boolean owning, Set<AttributeOption> attributes, String propertyName) { }
-
-  public void oneToOneEmbedded(ClassTypeInfo definer, NodeTypeMapping relatedMapping, boolean owner) { }
 */
   public void endMapping() { }
 

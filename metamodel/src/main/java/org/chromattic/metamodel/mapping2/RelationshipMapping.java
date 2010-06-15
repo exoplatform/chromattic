@@ -43,16 +43,6 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     return related;
   }
 
-  @Override
-  public void accept(MappingVisitor visitor) {
-/*
-    if (relationship instanceof Relationship.OneToOne.Hierarchic) {
-      Relationship.OneToOne.Hierarchic a = (Relationship.OneToOne.Hierarchic)relationship;
-      visitor.oneToOneHierarchic(property, a.mappedBy, a.owner);
-    }
-*/
-  }
-
   public abstract static class OneToOne<R extends OneToOne> extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>, R> {
 
     protected OneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
@@ -82,10 +72,20 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       public String getMappedBy() {
         return mappedBy;
       }
+
+      @Override
+      public void accept(MappingVisitor visitor) {
+        visitor.oneToOneHierarchic(this);
+      }
     }
     public static class Embedded extends OneToOne<Embedded> {
       public Embedded(SingleValuedPropertyInfo<BeanValueInfo> property) {
         super(property);
+      }
+
+      @Override
+      public void accept(MappingVisitor visitor) {
+        visitor.oneToOneEmbedded(this);
       }
     }
   }
@@ -100,7 +100,13 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       public Hierarchic(SingleValuedPropertyInfo<BeanValueInfo> property) {
         super(property);
       }
+
+      @Override
+      public void accept(MappingVisitor visitor) {
+        visitor.manyToOneHierarchic(this);
+      }
     }
+
     public static class Reference extends ManyToOne<OneToMany.Reference> {
 
       /** Mapped by value. */
@@ -116,6 +122,11 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       public String getMappedBy() {
         return mappedBy;
       }
+
+      @Override
+      public void accept(MappingVisitor visitor) {
+        visitor.manyRoOneReference(this);
+      }
     }
   }
 
@@ -128,6 +139,11 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     public static class Hierarchic extends OneToMany<ManyToOne.Hierarchic> {
       public Hierarchic(MultiValuedPropertyInfo<BeanValueInfo> property) {
         super(property);
+      }
+
+      @Override
+      public void accept(MappingVisitor visitor) {
+        visitor.oneToManyHierarchic(this);
       }
     }
     public static class Reference extends OneToMany<ManyToOne.Reference> {
@@ -144,6 +160,11 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
 
       public String getMappedBy() {
         return mappedBy;
+      }
+
+      @Override
+      public void accept(MappingVisitor visitor) {
+        visitor.oneToManyReference(this);
       }
     }
   }

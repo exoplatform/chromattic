@@ -19,15 +19,17 @@
 
 package org.chromattic.metamodel.mapping2;
 
+import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean2.PropertyInfo;
 import org.chromattic.metamodel.bean2.SimpleValueInfo;
+import org.chromattic.metamodel.bean2.SingleValuedPropertyInfo;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> extends PropertyMapping<P, SimpleValueInfo> {
+public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> extends PropertyMapping<P, SimpleValueInfo> {
 
   /** . */
   final PropertyDefinitionMapping propertyDefinition;
@@ -43,8 +45,26 @@ public class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> extends Prope
     return propertyDefinition;
   }
 
-  @Override
-  public void accept(MappingVisitor visitor) {
-    visitor.valueMapping(property, propertyDefinition);
+  public static class Single extends ValueMapping<SingleValuedPropertyInfo<SimpleValueInfo>> {
+    public Single(SingleValuedPropertyInfo<SimpleValueInfo> property, PropertyDefinitionMapping propertyDefinition) {
+      super(property, propertyDefinition);
+    }
+
+    @Override
+    public void accept(MappingVisitor visitor) {
+      visitor.singleValueMapping(this);
+    }
   }
+
+  public static class Multi extends ValueMapping<MultiValuedPropertyInfo<SimpleValueInfo>> {
+    public Multi(MultiValuedPropertyInfo<SimpleValueInfo> property, PropertyDefinitionMapping propertyDefinition) {
+      super(property, propertyDefinition);
+    }
+
+    @Override
+    public void accept(MappingVisitor visitor) {
+      visitor.multiValueMapping(this);
+    }
+  }
+
 }

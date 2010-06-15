@@ -363,9 +363,13 @@ public class ApplicationMappingBuilder {
           defaultValueList);
 
       //
-      PropertyMapping<P, SimpleValueInfo> mapping;
-      mapping = new ValueMapping<P>(property, propertyDefinition);
-      return mapping;
+      if (property instanceof SingleValuedPropertyInfo<?>) {
+        return (PropertyMapping<P, SimpleValueInfo>)new ValueMapping.Single((SingleValuedPropertyInfo<SimpleValueInfo>)property, propertyDefinition);
+      } else if (property instanceof MultiValuedPropertyInfo<?>) {
+        return (PropertyMapping<P, SimpleValueInfo>)new ValueMapping.Multi((MultiValuedPropertyInfo<SimpleValueInfo>)property, propertyDefinition);
+      } else {
+        throw new AssertionError();
+      }
     }
 
     private RelationshipMapping.OneToMany.Reference createReferenceOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
