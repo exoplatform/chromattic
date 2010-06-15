@@ -65,7 +65,7 @@ public class ApplicationMappingBuilder {
     return classTypeMappings;
   }
 
-  private static abstract class RelationshipResolver<F extends Relationship, T extends Relationship> {
+  private static abstract class RelationshipResolver<F extends RelationshipMapping<?>, T extends RelationshipMapping<?>> {
 
     /** . */
     final Class<F> fromClass;
@@ -89,15 +89,13 @@ public class ApplicationMappingBuilder {
             RelationshipMapping<?> relationshipMapping = (RelationshipMapping<?>)propertyMapping;
             BeanInfo relatedBean = relationshipMapping.getRelatedBean();
             BeanMapping relatedBeanMapping = beanMappings.get(relatedBean);
-            Relationship relationship = relationshipMapping.getRelationship();
-            if (fromClass.isInstance(relationship)) {
-              F fromRelationship = fromClass.cast(relationship);
+            if (fromClass.isInstance(relationshipMapping)) {
+              F fromRelationship = fromClass.cast(relationshipMapping);
               for (PropertyMapping relatedBeanPropertyMapping : relatedBeanMapping.getProperties().values()) {
                 if (relatedBeanPropertyMapping instanceof RelationshipMapping) {
                   RelationshipMapping<?> relatedBeanRelationshipMapping = (RelationshipMapping<?>)relatedBeanPropertyMapping;
-                  Relationship relatedBeanRelationship = relatedBeanRelationshipMapping.getRelationship();
-                  if (toClass.isInstance(relatedBeanRelationship)) {
-                    T toRelationship = toClass.cast(relatedBeanRelationship);
+                  if (toClass.isInstance(relatedBeanRelationshipMapping)) {
+                    T toRelationship = toClass.cast(relatedBeanRelationshipMapping);
                     if (fromRelationship != toRelationship) {
                       if (resolves(fromRelationship, toRelationship)) {
                         if (relationshipMapping.related != null) {
@@ -120,62 +118,62 @@ public class ApplicationMappingBuilder {
 
   }
 
-  private static class OneToOneHierarchicRelationshipResolver extends RelationshipResolver<Relationship.OneToOne.Hierarchic, Relationship.OneToOne.Hierarchic> {
+  private static class OneToOneHierarchicRelationshipResolver extends RelationshipResolver<RelationshipMapping.OneToOne.Hierarchic, RelationshipMapping.OneToOne.Hierarchic> {
 
     private OneToOneHierarchicRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(Relationship.OneToOne.Hierarchic.class, Relationship.OneToOne.Hierarchic.class, beanMappings);
+      super(RelationshipMapping.OneToOne.Hierarchic.class, RelationshipMapping.OneToOne.Hierarchic.class, beanMappings);
     }
 
     @Override
-    protected boolean resolves(Relationship.OneToOne.Hierarchic from, Relationship.OneToOne.Hierarchic to) {
+    protected boolean resolves(RelationshipMapping.OneToOne.Hierarchic from, RelationshipMapping.OneToOne.Hierarchic to) {
       return from.mappedBy.equals(to.mappedBy) && from.owner != to.owner;
     }
   }
 
-  private static class OneToManyHierarchicRelationshipResolver extends RelationshipResolver<Relationship.OneToMany.Hierarchic, Relationship.ManyToOne.Hierarchic> {
+  private static class OneToManyHierarchicRelationshipResolver extends RelationshipResolver<RelationshipMapping.OneToMany.Hierarchic, RelationshipMapping.ManyToOne.Hierarchic> {
 
     private OneToManyHierarchicRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(Relationship.OneToMany.Hierarchic.class, Relationship.ManyToOne.Hierarchic.class, beanMappings);
+      super(RelationshipMapping.OneToMany.Hierarchic.class, RelationshipMapping.ManyToOne.Hierarchic.class, beanMappings);
     }
 
     @Override
-    protected boolean resolves(Relationship.OneToMany.Hierarchic from, Relationship.ManyToOne.Hierarchic to) {
+    protected boolean resolves(RelationshipMapping.OneToMany.Hierarchic from, RelationshipMapping.ManyToOne.Hierarchic to) {
       return true;
     }
   }
 
-  private static class ManyToOneHierarchicRelationshipResolver extends RelationshipResolver<Relationship.ManyToOne.Hierarchic, Relationship.OneToMany.Hierarchic> {
+  private static class ManyToOneHierarchicRelationshipResolver extends RelationshipResolver<RelationshipMapping.ManyToOne.Hierarchic, RelationshipMapping.OneToMany.Hierarchic> {
 
     private ManyToOneHierarchicRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(Relationship.ManyToOne.Hierarchic.class, Relationship.OneToMany.Hierarchic.class, beanMappings);
+      super(RelationshipMapping.ManyToOne.Hierarchic.class, RelationshipMapping.OneToMany.Hierarchic.class, beanMappings);
     }
 
     @Override
-    protected boolean resolves(Relationship.ManyToOne.Hierarchic from, Relationship.OneToMany.Hierarchic to) {
+    protected boolean resolves(RelationshipMapping.ManyToOne.Hierarchic from, RelationshipMapping.OneToMany.Hierarchic to) {
       return true;
     }
   }
 
-  private static class OneToManyReferenceRelationshipResolver extends RelationshipResolver<Relationship.OneToMany.Reference, Relationship.ManyToOne.Reference> {
+  private static class OneToManyReferenceRelationshipResolver extends RelationshipResolver<RelationshipMapping.OneToMany.Reference, RelationshipMapping.ManyToOne.Reference> {
 
     private OneToManyReferenceRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(Relationship.OneToMany.Reference.class, Relationship.ManyToOne.Reference.class, beanMappings);
+      super(RelationshipMapping.OneToMany.Reference.class, RelationshipMapping.ManyToOne.Reference.class, beanMappings);
     }
 
     @Override
-    protected boolean resolves(Relationship.OneToMany.Reference from, Relationship.ManyToOne.Reference to) {
+    protected boolean resolves(RelationshipMapping.OneToMany.Reference from, RelationshipMapping.ManyToOne.Reference to) {
       return from.getMappedBy().equals(to.getMappedBy());
     }
   }
 
-  private static class ManyToOneReferenceRelationshipResolver extends RelationshipResolver<Relationship.ManyToOne.Reference, Relationship.OneToMany.Reference> {
+  private static class ManyToOneReferenceRelationshipResolver extends RelationshipResolver<RelationshipMapping.ManyToOne.Reference, RelationshipMapping.OneToMany.Reference> {
 
     private ManyToOneReferenceRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(Relationship.ManyToOne.Reference.class, Relationship.OneToMany.Reference.class, beanMappings);
+      super(RelationshipMapping.ManyToOne.Reference.class, RelationshipMapping.OneToMany.Reference.class, beanMappings);
     }
 
     @Override
-    protected boolean resolves(Relationship.ManyToOne.Reference from, Relationship.OneToMany.Reference to) {
+    protected boolean resolves(RelationshipMapping.ManyToOne.Reference from, RelationshipMapping.OneToMany.Reference to) {
       return from.getMappedBy().equals(to.getMappedBy());
     }
   }
@@ -376,13 +374,13 @@ public class ApplicationMappingBuilder {
         throw new UnsupportedOperationException();
       }
       RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Reference(mappedBy.value()));
+      mapping = new RelationshipMapping.OneToMany.Reference(property, mappedBy.value());
       return mapping;
     }
 
     private RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> createHierarchicOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToMany.Hierarchic());
+      mapping = new RelationshipMapping.OneToMany.Hierarchic(property);
       return mapping;
     }
 
@@ -392,19 +390,19 @@ public class ApplicationMappingBuilder {
         throw new UnsupportedOperationException();
       }
       RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Reference(mappedBy.value()));
+      mapping = new RelationshipMapping.ManyToOne.Reference(property, mappedBy.value());
       return mapping;
     }
 
     private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createHierarchicManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.ManyToOne.Hierarchic());
+      mapping = new RelationshipMapping.ManyToOne.Hierarchic(property);
       return mapping;
     }
 
     private RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> createEmbeddedOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, new Relationship.OneToOne.Embedded());
+      mapping = new RelationshipMapping.OneToOne.Embedded(property);
       return mapping;
     }
 
@@ -416,8 +414,7 @@ public class ApplicationMappingBuilder {
       }
       boolean owner = property.getAnnotation(Owner.class) != null;
       RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> mapping;
-      Relationship.OneToOne.Hierarchic relationship = new Relationship.OneToOne.Hierarchic(owner, mappedBy.value());
-      mapping = new RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>>(property, relationship);
+      mapping = new RelationshipMapping.OneToOne.Hierarchic(property, owner, mappedBy.value());
       return mapping;
     }
   }

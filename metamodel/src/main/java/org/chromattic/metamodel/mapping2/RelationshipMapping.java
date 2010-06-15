@@ -19,32 +19,20 @@
 
 package org.chromattic.metamodel.mapping2;
 
-import org.chromattic.metamodel.bean2.BeanInfo;
-import org.chromattic.metamodel.bean2.BeanValueInfo;
-import org.chromattic.metamodel.bean2.PropertyInfo;
+import org.chromattic.metamodel.bean2.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>> extends PropertyMapping<P, BeanValueInfo> {
+public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>> extends PropertyMapping<P, BeanValueInfo> {
 
 
   /** The related property if any. */
   RelationshipMapping related;
 
-  /** . */
-  private final Relationship<P> relationship;
-
-  public RelationshipMapping(P property, Relationship<P> relationship) {
+  public RelationshipMapping(P property) {
     super(property);
-
-    //
-    this.relationship = relationship;
-  }
-
-  public Relationship<P> getRelationship() {
-    return relationship;
   }
 
   public BeanInfo getRelatedBean() {
@@ -57,9 +45,106 @@ public class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>> extends 
 
   @Override
   public void accept(MappingVisitor visitor) {
+/*
     if (relationship instanceof Relationship.OneToOne.Hierarchic) {
       Relationship.OneToOne.Hierarchic a = (Relationship.OneToOne.Hierarchic)relationship;
       visitor.oneToOneHierarchic(property, a.mappedBy, a.owner);
+    }
+*/
+  }
+
+  public abstract static class OneToOne extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> {
+
+    protected OneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+      super(property);
+    }
+
+    public static class Hierarchic extends OneToOne {
+
+      /** Owner / not owner. */
+      final boolean owner;
+
+      /** Mapped by value. */
+      final String mappedBy;
+
+      public Hierarchic(SingleValuedPropertyInfo<BeanValueInfo> property, boolean owner, String mappedBy) {
+        super(property);
+
+        //
+        this.owner = owner;
+        this.mappedBy = mappedBy;
+      }
+
+      public boolean isOwner() {
+        return owner;
+      }
+
+      public String getMappedBy() {
+        return mappedBy;
+      }
+    }
+    public static class Embedded extends OneToOne {
+      public Embedded(SingleValuedPropertyInfo<BeanValueInfo> property) {
+        super(property);
+      }
+    }
+  }
+
+  public abstract static class ManyToOne extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>> {
+
+    protected ManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+      super(property);
+    }
+
+    public static class Hierarchic extends ManyToOne {
+      public Hierarchic(SingleValuedPropertyInfo<BeanValueInfo> property) {
+        super(property);
+      }
+    }
+    public static class Reference extends ManyToOne {
+
+      /** Mapped by value. */
+      final String mappedBy;
+
+      public Reference(SingleValuedPropertyInfo<BeanValueInfo> property, String mappedBy) {
+        super(property);
+
+        //
+        this.mappedBy = mappedBy;
+      }
+
+      public String getMappedBy() {
+        return mappedBy;
+      }
+    }
+  }
+
+  public abstract static class OneToMany extends RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>> {
+
+    protected OneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
+      super(property);
+    }
+
+    public static class Hierarchic extends OneToMany {
+      public Hierarchic(MultiValuedPropertyInfo<BeanValueInfo> property) {
+        super(property);
+      }
+    }
+    public static class Reference extends OneToMany {
+
+      /** Mapped by value. */
+      final String mappedBy;
+
+      public Reference(MultiValuedPropertyInfo<BeanValueInfo> property, String mappedBy) {
+        super(property);
+
+        //
+        this.mappedBy = mappedBy;
+      }
+
+      public String getMappedBy() {
+        return mappedBy;
+      }
     }
   }
 }

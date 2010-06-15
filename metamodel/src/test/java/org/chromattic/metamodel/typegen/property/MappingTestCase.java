@@ -38,7 +38,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
   public void testA() throws Exception {
     Map<Class<?>, BeanMapping> mappings = assertValid(A.class);
     BeanMapping mapping = mappings.get(A.class);
-    ValueMapping<?> stringMapping = (ValueMapping<?>) mapping.getPropertyMapping("string");
+    ValueMapping<?> stringMapping = mapping.getPropertyMapping("string", ValueMapping.class);
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
     assertEquals(null, propertyDefinition.getDefaultValue());
@@ -49,7 +49,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
   public void testB() throws Exception {
     Map<Class<?>, BeanMapping> mappings = assertValid(B.class);
     BeanMapping mapping = mappings.get(B.class);
-    ValueMapping<?> stringMapping = (ValueMapping<?>) mapping.getPropertyMapping("string");
+    ValueMapping<?> stringMapping = mapping.getPropertyMapping("string", ValueMapping.class);
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
     assertEquals(Arrays.asList("foo"), propertyDefinition.getDefaultValue());

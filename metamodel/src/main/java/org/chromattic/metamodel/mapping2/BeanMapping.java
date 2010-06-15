@@ -50,8 +50,13 @@ public class BeanMapping {
     return properties;
   }
 
-  public PropertyMapping<?, ?> getPropertyMapping(String name) {
-    return properties.get(name);
+  public <M extends PropertyMapping<?, ?>> M getPropertyMapping(String name, Class<M> type) {
+    PropertyMapping<?, ?> mapping = properties.get(name);
+    if (type.isInstance(mapping)) {
+      return type.cast(mapping);
+    } else {
+      return null;
+    }
   }
 
   public void accept(MappingVisitor visitor) {

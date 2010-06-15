@@ -20,7 +20,6 @@
 package org.chromattic.metamodel.typegen.onetomany.hierarchical;
 
 import org.chromattic.metamodel.mapping2.BeanMapping;
-import org.chromattic.metamodel.mapping2.Relationship;
 import org.chromattic.metamodel.mapping2.RelationshipMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
@@ -36,8 +35,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     Map<Class<?>, BeanMapping> mappings = assertValid(A1.class, A2.class);
     BeanMapping _1 = mappings.get(A1.class);
     BeanMapping _2 = mappings.get(A2.class);
-    RelationshipMapping r1 = (RelationshipMapping)_1.getPropertyMapping("children");
-    Relationship.OneToMany.Hierarchic relationship = (Relationship.OneToMany.Hierarchic)r1.getRelationship();
+    RelationshipMapping.OneToMany.Hierarchic r1 = _1.getPropertyMapping("children", RelationshipMapping.OneToMany.Hierarchic.class);
     assertSame(_2.getBean(), r1.getRelatedBean());
     assertNull(r1.getRelatedMapping());
     assertEquals(0, _2.getProperties().size());
@@ -48,8 +46,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     BeanMapping _1 = mappings.get(B1.class);
     BeanMapping _2 = mappings.get(B2.class);
     assertEquals(0, _1.getProperties().size());
-    RelationshipMapping r2 = (RelationshipMapping)_2.getPropertyMapping("parent");
-    Relationship.ManyToOne.Hierarchic relationship = (Relationship.ManyToOne.Hierarchic)r2.getRelationship();
+    RelationshipMapping.ManyToOne.Hierarchic r2 = _2.getPropertyMapping("parent", RelationshipMapping.ManyToOne.Hierarchic.class);
     assertSame(_1.getBean(), r2.getRelatedBean());
     assertNull(r2.getRelatedMapping());
   }
@@ -58,10 +55,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
     Map<Class<?>, BeanMapping> mappings = assertValid(C1.class, C2.class);
     BeanMapping _1 = mappings.get(C1.class);
     BeanMapping _2 = mappings.get(C2.class);
-    RelationshipMapping r1 = (RelationshipMapping)_1.getPropertyMapping("children");
-    RelationshipMapping r2 = (RelationshipMapping)_2.getPropertyMapping("parent");
-    Relationship.OneToMany.Hierarchic o1 = (Relationship.OneToMany.Hierarchic)r1.getRelationship();
-    Relationship.ManyToOne.Hierarchic o2 = (Relationship.ManyToOne.Hierarchic) r2.getRelationship();
+    RelationshipMapping.OneToMany.Hierarchic r1 = _1.getPropertyMapping("children", RelationshipMapping.OneToMany.Hierarchic.class);
+    RelationshipMapping.ManyToOne.Hierarchic r2 = _2.getPropertyMapping("parent", RelationshipMapping.ManyToOne.Hierarchic.class);
     assertSame(_2.getBean(), r1.getRelatedBean());
     assertSame(_1.getBean(), r2.getRelatedBean());
     assertSame(r1, r2.getRelatedMapping());
@@ -71,13 +66,11 @@ public class MappingTestCase extends AbstractMappingTestCase {
   public void testD() {
     Map<Class<?>, BeanMapping> mappings = assertValid(D.class);
     BeanMapping _ = mappings.get(D.class);
-    RelationshipMapping child = (RelationshipMapping)_.getPropertyMapping("children");
-    RelationshipMapping parent = (RelationshipMapping)_.getPropertyMapping("parent");
-    Relationship.OneToMany.Hierarchic o1 = (Relationship.OneToMany.Hierarchic)child.getRelationship();
-    Relationship.ManyToOne.Hierarchic o2 = (Relationship.ManyToOne.Hierarchic)parent.getRelationship();
-    assertSame(_.getBean(), child.getRelatedBean());
-    assertSame(_.getBean(), parent.getRelatedBean());
-    assertSame(child, parent.getRelatedMapping());
-    assertSame(parent, child.getRelatedMapping());
+    RelationshipMapping.OneToMany.Hierarchic r1 = _.getPropertyMapping("children", RelationshipMapping.OneToMany.Hierarchic.class);
+    RelationshipMapping.ManyToOne.Hierarchic r2 = _.getPropertyMapping("parent", RelationshipMapping.ManyToOne.Hierarchic.class);
+    assertSame(_.getBean(), r1.getRelatedBean());
+    assertSame(_.getBean(), r2.getRelatedBean());
+    assertSame(r1, r2.getRelatedMapping());
+    assertSame(r2, r1.getRelatedMapping());
   }
 }
