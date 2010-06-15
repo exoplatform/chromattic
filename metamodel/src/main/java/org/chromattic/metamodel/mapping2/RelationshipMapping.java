@@ -39,7 +39,7 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     return property.getValue().getBean(); 
   }
 
-  public RelationshipMapping getRelatedMapping() {
+  public R getRelatedMapping() {
     return related;
   }
 
