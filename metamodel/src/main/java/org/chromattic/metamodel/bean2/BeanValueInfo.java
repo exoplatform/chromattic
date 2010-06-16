@@ -33,6 +33,8 @@ public class BeanValueInfo extends ValueInfo {
 
   public BeanValueInfo(TypeInfo declaredType, ClassTypeInfo classType, BeanInfo bean) {
     super(declaredType, classType);
+
+    //
     this.bean = bean;
   }
 

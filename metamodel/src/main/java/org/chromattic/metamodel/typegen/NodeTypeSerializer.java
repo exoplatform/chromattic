@@ -170,7 +170,7 @@ public abstract class NodeTypeSerializer {
 
     //
     startNodeType(
-      nodeType.mapping.getType().getName(),
+      nodeType.getClassName(),
       nodeType.getName(),
       nodeType.isMixin(),
       nodeType.isOrderable(),

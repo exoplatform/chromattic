@@ -19,17 +19,24 @@
 
 package org.chromattic.metamodel.mapping2;
 
+import org.chromattic.api.AttributeOption;
 import org.chromattic.api.annotations.*;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.metamodel.bean2.*;
+import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
+import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeResolver;
+import org.reflext.core.TypeResolverImpl;
+import org.reflext.jlr.JavaLangReflectReflectionModel;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -38,16 +45,39 @@ import java.util.*;
  */
 public class ApplicationMappingBuilder {
 
-
+  /** Used for retrieving {@code java.lang.Object} info. */
+  private final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
   public Map<ClassTypeInfo, BeanMapping> build(Set<ClassTypeInfo> classTypes) {
 
-    Collection<BeanInfo> beans = new BeanInfoBuilder().build(classTypes).values();
+    // Clone for modification
+    classTypes = new HashSet<ClassTypeInfo>(classTypes);
 
-    //
-    Context ctx = new Context(new SimpleTypeResolver(), new HashSet<BeanInfo>(beans));
+    // Get object type
+    ClassTypeInfo objectClassType = (ClassTypeInfo)domain.resolve(Object.class);
 
-    //
+    // Add object type
+    classTypes.add((ClassTypeInfo)domain.resolve(Object.class));
+
+    // Build beans
+    Map<ClassTypeInfo, BeanInfo> beans = new BeanInfoBuilder().build(classTypes);
+
+    // Remove object bean
+    BeanInfo objectBean = beans.remove(objectClassType);
+
+    // Create context
+    Context ctx = new Context(new SimpleTypeResolver(), new HashSet<BeanInfo>(beans.values()));
+
+    // Build object bean info ahead as it does not contain any annotation
+    BeanMapping objectMapping = new BeanMapping(
+        objectBean,
+        NodeTypeKind.PRIMARY,
+        "nt:base",
+        false,
+        true);
+    ctx.beanMappings.put(objectBean, objectMapping);
+
+    // Build mappings
     Map<BeanInfo, BeanMapping> beanMappings = ctx.build();
 
     // Resolve relationships
@@ -100,10 +130,10 @@ public class ApplicationMappingBuilder {
                     T toRelationship = toClass.cast(relatedBeanRelationshipMapping);
                     if (fromRelationship != toRelationship) {
                       if (resolves(fromRelationship, toRelationship)) {
-                        if (relationshipMapping.related != null) {
+                        if (relationshipMapping.relatedRelationshipMapping != null) {
                           throw new UnsupportedOperationException();
                         }
-                        fromRelationship.related = toRelationship;
+                        fromRelationship.relatedRelationshipMapping = toRelationship;
                         break;
                       }
                     }
@@ -213,7 +243,7 @@ public class ApplicationMappingBuilder {
       BeanMapping mapping = beanMappings.get(bean);
       if (mapping == null) {
         if (beans.remove(bean)) {
-          mapping = new BeanMapping(bean);
+          mapping = create(bean);
           beanMappings.put(bean, mapping);
           build(mapping);
         } else {
@@ -221,6 +251,39 @@ public class ApplicationMappingBuilder {
         }
       }
       return mapping;
+    }
+
+    private BeanMapping create(BeanInfo bean) {
+
+      Collection<? extends Annotation> annotations = bean.getAnnotations(PrimaryType.class, MixinType.class);
+      if (annotations.size() != 1) {
+        throw new InvalidMappingException(bean.getClassType(), "Class is not annotated with a primary type of mixin type");
+      }
+
+      //
+      Annotation mappingAnnotation = annotations.iterator().next();
+
+      //
+      NodeTypeKind nodeTypeKind;
+      String nodeTypeName;
+      boolean orderable;
+      boolean abstract_;
+      if (mappingAnnotation instanceof PrimaryType) {
+        PrimaryType primaryTypeAnnotation = (PrimaryType)mappingAnnotation;
+        nodeTypeKind = NodeTypeKind.PRIMARY;
+        nodeTypeName = primaryTypeAnnotation.name();
+        orderable = primaryTypeAnnotation.orderable();
+        abstract_ = primaryTypeAnnotation.abstract_();
+      } else {
+        MixinType primaryTypeAnnotation = (MixinType)mappingAnnotation;
+        nodeTypeKind = NodeTypeKind.MIXIN;
+        nodeTypeName = primaryTypeAnnotation.name();
+        orderable = false;
+        abstract_ = true;
+      }
+
+      //
+      return new BeanMapping(bean, nodeTypeKind, nodeTypeName, orderable, abstract_);
     }
 
     private void build(BeanMapping beanMapping) {
@@ -237,7 +300,7 @@ public class ApplicationMappingBuilder {
       for (PropertyInfo<?> property : bean.getProperties().values()) {
 
         // Determine kind
-        Collection<? extends Annotation> annotations = property.getAnnotateds(
+        Collection<? extends Annotation> annotations = property.getAnnotations(
             Property.class,
             Properties.class,
             OneToOne.class,
@@ -270,14 +333,14 @@ public class ApplicationMappingBuilder {
               } else if (annotation instanceof WorkspaceName) {
                 mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>)property, NodeAttributeType.WORKSPACE_NAME);
               } else {
-                throw new UnsupportedOperationException();
+                throw new InvalidMappingException(bean.getClassType(), "The property " + property + " is not annotated");
               }
             } else if (value instanceof BeanValueInfo) {
               if (annotation instanceof OneToOne) {
                 OneToOne oneToOne =  (OneToOne)annotation;
                 switch (oneToOne.type()) {
                   case HIERARCHIC:
-                    mapping = createHierarchicOneToOne((SingleValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createHierarchicOneToOne(oneToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   case EMBEDDED:
                     mapping = createEmbeddedOneToOne((SingleValuedPropertyInfo<BeanValueInfo>)property);
@@ -310,9 +373,9 @@ public class ApplicationMappingBuilder {
                 Property propertyAnnotation = (Property)annotation;
                 mapping = createProperty(propertyAnnotation, (MultiValuedPropertyInfo<SimpleValueInfo>)property);
               } else if (annotation instanceof Properties) {
-                mapping = createProperties((MultiValuedPropertyInfo<? extends SimpleValueInfo>)property);
+                mapping = createProperties((MultiValuedPropertyInfo<? extends ValueInfo>)property);
               } else {
-                throw new UnsupportedOperationException();
+                throw new InvalidMappingException(bean.getClassType(), "No annotation found on property " + property);
               }
             } else if (value instanceof BeanValueInfo) {
               if (annotation instanceof OneToMany) {
@@ -328,8 +391,10 @@ public class ApplicationMappingBuilder {
                   default:
                     throw new UnsupportedOperationException();
                 }
-              } else {
-                throw new UnsupportedOperationException();
+              } else if (annotation instanceof Properties) {
+                mapping = createProperties((MultiValuedPropertyInfo<? extends ValueInfo>)property);
+              }  else {
+                throw new InvalidMappingException(bean.getClassType(), "The property " + property + " should be annotated with " + OneToMany.class.getName());
               }
             } else {
               throw new AssertionError();
@@ -339,20 +404,27 @@ public class ApplicationMappingBuilder {
           }
         }
 
-        // Resolve parent property without any check for now
-        PropertyInfo parentProperty = property.getParent();
-        if (parentProperty != null) {
-          BeanInfo ancestor = parentProperty.getOwner();
-          BeanMapping ancestorMapping = resolve(ancestor);
-          mapping.parent = ancestorMapping.properties.get(parentProperty.getName());
-        }
-
         //
-        properties.put(mapping.property.getName(), mapping);
+        if (mapping != null) {
+
+          // Resolve parent property without any check for now
+          PropertyInfo parentProperty = property.getParent();
+          if (parentProperty != null) {
+            BeanInfo ancestor = parentProperty.getOwner();
+            BeanMapping ancestorMapping = resolve(ancestor);
+            mapping.parent = ancestorMapping.properties.get(parentProperty.getName());
+          }
+
+          //
+          properties.put(mapping.property.getName(), mapping);
+        }
       }
 
-      //
-      beanMapping.properties = Collections.unmodifiableMap(properties);
+      // Wire
+      beanMapping.properties.putAll(properties);
+      for (PropertyMapping<?, ?> propertyMapping : beanMapping.properties.values()) {
+        propertyMapping.owner = beanMapping;
+      }
     }
 
     private AttributeMapping createAttribute(SingleValuedPropertyInfo<SimpleValueInfo> property, NodeAttributeType type) {
@@ -362,7 +434,7 @@ public class ApplicationMappingBuilder {
       return new AttributeMapping(property, type);
     }
 
-    private <V extends SimpleValueInfo> PropertiesMapping<V> createProperties(MultiValuedPropertyInfo<V> property) {
+    private <V extends ValueInfo> PropertiesMapping<V> createProperties(MultiValuedPropertyInfo<V> property) {
       if (property.getKind() != MultiValueKind.MAP) {
         throw new UnsupportedOperationException();
       }
@@ -415,12 +487,14 @@ public class ApplicationMappingBuilder {
       }
       RelationshipMapping.OneToMany.Reference mapping;
       mapping = new RelationshipMapping.OneToMany.Reference(property, mappedBy.value());
+      mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
 
     private RelationshipMapping.OneToMany.Hierarchic createHierarchicOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping.OneToMany.Hierarchic mapping;
       mapping = new RelationshipMapping.OneToMany.Hierarchic(property);
+      mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
 
@@ -431,30 +505,42 @@ public class ApplicationMappingBuilder {
       }
       RelationshipMapping.ManyToOne.Reference mapping;
       mapping = new RelationshipMapping.ManyToOne.Reference(property, mappedBy.value());
+      mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
 
     private RelationshipMapping.ManyToOne.Hierarchic createHierarchicManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping.ManyToOne.Hierarchic mapping;
       mapping = new RelationshipMapping.ManyToOne.Hierarchic(property);
+      mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
 
     private RelationshipMapping.OneToOne.Embedded createEmbeddedOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping.OneToOne.Embedded mapping;
-      mapping = new RelationshipMapping.OneToOne.Embedded(property);
+      boolean owner = property.getAnnotation(Owner.class) != null;
+      mapping = new RelationshipMapping.OneToOne.Embedded(property, owner);
+      mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
 
     private RelationshipMapping.OneToOne.Hierarchic createHierarchicOneToOne(
+        OneToOne annotation,
         SingleValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new UnsupportedOperationException();
       }
       boolean owner = property.getAnnotation(Owner.class) != null;
+      Set<AttributeOption> attributes = new HashSet<AttributeOption>();
+      for (AttributeOption attribute : annotation.options()) {
+        attributes.add(attribute);
+      }
+      boolean autocreated = attributes.contains(AttributeOption.AUTOCREATED);
+      boolean mandatory = attributes.contains(AttributeOption.MANDATORY);
       RelationshipMapping.OneToOne.Hierarchic mapping;
-      mapping = new RelationshipMapping.OneToOne.Hierarchic(property, owner, mappedBy.value());
+      mapping = new RelationshipMapping.OneToOne.Hierarchic(property, owner, mappedBy.value(), mandatory, autocreated);
+      mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
   }

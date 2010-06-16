@@ -218,7 +218,7 @@ public class BeanInfoBuilder {
       }
 
       // Now we have all the info to build each property correctly
-      Map<String, PropertyInfo> properties = new HashMap<String, PropertyInfo>();
+      Map<String, PropertyInfo<?>> properties = new HashMap<String, PropertyInfo<?>>();
       for (Map.Entry<String, ToBuild> toBuildEntry : toBuilds.entrySet()) {
 
         // Get parent property if any
@@ -275,7 +275,7 @@ public class BeanInfoBuilder {
                       toBuildEntry.getValue().getter,
                       toBuildEntry.getValue().setter,
                       collectionKind,
-                      new BeanValueInfo(type, Utils.resolveToClassType(bean.classType, type), relatedBean));
+                      new BeanValueInfo(type, Utils.resolveToClassType(bean.classType, elementType), relatedBean));
                 } else {
                   property = new MultiValuedPropertyInfo<SimpleValueInfo>(
                       bean,
@@ -350,7 +350,7 @@ public class BeanInfoBuilder {
       }
 
       // Update properties
-      bean.properties = Collections.unmodifiableMap(properties);
+      bean.properties.putAll(properties);
     }
 
 

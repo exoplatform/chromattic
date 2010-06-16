@@ -48,18 +48,18 @@ public class InheritanceTestCase extends TypeGenTestCase {
   }
 
   public void testSuperTypes() throws Exception {
-    assertEquals(0, a1NT.getSuperTypes().size());
-    assertEquals(1, a3NT.getSuperTypes().size());
-    assertEquals(1, a5NT.getSuperTypes().size());
+    assertEquals(1, a1NT.getSuperTypes().size());
+    assertEquals(2, a3NT.getSuperTypes().size());
+    assertEquals(2, a5NT.getSuperTypes().size());
     assertTrue(a3NT.getSuperTypes().contains(a1NT));
     assertTrue(a5NT.getSuperTypes().contains(a1NT));
-    assertEquals(2, a4NT.getSuperTypes().size());
+    assertEquals(3, a4NT.getSuperTypes().size());
     assertTrue(a4NT.getSuperTypes().contains(a1NT));
     assertTrue(a4NT.getSuperTypes().contains(a3NT));
   }
 
   public void testDeclaredSuperTypes() throws Exception {
-    assertEquals(0, a1NT.getDeclaredSuperTypes().size());
+    assertEquals(1, a1NT.getDeclaredSuperTypes().size());
     assertEquals(1, a3NT.getDeclaredSuperTypes().size());
     assertEquals(1, a5NT.getDeclaredSuperTypes().size());
     assertTrue(a3NT.getDeclaredSuperTypes().contains(a1NT));
@@ -77,7 +77,7 @@ public class InheritanceTestCase extends TypeGenTestCase {
   public void testChildNodeDefinitions() throws Exception {
     assertEquals(2, a1NT.getChildNodeDefinitions().size());
     assertEquals(0, a3NT.getChildNodeDefinitions().size());
-    assertEquals(1, a5NT.getChildNodeDefinitions().size());
+    assertEquals(2, a5NT.getChildNodeDefinitions().size());
   }
 
   public void testRelationshipOverride() {
@@ -120,9 +120,9 @@ public class InheritanceTestCase extends TypeGenTestCase {
     assertInvalid(B2.class);
   }
 
-  public void testInvalidAbstractProperty() {
-    assertInvalid(C2.class);
-  }
+//  public void testInvalidAbstractProperty() {
+//    assertInvalid(C2.class);
+//  }
 
   public void testInvalidAbstractOwnerOneToOne() {
     assertInvalid(D2.class);

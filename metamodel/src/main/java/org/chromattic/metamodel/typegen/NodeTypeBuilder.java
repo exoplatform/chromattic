@@ -29,7 +29,6 @@ import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.value.NamedOneToOneMapping;
 import org.chromattic.metamodel.mapping.value.OneToManyMapping;
-import org.chromattic.metamodel.mapping.value.OneToOneMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 
@@ -46,16 +45,16 @@ import java.util.Set;
 public class NodeTypeBuilder extends BaseTypeMappingVisitor {
 
   /** . */
-  private final LinkedHashMap<ClassTypeInfo, NodeType> nodeTypes;
+  private final LinkedHashMap<ClassTypeInfo, NodeType1> nodeTypes;
 
   /** . */
-  private NodeType current;
+  private NodeType1 current;
 
   /** . */
   private final SetMap<ClassTypeInfo, ClassTypeInfo> embeddedSuperTypesMap;
 
   public NodeTypeBuilder() {
-    this.nodeTypes = new LinkedHashMap<ClassTypeInfo, NodeType>();
+    this.nodeTypes = new LinkedHashMap<ClassTypeInfo, NodeType1>();
     this.embeddedSuperTypesMap = new SetMap<ClassTypeInfo, ClassTypeInfo>();
   }
 
@@ -63,11 +62,11 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
     return nodeTypes.get(type);
   }
 
-  private NodeType resolve(NodeTypeMapping mapping) {
-    NodeType nodeType = nodeTypes.get(mapping.getType());
+  private NodeType1 resolve(NodeTypeMapping mapping) {
+    NodeType1 nodeType = nodeTypes.get(mapping.getType());
     if (nodeType == null) {
       boolean skip = mapping.getType().getDeclaredAnnotation(AnnotationType.get(Skip.class)) != null;
-      nodeType = new NodeType(mapping, skip);
+      nodeType = new NodeType1(mapping, skip);
       nodeTypes.put(mapping.getType(), nodeType);
     }
     return nodeType;
@@ -217,14 +216,14 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
   public void end() {
 
     // Resolve super types
-    for (NodeType nodeType : nodeTypes.values()) {
+    for (NodeType1 nodeType : nodeTypes.values()) {
       ClassTypeInfo cti = nodeType.mapping.getType();
 
       // Take all delcared node types and find out which are the super types
       // based on the relationship between the java types
       for (NodeType otherNodeType : nodeTypes.values()) {
         if (otherNodeType != nodeType) {
-          if (cti.isSubType(otherNodeType.mapping.getType())) {
+          if (cti.isSubType(((NodeType1)otherNodeType).mapping.getType())) {
             nodeType.superTypes.add(otherNodeType);
           }
         }
@@ -239,7 +238,7 @@ public class NodeTypeBuilder extends BaseTypeMappingVisitor {
       foo:
       for (NodeType superNodeType : nodeType.superTypes) {
         for (NodeType otherSuperNodeType : nodeType.superTypes) {
-          if (otherSuperNodeType != superNodeType && otherSuperNodeType.mapping.getType().isSubType(superNodeType.mapping.getType())) {
+          if (otherSuperNodeType != superNodeType && ((NodeType1)otherSuperNodeType).mapping.getType().isSubType(((NodeType1)superNodeType).mapping.getType())) {
             continue foo;
           }
         }

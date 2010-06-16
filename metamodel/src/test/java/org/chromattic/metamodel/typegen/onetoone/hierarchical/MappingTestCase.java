@@ -39,7 +39,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertSame(_2.getBean(), r1.getRelatedBean());
     assertEquals(true, r1.isOwner());
     assertEquals("child", r1.getMappedBy());
-    assertNull(r1.getRelatedMapping());
+    assertNull(r1.getRelatedRelationshipMapping());
     assertEquals(0, _2.getProperties().size());
   }
 
@@ -52,7 +52,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertSame(_1.getBean(), r2.getRelatedBean());
     assertEquals("child", r2.getMappedBy());
     assertEquals(false, r2.isOwner());
-    assertNull(r2.getRelatedMapping());
+    assertNull(r2.getRelatedRelationshipMapping());
   }
 
   public void testC() {
@@ -67,8 +67,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("child", r2.getMappedBy());
     assertEquals(true, r1.isOwner());
     assertEquals(false, r2.isOwner());
-    assertSame(r1, r2.getRelatedMapping());
-    assertSame(r2, r1.getRelatedMapping());
+    assertSame(r1, r2.getRelatedRelationshipMapping());
+    assertSame(r2, r1.getRelatedRelationshipMapping());
   }
 
   public void testD() {
@@ -82,7 +82,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("child", r2.getMappedBy());
     assertEquals(true, r1.isOwner());
     assertEquals(false, r2.isOwner());
-    assertSame(r1, r2.getRelatedMapping());
-    assertSame(r2, r1.getRelatedMapping());
+    assertSame(r1, r2.getRelatedRelationshipMapping());
+    assertSame(r2, r1.getRelatedRelationshipMapping());
   }
 }

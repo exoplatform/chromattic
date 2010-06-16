@@ -38,7 +38,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.OneToMany.Reference r1 = _1.getPropertyMapping("referents", RelationshipMapping.OneToMany.Reference.class);
     assertSame(_2.getBean(), r1.getRelatedBean());
     assertEquals("ref", r1.getMappedBy());
-    assertNull(r1.getRelatedMapping());
+    assertNull(r1.getRelatedRelationshipMapping());
     assertEquals(0, _2.getProperties().size());
   }
 
@@ -50,7 +50,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.ManyToOne.Reference r2 = _2.getPropertyMapping("referenced", RelationshipMapping.ManyToOne.Reference.class);
     assertSame(_1.getBean(), r2.getRelatedBean());
     assertEquals("ref", r2.getMappedBy());
-    assertNull(r2.getRelatedMapping());
+    assertNull(r2.getRelatedRelationshipMapping());
   }
 
   public void testC() {
@@ -63,8 +63,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertSame(_1.getBean(), r2.getRelatedBean());
     assertEquals("ref", r1.getMappedBy());
     assertEquals("ref", r2.getMappedBy());
-    assertSame(r2, r1.getRelatedMapping());
-    assertSame(r1, r2.getRelatedMapping());
+    assertSame(r2, r1.getRelatedRelationshipMapping());
+    assertSame(r1, r2.getRelatedRelationshipMapping());
   }
 
   public void testD() {
@@ -76,7 +76,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertSame(_1.getBean(), r2.getRelatedBean());
     assertEquals("ref", r1.getMappedBy());
     assertEquals("ref", r2.getMappedBy());
-    assertSame(r2, r1.getRelatedMapping());
-    assertSame(r1, r2.getRelatedMapping());
+    assertSame(r2, r1.getRelatedRelationshipMapping());
+    assertSame(r1, r2.getRelatedRelationshipMapping());
   }
 }

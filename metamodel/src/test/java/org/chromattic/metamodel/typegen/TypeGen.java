@@ -19,14 +19,18 @@
 
 package org.chromattic.metamodel.typegen;
 
+import org.chromattic.metamodel.mapping2.ApplicationMappingBuilder;
+import org.chromattic.metamodel.mapping2.BeanMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -38,19 +42,40 @@ public class TypeGen {
   private final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
   /** . */
-  private final NodeTypeBuilder builder = new NodeTypeBuilder();
+  // private final NodeTypeBuilder builder = new NodeTypeBuilder();
+
+  private final Map<ClassTypeInfo, NodeType> schema = new HashMap<ClassTypeInfo, NodeType>();
+
+  private final Set<ClassTypeInfo> classTypes = new HashSet<ClassTypeInfo>();
 
   public ClassTypeInfo addType(Class<?> type) {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(type);
-    builder.addType(typeInfo);
+
+    // builder.addType(typeInfo);
+
+    classTypes.add(typeInfo);
+
     return typeInfo;
   }
 
   public NodeType getNodeType(ClassTypeInfo typeInfo) {
-    return builder.getNodeType(typeInfo);
+    return schema.get(typeInfo);
   }
 
   public void generate() {
+
+    ApplicationMappingBuilder amp = new ApplicationMappingBuilder();
+    Map<ClassTypeInfo, BeanMapping> mappings = amp.build(classTypes);
+    schema.clear();
+    SchemaBuilder sb = new SchemaBuilder();
+    sb.start();
+    for (BeanMapping mapping : mappings.values()) {
+      mapping.accept(sb);
+      ClassTypeInfo key = mapping.getBean().getClassType();
+      schema.put(key, sb.getNodeType(key));
+    }
+    sb.end();
+/*
     builder.generate();
     try {
       StringWriter sw = new StringWriter();
@@ -60,5 +85,6 @@ public class TypeGen {
     catch (Exception e) {
       e.printStackTrace();
     }
+*/
   }
 }

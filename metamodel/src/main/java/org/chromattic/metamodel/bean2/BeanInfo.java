@@ -20,8 +20,12 @@
 package org.chromattic.metamodel.bean2;
 
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.annotation.AnnotationType;
+import org.reflext.api.introspection.AnnotationIntrospector;
+import org.reflext.api.introspection.AnnotationTarget;
 
-import java.util.Map;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -36,10 +40,15 @@ public class BeanInfo {
   final ClassTypeInfo classType;
 
   /** . */
-  Map<String, PropertyInfo> properties;
+  final Map<String, PropertyInfo<?>> properties;
+
+  /** . */
+  final Map<String, PropertyInfo<?>> unmodifiableProperties;
 
   public BeanInfo(ClassTypeInfo classType) {
     this.classType = classType;
+    this.properties = new HashMap<String, PropertyInfo<?>>();
+    this.unmodifiableProperties = Collections.unmodifiableMap(properties);
   }
 
   public BeanInfo getParent() {
@@ -50,12 +59,33 @@ public class BeanInfo {
     return classType;
   }
 
-  public PropertyInfo getProperty(String name) {
+  public PropertyInfo<?> getProperty(String name) {
     return properties.get(name);
   }
 
-  public Map<String, PropertyInfo> getProperties() {
+  public Map<String, PropertyInfo<?>> getProperties() {
     return properties;
+  }
+
+  public Collection<? extends Annotation> getAnnotations(Class<? extends Annotation>... annotationClassTypes) {
+    List<Annotation> props = new ArrayList<Annotation>();
+    for (Class<? extends Annotation> annotationClassType : annotationClassTypes) {
+      Annotation annotation = getAnnotation(annotationClassType);
+      if (annotation != null) {
+        props.add(annotation);
+      }
+    }
+    return props;
+  }
+
+  public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+    if (annotationClass == null) {
+      throw new NullPointerException();
+    }
+    AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
+    AnnotationIntrospector<A> introspector = new AnnotationIntrospector<A>(annotationType);
+    AnnotationTarget<ClassTypeInfo,A> annotationTarget = introspector.resolve(classType);
+    return annotationTarget != null ? annotationTarget.getAnnotation() : null;
   }
 
   @Override

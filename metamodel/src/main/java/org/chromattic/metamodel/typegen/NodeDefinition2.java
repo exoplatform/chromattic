@@ -19,40 +19,46 @@
 
 package org.chromattic.metamodel.typegen;
 
+import org.chromattic.metamodel.mapping2.BeanMapping;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeDefinition {
+public class NodeDefinition2 extends NodeDefinition {
 
   /** . */
-  private final String name;
+  final Set<BeanMapping> mappings;
 
-  /** . */
-  private final boolean mandatory;
+  public NodeDefinition2(String name, boolean mandatory, boolean autocreated) {
+    super(name, mandatory, autocreated);
 
-  /** . */
-  private final boolean autocreated;
-
-  public NodeDefinition(String name, boolean mandatory, boolean autocreated) {
-    this.name = name;
-    this.mandatory = mandatory;
-    this.autocreated = autocreated;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public boolean isMandatory() {
-    return mandatory;
-  }
-
-  public boolean isAutocreated() {
-    return autocreated;
+    //
+    this.mappings = new HashSet<BeanMapping>();
   }
 
   public String getNodeTypeName() {
-    throw new UnsupportedOperationException();
+    // Try to find the common ancestor type of all types
+    BeanMapping ancestorMapping = null;
+    foo:
+    for (BeanMapping relatedMapping1 : mappings) {
+      for (BeanMapping relatedMapping2 : mappings) {
+        if (!relatedMapping1.getBean().getClassType().isAssignableFrom(relatedMapping2.getBean().getClassType())) {
+          continue foo;
+        }
+      }
+      ancestorMapping = relatedMapping1;
+      break;
+    }
+
+    //
+    if (ancestorMapping == null) {
+      return "nt:base";
+    } else {
+      return ancestorMapping.getNodeTypeName();
+    }
   }
 }

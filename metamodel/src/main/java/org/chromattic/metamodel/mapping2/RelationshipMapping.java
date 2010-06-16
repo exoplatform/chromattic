@@ -29,7 +29,10 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
 
 
   /** The related property if any. */
-  R related;
+  R relatedRelationshipMapping;
+
+  /** The related bean mapping. */
+  BeanMapping relatedBeanMapping;
 
   public RelationshipMapping(P property) {
     super(property);
@@ -39,8 +42,12 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     return property.getValue().getBean(); 
   }
 
-  public R getRelatedMapping() {
-    return related;
+  public BeanMapping getRelatedBeanMapping() {
+    return relatedBeanMapping;
+  }
+
+  public R getRelatedRelationshipMapping() {
+    return relatedRelationshipMapping;
   }
 
   public boolean isNew() {
@@ -54,28 +61,51 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
 
   public abstract static class OneToOne<R extends OneToOne> extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>, R> {
 
-    protected OneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+    /** Owner / not owner. */
+    final boolean owner;
+
+    protected OneToOne(SingleValuedPropertyInfo<BeanValueInfo> property, boolean owner) {
       super(property);
+
+      //
+      this.owner = owner;
+    }
+
+    public boolean isOwner() {
+      return owner;
     }
 
     public static class Hierarchic extends OneToOne<Hierarchic> {
 
-      /** Owner / not owner. */
-      final boolean owner;
-
       /** Mapped by value. */
       final String mappedBy;
 
-      public Hierarchic(SingleValuedPropertyInfo<BeanValueInfo> property, boolean owner, String mappedBy) {
-        super(property);
+      /** . */
+      final boolean mandatory;
+
+      /** . */
+      final boolean autocreated;
+
+      public Hierarchic(
+          SingleValuedPropertyInfo<BeanValueInfo> property,
+          boolean owner,
+          String mappedBy,
+          boolean mandatory,
+          boolean autocreated) {
+        super(property, owner);
 
         //
-        this.owner = owner;
         this.mappedBy = mappedBy;
+        this.mandatory = mandatory;
+        this.autocreated = autocreated;
       }
 
-      public boolean isOwner() {
-        return owner;
+      public boolean getMandatory() {
+        return mandatory;
+      }
+
+      public boolean getAutocreated() {
+        return autocreated;
       }
 
       public String getMappedBy() {
@@ -88,8 +118,8 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       }
     }
     public static class Embedded extends OneToOne<Embedded> {
-      public Embedded(SingleValuedPropertyInfo<BeanValueInfo> property) {
-        super(property);
+      public Embedded(SingleValuedPropertyInfo<BeanValueInfo> property, boolean owner) {
+        super(property, owner);
       }
 
       @Override

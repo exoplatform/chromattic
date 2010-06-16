@@ -29,12 +29,20 @@ import org.reflext.api.TypeInfo;
 public abstract class ValueInfo {
 
   /** The property type as declared originally. */
-  private TypeInfo declaredType;
+  private final TypeInfo declaredType;
 
   /** The property class type. */
-  private ClassTypeInfo classType;
+  private final ClassTypeInfo classType;
 
   protected ValueInfo(TypeInfo declaredType, ClassTypeInfo classType) {
+    if (declaredType == null) {
+      throw new NullPointerException("No null declared type accepted");
+    }
+    if (classType == null) {
+      throw new NullPointerException("No null class type accepted for declared type " + declaredType);
+    }
+
+    //
     this.declaredType = declaredType;
     this.classType = classType;
   }

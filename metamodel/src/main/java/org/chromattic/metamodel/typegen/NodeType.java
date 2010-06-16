@@ -20,7 +20,9 @@
 package org.chromattic.metamodel.typegen;
 
 import org.chromattic.common.collection.SetMap;
+import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
+import org.chromattic.metamodel.mapping2.BeanMapping;
 
 import java.util.*;
 
@@ -31,7 +33,13 @@ import java.util.*;
 public class NodeType {
 
   /** . */
-  final NodeTypeMapping mapping;
+  final String name;
+
+  /** . */
+  final String className;
+
+  /** . */
+  final boolean mixin;
 
   /** . */
   final Map<String, NodeDefinition> children;
@@ -48,8 +56,26 @@ public class NodeType {
   /** . */
   final boolean skip;
 
+  /** . */
+  final boolean orderable;
+
   NodeType(NodeTypeMapping mapping, boolean skip) {
-    this.mapping = mapping;
+    this.name = mapping.getTypeName();
+    this.className = mapping.getType().getName();
+    this.mixin = mapping.isMixin();
+    this.orderable = mapping.isOrderable();
+    this.children = new HashMap<String, NodeDefinition>();
+    this.properties = new HashMap<String, PropertyDefinition>();
+    this.superTypes = new HashSet<NodeType>();
+    this.declaredSuperTypes = new HashSet<NodeType>();
+    this.skip = skip;
+  }
+
+  NodeType(BeanMapping mapping, boolean skip) {
+    this.name = mapping.getNodeTypeName();
+    this.className = mapping.getBean().getClassType().getName();
+    this.mixin = mapping.getNodeTypeKind() == NodeTypeKind.MIXIN;
+    this.orderable = mapping.isOrderable();
     this.children = new HashMap<String, NodeDefinition>();
     this.properties = new HashMap<String, PropertyDefinition>();
     this.superTypes = new HashSet<NodeType>();
@@ -61,8 +87,12 @@ public class NodeType {
     return skip;
   }
 
+  public String getClassName() {
+    return className;
+  }
+
   public boolean isOrderable() {
-    return mapping.isOrderable();
+    return orderable;
   }
 
   public Collection<NodeType> getSuperTypes() {
@@ -82,15 +112,15 @@ public class NodeType {
   }
 
   public String getName() {
-    return mapping.getTypeName();
+    return name;
   }
 
   public boolean isMixin() {
-    return mapping.isMixin();
+    return mixin;
   }
 
   public boolean isPrimary() {
-    return mapping.isPrimary();
+    return !mixin;
   }
 
   public Map<String, NodeDefinition> getChildNodeDefinitions() {
@@ -102,11 +132,25 @@ public class NodeType {
   }
 
   void addChildNodeType(String childNodeName, boolean mandatory, boolean autocreated, NodeTypeMapping childNodeTypeMapping) {
-    NodeDefinition nodeDefinition = children.get(childNodeName);
+    NodeDefinition1 nodeDefinition = (NodeDefinition1)children.get(childNodeName);
     if (nodeDefinition == null) {
-      nodeDefinition = new NodeDefinition(childNodeName, mandatory, autocreated);
+      nodeDefinition = new NodeDefinition1(childNodeName, mandatory, autocreated);
       children.put(childNodeName, nodeDefinition);
     }
     nodeDefinition.mappings.add(childNodeTypeMapping);
+  }
+
+  void addChildNodeType(String childNodeName, boolean mandatory, boolean autocreated, BeanMapping childNodeTypeMapping) {
+    NodeDefinition2 nodeDefinition = (NodeDefinition2)children.get(childNodeName);
+    if (nodeDefinition == null) {
+      nodeDefinition = new NodeDefinition2(childNodeName, mandatory, autocreated);
+      children.put(childNodeName, nodeDefinition);
+    }
+    nodeDefinition.mappings.add(childNodeTypeMapping);
+  }
+
+  @Override
+  public String toString() {
+    return "NodeType[name=" + name + "]";
   }
 }

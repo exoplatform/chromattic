@@ -21,12 +21,13 @@ package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean2.SimpleValueInfo;
+import org.chromattic.metamodel.bean2.ValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertiesMapping<V extends SimpleValueInfo> extends PropertyMapping<MultiValuedPropertyInfo<V>,V> {
+public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<MultiValuedPropertyInfo<V>,V> {
 
   public PropertiesMapping(MultiValuedPropertyInfo<V> property) {
     super(property);
@@ -34,7 +35,7 @@ public class PropertiesMapping<V extends SimpleValueInfo> extends PropertyMappin
 
   @Override
   public void accept(MappingVisitor visitor) {
-    throw new UnsupportedOperationException();
+    visitor.propertiesMapping(this);
   }
 
   public boolean isNew() {

@@ -33,6 +33,8 @@ public class MappingVisitor {
 
   public void multiValueMapping(ValueMapping.Multi mapping) { }
 
+  public void propertiesMapping(PropertiesMapping<?> mapping) { }
+
   public void oneToOneHierarchic(RelationshipMapping.OneToOne.Hierarchic mapping) { }
 
   public void oneToManyHierarchic(RelationshipMapping.OneToMany.Hierarchic mapping) { }

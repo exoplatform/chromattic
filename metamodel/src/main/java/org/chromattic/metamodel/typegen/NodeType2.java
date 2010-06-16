@@ -17,51 +17,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
+package org.chromattic.metamodel.typegen;
 
-import org.chromattic.metamodel.bean2.PropertyInfo;
-import org.chromattic.metamodel.bean2.ValueInfo;
+import org.chromattic.metamodel.mapping2.BeanMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyMapping<P extends PropertyInfo<V>, V extends ValueInfo> {
+public class NodeType2 extends NodeType {
 
-  /** . */
-  BeanMapping owner;
+  BeanMapping mapping;
 
-  /** The optional parent. */
-  PropertyMapping parent;
+  public NodeType2(BeanMapping mapping, boolean skip) {
+    super(mapping, skip);
 
-  /** . */
-  final P property;
-
-  public PropertyMapping(P property) {
-    this.property = property;
+    //
+    this.mapping = mapping;
   }
-
-  public PropertyMapping getParent() {
-    return parent;
-  }
-
-  public BeanMapping getOwner() {
-    return owner;
-  }
-
-  public String getName() {
-    return property.getName();
-  }
-
-  public P getProperty() {
-    return property;
-  }
-
-  public V getValue() {
-    return property.getValue();
-  }
-
-  public abstract void accept(MappingVisitor visitor);
-
-  public abstract boolean isNew();
 }

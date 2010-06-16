@@ -20,7 +20,10 @@
 package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.metamodel.bean2.BeanInfo;
+import org.chromattic.metamodel.mapping.NodeTypeKind;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,10 +39,52 @@ public class BeanMapping {
   BeanMapping parent;
 
   /** . */
-  Map<String, PropertyMapping<?, ?>> properties;
+  final Map<String, PropertyMapping<?, ?>> properties;
 
-  public BeanMapping(BeanInfo bean) {
+  /** . */
+  final Map<String, PropertyMapping<?, ?>> unmodifiableProperties;
+
+  /** . */
+  final NodeTypeKind nodeTypeKind;
+
+  /** . */
+  final String nodeTypeName;
+
+  /** . */
+  final boolean orderable;
+
+  /** . */
+  final boolean abstract_;
+
+  public BeanMapping(
+      BeanInfo bean,
+      NodeTypeKind nodeTypeKind,
+      String nodeTypeName,
+      boolean orderable,
+      boolean abstract_) {
     this.bean = bean;
+    this.nodeTypeKind = nodeTypeKind;
+    this.nodeTypeName = nodeTypeName;
+    this.orderable = orderable;
+    this.abstract_ = abstract_;
+    this.properties = new HashMap<String, PropertyMapping<?,?>>();
+    this.unmodifiableProperties = Collections.unmodifiableMap(properties);
+  }
+
+  public NodeTypeKind getNodeTypeKind() {
+    return nodeTypeKind;
+  }
+
+  public String getNodeTypeName() {
+    return nodeTypeName;
+  }
+
+  public boolean isOrderable() {
+    return orderable;
+  }
+
+  public boolean isAbstract() {
+    return abstract_;
   }
 
   public BeanInfo getBean() {

@@ -92,7 +92,7 @@ public abstract class PropertyInfo<V extends ValueInfo> {
     return setter;
   }
 
-  public Collection<? extends Annotation> getAnnotateds(Class<? extends Annotation>... annotationClassTypes) {
+  public Collection<? extends Annotation> getAnnotations(Class<? extends Annotation>... annotationClassTypes) {
     List<Annotation> props = new ArrayList<Annotation>();
     for (Class<? extends Annotation> annotationClassType : annotationClassTypes) {
       Annotation annotation = getAnnotation(annotationClassType);
@@ -137,5 +137,10 @@ public abstract class PropertyInfo<V extends ValueInfo> {
     } else {
       return null;
     }
+  }
+
+  @Override
+  public String toString() {
+    return "PropertyInfo[name=" + name + "]";
   }
 }
