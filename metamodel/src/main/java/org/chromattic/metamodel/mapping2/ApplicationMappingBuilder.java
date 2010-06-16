@@ -20,9 +20,31 @@
 package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.api.AttributeOption;
-import org.chromattic.api.annotations.*;
+import org.chromattic.api.annotations.Create;
+import org.chromattic.api.annotations.DefaultValue;
+import org.chromattic.api.annotations.Destroy;
+import org.chromattic.api.annotations.FindById;
+import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.MixinType;
+import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.OneToMany;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
+import org.chromattic.api.annotations.Path;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
-import org.chromattic.metamodel.bean2.*;
+import org.chromattic.api.annotations.Property;
+import org.chromattic.api.annotations.WorkspaceName;
+import org.chromattic.metamodel.bean2.BeanInfo;
+import org.chromattic.metamodel.bean2.BeanInfoBuilder;
+import org.chromattic.metamodel.bean2.BeanValueInfo;
+import org.chromattic.metamodel.bean2.MultiValueKind;
+import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean2.PropertyInfo;
+import org.chromattic.metamodel.bean2.SimpleValueInfo;
+import org.chromattic.metamodel.bean2.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean2.ValueInfo;
 import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
@@ -31,7 +53,13 @@ import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.MethodInfo;
+import org.reflext.api.TypeInfo;
 import org.reflext.api.TypeResolver;
+import org.reflext.api.VoidTypeInfo;
+import org.reflext.api.introspection.AnnotationTarget;
+import org.reflext.api.introspection.MethodIntrospector;
+import org.reflext.api.visit.HierarchyScope;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
 
@@ -425,6 +453,76 @@ public class ApplicationMappingBuilder {
       for (PropertyMapping<?, ?> propertyMapping : beanMapping.properties.values()) {
         propertyMapping.owner = beanMapping;
       }
+
+      // Take care of methods
+      MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL);
+      Set<MethodMapping> methodMappings = new HashSet<MethodMapping>();
+
+      // Create
+      for (AnnotationTarget<MethodInfo, Create> annotatedMethods : introspector.resolveMethods(bean.getClassType(), Constants.CREATE)) {
+        MethodInfo method = annotatedMethods.getTarget();
+        if (!method.isStatic()) {
+          List<TypeInfo> parameterTypes = method.getParameterTypes();
+          if (parameterTypes.size() < 2) {
+            if (parameterTypes.size() == 1) {
+              TypeInfo argTI = parameterTypes.get(0);
+              if (argTI instanceof ClassTypeInfo) {
+                ClassTypeInfo argCTI = (ClassTypeInfo)argTI;
+                if (!argCTI.getName().equals(String.class.getName())) {
+                  throw new IllegalStateException();
+                }
+              } else {
+                throw new IllegalStateException();
+              }
+            }
+            TypeInfo returnTypeInfo = bean.getClassType().resolve(method.getReturnType());
+            if (returnTypeInfo instanceof ClassTypeInfo) {
+              methodMappings.add(new CreateMapping(method, (ClassTypeInfo)returnTypeInfo));
+            } else {
+              throw new InvalidMappingException(bean.getClassType(), "Invalid " + method + " method return type " + returnTypeInfo);
+            }
+          } else {
+            throw new IllegalStateException();
+          }
+        }
+      }
+
+      // Destroy
+      for (AnnotationTarget<MethodInfo, Destroy> annotatedMethods : introspector.resolveMethods(bean.getClassType(), Constants.DESTROY)) {
+        MethodInfo method = annotatedMethods.getTarget();
+        if (!method.isStatic()) {
+          List<TypeInfo> parameterTypes = method.getParameterTypes();
+          if (parameterTypes.size() != 0) {
+            throw new IllegalStateException();
+          }
+          if (!(method.getReturnType() instanceof VoidTypeInfo)) {
+            throw new IllegalStateException();
+          }
+          methodMappings.add(new DestroyMapping(method));
+        }
+      }
+
+      // Find by id
+      for (AnnotationTarget<MethodInfo, FindById> annotatedMethods : introspector.resolveMethods(bean.getClassType(), Constants.FIND_BY_ID)) {
+        MethodInfo method = annotatedMethods.getTarget();
+        if (!method.isStatic()) {
+          List<TypeInfo> parameterTypes = method.getParameterTypes();
+          if (parameterTypes.size() == 1) {
+            TypeInfo argTI = parameterTypes.get(0);
+            if (argTI instanceof ClassTypeInfo) {
+              ClassTypeInfo argCTI = (ClassTypeInfo)argTI;
+              if (argCTI.getName().equals(String.class.getName())) {
+                ClassTypeInfo cti = (ClassTypeInfo)bean.getClassType().resolve(method.getReturnType());
+                methodMappings.add(new FindByIdMapping(method, cti));
+              } else {
+                throw new IllegalStateException();
+              }
+            } else {
+              throw new IllegalStateException();
+            }
+          }
+        }
+      }
     }
 
     private AttributeMapping createAttribute(SingleValuedPropertyInfo<SimpleValueInfo> property, NodeAttributeType type) {
@@ -533,9 +631,7 @@ public class ApplicationMappingBuilder {
       }
       boolean owner = property.getAnnotation(Owner.class) != null;
       Set<AttributeOption> attributes = new HashSet<AttributeOption>();
-      for (AttributeOption attribute : annotation.options()) {
-        attributes.add(attribute);
-      }
+      attributes.addAll(Arrays.asList(annotation.options()));
       boolean autocreated = attributes.contains(AttributeOption.AUTOCREATED);
       boolean mandatory = attributes.contains(AttributeOption.MANDATORY);
       RelationshipMapping.OneToOne.Hierarchic mapping;

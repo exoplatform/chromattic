@@ -16,33 +16,40 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper.onetomany.hierarchical;
+
+package org.chromattic.core.mapper2.onetomany.reference;
 
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.jcr.LinkType;
+import org.chromattic.core.mapper2.JCRNodeCollectionPropertyMapper;
+import org.chromattic.metamodel.bean2.BeanValueInfo;
+import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.mapping2.RelationshipMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AnyChildMultiValueMapper {
+public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo>, EntityContext> {
 
-  public abstract <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass);
+  /** . */
+  final String propertyName;
 
-  public static class Map extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildMap<E>(parentCtx, relatedClass);
-    }
+  /** . */
+  final LinkType linkType;
+
+  public JCRReferentCollectionPropertyMapper(
+    RelationshipMapping.OneToMany.Reference info,
+    LinkType linkType) throws ClassNotFoundException {
+    super(EntityContext.class, info);
+
+    //
+    this.propertyName = info.getMappedBy();
+    this.linkType = linkType;
   }
 
-  public static class Collection extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildCollection<E>(parentCtx, relatedClass);
-    }
-  }
-
-  public static class List extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildList<E>(parentCtx, relatedClass);
-    }
+  @Override
+  public Object get(final EntityContext context) throws Throwable {
+    return new ReferentCollection(context, this);
   }
 }

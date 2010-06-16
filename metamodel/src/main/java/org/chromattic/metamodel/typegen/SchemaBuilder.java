@@ -149,12 +149,12 @@ public class SchemaBuilder extends MappingVisitor {
   }
 
   @Override
-  public void startMapping(BeanMapping mapping) {
+  public void startBean(BeanMapping mapping) {
     current = resolve(mapping);
   }
 
   @Override
-  public void endMapping() {
+  public void endBean() {
     current = null;
   }
 

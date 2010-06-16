@@ -16,33 +16,18 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.EntityContext;
+package org.chromattic.metamodel.mapping2;
+
+import org.reflext.api.MethodInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AnyChildMultiValueMapper {
+public class DestroyMapping extends MethodMapping {
 
-  public abstract <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass);
-
-  public static class Map extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildMap<E>(parentCtx, relatedClass);
-    }
-  }
-
-  public static class Collection extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildCollection<E>(parentCtx, relatedClass);
-    }
-  }
-
-  public static class List extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildList<E>(parentCtx, relatedClass);
-    }
+  public DestroyMapping(MethodInfo method) {
+    super(method);
   }
 }

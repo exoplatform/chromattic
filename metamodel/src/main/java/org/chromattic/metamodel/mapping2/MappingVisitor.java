@@ -27,7 +27,7 @@ public class MappingVisitor {
   
   public void start() { }
 
-  public void startMapping(BeanMapping mapping) { }
+  public void startBean(BeanMapping mapping) { }
 
   public void singleValueMapping(ValueMapping.Single mapping) { }
 
@@ -52,7 +52,7 @@ public class MappingVisitor {
 
   public void propertyMapMapping(ClassTypeInfo definer, PropertyMetaType metaType, boolean skip) { }
 */
-  public void endMapping() { }
+  public void endBean() { }
 
   public void end() { }
   

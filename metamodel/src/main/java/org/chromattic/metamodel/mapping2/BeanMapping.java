@@ -105,10 +105,10 @@ public class BeanMapping {
   }
 
   public void accept(MappingVisitor visitor) {
-    visitor.startMapping(this);
+    visitor.startBean(this);
     for (PropertyMapping<?, ?> property : properties.values()) {
       property.accept(visitor);
     }
-    visitor.endMapping();
+    visitor.endBean();
   }
 }

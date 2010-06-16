@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,33 +16,48 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.EntityContext;
+package org.chromattic.core.mapper2;
+
+import org.chromattic.metamodel.mapping2.BeanMapping;
+import org.chromattic.metamodel.mapping2.MappingVisitor;
+
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AnyChildMultiValueMapper {
+public class MapperBuilder {
 
-  public abstract <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass);
 
-  public static class Map extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildMap<E>(parentCtx, relatedClass);
+  public void build(Collection<BeanMapping> beanMappings) {
+
+    Context ctx = new Context();
+
+    ctx.start();
+
+    for (BeanMapping beanMapping : beanMappings) {
+      beanMapping.accept(ctx);
+    }
+
+    ctx.end();
+
+
+  }
+
+  private static class Context extends MappingVisitor {
+
+    @Override
+    public void startBean(BeanMapping mapping) {
+
+    }
+
+    @Override
+    public void endBean() {
+
     }
   }
 
-  public static class Collection extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildCollection<E>(parentCtx, relatedClass);
-    }
-  }
-
-  public static class List extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildList<E>(parentCtx, relatedClass);
-    }
-  }
 }

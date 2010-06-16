@@ -16,33 +16,34 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.EntityContext;
+package org.chromattic.core.mapper2;
+
+
+import org.chromattic.core.ObjectContext;
+import org.chromattic.metamodel.bean2.PropertyInfo;
+import org.chromattic.metamodel.bean2.ValueInfo;
+import org.chromattic.metamodel.mapping2.PropertyMapping;
+
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AnyChildMultiValueMapper {
+public abstract class RelatedPropertyMapper<P extends PropertyInfo<V>, V extends ValueInfo, C extends ObjectContext> extends PropertyMapper<P, V, C> {
 
-  public abstract <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass);
+  /** . */
+  protected Set<ObjectMapper> relatedTypes;
 
-  public static class Map extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildMap<E>(parentCtx, relatedClass);
-    }
+  protected RelatedPropertyMapper(Class<C> contextType, PropertyMapping<P, V> info) {
+    super(contextType, info);
   }
 
-  public static class Collection extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildCollection<E>(parentCtx, relatedClass);
-    }
-  }
+  public abstract Class<?> getRelatedClass();
 
-  public static class List extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildList<E>(parentCtx, relatedClass);
-    }
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "[name=" + info.getProperty().getName() + "]";
   }
 }
