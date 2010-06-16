@@ -22,8 +22,11 @@ package org.chromattic.metamodel.mapping2;
 import org.chromattic.metamodel.bean2.BeanInfo;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,6 +46,12 @@ public class BeanMapping {
 
   /** . */
   final Map<String, PropertyMapping<?, ?>> unmodifiableProperties;
+
+  /** . */
+  final List<MethodMapping> methods;
+
+  /** . */
+  final List<MethodMapping> unmodifiableMethods;
 
   /** . */
   final NodeTypeKind nodeTypeKind;
@@ -69,6 +78,8 @@ public class BeanMapping {
     this.abstract_ = abstract_;
     this.properties = new HashMap<String, PropertyMapping<?,?>>();
     this.unmodifiableProperties = Collections.unmodifiableMap(properties);
+    this.methods = new ArrayList<MethodMapping>();
+    this.unmodifiableMethods = Collections.unmodifiableList(methods);
   }
 
   public NodeTypeKind getNodeTypeKind() {
@@ -95,6 +106,10 @@ public class BeanMapping {
     return properties;
   }
 
+  public Collection<MethodMapping> getMethods() {
+    return methods;
+  }
+
   public <M extends PropertyMapping<?, ?>> M getPropertyMapping(String name, Class<M> type) {
     PropertyMapping<?, ?> mapping = properties.get(name);
     if (type.isInstance(mapping)) {
@@ -108,6 +123,9 @@ public class BeanMapping {
     visitor.startBean(this);
     for (PropertyMapping<?, ?> property : properties.values()) {
       property.accept(visitor);
+    }
+    for (MethodMapping method : methods) {
+      method.accept(visitor);
     }
     visitor.endBean();
   }

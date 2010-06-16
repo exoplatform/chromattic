@@ -37,16 +37,21 @@ public class POMTestCase extends AbstractTestCase {
   protected void createDomain() {
     addClass(WorkspaceImpl.class);
     addClass(UIContainerImpl.class);
+    addClass(UIComponentImpl.class);
     addClass(UIWindowImpl.class);
     addClass(UIInsertionImpl.class);
     addClass(PageImpl.class);
     addClass(NavigationImpl.class);
+    addClass(NavigationTargetImpl.class);
     addClass(PageNavigationTargetImpl.class);
     addClass(URLNavigationTargetImpl.class);
+    addClass(Sites.class);
+    addClass(SiteImpl.class);
     addClass(PortalSites.class);
     addClass(PortalSite.class);
     addClass(GroupSites.class);
     addClass(GroupSite.class);
+    addClass(Templatized.class);
   }
 
   public void testPortals() throws Exception {

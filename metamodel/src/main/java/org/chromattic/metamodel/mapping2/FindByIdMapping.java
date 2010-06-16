@@ -41,4 +41,9 @@ public class FindByIdMapping extends MethodMapping {
   public ClassTypeInfo getType() {
     return type;
   }
+
+  @Override
+  public void accept(MappingVisitor visitor) {
+    visitor.visit(this);
+  }
 }

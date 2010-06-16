@@ -384,7 +384,7 @@ public class ApplicationMappingBuilder {
                     break;
                   case PATH:
                   case REFERENCE:
-                    mapping = createReferenceManyToOne((SingleValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createReferenceManyToOne(manyToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   default:
                     throw new UnsupportedOperationException();
@@ -414,7 +414,7 @@ public class ApplicationMappingBuilder {
                     break;
                   case PATH:
                   case REFERENCE:
-                    mapping = createReferenceOneToMany((MultiValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createReferenceOneToMany(oneToMany, (MultiValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   default:
                     throw new UnsupportedOperationException();
@@ -475,9 +475,9 @@ public class ApplicationMappingBuilder {
                 throw new IllegalStateException();
               }
             }
-            TypeInfo returnTypeInfo = bean.getClassType().resolve(method.getReturnType());
-            if (returnTypeInfo instanceof ClassTypeInfo) {
-              methodMappings.add(new CreateMapping(method, (ClassTypeInfo)returnTypeInfo));
+            ClassTypeInfo returnTypeInfo = bean.resolveToClass(method.getReturnType());
+            if (returnTypeInfo != null) {
+              methodMappings.add(new CreateMapping(method, returnTypeInfo));
             } else {
               throw new InvalidMappingException(bean.getClassType(), "Invalid " + method + " method return type " + returnTypeInfo);
             }
@@ -578,13 +578,13 @@ public class ApplicationMappingBuilder {
       }
     }
 
-    private RelationshipMapping.OneToMany.Reference createReferenceOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.OneToMany.Reference createReferenceOneToMany(OneToMany annotation, MultiValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new UnsupportedOperationException();
       }
       RelationshipMapping.OneToMany.Reference mapping;
-      mapping = new RelationshipMapping.OneToMany.Reference(property, mappedBy.value());
+      mapping = new RelationshipMapping.OneToMany.Reference(property, mappedBy.value(), annotation.type());
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
@@ -596,13 +596,13 @@ public class ApplicationMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping.ManyToOne.Reference createReferenceManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.ManyToOne.Reference createReferenceManyToOne(ManyToOne annotation, SingleValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new UnsupportedOperationException();
       }
       RelationshipMapping.ManyToOne.Reference mapping;
-      mapping = new RelationshipMapping.ManyToOne.Reference(property, mappedBy.value());
+      mapping = new RelationshipMapping.ManyToOne.Reference(property, mappedBy.value(), annotation.type());
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }

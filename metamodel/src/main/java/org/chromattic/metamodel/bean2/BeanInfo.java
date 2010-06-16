@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.bean2;
 
 import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.AnnotationTarget;
@@ -76,6 +77,10 @@ public class BeanInfo {
       }
     }
     return props;
+  }
+
+  public ClassTypeInfo resolveToClass(TypeInfo type) {
+    return Utils.resolveToClassType(classType, type);
   }
 
   public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {

@@ -33,6 +33,7 @@ public class PolymorphicTestCase extends AbstractTestCase {
 
   protected void createDomain() {
     addClass(A.class);
+    addClass(B.class);
     addClass(C.class);
     addClass(D.class);
   }

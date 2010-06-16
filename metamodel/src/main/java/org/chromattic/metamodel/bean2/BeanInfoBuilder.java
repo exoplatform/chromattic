@@ -264,7 +264,7 @@ public class BeanInfoBuilder {
               }
             }
             if (collectionKind != null) {
-              ClassTypeInfo elementClassType = Utils.resolveToClassType(bean.classType, elementType);
+              ClassTypeInfo elementClassType = bean.resolveToClass(elementType);
               if (elementClassType != null) {
                 BeanInfo relatedBean = resolve(elementClassType);
                 if (relatedBean != null) {
@@ -275,7 +275,7 @@ public class BeanInfoBuilder {
                       toBuildEntry.getValue().getter,
                       toBuildEntry.getValue().setter,
                       collectionKind,
-                      new BeanValueInfo(type, Utils.resolveToClassType(bean.classType, elementType), relatedBean));
+                      new BeanValueInfo(type, bean.resolveToClass(elementType), relatedBean));
                 } else {
                   property = new MultiValuedPropertyInfo<SimpleValueInfo>(
                       bean,
@@ -284,7 +284,7 @@ public class BeanInfoBuilder {
                       toBuildEntry.getValue().getter,
                       toBuildEntry.getValue().setter,
                       collectionKind,
-                      new SimpleValueInfo(elementType, Utils.resolveToClassType(bean.classType, elementType)));
+                      new SimpleValueInfo(elementType, bean.resolveToClass(elementType)));
                 }
               }
             }
@@ -319,7 +319,7 @@ public class BeanInfoBuilder {
                 toBuildEntry.getValue().getter,
                 toBuildEntry.getValue().setter,
                 MultiValueKind.ARRAY,
-                new SimpleValueInfo(componentType, Utils.resolveToClassType(bean.classType, componentType)));
+                new SimpleValueInfo(componentType, bean.resolveToClass(componentType)));
           }
         } else if (resolvedType instanceof ClassTypeInfo) {
           BeanInfo related = resolve((ClassTypeInfo)resolvedType);
@@ -330,7 +330,7 @@ public class BeanInfoBuilder {
                 toBuildEntry.getKey(),
                 toBuildEntry.getValue().getter,
                 toBuildEntry.getValue().setter,
-                new BeanValueInfo(type, Utils.resolveToClassType(bean.classType, type), related));
+                new BeanValueInfo(type, bean.resolveToClass(type), related));
           }
         }
 
@@ -342,7 +342,7 @@ public class BeanInfoBuilder {
               toBuildEntry.getKey(),
               toBuildEntry.getValue().getter,
               toBuildEntry.getValue().setter,
-              new SimpleValueInfo(type, Utils.resolveToClassType(bean.classType, type)));
+              new SimpleValueInfo(type, bean.resolveToClass(type)));
         }
 
         //

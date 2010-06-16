@@ -53,10 +53,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I>
   public JCRPropertyListPropertyMapper(
     Class<O> contextType,
     SimpleTypeProvider<I, E> vt,
-    ValueMapping<MultiValuedPropertyInfo<SimpleValueInfo>> info,
-    String jcrPropertyName,
-    PropertyMetaType<I> propertyType,
-    List<String> defaultValue) {
+    ValueMapping.Multi info) {
     super(contextType, info);
 
     //
@@ -72,13 +69,11 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I>
         throw new AssertionError();
     }
 
-    // YES IT'S UGLY BUT FOR NOW IT'S OK
-
     //
     this.listType = listType;
-    this.jcrPropertyName = jcrPropertyName;
+    this.jcrPropertyName = info.getPropertyDefinition().getName();
     this.elementType = info.getValue();
-    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getClassType().getType(), propertyType, vt, defaultValue);
+    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getClassType().getType(), (PropertyMetaType<I>) info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
   }
 
   @Override

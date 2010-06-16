@@ -50,6 +50,6 @@ public class AttributeMapping extends PropertyMapping<SingleValuedPropertyInfo<S
 
   @Override
   public void accept(MappingVisitor visitor) {
-    throw new UnsupportedOperationException();
+    visitor.attributeMapping(this);
   }
 }

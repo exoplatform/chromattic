@@ -40,15 +40,12 @@ public class JCRNamedReferentPropertyMapper<O extends ObjectContext> extends JCR
   /** . */
   private final LinkType linkType;
 
-  public JCRNamedReferentPropertyMapper(
-    Class<O> contextType,
-    RelationshipMapping.ManyToOne.Reference info,
-    LinkType linkType) throws ClassNotFoundException {
+  public JCRNamedReferentPropertyMapper(Class<O> contextType, RelationshipMapping.ManyToOne.Reference info) throws ClassNotFoundException {
     super(contextType, info);
 
     //
     this.propertyName = info.getMappedBy();
-    this.linkType = linkType;
+    this.linkType = JCRReferentCollectionPropertyMapper.relationshipToLinkMapping.get(info.getType());
   }
 
   @Override

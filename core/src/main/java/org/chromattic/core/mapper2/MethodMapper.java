@@ -33,9 +33,6 @@ import java.lang.reflect.Method;
 public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
 
   /** . */
-  ObjectMapper mapper;
-
-  /** . */
   private final Method method;
 
   public MethodMapper(Method method) {

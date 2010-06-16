@@ -45,15 +45,16 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext, E, I> extends Pr
   public JCRPropertyPropertyMapper(
     Class<O> contextType,
     SimpleTypeProvider<I, E> vt,
-    ValueMapping<SingleValuedPropertyInfo<SimpleValueInfo>> info,
-    String jcrPropertyName,
-    List<String> defaultValue,
-    PropertyMetaType<I> jcrType) {
+    ValueMapping.Single info) {
     super(contextType, info);
 
     //
-    this.jcrPropertyName = jcrPropertyName;
-    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getClassType().getType(), jcrType, vt, defaultValue);
+    this.jcrPropertyName = info.getPropertyDefinition().getName();
+    this.vt = new ValueDefinition<I, E>(
+        (Class)info.getValue().getClassType().getType(),
+        (PropertyMetaType<I>)info.getPropertyDefinition().getMetaType(),
+        vt,
+        info.getPropertyDefinition().getDefaultValue());
   }
 
   @Override

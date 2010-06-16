@@ -32,7 +32,7 @@ import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> extends PropertyMapping<P, SimpleValueInfo> {
 
   /** . */
-  final PropertyDefinitionMapping propertyDefinition;
+  final PropertyDefinitionMapping<?> propertyDefinition;
 
   public ValueMapping(P property, PropertyDefinitionMapping propertyDefinition) {
     super(property);
@@ -50,7 +50,7 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> exte
     }
   }
 
-  public PropertyDefinitionMapping getPropertyDefinition() {
+  public PropertyDefinitionMapping<?> getPropertyDefinition() {
     return propertyDefinition;
   }
 

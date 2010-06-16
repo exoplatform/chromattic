@@ -25,7 +25,7 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MethodMapping {
+public abstract class MethodMapping {
 
   /** . */
   private final MethodInfo method;
@@ -37,4 +37,6 @@ public class MethodMapping {
   public MethodInfo getMethod() {
     return method;
   }
+
+  public abstract void accept(MappingVisitor visitor);
 }

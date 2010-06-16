@@ -33,6 +33,7 @@ public class MultiParentTestCase extends AbstractTestCase {
   protected void createDomain() {
     addClass(A.class);
     addClass(B.class);
+    addClass(C.class);
   }
 
   public void testLoad() throws Exception {

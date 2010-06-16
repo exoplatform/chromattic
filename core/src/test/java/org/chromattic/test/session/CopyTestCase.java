@@ -34,6 +34,7 @@ public class CopyTestCase extends AbstractTestCase {
   @Override
   protected void createDomain() {
     addClass(A.class);
+    addClass(B.class);
   }
 
   public void testCopyProperties() {

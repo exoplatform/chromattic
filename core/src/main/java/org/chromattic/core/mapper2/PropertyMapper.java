@@ -35,9 +35,6 @@ import java.lang.reflect.Method;
 public abstract class PropertyMapper<P extends PropertyInfo<V>, V extends ValueInfo, O extends ObjectContext> implements MethodInvoker<O> {
 
   /** . */
-  ObjectMapper<O> mapper;
-
-  /** . */
   protected final Class<O> contextType;
 
   /** . */

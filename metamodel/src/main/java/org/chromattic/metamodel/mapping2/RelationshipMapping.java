@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.mapping2;
 
+import org.chromattic.api.RelationshipType;
 import org.chromattic.metamodel.bean2.*;
 
 /**
@@ -151,20 +152,28 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       /** Mapped by value. */
       final String mappedBy;
 
-      public Reference(SingleValuedPropertyInfo<BeanValueInfo> property, String mappedBy) {
+      /** The relationship type. */
+      final RelationshipType type;
+
+      public Reference(SingleValuedPropertyInfo<BeanValueInfo> property, String mappedBy, RelationshipType type) {
         super(property);
 
         //
         this.mappedBy = mappedBy;
+        this.type = type;
       }
 
       public String getMappedBy() {
         return mappedBy;
       }
 
+      public RelationshipType getType() {
+        return type;
+      }
+
       @Override
       public void accept(MappingVisitor visitor) {
-        visitor.manyRoOneReference(this);
+        visitor.manyToOneReference(this);
       }
     }
   }
@@ -190,15 +199,23 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       /** Mapped by value. */
       final String mappedBy;
 
-      public Reference(MultiValuedPropertyInfo<BeanValueInfo> property, String mappedBy) {
+      /** The relationship type. */
+      final RelationshipType type;
+
+      public Reference(MultiValuedPropertyInfo<BeanValueInfo> property, String mappedBy, RelationshipType type) {
         super(property);
 
         //
         this.mappedBy = mappedBy;
+        this.type = type;
       }
 
       public String getMappedBy() {
         return mappedBy;
+      }
+
+      public RelationshipType getType() {
+        return type;
       }
 
       @Override

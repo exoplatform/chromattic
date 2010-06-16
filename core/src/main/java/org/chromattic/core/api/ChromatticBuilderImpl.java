@@ -23,7 +23,11 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
+import org.chromattic.core.mapper2.MapperBuilder;
+import org.chromattic.metamodel.bean2.BeanInfo;
 import org.chromattic.metamodel.mapping.TypeMappingDomain;
+import org.chromattic.metamodel.mapping2.ApplicationMappingBuilder;
+import org.chromattic.metamodel.mapping2.BeanMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.jcr.SessionLifeCycle;
@@ -69,6 +73,22 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       mappingBuilder.add(typeInfo);
     }
     mappings.addAll(mappingBuilder.build());
+
+    //
+    //
+    //
+    Set<ClassTypeInfo> classTypes = new HashSet<ClassTypeInfo>();
+    for (Class clazz : classes) {
+      ClassTypeInfo typeInfo = (ClassTypeInfo)typeResolver.resolve(clazz);
+      classTypes.add(typeInfo);
+    }
+    Map<ClassTypeInfo, BeanMapping> beanMappings = new ApplicationMappingBuilder().build(classTypes);
+    MapperBuilder builder = new MapperBuilder(propertyTypeResolver);
+    builder.build(beanMappings.values());
+
+    //
+    //
+    //
 
     //
     Boolean optimizeJCREnabled = options.getValue(JCR_OPTIMIZE_ENABLED);

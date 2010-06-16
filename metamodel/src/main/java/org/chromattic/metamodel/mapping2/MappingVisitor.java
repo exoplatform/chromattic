@@ -35,6 +35,8 @@ public class MappingVisitor {
 
   public void propertiesMapping(PropertiesMapping<?> mapping) { }
 
+  public void attributeMapping(AttributeMapping mapping) { }
+
   public void oneToOneHierarchic(RelationshipMapping.OneToOne.Hierarchic mapping) { }
 
   public void oneToManyHierarchic(RelationshipMapping.OneToMany.Hierarchic mapping) { }
@@ -43,15 +45,16 @@ public class MappingVisitor {
 
   public void oneToManyReference(RelationshipMapping.OneToMany.Reference mapping) { }
 
-  public void manyRoOneReference(RelationshipMapping.ManyToOne.Reference mapping) { }
+  public void manyToOneReference(RelationshipMapping.ManyToOne.Reference mapping) { }
 
   public void oneToOneEmbedded(RelationshipMapping.OneToOne.Embedded mapping) { }
 
-/*
+  public void visit(CreateMapping mapping) { }
 
+  public void visit(DestroyMapping mapping) { }
 
-  public void propertyMapMapping(ClassTypeInfo definer, PropertyMetaType metaType, boolean skip) { }
-*/
+  public void visit(FindByIdMapping mapping) { }
+
   public void endBean() { }
 
   public void end() { }

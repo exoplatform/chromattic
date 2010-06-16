@@ -19,12 +19,15 @@
 
 package org.chromattic.core.mapper2.onetomany.reference;
 
+import org.chromattic.api.RelationshipType;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper2.JCRNodeCollectionPropertyMapper;
 import org.chromattic.metamodel.bean2.BeanValueInfo;
 import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.mapping2.RelationshipMapping;
+
+import java.util.EnumMap;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -33,19 +36,28 @@ import org.chromattic.metamodel.mapping2.RelationshipMapping;
 public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo>, EntityContext> {
 
   /** . */
+  final static EnumMap<RelationshipType, LinkType> relationshipToLinkMapping;
+
+  static {
+    EnumMap<RelationshipType, LinkType> tmp = new EnumMap<RelationshipType, LinkType>(RelationshipType.class);
+    tmp.put(RelationshipType.REFERENCE, LinkType.REFERENCE);
+    tmp.put(RelationshipType.PATH, LinkType.PATH);
+    relationshipToLinkMapping = tmp;
+  }
+
+  /** . */
   final String propertyName;
 
   /** . */
   final LinkType linkType;
 
   public JCRReferentCollectionPropertyMapper(
-    RelationshipMapping.OneToMany.Reference info,
-    LinkType linkType) throws ClassNotFoundException {
+    RelationshipMapping.OneToMany.Reference info) throws ClassNotFoundException {
     super(EntityContext.class, info);
 
     //
     this.propertyName = info.getMappedBy();
-    this.linkType = linkType;
+    this.linkType = relationshipToLinkMapping.get(info.getType());
   }
 
   @Override
