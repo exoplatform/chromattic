@@ -34,11 +34,20 @@ public class MappingTestCase extends AbstractMappingTestCase {
 
   public void testB() throws Exception {
     Map<Class<?>, BeanMapping> mappings = assertValid(B1.class, B2.class);
-    BeanMapping mapping = mappings.get(B2.class);
-    RelationshipMapping.ManyToOne.Hierarchic a = mapping.getPropertyMapping("parent2", RelationshipMapping.ManyToOne.Hierarchic.class);
-    assertNotNull(a);
-    assertNotNull(a.getParent());
-    assertEquals(Collections.<Object, Object>emptyMap(), mapping.getProperties());
+
+    //
+    BeanMapping _1 = mappings.get(B1.class);
+    RelationshipMapping.ManyToOne.Hierarchic r1 = _1.getPropertyMapping("parent2", RelationshipMapping.ManyToOne.Hierarchic.class);
+    assertNotNull(r1);
+    assertNull(r1.getParent());
+    assertTrue(r1.isNew());
+
+    //
+    BeanMapping _2 = mappings.get(B2.class);
+    RelationshipMapping.ManyToOne.Hierarchic r2 = _2.getPropertyMapping("parent2", RelationshipMapping.ManyToOne.Hierarchic.class);
+    assertNotNull(r2);
+    assertNotNull(r2.getParent());
+    assertFalse(r2.isNew());
   }
   
 }

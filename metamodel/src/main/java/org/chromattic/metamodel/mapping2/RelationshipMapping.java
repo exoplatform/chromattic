@@ -43,6 +43,15 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     return related;
   }
 
+  public boolean isNew() {
+    if (parent == null) {
+      return true;
+    } else {
+      RelationshipMapping<?, ?> a = (RelationshipMapping<?,?>)parent;
+      return property.getValue().getBean() != a.property.getValue().getBean();
+    }
+  }
+
   public abstract static class OneToOne<R extends OneToOne> extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>, R> {
 
     protected OneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {

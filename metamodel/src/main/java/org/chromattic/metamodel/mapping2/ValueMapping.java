@@ -41,6 +41,15 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> exte
     this.propertyDefinition = propertyDefinition;
   }
 
+  public boolean isNew() {
+    if (parent == null) {
+      return true;
+    } else {
+      ValueMapping<?> a = null;
+      return propertyDefinition.getMetaType() != a.propertyDefinition.getMetaType();
+    }
+  }
+
   public PropertyDefinitionMapping getPropertyDefinition() {
     return propertyDefinition;
   }

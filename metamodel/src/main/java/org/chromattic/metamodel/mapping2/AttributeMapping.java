@@ -37,6 +37,13 @@ public class AttributeMapping extends PropertyMapping<SingleValuedPropertyInfo<S
     this.type = type;
   }
 
+  @Override
+  public boolean isNew() {
+
+    // 
+    return false;
+  }
+
   public NodeAttributeType getType() {
     return type;
   }

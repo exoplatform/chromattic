@@ -36,4 +36,17 @@ public class PropertiesMapping<V extends SimpleValueInfo> extends PropertyMappin
   public void accept(MappingVisitor visitor) {
     throw new UnsupportedOperationException();
   }
+
+  public boolean isNew() {
+/*
+    if (parent == null) {
+      return true;
+    } else {
+      PropertiesMapping<?> a = null;
+      return property.getValue().getBean() != a.property.getValue().getBean();
+    }
+*/
+    // Implement that properly based on the type of "*"
+    return true;
+  }
 }
