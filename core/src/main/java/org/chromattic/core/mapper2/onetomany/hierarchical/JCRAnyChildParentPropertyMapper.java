@@ -20,7 +20,6 @@
 package org.chromattic.core.mapper2.onetomany.hierarchical;
 
 import org.chromattic.core.ObjectContext;
-import org.chromattic.core.mapper.onetomany.hierarchical.AnyChildMultiValueMapper;
 import org.chromattic.core.mapper2.JCRNodeCollectionPropertyMapper;
 import org.chromattic.metamodel.bean2.BeanValueInfo;
 import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;

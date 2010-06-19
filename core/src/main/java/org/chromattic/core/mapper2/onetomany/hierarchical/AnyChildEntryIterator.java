@@ -16,33 +16,48 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper.onetomany.hierarchical;
 
+package org.chromattic.core.mapper2.onetomany.hierarchical;
+
+import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.core.EntityContext;
+
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AnyChildMultiValueMapper {
+public class AnyChildEntryIterator<E> extends AbstractFilterIterator<Map.Entry<String, E>, E> {
 
-  public abstract <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass);
+  /** . */
+  private final AnyChildMap map;
 
-  public static class Map extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildMap<E>(parentCtx, relatedClass);
-    }
+  public AnyChildEntryIterator(AnyChildMap<E> map) throws NullPointerException {
+    super(map.parentCtx.getChildren(map.relatedClass));
+
+    //
+    this.map = map;
   }
 
-  public static class Collection extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildCollection<E>(parentCtx, relatedClass);
-    }
-  }
+  protected Map.Entry<String, E> adapt(final E internal) {
+    final EntityContext internalCtx = map.parentCtx.getSession().unwrapEntity(internal);
+    return new Map.Entry<String, E>() {
 
-  public static class List extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildList<E>(parentCtx, relatedClass);
-    }
+      /** . */
+      private final String name = map.parentCtx.getSession().getName(internalCtx);
+
+      public String getKey() {
+        return name;
+      }
+
+      public E getValue() {
+        return internal;
+      }
+
+      public E setValue(E value) {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 }

@@ -17,27 +17,36 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.mapper.property;
+package org.chromattic.core.mapper2.onetomany.hierarchical;
 
-import org.chromattic.core.ObjectContext;
-import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.metamodel.bean.PropertyQualifier;
-import org.chromattic.metamodel.bean.value.MapValueInfo;
-import org.chromattic.metamodel.bean.value.SimpleValueInfo;
+import java.util.Map;
+import java.util.AbstractSet;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMapPropertyMapper<O extends ObjectContext>
-  extends PropertyMapper<MapValueInfo<SimpleValueInfo, SimpleValueInfo>, O> {
+public class AnyChildEntrySet<E> extends AbstractSet<Map.Entry<String, E>> {
 
-  public JCRPropertyMapPropertyMapper(Class<O> contextType, PropertyQualifier<MapValueInfo<SimpleValueInfo, SimpleValueInfo>> info) {
-    super(contextType, info);
+  /** . */
+  private final AnyChildMap<E> map;
+
+  public AnyChildEntrySet(AnyChildMap<E> map) {
+    this.map = map;
   }
 
-  @Override
-  public Object get(O context) throws Throwable {
-    return context.getEntity().getPropertyMap();
+  public Iterator<Map.Entry<String, E>> iterator() {
+    return new AnyChildEntryIterator<E>(map);
+  }
+
+  public int size() {
+    int size = 0;
+    Iterator<E> iterator = map.parentCtx.getChildren(map.relatedClass);
+    while (iterator.hasNext()) {
+      iterator.next();
+      size++;
+    }
+    return size;
   }
 }

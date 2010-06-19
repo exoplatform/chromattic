@@ -25,7 +25,7 @@ import org.chromattic.common.collection.SetMap;
 import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.core.mapper.onetomany.hierarchical.AnyChildMultiValueMapper;
+import org.chromattic.core.mapper2.onetomany.hierarchical.AnyChildMultiValueMapper;
 import org.chromattic.core.mapper2.nodeattribute.JCRNodeAttributePropertyMapper;
 import org.chromattic.core.mapper2.onetomany.hierarchical.JCRAnyChildCollectionPropertyMapper;
 import org.chromattic.core.mapper2.onetomany.hierarchical.JCRAnyChildParentPropertyMapper;

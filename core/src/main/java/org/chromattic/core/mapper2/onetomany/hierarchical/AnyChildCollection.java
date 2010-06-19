@@ -17,32 +17,56 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.mapper.onetomany.hierarchical;
+package org.chromattic.core.mapper2.onetomany.hierarchical;
 
-import java.util.Map;
-import java.util.AbstractSet;
+import org.chromattic.core.EntityContext;
+
+import java.util.AbstractCollection;
 import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class AnyChildEntrySet<E> extends AbstractSet<Map.Entry<String, E>> {
+class AnyChildCollection<E> extends AbstractCollection<E> {
 
   /** . */
-  private final AnyChildMap<E> map;
+  private final EntityContext parentCtx;
 
-  public AnyChildEntrySet(AnyChildMap<E> map) {
-    this.map = map;
+  /** . */
+  private final Class<E> relatedClass;
+
+  public AnyChildCollection(EntityContext parentCtx, Class<E> relatedClass) {
+    this.relatedClass = relatedClass;
+    this.parentCtx = parentCtx;
   }
 
-  public Iterator<Map.Entry<String, E>> iterator() {
-    return new AnyChildEntryIterator<E>(map);
+  @Override
+  public boolean add(Object child) {
+    if (child == null) {
+      throw new NullPointerException();
+    }
+    if (!relatedClass.isInstance(child)) {
+      throw new ClassCastException("Cannot cast object with class " + child.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
+
+    //
+    EntityContext childCtx = parentCtx.getSession().unwrapEntity(child);
+
+    //
+    parentCtx.addChild(childCtx);
+
+    //
+    return true;
+  }
+
+  public Iterator<E> iterator() {
+    return parentCtx.getChildren(relatedClass);
   }
 
   public int size() {
     int size = 0;
-    Iterator<E> iterator = map.parentCtx.getChildren(map.relatedClass);
+    Iterator<E> iterator = iterator();
     while (iterator.hasNext()) {
       iterator.next();
       size++;

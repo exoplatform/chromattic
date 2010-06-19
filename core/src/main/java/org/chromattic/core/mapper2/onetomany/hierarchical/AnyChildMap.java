@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core.mapper.onetomany.hierarchical;
+package org.chromattic.core.mapper2.onetomany.hierarchical;
 
 import org.chromattic.core.EntityContext;
 
