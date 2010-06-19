@@ -21,7 +21,7 @@ package org.chromattic.core.query;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.core.DomainSession;
-import org.chromattic.core.mapper2.ObjectMapper;
+import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.Domain;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 

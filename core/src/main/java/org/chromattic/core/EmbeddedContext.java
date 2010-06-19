@@ -20,7 +20,7 @@
 package org.chromattic.core;
 
 import org.chromattic.core.jcr.info.NodeTypeInfo;
-import org.chromattic.core.mapper2.ObjectMapper;
+import org.chromattic.core.mapper.ObjectMapper;
 
 import java.lang.reflect.Method;
 
