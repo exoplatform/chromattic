@@ -19,6 +19,9 @@
 
 package org.chromattic.core.mapper2;
 
+import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.common.ObjectInstantiator;
+import org.chromattic.common.collection.SetMap;
 import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.ObjectContext;
@@ -47,12 +50,16 @@ import org.chromattic.metamodel.mapping2.PropertiesMapping;
 import org.chromattic.metamodel.mapping2.RelationshipMapping;
 import org.chromattic.metamodel.mapping2.ValueMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
+import org.chromattic.spi.instrument.Instrumentor;
+import org.chromattic.spi.instrument.MethodHandler;
+import org.chromattic.spi.instrument.ProxyFactory;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -61,17 +68,44 @@ import java.util.List;
 public class MapperBuilder {
 
   /** . */
+  private static final ProxyFactory<?> NULL_PROXY_FACTORY = new ProxyFactory<Object>() {
+    public Object createProxy(MethodHandler invoker) {
+      throw new UnsupportedOperationException("Cannot create proxy for " + invoker);
+    }
+  };
+
+  /** . */
+  private static final Instrumentor NULL_INSTRUMENTOR = new Instrumentor() {
+
+    // This is OK as the class is *stateless*
+    @SuppressWarnings("unchecked")
+    public <O> ProxyFactory<O> getProxyClass(Class<O> clazz) {
+      return (ProxyFactory<O>)NULL_PROXY_FACTORY;
+    }
+
+    public MethodHandler getInvoker(Object proxy) {
+      throw new UnsupportedOperationException();
+    }
+  };
+
+  /** . */
   private final SimpleTypeResolver simpleTypeResolver;
 
   /** . */
   private final ValueTypeFactory valueTypeFactory;
 
-  public MapperBuilder(SimpleTypeResolver simpleTypeResolver) {
+  /** . */
+  private final Instrumentor instrumentor;
+
+  public MapperBuilder(
+      SimpleTypeResolver simpleTypeResolver,
+      Instrumentor instrumentor) {
     this.simpleTypeResolver = simpleTypeResolver;
     this.valueTypeFactory = new ValueTypeFactory(simpleTypeResolver);
+    this.instrumentor = instrumentor;
   }
 
-  public void build(Collection<BeanMapping> beanMappings) {
+  public Collection<ObjectMapper<?>> build(Collection<BeanMapping> beanMappings) {
 
     Context ctx = new Context();
 
@@ -83,25 +117,40 @@ public class MapperBuilder {
 
     ctx.end();
 
-
+    return ctx.beanMappers.values();
   }
 
   private class Context extends MappingVisitor {
 
     private BeanMapping beanMapping;
 
+    private SetMap<BeanMapping, MethodMapper.Create> createMethods;
+
+    private Map<BeanMapping, ObjectMapper<?>> beanMappers;
+
     private Class<? extends ObjectContext> contextType;
 
-    private List<PropertyMapper<?, ?, ?>> propertyMappers;
+    Set<MethodMapper<?>> methodMappers;
+//    Set<MethodMapper<EntityContext>> methodMappersForE;
+    Set<PropertyMapper<?, ?, ?>> propertyMappers;
+//    Set<PropertyMapper<?, ?, EntityContext>> propertyMappersForEntity;
+//    Set<PropertyMapper<?, ?, EmbeddedContext>> propertyMappersForEmbedded;
 
-    private List<MethodMapper<?>> methodMappers;
+    @Override
+    public void start() {
+      this.beanMappers = new HashMap<BeanMapping, ObjectMapper<?>>();
+      this.createMethods = new SetMap<BeanMapping, MethodMapper.Create>();
+    }
 
     @Override
     public void startBean(BeanMapping mapping) {
       this.beanMapping = mapping;
       this.contextType = mapping.getNodeTypeKind() == NodeTypeKind.PRIMARY ? EntityContext.class : EmbeddedContext.class;
-      this.propertyMappers = new ArrayList<PropertyMapper<?,?,?>>();
-      this.methodMappers = new ArrayList<MethodMapper<?>>();
+      this.propertyMappers = new HashSet<PropertyMapper<?,?,?>>();
+      this.methodMappers = new HashSet<MethodMapper<?>>();
+//      this.methodMappersForE = new HashSet<MethodMapper<EntityContext>>();
+//      this.propertyMappersForEntity = new HashSet<PropertyMapper<?, ?, EntityContext>>();
+//      this.propertyMappersForEmbedded = new HashSet<PropertyMapper<?, ?, EmbeddedContext>>();
     }
 
     @Override
@@ -216,20 +265,21 @@ public class MapperBuilder {
 
     @Override
     public void visit(CreateMapping mapping) {
-      MethodMapper mapper = new MethodMapper.Create((Method)mapping.getMethod().getMethod());
+      MethodMapper.Create mapper = new MethodMapper.Create(mapping.getMethod());
       methodMappers.add(mapper);
+      createMethods.get(mapping.getBeanMapping()).add(mapper);
     }
 
     @Override
     public void visit(DestroyMapping mapping) {
-      MethodMapper mapper = new MethodMapper.Destroy((Method)mapping.getMethod().getMethod());
+      MethodMapper mapper = new MethodMapper.Destroy(mapping.getMethod());
       methodMappers.add(mapper);
     }
 
     @Override
     public void visit(FindByIdMapping mapping) {
       try {
-        MethodMapper mapper = new MethodMapper.FindById((Method)mapping.getMethod().getMethod(), mapping.getType());
+        MethodMapper mapper = new MethodMapper.FindById(mapping.getMethod(), mapping.getType());
         methodMappers.add(mapper);
       } catch (ClassNotFoundException e) {
         throw new UnsupportedOperationException(e);
@@ -239,7 +289,62 @@ public class MapperBuilder {
     @Override
     public void endBean() {
 
+      Instrumentor objectInstrumentor;
+      if (beanMapping.getBean().getClassType().getName().equals(Object.class.getName())) {
+        objectInstrumentor = NULL_INSTRUMENTOR;
+      } else {
+        objectInstrumentor = instrumentor;
+      }
+
+      ObjectMapper<?> mapper;
+      if (beanMapping.getNodeTypeKind() == NodeTypeKind.PRIMARY) {
+
+        // Get the formatter
+        ObjectFormatter formatter = null;
+        if (beanMapping.getFormatterClassType() != null) {
+          Class<? extends ObjectFormatter> formatterClass = (Class<ObjectFormatter>)beanMapping.getFormatterClassType().getType();
+          formatter = ObjectInstantiator.newInstance(formatterClass);
+        }
+
+        mapper = new ObjectMapper(
+            beanMapping.isAbstract(),
+            (Class<?>)beanMapping.getBean().getClassType().getType(),
+            propertyMappers,
+            methodMappers,
+            beanMapping.getOnDuplicate(),
+            formatter,
+            objectInstrumentor,
+            beanMapping.getNodeTypeName(),
+            beanMapping.getNodeTypeKind()
+        );
+
+      } else {
+
+        mapper = new ObjectMapper(
+            beanMapping.isAbstract(),
+            (Class<?>)beanMapping.getBean().getClassType().getType(),
+            propertyMappers,
+            methodMappers,
+            beanMapping.getOnDuplicate(),
+            null,
+            objectInstrumentor,
+            beanMapping.getNodeTypeName(),
+            beanMapping.getNodeTypeKind()
+        );
+      }
+
+      //
+      beanMappers.put(beanMapping, mapper);
+    }
+
+    @Override
+    public void end() {
+      for (BeanMapping beanMapping : createMethods.keySet()) {
+        ObjectMapper beanMapper = beanMappers.get(beanMapping);
+        for (MethodMapper.Create createMapper : createMethods.get(beanMapping)) {
+          createMapper.mapper = beanMapper ;
+        }
+      }
     }
   }
-
 }

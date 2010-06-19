@@ -84,10 +84,13 @@ public class BeanInfo {
   }
 
   public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
-    if (annotationClass == null) {
+    return getAnnotation(AnnotationType.get(annotationClass));
+  }
+
+  public <A> A getAnnotation(AnnotationType<A, ?> annotationType) {
+    if (annotationType == null) {
       throw new NullPointerException();
     }
-    AnnotationType<A, ?> annotationType = AnnotationType.get(annotationClass);
     AnnotationIntrospector<A> introspector = new AnnotationIntrospector<A>(annotationType);
     AnnotationTarget<ClassTypeInfo,A> annotationTarget = introspector.resolve(classType);
     return annotationTarget != null ? annotationTarget.getAnnotation() : null;

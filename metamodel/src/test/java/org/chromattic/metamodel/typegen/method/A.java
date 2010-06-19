@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,32 +17,19 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
+package org.chromattic.metamodel.typegen.method;
 
-import org.reflext.api.MethodInfo;
+import org.chromattic.api.annotations.Destroy;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class CreateMapping extends MethodMapping {
+@PrimaryType(name = "a")
+public abstract class A {
+  
+  @Destroy
+  public abstract void destroy();
 
-  /** . */
-  private final BeanMapping beanMapping;
-
-  public CreateMapping(MethodInfo method, BeanMapping bean) {
-    super(method);
-
-    //
-    this.beanMapping = bean;
-  }
-
-  public BeanMapping getBeanMapping() {
-    return beanMapping;
-  }
-
-  @Override
-  public void accept(MappingVisitor visitor) {
-    visitor.visit(this);
-  }
 }

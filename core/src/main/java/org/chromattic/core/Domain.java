@@ -22,9 +22,7 @@ package org.chromattic.core;
 import org.chromattic.api.BuilderException;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
-import org.chromattic.core.mapper.ObjectMapper;
-import org.chromattic.metamodel.mapping.NodeTypeMapping;
-import org.chromattic.core.mapper.MapperBuilder;
+import org.chromattic.core.mapper2.ObjectMapper;
 import org.chromattic.core.jcr.info.NodeInfoManager;
 import org.chromattic.core.query.QueryManager;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
@@ -99,7 +97,7 @@ public class Domain {
 
   public Domain(
     SimpleTypeResolver resolver,
-    Set<NodeTypeMapping> typeMappings,
+    Collection<ObjectMapper<?>> mappers,
     Instrumentor instrumentor,
     ObjectFormatter objectFormatter,
     boolean propertyCacheEnabled,
@@ -110,12 +108,6 @@ public class Domain {
     int rootCreateMode,
     String rootNodeType) {
 
-
-    //
-
-    //
-    MapperBuilder builder = new MapperBuilder(resolver, typeMappings, instrumentor);
-
     //
     if (!CREATE_MODES.contains(rootCreateMode)) {
       throw new IllegalArgumentException("Invalid create mode " + rootCreateMode);
@@ -124,7 +116,7 @@ public class Domain {
     //
     Map<String, ObjectMapper> typeMapperByNodeType = new HashMap<String, ObjectMapper>();
     Map<Class<?>, ObjectMapper> typeMapperByClass = new HashMap<Class<?>, ObjectMapper>();
-    for (ObjectMapper typeMapper : builder.build()) {
+    for (ObjectMapper typeMapper : mappers) {
       if (typeMapperByNodeType.containsKey(typeMapper.getNodeTypeName())) {
         throw new IllegalStateException("Duplicate node type name " + typeMapper);
       }

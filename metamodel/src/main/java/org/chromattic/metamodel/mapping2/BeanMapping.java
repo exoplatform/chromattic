@@ -19,8 +19,10 @@
 
 package org.chromattic.metamodel.mapping2;
 
+import org.chromattic.api.NameConflictResolution;
 import org.chromattic.metamodel.bean2.BeanInfo;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
+import org.reflext.api.ClassTypeInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,6 +59,9 @@ public class BeanMapping {
   final NodeTypeKind nodeTypeKind;
 
   /** . */
+  final ClassTypeInfo formatterClassType;
+
+  /** . */
   final String nodeTypeName;
 
   /** . */
@@ -65,10 +70,15 @@ public class BeanMapping {
   /** . */
   final boolean abstract_;
 
+  /** . */
+  final NameConflictResolution onDuplicate;
+
   public BeanMapping(
       BeanInfo bean,
       NodeTypeKind nodeTypeKind,
       String nodeTypeName,
+      NameConflictResolution onDuplicate,
+      ClassTypeInfo formatterClassType,
       boolean orderable,
       boolean abstract_) {
     this.bean = bean;
@@ -80,6 +90,8 @@ public class BeanMapping {
     this.unmodifiableProperties = Collections.unmodifiableMap(properties);
     this.methods = new ArrayList<MethodMapping>();
     this.unmodifiableMethods = Collections.unmodifiableList(methods);
+    this.onDuplicate = onDuplicate;
+    this.formatterClassType = formatterClassType;
   }
 
   public NodeTypeKind getNodeTypeKind() {
@@ -88,6 +100,14 @@ public class BeanMapping {
 
   public String getNodeTypeName() {
     return nodeTypeName;
+  }
+
+  public ClassTypeInfo getFormatterClassType() {
+    return formatterClassType;
+  }
+
+  public NameConflictResolution getOnDuplicate() {
+    return onDuplicate;
   }
 
   public boolean isOrderable() {

@@ -20,14 +20,18 @@
 package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.api.AttributeOption;
+import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.Destroy;
 import org.chromattic.api.annotations.FindById;
+import org.chromattic.api.annotations.FormattedBy;
+import org.chromattic.api.annotations.Id;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.NamingPolicy;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
@@ -57,6 +61,9 @@ import org.reflext.api.MethodInfo;
 import org.reflext.api.TypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.api.VoidTypeInfo;
+import org.reflext.api.annotation.AnnotationInfo;
+import org.reflext.api.annotation.AnnotationParameterInfo;
+import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationTarget;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
@@ -75,6 +82,12 @@ public class ApplicationMappingBuilder {
 
   /** Used for retrieving {@code java.lang.Object} info. */
   private final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
+
+  /** . */
+  private final ClassTypeInfo FORMATTED_BY = (ClassTypeInfo)domain.resolve(FormattedBy.class);
+
+  /** . */
+  private final AnnotationType<AnnotationInfo, ?> FORMATTED_BY_ANNOTATION_TYPE = AnnotationType.get(FORMATTED_BY);
 
   public Map<ClassTypeInfo, BeanMapping> build(Set<ClassTypeInfo> classTypes) {
 
@@ -101,6 +114,8 @@ public class ApplicationMappingBuilder {
         objectBean,
         NodeTypeKind.PRIMARY,
         "nt:base",
+        NameConflictResolution.FAIL,
+        null,
         false,
         true);
     ctx.beanMappings.put(objectBean, objectMapping);
@@ -244,13 +259,25 @@ public class ApplicationMappingBuilder {
     final SimpleTypeResolver typeResolver;
 
     /** . */
+    final Map<ClassTypeInfo, BeanInfo> beanClassTypeMap;
+
+    /** . */
     final Set<BeanInfo> beans;
 
     /** . */
     final Map<BeanInfo, BeanMapping> beanMappings;
 
     private Context(SimpleTypeResolver typeResolver, Set<BeanInfo> beans) {
+
+      //
+      Map<ClassTypeInfo, BeanInfo> beanClassTypeMap = new HashMap<ClassTypeInfo, BeanInfo>();
+      for (BeanInfo bean : beans) {
+        beanClassTypeMap.put(bean.getClassType(), bean);
+      }
+
+      //
       this.typeResolver = typeResolver;
+      this.beanClassTypeMap = beanClassTypeMap;
       this.beans = beans;
       this.beanMappings = new HashMap<BeanInfo, BeanMapping>();
     }
@@ -264,6 +291,15 @@ public class ApplicationMappingBuilder {
         } else {
           return beanMappings;
         }
+      }
+    }
+
+    private BeanMapping resolve(ClassTypeInfo classType) {
+      BeanInfo bean = beanClassTypeMap.get(classType);
+      if (bean != null) {
+        return resolve(bean);
+      } else {
+        return null;
       }
     }
 
@@ -292,6 +328,20 @@ public class ApplicationMappingBuilder {
       Annotation mappingAnnotation = annotations.iterator().next();
 
       //
+      NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
+      NamingPolicy namingPolicy = bean.getAnnotation(NamingPolicy.class);
+      if (namingPolicy != null) {
+        onDuplicate = namingPolicy.onDuplicate();
+      }
+
+      ClassTypeInfo formatter = null;
+      AnnotationInfo formattedBy = bean.getAnnotation(FORMATTED_BY_ANNOTATION_TYPE);
+      if (formattedBy != null) {
+        AnnotationParameterInfo<ClassTypeInfo> valueParameter = (AnnotationParameterInfo<ClassTypeInfo>)formattedBy.getParameter("value");
+        formatter = valueParameter.getValue();
+      }
+
+      //
       NodeTypeKind nodeTypeKind;
       String nodeTypeName;
       boolean orderable;
@@ -311,7 +361,7 @@ public class ApplicationMappingBuilder {
       }
 
       //
-      return new BeanMapping(bean, nodeTypeKind, nodeTypeName, orderable, abstract_);
+      return new BeanMapping(bean, nodeTypeKind, nodeTypeName, onDuplicate, formatter, orderable, abstract_);
     }
 
     private void build(BeanMapping beanMapping) {
@@ -334,6 +384,7 @@ public class ApplicationMappingBuilder {
             OneToOne.class,
             OneToMany.class,
             ManyToOne.class,
+            Id.class,
             Path.class,
             Name.class,
             WorkspaceName.class
@@ -354,6 +405,8 @@ public class ApplicationMappingBuilder {
               if (annotation instanceof Property) {
                 Property propertyAnnotation = (Property)annotation;
                 mapping = createProperty(propertyAnnotation, (SingleValuedPropertyInfo<SimpleValueInfo>)property);
+              } else if (annotation instanceof Id) {
+                mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>)property, NodeAttributeType.ID);
               } else if (annotation instanceof Path) {
                 mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>)property, NodeAttributeType.PATH);
               } else if (annotation instanceof Name) {
@@ -477,7 +530,11 @@ public class ApplicationMappingBuilder {
             }
             ClassTypeInfo returnTypeInfo = bean.resolveToClass(method.getReturnType());
             if (returnTypeInfo != null) {
-              methodMappings.add(new CreateMapping(method, returnTypeInfo));
+              BeanMapping createBeanMapping = resolve(returnTypeInfo);
+              if (createBeanMapping == null) {
+                throw new UnsupportedOperationException();
+              }
+              methodMappings.add(new CreateMapping(method, createBeanMapping));
             } else {
               throw new InvalidMappingException(bean.getClassType(), "Invalid " + method + " method return type " + returnTypeInfo);
             }
@@ -523,6 +580,9 @@ public class ApplicationMappingBuilder {
           }
         }
       }
+
+      //
+      beanMapping.methods.addAll(methodMappings);
     }
 
     private AttributeMapping createAttribute(SingleValuedPropertyInfo<SimpleValueInfo> property, NodeAttributeType type) {

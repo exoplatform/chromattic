@@ -67,7 +67,11 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
   /** . */
   private final NodeTypeKind kind;
 
+  /** . */
+  private final boolean abstract_;
+
   public ObjectMapper(
+    boolean abstract_,
     Class<?> objectClass,
     Set<PropertyMapper<?, ?, C>> propertyMappers,
     Set<MethodMapper<C>> methodMappers,
@@ -91,10 +95,11 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
       }
     }
     for (MethodMapper<C> methodMapper : methodMappers) {
-      dispatchers.put(methodMapper.getMethod(), methodMapper);
+      dispatchers.put((Method)methodMapper.getMethod().getMethod(), methodMapper);
     }
 
     //
+    this.abstract_ = abstract_;
     this.dispatchers = dispatchers;
     this.objectClass = objectClass;
     this.methodMappers = methodMappers;
@@ -129,6 +134,10 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
       msg.append(")");
       throw new AssertionError(msg);
     }
+  }
+
+  public boolean isAbstract() {
+    return abstract_; 
   }
 
   public NodeTypeKind getKind() {

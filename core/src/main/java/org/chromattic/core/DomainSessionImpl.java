@@ -27,9 +27,9 @@ import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.core.jcr.info.MixinTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
-import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
+import org.chromattic.core.mapper2.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 
 import javax.jcr.*;
@@ -497,6 +497,11 @@ public class DomainSessionImpl extends DomainSession {
     ObjectMapper<?> typeMapper = domain.getTypeMapper(clazz);
     if (typeMapper == null) {
       throw new IllegalArgumentException("The type " + clazz.getName() + " is not mapped");
+    }
+
+    //
+    if (typeMapper.getKind() == NodeTypeKind.PRIMARY && typeMapper.isAbstract()) {
+      throw new IllegalArgumentException("The type " + clazz.getName() + " is abstract");
     }
 
     //

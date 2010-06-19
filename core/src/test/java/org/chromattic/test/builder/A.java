@@ -27,6 +27,6 @@ import org.chromattic.metamodel.annotations.Skip;
  * @version $Revision$
  */
 @Skip
-@PrimaryType(name = "nt:base")
+@PrimaryType(name = "nt:unstructured")
 public class A {
 }

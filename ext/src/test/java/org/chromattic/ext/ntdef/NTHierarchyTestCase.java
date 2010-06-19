@@ -43,6 +43,7 @@ public class NTHierarchyTestCase extends TestCase {
     builder.add(NTFolder.class);
     builder.add(NTFile.class);
     builder.add(NTResource.class);
+    builder.add(NTHierarchyNode.class);
     chromattic = builder.build();
   }
 
