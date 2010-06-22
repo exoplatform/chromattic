@@ -20,8 +20,8 @@
 package org.chromattic.core.mapper;
 
 import org.chromattic.core.ObjectContext;
-import org.chromattic.metamodel.bean2.SingleValuedPropertyInfo;
-import org.chromattic.metamodel.bean2.ValueInfo;
+import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.ValueInfo;
 import org.chromattic.metamodel.mapping2.PropertyMapping;
 
 /**

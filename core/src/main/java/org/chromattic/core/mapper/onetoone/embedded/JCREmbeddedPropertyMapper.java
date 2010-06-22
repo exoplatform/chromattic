@@ -21,8 +21,8 @@ package org.chromattic.core.mapper.onetoone.embedded;
 import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
-import org.chromattic.metamodel.bean2.BeanValueInfo;
-import org.chromattic.metamodel.bean2.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 import org.chromattic.metamodel.mapping2.RelationshipMapping;
 
 /**

@@ -21,8 +21,8 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
-import org.chromattic.metamodel.bean2.BeanValueInfo;
-import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.mapping2.RelationshipMapping;
 
 /**

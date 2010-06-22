@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean2;
+package org.chromattic.metamodel.bean;
 
 import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;

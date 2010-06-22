@@ -20,7 +20,11 @@
 package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.bean2.*;
+import org.chromattic.metamodel.bean.BeanInfo;
+import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

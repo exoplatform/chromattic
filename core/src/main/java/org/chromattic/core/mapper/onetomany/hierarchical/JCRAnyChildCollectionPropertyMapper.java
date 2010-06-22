@@ -22,8 +22,8 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 import org.chromattic.core.DomainSession;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
-import org.chromattic.metamodel.bean2.BeanValueInfo;
-import org.chromattic.metamodel.bean2.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.BeanValueInfo;
 import org.chromattic.metamodel.mapping2.RelationshipMapping;
 
 /**

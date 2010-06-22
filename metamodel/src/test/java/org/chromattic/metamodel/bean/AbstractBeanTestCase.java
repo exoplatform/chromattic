@@ -28,12 +28,6 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.chromattic.metamodel.bean2.AccessMode;
-import org.chromattic.metamodel.bean2.BeanInfo;
-import org.chromattic.metamodel.bean2.BeanInfoBuilder;
-import org.chromattic.metamodel.bean2.PropertyInfo;
-import org.chromattic.metamodel.bean2.SingleValuedPropertyInfo;
-import org.chromattic.metamodel.bean2.ValueInfo;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;

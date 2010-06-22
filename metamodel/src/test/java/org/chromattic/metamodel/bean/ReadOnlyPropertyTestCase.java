@@ -19,12 +19,9 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.bean2.AccessMode;
-import org.chromattic.metamodel.bean2.BeanInfo;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Collections;
-import java.util.HashSet;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

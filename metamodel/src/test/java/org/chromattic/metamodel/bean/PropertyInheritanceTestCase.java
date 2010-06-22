@@ -19,8 +19,6 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.bean2.AccessMode;
-import org.chromattic.metamodel.bean2.BeanInfo;
 import org.reflext.api.ClassTypeInfo;
 
 /**

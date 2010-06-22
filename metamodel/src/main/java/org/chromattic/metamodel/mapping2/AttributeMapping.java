@@ -19,8 +19,8 @@
 
 package org.chromattic.metamodel.mapping2;
 
-import org.chromattic.metamodel.bean2.SimpleValueInfo;
-import org.chromattic.metamodel.bean2.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.SimpleValueInfo;
+import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 
 /**

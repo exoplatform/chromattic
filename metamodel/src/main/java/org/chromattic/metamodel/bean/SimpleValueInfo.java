@@ -17,28 +17,33 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean2;
+package org.chromattic.metamodel.bean;
 
-import org.reflext.api.MethodInfo;
+import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.reflext.api.TypeInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MultiValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo<V> {
+public class SimpleValueInfo extends ValueInfo {
 
   /** . */
-  private final MultiValueKind kind;
+  private final SimpleTypeMapping typeMapping;
 
-  public MultiValuedPropertyInfo(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, MultiValueKind kind, V value) {
-    super(bean, parent, name, getter, setter, value);
+  public SimpleValueInfo(
+      TypeInfo declaredType,
+      TypeInfo effectiveType,
+      SimpleTypeMapping typeMapping) {
+    super(declaredType, effectiveType);
 
     //
-    this.kind = kind;
+    this.typeMapping = typeMapping;
   }
 
-  public MultiValueKind getKind() {
-    return kind;
+  public SimpleTypeMapping getTypeMapping() {
+    return typeMapping;
   }
+
+
 }

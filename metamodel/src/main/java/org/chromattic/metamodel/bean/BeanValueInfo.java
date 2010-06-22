@@ -17,9 +17,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean2;
+package org.chromattic.metamodel.bean;
 
-import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeInfo;
 
@@ -27,24 +26,27 @@ import org.reflext.api.TypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleValueInfo extends ValueInfo {
+public class BeanValueInfo extends ValueInfo {
 
   /** . */
-  private final SimpleTypeMapping typeMapping;
+  private final BeanInfo bean;
 
-  public SimpleValueInfo(
-      TypeInfo declaredType,
-      TypeInfo effectiveType,
-      SimpleTypeMapping typeMapping) {
-    super(declaredType, effectiveType);
+  /** . */
+  private final ClassTypeInfo classType;
+
+  public BeanValueInfo(TypeInfo declaredType, ClassTypeInfo classType, BeanInfo bean) {
+    super(declaredType, classType);
 
     //
-    this.typeMapping = typeMapping;
+    this.classType = classType;
+    this.bean = bean;
   }
 
-  public SimpleTypeMapping getTypeMapping() {
-    return typeMapping;
+  public ClassTypeInfo getClassType() {
+    return classType;
   }
 
-
+  public BeanInfo getBean() {
+    return bean;
+  }
 }

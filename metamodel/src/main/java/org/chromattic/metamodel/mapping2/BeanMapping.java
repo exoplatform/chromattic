@@ -20,7 +20,7 @@
 package org.chromattic.metamodel.mapping2;
 
 import org.chromattic.api.NameConflictResolution;
-import org.chromattic.metamodel.bean2.BeanInfo;
+import org.chromattic.metamodel.bean.BeanInfo;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.reflext.api.ClassTypeInfo;
 

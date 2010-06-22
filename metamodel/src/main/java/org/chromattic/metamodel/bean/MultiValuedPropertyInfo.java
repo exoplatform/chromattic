@@ -17,40 +17,27 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean2;
+package org.chromattic.metamodel.bean;
 
-import org.reflext.api.TypeInfo;
+import org.reflext.api.MethodInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ValueInfo {
+public class MultiValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo<V> {
 
-  /** The property type as declared originally. */
-  private final TypeInfo declaredType;
+  /** . */
+  private final MultiValueKind kind;
 
-  /** The effective property type. */
-  private final TypeInfo effectiveType;
-
-  protected ValueInfo(TypeInfo declaredType, TypeInfo effectiveType) {
-    if (declaredType == null) {
-      throw new NullPointerException("No null declared type accepted");
-    }
-    if (effectiveType == null) {
-      throw new NullPointerException("No null effective type accepted");
-    }
+  public MultiValuedPropertyInfo(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, MultiValueKind kind, V value) {
+    super(bean, parent, name, getter, setter, value);
 
     //
-    this.declaredType = declaredType;
-    this.effectiveType = effectiveType;
+    this.kind = kind;
   }
 
-  public TypeInfo getEffectiveType() {
-    return effectiveType;
-  }
-
-  public TypeInfo getDeclaredType() {
-    return declaredType;
+  public MultiValueKind getKind() {
+    return kind;
   }
 }

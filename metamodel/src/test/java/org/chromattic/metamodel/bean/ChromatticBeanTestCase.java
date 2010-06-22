@@ -17,9 +17,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean2;
+package org.chromattic.metamodel.bean;
 
-import junit.framework.TestCase;
 import org.chromattic.common.collection.Collections;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodSignature;

@@ -17,18 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean2;
-
-import org.reflext.api.MethodInfo;
-import org.reflext.api.TypeInfo;
+package org.chromattic.metamodel.bean;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SingleValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo<V> {
-
-  public SingleValuedPropertyInfo(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, V value) {
-    super(bean, parent, name, getter, setter, value);
-  }
+public enum AccessMode {
+  READ_ONLY, READ_WRITE, WRITE_ONLY
 }

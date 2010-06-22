@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.typegen.property;
 
-import org.chromattic.metamodel.bean2.MultiValueKind;
+import org.chromattic.metamodel.bean.MultiValueKind;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping2.BeanMapping;

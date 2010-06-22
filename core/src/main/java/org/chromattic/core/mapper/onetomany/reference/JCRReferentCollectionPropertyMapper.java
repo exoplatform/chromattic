@@ -23,8 +23,8 @@ import org.chromattic.api.RelationshipType;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
-import org.chromattic.metamodel.bean2.BeanValueInfo;
-import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.mapping2.RelationshipMapping;
 
 import java.util.EnumMap;

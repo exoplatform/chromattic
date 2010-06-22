@@ -17,36 +17,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean2;
+package org.chromattic.metamodel.bean;
 
-import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.TypeInfo;
+import org.reflext.api.MethodInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class BeanValueInfo extends ValueInfo {
+public class SingleValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo<V> {
 
-  /** . */
-  private final BeanInfo bean;
-
-  /** . */
-  private final ClassTypeInfo classType;
-
-  public BeanValueInfo(TypeInfo declaredType, ClassTypeInfo classType, BeanInfo bean) {
-    super(declaredType, classType);
-
-    //
-    this.classType = classType;
-    this.bean = bean;
-  }
-
-  public ClassTypeInfo getClassType() {
-    return classType;
-  }
-
-  public BeanInfo getBean() {
-    return bean;
+  public SingleValuedPropertyInfo(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, V value) {
+    super(bean, parent, name, getter, setter, value);
   }
 }

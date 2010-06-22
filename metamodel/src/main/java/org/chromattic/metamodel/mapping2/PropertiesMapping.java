@@ -19,9 +19,8 @@
 
 package org.chromattic.metamodel.mapping2;
 
-import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
-import org.chromattic.metamodel.bean2.SimpleValueInfo;
-import org.chromattic.metamodel.bean2.ValueInfo;
+import org.chromattic.metamodel.bean.ValueInfo;
+import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 
 /**
