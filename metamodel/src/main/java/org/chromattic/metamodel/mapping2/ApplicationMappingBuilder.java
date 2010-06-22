@@ -100,6 +100,10 @@ public class ApplicationMappingBuilder {
     this.simpleTypeResolver = simpleTypeResolver;
   }
 
+  public Map<ClassTypeInfo, BeanMapping> build(ClassTypeInfo... classTypes) {
+    return build(org.chromattic.common.collection.Collections.set(classTypes));
+  }
+
   public Map<ClassTypeInfo, BeanMapping> build(Set<ClassTypeInfo> classTypes) {
 
     // Clone for modification

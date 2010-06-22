@@ -20,7 +20,6 @@ package org.chromattic.test.lifecycle;
 
 import org.chromattic.api.AttributeOption;
 import org.chromattic.api.annotations.*;
-import org.chromattic.metamodel.bean.PropertyRole;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

@@ -45,6 +45,10 @@ public class BeanInfoBuilder {
     this.simpleTypeResolver = simpleTypeResolver;
   }
 
+  public Map<ClassTypeInfo, BeanInfo> build(ClassTypeInfo... classTypes) {
+    return build(org.chromattic.common.collection.Collections.set(classTypes));
+  }
+
   public Map<ClassTypeInfo, BeanInfo> build(Set<ClassTypeInfo> classTypes) {
     Context ctx = new Context(classTypes);
     ctx.build();

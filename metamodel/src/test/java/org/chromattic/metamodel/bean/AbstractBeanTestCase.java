@@ -28,8 +28,12 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.chromattic.metamodel.bean.value.SingleValueInfo;
-import org.chromattic.metamodel.bean.value.ValueInfo;
+import org.chromattic.metamodel.bean2.AccessMode;
+import org.chromattic.metamodel.bean2.BeanInfo;
+import org.chromattic.metamodel.bean2.BeanInfoBuilder;
+import org.chromattic.metamodel.bean2.PropertyInfo;
+import org.chromattic.metamodel.bean2.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean2.ValueInfo;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
@@ -46,28 +50,27 @@ public abstract class AbstractBeanTestCase extends TestCase {
   protected final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
   protected final BeanInfo beanInfo(ClassTypeInfo typeInfo) {
-    return new BeanInfoFactory(new SimpleTypeResolver()).build(typeInfo);
+    return new BeanInfoBuilder(new SimpleTypeResolver()).build(typeInfo).get(typeInfo);
   }
 
-  protected final void assertProperty(PropertyQualifier<?> property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
+  protected final void assertProperty(PropertyInfo<?> property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
     assertNotNull(property);
-    assertEquals(expectedName, property.getProperty().getName());
+    assertEquals(expectedName, property.getName());
     ValueInfo value = property.getValue();
-    if (value instanceof SingleValueInfo) {
-      assertTrue(value.getTypeInfo() instanceof ClassTypeInfo);
-      assertEquals(expectedType.getName(), ((ClassTypeInfo)value.getTypeInfo()).getName());
+    if (property instanceof SingleValuedPropertyInfo) {
+      assertEquals(expectedType.getName(), value.getEffectiveType().getName());
       switch (accessMode) {
         case READ_ONLY:
-          assertNotNull(property.getProperty().getGetter());
-          assertNull(property.getProperty().getSetter());
+          assertNotNull(property.getGetter());
+          assertNull(property.getSetter());
           break;
         case WRITE_ONLY:
-          assertNull(property.getProperty().getGetter());
-          assertNotNull(property.getProperty().getSetter());
+          assertNull(property.getGetter());
+          assertNotNull(property.getSetter());
           break;
         case READ_WRITE:
-          assertNotNull(property.getProperty().getGetter());
-          assertNotNull(property.getProperty().getSetter());
+          assertNotNull(property.getGetter());
+          assertNotNull(property.getSetter());
           break;
       }
     } else {
@@ -76,10 +79,10 @@ public abstract class AbstractBeanTestCase extends TestCase {
   }
 
   protected final <A extends Annotation> void assertAnnotation(
-    PropertyQualifier<?> property,
+    PropertyInfo<?> property,
     Class<A> annotationClass,
     Map<String, Object> expectedAnnotation) {
-    A ann1 = property.getAnnotated(annotationClass).getAnnotation();
+    A ann1 = property.getAnnotation(annotationClass);
     assertNotNull(ann1);
     Map<String, Object> values = new HashMap<String, Object>();
     for (Method m : ann1.getClass().getDeclaredMethods()) {

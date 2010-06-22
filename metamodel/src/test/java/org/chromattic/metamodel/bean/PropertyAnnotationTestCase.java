@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.chromattic.metamodel.bean2.BeanInfo;
 import org.reflext.api.ClassTypeInfo;
 
 import java.lang.annotation.Retention;
@@ -53,7 +54,7 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
   public void testFoo1() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo1.class);
     BeanInfo beanInfo = beanInfo(typeInfo);
-    assertEquals(1, beanInfo.getPropertyNames().size());
+    assertEquals(1, beanInfo.getProperties().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
   }
 
@@ -61,7 +62,7 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
   public void testFoo1_1() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo1_1.class);
     BeanInfo beanInfo = beanInfo(typeInfo);
-    assertEquals(1, beanInfo.getPropertyNames().size());
+    assertEquals(1, beanInfo.getProperties().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
   }
 
@@ -80,7 +81,7 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
   public void testFoo2() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo2.class);
     BeanInfo beanInfo = beanInfo(typeInfo);
-    assertEquals(1, beanInfo.getPropertyNames().size());
+    assertEquals(1, beanInfo.getProperties().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
   }
 
@@ -119,7 +120,7 @@ public class PropertyAnnotationTestCase extends AbstractBeanTestCase {
   public void testFoo4() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(Foo4.class);
     BeanInfo beanInfo = beanInfo(typeInfo);
-    assertEquals(1, beanInfo.getPropertyNames().size());
+    assertEquals(1, beanInfo.getProperties().size());
     assertAnnotation(beanInfo.getProperty("a"), Ann1.class, Collections.singletonMap("value", (Object)"Ann1_Foo1"));
   }
 }

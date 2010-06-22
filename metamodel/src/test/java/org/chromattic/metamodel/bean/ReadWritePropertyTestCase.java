@@ -19,6 +19,8 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.chromattic.metamodel.bean2.AccessMode;
+import org.chromattic.metamodel.bean2.BeanInfo;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Collections;
@@ -37,7 +39,7 @@ public class ReadWritePropertyTestCase extends AbstractBeanTestCase {
   public void testConsistentGetterAndSetter() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(ConsistentGetterAndSetter.class);
     BeanInfo beanInfo = beanInfo(typeInfo);
-    assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
+    assertEquals(Collections.singleton("a"), beanInfo.getProperties().keySet());
     assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_WRITE);
   }
 
@@ -49,7 +51,7 @@ public class ReadWritePropertyTestCase extends AbstractBeanTestCase {
   public void testGetterAndSetterWithDifferentTypes() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(GetterAndSetterWithDifferentTypes.class);
     BeanInfo beanInfo = beanInfo(typeInfo);
-    assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
+    assertEquals(Collections.singleton("a"), beanInfo.getProperties().keySet());
     assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_ONLY);
   }
 }
