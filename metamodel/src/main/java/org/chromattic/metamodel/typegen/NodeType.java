@@ -20,7 +20,6 @@
 package org.chromattic.metamodel.typegen;
 
 import org.chromattic.metamodel.mapping.NodeTypeKind;
-import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping2.BeanMapping;
 
 import java.util.*;
@@ -30,6 +29,9 @@ import java.util.*;
  * @version $Revision$
  */
 public class NodeType {
+
+  /** . */
+  final BeanMapping mapping;
 
   /** . */
   final String name;
@@ -53,24 +55,10 @@ public class NodeType {
   final Set<NodeType> declaredSuperTypes;
 
   /** . */
-  final boolean skip;
-
-  /** . */
   final boolean orderable;
 
-  NodeType(NodeTypeMapping mapping, boolean skip) {
-    this.name = mapping.getTypeName();
-    this.className = mapping.getType().getName();
-    this.mixin = mapping.isMixin();
-    this.orderable = mapping.isOrderable();
-    this.children = new HashMap<String, NodeDefinition>();
-    this.properties = new HashMap<String, PropertyDefinition>();
-    this.superTypes = new HashSet<NodeType>();
-    this.declaredSuperTypes = new HashSet<NodeType>();
-    this.skip = skip;
-  }
-
-  NodeType(BeanMapping mapping, boolean skip) {
+  NodeType(BeanMapping mapping) {
+    this.mapping = mapping;
     this.name = mapping.getNodeTypeName();
     this.className = mapping.getBean().getClassType().getName();
     this.mixin = mapping.getNodeTypeKind() == NodeTypeKind.MIXIN;
@@ -79,7 +67,6 @@ public class NodeType {
     this.properties = new HashMap<String, PropertyDefinition>();
     this.superTypes = new HashSet<NodeType>();
     this.declaredSuperTypes = new HashSet<NodeType>();
-    this.skip = skip;
   }
 
   public String getClassName() {
@@ -126,19 +113,10 @@ public class NodeType {
     return children.get(childNodeName);
   }
 
-  void addChildNodeType(String childNodeName, boolean mandatory, boolean autocreated, NodeTypeMapping childNodeTypeMapping) {
-    NodeDefinition1 nodeDefinition = (NodeDefinition1)children.get(childNodeName);
-    if (nodeDefinition == null) {
-      nodeDefinition = new NodeDefinition1(childNodeName, mandatory, autocreated);
-      children.put(childNodeName, nodeDefinition);
-    }
-    nodeDefinition.mappings.add(childNodeTypeMapping);
-  }
-
   void addChildNodeType(String childNodeName, boolean mandatory, boolean autocreated, BeanMapping childNodeTypeMapping) {
-    NodeDefinition2 nodeDefinition = (NodeDefinition2)children.get(childNodeName);
+    NodeDefinition nodeDefinition = children.get(childNodeName);
     if (nodeDefinition == null) {
-      nodeDefinition = new NodeDefinition2(childNodeName, mandatory, autocreated);
+      nodeDefinition = new NodeDefinition(childNodeName, mandatory, autocreated);
       children.put(childNodeName, nodeDefinition);
     }
     nodeDefinition.mappings.add(childNodeTypeMapping);

@@ -79,28 +79,28 @@ public class SchemaBuilder {
   private static class Visitor extends MappingVisitor {
 
     /** . */
-    private final LinkedHashMap<ClassTypeInfo, NodeType2> nodeTypes;
+    private final LinkedHashMap<ClassTypeInfo, NodeType> nodeTypes;
 
     /** . */
-    private NodeType2 current;
+    private NodeType current;
 
     /** . */
     private final SetMap<ClassTypeInfo, ClassTypeInfo> embeddedSuperTypesMap;
 
     private Visitor() {
-      this.nodeTypes = new LinkedHashMap<ClassTypeInfo, NodeType2>();
+      this.nodeTypes = new LinkedHashMap<ClassTypeInfo, NodeType>();
       this.embeddedSuperTypesMap = new SetMap<ClassTypeInfo, ClassTypeInfo>();
     }
 
-    public NodeType2 getNodeType(ClassTypeInfo type) {
+    public NodeType getNodeType(ClassTypeInfo type) {
       return nodeTypes.get(type);
     }
 
-    private NodeType2 resolve(BeanMapping mapping) {
-      NodeType2 nodeType = nodeTypes.get(mapping.getBean().getClassType());
+    private NodeType resolve(BeanMapping mapping) {
+      NodeType nodeType = nodeTypes.get(mapping.getBean().getClassType());
       if (nodeType == null) {
         if (mapping.getBean().getAnnotation(Skip.class) == null) {
-          nodeType = new NodeType2(mapping);
+          nodeType = new NodeType(mapping);
           nodeTypes.put(mapping.getBean().getClassType(), nodeType);
         }
       }
@@ -120,7 +120,7 @@ public class SchemaBuilder {
     public void oneToManyReference(RelationshipMapping.OneToMany.Reference mapping) {
       if (mapping.isNew() && mapping.getProperty().getAnnotation(Skip.class) == null) {
         BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
-        NodeType2 related = resolve(relatedBeanMapping);
+        NodeType related = resolve(relatedBeanMapping);
         int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
         related.properties.put(mapping.getMappedBy(), new PropertyDefinition(mapping.getMappedBy(), false, propertyType));
       }
@@ -165,7 +165,7 @@ public class SchemaBuilder {
       if (current != null) {
         if (mapping.isNew()) {
           BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
-          NodeType2 related = resolve(relatedBeanMapping);
+          NodeType related = resolve(relatedBeanMapping);
           if (related != null) {
             related.addChildNodeType("*", false, false, current.mapping);
           }
@@ -211,7 +211,7 @@ public class SchemaBuilder {
                 mapping.getAutocreated(),
                 relatedBeanMapping);
           } else {
-            NodeType2 related = resolve(relatedBeanMapping);
+            NodeType related = resolve(relatedBeanMapping);
             if (related != null) {
               related.addChildNodeType(
                   mapping.getMappedBy(),
@@ -236,12 +236,12 @@ public class SchemaBuilder {
 
     public void end() {
       // Resolve super types
-      for (NodeType2 nodeType : nodeTypes.values()) {
+      for (NodeType nodeType : nodeTypes.values()) {
         ClassTypeInfo cti = nodeType.mapping.getBean().getClassType();
 
         // Take all delcared node types and find out which are the super types
         // based on the relationship between the java types
-        for (NodeType2 otherNodeType : nodeTypes.values()) {
+        for (NodeType otherNodeType : nodeTypes.values()) {
           if (otherNodeType != nodeType) {
             if (cti.isSubType((otherNodeType).mapping.getBean().getClassType())) {
               nodeType.superTypes.add(otherNodeType);
@@ -258,7 +258,7 @@ public class SchemaBuilder {
         foo:
         for (NodeType superNodeType : nodeType.superTypes) {
           for (NodeType otherSuperNodeType : nodeType.superTypes) {
-            if (otherSuperNodeType != superNodeType && ((NodeType2)otherSuperNodeType).mapping.getBean().getClassType().isSubType(((NodeType2)superNodeType).mapping.getBean().getClassType())) {
+            if (otherSuperNodeType != superNodeType && ((NodeType)otherSuperNodeType).mapping.getBean().getClassType().isSubType(((NodeType)superNodeType).mapping.getBean().getClassType())) {
               continue foo;
             }
           }
