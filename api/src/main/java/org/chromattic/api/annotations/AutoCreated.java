@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,32 +17,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.typegen.onetoone.hierarchical;
+package org.chromattic.api.annotations;
 
-import org.chromattic.api.annotations.AutoCreated;
-import org.chromattic.api.annotations.Mandatory;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Owner;
-import org.chromattic.api.annotations.PrimaryType;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "1")
-public abstract class E1 {
-
-  @MappedBy("child1")
-  @Owner
-  @OneToOne
-  @Mandatory
-  public abstract E2 getChild1();
-
-  @MappedBy("child2")
-  @Owner
-  @OneToOne
-  @AutoCreated
-  public abstract E2 getChild2();
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface AutoCreated {
 }

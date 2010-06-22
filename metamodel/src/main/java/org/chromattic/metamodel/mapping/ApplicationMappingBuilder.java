@@ -19,14 +19,15 @@
 
 package org.chromattic.metamodel.mapping;
 
-import org.chromattic.api.AttributeOption;
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.annotations.AutoCreated;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.Destroy;
 import org.chromattic.api.annotations.FindById;
 import org.chromattic.api.annotations.FormattedBy;
 import org.chromattic.api.annotations.Id;
+import org.chromattic.api.annotations.Mandatory;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.MixinType;
@@ -654,7 +655,8 @@ public class ApplicationMappingBuilder {
       PropertyDefinitionMapping propertyDefinition = new PropertyDefinitionMapping(
           propertyAnnotation.name(),
           abc.getPropertyMetaType(),
-          defaultValueList);
+          defaultValueList,
+          false);
 
       //
       if (property instanceof SingleValuedPropertyInfo<?>) {
@@ -718,10 +720,8 @@ public class ApplicationMappingBuilder {
         throw new UnsupportedOperationException();
       }
       boolean owner = property.getAnnotation(Owner.class) != null;
-      Set<AttributeOption> attributes = new HashSet<AttributeOption>();
-      attributes.addAll(Arrays.asList(annotation.options()));
-      boolean autocreated = attributes.contains(AttributeOption.AUTOCREATED);
-      boolean mandatory = attributes.contains(AttributeOption.MANDATORY);
+      boolean autocreated = property.getAnnotation(AutoCreated.class) != null;
+      boolean mandatory = property.getAnnotation(Mandatory.class) != null;
       RelationshipMapping.OneToOne.Hierarchic mapping;
       mapping = new RelationshipMapping.OneToOne.Hierarchic(property, owner, mappedBy.value(), mandatory, autocreated);
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());

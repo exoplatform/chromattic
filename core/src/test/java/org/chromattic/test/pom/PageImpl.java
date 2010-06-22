@@ -19,9 +19,16 @@
 
 package org.chromattic.test.pom;
 
-import org.chromattic.api.AttributeOption;
-import org.chromattic.api.annotations.*;
 import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.AutoCreated;
+import org.chromattic.api.annotations.Create;
+import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.OneToMany;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
+import org.chromattic.api.annotations.PrimaryType;
 
 import java.util.Collection;
 
@@ -76,9 +83,10 @@ public abstract class PageImpl {
   @MappedBy("root")
   public abstract SiteImpl getSiteParent();
 
-  @OneToOne(options = AttributeOption.AUTOCREATED)
+  @OneToOne
   @Owner
   @MappedBy("container")
+  @AutoCreated
   public abstract UIContainerImpl getContainer();
 
   @Create

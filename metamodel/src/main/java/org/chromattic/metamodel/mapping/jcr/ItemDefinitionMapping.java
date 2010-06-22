@@ -24,6 +24,15 @@ package org.chromattic.metamodel.mapping.jcr;
  * @version $Revision$
  */
 public class ItemDefinitionMapping {
-  ItemDefinitionMapping() {
+
+  /** . */
+  private final boolean mandatory;
+
+  public ItemDefinitionMapping(boolean mandatory) {
+    this.mandatory = mandatory;
+  }
+
+  public boolean isMandatory() {
+    return mandatory;
   }
 }

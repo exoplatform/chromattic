@@ -18,8 +18,11 @@
  */
 package org.chromattic.test.lifecycle;
 
-import org.chromattic.api.AttributeOption;
-import org.chromattic.api.annotations.*;
+import org.chromattic.api.annotations.Mandatory;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -28,9 +31,10 @@ import org.chromattic.api.annotations.*;
 @PrimaryType(name = "lifecycle:m1")
 public abstract class M1 {
 
-  @OneToOne(options = AttributeOption.MANDATORY)
+  @OneToOne
   @Owner
   @MappedBy("mandatory")
+  @Mandatory
   public abstract M2 getMandatory();
   
   public abstract void setMandatory(M2 mandatory);

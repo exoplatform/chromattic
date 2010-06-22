@@ -36,7 +36,10 @@ public class PropertyDefinitionMapping<I> extends ItemDefinitionMapping {
   /** . */
   private final PropertyMetaType<I> metaType;
 
-  public PropertyDefinitionMapping(String name, PropertyMetaType<I> metaType, List<String> defaultValue) {
+  public PropertyDefinitionMapping(String name, PropertyMetaType<I> metaType, List<String> defaultValue, boolean mandatory) {
+    super(mandatory);
+
+    //
     this.name = name;
     this.metaType = metaType;
     this.defaultValue = defaultValue;

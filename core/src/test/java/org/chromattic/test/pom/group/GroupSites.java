@@ -19,7 +19,7 @@
 
 package org.chromattic.test.pom.group;
 
-import org.chromattic.api.AttributeOption;
+import org.chromattic.api.annotations.AutoCreated;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.MappedBy;
@@ -33,8 +33,9 @@ import org.chromattic.test.pom.WorkspaceImpl;
 @PrimaryType(name = "pom:groups")
 public abstract class GroupSites extends Sites<GroupSite> {
 
-  @OneToOne(options = AttributeOption.AUTOCREATED)
+  @OneToOne
   @MappedBy("groups")
+  @AutoCreated
   public abstract WorkspaceImpl getWorkspace();
 
 }

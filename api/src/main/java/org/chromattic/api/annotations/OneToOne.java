@@ -19,7 +19,6 @@
 
 package org.chromattic.api.annotations;
 
-import org.chromattic.api.AttributeOption;
 import org.chromattic.api.RelationshipType;
 
 import java.lang.annotation.Retention;
@@ -43,7 +42,5 @@ public @interface OneToOne {
    * @return the relationship type
    */
   RelationshipType type() default RelationshipType.HIERARCHIC;
-
-  AttributeOption[] options() default {}; 
 
 }

@@ -19,8 +19,14 @@
 
 package org.chromattic.test.pom;
 
-import org.chromattic.api.AttributeOption;
-import org.chromattic.api.annotations.*;
+import org.chromattic.api.annotations.AutoCreated;
+import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
+import org.chromattic.api.annotations.PrimaryType;
+
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -37,14 +43,16 @@ public abstract class SiteImpl<T extends Sites> {
   @ManyToOne
   public abstract T getSites();
 
-  @OneToOne(options = AttributeOption.AUTOCREATED)
+  @OneToOne
   @Owner
   @MappedBy("root")
+  @AutoCreated
   public abstract PageImpl getRoot();
 
-  @OneToOne(options = AttributeOption.AUTOCREATED)
+  @OneToOne
   @Owner
   @MappedBy("navigation")
+  @AutoCreated
   public abstract NavigationImpl getNavigation();
 
 }

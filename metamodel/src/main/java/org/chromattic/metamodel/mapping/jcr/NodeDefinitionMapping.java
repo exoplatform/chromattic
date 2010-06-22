@@ -19,10 +19,6 @@
 
 package org.chromattic.metamodel.mapping.jcr;
 
-import org.chromattic.api.AttributeOption;
-
-import java.util.Set;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -30,13 +26,14 @@ import java.util.Set;
 public class NodeDefinitionMapping extends ItemDefinitionMapping {
 
   /** . */
-  private final Set<AttributeOption> attributes;
+  private final boolean autocreated;
 
-  public NodeDefinitionMapping(Set<AttributeOption> attributes) {
-    this.attributes = attributes;
+  public NodeDefinitionMapping(boolean mandatory, boolean autocreated) {
+    super(mandatory);
+    this.autocreated = autocreated;
   }
 
-  public Set<AttributeOption> getAttributes() {
-    return attributes;
+  public boolean isAutocreated() {
+    return autocreated;
   }
 }
