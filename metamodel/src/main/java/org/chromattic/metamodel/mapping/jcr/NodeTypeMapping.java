@@ -25,7 +25,7 @@ import org.chromattic.metamodel.mapping.NodeTypeKind;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeTypeDefinitionMapping {
+public class NodeTypeMapping {
 
   /** . */
   private final String typeName;
@@ -39,7 +39,7 @@ public class NodeTypeDefinitionMapping {
   /** . */
   private final boolean _abstract;
 
-  public NodeTypeDefinitionMapping(String typeName, NodeTypeKind kind, boolean orderable, boolean _abstract) {
+  public NodeTypeMapping(String typeName, NodeTypeKind kind, boolean orderable, boolean _abstract) {
     if (typeName == null) {
       throw new NullPointerException();
     }
