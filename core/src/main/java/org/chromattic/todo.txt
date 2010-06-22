@@ -1,4 +1,6 @@
-- @OneToMany EMBEDDED with Map<Class<?>, Object> to provide access to mixins in a detyped manner 
+- @Rest integration : any chromattic object should also be rest enabled!!!
+
+- @OneToMany EMBEDDED with Map<Class<?>, Object> to provide access to mixins in a detyped manner
 - split APT plugin into two jars, one for compile time and one for runtime
 - copy operation (mixins, create notifications, etc...)
 - !bug: PATH relationship with move are not preserved
