@@ -87,15 +87,15 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
       PropertyMapping<?, ?> info = propertyMapper.getInfo();
       MethodInfo getter = info.getProperty().getGetter();
       if (getter != null) {
-        dispatchers.put((Method)getter.getMethod(), propertyMapper);
+        dispatchers.put((Method)getter.unwrap(), propertyMapper);
       }
       MethodInfo setter = info.getProperty().getSetter();
       if (setter != null) {
-        dispatchers.put((Method)setter.getMethod(), propertyMapper);
+        dispatchers.put((Method)setter.unwrap(), propertyMapper);
       }
     }
     for (MethodMapper<C> methodMapper : methodMappers) {
-      dispatchers.put((Method)methodMapper.getMethod().getMethod(), methodMapper);
+      dispatchers.put((Method)methodMapper.getMethod().unwrap(), methodMapper);
     }
 
     //

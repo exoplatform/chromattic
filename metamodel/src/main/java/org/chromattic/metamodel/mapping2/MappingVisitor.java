@@ -25,8 +25,6 @@ package org.chromattic.metamodel.mapping2;
  */
 public class MappingVisitor {
   
-  public void start() { }
-
   public void startBean(BeanMapping mapping) { }
 
   public void singleValueMapping(ValueMapping.Single mapping) { }
@@ -57,6 +55,4 @@ public class MappingVisitor {
 
   public void endBean() { }
 
-  public void end() { }
-  
 }

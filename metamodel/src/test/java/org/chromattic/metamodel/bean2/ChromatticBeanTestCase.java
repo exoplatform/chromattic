@@ -70,7 +70,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     Map<ClassTypeInfo, BeanInfo> classTypeToBean = builder.build(classTypes);
     Map<Class<?>, BeanInfo> classToBean = new HashMap<Class<?>, BeanInfo>();
     for (Map.Entry<ClassTypeInfo, BeanInfo> entry : classTypeToBean.entrySet()) {
-      classToBean.put((Class<?>)entry.getKey().getType(), entry.getValue());
+      classToBean.put((Class<?>)entry.getKey().unwrap(), entry.getValue());
     }
     return classToBean;
   }
@@ -186,7 +186,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     //
     PropertyInfo ap = ai.getProperty("a");
     assertNotNull(ap);
-    assertSame(domain.resolve(Number.class), ap.getValue().getClassType());
+//    assertSame(domain.resolve(Number.class), ap.getValue().getEffectiveType());
     assertNull(ap.getParent());
     assertNotNull(ap.getGetter());
     assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), ap.getGetter());
@@ -196,7 +196,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     PropertyInfo bp = bi.getProperty("a");
     assertNotNull(bp);
 //    assertSame(domain.resolve(Integer.class), bp.getType());
-    assertSame(domain.resolve(Integer.class), bp.getValue().getClassType());
+    assertSame(domain.resolve(Integer.class), bp.getValue().getEffectiveType());
     assertSame(ap, bp.getParent());
     assertNotNull(bp.getGetter());
     assertSame(ai.classType.getDeclaredMethod(new MethodSignature("getA")), bp.getGetter()); 
@@ -231,7 +231,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     PropertyInfo bp = bi.getProperty("a");
     assertNotNull(bp);
     assertSame(domain.resolve(A.class), bp.getValue().getDeclaredType());
-    assertSame(domain.resolve(A.class), bp.getValue().getClassType());
+    assertSame(domain.resolve(A.class), bp.getValue().getEffectiveType());
     assertTrue(bp.getValue() instanceof BeanValueInfo);
     assertEquals(ai, ((BeanValueInfo)bp.getValue()).getBean());
     assertSame(null, bp.getParent());
@@ -254,7 +254,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     PropertyInfo ap = ai.getProperty("a");
     assertNotNull(ap);
     assertSame(domain.resolve(A.class), ap.getValue().getDeclaredType());
-    assertSame(domain.resolve(A.class), ap.getValue().getClassType());
+    assertSame(domain.resolve(A.class), ap.getValue().getEffectiveType());
     assertTrue(ap.getValue() instanceof BeanValueInfo);
     assertEquals(ai, ((BeanValueInfo)ap.getValue()).getBean());
     assertSame(null, ap.getParent());
@@ -281,7 +281,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     PropertyInfo ap = ai.getProperty("a");
     assertNotNull(ap);
     // assertSame(o, ap.getType()); <X>
-    assertSame(Object.class, ap.getValue().getClassType().getType());
+    assertSame(Object.class, ap.getValue().getEffectiveType().unwrap());
     assertTrue(ap.getValue() instanceof BeanValueInfo);
     assertEquals(oi, ((BeanValueInfo)ap.getValue()).getBean());
     assertSame(null, ap.getParent());
@@ -293,7 +293,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     PropertyInfo bp = bi.getProperty("a");
     assertNotNull(bp);
 //    assertSame(domain.resolve(B.class), bp.getType());
-    assertSame(domain.resolve(B.class), bp.getValue().getClassType());
+    assertSame(domain.resolve(B.class), bp.getValue().getEffectiveType());
     assertTrue(bp.getValue() instanceof BeanValueInfo);
     assertEquals(bi, ((BeanValueInfo)bp.getValue()).getBean());
     assertSame(ap, bp.getParent());
@@ -408,6 +408,6 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
     assertEquals(MultiValueKind.MAP, cp.getKind());
     SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
-    assertEquals(domain.resolve(Object.class), value.getClassType());
+//    assertEquals(domain.resolve(Object.class), value.getEffectiveType());
   }
 }

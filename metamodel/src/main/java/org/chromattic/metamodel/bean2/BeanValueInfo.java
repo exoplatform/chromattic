@@ -31,11 +31,19 @@ public class BeanValueInfo extends ValueInfo {
   /** . */
   private final BeanInfo bean;
 
+  /** . */
+  private final ClassTypeInfo classType;
+
   public BeanValueInfo(TypeInfo declaredType, ClassTypeInfo classType, BeanInfo bean) {
     super(declaredType, classType);
 
     //
+    this.classType = classType;
     this.bean = bean;
+  }
+
+  public ClassTypeInfo getClassType() {
+    return classType;
   }
 
   public BeanInfo getBean() {

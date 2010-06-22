@@ -110,7 +110,7 @@ class SimpleTypeMappingImpl<I> implements SimpleTypeMapping {
 
   public SimpleTypeProvider<I, ?> create() {
     if (instance == null) {
-      Class type = (Class)typeInfo.getType();
+      Class type = (Class)typeInfo.unwrap();
       try {
         instance = (SimpleTypeProvider<I,?>)type.newInstance();
       }

@@ -17,22 +17,19 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.typegen;
+package org.chromattic.metamodel.typegen.property;
 
-import org.chromattic.metamodel.mapping2.BeanMapping;
+import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeType2 extends NodeType {
+@PrimaryType(name = "d2")
+public abstract class E {
 
-  BeanMapping mapping;
+  @Property(name = "bytes")
+  public abstract byte[] getBytes();
 
-  public NodeType2(BeanMapping mapping) {
-    super(mapping, false);
-
-    //
-    this.mapping = mapping;
-  }
 }

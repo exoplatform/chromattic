@@ -19,6 +19,8 @@
 
 package org.chromattic.metamodel.bean2;
 
+import org.chromattic.metamodel.type.SimpleTypeMapping;
+import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.*;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyVisitor;
@@ -32,6 +34,16 @@ import java.util.*;
  */
 public class BeanInfoBuilder {
 
+  /** . */
+  private final SimpleTypeResolver simpleTypeResolver;
+
+  public BeanInfoBuilder() {
+    this(new SimpleTypeResolver());
+  }
+
+  public BeanInfoBuilder(SimpleTypeResolver simpleTypeResolver) {
+    this.simpleTypeResolver = simpleTypeResolver;
+  }
 
   public Map<ClassTypeInfo, BeanInfo> build(Set<ClassTypeInfo> classTypes) {
     Context ctx = new Context(classTypes);
@@ -39,7 +51,7 @@ public class BeanInfoBuilder {
     return ctx.beans;
   }
 
-  private static class Context {
+  private class Context {
 
     private class BeanHierarchyVisitorStrategy<V extends HierarchyVisitor<V>> extends HierarchyVisitorStrategy<V> {
 
@@ -247,8 +259,8 @@ public class BeanInfoBuilder {
           if (rawType instanceof ClassTypeInfo) {
             ClassTypeInfo rawClassType = (ClassTypeInfo)rawType;
             String rawClassName = rawClassType.getName();
-            MultiValueKind collectionKind = null;
-            TypeInfo elementType = null;
+            final MultiValueKind collectionKind;
+            final TypeInfo elementType;
             if (rawClassName.equals("java.util.Collection")) {
               collectionKind = MultiValueKind.COLLECTION;
               elementType = parameterizedType.getTypeArguments().get(0);
@@ -261,7 +273,13 @@ public class BeanInfoBuilder {
               if (resolvedKeyType instanceof ClassTypeInfo && ((ClassTypeInfo)resolvedKeyType).getName().equals("java.lang.String")) {
                 elementType = parameterizedType.getTypeArguments().get(1);
                 collectionKind = MultiValueKind.MAP;
+              } else {
+                elementType = null;
+                collectionKind = null;
               }
+            } else {
+              elementType = null;
+              collectionKind = null;
             }
             if (collectionKind != null) {
               ClassTypeInfo elementClassType = bean.resolveToClass(elementType);
@@ -284,13 +302,13 @@ public class BeanInfoBuilder {
                       toBuildEntry.getValue().getter,
                       toBuildEntry.getValue().setter,
                       collectionKind,
-                      new SimpleValueInfo(elementType, bean.resolveToClass(elementType)));
+                      createSimpleValueInfo(bean, elementType));
                 }
               }
             }
           }
         } else if (resolvedType instanceof ArrayTypeInfo) {
-          TypeInfo componentType = ((ArrayTypeInfo)resolvedType).getComponentType();
+          final TypeInfo componentType = ((ArrayTypeInfo)resolvedType).getComponentType();
           if (componentType instanceof SimpleTypeInfo) {
             SimpleTypeInfo componentSimpleType = (SimpleTypeInfo)componentType;
             switch (componentSimpleType.getLiteralType()) {
@@ -306,7 +324,7 @@ public class BeanInfoBuilder {
                     toBuildEntry.getValue().getter,
                     toBuildEntry.getValue().setter,
                     MultiValueKind.ARRAY,
-                    new SimpleValueInfo(componentSimpleType, componentSimpleType));
+                    createSimpleValueInfo(bean, componentType));
                 break;
               default:
                 break;
@@ -319,7 +337,7 @@ public class BeanInfoBuilder {
                 toBuildEntry.getValue().getter,
                 toBuildEntry.getValue().setter,
                 MultiValueKind.ARRAY,
-                new SimpleValueInfo(componentType, bean.resolveToClass(componentType)));
+                createSimpleValueInfo(bean, componentType));
           }
         } else if (resolvedType instanceof ClassTypeInfo) {
           BeanInfo related = resolve((ClassTypeInfo)resolvedType);
@@ -336,13 +354,14 @@ public class BeanInfoBuilder {
 
         // Otherwise consider everything as a single valued simple value
         if (property == null) {
+
           property = new SingleValuedPropertyInfo<SimpleValueInfo>(
               bean,
               parentProperty,
               toBuildEntry.getKey(),
               toBuildEntry.getValue().getter,
               toBuildEntry.getValue().setter,
-              new SimpleValueInfo(type, bean.resolveToClass(type)));
+              createSimpleValueInfo(bean, type));
         }
 
         //
@@ -353,6 +372,10 @@ public class BeanInfoBuilder {
       bean.properties.putAll(properties);
     }
 
-
+    private SimpleValueInfo createSimpleValueInfo(BeanInfo bean, TypeInfo type) {
+      TypeInfo resolvedType = bean.getClassType().resolve(type);
+      SimpleTypeMapping mapping = simpleTypeResolver.resolveType(resolvedType);
+      return new SimpleValueInfo(type, resolvedType, mapping);
+    }
   }
 }

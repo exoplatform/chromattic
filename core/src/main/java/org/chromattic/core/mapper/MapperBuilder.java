@@ -136,7 +136,6 @@ public class MapperBuilder {
 //    Set<PropertyMapper<?, ?, EntityContext>> propertyMappersForEntity;
 //    Set<PropertyMapper<?, ?, EmbeddedContext>> propertyMappersForEmbedded;
 
-    @Override
     public void start() {
       this.beanMappers = new HashMap<BeanMapping, ObjectMapper<?>>();
       this.createMethods = new SetMap<BeanMapping, MethodMapper.Create>();
@@ -302,13 +301,13 @@ public class MapperBuilder {
         // Get the formatter
         ObjectFormatter formatter = null;
         if (beanMapping.getFormatterClassType() != null) {
-          Class<? extends ObjectFormatter> formatterClass = (Class<ObjectFormatter>)beanMapping.getFormatterClassType().getType();
+          Class<? extends ObjectFormatter> formatterClass = (Class<ObjectFormatter>)beanMapping.getFormatterClassType().unwrap();
           formatter = ObjectInstantiator.newInstance(formatterClass);
         }
 
         mapper = new ObjectMapper(
             beanMapping.isAbstract(),
-            (Class<?>)beanMapping.getBean().getClassType().getType(),
+            (Class<?>)beanMapping.getBean().getClassType().unwrap(),
             propertyMappers,
             methodMappers,
             beanMapping.getOnDuplicate(),
@@ -322,7 +321,7 @@ public class MapperBuilder {
 
         mapper = new ObjectMapper(
             beanMapping.isAbstract(),
-            (Class<?>)beanMapping.getBean().getClassType().getType(),
+            (Class<?>)beanMapping.getBean().getClassType().unwrap(),
             propertyMappers,
             methodMappers,
             beanMapping.getOnDuplicate(),
@@ -337,7 +336,6 @@ public class MapperBuilder {
       beanMappers.put(beanMapping, mapper);
     }
 
-    @Override
     public void end() {
       for (BeanMapping beanMapping : createMethods.keySet()) {
         ObjectMapper beanMapper = beanMappers.get(beanMapping);

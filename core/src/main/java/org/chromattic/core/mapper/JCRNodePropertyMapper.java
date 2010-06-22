@@ -37,7 +37,7 @@ public abstract class JCRNodePropertyMapper<P extends SingleValuedPropertyInfo<V
     super(contextType, info);
 
     //
-    relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getClassType().getName());
+    relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getEffectiveType().getName());
   }
 
   public Class<?> getRelatedClass() {

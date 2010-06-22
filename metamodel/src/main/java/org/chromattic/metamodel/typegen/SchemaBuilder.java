@@ -19,175 +19,251 @@
 
 package org.chromattic.metamodel.typegen;
 
+import org.chromattic.api.RelationshipType;
 import org.chromattic.common.collection.SetMap;
-import org.chromattic.metamodel.bean2.SimpleValueInfo;
-import org.chromattic.metamodel.bean2.ValueInfo;
+import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
-import org.chromattic.metamodel.mapping2.*;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
+import org.chromattic.metamodel.mapping2.ApplicationMappingBuilder;
+import org.chromattic.metamodel.mapping2.BeanMapping;
+import org.chromattic.metamodel.mapping2.MappingVisitor;
+import org.chromattic.metamodel.mapping2.PropertiesMapping;
+import org.chromattic.metamodel.mapping2.RelationshipMapping;
+import org.chromattic.metamodel.mapping2.ValueMapping;
+import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SchemaBuilder extends MappingVisitor {
+public class SchemaBuilder {
 
   /** . */
-  private final LinkedHashMap<ClassTypeInfo, NodeType2> nodeTypes;
-
-  /** . */
-  private NodeType2 current;
-
-  /** . */
-  private final SetMap<ClassTypeInfo, ClassTypeInfo> embeddedSuperTypesMap;
+  private final SimpleTypeResolver simpleTypeResolver;
 
   public SchemaBuilder() {
-    this.nodeTypes = new LinkedHashMap<ClassTypeInfo, NodeType2>();
-    this.embeddedSuperTypesMap = new SetMap<ClassTypeInfo, ClassTypeInfo>();
+    this(new SimpleTypeResolver());
   }
 
-  public NodeType2 getNodeType(ClassTypeInfo type) {
-    return nodeTypes.get(type);
+  public SchemaBuilder(SimpleTypeResolver simpleTypeResolver) {
+    this.simpleTypeResolver = simpleTypeResolver;
   }
 
-  private NodeType2 resolve(BeanMapping mapping) {
-    NodeType2 nodeType = nodeTypes.get(mapping.getBean().getClassType());
-    if (nodeType == null) {
-//      boolean skip = mapping.getType().getDeclaredAnnotation(AnnotationType.get(Skip.class)) != null;
-      nodeType = new NodeType2(mapping, false);
-      nodeTypes.put(mapping.getBean().getClassType(), nodeType);
+  public Map<ClassTypeInfo, NodeType> build(Set<ClassTypeInfo> classTypes) {
+    ApplicationMappingBuilder amp = new ApplicationMappingBuilder(simpleTypeResolver);
+    Map<ClassTypeInfo, BeanMapping> mappings = amp.build(classTypes);
+    Visitor visitor = new Visitor();
+    Map<ClassTypeInfo, NodeType> schema = new HashMap<ClassTypeInfo, NodeType>();
+
+    //
+    for (BeanMapping mapping : mappings.values()) {
+      mapping.accept(visitor);
+      ClassTypeInfo key = mapping.getBean().getClassType();
+      schema.put(key, visitor.getNodeType(key));
     }
-    return nodeType;
+
+    //
+    visitor.end();
+
+    //
+    return schema;
   }
 
-  @Override
-  public void singleValueMapping(ValueMapping.Single mapping) {
-    if (mapping.isNew()) {
-      current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), false));
+  private static class Visitor extends MappingVisitor {
+
+    /** . */
+    private final LinkedHashMap<ClassTypeInfo, NodeType2> nodeTypes;
+
+    /** . */
+    private NodeType2 current;
+
+    /** . */
+    private final SetMap<ClassTypeInfo, ClassTypeInfo> embeddedSuperTypesMap;
+
+    private Visitor() {
+      this.nodeTypes = new LinkedHashMap<ClassTypeInfo, NodeType2>();
+      this.embeddedSuperTypesMap = new SetMap<ClassTypeInfo, ClassTypeInfo>();
     }
-  }
 
-  @Override
-  public void multiValueMapping(ValueMapping.Multi mapping) {
-    if (mapping.isNew()) {
-      current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), true));
+    public NodeType2 getNodeType(ClassTypeInfo type) {
+      return nodeTypes.get(type);
     }
-  }
 
-  @Override
-  public void propertiesMapping(PropertiesMapping<?> mapping) {
-
-    // For now do simple until we figure out something better
-    current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));
-
-/*
-    if (definer.equals(current.mapping.getType())) {
-      int jcrType = metaType != null ? metaType.getCode() : PropertyType.UNDEFINED;
-       PropertyDefinition pd = current.properties.get("*");
-      if (pd != null) {
-        if (pd.getType() != jcrType) {
-          current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));
+    private NodeType2 resolve(BeanMapping mapping) {
+      NodeType2 nodeType = nodeTypes.get(mapping.getBean().getClassType());
+      if (nodeType == null) {
+        if (mapping.getBean().getAnnotation(Skip.class) == null) {
+          nodeType = new NodeType2(mapping);
+          nodeTypes.put(mapping.getBean().getClassType(), nodeType);
         }
-      } else {
-        current.properties.put("*", new PropertyDefinition("*", false, jcrType));
+      }
+      return nodeType;
+    }
+
+    @Override
+    public void singleValueMapping(ValueMapping.Single mapping) {
+      if (current != null) {
+        if (mapping.isNew() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+          current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), false));
+        }
       }
     }
-*/
-  }
 
-  @Override
-  public void manyToOneHierarchic(RelationshipMapping.ManyToOne.Hierarchic mapping) {
-    if (mapping.isNew()) {
-      BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
-      resolve(relatedBeanMapping).addChildNodeType("*", false, false, current.mapping);
-    }
-  }
-
-  @Override
-  public void oneToManyHierarchic(RelationshipMapping.OneToMany.Hierarchic mapping) {
-    BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
-    if (mapping.isNew()) {
-      current.addChildNodeType("*", false, false, relatedBeanMapping);
-    }
-  }
-
-  @Override
-  public void oneToOneEmbedded(RelationshipMapping.OneToOne.Embedded mapping) {
-    BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
-    if (mapping.isOwner()) {
-      if (relatedBeanMapping.getNodeTypeKind() == NodeTypeKind.PRIMARY) {
-        embeddedSuperTypesMap.get(current.mapping.getBean().getClassType()).add(relatedBeanMapping.getBean().getClassType());
-      }
-    } else {
-      if (current.mapping.getNodeTypeKind() == NodeTypeKind.PRIMARY) {
-        embeddedSuperTypesMap.get(relatedBeanMapping.getBean().getClassType()).add(current.mapping.getBean().getClassType());
+    @Override
+    public void oneToManyReference(RelationshipMapping.OneToMany.Reference mapping) {
+      if (mapping.isNew() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+        BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
+        NodeType2 related = resolve(relatedBeanMapping);
+        int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
+        related.properties.put(mapping.getMappedBy(), new PropertyDefinition(mapping.getMappedBy(), false, propertyType));
       }
     }
-  }
 
-  @Override
-  public void oneToOneHierarchic(RelationshipMapping.OneToOne.Hierarchic mapping) {
-    if (mapping.isNew()) {
-      BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
-      if (mapping.isOwner()) {
-        current.addChildNodeType(
-            mapping.getMappedBy(),
-            mapping.getMandatory(),
-            mapping.getAutocreated(),
-            relatedBeanMapping);
-      } else {
-        resolve(relatedBeanMapping).addChildNodeType(
-            mapping.getMappedBy(),
-            false,
-            mapping.getAutocreated(),
-            current.mapping);
+    @Override
+    public void manyToOneReference(RelationshipMapping.ManyToOne.Reference mapping) {
+      if (mapping.isNew() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+        int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
+        current.properties.put(mapping.getMappedBy(), new PropertyDefinition(mapping.getMappedBy(), false, propertyType));
       }
     }
-  }
 
-  @Override
-  public void startBean(BeanMapping mapping) {
-    current = resolve(mapping);
-  }
+    @Override
+    public void multiValueMapping(ValueMapping.Multi mapping) {
+      if (current != null) {
+        if (mapping.isNew() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+          current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), true));
+        }
+      }
+    }
 
-  @Override
-  public void endBean() {
-    current = null;
-  }
-
-  @Override
-  public void end() {
-    // Resolve super types
-    for (NodeType2 nodeType : nodeTypes.values()) {
-      ClassTypeInfo cti = nodeType.mapping.getBean().getClassType();
-
-      // Take all delcared node types and find out which are the super types
-      // based on the relationship between the java types
-      for (NodeType2 otherNodeType : nodeTypes.values()) {
-        if (otherNodeType != nodeType) {
-          if (cti.isSubType((otherNodeType).mapping.getBean().getClassType())) {
-            nodeType.superTypes.add(otherNodeType);
+    @Override
+    public void propertiesMapping(PropertiesMapping<?> mapping) {
+      if (current != null) {
+        if (mapping.getProperty().getAnnotation(Skip.class) == null) {
+          PropertyMetaType metatype = mapping.getMetaType();
+          int code = metatype != null ? metatype.getCode() : PropertyType.UNDEFINED;
+          PropertyDefinition pd = current.properties.get("*");
+          if (pd == null) {
+            current.properties.put("*", new PropertyDefinition("*", false, code));
+          } else {
+            if (pd.getType() != code) {
+              current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));            }
           }
         }
       }
+    }
 
-      // Add the embedded super types
-      for (ClassTypeInfo embeddedSuperTypeInfo : embeddedSuperTypesMap.get(cti)) {
-        nodeType.superTypes.add(nodeTypes.get(embeddedSuperTypeInfo));
-      }
-
-      // Now resolve the minimum set of declared super types
-      foo:
-      for (NodeType superNodeType : nodeType.superTypes) {
-        for (NodeType otherSuperNodeType : nodeType.superTypes) {
-          if (otherSuperNodeType != superNodeType && ((NodeType2)otherSuperNodeType).mapping.getBean().getClassType().isSubType(((NodeType2)superNodeType).mapping.getBean().getClassType())) {
-            continue foo;
+    @Override
+    public void manyToOneHierarchic(RelationshipMapping.ManyToOne.Hierarchic mapping) {
+      if (current != null) {
+        if (mapping.isNew()) {
+          BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
+          NodeType2 related = resolve(relatedBeanMapping);
+          if (related != null) {
+            related.addChildNodeType("*", false, false, current.mapping);
           }
         }
-        nodeType.declaredSuperTypes.add(superNodeType);
+      }
+    }
+
+    @Override
+    public void oneToManyHierarchic(RelationshipMapping.OneToMany.Hierarchic mapping) {
+      if (current != null) {
+        BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
+        if (mapping.isNew()) {
+          current.addChildNodeType("*", false, false, relatedBeanMapping);
+        }
+      }
+    }
+
+    @Override
+    public void oneToOneEmbedded(RelationshipMapping.OneToOne.Embedded mapping) {
+      if (current != null) {
+        BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
+        if (mapping.isOwner()) {
+          if (relatedBeanMapping.getNodeTypeKind() == NodeTypeKind.PRIMARY) {
+            embeddedSuperTypesMap.get(current.mapping.getBean().getClassType()).add(relatedBeanMapping.getBean().getClassType());
+          }
+        } else {
+          if (current.mapping.getNodeTypeKind() == NodeTypeKind.PRIMARY) {
+            embeddedSuperTypesMap.get(relatedBeanMapping.getBean().getClassType()).add(current.mapping.getBean().getClassType());
+          }
+        }
+      }
+    }
+
+    @Override
+    public void oneToOneHierarchic(RelationshipMapping.OneToOne.Hierarchic mapping) {
+      if (current != null) {
+        if (mapping.isNew()) {
+          BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
+          if (mapping.isOwner()) {
+            current.addChildNodeType(
+                mapping.getMappedBy(),
+                mapping.getMandatory(),
+                mapping.getAutocreated(),
+                relatedBeanMapping);
+          } else {
+            NodeType2 related = resolve(relatedBeanMapping);
+            if (related != null) {
+              related.addChildNodeType(
+                  mapping.getMappedBy(),
+                  false,
+                  mapping.getAutocreated(),
+                  current.mapping);
+            }
+          }
+        }
+      }
+    }
+
+    @Override
+    public void startBean(BeanMapping mapping) {
+      current = resolve(mapping);
+    }
+
+    @Override
+    public void endBean() {
+      current = null;
+    }
+
+    public void end() {
+      // Resolve super types
+      for (NodeType2 nodeType : nodeTypes.values()) {
+        ClassTypeInfo cti = nodeType.mapping.getBean().getClassType();
+
+        // Take all delcared node types and find out which are the super types
+        // based on the relationship between the java types
+        for (NodeType2 otherNodeType : nodeTypes.values()) {
+          if (otherNodeType != nodeType) {
+            if (cti.isSubType((otherNodeType).mapping.getBean().getClassType())) {
+              nodeType.superTypes.add(otherNodeType);
+            }
+          }
+        }
+
+        // Add the embedded super types
+        for (ClassTypeInfo embeddedSuperTypeInfo : embeddedSuperTypesMap.get(cti)) {
+          nodeType.superTypes.add(nodeTypes.get(embeddedSuperTypeInfo));
+        }
+
+        // Now resolve the minimum set of declared super types
+        foo:
+        for (NodeType superNodeType : nodeType.superTypes) {
+          for (NodeType otherSuperNodeType : nodeType.superTypes) {
+            if (otherSuperNodeType != superNodeType && ((NodeType2)otherSuperNodeType).mapping.getBean().getClassType().isSubType(((NodeType2)superNodeType).mapping.getBean().getClassType())) {
+              continue foo;
+            }
+          }
+          nodeType.declaredSuperTypes.add(superNodeType);
+        }
       }
     }
   }

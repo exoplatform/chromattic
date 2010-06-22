@@ -42,7 +42,7 @@ public class EnumSimpleTypeMapping implements SimpleTypeMapping {
 
   public SimpleTypeProvider<?, ?> create() {
     // todo : maybe need a cache here?
-    Class clazz = (Class<Object>)enumInfo.getType();
+    Class clazz = (Class<Object>)enumInfo.unwrap();
     return new EnumSimpleTypeProvider(clazz);
   }
 }

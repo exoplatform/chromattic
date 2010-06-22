@@ -45,7 +45,7 @@ class PropertyMetaData {
 
   PropertyMetaData(PropertyInfo pi) {
     this.name = pi.getName();
-    this.type = (Class<?>)pi.getValue().getDeclaredType().getType();
+    this.type = (Class<?>)pi.getValue().getDeclaredType().unwrap();
     this.accessMode = pi.getGetter() == null ? AccessMode.WRITE_ONLY : (pi.getSetter() == null ? AccessMode.READ_ONLY : AccessMode.READ_WRITE);
   }
 

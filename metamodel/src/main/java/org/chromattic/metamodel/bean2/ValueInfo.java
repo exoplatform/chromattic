@@ -19,7 +19,6 @@
 
 package org.chromattic.metamodel.bean2;
 
-import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeInfo;
 
 /**
@@ -31,27 +30,27 @@ public abstract class ValueInfo {
   /** The property type as declared originally. */
   private final TypeInfo declaredType;
 
-  /** The property class type. */
-  private final ClassTypeInfo classType;
+  /** The effective property type. */
+  private final TypeInfo effectiveType;
 
-  protected ValueInfo(TypeInfo declaredType, ClassTypeInfo classType) {
+  protected ValueInfo(TypeInfo declaredType, TypeInfo effectiveType) {
     if (declaredType == null) {
       throw new NullPointerException("No null declared type accepted");
     }
-    if (classType == null) {
-      throw new NullPointerException("No null class type accepted for declared type " + declaredType);
+    if (effectiveType == null) {
+      throw new NullPointerException("No null effective type accepted");
     }
 
     //
     this.declaredType = declaredType;
-    this.classType = classType;
+    this.effectiveType = effectiveType;
+  }
+
+  public TypeInfo getEffectiveType() {
+    return effectiveType;
   }
 
   public TypeInfo getDeclaredType() {
     return declaredType;
-  }
-
-  public ClassTypeInfo getClassType() {
-    return classType;
   }
 }

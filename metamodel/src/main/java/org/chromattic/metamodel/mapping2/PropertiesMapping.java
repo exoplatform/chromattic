@@ -22,6 +22,7 @@ package org.chromattic.metamodel.mapping2;
 import org.chromattic.metamodel.bean2.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean2.SimpleValueInfo;
 import org.chromattic.metamodel.bean2.ValueInfo;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -29,8 +30,18 @@ import org.chromattic.metamodel.bean2.ValueInfo;
  */
 public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<MultiValuedPropertyInfo<V>,V> {
 
-  public PropertiesMapping(MultiValuedPropertyInfo<V> property) {
+  /** . */
+  private final PropertyMetaType<?> metaType;
+
+  public PropertiesMapping(MultiValuedPropertyInfo<V> property, PropertyMetaType<?> metaType) {
     super(property);
+
+    //
+    this.metaType = metaType;
+  }
+
+  public PropertyMetaType<?> getMetaType() {
+    return metaType;
   }
 
   @Override

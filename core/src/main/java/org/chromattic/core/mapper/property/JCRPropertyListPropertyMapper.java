@@ -73,7 +73,7 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I>
     this.listType = listType;
     this.jcrPropertyName = info.getPropertyDefinition().getName();
     this.elementType = info.getValue();
-    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getClassType().getType(), (PropertyMetaType<I>) info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
+    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getEffectiveType().unwrap(), (PropertyMetaType<I>) info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
   }
 
   @Override

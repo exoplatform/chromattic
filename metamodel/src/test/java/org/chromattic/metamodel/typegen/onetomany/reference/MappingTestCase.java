@@ -22,6 +22,7 @@ package org.chromattic.metamodel.typegen.onetomany.reference;
 import org.chromattic.metamodel.mapping2.BeanMapping;
 import org.chromattic.metamodel.mapping2.RelationshipMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
+import org.chromattic.metamodel.typegen.TypeGen;
 
 import java.util.Map;
 
@@ -53,7 +54,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertNull(r2.getRelatedRelationshipMapping());
   }
 
-  public void testC() {
+  public void testC() throws Exception {
     Map<Class<?>, BeanMapping> mappings = assertValid(C1.class, C2.class);
     BeanMapping _1 = mappings.get(C1.class);
     BeanMapping _2 = mappings.get(C2.class);

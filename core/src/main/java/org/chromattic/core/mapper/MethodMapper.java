@@ -55,7 +55,7 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
 
   @Override
   public String toString() {
-    return "MethodMapper[" + ((Method)method.getMethod()).getDeclaringClass().getName() + "#" + method.getName() + "]";
+    return "MethodMapper[" + ((Method)method.unwrap()).getDeclaringClass().getName() + "#" + method.getName() + "]";
   }
 
   public static class Create<C extends ObjectContext> extends MethodMapper<C> {

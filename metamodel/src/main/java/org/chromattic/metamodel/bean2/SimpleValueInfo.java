@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.bean2;
 
+import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeInfo;
 
@@ -28,7 +29,22 @@ import org.reflext.api.TypeInfo;
  */
 public class SimpleValueInfo extends ValueInfo {
 
-  public SimpleValueInfo(TypeInfo declaredType, ClassTypeInfo classType) {
-    super(declaredType, classType);
+  /** . */
+  private final SimpleTypeMapping typeMapping;
+
+  public SimpleValueInfo(
+      TypeInfo declaredType,
+      TypeInfo effectiveType,
+      SimpleTypeMapping typeMapping) {
+    super(declaredType, effectiveType);
+
+    //
+    this.typeMapping = typeMapping;
   }
+
+  public SimpleTypeMapping getTypeMapping() {
+    return typeMapping;
+  }
+
+
 }

@@ -89,6 +89,17 @@ public class ApplicationMappingBuilder {
   /** . */
   private final AnnotationType<AnnotationInfo, ?> FORMATTED_BY_ANNOTATION_TYPE = AnnotationType.get(FORMATTED_BY);
 
+  /** . */
+  private final SimpleTypeResolver simpleTypeResolver;
+
+  public ApplicationMappingBuilder() {
+    this(new SimpleTypeResolver());
+  }
+
+  public ApplicationMappingBuilder(SimpleTypeResolver simpleTypeResolver) {
+    this.simpleTypeResolver = simpleTypeResolver;
+  }
+
   public Map<ClassTypeInfo, BeanMapping> build(Set<ClassTypeInfo> classTypes) {
 
     // Clone for modification
@@ -101,7 +112,7 @@ public class ApplicationMappingBuilder {
     classTypes.add((ClassTypeInfo)domain.resolve(Object.class));
 
     // Build beans
-    Map<ClassTypeInfo, BeanInfo> beans = new BeanInfoBuilder().build(classTypes);
+    Map<ClassTypeInfo, BeanInfo> beans = new BeanInfoBuilder(simpleTypeResolver).build(classTypes);
 
     // Remove object bean
     BeanInfo objectBean = beans.remove(objectClassType);
@@ -586,7 +597,12 @@ public class ApplicationMappingBuilder {
     }
 
     private AttributeMapping createAttribute(SingleValuedPropertyInfo<SimpleValueInfo> property, NodeAttributeType type) {
-      if (!property.getValue().getClassType().getName().equals(String.class.getName())) {
+      TypeInfo effectiveType = property.getValue().getEffectiveType();
+      if (!(effectiveType instanceof ClassTypeInfo)) {
+        throw new UnsupportedOperationException();
+      }
+      ClassTypeInfo effectiveClassType = (ClassTypeInfo)effectiveType;
+      if (!effectiveClassType.getName().equals(String.class.getName())) {
         throw new UnsupportedOperationException();
       }
       return new AttributeMapping(property, type);
@@ -596,7 +612,18 @@ public class ApplicationMappingBuilder {
       if (property.getKind() != MultiValueKind.MAP) {
         throw new UnsupportedOperationException();
       }
-      return new PropertiesMapping<V>(property);
+      TypeInfo type = property.getValue().getEffectiveType();
+      PropertyMetaType<?> mt =  null;
+      if (type.getName().equals(Object.class.getName())) {
+        mt = null;
+      } else {
+        SimpleTypeMapping stm = typeResolver.resolveType(type);
+        if (stm == null) {
+          throw new InvalidMappingException(property.getOwner().getClassType(), "Cannot map type " + type + " as properties");
+        }
+        mt = stm.getPropertyMetaType();
+      }
+      return new PropertiesMapping<V>(property, mt);
     }
 
     private <P extends PropertyInfo<SimpleValueInfo>> PropertyMapping<P, SimpleValueInfo> createProperty(

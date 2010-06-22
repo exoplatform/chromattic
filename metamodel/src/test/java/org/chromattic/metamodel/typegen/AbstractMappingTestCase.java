@@ -49,7 +49,7 @@ public abstract class AbstractMappingTestCase extends TestCase {
     }
     Map<Class<?>, BeanMapping> classMapping = new HashMap<Class<?>, BeanMapping>();
     for (Map.Entry<ClassTypeInfo, BeanMapping> classTypeMapping : builder.build(ctis).entrySet()) {
-      classMapping.put((Class<?>)classTypeMapping.getKey().getType(), classTypeMapping.getValue());
+      classMapping.put((Class<?>)classTypeMapping.getKey().unwrap(), classTypeMapping.getValue());
     }
     return classMapping;
   }

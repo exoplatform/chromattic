@@ -43,6 +43,10 @@ public class JLOTypeInfo implements ClassTypeInfo {
     return instance;
   }
 
+  public boolean isReified() {
+    return true;
+  }
+
   public String getName() {
     return Object.class.getName();
   }
@@ -91,7 +95,7 @@ public class JLOTypeInfo implements ClassTypeInfo {
     return false;
   }
 
-  public Object getType() {
+  public Object unwrap() {
     return Object.class;
   }
 

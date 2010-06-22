@@ -83,9 +83,7 @@ public abstract class NodeTypeSerializer {
     if (nodeType == null) {
       throw new NullPointerException("No node type provided");
     }
-    if (!nodeType.getSkip()) {
-      nodeTypes.put(nodeType.getName(), nodeType);
-    }
+    nodeTypes.put(nodeType.getName(), nodeType);
   }
 
   public void addPrefixMapping(String namespacePrefix, String namespaceURI) {

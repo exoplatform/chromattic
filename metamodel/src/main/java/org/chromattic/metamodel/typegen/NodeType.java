@@ -19,7 +19,6 @@
 
 package org.chromattic.metamodel.typegen;
 
-import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.chromattic.metamodel.mapping.NodeTypeMapping;
 import org.chromattic.metamodel.mapping2.BeanMapping;
@@ -81,10 +80,6 @@ public class NodeType {
     this.superTypes = new HashSet<NodeType>();
     this.declaredSuperTypes = new HashSet<NodeType>();
     this.skip = skip;
-  }
-
-  public boolean getSkip() {
-    return skip;
   }
 
   public String getClassName() {

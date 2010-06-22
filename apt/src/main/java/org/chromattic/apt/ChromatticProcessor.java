@@ -23,15 +23,29 @@ import org.chromattic.api.annotations.NodeTypeDefs;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.common.collection.SetMap;
-import org.chromattic.metamodel.typegen.*;
+import org.chromattic.metamodel.typegen.CNDNodeTypeSerializer;
+import org.chromattic.metamodel.typegen.NodeType;
+import org.chromattic.metamodel.typegen.NodeTypeSerializer;
+import org.chromattic.metamodel.typegen.SchemaBuilder;
+import org.chromattic.metamodel.typegen.XMLNodeTypeSerializer;
 import org.chromattic.spi.instrument.MethodHandler;
-import org.reflext.api.*;
+import org.reflext.api.ClassKind;
+import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.MethodInfo;
+import org.reflext.api.TypeInfo;
+import org.reflext.api.TypeResolver;
+import org.reflext.api.VoidTypeInfo;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
 import org.reflext.apt.JavaxLangReflectionModel;
 import org.reflext.core.TypeResolverImpl;
 
-import javax.annotation.processing.*;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -41,9 +55,16 @@ import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 import java.io.Writer;
-import java.util.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -122,7 +143,7 @@ public class ChromatticProcessor extends AbstractProcessor {
 
     Filer filer = processingEnv.getFiler();
 
-    NodeTypeBuilder visitor = new NodeTypeBuilder();
+    Set<ClassTypeInfo> classTypes = new HashSet<ClassTypeInfo>();
 
     SetMap<String, ClassTypeInfo> packageToClassTypes = new SetMap<String, ClassTypeInfo>();
 
@@ -150,7 +171,7 @@ public class ChromatticProcessor extends AbstractProcessor {
       }
 
       processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "About to process the type " + cti.getName());
-      visitor.addType(cti);
+      classTypes.add(cti);
       try {
         JavaFileObject jfo = filer.createSourceFile(typeElt.getQualifiedName() + "_Chromattic", typeElt);
         PrintWriter out = new PrintWriter(jfo.openWriter());
@@ -165,7 +186,7 @@ public class ChromatticProcessor extends AbstractProcessor {
     }
 
     // Validate model
-    visitor.generate();
+    Map<ClassTypeInfo, NodeType> schema = new SchemaBuilder().build(classTypes);
 
     //
     for (String packageName : packageToClassTypes.keySet()) {
@@ -181,7 +202,10 @@ public class ChromatticProcessor extends AbstractProcessor {
         if (packageMetaData.namespacePrefix.length() > 0 || packageMetaData.namespaceURI.length() > 0) {
           mappings = Collections.singletonMap(packageMetaData.namespacePrefix, packageMetaData.namespaceURI);
         }
-        nodeTypes.add(visitor.getNodeType(cti));
+        NodeType nodeType = schema.get(cti);
+        if (nodeType != null) {
+          nodeTypes.add(nodeType);
+        }
       }
 
       //

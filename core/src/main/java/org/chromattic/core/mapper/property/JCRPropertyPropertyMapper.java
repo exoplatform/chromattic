@@ -49,7 +49,7 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext, E, I> extends Pr
     //
     this.jcrPropertyName = info.getPropertyDefinition().getName();
     this.vt = new ValueDefinition<I, E>(
-        (Class)info.getValue().getClassType().getType(),
+        (Class)info.getValue().getEffectiveType().unwrap(),
         (PropertyMetaType<I>)info.getPropertyDefinition().getMetaType(),
         vt,
         info.getPropertyDefinition().getDefaultValue());
