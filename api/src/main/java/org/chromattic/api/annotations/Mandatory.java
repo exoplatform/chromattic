@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
+ * @since 1.1
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
