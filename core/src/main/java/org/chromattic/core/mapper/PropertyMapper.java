@@ -23,7 +23,7 @@ import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.ValueInfo;
-import org.chromattic.metamodel.mapping2.PropertyMapping;
+import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.reflext.api.MethodInfo;
 
 import java.lang.reflect.Method;

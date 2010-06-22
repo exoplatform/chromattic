@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 eXo Platform SAS.
+ * Copyright (C) 2003-2009 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,11 +17,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
+package org.chromattic.metamodel.mapping;
+
+import org.reflext.api.MethodInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ApplicationMapping {
+public class CreateMapping extends MethodMapping {
+
+  /** . */
+  private final BeanMapping beanMapping;
+
+  public CreateMapping(MethodInfo method, BeanMapping bean) {
+    super(method);
+
+    //
+    this.beanMapping = bean;
+  }
+
+  public BeanMapping getBeanMapping() {
+    return beanMapping;
+  }
+
+  @Override
+  public void accept(MappingVisitor visitor) {
+    visitor.visit(this);
+  }
 }

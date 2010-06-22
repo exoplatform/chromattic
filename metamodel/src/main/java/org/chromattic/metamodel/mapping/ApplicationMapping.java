@@ -17,33 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
-
-import org.chromattic.api.annotations.*;
-import org.reflext.api.annotation.AnnotationType;
+package org.chromattic.metamodel.mapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class Constants {
-
-  /** . */
-  static final AnnotationType<NamingPolicy, ?> NAMING_POLICY = AnnotationType.get(NamingPolicy.class);
-
-  /** . */
-  static final AnnotationType<PrimaryType, ?> PRIMARY_TYPE = AnnotationType.get(PrimaryType.class);
-
-  /** . */
-  static final AnnotationType<MixinType, ?> MIXIN_TYPE = AnnotationType.get(MixinType.class);
-
-  /** . */
-  static final AnnotationType<Create, ?> CREATE = AnnotationType.get(Create.class);
-
-  /** . */
-  static final AnnotationType<Destroy, ?> DESTROY = AnnotationType.get(Destroy.class);
-
-  /** . */
-  static final AnnotationType<FindById, ?> FIND_BY_ID = AnnotationType.get(FindById.class);
-
+public class ApplicationMapping {
 }

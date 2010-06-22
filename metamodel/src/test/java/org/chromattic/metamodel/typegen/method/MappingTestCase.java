@@ -19,8 +19,8 @@
 
 package org.chromattic.metamodel.typegen.method;
 
-import org.chromattic.metamodel.mapping2.BeanMapping;
-import org.chromattic.metamodel.mapping2.MethodMapping;
+import org.chromattic.metamodel.mapping.BeanMapping;
+import org.chromattic.metamodel.mapping.MethodMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
 import java.util.Collection;

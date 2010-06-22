@@ -20,7 +20,7 @@
 package org.chromattic.metamodel.typegen;
 
 import org.chromattic.metamodel.mapping.NodeTypeKind;
-import org.chromattic.metamodel.mapping2.BeanMapping;
+import org.chromattic.metamodel.mapping.BeanMapping;
 
 import java.util.*;
 

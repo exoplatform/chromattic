@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
+package org.chromattic.metamodel.mapping;
 
 import org.reflext.api.MethodInfo;
 
@@ -25,18 +25,14 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class MethodMapping {
+public class DestroyMapping extends MethodMapping {
 
-  /** . */
-  private final MethodInfo method;
-
-  public MethodMapping(MethodInfo method) {
-    this.method = method;
+  public DestroyMapping(MethodInfo method) {
+    super(method);
   }
 
-  public MethodInfo getMethod() {
-    return method;
+  @Override
+  public void accept(MappingVisitor visitor) {
+    visitor.visit(this);
   }
-
-  public abstract void accept(MappingVisitor visitor);
 }

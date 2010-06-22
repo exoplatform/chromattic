@@ -26,7 +26,7 @@ import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
-import org.chromattic.metamodel.mapping2.ValueMapping;
+import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
 import java.util.List;

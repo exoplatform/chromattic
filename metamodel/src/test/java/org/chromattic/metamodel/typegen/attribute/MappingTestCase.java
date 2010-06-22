@@ -19,9 +19,9 @@
 
 package org.chromattic.metamodel.typegen.attribute;
 
+import org.chromattic.metamodel.mapping.AttributeMapping;
+import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
-import org.chromattic.metamodel.mapping2.AttributeMapping;
-import org.chromattic.metamodel.mapping2.BeanMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
 import java.util.Map;

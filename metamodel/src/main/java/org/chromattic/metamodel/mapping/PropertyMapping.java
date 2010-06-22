@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,18 +17,51 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping.value;
+package org.chromattic.metamodel.mapping;
 
-import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.mapping.NodeTypeMapping;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.ValueInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractManyToOneMapping<O extends AbstractOneToManyMapping<M, O>, M extends AbstractManyToOneMapping<O, M>> extends RelationshipMapping<O, M> {
+public abstract class PropertyMapping<P extends PropertyInfo<V>, V extends ValueInfo> {
 
-  public AbstractManyToOneMapping(NodeTypeMapping definer, NodeTypeMapping owner, NodeTypeMapping relatedType, RelationshipType type) {
-    super(definer, owner, relatedType, Multiplicity.MANY, Multiplicity.ONE, type);
+  /** . */
+  BeanMapping owner;
+
+  /** The optional parent. */
+  PropertyMapping parent;
+
+  /** . */
+  final P property;
+
+  public PropertyMapping(P property) {
+    this.property = property;
   }
+
+  public PropertyMapping getParent() {
+    return parent;
+  }
+
+  public BeanMapping getOwner() {
+    return owner;
+  }
+
+  public String getName() {
+    return property.getName();
+  }
+
+  public P getProperty() {
+    return property;
+  }
+
+  public V getValue() {
+    return property.getValue();
+  }
+
+  public abstract void accept(MappingVisitor visitor);
+
+  public abstract boolean isNew();
 }

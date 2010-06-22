@@ -20,8 +20,8 @@
 package org.chromattic.metamodel.typegen;
 
 import junit.framework.TestCase;
-import org.chromattic.metamodel.mapping2.ApplicationMappingBuilder;
-import org.chromattic.metamodel.mapping2.BeanMapping;
+import org.chromattic.metamodel.mapping.ApplicationMappingBuilder;
+import org.chromattic.metamodel.mapping.BeanMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;

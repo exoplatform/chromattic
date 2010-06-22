@@ -22,7 +22,7 @@ package org.chromattic.core.mapper;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.mapping2.PropertyMapping;
+import org.chromattic.metamodel.mapping.PropertyMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

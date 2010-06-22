@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
+package org.chromattic.metamodel.mapping;
 
 import org.chromattic.api.AttributeOption;
 import org.chromattic.api.NameConflictResolution;
@@ -49,9 +49,6 @@ import org.chromattic.metamodel.bean.BeanInfoBuilder;
 import org.chromattic.metamodel.bean.MultiValueKind;
 import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean.ValueInfo;
-import org.chromattic.metamodel.mapping.InvalidMappingException;
-import org.chromattic.metamodel.mapping.NodeAttributeType;
-import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.type.SimpleTypeMapping;

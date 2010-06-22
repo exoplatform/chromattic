@@ -17,33 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
+package org.chromattic.metamodel.mapping;
 
-import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class FindByIdMapping extends MethodMapping {
+public abstract class MethodMapping {
 
   /** . */
-  private final ClassTypeInfo type;
+  private final MethodInfo method;
 
-  public FindByIdMapping(MethodInfo method, ClassTypeInfo type) {
-    super(method);
-
-    //
-    this.type = type;
+  public MethodMapping(MethodInfo method) {
+    this.method = method;
   }
 
-  public ClassTypeInfo getType() {
-    return type;
+  public MethodInfo getMethod() {
+    return method;
   }
 
-  @Override
-  public void accept(MappingVisitor visitor) {
-    visitor.visit(this);
-  }
+  public abstract void accept(MappingVisitor visitor);
 }

@@ -20,12 +20,9 @@
 package org.chromattic.metamodel.typegen.onetomany.reference;
 
 import org.chromattic.common.collection.Collections;
-import org.chromattic.metamodel.mapping2.BeanMapping;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
 import org.chromattic.metamodel.typegen.TypeGenTestCase;
-import org.chromattic.metamodel.typegen.property.A1;
-import org.chromattic.metamodel.typegen.property.A2;
 
 import javax.jcr.PropertyType;
 import java.util.Map;

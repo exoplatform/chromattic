@@ -19,8 +19,8 @@
 
 package org.chromattic.metamodel.typegen.onetomany.hierarchical;
 
-import org.chromattic.metamodel.mapping2.BeanMapping;
-import org.chromattic.metamodel.mapping2.RelationshipMapping;
+import org.chromattic.metamodel.mapping.BeanMapping;
+import org.chromattic.metamodel.mapping.RelationshipMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
 import java.util.Map;

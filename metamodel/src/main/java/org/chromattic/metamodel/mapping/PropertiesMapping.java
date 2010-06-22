@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,32 +17,47 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
+package org.chromattic.metamodel.mapping;
 
-import org.reflext.api.MethodInfo;
+import org.chromattic.metamodel.bean.ValueInfo;
+import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class CreateMapping extends MethodMapping {
+public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<MultiValuedPropertyInfo<V>,V> {
 
   /** . */
-  private final BeanMapping beanMapping;
+  private final PropertyMetaType<?> metaType;
 
-  public CreateMapping(MethodInfo method, BeanMapping bean) {
-    super(method);
+  public PropertiesMapping(MultiValuedPropertyInfo<V> property, PropertyMetaType<?> metaType) {
+    super(property);
 
     //
-    this.beanMapping = bean;
+    this.metaType = metaType;
   }
 
-  public BeanMapping getBeanMapping() {
-    return beanMapping;
+  public PropertyMetaType<?> getMetaType() {
+    return metaType;
   }
 
   @Override
   public void accept(MappingVisitor visitor) {
-    visitor.visit(this);
+    visitor.propertiesMapping(this);
+  }
+
+  public boolean isNew() {
+/*
+    if (parent == null) {
+      return true;
+    } else {
+      PropertiesMapping<?> a = null;
+      return property.getValue().getBean() != a.property.getValue().getBean();
+    }
+*/
+    // Implement that properly based on the type of "*"
+    return true;
   }
 }

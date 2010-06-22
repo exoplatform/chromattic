@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,22 +17,33 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.mapping2;
+package org.chromattic.metamodel.mapping;
 
-import org.reflext.api.MethodInfo;
+import org.chromattic.api.annotations.*;
+import org.reflext.api.annotation.AnnotationType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DestroyMapping extends MethodMapping {
+class Constants {
 
-  public DestroyMapping(MethodInfo method) {
-    super(method);
-  }
+  /** . */
+  static final AnnotationType<NamingPolicy, ?> NAMING_POLICY = AnnotationType.get(NamingPolicy.class);
 
-  @Override
-  public void accept(MappingVisitor visitor) {
-    visitor.visit(this);
-  }
+  /** . */
+  static final AnnotationType<PrimaryType, ?> PRIMARY_TYPE = AnnotationType.get(PrimaryType.class);
+
+  /** . */
+  static final AnnotationType<MixinType, ?> MIXIN_TYPE = AnnotationType.get(MixinType.class);
+
+  /** . */
+  static final AnnotationType<Create, ?> CREATE = AnnotationType.get(Create.class);
+
+  /** . */
+  static final AnnotationType<Destroy, ?> DESTROY = AnnotationType.get(Destroy.class);
+
+  /** . */
+  static final AnnotationType<FindById, ?> FIND_BY_ID = AnnotationType.get(FindById.class);
+
 }

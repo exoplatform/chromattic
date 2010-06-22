@@ -20,12 +20,12 @@
 package org.chromattic.metamodel.typegen.property;
 
 import org.chromattic.metamodel.bean.MultiValueKind;
+import org.chromattic.metamodel.mapping.BeanMapping;
+import org.chromattic.metamodel.mapping.PropertiesMapping;
+import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
-import org.chromattic.metamodel.mapping2.BeanMapping;
-import org.chromattic.metamodel.mapping2.PropertiesMapping;
-import org.chromattic.metamodel.mapping2.PropertyMapping;
-import org.chromattic.metamodel.mapping2.ValueMapping;
+import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 import org.reflext.api.ClassTypeInfo;
 

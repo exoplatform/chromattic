@@ -19,11 +19,10 @@
 
 package org.chromattic.metamodel.typegen.inheritance;
 
-import org.chromattic.metamodel.mapping2.BeanMapping;
-import org.chromattic.metamodel.mapping2.RelationshipMapping;
+import org.chromattic.metamodel.mapping.RelationshipMapping;
+import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
