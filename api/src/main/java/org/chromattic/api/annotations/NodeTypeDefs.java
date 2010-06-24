@@ -43,13 +43,6 @@ import java.lang.annotation.Target;
 public @interface NodeTypeDefs {
 
   /**
-   * The name of the generated resource file.
-   *
-   * @return the resource file name
-   */
-  String name() default "nodetypes.xml";
-
-  /**
    * Controls the inclusion of node types from sub packages of the annotated package.</p>
    *
    * @return true if the sub packages should be included
