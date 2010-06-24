@@ -182,7 +182,7 @@ two mapping styles one-to-many/many-to-one and one-to-one mapping. The one-to-on
 the particular child of a node, the one-to-many-many-to-one mapping is useful for accessing residual node definitions
 defined by a wildcard (*) name.
 
-== One-to-many/many-to-one hierarchical relationship mapping ==
+== One-to-many/many-to-one hierarchical relationship mapping {{anchor id=hierarchical_onetomany_section/}} ==
 
 The usage of Java generics combined with different types of collection provides a flexible mapping. Java generics allows
 collection filtering based on the type of the collection, it becomes handy when you need to access the a subset of the
@@ -332,6 +332,11 @@ a node can be the target of multiple nodes.
 
 {{note}}Technically it should be possible to support many-to-many relationship using a multivalued reference property.
 This feature could be implemented in the future.{{/note}}
+
+== One-to-many/many-to-one reference relationship mapping == 
+
+Mapping single valued reference properties to Chromattic relationship relationship relies on Java collections, in a similar
+ manner hierarchical [[one-to-many/many-to-one relationship>>#hierarchical_onetomany_section]] does.
 
 
 
