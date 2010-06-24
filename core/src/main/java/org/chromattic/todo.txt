@@ -1,7 +1,11 @@
+- split APT plugin into two jars, one for compile time and one for runtime
+
+
 - @Rest integration : any chromattic object should also be rest enabled!!!
 
+- @ManyToMany REFERENCE with list of reference values
+
 - @OneToMany EMBEDDED with Map<Class<?>, Object> to provide access to mixins in a detyped manner
-- split APT plugin into two jars, one for compile time and one for runtime
 - copy operation (mixins, create notifications, etc...)
 - !bug: PATH relationship with move are not preserved
 - no mapper registered -> NPE during a findByPath
@@ -14,8 +18,6 @@
 - notion de REL LINK in associations
 - better remove (no need for navigating everything, use prefix)!!!!
 - @PrimaryType(name = "foo", mixinTypes = {Mixin.class})
-
-- map BINARY to byte[]
 
 - allow to force the backend JCR type to map a STRING to a PATH => remove @Path @Property
 
@@ -48,8 +50,6 @@
 - clarify semantic of class importance in one to many map mapping : I.E do we expect class cast or non existence ???
 - Map iterators on relationship for maximum efficiency and allow skip
 - tester que les node type résiduels ont la bonne property type
-
-- create nodetypes.xml from the mappings with an annotation processor
 
 - a cache invalidation framework based on transforming node to object id + class
 
