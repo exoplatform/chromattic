@@ -1,5 +1,6 @@
 - split APT plugin into two jars, one for compile time and one for runtime
 
+- auto generated IDs for Map<String, A> for one to many hierarchical
 
 - @Rest integration : any chromattic object should also be rest enabled!!!
 
