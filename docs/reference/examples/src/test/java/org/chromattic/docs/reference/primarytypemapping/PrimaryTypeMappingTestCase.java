@@ -38,7 +38,9 @@ public class PrimaryTypeMappingTestCase extends TestCase {
   @Override
   protected void setUp() throws Exception {
     ChromatticBuilder builder = ChromatticBuilder.create();
+    builder.add(WebSite.class);
     builder.add(Page.class);
+    builder.add(Content.class);
     chromattic = builder.build();
   }
 
