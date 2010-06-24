@@ -423,6 +423,7 @@
            <module>exo</module>
            <module>core</module>
            <module>ext</module>
+           <module>docs</module>
         </modules>
      </profile>
      

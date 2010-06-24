@@ -47,8 +47,6 @@ public @interface NodeTypeDefs {
 
   boolean deep() default false;
 
-  String namespacePrefix() default "";
-
-  String namespaceValue() default "";
+  NamespaceMapping[] namespaces() default {};
 
 }

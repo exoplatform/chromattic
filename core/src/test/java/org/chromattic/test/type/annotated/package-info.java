@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "type_annotated", namespaceValue = "type_annotated") package org.chromattic.test.type.annotated;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="type_annotated", uri="type_annotated")) package org.chromattic.test.type.annotated;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

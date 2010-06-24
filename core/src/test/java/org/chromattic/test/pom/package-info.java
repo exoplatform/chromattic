@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "pom", namespaceValue = "pom", deep = true) package org.chromattic.test.pom;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="pom", uri="pom"), deep = true) package org.chromattic.test.pom;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

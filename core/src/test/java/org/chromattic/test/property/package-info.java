@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "property", namespaceValue = "property") package org.chromattic.test.property;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="property", uri="property")) package org.chromattic.test.property;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

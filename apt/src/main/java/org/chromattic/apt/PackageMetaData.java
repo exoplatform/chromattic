@@ -21,6 +21,8 @@ package org.chromattic.apt;
 
 import org.reflext.api.ClassTypeInfo;
 
+import java.util.Map;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -31,22 +33,17 @@ class PackageMetaData {
   final String packageName;
 
   /** . */
-  final String namespacePrefix;
-
-  /** . */
-  final String namespaceURI;
+  final Map<String, String> prefixMappings;
 
   /** . */
   final boolean deep;
 
   public PackageMetaData(
     String packageName,
-    String namespacePrefix,
-    String namespaceURI,
+    Map<String, String> prefixMappings,
     boolean deep) {
     this.packageName = packageName;
-    this.namespacePrefix = namespacePrefix;
-    this.namespaceURI = namespaceURI;
+    this.prefixMappings = prefixMappings;
     this.deep = deep;
   }
 

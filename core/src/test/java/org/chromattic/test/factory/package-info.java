@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "factory", namespaceValue = "factory") package org.chromattic.test.factory;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="factory", uri="factory")) package org.chromattic.test.factory;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

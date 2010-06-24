@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "inheritance", namespaceValue = "inheritance") package org.chromattic.test.inheritance;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="inheritance", uri="inheritance")) package org.chromattic.test.inheritance;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "methodinvocation", namespaceValue = "methodinvocation", deep = true) package org.chromattic.test.methodinvocation;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="methodinvocation", uri="methodinvocation"), deep = true) package org.chromattic.test.methodinvocation;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

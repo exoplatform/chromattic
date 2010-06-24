@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs package org.chromattic.docs.reference.gettingstarted;
+@NodeTypeDefs() package org.chromattic.docs.reference.gettingstarted;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

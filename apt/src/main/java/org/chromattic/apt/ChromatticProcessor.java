@@ -19,6 +19,7 @@
 
 package org.chromattic.apt;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
@@ -115,10 +116,16 @@ public class ChromatticProcessor extends AbstractProcessor {
       PackageElement pkgElt = (PackageElement)e;
       String packageName = new StringBuilder().append(pkgElt.getQualifiedName()).toString();
       NodeTypeDefs ntDefs = pkgElt.getAnnotation(NodeTypeDefs.class);
+      Map<String, String> prefixMappings = Collections.emptyMap();
+      for (NamespaceMapping mapping : ntDefs.namespaces()) {
+        if (prefixMappings.isEmpty()) {
+          prefixMappings = new HashMap<String, String>();
+        }
+        prefixMappings.put(mapping.prefix(), mapping.uri());
+      }
       packageMetaData.put(packageName, new PackageMetaData(
         packageName,
-        ntDefs.namespacePrefix(),
-        ntDefs.namespaceValue(),
+        prefixMappings,
         ntDefs.deep()));
     }
 
@@ -199,8 +206,11 @@ public class ChromatticProcessor extends AbstractProcessor {
       //
       for (ClassTypeInfo cti : packageToClassTypes.get(packageName)) {
         PackageMetaData packageMetaData = packageMetaDatas.get(packageName);
-        if (packageMetaData.namespacePrefix.length() > 0 || packageMetaData.namespaceURI.length() > 0) {
-          mappings = Collections.singletonMap(packageMetaData.namespacePrefix, packageMetaData.namespaceURI);
+        if (packageMetaData.prefixMappings.size() > 0) {
+          if (mappings.isEmpty()) {
+            mappings = new HashMap<String, String>();
+          }
+          mappings.putAll(packageMetaData.prefixMappings);
         }
         NodeType nodeType = schema.get(cti);
         if (nodeType != null) {

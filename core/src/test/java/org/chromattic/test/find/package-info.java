@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "find", namespaceValue = "find") package org.chromattic.test.find;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="find", uri="find")) package org.chromattic.test.find;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

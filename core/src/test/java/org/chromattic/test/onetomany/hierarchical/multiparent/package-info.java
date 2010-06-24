@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "onetomany_h_multiparent", namespaceValue = "onetomany_h_multiparent") package org.chromattic.test.onetomany.hierarchical.multiparent;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="onetomany_h_multiparent", uri="onetomany_h_multiparent")) package org.chromattic.test.onetomany.hierarchical.multiparent;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

@@ -56,6 +56,19 @@ public abstract class Page {
   public abstract void setTitle(String title);
 
   /**
+   * Returns the page content.
+   * @return the page content
+   */
+  @Property(name = "content")
+  public abstract String getContent(); 
+
+  /**
+   * Updates the page content.
+   * @param content the new page content
+   */
+  public abstract void setContent(String content);
+
+  /**
    * Returns the date of the page last modification.
    *
    * @return the date of the last modification

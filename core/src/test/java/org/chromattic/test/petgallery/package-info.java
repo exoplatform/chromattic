@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "petgallery", namespaceValue = "petgallery") package org.chromattic.test.petgallery;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="petgallery", uri="petgallery")) package org.chromattic.test.petgallery;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

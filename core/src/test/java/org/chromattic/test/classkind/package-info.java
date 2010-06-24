@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "classkind", namespaceValue = "classkind") package org.chromattic.test.classkind;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="classkind", uri="classkind")) package org.chromattic.test.classkind;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

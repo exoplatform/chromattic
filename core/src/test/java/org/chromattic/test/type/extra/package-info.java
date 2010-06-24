@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespacePrefix = "type_extra", namespaceValue = "type_extra") package org.chromattic.test.type.extra;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="type_extra", uri="type_extra")) package org.chromattic.test.type.extra;
 
+import org.chromattic.api.annotations.NamespaceMapping;
 import org.chromattic.api.annotations.NodeTypeDefs;

@@ -27,7 +27,7 @@ JCR defines the following set of property types:
 Any of those types except the ##REFERENCE## type can be mapped to an object property.
 
 ##REFERENCE## types can be used, however this type is not mapped to a specific Java type, instead
-Chromattic supports it thanks to the concept of relationship that will be explained later.
+Chromattic supports it thanks to the concept of relationship that will be explained in the [[#reference_relationship_section]].
 
 === Generic data types ===
 
@@ -162,7 +162,7 @@ does not affect the JCR property values. When the JCR property does not exist, a
 To update the values of a JCR property, the property setter has to be invoked. The list of values is read once and
 copied to the corresponding JCR property. If the list is null, it simply delete the property.
 
-== Mixed property mapping ==
+== Mixing multi value and single value styles ==
 
 It can be convenient to map a single valued property to a multi valued property. For instance a multi valued JCR
  property exposed as a single valued property provides access to the first value of the values.
@@ -177,10 +177,16 @@ accessed.
 
 = Mapping parent child relationships =
 
-Chromattic makes the usage of the JCR node hierarchy very natural thanks to the relationship mapping. The usage of Java
-generics combined with different types of collection provides a flexible mapping. Java generics allows collection filtering
-based on the type of the collection, it becomes handy when you need to access the a subset of the child nodes filtered with
- a specific node type (make a chapter on genericity).
+Chromattic makes the usage of the JCR node hierarchy very natural thanks to relationship mapping. Chromattic defines
+two mapping styles one-to-many/many-to-one and one-to-one mapping. The one-to-one mapping is useful for accessing
+the particular child of a node, the one-to-many-many-to-one mapping is useful for accessing residual node definitions
+defined by a wildcard (*) name.
+
+== One-to-many/many-to-one hierarchical relationship mapping ==
+
+The usage of Java generics combined with different types of collection provides a flexible mapping. Java generics allows
+collection filtering based on the type of the collection, it becomes handy when you need to access the a subset of the
+child nodes filtered with a specific node type (make a chapter on genericity).
 
 Chromattic provides access to the children of node with a Java collection. A bean annotates a collection valued getter
 with the ##@OneToMany## annotation.
@@ -223,7 +229,7 @@ parent node types. When the various parent types share a common parent class, th
  accessor instead. Ultimately it is possible to use the ##java.lang.Object## type that is implicitely mapped to the
 ##nt:base## node typen, the ##nt:base## node type is the super type of all JCR node types. (todo: make a section about that somewhere else to clarify)
 
-== Adding a child node ==
+=== Adding a child node ===
 
 There are several ways for adding a child and we are going to examine two of them in this section.
 
@@ -248,7 +254,7 @@ In both case, Chromattic will use the name set on the child before it is inserte
 call takes as second argument the name of the future child. This name is stored temporarily on the create child and is used
 when the node is effectively inserted.
 
-== Destroying a node ==
+=== Destroying a node ===
 
 We have explained two ways for adding a child to a parent, we will now see that we can use the same methods to destroy a node
 and its relationship to its parent (indeed in JCR, the only node with no parent is the root node).
@@ -265,13 +271,13 @@ Setting the parent of a Chromattic object to null forces Chromattic to remove th
 {@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testParent() {2}}
 {{/java}}
 
-== Collection types ==
+=== Collection types ===
 
 In our example we have examined the ##ManyToOne## side of the relationship based on a ##java.util.Collection## interface.
 Two other type of mapping are available ##java.util.List## and ##java.util.Map##, let's study what would become our example
 with such mappings.
 
-=== ##java.util.List## mapping ===
+==== ##java.util.List## mapping ====
 
 The list mapping must be only used when the corresponding node type has defined its children to be ordered. The list interface
 adds the notion of order to the collection interface, and using the order oriented method on the list will affect the
@@ -283,7 +289,7 @@ children.add(children.get(0));
 {{/java}}
 {{/example}}
 
-=== ##java.util.Map## mapping ==
+==== ##java.util.Map## mapping ====
 
 The map interface adds the notion of key which is very useful when the children needs to be accessed by their key. Previously
 we have seen that when the child is created from the session, its name has to be specifed. When the map interface is used,
@@ -307,4 +313,25 @@ Page foo = children.get("foo");
 children.remove("foo");
 {{/java}}
 {{/example}}
+
+== One-to-one hierarchical relationship mapping ==
+
+todo
+
+= Mapping reference relationship {{anchor id=reference_relationship_section/}} =
+
+The hierarchical tree structure supported by JCR is the default way to organize data. JCR provides a reference mechanism
+for relationship between nodes, a node has a pointer to target node via a property. The relationship is based on two specific
+property types:
+
+* The ##REFERENCE## property type references a target node using its UUID.
+* The ##PATH## property type references a target node using its path.
+
+The single kind of relationship supported by reference is one-to-many/many-to-one: a node references a target node and
+a node can be the target of multiple nodes. 
+
+{{note}}Technically it should be possible to support many-to-many relationship using a multivalued reference property.
+This feature could be implemented in the future.{{/note}}
+
+
 

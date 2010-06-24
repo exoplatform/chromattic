@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="onetoone_e", uri="onetoone_e")) package org.chromattic.test.onetoone.embedded;
+package org.chromattic.api.annotations;
 
-import org.chromattic.api.annotations.NamespaceMapping;
-import org.chromattic.api.annotations.NodeTypeDefs;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+/**
+ * Maps a prefix
+ *
+ * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
+ * @version $Revision$
+ */
+@Retention(RetentionPolicy.RUNTIME)
+public @interface NamespaceMapping {
+
+  /**
+   * The prefix mapped to the namespace.
+   *
+   * @return the prfix mapping
+   */
+  String prefix();
+
+  /**
+   * The namespace uri mapped to the prefix.
+   *
+   * @return the namespace uri
+   */
+  String uri();
+
+}
