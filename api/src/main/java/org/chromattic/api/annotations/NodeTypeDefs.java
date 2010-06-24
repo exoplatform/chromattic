@@ -25,10 +25,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A package annotation that triggers node type generation for all the Chromattic classes found in the annotated
- * package and the sub packages. The node types are generated in a resource named by default <code>nodetypes.xml</code>
- * in the annotated package. This resource should be available later at runtimpe via the
- * {@link ClassLoader#getResource(String)} mechanism.
+ * <p>A package annotation that triggers node type generation for any Chromattic classes found in the annotated
+ * package. The node types are generated in a resource named by default <code>nodetypes.xml</code> in the annotated
+ * package. This resource should be available later at runtimpe via the {@link ClassLoader#getResource(String)} mechanism.</p>
+ *
+ * <p>Class inclusion can be controlled and extended to sub packages with the {@link #deep()} parameter.</p>
+ *
+ * <p>Namespace can be declared and mapped to qualified name prefix to declare namespacing of the node types. For that
+ * matter the {#namespaces} parameter can be used.</p>
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -45,8 +49,18 @@ public @interface NodeTypeDefs {
    */
   String name() default "nodetypes.xml";
 
+  /**
+   * Controls the inclusion of node types from sub packages of the annotated package.</p>
+   *
+   * @return true if the sub packages should be included
+   */
   boolean deep() default false;
 
+  /**
+   * Defines the set of namespaces mapped in this node type definition declaration.
+   *
+   * @return the namespace mappings
+   */
   NamespaceMapping[] namespaces() default {};
 
 }
