@@ -24,36 +24,30 @@ import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.chromattic.docs.reference.AbstractTestCase;
 import org.chromattic.docs.reference.primarytypemapping.Page;
 import org.chromattic.ext.ntdef.*;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MotivationTestCase extends TestCase {
-
-  /** . */
-  private Chromattic chromattic;
+public class MotivationTestCase extends AbstractTestCase {
 
   @Override
-  protected void setUp() throws Exception {
-    ChromatticBuilder builder = ChromatticBuilder.create();
-    builder.add(NTFile.class);
-    builder.add(NTFolder.class);
-    builder.add(NTHierarchyNode.class);
-    builder.add(NTResource.class);
-    chromattic = builder.build();
+  protected Iterable<Class<?>> classes() {
+    return Arrays.asList(NTFolder.class, NTFile.class, NTHierarchyNode.class, NTResource.class);
   }
 
   public void testFoo() {
 
-    ChromatticSessionImpl session = (ChromatticSessionImpl)chromattic.openSession();
+    ChromatticSessionImpl session = login();
 
     try {
 
@@ -115,5 +109,4 @@ public class MotivationTestCase extends TestCase {
       }
     }
   }
-
 }

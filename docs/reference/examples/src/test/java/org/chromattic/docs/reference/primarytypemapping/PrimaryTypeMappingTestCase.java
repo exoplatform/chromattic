@@ -19,33 +19,25 @@
 
 package org.chromattic.docs.reference.primarytypemapping;
 
-import junit.framework.TestCase;
-import org.chromattic.api.Chromattic;
-import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.docs.reference.AbstractTestCase;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PrimaryTypeMappingTestCase extends TestCase {
-
-  /** . */
-  private Chromattic chromattic;
+public class PrimaryTypeMappingTestCase extends AbstractTestCase {
 
   @Override
-  protected void setUp() throws Exception {
-    ChromatticBuilder builder = ChromatticBuilder.create();
-    builder.add(WebSite.class);
-    builder.add(Page.class);
-    builder.add(Content.class);
-    chromattic = builder.build();
+  protected Iterable<Class<?>> classes() {
+    return Arrays.asList(WebSite.class, Page.class, Content.class);
   }
 
   public void testChildrenCollection() {
-    ChromatticSession session = chromattic.openSession();
+    ChromatticSession session = login();
     Page page = session.insert(Page.class, "foo");
 
     // -1-
@@ -60,7 +52,7 @@ public class PrimaryTypeMappingTestCase extends TestCase {
   }
 
   public void testParent() {
-    ChromatticSession session = chromattic.openSession();
+    ChromatticSession session = login();
     Page page = session.insert(Page.class, "foo1");
 
     // -1-
@@ -71,5 +63,32 @@ public class PrimaryTypeMappingTestCase extends TestCase {
     // -2-
     child.setParent(null); // <> Setting the parent to null destroys the child
     assertFalse(page.getChildren().contains(child)); // <> And the parent does not contain the child anymore
+  }
+
+  public void testOneToOne() {
+    ChromatticSession session = login();
+    WebSite site = session.insert(WebSite.class, "site");
+
+    // -1-
+    Page root = session.create(Page.class); // <> Create the transient page object
+    site.setRootPage(root); // <> The page becomes persistent and the //root// node is inserted under the //site// node
+    assertEquals(site, root.getSite()); // <> The parent of the root page is the site object
+    session.save();
+
+    // -2-
+    site.setRootPage(null); // <> Setting the root page to null destroys the relationship
+  }
+
+  public void testOneToManyReference() {
+    ChromatticSession session = login();
+    WebSite site = session.insert(WebSite.class, "site");
+    Content content1 = session.create(Content.class, "1");
+    Content content2 = session.create(Content.class, "2");
+    site.getContents().add(content1);
+    Page root = session.create(Page.class);
+    site.setRootPage(root);
+
+    //
+    root.setContent(content1);
   }
 }

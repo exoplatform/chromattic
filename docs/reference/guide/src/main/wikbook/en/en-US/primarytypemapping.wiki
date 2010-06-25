@@ -316,7 +316,13 @@ children.remove("foo");
 
 == One-to-one hierarchical relationship mapping ==
 
-todo
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testOneToOne() {1}}
+{{/java}}
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testOneToOne() {2}}
+{{/java}}
 
 = Mapping reference relationship {{anchor id=reference_relationship_section/}} =
 

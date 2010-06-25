@@ -19,11 +19,13 @@
 
 package org.chromattic.docs.reference.primarytypemapping;
 
-import org.chromattic.api.annotations.AutoCreated;
 import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
+
+import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -34,8 +36,12 @@ public abstract class WebSite {
   
   @Owner
   @OneToOne
-  @AutoCreated
   @MappedBy("root")
   public abstract Page getRootPage();
+
+  public abstract void setRootPage(Page root);
+
+  @OneToMany
+  public abstract Collection<Content> getContents();
 
 }

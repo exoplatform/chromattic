@@ -63,6 +63,15 @@ public abstract class Page {
   public abstract void setParent(Page page);
 
   /**
+   * Returns the parent site.
+   *
+   * @return the parent site
+   */
+  @OneToOne
+  @MappedBy("root")
+  public abstract WebSite getSite();
+
+  /**
    * Returns the content associated to this page.
    *
    * @return the content
@@ -70,4 +79,6 @@ public abstract class Page {
   @ManyToOne(type = RelationshipType.REFERENCE)
   @MappedBy("content")
   public abstract Content getContent();
+
+  public abstract void setContent(Content content);
 }
