@@ -80,5 +80,10 @@ public abstract class Page {
   @MappedBy("content")
   public abstract Content getContent();
 
+  /**
+   * Set thet content on this page
+   *
+   * @param content the content
+   */
   public abstract void setContent(Content content);
 }

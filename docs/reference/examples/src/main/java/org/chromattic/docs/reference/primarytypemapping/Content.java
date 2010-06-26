@@ -101,5 +101,5 @@ public abstract class Content {
    */
   @OneToMany(type = RelationshipType.REFERENCE)
   @MappedBy("content")
-  public abstract Collection<Page> getPages();
+  public abstract Collection<Page> getPages(); 
 }

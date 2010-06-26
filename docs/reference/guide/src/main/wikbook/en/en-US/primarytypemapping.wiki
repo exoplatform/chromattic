@@ -344,5 +344,38 @@ This feature could be implemented in the future.{{/note}}
 Mapping single valued reference properties to Chromattic relationship relationship relies on Java collections, in a similar
  manner hierarchical [[one-to-many/many-to-one relationship>>#hierarchical_onetomany_section]] does.
 
+The ##@OneToMany## and ##@ManyToOne## annotations declares the relationship, however as it is not a hierarchical parent child
+relationship, the type of the annotation must be set to ##RelatonshipType.REFERENCE##.
 
+The ##Page## object has a reference to a ##Content## object. The ##@ManyToOne(type = RelationshipType.REFERENCE)##
+annotation on the   //content// property of ##Page## object declares the relationship from the ##Page## side.
 
+{{example}}
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getContent()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getContent()}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#setContent(org.chromattic.docs.reference.primarytypemapping.Content)}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#setContent(org.chromattic.docs.reference.primarytypemapping.Content)}
+{{/java}}
+{{/example}}
+
+Conversely the ##Content## object owns a collection of ##Page## objects, each of those having a reference pointing to this object.
+The ###OneToMany(type = RelationshipType.REFERENCE)## annotation on the //pages// property declares the relationship from the
+##Content## side. Unlike the [[one-to-many>>#hierarchical_onetomany_section]] relationship, the only possible type of collection
+is the ##java.util.Collection## interface because there isn't any notion of order, not name in such relationship.
+
+{{example}}
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#getPages()}
+{@include org.chromattic.docs.reference.primarytypemapping.Content#getPages()}
+{{/java}}
+{{/example}}
+
+Again here, the relationship between two objects is established when a ##Page## object is added to the pages collection of a
+##Content## object or when a ##Content## object is set by invoking the ##setContent(Content content)## method on the ##Page##
+object.
+
+== One-to-many/many-to-one path relationship mapping ==
+
+/todo
