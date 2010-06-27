@@ -3,5 +3,11 @@
 = Getting started with Chromattic =
 {{include document=gettingstarted.wiki/}}
 
-= Primary type mapping =
-{{include document=primarytypemapping.wiki/}}
+= Type mapping =
+{{include document=typemapping.wiki/}}
+
+= Hierarchical mapping =
+{{include document=hierarchicalmapping.wiki/}}
+
+= Reference mapping {{anchor id=reference_relationship_section/}} =
+{{include document=referencemapping.wiki/}}

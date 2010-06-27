@@ -1,0 +1,179 @@
+Chromattic establishes a correspondance between a Java class and a JCR node type. In most case there is a trivial mapping
+between a Java class and a JCR node type, however both models are not the same. Chromattic offers solutions for mapping
+JCR concepts like mixin and multiple type inheritance which are not native to the Java language.
+
+= Primary type mapping =
+
+The ##org.chromattic.api.annotations.PrimaryType## annotation creates a unique correspondance between a Java class and
+JCR primary node type. The mapping between an annotated class and the primary type must be unique for the JCR node type,
+therefore it is not possible to have the same node type mapped to more than one class inside the same Chromattic application.
+
+= Property mapping =
+
+== Property type mapping ==
+
+JCR defines the following set of property types:
+
+* The ##STRING## type
+* The ##BOOLEAN## type
+* The ##LONG## type
+* The ##DOUBLE## type
+* The ##DATE## type
+* The ##NAME## type
+* The ##BINARY## type
+* The ##PATH## type
+* The ##REFERENCE## type
+
+Any of those types except the ##REFERENCE## type can be mapped to an object property.
+
+##REFERENCE## types can be used, however this type is not mapped to a specific Java type, instead
+Chromattic supports it thanks to the concept of relationship that will be explained in the [[#reference_relationship_section]].
+
+=== Generic data types ===
+
+JCR provides two types to map generic data types:
+
+* The JCR ##STRING## type is mapped to the Java ##java.lang.String## type.
+* The JCR ##BINARY## type is mapped to the Java ##byte[]## type or the  ##java.io.InputStream## type.
+
+The string type is pretty straightforward to use, you simplet get or set the string that is mapped to the JCR property.
+
+
+The binary type can be used in two different manners, the first one maps the ##BINARY## type to a byte array. This mapping
+style is similar to the string mapping except that a byte array is not immutable. The client has the opportunity to alter the
+array as Chromattic cannot prevent it to be modified. This mapping style is very straightforward too but has the inconvenient
+to load the whole stream into memory which is not always desirable for very large streams.
+
+The other manner maps the ##BINARY## type to an ##java.io.InputStream##. This behavior is actually the JCR native behavior and
+Chromattic provides it as well, as it has the benefit to use an input stream to read and write binary data which is efficient
+for large binary content. This approach does not force to hold all the data in memory, unlike the byte array approach. However
+it requires a little extra work from the developer to use the input stream carefully.
+
+To read the data, the property getter returns an input stream that provides access to the binary data. The stream should be
+used as any other kind of input stream: consume data until the stream is empty and then close the stream in a finally block.
+The stream must be used corrected, otherwise the entire content could be loaded in memory and that would defeat the
+purpose of the stream based approach.
+
+To write data, the property setter must be called with an input stream that is used to consume all
+the data available. It means that on the return of the setter, the input stream shouldn't be used anymore for reading
+data as Chromattic will close the stream. Again here, the stream must be used carefully.
+
+=== Primitive types ===
+
+The types ##BOOLEAN##, ##LONG## and ##DOUBLE## are mapped to Java primitive types:
+
+* The JCR ##BOOLEAN## type is mapped to the Java ##boolean## type
+* The JCR ##LONG## type is mapped to either the Java ##int## or ##long## type
+* The JCR ##DOUBLE## type is mapped to either the Java ##double## or ##float## type
+
+For each of those types, there is the choice between either the Java primitive type or the Java wrapper type.
+
+=== Temporal type ===
+
+JCR defines a ##DATE## type that represents a date. Chromattic provides three different mappings for this type:
+
+1. Java date objects
+11. ##java.util.Calendar## mapping, the same type exposed by the native JCR API.
+11. ##java.util.Date## mapping
+1. ##java.lang.Long## or ##long## mapping exposing the value returned by ##Calendar#getTimeMillis()##
+
+Date objects objects are mutable by nature and Chromattic clones them when it is necessary to preserve the data.
+A date object returned by Chromattic can be modified without changing mapped JCR value, likewise a property update will
+read the value once and copy it.
+
+== Simple property mapping ==
+
+The ##org.chromattic.api.annotations.Property## annotation binds an object to a node property. Our
+##Page## shows several examples of property mapping using the ##@Property## annotation.
+This annotation has a mandatory ##name## parameter to provide the name of the corresponding JCR
+property.
+
+{{java}}
+{@include org.chromattic.api.annotations.Property}
+{{/java}}
+
+The ##Property## annotation can either annotate the getter or annotate the setter but it should be used
+only once with read/write accessible properties.
+
+=== Single valued property mapping ==
+
+The most common mapping style between a single valued class and a node property. The object property must
+provide at least a setter method or a getter method, probably both in most use cases, those methods must
+use the same java property type.
+
+A property getter method returns the JCR property value. If the property does not exist, the null value is returned
+when the java property type is not a primitive type. Sometimes it can happen that the JCR property does not exist
+but this property is mapped to a primitive type. When the situation occurs Chromattic throws a ##NullPointerException##,
+that behavior is similar to what happens when a null value is unboxed to its corresponding primitive type.
+
+A property setter method updates the JCR property value when it is invoked. For non primitive type it is possible to
+delete the property by providing a null argument.
+
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#getTitle()}
+{@include org.chromattic.docs.reference.primarytypemapping.Content#getTitle()} // <1> The title property is mapped the ##STRING## type
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#setTitle(java.lang.String)}
+{@include org.chromattic.docs.reference.primarytypemapping.Content#setTitle(java.lang.String)}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#getLastModifiedDate()}
+{@include org.chromattic.docs.reference.primarytypemapping.Content#getLastModifiedDate()} // <2> the last modified date property is mapped to the ##DATE## type
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#setLastModifiedDate(java.util.Date)}
+{@include org.chromattic.docs.reference.primarytypemapping.Content#setLastModifiedDate(java.util.Date)}
+{{/java}}
+
+The corresponding JCR node defines a title property and lastModifiedDate property:
+
+{{xml indent=2}}
+<propertyDefinition name="title" requiredType="STRING" autoCreated="false" mandatory="false" onParentVersion="COPY"
+protected="false" multiple="false">
+  <valueConstraints />
+</propertyDefinition>
+<propertyDefinition name="lastmodifieddate" requiredType="DATE" autoCreated="false" mandatory="false" onParentVersion="COPY"
+protected="false" multiple="false">
+  <valueConstraints />
+</propertyDefinition>
+{{/xml}}
+
+=== Multi valued property mapping ==
+
+JCR naturally provide support for multi valued properties, so does Chromattic. Chromattic gives you the choice
+to use either an array or a ##java.util.List## to access the data. A primitive array can be used when
+the type is a primitive type.
+
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getTags()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getTags()} // <> the tags property is mapped to a multi valued ##STRING## type
+{{/java}}
+
+The corresponding JCR node defines a tags properties:
+
+{{xml indent=2}}
+<propertyDefinition name="title" requiredType="STRING" autoCreated="false" mandatory="false" onParentVersion="COPY"
+protected="false" multiple="true">
+  <valueConstraints />
+</propertyDefinition>
+{{/xml}}
+
+When a list of values is returned by a getter method, any modification to this list is only visible to this list and
+does not affect the JCR property values. When the JCR property does not exist, a null value is returned to the caller.
+
+To update the values of a JCR property, the property setter has to be invoked. The list of values is read once and
+copied to the corresponding JCR property. If the list is null, it simply delete the property.
+
+=== Mixing multi value and single value styles ==
+
+It can be convenient to map a single valued property to a multi valued property. For instance a multi valued JCR
+ property exposed as a single valued property provides access to the first value of the values.
+
+|=                 |=JCR single valued|=JCR multi valued
+|Java single valued| trivial mapping  |access the first element
+|Java multi valued | a list of size 1 |trivial mapping
+
+The same multi valued JCR property can be exposed both as a single and multi valued property. The multi valued property
+gives access to the complete list of values and the single valued property is useful when the first value needs to be
+accessed.
+
+= Overview of other mapping styles =
+

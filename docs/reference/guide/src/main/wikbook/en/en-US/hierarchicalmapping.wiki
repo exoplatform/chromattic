@@ -1,0 +1,184 @@
+Chromattic makes the usage of the JCR node hierarchy very natural thanks to relationship mapping. Chromattic defines
+two mapping styles one-to-many/many-to-one and one-to-one mapping. The one-to-one mapping is useful for accessing
+the particular child of a node, the one-to-many-many-to-one mapping is useful for accessing residual node definitions
+defined by a wildcard (*) name.
+
+= One-to-many/many-to-one hierarchical relationship mapping {{anchor id=hierarchical_onetomany_section/}} =
+
+The usage of Java generics combined with different types of collection provides a flexible mapping. Java generics allows
+collection filtering based on the type of the collection, it becomes handy when you need to access the a subset of the
+child nodes filtered with a specific node type (make a chapter on genericity).
+
+Chromattic provides access to the children of node with a Java collection. A bean annotates a collection valued getter
+with the ##@OneToMany## annotation.
+
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getChildren()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getChildren()}
+{{/java}}
+
+The getter method never returns a null value as a node always provides a set of children even if this set is empty. Unlike for
+multi valued property collection, any modification to this collection will be reflected directly by the underlying JCR node
+children and vice versa:
+
+* The ##add(Page page)## adds a page
+* The ##remove(Object o)## removes a page
+* The ##clear()## removes all the page children
+* The ##iterator()## returns an ##iterator## that can be used to remove any child
+
+The other collection methods of the collection class are read methods that won't modify the children and provides various ways
+to deal with the children.
+
+The ##Page## object also provides to its parent with a property annotated with the ##ManyToOne## annotation. The getter
+ method returns the object associated to the parent node.
+
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getParent()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getParent()}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#setParent(org.chromattic.docs.reference.primarytypemapping.Page)}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#setParent(org.chromattic.docs.reference.primarytypemapping.Page)}
+{{/java}}
+
+ A null value can be obtained in two particular situations:
+
+1. When an object is associated to the root node, indeed the root node is the only node without a parent
+1. When an object has a parent of a JCR node type that is not mapped to the Chromattic object returned the getter
+
+It is legal for an object to have several parent accessors when the corresponding JCR node type can have different
+parent node types. When the various parent types share a common parent class, this class can be used to have a single
+ accessor instead. Ultimately it is possible to use the ##java.lang.Object## type that is implicitely mapped to the
+##nt:base## node typen, the ##nt:base## node type is the super type of all JCR node types. (todo: make a section about that somewhere else to clarify)
+
+== Adding a child node ==
+
+There are several ways for adding a child and we are going to examine two of them in this section.
+
+The first way to add a child is to use the collection returned by the parent object. As said earlier, any modification to the
+collection is directly reflected into the corresponding JCR node.
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testChildrenCollection() {1}}
+{{/java}}
+
+The second way is to use to add a child is to use the parent setter.
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testParent() {1}}
+{{/java}}
+
+Setting the parent to the child has the same effect than adding the child to the collection. Indeed we can notice in both
+examples that the when one style is used, we get the same result: the parent getter returns the parent object and the children
+collection contains the child.
+
+In both case, Chromattic will use the name set on the child before it is inserted in its parent. The session ##create## method
+call takes as second argument the name of the future child. This name is stored temporarily on the create child and is used
+when the node is effectively inserted.
+
+== Destroying a node ==
+
+We have explained two ways for adding a child to a parent, we will now see that we can use the same methods to destroy a node
+and its relationship to its parent (indeed in JCR, the only node with no parent is the root node).
+
+When a child is removed from its parent collection, it is removed.
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testChildrenCollection() {2}}
+{{/java}}
+
+Setting the parent of a Chromattic object to null forces Chromattic to remove the object and the associated node.
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testParent() {2}}
+{{/java}}
+
+== Collection types ==
+
+In our example we have examined the ##ManyToOne## side of the relationship based on a ##java.util.Collection## interface.
+Two other type of mapping are available ##java.util.List## and ##java.util.Map##, let's study what would become our example
+with such mappings.
+
+=== ##java.util.List## mapping ===
+
+The list mapping must be only used when the corresponding node type has defined its children to be ordered. The list interface
+adds the notion of order to the collection interface, and using the order oriented method on the list will affect the
+order of the children.
+
+{{example title="Moving a child from the first position to the last position"}}
+{{java}}
+children.add(children.get(0));
+{{/java}}
+{{/example}}
+
+=== ##java.util.Map## mapping ===
+
+The map interface adds the notion of key which is very useful when the children needs to be accessed by their key. Previously
+we have seen that when the child is created from the session, its name has to be specifed. When the map interface is used,
+this is not necessary anymore, as the child name is specified when it is inserted with the ##put(String key, Page value)## operation.
+
+{{example title="Child insertion"}}
+{{java}}
+Page page = session.create(Page.class);
+children.put("foo", page);
+{{/java}}
+{{/example}}
+
+{{example title="Obtaining a particular child"}}
+{{java}}
+Page foo = children.get("foo");
+{{/java}}
+{{/example}}
+
+{{example title="Child removal"}}
+{{java}}
+children.remove("foo");
+{{/java}}
+{{/example}}
+
+= One-to-one hierarchical relationship mapping =
+
+In the [[#hierarchical_onetomany_section]] we explained how to map a node and a its children. One to one hierarchical mapping
+is about mapping a node and one of its named children thanks to a one-to-one relationship. The most important difference between
+the two mapping styles is that a one-to-one relationship acts on a precise child defined by its name.
+
+In our example, this type of relationship is used to model the relationship between a website and the root of the page
+hierarchy of this website. The ##WebSite## object is mapped to the //website// node and this node has a child named //rootpage//.
+The one-to-one relationship between ##WebSite## objects and ##Page## objects is precisely defined for the //rootpage// child
+of the //website// node.
+
+Mapping one-to-many/many-to-one hierarchical relationship was only requiring the ##@OneToMany## and ##@ManyToOne## annotations.
+One-to-one relationship mapping requires two additional annotations:
+
+* The ##@Owner## annotation makes the distinction between the parent and the child of the relationship. The parent object
+ must be annotated with the ##@Owner## annotation and the child not.
+* The ##@MappedBy## annotation provides the name of the node by which the relationship is maintained. It contains a single
+parameter the is the name of the child.
+
+{{example title="The rootPage property"}}
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.WebSite#getRootPage()}
+{@include org.chromattic.docs.reference.primarytypemapping.WebSite#getRootPage()}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.WebSite#setRootPage(org.chromattic.docs.reference.primarytypemapping.Page)}
+{@include org.chromattic.docs.reference.primarytypemapping.WebSite#setRootPage(org.chromattic.docs.reference.primarytypemapping.Page)}
+{{/java}}
+{{/example}}
+
+{{example title="The site property"}}
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getSite()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getSite()}
+{{/java}}
+{{/example}}
+
+/todo explain the dynamic of relationship life cycle
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testOneToOne() {1}}
+{{/java}}
+
+{{java}}
+{@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testOneToOne() {2}}
+{{/java}}
+
+
