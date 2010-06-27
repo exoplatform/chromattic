@@ -31,7 +31,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "website")
+@PrimaryType(name = "ptm:website")
 public abstract class WebSite {
 
   /**
