@@ -33,12 +33,22 @@ import java.util.Collection;
  */
 @PrimaryType(name = "website")
 public abstract class WebSite {
-  
+
+  /**
+   * Returns the root page of the website.
+   *
+   * @return the root page
+   */
   @Owner
   @OneToOne
   @MappedBy("root")
   public abstract Page getRootPage();
 
+  /**
+   * Sets the root page of the website.
+   *
+   * @param root the root page
+   */
   public abstract void setRootPage(Page root);
 
   @OneToMany

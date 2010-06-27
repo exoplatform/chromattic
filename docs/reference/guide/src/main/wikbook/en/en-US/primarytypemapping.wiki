@@ -316,6 +316,42 @@ children.remove("foo");
 
 == One-to-one hierarchical relationship mapping ==
 
+In the [[#hierarchical_onetomany_section]] we explained how to map a node and a its children. One to one hierarchical mapping
+is about mapping a node and one of its named children thanks to a one-to-one relationship. The most important difference between
+the two mapping styles is that a one-to-one relationship acts on a precise child defined by its name.
+
+In our example, this type of relationship is used to model the relationship between a website and the root of the page
+hierarchy of this website. The ##WebSite## object is mapped to the //website// node and this node has a child named //rootpage//.
+The one-to-one relationship between ##WebSite## objects and ##Page## objects is precisely defined for the //rootpage// child
+of the //website// node.
+
+Mapping one-to-many/many-to-one hierarchical relationship was only requiring the ##@OneToMany## and ##@ManyToOne## annotations.
+One-to-one relationship mapping requires two additional annotations:
+
+* The ##@Owner## annotation makes the distinction between the parent and the child of the relationship. The parent object
+ must be annotated with the ##@Owner## annotation and the child not.
+* The ##@MappedBy## annotation provides the name of the node by which the relationship is maintained. It contains a single
+parameter the is the name of the child.
+
+{{example title="The rootPage property"}}
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.WebSite#getRootPage()}
+{@include org.chromattic.docs.reference.primarytypemapping.WebSite#getRootPage()}
+
+{@javadoc org.chromattic.docs.reference.primarytypemapping.WebSite#setRootPage(org.chromattic.docs.reference.primarytypemapping.Page)}
+{@include org.chromattic.docs.reference.primarytypemapping.WebSite#setRootPage(org.chromattic.docs.reference.primarytypemapping.Page)}
+{{/java}}
+{{/example}}
+
+{{example title="The site property"}}
+{{java}}
+{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getSite()}
+{@include org.chromattic.docs.reference.primarytypemapping.Page#getSite()}
+{{/java}}
+{{/example}}
+
+/todo explain the dynamic of relationship life cycle
+
 {{java}}
 {@include org.chromattic.docs.reference.primarytypemapping.PrimaryTypeMappingTestCase#testOneToOne() {1}}
 {{/java}}
