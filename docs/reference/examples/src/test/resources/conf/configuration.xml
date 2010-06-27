@@ -35,7 +35,7 @@
           <name>autoCreatedInNewRepository</name>
           <description>Node types configuration file</description>
           <value>jar:/org/chromattic/docs/reference/gettingstarted/nodetypes.xml</value>
-          <value>jar:/org/chromattic/docs/reference/primarytypemapping/nodetypes.xml</value>
+          <value>jar:/org/chromattic/docs/reference/website/nodetypes.xml</value>
         </values-param>
       </init-params>
     </component-plugin>
@@ -46,9 +46,8 @@
       <init-params>
         <properties-param>
           <name>namespaces</name>
-         <property name="gs" value="http://www.chromattic.org/examples/gettingstarted/1.1/"/>
-          <property name="ptm" value="http://www.gatein.org/examples/primarytypemapping/1.1/"/>
-          </properties-param>
+          <property name="gs" value="http://www.chromattic.org/examples/gettingstarted/1.1/"/>
+        </properties-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>

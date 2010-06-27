@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.docs.reference.primarytypemapping;
+package org.chromattic.docs.reference.website;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.docs.reference.AbstractTestCase;
@@ -29,7 +29,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PrimaryTypeMappingTestCase extends AbstractTestCase {
+public class HierarchicalMappingTestCase extends AbstractTestCase {
 
   @Override
   protected Iterable<Class<?>> classes() {
@@ -77,18 +77,5 @@ public class PrimaryTypeMappingTestCase extends AbstractTestCase {
 
     // -2-
     site.setRootPage(null); // <> Setting the root page to null destroys the relationship
-  }
-
-  public void testOneToManyReference() {
-    ChromatticSession session = login();
-    WebSite site = session.insert(WebSite.class, "site");
-    Content content1 = session.create(Content.class, "1");
-    Content content2 = session.create(Content.class, "2");
-    site.getContents().add(content1);
-    Page root = session.create(Page.class);
-    site.setRootPage(root);
-
-    //
-    root.setContent(content1);
   }
 }

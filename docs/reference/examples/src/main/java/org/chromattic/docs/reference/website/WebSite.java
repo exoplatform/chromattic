@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.docs.reference.primarytypemapping;
+package org.chromattic.docs.reference.website;
 
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToMany;
@@ -31,7 +31,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "ptm:website")
+@PrimaryType(name = "website")
 public abstract class WebSite {
 
   /**

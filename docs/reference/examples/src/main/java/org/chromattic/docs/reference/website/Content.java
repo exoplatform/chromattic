@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.docs.reference.primarytypemapping;
+package org.chromattic.docs.reference.website;
 
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.MappedBy;
@@ -33,7 +33,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "ptm:content")
+@PrimaryType(name = "content")
 public abstract class Content {
 
   /**

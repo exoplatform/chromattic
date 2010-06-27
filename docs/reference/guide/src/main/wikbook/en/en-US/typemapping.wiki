@@ -110,17 +110,17 @@ A property setter method updates the JCR property value when it is invoked. For 
 delete the property by providing a null argument.
 
 {{java}}
-{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#getTitle()}
-{@include org.chromattic.docs.reference.primarytypemapping.Content#getTitle()} // <1> The title property is mapped the ##STRING## type
+{@javadoc org.chromattic.docs.reference.website.Content#getTitle()}
+{@include org.chromattic.docs.reference.website.Content#getTitle()} // <1> The title property is mapped the ##STRING## type
 
-{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#setTitle(java.lang.String)}
-{@include org.chromattic.docs.reference.primarytypemapping.Content#setTitle(java.lang.String)}
+{@javadoc org.chromattic.docs.reference.website.Content#setTitle(java.lang.String)}
+{@include org.chromattic.docs.reference.website.Content#setTitle(java.lang.String)}
 
-{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#getLastModifiedDate()}
-{@include org.chromattic.docs.reference.primarytypemapping.Content#getLastModifiedDate()} // <2> the last modified date property is mapped to the ##DATE## type
+{@javadoc org.chromattic.docs.reference.website.Content#getLastModifiedDate()}
+{@include org.chromattic.docs.reference.website.Content#getLastModifiedDate()} // <2> the last modified date property is mapped to the ##DATE## type
 
-{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#setLastModifiedDate(java.util.Date)}
-{@include org.chromattic.docs.reference.primarytypemapping.Content#setLastModifiedDate(java.util.Date)}
+{@javadoc org.chromattic.docs.reference.website.Content#setLastModifiedDate(java.util.Date)}
+{@include org.chromattic.docs.reference.website.Content#setLastModifiedDate(java.util.Date)}
 {{/java}}
 
 The corresponding JCR node defines a title property and lastModifiedDate property:
@@ -143,8 +143,8 @@ to use either an array or a ##java.util.List## to access the data. A primitive a
 the type is a primitive type.
 
 {{java}}
-{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getTags()}
-{@include org.chromattic.docs.reference.primarytypemapping.Page#getTags()} // <> the tags property is mapped to a multi valued ##STRING## type
+{@javadoc org.chromattic.docs.reference.website.Page#getTags()}
+{@include org.chromattic.docs.reference.website.Page#getTags()} // <> the tags property is mapped to a multi valued ##STRING## type
 {{/java}}
 
 The corresponding JCR node defines a tags properties:

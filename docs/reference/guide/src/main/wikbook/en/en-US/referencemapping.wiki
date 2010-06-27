@@ -24,11 +24,11 @@ annotation on the   //content// property of ##Page## object declares the relatio
 
 {{example}}
 {{java}}
-{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#getContent()}
-{@include org.chromattic.docs.reference.primarytypemapping.Page#getContent()}
+{@javadoc org.chromattic.docs.reference.website.Page#getContent()}
+{@include org.chromattic.docs.reference.website.Page#getContent()}
 
-{@javadoc org.chromattic.docs.reference.primarytypemapping.Page#setContent(org.chromattic.docs.reference.primarytypemapping.Content)}
-{@include org.chromattic.docs.reference.primarytypemapping.Page#setContent(org.chromattic.docs.reference.primarytypemapping.Content)}
+{@javadoc org.chromattic.docs.reference.website.Page#setContent(org.chromattic.docs.reference.website.Content)}
+{@include org.chromattic.docs.reference.website.Page#setContent(org.chromattic.docs.reference.website.Content)}
 {{/java}}
 {{/example}}
 
@@ -39,8 +39,8 @@ is the ##java.util.Collection## interface because there isn't any notion of orde
 
 {{example}}
 {{java}}
-{@javadoc org.chromattic.docs.reference.primarytypemapping.Content#getPages()}
-{@include org.chromattic.docs.reference.primarytypemapping.Content#getPages()}
+{@javadoc org.chromattic.docs.reference.website.Content#getPages()}
+{@include org.chromattic.docs.reference.website.Content#getPages()}
 {{/java}}
 {{/example}}
 

@@ -19,20 +19,14 @@
 
 package org.chromattic.docs.reference.motivation;
 
-import junit.framework.TestCase;
-import org.chromattic.api.Chromattic;
-import org.chromattic.api.ChromatticBuilder;
-import org.chromattic.api.ChromatticSession;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.docs.reference.AbstractTestCase;
-import org.chromattic.docs.reference.primarytypemapping.Page;
 import org.chromattic.ext.ntdef.*;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import java.util.Arrays;
-import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
