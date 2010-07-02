@@ -1,5 +1,6 @@
 <bookinfo>
-  <title>Chromattic Reference Guide</title>
+  <title>Chromattic</title>
+  <subtitle>Chromattic Reference Guide</subtitle>
   <edition>1.0</edition>
   <pubsnumber>1</pubsnumber>
   <productname>Chromattic</productname>
@@ -12,11 +13,17 @@
     <author>
       <firstname>Julien</firstname>
       <surname>Viet</surname>
-    </author>
-    <editor>
       <affiliation>
         <shortaffil>eXo Platform</shortaffil>
       </affiliation>
-    </editor>
+    </author>
   </authorgroup>
+  <mediaobject>
+    <imageobject role="fo">
+      <imagedata align="center" fileref="images/chromattic.png" format="PNG" width="6in"/>
+    </imageobject>
+    <imageobject role="html">
+      <imagedata align="center" fileref="images/chromattic.png" format="PNG" scale="6in"/>
+    </imageobject>
+  </mediaobject>
 </bookinfo>

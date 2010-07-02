@@ -126,14 +126,9 @@ delete the property by providing a null argument.
 The corresponding JCR node defines a title property and lastModifiedDate property:
 
 {{xml indent=2}}
-<propertyDefinition name="title" requiredType="STRING" autoCreated="false" mandatory="false" onParentVersion="COPY"
-protected="false" multiple="false">
-  <valueConstraints />
-</propertyDefinition>
-<propertyDefinition name="lastmodifieddate" requiredType="DATE" autoCreated="false" mandatory="false" onParentVersion="COPY"
-protected="false" multiple="false">
-  <valueConstraints />
-</propertyDefinition>
+<wikbook:include
+  href="/org/chromattic/docs/reference/website/nodetypes.xml"
+  xpath="//nodeType[@name='content']//propertyDefinition[@name='title' or @name='lastmodifieddate']"/>
 {{/xml}}
 
 === Multi valued property mapping ==
@@ -143,17 +138,16 @@ to use either an array or a ##java.util.List## to access the data. A primitive a
 the type is a primitive type.
 
 {{java}}
-{@javadoc org.chromattic.docs.reference.website.Page#getTags()}
-{@include org.chromattic.docs.reference.website.Page#getTags()} // <> the tags property is mapped to a multi valued ##STRING## type
+{@javadoc org.chromattic.docs.reference.website.Content#getTags()}
+{@include org.chromattic.docs.reference.website.Content#getTags()} // <> the tags property is mapped to a multi valued ##STRING## type
 {{/java}}
 
 The corresponding JCR node defines a tags properties:
 
 {{xml indent=2}}
-<propertyDefinition name="title" requiredType="STRING" autoCreated="false" mandatory="false" onParentVersion="COPY"
-protected="false" multiple="true">
-  <valueConstraints />
-</propertyDefinition>
+<wikbook:include
+  href="/org/chromattic/docs/reference/website/nodetypes.xml"
+  xpath="//nodeType[@name='content']//propertyDefinition[@name='tags']"/>
 {{/xml}}
 
 When a list of values is returned by a getter method, any modification to this list is only visible to this list and
