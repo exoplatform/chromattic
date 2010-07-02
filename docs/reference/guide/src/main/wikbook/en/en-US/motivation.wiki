@@ -2,13 +2,13 @@ Chromattic development started during July 2009 when I had to develop a rich mod
 that was persisted in a JCR repository. The development started with the prototyping of the model as a set of Java
 interfaces, just bare interfaces plus a set of value objects. Once I was satisfied with the initial model, I decided
 it was time to write the JCR persistence implementation and quickly I realized that I would not be able to achieve it
-without investing a lot of time in writing very error prone code.
+without the help of a tool.
 
 Obviously the idea of using a mapping framework stroke me and I fell in the Not Invented Here syndrom for some reason.
 
-If you are reading this chapter it's probably because you are not yet convinced that Chromattic can do something for
-you (if you are convinced, read the chapter so you can convince other persons) and //some reason// is probably not
-enough to convince you.
+If you are reading this chapter it's probably because you are not yet convinced that Chromattic can do something useful for
+you (if you are already convinced, read this chapter anyway so you can convince other persons) and //some reason// is probably
+not enough to convince you.
 
 JCR defines a set of base node types for modelling a file system and that's a perfect example to use:
 
@@ -43,21 +43,14 @@ to invoke the ##list## method.
 * The ##instanceof## operator is what a Java developer uses when he wants to determine the type of an object. The JCR
 version performs the same operation but there is more work to do.
 
-The second benefit of Chromattic is productivity: modern IDEs provide an impressive set of tools that gives much power
-to the developer, Chromattic type safe and object oriented nature fits perfectly here:
+The second benefit is object oriented programming: each node turns into a Chromattic object, and on that
+object you can add any method you need to. This is just what we use in this example with the ##getContentResource()##
+method on the ##NTFile## object.
+
+The third benefit is productivity: modern IDEs provide an impressive set of tools that gives a lot of power
+to the developer, Chromattic type safe and object oriented nature is a perfect fit:
 
 * A Chromattic object is a Java object and the IDE is able to perform code completion.
 * Refactoring is a commodity offered by any IDE that can be leveraged on a Chromattic model.
-
-The third benefit of Chromattic is to hide the quircks of the native JCR API. This benefit is probably very subjective as
-one developer may feel very comfortable with the JCR API. The biased truth is that ** I ** am not:
-
-* Any operation provided by the JCR native API throws a checked ##RepositoryException##. Checked versus non
-checked exception is a great Java debate, I don't have a good answer for it. I feel comfortable with both, because
-I think that if it used correctly, it gives good results. In the case of JCR, I don't think it was a good idea, as
-it force the control flow of the application that has to either rethrow it and deal with it.
-* I would define a good API as an intuitive API, specially when it comes of the part of the API that are the most used.
-For instance in the former example, the obtention of a node property uses three operations (##hasProperty##, ##getProperty## and ##getString##)
-where it could use just one.
 
 There are many other reasons left to use Chromattic, let's discover them in this guide. 
