@@ -34,6 +34,6 @@ import java.lang.annotation.ElementType;
  * @version $Revision$
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.FIELD})
 public @interface Properties {
 }
