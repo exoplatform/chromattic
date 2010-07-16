@@ -32,25 +32,29 @@ import java.util.Map;
  */
 public class MappingTestCase extends AbstractMappingTestCase {
 
-  public void testA1() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(A1.class);
-    BeanMapping mapping = mappings.get(A1.class);
+  public void testA1() throws Exception { testA1(A1.class); }
+  public void testA2() throws Exception { testA2(A2.class); }
+  public void testA3() throws Exception { testA3(A3.class); }
+
+  protected void testA1(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     AttributeMapping stringMapping = mapping.getPropertyMapping("path", AttributeMapping.class);
     assertEquals("path", stringMapping.getName());
     assertEquals(NodeAttributeType.PATH, stringMapping.getType());
   }
 
-  public void testA2() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(A2.class);
-    BeanMapping mapping = mappings.get(A2.class);
+  protected void testA2(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     AttributeMapping stringMapping = mapping.getPropertyMapping("name", AttributeMapping.class);
     assertEquals("name", stringMapping.getName());
     assertEquals(NodeAttributeType.NAME, stringMapping.getType());
   }
 
-  public void testA3() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(A3.class);
-    BeanMapping mapping = mappings.get(A3.class);
+  protected void testA3(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     AttributeMapping stringMapping = mapping.getPropertyMapping("workspaceName", AttributeMapping.class);
     assertEquals("workspaceName", stringMapping.getName());
     assertEquals(NodeAttributeType.WORKSPACE_NAME, stringMapping.getType());
