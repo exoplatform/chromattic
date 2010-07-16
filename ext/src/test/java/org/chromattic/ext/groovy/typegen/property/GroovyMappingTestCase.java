@@ -19,6 +19,7 @@
 
 package org.chromattic.ext.groovy.typegen.property;
 
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import org.chromattic.metamodel.typegen.property.MappingTestCase;
 
@@ -27,41 +28,121 @@ import org.chromattic.metamodel.typegen.property.MappingTestCase;
  * @version $Revision$
  */
 public class GroovyMappingTestCase extends MappingTestCase {
+  private final Class<?> a1class = new GroovyClassLoader().parseClass(
+      "import org.chromattic.api.annotations.PrimaryType\n" +
+      "import org.chromattic.api.annotations.Property\n" +
+      "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+      "@ChromatticSupport\n" +
+      "@PrimaryType(name = \"a1\")\n" +
+      "class A1 {\n" +
+      "  @Property(name = \"string\") String string;\n" +
+      "}"
+    );
+
+  private final Class<?> a2class = new GroovyClassLoader().parseClass(
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.DefaultValue\n" +
+    "import org.chromattic.api.annotations.Property\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"a2\")\n" +
+    "class A2 {\n" +
+    "  @DefaultValue(\"foo\") @Property(name = \"string\") String string;\n" +
+    "}"
+  );
   
-  public void testA1() throws Exception {
-    testA1((Class<?>) new GroovyShell(new A1ClassLoader()).evaluate("A1.class"));
-  }
+  private final Class<?> b1class = new GroovyClassLoader().parseClass(
+    "import java.util.List\n" +
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.Property\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"b1\")\n" +
+    "class B1 {\n" +
+    "  @Property(name = \"strings\") List<String> strings;\n" +
+    "}"
+  );
 
-  public void testA2() throws Exception {
-    testA2((Class<?>) new GroovyShell(new A2ClassLoader()).evaluate("A2.class"));
-  }
+  private final Class<?> b2class = new GroovyClassLoader().parseClass(
+    "import java.util.List\n" +
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.Property\n" +
+    "import org.chromattic.api.annotations.DefaultValue\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"b2\")\n" +
+    "class B2 {\n" +
+    "  @DefaultValue([\"foo\",\"bar\"]) @Property(name = \"strings\") List<String> strings;\n" +
+    "}"
+  );
 
-  public void testB1() throws Exception {
-    testB1((Class<?>) new GroovyShell(new B1ClassLoader()).evaluate("B1.class"));
-  }
+  private final Class<?> c1class = new GroovyClassLoader().parseClass(
+      "import org.chromattic.api.annotations.PrimaryType\n" +
+      "import org.chromattic.api.annotations.Property\n" +
+      "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+      "@ChromatticSupport\n" +
+      "@PrimaryType(name = \"c1\")\n" +
+      "class C1 {\n" +
+      "  @Property(name = \"strings\") String[] strings;\n" +
+      "}"
+    );
+  
+  private final Class<?> c2class = new GroovyClassLoader().parseClass(
+      "import org.chromattic.api.annotations.PrimaryType\n" +
+      "import org.chromattic.api.annotations.Property\n" +
+      "import org.chromattic.api.annotations.DefaultValue\n" +
+      "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+      "@ChromatticSupport\n" +
+      "@PrimaryType(name = \"c2\")\n" +
+      "class C2 {\n" +
+      "  @DefaultValue([\"foo\",\"bar\"]) @Property(name = \"strings\") String[] strings;\n" +
+      "}"
+    );
 
-  public void testB2() throws Exception {
-    testB2((Class<?>) new GroovyShell(new B2ClassLoader()).evaluate("B2.class"));
-  }
+  private final Class<?> d1class = new GroovyClassLoader().parseClass(
+    "import java.util.Map\n" +
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.Properties\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"d1\")\n" +
+    "class D1 {\n" +
+    "  @Properties Map<String, ?> properties;\n" +
+    "}"
+  );
 
-  public void testC1() throws Exception {
-    testC1((Class<?>) new GroovyShell(new C1ClassLoader()).evaluate("C1.class"));
-  }
+  private final Class<?> d2class = new GroovyClassLoader().parseClass(
+    "import java.util.Map\n" +
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.Properties\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"d2\")\n" +
+    "class D2 {\n" +
+    "  @Properties Map<String, String> properties;\n" +
+    "}"
+  );
 
-  public void testC2() throws Exception {
-    testC2((Class<?>) new GroovyShell(new C2ClassLoader()).evaluate("C2.class"));
-  }
-
-  public void testD1() throws Exception {
-    testD1((Class<?>) new GroovyShell(new D1ClassLoader()).evaluate("D1.class"));
-  }
-
-  public void testD2() throws Exception {
-    testD2((Class<?>) new GroovyShell(new D2ClassLoader()).evaluate("D2.class"));
-  }
-
-  public void testE() throws Exception {
-    testE((Class<?>) new GroovyShell(new EClassLoader()).evaluate("E.class"));
-  }
+  private final Class<?> eclass = new GroovyClassLoader().parseClass(
+      "import java.util.Map\n" +
+      "import org.chromattic.api.annotations.PrimaryType\n" +
+      "import org.chromattic.api.annotations.Property\n" +
+      "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+      "@ChromatticSupport\n" +
+      "@PrimaryType(name = \"e\")\n" +
+      "class E {\n" +
+      "  @Property(name = \"bytes\") byte[] bytes;\n" +
+      "}"
+    );
+  
+  public void testA1() throws Exception { testA1(a1class); }
+  public void testA2() throws Exception { testA2(a2class); }
+  public void testB1() throws Exception { testB1(b1class); }
+  public void testB2() throws Exception { testB2(b2class); }
+  public void testC1() throws Exception { testC1(c1class); }
+  public void testC2() throws Exception { testC2(c2class); }
+  public void testD1() throws Exception { testD1(d1class); }
+  public void testD2() throws Exception { testD2(d2class); }
+  public void testE() throws Exception { testE(eclass); }
 
 }

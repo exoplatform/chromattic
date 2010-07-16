@@ -19,14 +19,10 @@
 
 package org.chromattic.ext.groovy.typegen.property;
 
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import org.chromattic.ext.groovy.typegen.attribute.*;
-import org.chromattic.metamodel.typegen.property.A1;
-import org.chromattic.metamodel.typegen.property.A2;
 import org.chromattic.metamodel.typegen.property.PropertyTestCase;
-
-import javax.jcr.PropertyType;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -34,12 +30,30 @@ import java.util.Map;
  */
 public class GroovyPropertyTestCase extends PropertyTestCase {
 
-  public void testProperty() throws Exception {
-    testProperty((Class<?>) new GroovyShell(new A1ClassLoader()).evaluate("A1.class"));
-  }
+  private final Class<?> a1class = new GroovyClassLoader().parseClass(
+      "import org.chromattic.api.annotations.PrimaryType\n" +
+      "import org.chromattic.api.annotations.Property\n" +
+      "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+      "@ChromatticSupport\n" +
+      "@PrimaryType(name = \"a1\")\n" +
+      "class A1 {\n" +
+      "  @Property(name = \"string\") String string;\n" +
+      "}"
+    );
 
-  public void testDefaultValues() throws Exception {
-    testDefaultValues((Class<?>) new GroovyShell(new A2ClassLoader()).evaluate("A2.class"));
-  }
+  private final Class<?> a2class = new GroovyClassLoader().parseClass(
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.DefaultValue\n" +
+    "import org.chromattic.api.annotations.Property\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"a2\")\n" +
+    "class A2 {\n" +
+    "  @DefaultValue(\"foo\") @Property(name = \"string\") String string;\n" +
+    "}"
+  );
+
+  public void testProperty() throws Exception { testProperty(a1class); }
+  public void testDefaultValues() throws Exception { testDefaultValues(a2class); }
   
 }

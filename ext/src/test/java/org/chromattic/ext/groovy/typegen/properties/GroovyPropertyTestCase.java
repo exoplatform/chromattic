@@ -19,6 +19,7 @@
 
 package org.chromattic.ext.groovy.typegen.properties;
 
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import org.chromattic.metamodel.typegen.properties.PropertiesTestCase;
 
@@ -27,15 +28,45 @@ import org.chromattic.metamodel.typegen.properties.PropertiesTestCase;
  * @version $Revision$
  */
 public class GroovyPropertyTestCase extends PropertiesTestCase {
-  public void testStringProperties() throws Exception {
-    testStringProperties((Class<?>) new GroovyShell(new AClassLoader()).evaluate("A.class"));
-  }
 
-  public void testObjectProperties() throws Exception {
-    testObjectProperties((Class<?>) new GroovyShell(new BClassLoader()).evaluate("B.class"));
-  }
+  private final Class<?> aclass = new GroovyClassLoader().parseClass(
+    "import java.util.Map\n" +
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.Properties\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"a\")\n" +
+    "class A {\n" +
+    "  @Properties() Map<String, String> properties;\n" +
+    "}"
+  );
 
-  public void testAnyProperties() throws Exception {
-    testAnyProperties((Class<?>) new GroovyShell(new CClassLoader()).evaluate("C.class"));
-  }
+  private final Class<?> bclass = new GroovyClassLoader().parseClass(
+    "import java.util.Map\n" +
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.Properties\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"b\")\n" +
+    "class B {\n" +
+    "  @Properties() Map<String, Object> properties;\n" +
+    "}"
+  );
+
+  private final Class<?> cclass = new GroovyClassLoader().parseClass(
+    "import java.util.Map\n" +
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.Properties\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"c\")\n" +
+    "class C {\n" +
+    "  @Properties() Map<String, String> stringProperties;\n" +
+    "  @Properties() Map<String, Integer> integerProperties;\n" +
+    "}"
+  );
+  
+  public void testStringProperties() throws Exception { testStringProperties(aclass); }
+  public void testObjectProperties() throws Exception { testObjectProperties(bclass); }
+  public void testAnyProperties() throws Exception { testAnyProperties(cclass); }
 }

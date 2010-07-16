@@ -19,6 +19,7 @@
 
 package org.chromattic.ext.groovy.typegen.orderablechildnodes;
 
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import org.chromattic.ext.groovy.typegen.properties.*;
 import org.chromattic.metamodel.typegen.orderablechildnodes.OrderableChildNodesTestCase;
@@ -28,7 +29,16 @@ import org.chromattic.metamodel.typegen.orderablechildnodes.OrderableChildNodesT
  * @version $Revision$
  */
 public class GroovyOrderableChildNodesTestCase extends OrderableChildNodesTestCase {
-  public void testOrderable() throws Exception {
-    testOrderable((Class<?>) new GroovyShell(new AClassLoader()).evaluate("A.class"));
-  }
+
+  private final Class<?> aclass = new GroovyClassLoader().parseClass(
+      "import java.util.Map\n" +
+      "import org.chromattic.api.annotations.PrimaryType\n" +
+      "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+      "@ChromatticSupport\n" +
+      "@PrimaryType(name = \"a\", orderable = true)\n" +
+      "class A {\n" +
+      "}"
+    );
+
+  public void testOrderable() throws Exception { testOrderable(aclass); }
 }

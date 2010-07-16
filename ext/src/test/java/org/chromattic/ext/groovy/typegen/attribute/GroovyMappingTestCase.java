@@ -19,6 +19,7 @@
 
 package org.chromattic.ext.groovy.typegen.attribute;
 
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import org.chromattic.metamodel.typegen.attribute.MappingTestCase;
 
@@ -29,17 +30,41 @@ import java.util.Map;
  * @version $Revision$
  */
 public class GroovyMappingTestCase extends MappingTestCase {
+  private final Class<?> a1class = new GroovyClassLoader().parseClass(
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.Path\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"a1\")\n" +
+    "class A1 {\n" +
+    "  @Path String path;\n" +
+    "}"
+  );
 
-  public void testA1() throws Exception {
-    testA1((Class<?>) new GroovyShell(new A1ClassLoader()).evaluate("A1.class"));
-  }
+  private final Class<?> a2class = new GroovyClassLoader().parseClass(
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.Name\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"a2\")\n" +
+    "class A2 {\n" +
+    "  @Name String name;\n" +
+    "}"
+  );
 
-  public void testA2() throws Exception {
-    testA2((Class<?>) new GroovyShell(new A2ClassLoader()).evaluate("A2.class"));
-  }
+  private final Class<?> a3class = new GroovyClassLoader().parseClass(
+    "import org.chromattic.api.annotations.PrimaryType\n" +
+    "import org.chromattic.api.annotations.WorkspaceName\n" +
+    "import org.chromattic.ext.groovy.annotations.ChromatticSupport\n" +
+    "@ChromatticSupport\n" +
+    "@PrimaryType(name = \"a3\")\n" +
+    "class A3 {\n" +
+    "  @WorkspaceName String workspaceName;\n" +
+    "}"
+  );
 
-  public void testA3() throws Exception {
-    testA3((Class<?>) new GroovyShell(new A3ClassLoader()).evaluate("A3.class"));
-  }
+  public void testA1() throws Exception { testA1(a1class); }
+  public void testA2() throws Exception { testA2(a2class); }
+  public void testA3() throws Exception { testA3(a3class); }
   
 }
