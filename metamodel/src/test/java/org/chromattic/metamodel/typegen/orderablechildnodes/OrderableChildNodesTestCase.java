@@ -33,9 +33,11 @@ import java.util.Map;
  */
 public class OrderableChildNodesTestCase extends TypeGenTestCase {
 
-  public void testOrderable() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(A.class);
-    NodeType aNT = a.get(A.class);
+  public void testOrderable() throws Exception { testOrderable(A.class); }
+
+  protected void testOrderable(Class<?> clazz) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(clazz);
+    NodeType aNT = a.get(clazz);
     assertEquals("a", aNT.getName());
     assertEquals(true, aNT.isOrderable());
   }
