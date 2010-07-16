@@ -38,10 +38,19 @@ import java.util.Map;
  */
 public class MappingTestCase extends AbstractMappingTestCase {
 
+  public void testA1() throws Exception { testA1(A1.class); }
+  public void testA2() throws Exception { testA2(A2.class); }
+  public void testB1() throws Exception { testB1(B1.class); }
+  public void testB2() throws Exception { testB2(B2.class); }
+  public void testC1() throws Exception { testC1(C1.class); }
+  public void testC2() throws Exception { testC2(C2.class); }
+  public void testD1() throws Exception { testD1(D1.class); }
+  public void testD2() throws Exception { testD2(D2.class); }
+  public void testE() throws Exception { testE(E.class); }
 
-  public void testA1() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(A1.class);
-    BeanMapping mapping = mappings.get(A1.class);
+  protected void testA1(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     ValueMapping.Single stringMapping = mapping.getPropertyMapping("string", ValueMapping.Single.class);
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
@@ -50,9 +59,9 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("string", stringMapping.getName());
   }
 
-  public void testA2() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(A2.class);
-    BeanMapping mapping = mappings.get(A2.class);
+  protected void testA2(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     ValueMapping.Single stringMapping = mapping.getPropertyMapping("string", ValueMapping.Single.class);
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
@@ -61,9 +70,9 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("string", stringMapping.getName());
   }
 
-  public void testB1() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(B1.class);
-    BeanMapping mapping = mappings.get(B1.class);
+  protected void testB1(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
     assertEquals(MultiValueKind.LIST, stringMapping.getProperty().getKind());
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
@@ -73,9 +82,9 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("strings", stringMapping.getName());
   }
 
-  public void testB2() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(B2.class);
-    BeanMapping mapping = mappings.get(B2.class);
+  protected void testB2(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
     assertEquals(MultiValueKind.LIST, stringMapping.getProperty().getKind());
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
@@ -85,9 +94,9 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("strings", stringMapping.getName());
   }
 
-  public void testC1() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(C1.class);
-    BeanMapping mapping = mappings.get(C1.class);
+  protected void testC1(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
     assertEquals(MultiValueKind.ARRAY, stringMapping.getProperty().getKind());
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
@@ -97,9 +106,9 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("strings", stringMapping.getName());
   }
 
-  public void testC2() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(C2.class);
-    BeanMapping mapping = mappings.get(C2.class);
+  protected void testC2(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
     assertEquals(MultiValueKind.ARRAY, stringMapping.getProperty().getKind());
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
@@ -109,25 +118,25 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("strings", stringMapping.getName());
   }
 
-  public void testD1() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(D1.class);
-    BeanMapping mapping = mappings.get(D1.class);
+  protected void testD1(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     PropertiesMapping<?> stringMapping = mapping.getPropertyMapping("properties", PropertiesMapping.class);
     assertEquals(MultiValueKind.MAP, stringMapping.getProperty().getKind());
     assertEquals(Object.class.getName(), ((ClassTypeInfo)stringMapping.getProperty().getValue().getEffectiveType()).getName());
   }
 
-  public void testD2() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(D2.class);
-    BeanMapping mapping = mappings.get(D2.class);
+  protected void testD2(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     PropertiesMapping<?> stringMapping = mapping.getPropertyMapping("properties", PropertiesMapping.class);
     assertEquals(MultiValueKind.MAP, stringMapping.getProperty().getKind());
     assertEquals(String.class.getName(), ((ClassTypeInfo)stringMapping.getProperty().getValue().getEffectiveType()).getName());
   }
 
-  public void testE() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(E.class);
-    BeanMapping mapping = mappings.get(E.class);
+  protected void testE(Class<?> clazz) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz);
+    BeanMapping mapping = mappings.get(clazz);
     PropertyMapping<?, ?> stringMapping = mapping.getPropertyMapping("bytes", PropertyMapping.class);
 //    assertEquals(String.class.getName(), stringMapping.getProperty().getValue().getClassType().getName());
   }

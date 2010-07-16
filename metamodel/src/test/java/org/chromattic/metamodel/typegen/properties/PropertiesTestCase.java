@@ -35,9 +35,13 @@ import java.util.Map;
  */
 public class PropertiesTestCase extends TypeGenTestCase {
 
-  public void testStringProperties() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(A.class);
-    NodeType aNT = a.get(A.class);
+  public void testStringProperties() throws Exception { testStringProperties(A.class); }
+  public void testObjectProperties() throws Exception { testObjectProperties(B.class); }
+  public void testAnyProperties() throws Exception { testAnyProperties(C.class); }
+
+  protected void testStringProperties(Class<?> clazz) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(clazz);
+    NodeType aNT = a.get(clazz);
     assertEquals(Collections.<String>set("*"), aNT.getPropertyDefinitions().keySet());
     PropertyDefinition pd = aNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());
@@ -45,9 +49,9 @@ public class PropertiesTestCase extends TypeGenTestCase {
     assertEquals(null, pd.getDefaultValues());
   }
 
-  public void testObjectProperties() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(B.class);
-    NodeType bNT = a.get(B.class);
+  protected void testObjectProperties(Class<?> clazz) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(clazz);
+    NodeType bNT = a.get(clazz);
     assertEquals(Collections.<String>set("*"), bNT.getPropertyDefinitions().keySet());
     PropertyDefinition pd = bNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());
@@ -55,9 +59,9 @@ public class PropertiesTestCase extends TypeGenTestCase {
     assertEquals(null, pd.getDefaultValues());
   }
 
-  public void testAnyProperties() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(C.class);
-    NodeType cNT = a.get(C.class);
+  protected void testAnyProperties(Class<?> clazz) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(clazz);
+    NodeType cNT = a.get(clazz);
     assertEquals(Collections.<String>set("*"), cNT.getPropertyDefinitions().keySet());
     PropertyDefinition pd = cNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());

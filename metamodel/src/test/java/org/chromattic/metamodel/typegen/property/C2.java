@@ -27,7 +27,7 @@ import org.chromattic.api.annotations.Property;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "b1")
+@PrimaryType(name = "c2")
 public abstract class C2 {
 
   @Property(name = "strings")
