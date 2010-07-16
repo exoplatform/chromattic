@@ -23,8 +23,6 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
-import org.chromattic.core.mapper.MapperBuilder;
-import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
@@ -34,12 +32,16 @@ import org.chromattic.core.Domain;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.format.ObjectFormatter;
-import org.reflext.api.*;
+import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
 
-import java.util.*;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -48,24 +50,12 @@ import java.lang.reflect.Type;
 public class ChromatticBuilderImpl extends ChromatticBuilder {
 
 
-  /** . */
-  private Collection<BeanMapping> mappings;
-
   public ChromatticBuilderImpl() {
   }
 
   private <T> T create(Option.Instance<String> optionInstance, Class<T> expectedClass) {
     String s = optionInstance.getValue();
     return ObjectInstantiator.newInstance(s, expectedClass);
-  }
-
-  /**
-   * Returns the set of mappings of this builder.
-   *
-   * @return the set of mappings
-   */
-  public Collection<? extends BeanMapping> getMappings() {
-    return mappings;
   }
 
   @Override
@@ -139,16 +129,14 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       classTypes.add(typeInfo);
     }
     Map<ClassTypeInfo, BeanMapping> beanMappings = new BeanMappingBuilder().build(classTypes);
-    MapperBuilder builder = new MapperBuilder(propertyTypeResolver, instrumentor);
-    mappings = beanMappings.values();
+    Collection<BeanMapping> mappings = beanMappings.values();
 
     // Build mappers
-    Collection<ObjectMapper<?>> mappers = builder.build(mappings);
 
     // Build domain
     Domain domain = new Domain(
       propertyTypeResolver,
-      mappers,
+      mappings,
       instrumentor,
       objectFormatter,
       propertyCacheEnabled,

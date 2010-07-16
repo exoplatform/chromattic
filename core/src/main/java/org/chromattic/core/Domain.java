@@ -22,9 +22,11 @@ package org.chromattic.core;
 import org.chromattic.api.BuilderException;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
+import org.chromattic.core.mapper.MapperBuilder;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.jcr.info.NodeInfoManager;
 import org.chromattic.core.query.QueryManager;
+import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.api.format.ObjectFormatter;
@@ -61,6 +63,9 @@ public class Domain {
 
   /** . */
   private final Instrumentor instrumentor;
+
+  /** . */
+  final Collection<BeanMapping> mappings;
   
   /** . */
   final ObjectFormatter objectFormatter;
@@ -97,7 +102,7 @@ public class Domain {
 
   public Domain(
     SimpleTypeResolver resolver,
-    Collection<ObjectMapper<?>> mappers,
+    Collection<BeanMapping> mappings,
     Instrumentor instrumentor,
     ObjectFormatter objectFormatter,
     boolean propertyCacheEnabled,
@@ -112,6 +117,10 @@ public class Domain {
     if (!CREATE_MODES.contains(rootCreateMode)) {
       throw new IllegalArgumentException("Invalid create mode " + rootCreateMode);
     }
+
+    //
+    MapperBuilder builder = new MapperBuilder(resolver, instrumentor);
+    Collection<ObjectMapper<?>> mappers = builder.build(mappings);
 
     //
     Map<String, ObjectMapper> typeMapperByNodeType = new HashMap<String, ObjectMapper>();
@@ -134,6 +143,7 @@ public class Domain {
     }
 
     //
+    this.mappings = mappings;
     this.typeMapperByClass = typeMapperByClass;
     this.typeMapperByNodeType = typeMapperByNodeType;
     this.instrumentor = instrumentor;
@@ -148,6 +158,10 @@ public class Domain {
     this.queryManager = new QueryManager(rootNodePath);
     this.rootCreateMode = rootCreateMode;
     this.rootNodeType = rootNodeType;
+  }
+
+  public Collection<BeanMapping> getMappings() {
+    return mappings;
   }
 
   public boolean isHasPropertyOptimized() {
