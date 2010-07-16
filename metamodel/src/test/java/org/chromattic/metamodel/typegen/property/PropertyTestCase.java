@@ -33,9 +33,12 @@ import java.util.Map;
  */
 public class PropertyTestCase extends TypeGenTestCase {
 
-  public void testProperty() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(A1.class);
-    NodeType aNT = a.get(A1.class);
+  public void testProperty() throws Exception { testProperty(A1.class); }
+  public void testDefaultValues() throws Exception { testDefaultValues(A2.class); }
+
+  protected void testProperty(Class<?> clazz) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(clazz);
+    NodeType aNT = a.get(clazz);
     assertEquals(Collections.<String>set("string"), aNT.getPropertyDefinitions().keySet());
     PropertyDefinition stringPD = aNT.getPropertyDefinition("string");
     assertEquals("string", stringPD.getName());
@@ -43,9 +46,9 @@ public class PropertyTestCase extends TypeGenTestCase {
     assertEquals(null, stringPD.getDefaultValues());
   }
 
-  public void testDefaultValues() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(A2.class);
-    NodeType bNT = a.get(A2.class);
+  protected void testDefaultValues(Class<?> clazz) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(clazz);
+    NodeType bNT = a.get(clazz);
     assertEquals(Collections.<String>set("string"), bNT.getPropertyDefinitions().keySet());
     PropertyDefinition stringPD = bNT.getPropertyDefinition("string");
     assertEquals("string", stringPD.getName());
