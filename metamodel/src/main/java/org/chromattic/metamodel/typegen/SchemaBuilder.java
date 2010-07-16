@@ -22,7 +22,7 @@ package org.chromattic.metamodel.typegen;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.annotations.Skip;
-import org.chromattic.metamodel.mapping.ApplicationMappingBuilder;
+import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.MappingVisitor;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
@@ -57,7 +57,7 @@ public class SchemaBuilder {
   }
 
   public Map<ClassTypeInfo, NodeType> build(Set<ClassTypeInfo> classTypes) {
-    ApplicationMappingBuilder amp = new ApplicationMappingBuilder(simpleTypeResolver);
+    BeanMappingBuilder amp = new BeanMappingBuilder(simpleTypeResolver);
     Map<ClassTypeInfo, BeanMapping> mappings = amp.build(classTypes);
     Visitor visitor = new Visitor();
     Map<ClassTypeInfo, NodeType> schema = new HashMap<ClassTypeInfo, NodeType>();

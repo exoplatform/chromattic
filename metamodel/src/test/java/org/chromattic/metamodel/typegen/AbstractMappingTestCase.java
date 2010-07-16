@@ -20,7 +20,7 @@
 package org.chromattic.metamodel.typegen;
 
 import junit.framework.TestCase;
-import org.chromattic.metamodel.mapping.ApplicationMappingBuilder;
+import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
@@ -42,7 +42,7 @@ public abstract class AbstractMappingTestCase extends TestCase {
   private final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
   protected final Map<Class<?>, BeanMapping> assertValid(Class<?>... classTypes) {
-    ApplicationMappingBuilder builder = new ApplicationMappingBuilder();
+    BeanMappingBuilder builder = new BeanMappingBuilder();
     HashSet<ClassTypeInfo> ctis = new HashSet<ClassTypeInfo>();
     for (Class<?> classType : classTypes) {
       ctis.add((ClassTypeInfo)domain.resolve(classType));

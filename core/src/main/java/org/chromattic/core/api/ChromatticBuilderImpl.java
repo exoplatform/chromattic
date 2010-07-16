@@ -25,7 +25,7 @@ import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
 import org.chromattic.core.mapper.MapperBuilder;
 import org.chromattic.core.mapper.ObjectMapper;
-import org.chromattic.metamodel.mapping.ApplicationMappingBuilder;
+import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
@@ -48,12 +48,24 @@ import java.lang.reflect.Type;
 public class ChromatticBuilderImpl extends ChromatticBuilder {
 
 
+  /** . */
+  private Collection<BeanMapping> mappings;
+
   public ChromatticBuilderImpl() {
   }
 
   private <T> T create(Option.Instance<String> optionInstance, Class<T> expectedClass) {
     String s = optionInstance.getValue();
     return ObjectInstantiator.newInstance(s, expectedClass);
+  }
+
+  /**
+   * Returns the set of mappings of this builder.
+   *
+   * @return the set of mappings
+   */
+  public Collection<? extends BeanMapping> getMappings() {
+    return mappings;
   }
 
   @Override
@@ -120,15 +132,18 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     //
     SessionLifeCycle sessionLifeCycle = create(options.getInstance(SESSION_LIFECYCLE_CLASSNAME), SessionLifeCycle.class);
 
-    //
+    // Build mappings
     Set<ClassTypeInfo> classTypes = new HashSet<ClassTypeInfo>();
     for (Class clazz : classes) {
       ClassTypeInfo typeInfo = (ClassTypeInfo)typeResolver.resolve(clazz);
       classTypes.add(typeInfo);
     }
-    Map<ClassTypeInfo, BeanMapping> beanMappings = new ApplicationMappingBuilder().build(classTypes);
+    Map<ClassTypeInfo, BeanMapping> beanMappings = new BeanMappingBuilder().build(classTypes);
     MapperBuilder builder = new MapperBuilder(propertyTypeResolver, instrumentor);
-    Collection<ObjectMapper<?>> mappers = builder.build(beanMappings.values());
+    mappings = beanMappings.values();
+
+    // Build mappers
+    Collection<ObjectMapper<?>> mappers = builder.build(mappings);
 
     // Build domain
     Domain domain = new Domain(

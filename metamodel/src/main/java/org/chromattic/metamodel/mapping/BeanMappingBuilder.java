@@ -73,10 +73,12 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 /**
+ * The bean mapping builder.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ApplicationMappingBuilder {
+public class BeanMappingBuilder {
 
   /** Used for retrieving {@code java.lang.Object} info. */
   private final TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
@@ -90,11 +92,11 @@ public class ApplicationMappingBuilder {
   /** . */
   private final SimpleTypeResolver simpleTypeResolver;
 
-  public ApplicationMappingBuilder() {
+  public BeanMappingBuilder() {
     this(new SimpleTypeResolver());
   }
 
-  public ApplicationMappingBuilder(SimpleTypeResolver simpleTypeResolver) {
+  public BeanMappingBuilder(SimpleTypeResolver simpleTypeResolver) {
     this.simpleTypeResolver = simpleTypeResolver;
   }
 
