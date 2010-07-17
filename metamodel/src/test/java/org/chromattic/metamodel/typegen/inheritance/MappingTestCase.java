@@ -31,18 +31,20 @@ import java.util.Map;
  */
 public class MappingTestCase extends AbstractMappingTestCase {
 
-  public void testB() throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(B1.class, B2.class);
+  public void testB() throws Exception { testB(B1.class, B2.class); }
+
+  public void testB(Class<?> clazz1, Class<?> clazz2) throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(clazz1, clazz2);
 
     //
-    BeanMapping _1 = mappings.get(B1.class);
+    BeanMapping _1 = mappings.get(clazz1);
     RelationshipMapping.ManyToOne.Hierarchic r1 = _1.getPropertyMapping("parent2", RelationshipMapping.ManyToOne.Hierarchic.class);
     assertNotNull(r1);
     assertNull(r1.getParent());
     assertTrue(r1.isNew());
 
     //
-    BeanMapping _2 = mappings.get(B2.class);
+    BeanMapping _2 = mappings.get(clazz2);
     RelationshipMapping.ManyToOne.Hierarchic r2 = _2.getPropertyMapping("parent2", RelationshipMapping.ManyToOne.Hierarchic.class);
     assertNotNull(r2);
     assertNotNull(r2.getParent());

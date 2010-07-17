@@ -19,12 +19,7 @@
 
 package org.chromattic.metamodel.typegen.inheritance;
 
-import junit.framework.TestCase;
-import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.typegen.*;
-import org.reflext.api.ClassTypeInfo;
-
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -40,11 +35,15 @@ public class InheritanceTestCase extends TypeGenTestCase {
 
   @Override
   protected void setUp() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(A1.class, A3.class, A4.class, A5.class);
-    a1NT = a.get(A1.class);
-    a3NT = a.get(A3.class);
-    a4NT = a.get(A4.class);
-    a5NT = a.get(A5.class);
+    setUp(A1.class, A3.class, A4.class, A5.class);
+  }
+
+  protected void setUp(Class<?> a1class, Class<?> a3class, Class<?> a4class, Class<?> a5class) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(a1class, a3class, a4class, a5class);
+    a1NT = a.get(a1class);
+    a3NT = a.get(a3class);
+    a4NT = a.get(a4class);
+    a5NT = a.get(a5class);
   }
 
   public void testSuperTypes() throws Exception {
@@ -80,7 +79,15 @@ public class InheritanceTestCase extends TypeGenTestCase {
     assertEquals(2, a5NT.getChildNodeDefinitions().size());
   }
 
+  public void testGenericRelationship() { testGenericRelationship(H1.class, H2.class, H3.class); }
+  public void testOneToOneGenericRelationship() { testOneToOneGenericRelationship(I1.class, I2.class, I3.class, I4.class); }
+  public void testInvalidAbstractManyToOne() { testInvalidAbstractManyToOne(B2.class); }
+  public void testInvalidAbstractOwnerOneToOne() { testInvalidAbstractOwnerOneToOne(D2.class); }
+  public void testInvalidAbstractOneToOne() { testInvalidAbstractOneToOne(E2.class); }
+  public void testInvalidAbstractOneToMany() { testInvalidAbstractOneToMany(F2.class); }
+
   public void testRelationshipOverride() {
+    // TODO : verify this test
     Map<Class<?>, NodeType> a = assertValid(G1.class, G2.class, G3.class);
     NodeType g1 = a.get(H1.class);
     NodeType g2 = a.get(H2.class);
@@ -89,11 +96,11 @@ public class InheritanceTestCase extends TypeGenTestCase {
 //    assertNotNull(g2Def);
   }
 
-  public void testGenericRelationship() {
-    Map<Class<?>, NodeType> a = assertValid(H1.class, H2.class, H3.class);
-    NodeType h1 = a.get(H1.class);
-    NodeType h2 = a.get(H2.class);
-    NodeType h3 = a.get(H3.class);
+  protected void testGenericRelationship(Class<?> h1class, Class<?> h2class, Class<?> h3class) {
+    Map<Class<?>, NodeType> a = assertValid(h1class, h2class, h3class);
+    NodeType h1 = a.get(h1class);
+    NodeType h2 = a.get(h2class);
+    NodeType h3 = a.get(h3class);
     NodeDefinition h1AnyDef = h1.getChildNodeDefinition("*");
     assertNotNull(h1AnyDef);
     assertEquals("nt:base", h1AnyDef.getNodeTypeName());
@@ -102,12 +109,12 @@ public class InheritanceTestCase extends TypeGenTestCase {
     assertEquals("h3", h2AnyDef.getNodeTypeName());
   }
 
-  public void testOneToOneGenericRelationship() {
-    Map<Class<?>, NodeType> a = assertValid(I1.class, I2.class, I3.class, I4.class);
-    NodeType i1 = a.get(I1.class);
-    NodeType i2 = a.get(I2.class);
-    NodeType i3 = a.get(I3.class);
-    NodeType i4 = a.get(I4.class);
+  protected void testOneToOneGenericRelationship(Class<?> i1class, Class<?> i2class, Class<?> i3class, Class<?> i4class) {
+    Map<Class<?>, NodeType> a = assertValid(i1class, i2class, i3class, i4class);
+    NodeType i1 = a.get(i1class);
+    NodeType i2 = a.get(i2class);
+    NodeType i3 = a.get(i3class);
+    NodeType i4 = a.get(i4class);
     NodeDefinition i1ChildDef = i1.getChildNodeDefinition("child");
     assertNotNull(i1ChildDef);
     assertEquals("i3", i1ChildDef.getNodeTypeName());
@@ -116,23 +123,23 @@ public class InheritanceTestCase extends TypeGenTestCase {
     assertEquals("i4", i2ChildDef.getNodeTypeName());
   }
 
-  public void testInvalidAbstractManyToOne() {
-    assertInvalid(B2.class);
+  protected void testInvalidAbstractManyToOne(Class<?> clazz) {
+    assertInvalid(clazz);
   }
 
 //  public void testInvalidAbstractProperty() {
 //    assertInvalid(C2.class);
 //  }
 
-  public void testInvalidAbstractOwnerOneToOne() {
-    assertInvalid(D2.class);
+  protected void testInvalidAbstractOwnerOneToOne(Class<?> clazz) {
+    assertInvalid(clazz);
   }
 
-  public void testInvalidAbstractOneToOne() {
-    assertInvalid(E2.class);
+  protected void testInvalidAbstractOneToOne(Class<?> clazz) {
+    assertInvalid(clazz);
   }
 
-  public void testInvalidAbstractOneToMany() {
-    assertInvalid(F2.class);
+  protected void testInvalidAbstractOneToMany(Class<?> clazz) {
+    assertInvalid(clazz);
   }
 }
