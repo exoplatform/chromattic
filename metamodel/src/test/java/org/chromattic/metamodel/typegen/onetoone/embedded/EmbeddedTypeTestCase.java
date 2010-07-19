@@ -32,35 +32,39 @@ import java.util.Map;
  */
 public class EmbeddedTypeTestCase extends TypeGenTestCase {
 
-  public void testOwnerMixinType() {
-    Map<Class<?>, NodeType> a = assertValid(B1.class, B2.class);
+  public void testOwnerMixinType() { testOwnerMixinType(B1.class, B2.class); }
+  public void testOwnerSuperType() { testOwnerSuperType(A1.class, A2.class); }
+  public void testOwnedSuperType() { testOwnedSuperType(A3.class, A4.class); }
+
+  protected void testOwnerMixinType(Class<?> b1class, Class<?> b2class) {
+    Map<Class<?>, NodeType> a = assertValid(b1class, b2class);
     TypeGen gen = new TypeGen();
     gen.generate();
-    NodeType b1NT = a.get(B1.class);
+    NodeType b1NT = a.get(b1class);
     assertEquals("b1", b1NT.getName());
     assertEquals(Collections.<String>set(), b1NT.getPropertyDefinitions().keySet());
-    NodeType b2NT = a.get(B2.class);
+    NodeType b2NT = a.get(b2class);
     assertEquals("b2", b2NT.getName());
     assertEquals(Collections.<String>set("foo"), b2NT.getPropertyDefinitions().keySet());
     assertFalse(b2NT.getDeclaredSuperTypes().contains(b1NT));
     assertFalse(b1NT.getDeclaredSuperTypes().contains(b2NT));
   }
 
-  public void testOwnerSuperType() {
-    Map<Class<?>, NodeType> a = assertValid(A1.class, A2.class);
-    NodeType a1NT = a.get(A1.class);
+  protected void testOwnerSuperType(Class<?> a1class, Class<?> a2class) {
+    Map<Class<?>, NodeType> a = assertValid(a1class, a2class);
+    NodeType a1NT = a.get(a1class);
     assertEquals("a1", a1NT.getName());
-    NodeType a2NT = a.get(A2.class);
+    NodeType a2NT = a.get(a2class);
     assertEquals("a2", a2NT.getName());
     assertTrue(a2NT.getDeclaredSuperTypes().contains(a1NT));
     assertFalse(a1NT.getDeclaredSuperTypes().contains(a2NT));
   }
 
-  public void testOwnedSuperType() {
-    Map<Class<?>, NodeType> a = assertValid(A3.class, A4.class);
-    NodeType a3NT = a.get(A3.class);
+  protected void testOwnedSuperType(Class<?> a3class, Class<?> a4class) {
+    Map<Class<?>, NodeType> a = assertValid(a3class, a4class);
+    NodeType a3NT = a.get(a3class);
     assertEquals("a3", a3NT.getName());
-    NodeType a4NT = a.get(A4.class);
+    NodeType a4NT = a.get(a4class);
     assertEquals("a4", a4NT.getName());
     assertFalse(a4NT.getDeclaredSuperTypes().contains(a3NT));
     assertTrue(a3NT.getDeclaredSuperTypes().contains(a4NT));

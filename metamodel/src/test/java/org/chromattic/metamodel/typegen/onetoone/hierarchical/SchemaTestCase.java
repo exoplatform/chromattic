@@ -33,11 +33,16 @@ import java.util.Map;
  */
 public class SchemaTestCase extends TypeGenTestCase {
 
-  public void testMappedBy() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(A1.class, A2.class);
-    NodeType a1NT = a.get(A1.class);
+  public void testMappedBy() throws Exception { testMappedBy(A1.class, A2.class); }
+  public void testRelatedMappedBy() throws Exception { testRelatedMappedBy(B1.class, B2.class); }
+  public void testOptions() throws Exception { testOptions(E1.class, E2.class); }
+  public void testSelf() throws Exception { testSelf(D.class); }
+
+  protected void testMappedBy(Class<?> a1class, Class<?> a2class) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(a1class, a2class);
+    NodeType a1NT = a.get(a1class);
     assertEquals("1", a1NT.getName());
-    NodeType a2NT = a.get(A2.class);
+    NodeType a2NT = a.get(a2class);
     assertEquals("2", a2NT.getName());
     assertEquals(Collections.set("child"), a1NT.getChildNodeDefinitions().keySet());
     assertEquals(0, a1NT.getPropertyDefinitions().size());
@@ -47,11 +52,11 @@ public class SchemaTestCase extends TypeGenTestCase {
     assertEquals(0, a2NT.getPropertyDefinitions().size());
   }
 
-  public void testRelatedMappedBy() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(B1.class, B2.class);
-    NodeType b1NT = a.get(B1.class);
+  protected void testRelatedMappedBy(Class<?> b1class, Class<?> b2class) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(b1class, b2class);
+    NodeType b1NT = a.get(b1class);
     assertEquals("1", b1NT.getName());
-    NodeType b2NT = a.get(B2.class);
+    NodeType b2NT = a.get(b2class);
     assertEquals("2", b2NT.getName());
     assertEquals(Collections.set("child"), b1NT.getChildNodeDefinitions().keySet());
     assertEquals(0, b1NT.getPropertyDefinitions().size());
@@ -61,11 +66,11 @@ public class SchemaTestCase extends TypeGenTestCase {
     assertEquals(0, b2NT.getPropertyDefinitions().size());
   }
 
-  public void testOptions() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(E1.class, E2.class);
-    NodeType c1NT = a.get(E1.class);
+  protected void testOptions(Class<?> e1class, Class<?> e2class) throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(e1class, e2class);
+    NodeType c1NT = a.get(e1class);
     assertEquals("1", c1NT.getName());
-    NodeType c2NT = a.get(E2.class);
+    NodeType c2NT = a.get(e2class);
     assertEquals("2", c2NT.getName());
 
     //
@@ -83,9 +88,9 @@ public class SchemaTestCase extends TypeGenTestCase {
     assertEquals(Collections.<String>set(), c2NT.getChildNodeDefinitions().keySet());
   }
 
-  public void testSelf() throws Exception {
+  protected void testSelf(Class<?> dclass) throws Exception {
     TypeGen gen = new TypeGen();
-    ClassTypeInfo c = gen.addType(D.class);
+    ClassTypeInfo c = gen.addType(dclass);
     gen.generate();
     NodeType cNT = gen.getNodeType(c);
     assertEquals("1", cNT.getName());
