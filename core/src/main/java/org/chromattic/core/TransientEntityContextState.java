@@ -21,8 +21,8 @@ package org.chromattic.core;
 
 import org.chromattic.api.Status;
 import org.chromattic.core.vt2.ValueDefinition;
-import org.chromattic.core.jcr.info.NodeTypeInfo;
-import org.chromattic.core.jcr.info.PrimaryTypeInfo;
+import org.chromattic.core.jcr.type.NodeTypeInfo;
+import org.chromattic.core.jcr.type.PrimaryTypeInfo;
 
 import javax.jcr.Node;
 import java.util.List;

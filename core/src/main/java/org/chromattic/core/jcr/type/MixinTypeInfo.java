@@ -16,46 +16,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.jcr.info;
+package org.chromattic.core.jcr.type;
 
-import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.nodetype.NodeType;
 
 /**
+ * <p>Meta information about a mixin type.</p>
+ *
+ * <p>This object does not hold a reference to an existing node type object.</p>
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyDefinitionInfo {
+public class MixinTypeInfo extends NodeTypeInfo
+{
 
-  /** . */
-  private final String name;
+  public MixinTypeInfo(NodeType nodeType) {
+    super(nodeType);
 
-  /** . */
-  private final int type;
-
-  /** . */
-  private final boolean multiple;
-
-  public PropertyDefinitionInfo(PropertyDefinition propertyDefinition) {
-    this.name = propertyDefinition.getName();
-    this.type = propertyDefinition.getRequiredType();
-    this.multiple = propertyDefinition.isMultiple();
-  }
-
-  public PropertyDefinitionInfo(String name, int type, boolean multiple) {
-    this.name = name;
-    this.type = type;
-    this.multiple = multiple;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public int getType() {
-    return type;
-  }
-
-  public boolean isMultiple() {
-    return multiple;
+    //
+    if (!nodeType.isMixin()) {
+      throw new IllegalArgumentException();
+    }
   }
 }

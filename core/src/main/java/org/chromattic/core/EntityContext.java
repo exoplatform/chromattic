@@ -27,7 +27,7 @@ import java.util.Map;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.common.logging.Logger;
-import org.chromattic.core.jcr.info.NodeTypeInfo;
+import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeAttributeType;

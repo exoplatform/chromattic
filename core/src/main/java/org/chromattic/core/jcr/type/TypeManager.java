@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.jcr.info;
+package org.chromattic.core.jcr.type;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -28,10 +28,14 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
+ * <p>Manage type related information.</p>
+ *
+ * <p>This acts actually like the cache of underlying JCR type system.</p>
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeInfoManager {
+public class TypeManager {
 
   /** . */
   private final Object nodeTypeInfosLock = new Object();
@@ -53,12 +57,6 @@ public class NodeInfoManager {
 
     //
     return ntInfo.getMixinNames().contains("mix:referenceable");
-  }
-
-  public NodeInfo getInfo(Node node) throws RepositoryException {
-    NodeType primaryNodeType = node.getPrimaryNodeType();
-    PrimaryTypeInfo primaryTypeInfo = (PrimaryTypeInfo)getTypeInfo(primaryNodeType);
-    return new NodeInfo(this, node, primaryTypeInfo);
   }
 
   public PrimaryTypeInfo getPrimaryTypeInfo(NodeType primaryType) throws RepositoryException {

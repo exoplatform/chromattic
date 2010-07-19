@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.jcr.info;
+package org.chromattic.core.jcr.type;
 
 import javax.jcr.nodetype.NodeType;
 import java.util.Collections;
@@ -26,6 +26,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * <p>Meta information about a primary node type.</p>
+ *
+ * <p>This object does not hold a reference to an existing node type object.</p>
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */

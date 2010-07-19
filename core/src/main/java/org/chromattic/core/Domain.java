@@ -24,7 +24,7 @@ import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
 import org.chromattic.core.mapper.MapperBuilder;
 import org.chromattic.core.mapper.ObjectMapper;
-import org.chromattic.core.jcr.info.NodeInfoManager;
+import org.chromattic.core.jcr.type.TypeManager;
 import org.chromattic.core.query.QueryManager;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
@@ -95,7 +95,7 @@ public class Domain {
   final int rootCreateMode;
 
   /** . */
-  final NodeInfoManager nodeInfoManager;
+  final TypeManager nodeInfoManager;
 
   /** . */
   final QueryManager queryManager;
@@ -154,7 +154,7 @@ public class Domain {
     this.hasNodeOptimized = hasNodeOptimized;
     this.rootNodePath = rootNodePath;
     this.rootNodePathSegments = rootNodePathSegments;
-    this.nodeInfoManager = new NodeInfoManager();
+    this.nodeInfoManager = new TypeManager();
     this.queryManager = new QueryManager(rootNodePath);
     this.rootCreateMode = rootCreateMode;
     this.rootNodeType = rootNodeType;

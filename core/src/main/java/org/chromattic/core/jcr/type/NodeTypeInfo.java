@@ -16,53 +16,55 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.jcr.info;
+package org.chromattic.core.jcr.type;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.PropertyDefinition;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * <p>Meta information about a node type.</p>
+ *
+ * <p>This object does not hold a reference to an existing node type object.</p>
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeInfo {
+public class NodeTypeInfo
+{
 
   /** . */
-  private final NodeInfoManager manager;
+  private final String name;
 
   /** . */
-  private final Node node;
+  private final Map<String, PropertyDefinitionInfo> propertyDefinitions;
 
-  /** . */
-  private final PrimaryTypeInfo primaryNodeTypeInfo;
-
-  protected NodeInfo(NodeInfoManager manager, Node node, PrimaryTypeInfo primaryNodeTypeInfo) {
-    this.manager = manager;
-    this.node = node;
-    this.primaryNodeTypeInfo = primaryNodeTypeInfo;
-  }
-
-  public Node getNode() {
-    return node;
-  }
-
-  public PrimaryTypeInfo getPrimaryNodeTypeInfo() {
-    return primaryNodeTypeInfo;
-  }
-
-  public PropertyDefinitionInfo getPropertyDefinitionInfo(String name) {
-    return primaryNodeTypeInfo.getPropertyDefinitionInfo(name);
-  }
-
-  public PropertyDefinitionInfo findPropertyDefinition(String propertyName) throws RepositoryException {
-    PropertyDefinitionInfo propertyDefinitionInfo = getPropertyDefinitionInfo(propertyName);
-
-    // Should we also try residual definition for mixins ??????
-    if (propertyDefinitionInfo == null) {
-      return getPropertyDefinitionInfo("*");
+  public NodeTypeInfo(NodeType nodeType) {
+    Map<String, PropertyDefinitionInfo> propertyDefinitions = new HashMap<String, PropertyDefinitionInfo>();
+    for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions()) {
+      PropertyDefinitionInfo propertyDefinitionInfo = new PropertyDefinitionInfo(propertyDefinition);
+      propertyDefinitions.put(propertyDefinitionInfo.getName(), propertyDefinitionInfo);
     }
 
     //
+    this.name = nodeType.getName();
+    this.propertyDefinitions = propertyDefinitions;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public PropertyDefinitionInfo getPropertyDefinitionInfo(String name) {
+    return propertyDefinitions.get(name);
+  }
+
+  public PropertyDefinitionInfo findPropertyDefinition(String propertyName) {
+    PropertyDefinitionInfo propertyDefinitionInfo = getPropertyDefinitionInfo(propertyName);
+    if (propertyDefinitionInfo == null) {
+      return getPropertyDefinitionInfo("*");
+    }
     return propertyDefinitionInfo;
   }
 }

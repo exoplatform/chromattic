@@ -20,15 +20,14 @@
 package org.chromattic.core;
 
 import org.chromattic.api.*;
-import org.chromattic.core.jcr.info.NodeTypeInfo;
-import org.chromattic.core.jcr.info.PrimaryTypeInfo;
-import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
+import org.chromattic.core.jcr.type.NodeTypeInfo;
+import org.chromattic.core.jcr.type.PrimaryTypeInfo;
+import org.chromattic.core.jcr.type.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.core.vt2.ValueDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;

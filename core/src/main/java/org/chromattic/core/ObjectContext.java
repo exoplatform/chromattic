@@ -22,7 +22,7 @@ package org.chromattic.core;
 import org.chromattic.api.ChromatticIOException;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.jcr.Path;
-import org.chromattic.core.jcr.info.NodeTypeInfo;
+import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.spi.instrument.MethodHandler;
 
