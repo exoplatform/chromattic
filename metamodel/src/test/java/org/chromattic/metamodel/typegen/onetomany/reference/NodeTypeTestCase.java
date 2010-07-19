@@ -33,11 +33,13 @@ import java.util.Map;
  */
 public class NodeTypeTestCase extends TypeGenTestCase {
 
-  public void testProperty() throws Exception {
-    Map<Class<?>, NodeType> map = assertValid(C1.class, C2.class);
-    NodeType _1 = map.get(C1.class);
+  public void testProperty() throws Exception { testProperty(C1.class, C2.class); }
+
+  protected void testProperty(Class<?> c1class, Class<?> c2class) throws Exception {
+    Map<Class<?>, NodeType> map = assertValid(c1class, c2class);
+    NodeType _1 = map.get(c1class);
     assertEquals(Collections.<String>set(), _1.getPropertyDefinitions().keySet());
-    NodeType _2 = map.get(C2.class);
+    NodeType _2 = map.get(c2class);
     assertEquals(Collections.<String>set("ref"), _2.getPropertyDefinitions().keySet());
     PropertyDefinition stringPD = _2.getPropertyDefinition("ref");
     assertEquals("ref", stringPD.getName());
