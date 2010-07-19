@@ -117,7 +117,7 @@ class PersistentEntityContextState extends EntityContextState {
       //
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
       if (def == null) {
-        throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
+        throw new NoSuchPropertyException("Property " + propertyName + " cannot be loaded from node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
       }
 
