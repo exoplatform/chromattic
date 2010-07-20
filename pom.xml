@@ -424,6 +424,7 @@
            <module>core</module>
            <module>ext</module>
            <module>docs</module>
+           <module>groovy</module>
         </modules>
      </profile>
      
@@ -443,6 +444,7 @@
            <module>core</module>
            <module>ext</module>
            <module>docs</module>
+           <module>groovy</module>
         </modules>
      </profile>
      
