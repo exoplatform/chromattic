@@ -17,9 +17,11 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy;
+package org.chromattic.groovy.typegen;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.chromattic.groovy.GroovyUtils;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -27,6 +29,6 @@ import junit.framework.TestCase;
  */
 public class UtilsTest extends TestCase {
   public void testGetterName() {
-    assertEquals(Utils.getterName("property"), "getProperty");
+    Assert.assertEquals(GroovyUtils.getterName("property"), "getProperty");
   }
 }

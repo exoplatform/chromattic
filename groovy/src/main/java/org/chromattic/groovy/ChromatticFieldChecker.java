@@ -19,16 +19,18 @@
 
 package org.chromattic.groovy;
 
+import org.codehaus.groovy.ast.FieldNode;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class Utils {
+public class ChromatticFieldChecker {
 
-  public static String getterName(String fieldName) {
-    return String.format("get%s%s",
-            fieldName.substring(0, 1).toUpperCase()
-            , fieldName.substring(1)
-            );
+  public void checkChromaticFieldType(FieldNode fieldNode) throws ChromatticASTTransformationException {
+    if (fieldNode.isDynamicTyped())
+      // Stop the visit if field have dynamic type
+      throw new ChromatticASTTransformationException("Please use static types with Chromattic annotations.");
   }
+
 }

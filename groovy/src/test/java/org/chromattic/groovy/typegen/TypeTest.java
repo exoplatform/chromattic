@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy;
+package org.chromattic.groovy.typegen;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
