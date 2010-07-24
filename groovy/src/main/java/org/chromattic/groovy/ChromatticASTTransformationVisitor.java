@@ -36,10 +36,14 @@ public class ChromatticASTTransformationVisitor {
   public void visit(ASTNode[] nodes, SourceUnit sourceUnit) throws ChromatticASTTransformationException {
     for (ClassNode classNode : (List<ClassNode>) sourceUnit.getAST().getClasses()) {
       if (!classNode.isScript()) {
-        for (AnnotationNode annotationNode : (List<AnnotationNode>) classNode.getAnnotations()) {
+        Set<AnnotationNode> annotationNodeSet = new HashSet<AnnotationNode>();
+        annotationNodeSet.addAll(classNode.getAnnotations());
+        for (FieldNode fieldNode : classNode.getFields()) annotationNodeSet.addAll(fieldNode.getAnnotations());
+        for (MethodNode methodNode : classNode.getMethods()) annotationNodeSet.addAll(methodNode.getAnnotations());
+        for (AnnotationNode annotationNode : annotationNodeSet) {
           if (annotationNode.getClassNode().getName().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE)) {
             visitClass(classNode);
-            break;
+          break;
           }
         }
       }

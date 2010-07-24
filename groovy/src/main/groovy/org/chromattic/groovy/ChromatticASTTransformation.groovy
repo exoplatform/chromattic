@@ -24,6 +24,8 @@ import org.codehaus.groovy.ast.ASTNode
 import org.codehaus.groovy.transform.ASTTransformation
 import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.transform.GroovyASTTransformation
+import org.chromattic.api.annotations.Create
+import org.chromattic.api.annotations.Name
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -36,4 +38,5 @@ class ChromatticASTTransformation implements ASTTransformation {
   public void visit(ASTNode[] nodes, SourceUnit sourceUnit) {
     visitor.visit nodes, sourceUnit
   }
+
 }

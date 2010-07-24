@@ -195,9 +195,8 @@ public class GroovyInheritanceTestCase extends InheritanceTestCase {
   }
   
   public void testInvalidAbstractManyToOne() { testInvalidAbstractManyToOne((Class<?>) bGroovyShell.evaluate("B2.class")); }
-  // TODO : visit classes if only one children is a chromattic children
-  //public void testInvalidAbstractOwnerOneToOne() { testInvalidAbstractOwnerOneToOne((Class<?>) dGroovyShell.evaluate("D2.class")); }
-  //public void testInvalidAbstractOneToOne() { testInvalidAbstractOneToOne((Class<?>) eGroovyShell.evaluate("E2.class")); }
-  //public void testInvalidAbstractOneToMany() { testInvalidAbstractOneToMany((Class<?>) fGroovyShell.evaluate("F2.class")); }
+  public void testInvalidAbstractOwnerOneToOne() { testInvalidAbstractOwnerOneToOne((Class<?>) dGroovyShell.evaluate("D2.class")); }
+  public void testInvalidAbstractOneToOne() { testInvalidAbstractOneToOne((Class<?>) eGroovyShell.evaluate("E2.class")); }
+  public void testInvalidAbstractOneToMany() { testInvalidAbstractOneToMany((Class<?>) fGroovyShell.evaluate("F2.class")); }
 
 }
