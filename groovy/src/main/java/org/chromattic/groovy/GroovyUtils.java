@@ -19,17 +19,70 @@
 
 package org.chromattic.groovy;
 
+import org.chromattic.api.annotations.SetterDelegation;
+import org.codehaus.groovy.ast.*;
+import org.codehaus.groovy.ast.expr.*;
+import org.codehaus.groovy.ast.stmt.ExpressionStatement;
+import org.codehaus.groovy.ast.stmt.ReturnStatement;
+import org.codehaus.groovy.syntax.Token;
+import org.codehaus.groovy.syntax.Types;
+
+import java.lang.reflect.Modifier;
+import java.util.List;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class GroovyUtils {
+  public static enum GetSet {
+    GET, SET;
+  }
+
   public static final String ANNOTATIONS_PACKAGE = "org.chromattic.api.annotations.";
 
-  public static String getterName(String fieldName) {
-    return String.format("get%s%s",
-      fieldName.substring(0, 1).toUpperCase()
+  public static String getsetName(GetSet getSet, String fieldName) {
+    return String.format("%s%s%s",
+      getSet.toString().toLowerCase()
+      , fieldName.substring(0, 1).toUpperCase()
       , fieldName.substring(1)
       );
+  }
+
+  public static void createGetter(ClassNode classNode, FieldNode fieldNode) {
+    classNode.addMethod(
+      GroovyUtils.getsetName(GroovyUtils.GetSet.GET, fieldNode.getName())
+      , Modifier.PUBLIC
+      , fieldNode.getType()
+      , new Parameter[]{}
+      , new ClassNode[]{}
+      , new ReturnStatement(new FieldExpression(fieldNode))
+    );
+  }
+
+  public static void createSetter(ClassNode classNode, FieldNode fieldNode) {
+    classNode.addMethod(
+      GroovyUtils.getsetName(GroovyUtils.GetSet.SET, fieldNode.getName())
+      , Modifier.PUBLIC
+      , ClassHelper.VOID_TYPE
+      , new Parameter[]{ new Parameter(fieldNode.getType(), "value") }
+      , new ClassNode[]{}
+      , new ExpressionStatement(new BinaryExpression(new PropertyExpression(new VariableExpression("this"), fieldNode.getName()), Token.newSymbol(Types.EQUAL, 0, 0), new VariableExpression("value")))
+    );
+  }
+
+  public static MethodNode getGetter(ClassNode classNode, FieldNode fieldNode) {
+    return classNode.getGetterMethod(GroovyUtils.getsetName(GroovyUtils.GetSet.GET, fieldNode.getName()));
+  }
+
+  public static MethodNode getSetter(ClassNode classNode, FieldNode fieldNode) {
+    return classNode.getSetterMethod(GroovyUtils.getsetName(GroovyUtils.GetSet.SET, fieldNode.getName()));
+  }
+
+  public static boolean isChromatticAnnoted(FieldNode fieldNode) {
+    for (AnnotationNode annotationNode : (List<AnnotationNode>) fieldNode.getAnnotations()) {
+      if (annotationNode.getClassNode().getName().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE)) return true;
+    }
+    return false;
   }
 }

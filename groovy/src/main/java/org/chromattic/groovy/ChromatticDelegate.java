@@ -20,6 +20,8 @@
 package org.chromattic.groovy;
 
 import groovy.lang.GroovyInterceptable;
+import org.chromattic.groovy.exceptions.InvokeMethodDoNotExistException;
+import org.chromattic.spi.instrument.MethodHandler;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.expr.*;
 import org.codehaus.groovy.ast.stmt.*;
@@ -46,7 +48,6 @@ public class ChromatticDelegate {
    */
   public void addChromatticInvokeMethod(ClassNode classNode) {
 
-    if (getInvokeMethod(classNode) != null) return;
     //System.out.println("[CHROMATTIC] Add invokeMethod");
     // generate :
     //   public Object invokeMethod(String m, Object p) {
@@ -91,10 +92,15 @@ public class ChromatticDelegate {
           )
       )
     );
+
+    try {
+      plugChromatticDelegation(classNode);
+    } catch (InvokeMethodDoNotExistException ignore) { }
   }
 
-  public void plugChromatticDelegation(ClassNode classNode) {
+  public void plugChromatticDelegation(ClassNode classNode) throws InvokeMethodDoNotExistException {
     MethodNode methodNode = getInvokeMethod(classNode);
+    if (methodNode == null) throw new InvokeMethodDoNotExistException("MOP method don't exist");
     methodNode.setCode(
       new BlockStatement(
         new Statement[] {
@@ -106,10 +112,19 @@ public class ChromatticDelegate {
     );
   }
 
+  public void addInvokerField(ClassNode classNode) {
+    classNode.addField(
+      "chromatticInvoker"
+      , Modifier.PRIVATE
+      , new ClassNode(MethodHandler.class)
+      , new ConstantExpression(null)
+    );
+  }
+
   private Statement createChromatticDelegation() {
     // generate :
     //   if (this.class.getMethod(m, (Class<?>[]) p.collect { it.class }).getAnnotations().any {it.toString().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE, 1)})
-    //     return new ChromatticInvoker().chromatticInvoke(this, m, p);
+    //     return chromatticInvoker.invoke(this, m, p);
     return new IfStatement(
       new BooleanExpression(
         new MethodCallExpression(
@@ -140,15 +155,28 @@ public class ChromatticDelegate {
       )
       , new ReturnStatement(
           new MethodCallExpression(
-            new ConstructorCallExpression(
-              new ClassNode(ChromatticInvoker.class)
-              , new ArgumentListExpression(new Expression[]{})
-            )
-            , "chromatticInvoke"
+            new VariableExpression("chromatticInvoker")
+            , "invoke"
             , new ArgumentListExpression(
                 new Expression[] {
                   new VariableExpression("this")
-                  , new VariableExpression("m")
+                  , new MethodCallExpression(
+                      new VariableExpression("class")
+                      , "getMethod"
+                      , new ArgumentListExpression(
+                          new Expression[] {
+                            new VariableExpression("m")
+                            , new CastExpression(
+                                new ClassNode(Class[].class)
+                                , new MethodCallExpression(
+                                    new VariableExpression("p")
+                                    , "collect"
+                                    , createArrayToClassArrayClosure()
+                                )
+                              )
+                          }
+                      )
+                    )
                   , new VariableExpression("p")
                 }
             )

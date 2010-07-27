@@ -17,21 +17,26 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy;
-
-import org.chromattic.groovy.exceptions.ChromatticASTTransformationException;
-import org.codehaus.groovy.ast.FieldNode;
+package org.chromattic.groovy.exceptions;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ChromatticFieldChecker {
+public class InvokeMethodDoNotExistException extends Exception {
 
-  public void checkChromaticFieldType(FieldNode fieldNode) throws ChromatticASTTransformationException {
-    if (fieldNode.isDynamicTyped())
-      // Stop the visit if field have dynamic type
-      throw new ChromatticASTTransformationException("Please use static types with Chromattic annotations.");
+  public InvokeMethodDoNotExistException() {
   }
 
+  public InvokeMethodDoNotExistException(String message) {
+    super(message);
+  }
+
+  public InvokeMethodDoNotExistException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public InvokeMethodDoNotExistException(Throwable cause) {
+    super(cause);
+  }
 }

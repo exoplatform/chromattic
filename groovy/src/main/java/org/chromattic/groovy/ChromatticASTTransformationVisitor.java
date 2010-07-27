@@ -19,6 +19,7 @@
 
 package org.chromattic.groovy;
 
+import org.chromattic.groovy.exceptions.*;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.control.SourceUnit;
 
@@ -32,10 +33,12 @@ public class ChromatticASTTransformationVisitor {
   private final ChromatticAnnotationMover annotationMover = new ChromatticAnnotationMover();
   private final ChromatticFieldChecker fieldChecker = new ChromatticFieldChecker();
   private final ChromatticDelegate delegate = new ChromatticDelegate();
+  private final ChromatticConstructor constructor = new ChromatticConstructor();
 
   public void visit(ASTNode[] nodes, SourceUnit sourceUnit) throws ChromatticASTTransformationException {
     for (ClassNode classNode : (List<ClassNode>) sourceUnit.getAST().getClasses()) {
       if (!classNode.isScript()) {
+        for (Object methodNode : classNode.getMethods()) System.out.println(methodNode);
         Set<AnnotationNode> annotationNodeSet = new HashSet<AnnotationNode>();
         annotationNodeSet.addAll(classNode.getAnnotations());
         for (FieldNode fieldNode : classNode.getFields()) annotationNodeSet.addAll(fieldNode.getAnnotations());
@@ -51,22 +54,46 @@ public class ChromatticASTTransformationVisitor {
   }
 
   private void visitClass(ClassNode classNode) throws ChromatticASTTransformationException {
+    try {
+      constructor.setPrivateDefaultConstructor(classNode);
+    } catch (DefaultConstructorNotFound e) {
+      constructor.generatePrivateDefaultConstructor(classNode);
+    }
+    constructor.generatePrivateHandlerConstructor(classNode);
 
     // Browse children to adapt groovy structure
     for (FieldNode fieldNode : classNode.getFields()) {
-      for (AnnotationNode annotationNode : (List<AnnotationNode>)fieldNode.getAnnotations()) {
+      if (GroovyUtils.isChromatticAnnoted(fieldNode)) {
+
+        //
+        try {
+          annotationMover.addSetterDelegationAnnotation(classNode, fieldNode);
+        } catch (SetterDoNotExistException e) {
+          annotationMover.generateSetter(classNode, fieldNode);
+        }
+      }
+      for (AnnotationNode annotationNode : (List<AnnotationNode>) fieldNode.getAnnotations()) {
         if (annotationNode.getClassNode().getName().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE)) {
           fieldChecker.checkChromaticFieldType(fieldNode);
-          annotationMover.moveFieldAnnotationToMethod(classNode, annotationNode, fieldNode);
+
+          //
+          try {
+            annotationMover.addFieldAnnotationToMethod(classNode, fieldNode, annotationNode);
+          } catch (GetterDoNotExistException e) {
+            annotationMover.generateGetter(classNode, fieldNode, annotationNode);
+          }
         }
       }
       annotationMover.removeChromatticAnnotation(fieldNode);
     }
 
     // Transform GroovyObject to ChromatticObject
-    //System.out.println("[CHROMATTIC] Transform " + classNode.getName() + " to chromattic class");
     delegate.setGroovyInterceptable(classNode);
-    delegate.addChromatticInvokeMethod(classNode);
-    delegate.plugChromatticDelegation(classNode);
+    delegate.addInvokerField(classNode);
+    try {
+      delegate.plugChromatticDelegation(classNode);
+    } catch (InvokeMethodDoNotExistException e) {
+      delegate.addChromatticInvokeMethod(classNode);
+    }
   }
 }

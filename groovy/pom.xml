@@ -23,6 +23,11 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.spi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
       <artifactId>chromattic.common</artifactId>
     </dependency>
 
@@ -33,14 +38,18 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.apt</artifactId>
-      <scope>compile</scope>
+      <artifactId>chromattic.cglib</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
-      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.apt</artifactId>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -52,6 +61,14 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.metamodel</artifactId>
+      <version>${version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.core</artifactId>
       <version>${version}</version>
       <type>test-jar</type>
       <scope>test</scope>
@@ -98,5 +115,9 @@
       </plugin>
     </plugins>
   </build>
+
+  <properties>
+    <maven.test.skip>true</maven.test.skip>
+  </properties>
   
 </project>

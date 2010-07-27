@@ -29,6 +29,7 @@ import org.chromattic.groovy.GroovyUtils;
  */
 public class UtilsTest extends TestCase {
   public void testGetterName() {
-    Assert.assertEquals(GroovyUtils.getterName("property"), "getProperty");
+    Assert.assertEquals(GroovyUtils.getsetName(GroovyUtils.GetSet.GET, "property"), "getProperty");
+    Assert.assertEquals(GroovyUtils.getsetName(GroovyUtils.GetSet.SET, "property"), "setProperty");
   }
 }
