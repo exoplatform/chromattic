@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.typegen.onetomany.reference;
+package org.chromattic.groovy.metamodel.typegen.onetomany.reference;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;

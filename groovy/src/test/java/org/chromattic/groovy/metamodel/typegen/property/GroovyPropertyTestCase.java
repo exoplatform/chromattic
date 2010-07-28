@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.typegen.property;
+package org.chromattic.groovy.metamodel.typegen.property;
 
 import groovy.lang.GroovyClassLoader;
 import org.chromattic.metamodel.typegen.property.PropertyTestCase;

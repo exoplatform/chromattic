@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.typegen.attribute;
+package org.chromattic.groovy.metamodel.typegen.attribute;
 
 import groovy.lang.GroovyClassLoader;
 import org.chromattic.metamodel.typegen.attribute.MappingTestCase;

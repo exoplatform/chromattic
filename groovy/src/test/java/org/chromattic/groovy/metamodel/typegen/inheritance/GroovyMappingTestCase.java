@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.typegen.inheritance;
+package org.chromattic.groovy.metamodel.typegen.inheritance;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
