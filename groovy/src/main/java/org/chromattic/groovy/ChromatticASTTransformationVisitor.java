@@ -68,7 +68,7 @@ public class ChromatticASTTransformationVisitor {
         //
         try {
           annotationMover.addSetterDelegationAnnotation(classNode, fieldNode);
-        } catch (SetterDoNotExistException e) {
+        } catch (SetterNoSuchException e) {
           annotationMover.generateSetter(classNode, fieldNode);
         }
       }
@@ -79,7 +79,7 @@ public class ChromatticASTTransformationVisitor {
           //
           try {
             annotationMover.addFieldAnnotationToMethod(classNode, fieldNode, annotationNode);
-          } catch (GetterDoNotExistException e) {
+          } catch (GetterNoSuchException e) {
             annotationMover.generateGetter(classNode, fieldNode, annotationNode);
           }
         }
@@ -92,7 +92,7 @@ public class ChromatticASTTransformationVisitor {
     delegate.addInvokerField(classNode);
     try {
       delegate.plugChromatticDelegation(classNode);
-    } catch (InvokeMethodDoNotExistException e) {
+    } catch (InvokeMethodNoSuchException e) {
       delegate.addChromatticInvokeMethod(classNode);
     }
   }

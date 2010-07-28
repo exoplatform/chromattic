@@ -20,7 +20,7 @@
 package org.chromattic.groovy;
 
 import groovy.lang.GroovyInterceptable;
-import org.chromattic.groovy.exceptions.InvokeMethodDoNotExistException;
+import org.chromattic.groovy.exceptions.InvokeMethodNoSuchException;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.expr.*;
@@ -95,12 +95,12 @@ public class ChromatticDelegate {
 
     try {
       plugChromatticDelegation(classNode);
-    } catch (InvokeMethodDoNotExistException ignore) { }
+    } catch (InvokeMethodNoSuchException ignore) { }
   }
 
-  public void plugChromatticDelegation(ClassNode classNode) throws InvokeMethodDoNotExistException {
+  public void plugChromatticDelegation(ClassNode classNode) throws InvokeMethodNoSuchException {
     MethodNode methodNode = getInvokeMethod(classNode);
-    if (methodNode == null) throw new InvokeMethodDoNotExistException("MOP method don't exist");
+    if (methodNode == null) throw new InvokeMethodNoSuchException("MOP method don't exist");
     methodNode.setCode(
       new BlockStatement(
         new Statement[] {

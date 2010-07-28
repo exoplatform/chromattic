@@ -23,20 +23,20 @@ package org.chromattic.groovy.exceptions;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class InvokeMethodDoNotExistException extends Exception {
+public class InvokeMethodNoSuchException extends Exception {
 
-  public InvokeMethodDoNotExistException() {
+  public InvokeMethodNoSuchException() {
   }
 
-  public InvokeMethodDoNotExistException(String message) {
+  public InvokeMethodNoSuchException(String message) {
     super(message);
   }
 
-  public InvokeMethodDoNotExistException(String message, Throwable cause) {
+  public InvokeMethodNoSuchException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public InvokeMethodDoNotExistException(Throwable cause) {
+  public InvokeMethodNoSuchException(Throwable cause) {
     super(cause);
   }
 }

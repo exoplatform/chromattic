@@ -23,19 +23,19 @@ package org.chromattic.groovy.exceptions;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SetterDoNotExistException extends Exception {
-  public SetterDoNotExistException() {
+public class GetterNoSuchException extends Exception {
+  public GetterNoSuchException() {
   }
 
-  public SetterDoNotExistException(String message) {
+  public GetterNoSuchException(String message) {
     super(message);
   }
 
-  public SetterDoNotExistException(String message, Throwable cause) {
+  public GetterNoSuchException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public SetterDoNotExistException(Throwable cause) {
+  public GetterNoSuchException(Throwable cause) {
     super(cause);
   }
 }
