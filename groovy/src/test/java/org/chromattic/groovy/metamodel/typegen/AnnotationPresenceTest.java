@@ -53,13 +53,31 @@ public class AnnotationPresenceTest extends TestCase {
   }
 
   public void testAnnotationImplicitGetterPresent() {
-    Object eval = groovyShell.evaluate("new A().getClass().getDeclaredMethod(\"getStringTypedChromattic\").getAnnotations().length");
-    assertEquals(eval, 1);
+    assertTrue((Boolean) groovyShell.evaluate(
+      "import org.chromattic.api.annotations.Name\n" +
+      "new A().getClass().getDeclaredMethod(\"getStringTypedChromattic\").isAnnotationPresent(Name.class)")
+    );
   }
 
   public void testAnnotationExplicitGetterPresent() {
-    Object eval = groovyShell.evaluate("new A().getClass().getDeclaredMethod(\"getStringTypedChromatticExplicitGetter\").getAnnotations().length");
-    assertEquals(eval, 1);
+    assertTrue((Boolean) groovyShell.evaluate(
+      "import org.chromattic.api.annotations.Property\n" +
+      "new A().getClass().getDeclaredMethod(\"getStringTypedChromatticExplicitGetter\").isAnnotationPresent(Property.class)")
+    );
+  }
+
+  public void testAnnotationImplicitSetterPresent() {
+    assertTrue((Boolean) groovyShell.evaluate(
+      "import org.chromattic.api.annotations.SetterDelegation\n" +
+      "new A().getClass().getDeclaredMethod(\"setStringTypedChromattic\", String.class).isAnnotationPresent(SetterDelegation.class)")
+    );
+  }
+
+  public void testAnnotationExplicitSetterPresent() {
+    assertTrue((Boolean) groovyShell.evaluate(
+      "import org.chromattic.api.annotations.SetterDelegation\n" +
+      "new A().getClass().getDeclaredMethod(\"setStringTypedChromatticExplicitGetter\", String.class).isAnnotationPresent(SetterDelegation.class)")
+    );
   }
 
 }

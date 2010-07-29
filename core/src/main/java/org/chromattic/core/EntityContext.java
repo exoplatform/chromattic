@@ -248,6 +248,7 @@ public final class EntityContext extends ObjectContext {
   }
 
   public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+    System.out.println("EntityContext : " + method);
     return mapper.invoke(this, method, args);
   }
 

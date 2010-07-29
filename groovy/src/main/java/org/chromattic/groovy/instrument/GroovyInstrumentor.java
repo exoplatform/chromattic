@@ -25,6 +25,7 @@ import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.spi.instrument.ProxyFactory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -38,19 +39,13 @@ public class GroovyInstrumentor implements Instrumentor {
   public MethodHandler getInvoker(Object proxy) {
     //if (proxy instanceof Instrumented) {
       try {
-        Field f = proxy.getClass().getDeclaredField("chromatticInvoker");
-        boolean initialIsAccessible = f.isAccessible();
-        if (!initialIsAccessible) {
-          f.setAccessible(true);
-        }
-        Object o = f.get(proxy);
-        f.setAccessible(initialIsAccessible);
-        return (MethodHandler) o;
+          return (MethodHandler) proxy.getClass().getMethod("getChromatticInvoker").invoke(proxy);
       }
-      catch (NoSuchFieldException e) {
+      catch (NoSuchMethodException e) {
         throw new AssertionError(e);
-      }
-      catch (IllegalAccessException e) {
+      } catch (InvocationTargetException e) {
+        throw new AssertionError(e);
+      } catch (IllegalAccessException e) {
         throw new AssertionError(e);
       }
     /*} else {

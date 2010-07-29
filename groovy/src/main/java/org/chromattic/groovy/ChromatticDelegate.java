@@ -42,191 +42,153 @@ public class ChromatticDelegate {
     classNode.addInterface(new ClassNode(GroovyInterceptable.class));
   }
 
-  /**
-   * Add MOP method if needed
-   * @param classNode
-   */
-  public void addChromatticInvokeMethod(ClassNode classNode) {
-
-    //System.out.println("[CHROMATTIC] Add invokeMethod");
-    // generate :
-    //   public Object invokeMethod(String m, Object p) {
-    //     return this.class.getMethod(m, (Class<?>[]) p.collect { it.class }).invoke(this, p);
-    //   }
-    
-    classNode.addMethod(
-      "invokeMethod"
-      , Modifier.PUBLIC
-      , new ClassNode(Object.class)
-      , new Parameter[] {
-          new Parameter(new ClassNode(String.class), "m")
-          , new Parameter(new ClassNode(Object.class), "p")
-        }
-      , new ClassNode[] {}
-      , new ReturnStatement(
-          new MethodCallExpression(
-            new MethodCallExpression(
-              new VariableExpression("class")
-              , "getMethod"
-              , new ArgumentListExpression(
-                  new Expression[] {
-                    new VariableExpression("m")
-                    , new CastExpression(
-                        new ClassNode(Class[].class)
-                        , new MethodCallExpression(
-                            new VariableExpression("p")
-                            , "collect"
-                            , createArrayToClassArrayClosure()
-                        )
-                      )
-                  }
-              )
-            )
-            , new ConstantExpression("invoke")
-            , new ArgumentListExpression(
-                new Expression[] {
-                  new VariableExpression("this")
-                  , new VariableExpression("p")
-                }
-              )
-          )
-      )
+  public void addInvokerField(ClassNode classNode) {
+    GroovyUtils.createGetter(
+      classNode
+      , classNode.addField(
+          "chromatticInvoker"
+          , Modifier.PRIVATE
+          , new ClassNode(MethodHandler.class)
+          , new ConstantExpression(null)
+        )
     );
-
-    try {
-      plugChromatticDelegation(classNode);
-    } catch (InvokeMethodNoSuchException ignore) { }
   }
 
-  public void plugChromatticDelegation(ClassNode classNode) throws InvokeMethodNoSuchException {
-    MethodNode methodNode = getInvokeMethod(classNode);
-    if (methodNode == null) throw new InvokeMethodNoSuchException("MOP method don't exist");
+  public void plugGetProperty(ClassNode classNode) throws NoSuchMethodException {
+    MethodNode methodNode = classNode.getMethod("getProperty", new Parameter[]{new Parameter(ClassHelper.STRING_TYPE, "p")});
+    if (methodNode == null) throw new NoSuchMethodException();
+
+    //
     methodNode.setCode(
       new BlockStatement(
         new Statement[] {
-          createChromatticDelegation()
-          , methodNode.getCode()
-        }
-        , methodNode.getVariableScope()
-      )
-    );
-  }
-
-  public void addInvokerField(ClassNode classNode) {
-    classNode.addField(
-      "chromatticInvoker"
-      , Modifier.PRIVATE
-      , new ClassNode(MethodHandler.class)
-      , new ConstantExpression(null)
-    );
-  }
-
-  private Statement createChromatticDelegation() {
-    // generate :
-    //   if (this.class.getMethod(m, (Class<?>[]) p.collect { it.class }).getAnnotations().any {it.toString().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE, 1)})
-    //     return chromatticInvoker.invoke(this, m, p);
-    return new IfStatement(
-      new BooleanExpression(
-        new MethodCallExpression(
-          new MethodCallExpression(
-            new MethodCallExpression(
-              new VariableExpression("class")
-              , "getMethod"
+          new ReturnStatement(
+            new StaticMethodCallExpression(
+              new ClassNode(ChromatticGroovyInvocation.class)
+              , "getProperty"
               , new ArgumentListExpression(
                   new Expression[] {
-                    new VariableExpression("m")
-                    , new CastExpression(
-                        new ClassNode(Class[].class)
-                        , new MethodCallExpression(
-                            new VariableExpression("p")
-                            , "collect"
-                            , createArrayToClassArrayClosure()
-                        )
-                      )
+                    new VariableExpression("this")
+                    , new VariableExpression("p")
+                    , new FieldExpression(classNode.getField("chromatticInvoker"))
                   }
               )
             )
-            , new ConstantExpression("getAnnotations")
-            , new ArgumentListExpression(new Expression[]{})
           )
-          , "any"
-          , createChromatticAnnotationPresentClosure() // Closure
-        )
+        }
+        ,new VariableScope()
       )
-      , new ReturnStatement(
-          new MethodCallExpression(
-            new VariableExpression("chromatticInvoker")
-            , "invoke"
-            , new ArgumentListExpression(
-                new Expression[] {
-                  new VariableExpression("this")
-                  , new MethodCallExpression(
-                      new VariableExpression("class")
-                      , "getMethod"
-                      , new ArgumentListExpression(
-                          new Expression[] {
-                            new VariableExpression("m")
-                            , new CastExpression(
-                                new ClassNode(Class[].class)
-                                , new MethodCallExpression(
-                                    new VariableExpression("p")
-                                    , "collect"
-                                    , createArrayToClassArrayClosure()
-                                )
-                              )
-                          }
-                      )
-                    )
-                  , new VariableExpression("p")
-                }
-            )
-          )
-      )
-      , new EmptyStatement()
     );
   }
 
-  private MethodNode getInvokeMethod(ClassNode classNode) {
-    return classNode.getMethod(
-      "invokeMethod"
+  public void plugSetProperty(ClassNode classNode) throws NoSuchMethodException {
+    MethodNode methodNode = classNode.getMethod(
+      "setProperty"
       , new Parameter[] {
-        new Parameter(new ClassNode(String.class), "m")
-        , new Parameter(new ClassNode(Object.class), "p")
+          new Parameter(ClassHelper.STRING_TYPE, "p")
+          , new Parameter(ClassHelper.OBJECT_TYPE, "v")
       }
     );
-  }
+    if (methodNode == null) throw new NoSuchMethodException();
 
-  private ClosureExpression createArrayToClassArrayClosure() {
-    ClosureExpression closureExpression =
-      new ClosureExpression (
-        new Parameter[] {}
-        , new ExpressionStatement(new PropertyExpression(new VariableExpression("it"), "class"))
-      );
-    closureExpression.setVariableScope(new VariableScope());
-    return closureExpression;
-  }
-
-  private ClosureExpression createChromatticAnnotationPresentClosure() {
-    ClosureExpression closureExpression =
-      new ClosureExpression (
-        new Parameter[] {}
-        , new ExpressionStatement(
-            new MethodCallExpression(
-              new MethodCallExpression(
-                new VariableExpression("it")
-                , "toString"
-                , new ArgumentListExpression(new Expression[]{})
+    //
+    methodNode.setCode(
+      new BlockStatement(
+        new Statement[] {
+          new ExpressionStatement(
+            new StaticMethodCallExpression(
+              new ClassNode(ChromatticGroovyInvocation.class)
+              , "setProperty"
+              , new ArgumentListExpression(
+                  new Expression[] {
+                    new VariableExpression("this")
+                    , new VariableExpression("p")
+                    , new VariableExpression("v")
+                    , new FieldExpression(classNode.getField("chromatticInvoker"))
+                  }
               )
-              , "startsWith"
-              , new ArgumentListExpression(new Expression[]{
-                  new ConstantExpression(GroovyUtils.ANNOTATIONS_PACKAGE)
-                  , new ConstantExpression(1)
-              })
             )
           )
-      );
-    closureExpression.setVariableScope(new VariableScope());
-    return closureExpression;
+        }
+        ,new VariableScope()
+      )
+    );
+  }
+
+  public void plugInvokeMethod(ClassNode classNode) throws NoSuchMethodException {
+    MethodNode methodNode = classNode.getMethod(
+      "invokeMethod"
+      , new Parameter[] {
+          new Parameter(ClassHelper.STRING_TYPE, "m")
+          , new Parameter(ClassHelper.OBJECT_TYPE, "p")
+      }
+    );
+    if (methodNode == null) throw new NoSuchMethodException();
+
+    //
+    methodNode.setCode(
+      new BlockStatement(
+        new Statement[] {
+          new ExpressionStatement(
+            new StaticMethodCallExpression(
+              new ClassNode(ChromatticGroovyInvocation.class)
+              , "invokeMethod"
+              , new ArgumentListExpression(
+                  new Expression[] {
+                    new VariableExpression("this")
+                    , new VariableExpression("m")
+                    , new VariableExpression("p")
+                    , new FieldExpression(classNode.getField("chromatticInvoker"))
+                  }
+              )
+            )
+          )
+        }
+        ,new VariableScope()
+      )
+    );
+  }
+
+  public void generateGetProperty(ClassNode classNode) {
+    classNode.addMethod(
+      "getProperty"
+      , Modifier.PUBLIC
+      , ClassHelper.OBJECT_TYPE
+      , new Parameter[] { new Parameter(ClassHelper.STRING_TYPE, "p") }
+      , new ClassNode[] {}
+      , new EmptyStatement()
+    );
+    try {
+      plugGetProperty(classNode);
+    } catch (NoSuchMethodException ignore) { }
+  }
+
+  public void generateSetProperty(ClassNode classNode) {
+    classNode.addMethod(
+      "setProperty"
+      , Modifier.PUBLIC
+      , ClassHelper.VOID_TYPE
+      , new Parameter[] { new Parameter(ClassHelper.STRING_TYPE, "p"), new Parameter(ClassHelper.OBJECT_TYPE, "v") }
+      , new ClassNode[] {}
+      , new EmptyStatement()
+    );
+    try {
+      plugSetProperty(classNode);
+    } catch (NoSuchMethodException ignore) { }
+  }
+
+  public void generateInvokeMethod(ClassNode classNode) {
+    classNode.addMethod(
+      "invokeMethod"
+      , Modifier.PUBLIC
+      , ClassHelper.OBJECT_TYPE
+      , new Parameter[] { new Parameter(ClassHelper.STRING_TYPE, "m"), new Parameter(ClassHelper.OBJECT_TYPE, "p") }
+      , new ClassNode[] {}
+      , new EmptyStatement()
+    );
+    try {
+      plugInvokeMethod(classNode);
+    } catch (NoSuchMethodException ignore) { }
   }
   
 }

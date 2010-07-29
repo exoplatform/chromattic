@@ -32,23 +32,19 @@ import java.lang.reflect.Field;
 public class GroovyProxyFactory<O> implements ProxyFactory<O> {
 
   /** . */
-  private final Class<O> clazz;
+  private final Constructor<? extends O> ctor;
 
   public GroovyProxyFactory(Class<O> clazz) {
-    this.clazz = clazz;
+    try {
+      ctor = clazz.getConstructor(MethodHandler.class);
+    } catch (Exception e) {
+      throw new AssertionError(e);
+    }
   }
 
   public O createProxy(MethodHandler invoker) {
     try {
-      Constructor<O> constructor = clazz.getConstructor(MethodHandler.class);
-      return constructor.newInstance(invoker);
-      /*O o = clazz.newInstance();
-      Field field = clazz.getDeclaredField("chromatticInvoker");
-      boolean initialIsAccessible = field.isAccessible();
-      if (!initialIsAccessible) field.setAccessible(true);
-      field.set(o, invoker);
-      field.setAccessible(initialIsAccessible);*/
-      //return o;
+      return ctor.newInstance(invoker);
     }
     catch (Exception e) {
       throw new AssertionError(e);

@@ -23,6 +23,8 @@ import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import junit.framework.TestCase;
 
+import java.lang.reflect.Modifier;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
@@ -30,20 +32,28 @@ import junit.framework.TestCase;
 public class ImplementTest extends TestCase {
   private static final GroovyClassLoader aClassLoader = new GroovyClassLoader();
   private static final GroovyClassLoader bClassLoader = new GroovyClassLoader();
+  private static final GroovyClassLoader cClassLoader = new GroovyClassLoader();
 
   private static final GroovyShell aShell = new GroovyShell(aClassLoader);
   private static final GroovyShell bShell = new GroovyShell(bClassLoader);
+  private static final GroovyShell cShell = new GroovyShell(cClassLoader);
 
   public ImplementTest() {
     aClassLoader.parseClass(
       "import org.chromattic.api.annotations.PrimaryType\n" +
       "@PrimaryType( name=\"a\")" +
-      "class A {}\n"
+      "class A { public A() {} }\n"
     );
     
     bClassLoader.parseClass(
       "import org.chromattic.api.annotations.Name\n" +
-      "class A { @Name String name }\n"
+      "class A {\n" +
+      "  @Name String name\n" +
+      "  public Integer m() {\n" +
+      "    return 3\n" +
+      "  }\n" +
+      "  def f = 5\n" +
+      "}\n"
     );
   }
 
@@ -51,8 +61,22 @@ public class ImplementTest extends TestCase {
     assertEquals(1, aShell.evaluate("new A().getClass().getInterfaces().length"));
     assertTrue((Boolean) aShell.evaluate("new A().getClass().getInterfaces()[0].equals(GroovyInterceptable.class)"));
   }
+
   public void testGroovyInterceptableWithChromatticChildren() throws Exception {
     assertEquals(1, bShell.evaluate("new A().getClass().getInterfaces().length"));
     assertTrue((Boolean) bShell.evaluate("new A().getClass().getInterfaces()[0].equals(GroovyInterceptable.class)"));
+  }
+
+  /*public void testPrivateConstructor() throws Exception {
+    assertEquals(Modifier.PRIVATE, aShell.evaluate("A.class.getDeclaredConstructor().getModifiers()"));
+    assertEquals(Modifier.PRIVATE, bShell.evaluate("A.class.getDeclaredConstructor().getModifiers()"));
+  }*/
+
+  public void testNoChromatticMethod() throws Exception {
+    assertEquals(3, bShell.evaluate("new A().m()"));
+  }
+
+  public void testNoChromatticField() throws Exception {
+    assertEquals(5, bShell.evaluate("new A().f"));
   }
 }

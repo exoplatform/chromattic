@@ -59,7 +59,7 @@ public class ChromatticConstructor {
     );
   }
 
-  public void generatePrivateHandlerConstructor(ClassNode classNode) {
+  public void generatePublicHandlerConstructor(ClassNode classNode) {
     classNode.addConstructor(
       Modifier.PUBLIC
       , new Parameter[]{ new Parameter(new ClassNode(MethodHandler.class), "chromatticInvoker") }

@@ -193,7 +193,7 @@ public class GroovyInheritanceTestCase extends InheritanceTestCase {
             , (Class<?>) iGroovyShell.evaluate("I3.class")
             , (Class<?>) iGroovyShell.evaluate("I4.class"));
   }
-  
+
   public void testInvalidAbstractManyToOne() { testInvalidAbstractManyToOne((Class<?>) bGroovyShell.evaluate("B2.class")); }
   public void testInvalidAbstractOwnerOneToOne() { testInvalidAbstractOwnerOneToOne((Class<?>) dGroovyShell.evaluate("D2.class")); }
   public void testInvalidAbstractOneToOne() { testInvalidAbstractOneToOne((Class<?>) eGroovyShell.evaluate("E2.class")); }
