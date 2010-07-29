@@ -56,7 +56,7 @@ public class ChromatticASTTransformationVisitor {
   private void visitClass(ClassNode classNode) throws ChromatticASTTransformationException {
     try {
       constructor.setPrivateDefaultConstructor(classNode);
-    } catch (DefaultConstructorNotFound e) {
+    } catch (NoSuchDefaultConstructor e) {
       constructor.generatePrivateDefaultConstructor(classNode);
     }
     constructor.generatePublicHandlerConstructor(classNode);
@@ -68,7 +68,7 @@ public class ChromatticASTTransformationVisitor {
         //
         try {
           annotationMover.addSetterDelegationAnnotation(classNode, fieldNode);
-        } catch (SetterNoSuchException e) {
+        } catch (NoSuchSetterException e) {
           annotationMover.generateSetter(classNode, fieldNode);
         }
       }
@@ -79,7 +79,7 @@ public class ChromatticASTTransformationVisitor {
           //
           try {
             annotationMover.addFieldAnnotationToMethod(classNode, fieldNode, annotationNode);
-          } catch (GetterNoSuchException e) {
+          } catch (NoSuchGetterException e) {
             annotationMover.generateGetter(classNode, fieldNode, annotationNode);
           }
         }

@@ -19,7 +19,7 @@
 
 package org.chromattic.groovy;
 
-import org.chromattic.groovy.exceptions.DefaultConstructorNotFound;
+import org.chromattic.groovy.exceptions.NoSuchDefaultConstructor;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.ast.ConstructorNode;
@@ -41,13 +41,13 @@ import java.util.List;
  * @version $Revision$
  */
 public class ChromatticConstructor {
-  public void setPrivateDefaultConstructor(ClassNode classNode) throws DefaultConstructorNotFound {
+  public void setPrivateDefaultConstructor(ClassNode classNode) throws NoSuchDefaultConstructor {
     for(ConstructorNode constructorNode : (List<ConstructorNode>) classNode.getDeclaredConstructors()) {
       if (constructorNode.getParameters().length == 0)
         constructorNode.setModifiers(Modifier.PRIVATE);
       return;
     }
-    throw new DefaultConstructorNotFound("No default constructor found for the class : " + classNode.getName());
+    throw new NoSuchDefaultConstructor("No default constructor found for the class : " + classNode.getName());
   }
 
   public void generatePrivateDefaultConstructor(ClassNode classNode) {

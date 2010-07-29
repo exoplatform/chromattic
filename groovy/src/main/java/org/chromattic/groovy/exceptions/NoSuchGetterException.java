@@ -23,19 +23,19 @@ package org.chromattic.groovy.exceptions;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GetterNoSuchException extends Exception {
-  public GetterNoSuchException() {
+public class NoSuchGetterException extends Exception {
+  public NoSuchGetterException() {
   }
 
-  public GetterNoSuchException(String message) {
+  public NoSuchGetterException(String message) {
     super(message);
   }
 
-  public GetterNoSuchException(String message, Throwable cause) {
+  public NoSuchGetterException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public GetterNoSuchException(Throwable cause) {
+  public NoSuchGetterException(Throwable cause) {
     super(cause);
   }
 }

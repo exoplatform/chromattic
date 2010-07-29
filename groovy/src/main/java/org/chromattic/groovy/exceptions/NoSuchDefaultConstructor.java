@@ -23,20 +23,19 @@ package org.chromattic.groovy.exceptions;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class InvokeMethodNoSuchException extends Exception {
-
-  public InvokeMethodNoSuchException() {
+public class NoSuchDefaultConstructor extends Exception {
+  public NoSuchDefaultConstructor() {
   }
 
-  public InvokeMethodNoSuchException(String message) {
+  public NoSuchDefaultConstructor(String message) {
     super(message);
   }
 
-  public InvokeMethodNoSuchException(String message, Throwable cause) {
+  public NoSuchDefaultConstructor(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public InvokeMethodNoSuchException(Throwable cause) {
+  public NoSuchDefaultConstructor(Throwable cause) {
     super(cause);
   }
 }

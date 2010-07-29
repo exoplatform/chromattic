@@ -20,7 +20,6 @@
 package org.chromattic.groovy;
 
 import groovy.lang.GroovyInterceptable;
-import org.chromattic.groovy.exceptions.InvokeMethodNoSuchException;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.expr.*;

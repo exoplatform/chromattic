@@ -23,19 +23,19 @@ package org.chromattic.groovy.exceptions;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SetterNoSuchException extends Exception {
-  public SetterNoSuchException() {
+public class NoSuchSetterException extends Exception {
+  public NoSuchSetterException() {
   }
 
-  public SetterNoSuchException(String message) {
+  public NoSuchSetterException(String message) {
     super(message);
   }
 
-  public SetterNoSuchException(String message, Throwable cause) {
+  public NoSuchSetterException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public SetterNoSuchException(Throwable cause) {
+  public NoSuchSetterException(Throwable cause) {
     super(cause);
   }
 }

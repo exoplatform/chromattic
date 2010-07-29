@@ -23,19 +23,20 @@ package org.chromattic.groovy.exceptions;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class DefaultConstructorNotFound extends Exception {
-  public DefaultConstructorNotFound() {
+public class NoSuchInvokeMethodException extends Exception {
+
+  public NoSuchInvokeMethodException() {
   }
 
-  public DefaultConstructorNotFound(String message) {
+  public NoSuchInvokeMethodException(String message) {
     super(message);
   }
 
-  public DefaultConstructorNotFound(String message, Throwable cause) {
+  public NoSuchInvokeMethodException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public DefaultConstructorNotFound(Throwable cause) {
+  public NoSuchInvokeMethodException(Throwable cause) {
     super(cause);
   }
 }
