@@ -67,10 +67,10 @@ public class ImplementTest extends TestCase {
     assertTrue((Boolean) bShell.evaluate("new A().getClass().getInterfaces()[0].equals(GroovyInterceptable.class)"));
   }
 
-  /*public void testPrivateConstructor() throws Exception {
-    assertEquals(Modifier.PRIVATE, aShell.evaluate("A.class.getDeclaredConstructor().getModifiers()"));
-    assertEquals(Modifier.PRIVATE, bShell.evaluate("A.class.getDeclaredConstructor().getModifiers()"));
-  }*/
+  public void testPrivateConstructor() throws Exception {
+    assertEquals(Modifier.PROTECTED, aShell.evaluate("A.class.getDeclaredConstructor().getModifiers()"));
+    assertEquals(Modifier.PROTECTED, bShell.evaluate("A.class.getDeclaredConstructor().getModifiers()"));
+  }
 
   public void testNoChromatticMethod() throws Exception {
     assertEquals(3, bShell.evaluate("new A().m()"));

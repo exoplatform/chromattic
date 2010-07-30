@@ -32,4 +32,24 @@ public class UtilsTest extends TestCase {
     Assert.assertEquals(GroovyUtils.getsetName(GroovyUtils.GetSet.GET, "property"), "getProperty");
     Assert.assertEquals(GroovyUtils.getsetName(GroovyUtils.GetSet.SET, "property"), "setProperty");
   }
+
+  public void testFieldName() {
+    Assert.assertEquals("name", GroovyUtils.fieldName("getName"));
+    Assert.assertEquals("name", GroovyUtils.fieldName("setName"));
+  }
+
+  public void testInvalidGetterSetter() {
+    try {
+      GroovyUtils.fieldName("etName");
+      fail();
+    } catch (Exception ok) {}
+    try {
+      GroovyUtils.fieldName("e");
+      fail();
+    } catch (Exception ok) {}
+    try {
+      GroovyUtils.fieldName(null);
+      fail();
+    } catch (Exception ok) {}
+  }
 }

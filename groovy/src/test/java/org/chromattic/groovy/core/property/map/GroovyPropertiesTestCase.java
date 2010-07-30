@@ -47,22 +47,12 @@ public class GroovyPropertiesTestCase extends AbstractTestCase {
       "public class A {\n" +
       "  @Properties public abstract Map<String, Object> properties\n" +
       "  @Property(name = \"string_property\") String string\n" +
-      "  public Object invokeMethod(String m, Object p) {\n" +
-      "    if (this.class.getMethod(m, (Class<?>[]) p.collect { it.class }).getAnnotations().any {it.toString().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE, 1)})\n" +
-      "      return chromatticInvoker.invoke(this, this.class.getMethod(m, (Class<?>[]) p.collect { it.class }), p);\n" +
-      "    return this.class.getMethod(m, (Class<?>[]) p.collect { it.class }).invoke(this, p);\n" +
-      "  }\n" +
       "}\n" +
       "@Skip\n" +
       "@PrimaryType(name = \"property_map:b\")\n" +
       "public class B {\n" +
       "  @Properties Map<String, Object> properties\n" +
       "  @Property(name = \"string_array_property\")\n String[] string\n" +
-      "  public Object invokeMethod(String m, Object p) {\n" +
-      "    if (this.class.getMethod(m, (Class<?>[]) p.collect { it.class }).getAnnotations().any {it.toString().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE, 1)})\n" +
-      "      return chromatticInvoker.invoke(this, this.class.getMethod(m, (Class<?>[]) p.collect { it.class }), p);\n" +
-      "    return this.class.getMethod(m, (Class<?>[]) p.collect { it.class }).invoke(this, p);\n" +
-      "  }\n" +
       "}"
     );
   }

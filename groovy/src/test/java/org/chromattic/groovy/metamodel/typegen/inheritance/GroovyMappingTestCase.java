@@ -38,7 +38,7 @@ public class GroovyMappingTestCase extends MappingTestCase {
       "import org.chromattic.api.annotations.ManyToOne\n" +
       "@PrimaryType(name = \"b1\")\n" +
       "class B1 {\n" +
-      "  @ManyToOne B1 parent2" +
+      "  @ManyToOne B1 parent2\n" +
       "}\n" +
       "@PrimaryType(name = \"b2\")\n" +
       "class B2 extends B1\n {" +

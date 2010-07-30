@@ -55,7 +55,10 @@ public class ChromatticDelegate {
 
   public void plugGetProperty(ClassNode classNode) throws NoSuchMethodException {
     MethodNode methodNode = classNode.getMethod("getProperty", new Parameter[]{new Parameter(ClassHelper.STRING_TYPE, "p")});
-    if (methodNode == null) throw new NoSuchMethodException();
+    if (
+            methodNode == null
+            || !classNode.equals(methodNode.getDeclaringClass())
+            ) throw new NoSuchMethodException();
 
     //
     methodNode.setCode(
@@ -88,7 +91,10 @@ public class ChromatticDelegate {
           , new Parameter(ClassHelper.OBJECT_TYPE, "v")
       }
     );
-    if (methodNode == null) throw new NoSuchMethodException();
+    if (
+            methodNode == null
+            || !classNode.equals(methodNode.getDeclaringClass())
+            ) throw new NoSuchMethodException();
 
     //
     methodNode.setCode(
@@ -122,7 +128,10 @@ public class ChromatticDelegate {
           , new Parameter(ClassHelper.OBJECT_TYPE, "p")
       }
     );
-    if (methodNode == null) throw new NoSuchMethodException();
+    if (
+            methodNode == null
+            || !classNode.equals(methodNode.getDeclaringClass())
+            ) throw new NoSuchMethodException();
 
     //
     methodNode.setCode(

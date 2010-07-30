@@ -55,9 +55,9 @@ public class ChromatticASTTransformationVisitor {
 
   private void visitClass(ClassNode classNode) throws ChromatticASTTransformationException {
     try {
-      constructor.setPrivateDefaultConstructor(classNode);
+      constructor.setProtectedDefaultConstructor(classNode);
     } catch (NoSuchDefaultConstructor e) {
-      constructor.generatePrivateDefaultConstructor(classNode);
+      constructor.generateProtectedDefaultConstructor(classNode);
     }
     constructor.generatePublicHandlerConstructor(classNode);
 
@@ -90,7 +90,7 @@ public class ChromatticASTTransformationVisitor {
     // Transform GroovyObject to ChromatticObject
     delegate.setGroovyInterceptable(classNode);
     delegate.addInvokerField(classNode);
-    /*try {
+    try {
       delegate.plugGetProperty(classNode);
     } catch (NoSuchMethodException e) {
       delegate.generateGetProperty(classNode);
@@ -104,6 +104,6 @@ public class ChromatticASTTransformationVisitor {
       delegate.plugInvokeMethod(classNode);
     } catch (NoSuchMethodException e) {
       delegate.generateInvokeMethod(classNode);
-    }*/
+    }
   }
 }

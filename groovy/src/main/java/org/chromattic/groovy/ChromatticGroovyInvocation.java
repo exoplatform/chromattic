@@ -22,6 +22,7 @@ package org.chromattic.groovy;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,16 +41,31 @@ public class ChromatticGroovyInvocation {
   }
 
   public static Object invokeMethod(Object target, String m, Object p, MethodHandler handler) {
+    Method method;
     try {
-      Method method = target.getClass().getMethod(m, args2Class(p));
-      if (isChromatticAnnoted(method))
+      method = target.getClass().getMethod(m, args2Class(p));
+    } catch (NoSuchMethodException _) {
+      // If method cannot be found, the method is getter or setter and the field is public and not annoted by chrommatic.
+      // We directly access to him.
+      try {
+        Field field = target.getClass().getField(GroovyUtils.fieldName(m));
+        return field.get(target);
+      } catch (Exception e) {
+        throw new AssertionError(e);
+      }
+    }
+
+    // method exist
+    try {
+      if (isChromatticAnnoted(method)) {
         return handler.invoke(target, method, (Object[]) p);
+      }
       else
         return target.getClass().getMethod(m, args2Class(p)).invoke(target, (Object[]) p);
-    } catch (Throwable t) {
-      throw new AssertionError(t);
+      } catch (Throwable t) {
+        throw new AssertionError(t);
+      }
     }
-  }
 
   private static Class[] args2Class (Object objs) {
     List<Class> classes = new ArrayList<Class>();

@@ -51,6 +51,15 @@ public class GroovyUtils {
       );
   }
 
+  public static String fieldName(String getsetName) {
+    if (
+            !"get".equals(getsetName.substring(0 , 3))
+            &&
+            !"set".equals(getsetName.substring(0 , 3))
+            ) throw new IllegalArgumentException("Invalid getter or setter name : " + getsetName);
+    return String.format("%s%s", getsetName.substring(3, 4).toLowerCase(), getsetName.substring(4));
+  }
+
   public static void createGetter(ClassNode classNode, FieldNode fieldNode) {
     classNode.addMethod(
       GroovyUtils.getsetName(GroovyUtils.GetSet.GET, fieldNode.getName())

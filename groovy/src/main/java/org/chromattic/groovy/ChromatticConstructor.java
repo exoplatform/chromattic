@@ -41,18 +41,18 @@ import java.util.List;
  * @version $Revision$
  */
 public class ChromatticConstructor {
-  public void setPrivateDefaultConstructor(ClassNode classNode) throws NoSuchDefaultConstructor {
+  public void setProtectedDefaultConstructor(ClassNode classNode) throws NoSuchDefaultConstructor {
     for(ConstructorNode constructorNode : (List<ConstructorNode>) classNode.getDeclaredConstructors()) {
       if (constructorNode.getParameters().length == 0)
-        constructorNode.setModifiers(Modifier.PRIVATE);
+        constructorNode.setModifiers(Modifier.PROTECTED);
       return;
     }
     throw new NoSuchDefaultConstructor("No default constructor found for the class : " + classNode.getName());
   }
 
-  public void generatePrivateDefaultConstructor(ClassNode classNode) {
+  public void generateProtectedDefaultConstructor(ClassNode classNode) {
     classNode.addConstructor(
-      Modifier.PRIVATE
+      Modifier.PROTECTED
       , new Parameter[]{}
       , new ClassNode[]{}
       , new EmptyStatement()
@@ -64,12 +64,12 @@ public class ChromatticConstructor {
       Modifier.PUBLIC
       , new Parameter[]{ new Parameter(new ClassNode(MethodHandler.class), "chromatticInvoker") }
       , new ClassNode[]{}
-      ,  new BlockStatement(
-           new Statement[]{
-             new ExpressionStatement(new ConstructorCallExpression(classNode, new ArgumentListExpression(new Expression[]{})))
-             , new ExpressionStatement(new BinaryExpression(new PropertyExpression(new VariableExpression("this"), "chromatticInvoker"), Token.newSymbol(Types.EQUAL, 0, 0), new VariableExpression("chromatticInvoker")))
-           }
-           , new VariableScope()
+      , new BlockStatement(
+         new Statement[]{
+           new ExpressionStatement(new ConstructorCallExpression(classNode, new ArgumentListExpression(new Expression[]{})))
+           , new ExpressionStatement(new BinaryExpression(new PropertyExpression(new VariableExpression("this"), "chromatticInvoker"), Token.newSymbol(Types.EQUAL, 0, 0), new VariableExpression("chromatticInvoker")))
+         }
+         , new VariableScope()
       )
     );
   }

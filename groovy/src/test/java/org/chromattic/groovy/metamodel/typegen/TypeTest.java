@@ -22,6 +22,7 @@ package org.chromattic.groovy.metamodel.typegen;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import junit.framework.TestCase;
+import org.codehaus.groovy.runtime.NullObject;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -51,8 +52,7 @@ public class TypeTest extends TestCase {
   public void testWithoutChromatticDynamicType() {
     Object eval = groovyShell.evaluate(
       "A a = new A();\n" +
-      "a.dynamicTyped = new Object();\n" +
-      "a.dynamicTyped.getClass()"
+      "a.class.getField(\"dynamicTyped\").getType()"
       );
     assertEquals(eval, Object.class);
   }
@@ -60,8 +60,7 @@ public class TypeTest extends TestCase {
   public void testWithoutChromatticStaticType() {
     Object eval = groovyShell.evaluate(
       "A a = new A();\n" +
-      "a.stringTyped = \"\"\n" +
-      "a.stringTyped.getClass()"
+      "a.class.getField(\"stringTyped\").getType()"
       );
     assertEquals(eval, String.class);
   }
@@ -81,8 +80,7 @@ public class TypeTest extends TestCase {
   public void testWithChromatticStaticType() {
     Object eval = groovyShell.evaluate(
       "A a = new A();\n" +
-      "a.stringTypedChromattic = \"\"\n" +
-      "a.stringTypedChromattic.getClass()"
+      "a.class.getField(\"stringTypedChromattic\").getType()"
       );
     assertEquals(eval, String.class);
   }
