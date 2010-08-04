@@ -19,43 +19,17 @@
 
 package org.chromattic.groovy.metamodel.typegen.attribute;
 
-import groovy.lang.GroovyClassLoader;
+import junit.framework.TestCase;
+import org.chromattic.groovy.relaunch.annotations.FromClass;
+import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
 import org.chromattic.metamodel.typegen.attribute.MappingTestCase;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyMappingTestCase extends MappingTestCase {
-  private final Class<?> a1class = new GroovyClassLoader().parseClass(
-    "import org.chromattic.api.annotations.PrimaryType\n" +
-    "import org.chromattic.api.annotations.Path\n" +
-    "@PrimaryType(name = \"a1\")\n" +
-    "class A1 {\n" +
-    "  @Path String path;\n" +
-    "}"
-  );
+@FromClass(
+  sourceClass = MappingTestCase.class
+  , classloader = ChromatticTestClassLoader.class
 
-  private final Class<?> a2class = new GroovyClassLoader().parseClass(
-    "import org.chromattic.api.annotations.PrimaryType\n" +
-    "import org.chromattic.api.annotations.Name\n" +
-    "@PrimaryType(name = \"a2\")\n" +
-    "class A2 {\n" +
-    "  @Name String name;\n" +
-    "}"
-  );
-
-  private final Class<?> a3class = new GroovyClassLoader().parseClass(
-    "import org.chromattic.api.annotations.PrimaryType\n" +
-    "import org.chromattic.api.annotations.WorkspaceName\n" +
-    "@PrimaryType(name = \"a3\")\n" +
-    "class A3 {\n" +
-    "  @WorkspaceName String workspaceName;\n" +
-    "}"
-  );
-
-  public void testA1() throws Exception { testA1(a1class); }
-  public void testA2() throws Exception { testA2(a2class); }
-  public void testA3() throws Exception { testA3(a3class); }
-  
-}
+) public class GroovyMappingTestCase extends TestCase {}

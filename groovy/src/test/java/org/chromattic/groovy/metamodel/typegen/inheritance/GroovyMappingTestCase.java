@@ -19,33 +19,17 @@
 
 package org.chromattic.groovy.metamodel.typegen.inheritance;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyShell;
+import junit.framework.TestCase;
+import org.chromattic.groovy.relaunch.annotations.FromClass;
+import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
 import org.chromattic.metamodel.typegen.inheritance.MappingTestCase;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyMappingTestCase extends MappingTestCase {
+@FromClass(
+  sourceClass = MappingTestCase.class
+  , classloader = ChromatticTestClassLoader.class
 
-  private final GroovyClassLoader bClassLoader = new GroovyClassLoader();
-  private final GroovyShell bGroovyShell = new GroovyShell(bClassLoader);
-
-  public GroovyMappingTestCase() {
-    bClassLoader.parseClass(
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "import org.chromattic.api.annotations.ManyToOne\n" +
-      "@PrimaryType(name = \"b1\")\n" +
-      "class B1 {\n" +
-      "  @ManyToOne B1 parent2\n" +
-      "}\n" +
-      "@PrimaryType(name = \"b2\")\n" +
-      "class B2 extends B1\n {" +
-      "}"
-    );
-  }
-
-
-  public void testB() throws Exception { testB((Class<?>) bGroovyShell.evaluate("B1.class"), (Class<?>) bGroovyShell.evaluate("B2.class")); }
-}
+) public class GroovyMappingTestCase extends TestCase {}

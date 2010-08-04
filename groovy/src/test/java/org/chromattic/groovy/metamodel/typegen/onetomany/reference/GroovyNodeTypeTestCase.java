@@ -19,37 +19,17 @@
 
 package org.chromattic.groovy.metamodel.typegen.onetomany.reference;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyShell;
+import junit.framework.TestCase;
+import org.chromattic.groovy.relaunch.annotations.FromClass;
+import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
 import org.chromattic.metamodel.typegen.onetomany.reference.NodeTypeTestCase;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyNodeTypeTestCase extends NodeTypeTestCase {
-  private final GroovyClassLoader cClassLoader = new GroovyClassLoader();
-  private final GroovyShell cGroovyShell = new GroovyShell(cClassLoader);
+@FromClass(
+  sourceClass = NodeTypeTestCase.class
+  , classloader = ChromatticTestClassLoader.class
 
-  public GroovyNodeTypeTestCase() {
-    cClassLoader.parseClass(
-      "import java.util.Collection\n" +
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "import org.chromattic.api.annotations.MappedBy\n" +
-      "import org.chromattic.api.annotations.OneToMany\n" +
-      "import org.chromattic.api.annotations.ManyToOne\n" +
-      "import org.chromattic.api.RelationshipType\n" +
-      "@PrimaryType(name = \"1\")\n" +
-      "class C1 {\n" +
-      "  @MappedBy(\"ref\") @OneToMany(type = RelationshipType.REFERENCE) Collection<C2> referents" +
-      "}\n" +
-      "@PrimaryType(name = \"2\")\n" +
-      "class C2\n {" +
-      "  @MappedBy(\"ref\") @ManyToOne(type = RelationshipType.REFERENCE) C1 referenced" +
-      "}\n"
-    );
-  }
-
-  public void testProperty() throws Exception { testProperty((Class<?>) cGroovyShell.evaluate("C1.class"), (Class<?>) cGroovyShell.evaluate("C2.class")); }
-  
-}
+) public class GroovyNodeTypeTestCase extends TestCase {}

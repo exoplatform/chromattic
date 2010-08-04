@@ -17,19 +17,19 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.metamodel.typegen.onetoone.embedded;
+package org.chromattic.groovy.metamodel.typegen.properties;
 
 import junit.framework.TestCase;
 import org.chromattic.groovy.relaunch.annotations.FromClass;
 import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
-import org.chromattic.metamodel.typegen.onetoone.embedded.EmbeddedTypeTestCase;
+import org.chromattic.metamodel.typegen.properties.PropertiesTestCase;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 @FromClass(
-  sourceClass = EmbeddedTypeTestCase.class
+  sourceClass = PropertiesTestCase.class
   , classloader = ChromatticTestClassLoader.class
 
-) public class GroovyEmbeddedTypeTestCase extends TestCase {}
+) public class GroovyPropertiesTestCase extends TestCase {}

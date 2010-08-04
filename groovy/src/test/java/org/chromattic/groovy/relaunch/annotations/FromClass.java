@@ -17,19 +17,23 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.metamodel.typegen.onetoone.embedded;
+package org.chromattic.groovy.relaunch.annotations;
 
 import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
-import org.chromattic.metamodel.typegen.onetoone.embedded.EmbeddedTypeTestCase;
+import org.chromattic.groovy.relaunch.classloader.TestClassLoader;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@FromClass(
-  sourceClass = EmbeddedTypeTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) public class GroovyEmbeddedTypeTestCase extends TestCase {}
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface FromClass {
+  Class<? extends TestCase> sourceClass();
+  Class<? extends TestClassLoader> classloader();
+}

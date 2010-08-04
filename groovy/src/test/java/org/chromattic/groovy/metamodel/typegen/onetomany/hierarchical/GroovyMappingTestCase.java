@@ -19,86 +19,17 @@
 
 package org.chromattic.groovy.metamodel.typegen.onetomany.hierarchical;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyShell;
+import junit.framework.TestCase;
+import org.chromattic.groovy.relaunch.annotations.FromClass;
+import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
 import org.chromattic.metamodel.typegen.onetomany.hierarchical.MappingTestCase;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyMappingTestCase extends MappingTestCase {
-  private final GroovyClassLoader aClassLoader = new GroovyClassLoader();
-  private final GroovyClassLoader bClassLoader = new GroovyClassLoader();
-  private final GroovyClassLoader cClassLoader = new GroovyClassLoader();
-  private final GroovyClassLoader dClassLoader = new GroovyClassLoader();
+@FromClass(
+  sourceClass = MappingTestCase.class
+  , classloader = ChromatticTestClassLoader.class
 
-  private final GroovyShell aGroovyShell = new GroovyShell(aClassLoader);
-  private final GroovyShell bGroovyShell = new GroovyShell(bClassLoader);
-  private final GroovyShell cGroovyShell = new GroovyShell(cClassLoader);
-  private final GroovyShell dGroovyShell = new GroovyShell(dClassLoader);
-
-  public GroovyMappingTestCase() {
-    aClassLoader.parseClass(
-      "import java.util.Collection\n" +
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "import org.chromattic.api.annotations.OneToMany\n" +
-      "@PrimaryType(name = \"1\")\n" +
-      "class A1 {\n" +
-      "  @OneToMany Collection<A2> children" +
-      "}\n" +
-      "@PrimaryType(name = \"2\")\n" +
-      "class A2\n {" +
-      "}\n"
-    );
-
-    bClassLoader.parseClass(
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "import org.chromattic.api.annotations.ManyToOne\n" +
-      "@PrimaryType(name = \"1\")\n" +
-      "class B1 {\n" +
-      "}\n" +
-      "@PrimaryType(name = \"2\")\n" +
-      "class B2\n {" +
-      "  @ManyToOne B1 parent" +
-      "}\n"
-    );
-
-    cClassLoader.parseClass(
-      "import java.util.Collection\n" +
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "import org.chromattic.api.annotations.MappedBy\n" +
-      "import org.chromattic.api.annotations.Owner\n" +
-      "import org.chromattic.api.annotations.OneToMany\n" +
-      "import org.chromattic.api.annotations.ManyToOne\n" +
-      "@PrimaryType(name = \"1\")\n" +
-      "class C1 {\n" +
-      "  @MappedBy(\"children\") @OneToMany Collection<C2> children" +
-      "}\n" +
-      "@PrimaryType(name = \"2\")\n" +
-      "class C2\n {" +
-      "  @ManyToOne C1 parent" +
-      "}\n"
-    );
-
-    dClassLoader.parseClass(
-      "import java.util.Collection\n" +
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "import org.chromattic.api.annotations.MappedBy\n" +
-      "import org.chromattic.api.annotations.Owner\n" +
-      "import org.chromattic.api.annotations.OneToMany\n" +
-      "import org.chromattic.api.annotations.ManyToOne\n" +
-      "@PrimaryType(name = \"1\")\n" +
-      "class D {\n" +
-      "  @OneToMany Collection<D> children\n" +
-      "  @ManyToOne D parent\n" +
-      "}\n"
-    );
-  }
-
-  public void testA() { testA((Class<?>) aGroovyShell.evaluate("A1.class"), (Class<?>) aGroovyShell.evaluate("A2.class")); }
-  public void testB() { testB((Class<?>) bGroovyShell.evaluate("B1.class"), (Class<?>) bGroovyShell.evaluate("B2.class")); }
-  public void testC() { testC((Class<?>) cGroovyShell.evaluate("C1.class"), (Class<?>) cGroovyShell.evaluate("C2.class")); }
-  public void testD() { testD((Class<?>) dGroovyShell.evaluate("D.class")); }
-}
-
+) public class GroovyMappingTestCase extends TestCase {}

@@ -17,19 +17,17 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.metamodel.typegen.onetoone.embedded;
-
-import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
-import org.chromattic.metamodel.typegen.onetoone.embedded.EmbeddedTypeTestCase;
+package org.chromattic.groovy.relaunch.classloader;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@FromClass(
-  sourceClass = EmbeddedTypeTestCase.class
-  , classloader = ChromatticTestClassLoader.class
+public abstract class TestClassLoader extends ClassLoader {
 
-) public class GroovyEmbeddedTypeTestCase extends TestCase {}
+  public TestClassLoader(ClassLoader parent) {
+    super(parent);
+  }
+
+  public abstract Class<?> loadClass(String name, Class currentLoading) throws ClassNotFoundException;
+}

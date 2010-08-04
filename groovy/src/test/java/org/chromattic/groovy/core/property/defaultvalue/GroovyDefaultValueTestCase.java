@@ -50,7 +50,7 @@ public class GroovyDefaultValueTestCase extends DefaultValueTestCase {
   }
 
   public void testPrimitiveInt2() throws Exception {
-    /*groovyShell.setVariable("session", login());
+    groovyShell.setVariable("session", login());
     groovyShell.setVariable("a", groovyShell.evaluate("session.insert(A.class, \"a\")"));
     groovyShell.setVariable("aNode", groovyShell.evaluate("session.getRoot().getNode(\"a\")"));
 
@@ -69,6 +69,6 @@ public class GroovyDefaultValueTestCase extends DefaultValueTestCase {
     groovyShell.evaluate("a.primitiveInt = 12");
     assertEquals(12, groovyShell.evaluate("a.primitiveInt"));
     groovyShell.evaluate("a.primitiveInt += 30");
-    assertEquals(42, groovyShell.evaluate("a.primitiveInt"));*/
+    assertEquals(42, groovyShell.evaluate("a.primitiveInt"));
   }
 }

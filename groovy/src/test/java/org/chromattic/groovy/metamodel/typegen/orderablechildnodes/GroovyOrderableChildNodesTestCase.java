@@ -19,22 +19,17 @@
 
 package org.chromattic.groovy.metamodel.typegen.orderablechildnodes;
 
-import groovy.lang.GroovyClassLoader;
+import junit.framework.TestCase;
+import org.chromattic.groovy.relaunch.annotations.FromClass;
+import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
 import org.chromattic.metamodel.typegen.orderablechildnodes.OrderableChildNodesTestCase;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyOrderableChildNodesTestCase extends OrderableChildNodesTestCase {
+@FromClass(
+  sourceClass = OrderableChildNodesTestCase.class
+  , classloader = ChromatticTestClassLoader.class
 
-  private final Class<?> aclass = new GroovyClassLoader().parseClass(
-      "import java.util.Map\n" +
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "@PrimaryType(name = \"a\", orderable = true)\n" +
-      "class A {\n" +
-      "}"
-    );
-
-  public void testOrderable() throws Exception { testOrderable(aclass); }
-}
+) public class GroovyOrderableChildNodesTestCase extends TestCase {}

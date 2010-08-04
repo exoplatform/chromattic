@@ -38,7 +38,6 @@ public class ChromatticASTTransformationVisitor {
   public void visit(ASTNode[] nodes, SourceUnit sourceUnit) throws ChromatticASTTransformationException {
     for (ClassNode classNode : (List<ClassNode>) sourceUnit.getAST().getClasses()) {
       if (!classNode.isScript()) {
-        for (Object methodNode : classNode.getMethods()) System.out.println(methodNode);
         Set<AnnotationNode> annotationNodeSet = new HashSet<AnnotationNode>();
         annotationNodeSet.addAll(classNode.getAnnotations());
         for (FieldNode fieldNode : classNode.getFields()) annotationNodeSet.addAll(fieldNode.getAnnotations());

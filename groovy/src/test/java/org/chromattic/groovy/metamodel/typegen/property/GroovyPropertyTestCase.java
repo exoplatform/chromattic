@@ -19,35 +19,17 @@
 
 package org.chromattic.groovy.metamodel.typegen.property;
 
-import groovy.lang.GroovyClassLoader;
+import junit.framework.TestCase;
+import org.chromattic.groovy.relaunch.annotations.FromClass;
+import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
 import org.chromattic.metamodel.typegen.property.PropertyTestCase;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyPropertyTestCase extends PropertyTestCase {
+@FromClass(
+  sourceClass = PropertyTestCase.class
+  , classloader = ChromatticTestClassLoader.class
 
-  private final Class<?> a1class = new GroovyClassLoader().parseClass(
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "import org.chromattic.api.annotations.Property\n" +
-      "@PrimaryType(name = \"a1\")\n" +
-      "class A1 {\n" +
-      "  @Property(name = \"string\") String string;\n" +
-      "}"
-    );
-
-  private final Class<?> a2class = new GroovyClassLoader().parseClass(
-    "import org.chromattic.api.annotations.PrimaryType\n" +
-    "import org.chromattic.api.annotations.DefaultValue\n" +
-    "import org.chromattic.api.annotations.Property\n" +
-    "@PrimaryType(name = \"a2\")\n" +
-    "class A2 {\n" +
-    "  @DefaultValue(\"foo\") @Property(name = \"string\") String string;\n" +
-    "}"
-  );
-
-  public void testProperty() throws Exception { testProperty(a1class); }
-  public void testDefaultValues() throws Exception { testDefaultValues(a2class); }
-  
-}
+) public class GroovyPropertyTestCase extends TestCase {}
