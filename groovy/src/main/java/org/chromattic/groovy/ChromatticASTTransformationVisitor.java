@@ -37,17 +37,8 @@ public class ChromatticASTTransformationVisitor {
 
   public void visit(ASTNode[] nodes, SourceUnit sourceUnit) throws ChromatticASTTransformationException {
     for (ClassNode classNode : (List<ClassNode>) sourceUnit.getAST().getClasses()) {
-      if (!classNode.isScript()) {
-        Set<AnnotationNode> annotationNodeSet = new HashSet<AnnotationNode>();
-        annotationNodeSet.addAll(classNode.getAnnotations());
-        for (FieldNode fieldNode : classNode.getFields()) annotationNodeSet.addAll(fieldNode.getAnnotations());
-        for (MethodNode methodNode : classNode.getMethods()) annotationNodeSet.addAll(methodNode.getAnnotations());
-        for (AnnotationNode annotationNode : annotationNodeSet) {
-          if (annotationNode.getClassNode().getName().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE)) {
-            visitClass(classNode);
-          break;
-          }
-        }
+      if (!classNode.isScript() && isInChromatticHierarchy(classNode)) {
+        visitClass(classNode);
       }
     }
   }
@@ -103,6 +94,23 @@ public class ChromatticASTTransformationVisitor {
       delegate.plugInvokeMethod(classNode);
     } catch (NoSuchMethodException e) {
       delegate.generateInvokeMethod(classNode);
+    }
+  }
+
+  private boolean isInChromatticHierarchy(ClassNode classNode) {
+    if (classNode != null) { 
+      Set<AnnotationNode> annotationNodeSet = new HashSet<AnnotationNode>();
+      annotationNodeSet.addAll(classNode.getAnnotations());
+      for (FieldNode fieldNode : classNode.getFields()) annotationNodeSet.addAll(fieldNode.getAnnotations());
+      for (MethodNode methodNode : classNode.getMethods()) annotationNodeSet.addAll(methodNode.getAnnotations());
+      for (AnnotationNode annotationNode : annotationNodeSet) {
+        if (annotationNode.getClassNode().getName().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE)) {
+          return true;
+        }
+      }
+      return isInChromatticHierarchy(classNode.getSuperClass());
+    } else {
+      return false;
     }
   }
 }

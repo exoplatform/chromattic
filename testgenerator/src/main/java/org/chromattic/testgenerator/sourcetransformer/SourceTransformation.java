@@ -17,18 +17,18 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.metamodel.typegen.property;
+package org.chromattic.testgenerator.sourcetransformer;
 
-import org.chromattic.metamodel.typegen.property.A1;
-import org.chromattic.metamodel.typegen.property.A2;
-import org.chromattic.metamodel.typegen.property.PropertyTestCase;
-import org.chromattic.testgenerator.UniversalTest;
+import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.expr.MethodCallExpr;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@UniversalTest(
-  sourceClass = PropertyTestCase.class,
-  chromatticClasses = {A1.class, A2.class})
-public class GroovyPropertyTestCase extends PropertyTestCase {}
+public interface SourceTransformation {
+  List<AnnotationExpr> getAnnotationExprs();
+  List<MethodCallExpr> getMethodCallExprs();
+}

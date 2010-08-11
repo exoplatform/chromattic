@@ -19,12 +19,10 @@
 
 package org.chromattic.groovy.instrument;
 
-import org.chromattic.apt.Instrumented;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.spi.instrument.ProxyFactory;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 /**

@@ -19,17 +19,17 @@
 
 package org.chromattic.groovy.metamodel.typegen.properties;
 
-import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
+import org.chromattic.metamodel.typegen.properties.A;
+import org.chromattic.metamodel.typegen.properties.B;
+import org.chromattic.metamodel.typegen.properties.C;
 import org.chromattic.metamodel.typegen.properties.PropertiesTestCase;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@FromClass(
-  sourceClass = PropertiesTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) public class GroovyPropertiesTestCase extends TestCase {}
+@UniversalTest(
+  sourceClass = PropertiesTestCase.class,
+  chromatticClasses = {A.class, B.class, C.class})
+public class GroovyPropertiesTestCase extends PropertiesTestCase {}

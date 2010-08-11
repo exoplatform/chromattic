@@ -19,18 +19,18 @@
 
 package org.chromattic.groovy.core.property.map;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyShell;
-import org.chromattic.test.AbstractTestCase;
-
-import java.util.HashMap;
-
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyPropertiesTestCase extends AbstractTestCase {
+/*@FromClass(
+  sourceClass = PropertiesTestCase.class
+  , classloader = ChromatticTestClassLoader.class
+
+) */
+public class GroovyPropertiesTestCase /*extends TestCase*/ {}
+/*public class GroovyPropertiesTestCase extends AbstractTestCase {
   GroovyClassLoader classLoader = new GroovyClassLoader();
 
   GroovyShell groovyShell = new GroovyShell(classLoader);
@@ -148,3 +148,4 @@ public class GroovyPropertiesTestCase extends AbstractTestCase {
     assertEquals("a", groovyShell.evaluate("copy.get(\"string_array_property\")"));
   }
 }
+*/

@@ -19,7 +19,6 @@
 
 package org.chromattic.groovy;
 
-import org.chromattic.api.annotations.SetterDelegation;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.expr.*;
 import org.codehaus.groovy.ast.stmt.ExpressionStatement;
@@ -27,8 +26,6 @@ import org.codehaus.groovy.ast.stmt.ReturnStatement;
 import org.codehaus.groovy.syntax.Token;
 import org.codehaus.groovy.syntax.Types;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 

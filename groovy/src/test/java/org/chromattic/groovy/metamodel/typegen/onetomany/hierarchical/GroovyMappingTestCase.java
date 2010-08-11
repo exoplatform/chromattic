@@ -19,17 +19,21 @@
 
 package org.chromattic.groovy.metamodel.typegen.onetomany.hierarchical;
 
-import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
+import org.chromattic.metamodel.typegen.onetomany.hierarchical.A1;
+import org.chromattic.metamodel.typegen.onetomany.hierarchical.A2;
+import org.chromattic.metamodel.typegen.onetomany.hierarchical.B1;
+import org.chromattic.metamodel.typegen.onetomany.hierarchical.B2;
+import org.chromattic.metamodel.typegen.onetomany.hierarchical.C1;
+import org.chromattic.metamodel.typegen.onetomany.hierarchical.C2;
+import org.chromattic.metamodel.typegen.onetomany.hierarchical.D;
 import org.chromattic.metamodel.typegen.onetomany.hierarchical.MappingTestCase;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@FromClass(
-  sourceClass = MappingTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) public class GroovyMappingTestCase extends TestCase {}
+@UniversalTest(
+  sourceClass = MappingTestCase.class,
+  chromatticClasses = {A1.class, A2.class, B1.class, B2.class, C1.class, C2.class, D.class})
+public class GroovyMappingTestCase extends MappingTestCase {}

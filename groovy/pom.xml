@@ -54,6 +54,12 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.testgenerator</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
       <artifactId>chromattic.exo</artifactId>
       <scope>test</scope>
     </dependency>
@@ -80,13 +86,37 @@
         <version>1.6.5</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.code.javaparser</groupId>
+      <artifactId>javaparser</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.core</artifactId>
+      <version>${version}</version>
+      <classifier>test-sources</classifier>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.metamodel</artifactId>
+      <version>${version}</version>
+      <classifier>test-sources</classifier>
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
 
+  
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
+          <!-- Groovy ASTTransformation -->
           <execution>
             <id>compile</id>
             <phase>compile</phase>
@@ -105,19 +135,79 @@
                         listfiles="true">
                   <classpath refid="maven.compile.classpath"/>
                 </groovyc>
+                <copy
+                        file="${basedir}/org.codehaus.groovy.transform.ASTTransformation"
+                        todir="${project.build.outputDirectory}/META-INF/services"/>
               </tasks>
             </configuration>
             <goals>
-                <goal>run</goal>
+              <goal>run</goal>
+            </goals>
+          </execution>
+
+          <!-- Groovy tests -->
+          <execution>
+            <id>generate-test-sources</id>
+            <phase>generate-test-sources</phase>
+            <configuration>
+              <tasks>
+                <taskdef
+                        name="groovyc"
+                        classname="org.codehaus.groovy.ant.Groovyc">
+                  <classpath refid="maven.compile.classpath"/>
+                </taskdef>
+                <groovyc
+                        destdir="${project.build.outputDirectory}"
+                        srcdir="${basedir}/src/test/java/"
+                        listfiles="true">
+                  <classpath refid="maven.compile.classpath"/>
+                </groovyc>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+
+          <!-- Groovy universal tests -->
+          <execution>
+            <id>test-compile</id>
+            <phase>test-compile</phase>
+            <configuration>
+              <tasks>
+                <taskdef
+                        name="groovyc"
+                        classname="org.codehaus.groovy.ant.Groovyc">
+                  <classpath refid="maven.compile.classpath"/>
+                </taskdef>
+                <groovyc
+                        destdir="${project.build.outputDirectory}"
+                        srcdir="${basedir}/target/test-classes/"
+                        listfiles="true">
+                  <classpath refid="maven.compile.classpath"/>
+                </groovyc>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
+      
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArguments>
+            <sourcepath>${project.basedir}/../metamodel/src/test/java</sourcepath>
+          </compilerArguments>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
-  <properties>
+  <!--<properties>
     <maven.test.skip>true</maven.test.skip>
-  </properties>
+  </properties>-->
   
 </project>

@@ -17,18 +17,34 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.metamodel.typegen.property;
+package org.chromattic.testgenerator.sourcetransformer;
 
-import org.chromattic.metamodel.typegen.property.A1;
-import org.chromattic.metamodel.typegen.property.A2;
-import org.chromattic.metamodel.typegen.property.PropertyTestCase;
-import org.chromattic.testgenerator.UniversalTest;
+import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.ImportDeclaration;
+import japa.parser.ast.PackageDeclaration;
+import japa.parser.ast.expr.NameExpr;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@UniversalTest(
-  sourceClass = PropertyTestCase.class,
-  chromatticClasses = {A1.class, A2.class})
-public class GroovyPropertyTestCase extends PropertyTestCase {}
+public class GroovyFromJavaSourceChromatticBuilder {
+  private CompilationUnit compilationUnit;
+  private StringBuilder sb = new StringBuilder();
+
+  public GroovyFromJavaSourceChromatticBuilder(CompilationUnit compilationUnit) {
+    this.compilationUnit = compilationUnit;
+  }
+
+  public void build() {
+    UnitChromatticVisitor unitChromatticVisitor = new UnitChromatticVisitor();
+    unitChromatticVisitor.visit(compilationUnit, null);
+    JavaToGroovySyntaxTransformer syntaxTransformer = new JavaToGroovySyntaxTransformer(unitChromatticVisitor);
+    sb.append(syntaxTransformer.transform(compilationUnit.toString()));
+  }
+
+  @Override
+  public String toString() {
+    return sb.toString();
+  }
+}

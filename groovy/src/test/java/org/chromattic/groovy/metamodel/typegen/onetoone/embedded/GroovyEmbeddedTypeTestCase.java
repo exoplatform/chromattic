@@ -19,17 +19,20 @@
 
 package org.chromattic.groovy.metamodel.typegen.onetoone.embedded;
 
-import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
+import org.chromattic.metamodel.typegen.onetoone.embedded.A1;
+import org.chromattic.metamodel.typegen.onetoone.embedded.A2;
+import org.chromattic.metamodel.typegen.onetoone.embedded.A3;
+import org.chromattic.metamodel.typegen.onetoone.embedded.A4;
+import org.chromattic.metamodel.typegen.onetoone.embedded.B1;
+import org.chromattic.metamodel.typegen.onetoone.embedded.B2;
 import org.chromattic.metamodel.typegen.onetoone.embedded.EmbeddedTypeTestCase;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@FromClass(
-  sourceClass = EmbeddedTypeTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) public class GroovyEmbeddedTypeTestCase extends TestCase {}
+@UniversalTest(
+  sourceClass = EmbeddedTypeTestCase.class,
+  chromatticClasses = {A1.class, A2.class, A3.class, A4.class, B1.class, B2.class})
+public class GroovyEmbeddedTypeTestCase extends EmbeddedTypeTestCase {}

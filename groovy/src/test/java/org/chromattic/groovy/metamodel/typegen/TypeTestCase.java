@@ -17,36 +17,39 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.instrument;
+package org.chromattic.groovy.metamodel.typegen;
 
-import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.spi.instrument.ProxyFactory;
-
-import java.lang.reflect.Constructor;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyShell;
+import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyProxyFactory<O> implements ProxyFactory<O> {
+public class TypeTestCase extends TestCase {
 
-  /** . */
-  private final Constructor<? extends O> ctor;
+  public void testWithoutChromatticDynamicType() throws Exception {
+    assertEquals(Object.class, A.class.getField("dynamicTyped").getType());
+  }
 
-  public GroovyProxyFactory(Class<O> clazz) {
+  public void testWithoutChromatticStaticType() throws Exception {
+    assertEquals(String.class, A.class.getField("stringTyped").getType());
+  }
+
+  public void testWithChromatticDynamicType() throws Exception {
     try {
-      ctor = clazz.getConstructor(MethodHandler.class);
+      new GroovyClassLoader().parseClass(
+        "import org.chromattic.api.annotations.Name" +
+        "class A { @Name def dynamicTypedChromattic }"
+      );
+      fail("Compilation must fails");
     } catch (Exception e) {
-      throw new AssertionError(e);
+      // If compilation fails, the test must success
     }
   }
 
-  public O createProxy(MethodHandler invoker) {
-    try {
-      return ctor.newInstance(invoker);
-    }
-    catch (Exception e) {
-      throw new AssertionError(e);
-    }
+  public void testWithChromatticStaticType() throws Exception {
+    assertEquals(String.class, A.class.getField("stringTypedChromattic").getType());
   }
 }

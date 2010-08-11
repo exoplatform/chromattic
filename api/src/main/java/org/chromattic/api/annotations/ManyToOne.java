@@ -35,7 +35,7 @@ import java.lang.annotation.ElementType;
  * @see org.chromattic.api.annotations.OneToMany
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target(ElementType.METHOD)
 public @interface ManyToOne {
 
   /**

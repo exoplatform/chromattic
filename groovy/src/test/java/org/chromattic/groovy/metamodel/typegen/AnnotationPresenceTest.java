@@ -22,62 +22,34 @@ package org.chromattic.groovy.metamodel.typegen;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import junit.framework.TestCase;
+import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.Property;
+import org.chromattic.api.annotations.SetterDelegation;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class AnnotationPresenceTest extends TestCase {
-  private static final GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
-  private static final GroovyShell groovyShell = new GroovyShell(groovyClassLoader);
-
-  public AnnotationPresenceTest() {
-    groovyClassLoader.parseClass(
-      "import org.chromattic.api.annotations.Name\n" +
-      "import org.chromattic.api.annotations.Property\n" +
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "@PrimaryType( name=\"a\")" +
-      "class A {\n" +
-      "  public @Name def String stringTypedChromattic\n" +
-      "  public @Property def String stringTypedChromatticExplicitGetter\n" +
-      "  public String getStringTypedChromatticExplicitGetter() {\n" +
-      "    return stringTypedChromatticExplicitGetter\n" +
-      "  }\n" +
-      "}"
-    );
+  
+  public void testAnnotationFieldPresent() throws Exception {
+    assertEquals(0, B.class.getDeclaredField("stringTypedChromattic").getAnnotations().length);
   }
 
-  public void testAnnotationFieldPresent() {
-    Object eval = groovyShell.evaluate("new A().getClass().getDeclaredField(\"stringTypedChromattic\").getAnnotations().length");
-    assertEquals(eval, 0);
+  public void testAnnotationImplicitGetterPresent() throws Exception {
+    assertTrue(B.class.getDeclaredMethod("getStringTypedChromattic").isAnnotationPresent(Name.class));
   }
 
-  public void testAnnotationImplicitGetterPresent() {
-    assertTrue((Boolean) groovyShell.evaluate(
-      "import org.chromattic.api.annotations.Name\n" +
-      "new A().getClass().getDeclaredMethod(\"getStringTypedChromattic\").isAnnotationPresent(Name.class)")
-    );
+  public void testAnnotationExplicitGetterPresent() throws Exception {
+    assertTrue(B.class.getDeclaredMethod("getStringTypedChromatticExplicitGetter").isAnnotationPresent(Property.class));
   }
 
-  public void testAnnotationExplicitGetterPresent() {
-    assertTrue((Boolean) groovyShell.evaluate(
-      "import org.chromattic.api.annotations.Property\n" +
-      "new A().getClass().getDeclaredMethod(\"getStringTypedChromatticExplicitGetter\").isAnnotationPresent(Property.class)")
-    );
+  public void testAnnotationImplicitSetterPresent() throws Exception {
+    assertTrue(B.class.getDeclaredMethod("setStringTypedChromattic", String.class).isAnnotationPresent(SetterDelegation.class));
   }
 
-  public void testAnnotationImplicitSetterPresent() {
-    assertTrue((Boolean) groovyShell.evaluate(
-      "import org.chromattic.api.annotations.SetterDelegation\n" +
-      "new A().getClass().getDeclaredMethod(\"setStringTypedChromattic\", String.class).isAnnotationPresent(SetterDelegation.class)")
-    );
-  }
-
-  public void testAnnotationExplicitSetterPresent() {
-    assertTrue((Boolean) groovyShell.evaluate(
-      "import org.chromattic.api.annotations.SetterDelegation\n" +
-      "new A().getClass().getDeclaredMethod(\"setStringTypedChromatticExplicitGetter\", String.class).isAnnotationPresent(SetterDelegation.class)")
-    );
+  public void testAnnotationExplicitSetterPresent() throws Exception {
+    assertTrue(B.class.getDeclaredMethod("setStringTypedChromatticExplicitGetter", String.class).isAnnotationPresent(SetterDelegation.class));
   }
 
 }

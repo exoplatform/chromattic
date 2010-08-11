@@ -19,17 +19,19 @@
 
 package org.chromattic.groovy.metamodel.typegen.inheritance;
 
-import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
+import org.chromattic.metamodel.typegen.inheritance.A2;
 import org.chromattic.metamodel.typegen.inheritance.InheritanceTestCase;
+import org.chromattic.metamodel.typegen.inheritance.A1;
+import org.chromattic.metamodel.typegen.inheritance.A3;
+import org.chromattic.metamodel.typegen.inheritance.A4;
+import org.chromattic.metamodel.typegen.inheritance.A5;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@FromClass(
-  sourceClass = InheritanceTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) public class GroovyInheritanceTestCase extends TestCase {}
+@UniversalTest(
+  sourceClass = InheritanceTestCase.class,
+  chromatticClasses = {A1.class, A2.class, A3.class, A4.class, A5.class})
+public class GroovyInheritanceTestCase extends InheritanceTestCase {}

@@ -17,18 +17,20 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.metamodel.typegen.property;
+package org.chromattic.testgenerator;
 
-import org.chromattic.metamodel.typegen.property.A1;
-import org.chromattic.metamodel.typegen.property.A2;
-import org.chromattic.metamodel.typegen.property.PropertyTestCase;
-import org.chromattic.testgenerator.UniversalTest;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@UniversalTest(
-  sourceClass = PropertyTestCase.class,
-  chromatticClasses = {A1.class, A2.class})
-public class GroovyPropertyTestCase extends PropertyTestCase {}
+@Retention(RetentionPolicy.SOURCE)
+@Target(ElementType.TYPE)
+public @interface UniversalTest {
+  Class<?> sourceClass();
+  Class<?>[] chromatticClasses() default {};
+}

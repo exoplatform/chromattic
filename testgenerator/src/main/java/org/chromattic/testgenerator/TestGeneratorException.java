@@ -17,18 +17,25 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.metamodel.typegen.property;
-
-import org.chromattic.metamodel.typegen.property.A1;
-import org.chromattic.metamodel.typegen.property.A2;
-import org.chromattic.metamodel.typegen.property.PropertyTestCase;
-import org.chromattic.testgenerator.UniversalTest;
+package org.chromattic.testgenerator;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@UniversalTest(
-  sourceClass = PropertyTestCase.class,
-  chromatticClasses = {A1.class, A2.class})
-public class GroovyPropertyTestCase extends PropertyTestCase {}
+public class TestGeneratorException extends RuntimeException {
+  public TestGeneratorException() {
+  }
+
+  public TestGeneratorException(String message) {
+    super(message);
+  }
+
+  public TestGeneratorException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public TestGeneratorException(Throwable cause) {
+    super(cause);
+  }
+}

@@ -19,16 +19,12 @@
 
 package org.chromattic.groovy.core.property.defaultvalue;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyShell;
-import org.chromattic.test.property.defaultvalue.DefaultValueTestCase;
-
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyDefaultValueTestCase extends DefaultValueTestCase {
-    GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
+public class GroovyDefaultValueTestCase /*extends DefaultValueTestCase*/ {
+ /*   GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
     GroovyShell groovyShell = new GroovyShell(groovyClassLoader);
 
   public GroovyDefaultValueTestCase() {
@@ -71,4 +67,4 @@ public class GroovyDefaultValueTestCase extends DefaultValueTestCase {
     groovyShell.evaluate("a.primitiveInt += 30");
     assertEquals(42, groovyShell.evaluate("a.primitiveInt"));
   }
-}
+*/}

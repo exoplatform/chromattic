@@ -19,17 +19,17 @@
 
 package org.chromattic.groovy.metamodel.typegen.attribute;
 
-import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
+import org.chromattic.metamodel.typegen.attribute.A1;
+import org.chromattic.metamodel.typegen.attribute.A2;
+import org.chromattic.metamodel.typegen.attribute.A3;
 import org.chromattic.metamodel.typegen.attribute.MappingTestCase;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@FromClass(
-  sourceClass = MappingTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) public class GroovyMappingTestCase extends TestCase {}
+@UniversalTest(
+  sourceClass = MappingTestCase.class,
+  chromatticClasses = {A1.class, A2.class, A3.class})
+public class GroovyMappingTestCase extends MappingTestCase {}

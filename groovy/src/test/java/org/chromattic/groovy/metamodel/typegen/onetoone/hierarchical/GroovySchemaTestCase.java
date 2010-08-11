@@ -19,17 +19,21 @@
 
 package org.chromattic.groovy.metamodel.typegen.onetoone.hierarchical;
 
-import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
+import org.chromattic.metamodel.typegen.onetoone.hierarchical.A1;
+import org.chromattic.metamodel.typegen.onetoone.hierarchical.A2;
+import org.chromattic.metamodel.typegen.onetoone.hierarchical.B1;
+import org.chromattic.metamodel.typegen.onetoone.hierarchical.B2;
+import org.chromattic.metamodel.typegen.onetoone.hierarchical.D;
+import org.chromattic.metamodel.typegen.onetoone.hierarchical.E1;
+import org.chromattic.metamodel.typegen.onetoone.hierarchical.E2;
 import org.chromattic.metamodel.typegen.onetoone.hierarchical.SchemaTestCase;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@FromClass(
-  sourceClass = SchemaTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) public class GroovySchemaTestCase extends TestCase {}
+@UniversalTest(
+  sourceClass = SchemaTestCase.class,
+  chromatticClasses = {A1.class, A2.class, B1.class, B2.class, E1.class, E2.class, D.class})
+public class GroovySchemaTestCase extends SchemaTestCase {}

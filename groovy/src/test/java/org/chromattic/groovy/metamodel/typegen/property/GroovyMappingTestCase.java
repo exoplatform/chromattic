@@ -19,18 +19,23 @@
 
 package org.chromattic.groovy.metamodel.typegen.property;
 
-import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
+import org.chromattic.metamodel.typegen.property.A1;
+import org.chromattic.metamodel.typegen.property.A2;
+import org.chromattic.metamodel.typegen.property.B1;
+import org.chromattic.metamodel.typegen.property.B2;
+import org.chromattic.metamodel.typegen.property.C1;
+import org.chromattic.metamodel.typegen.property.C2;
+import org.chromattic.metamodel.typegen.property.D1;
+import org.chromattic.metamodel.typegen.property.D2;
+import org.chromattic.metamodel.typegen.property.E;
 import org.chromattic.metamodel.typegen.property.MappingTestCase;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-
-@FromClass(
-  sourceClass = MappingTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) public class GroovyMappingTestCase extends TestCase {}
+@UniversalTest(
+  sourceClass = MappingTestCase.class,
+  chromatticClasses = {A1.class, A2.class, B1.class, B2.class, C1.class, C2.class, D1.class, D2.class, E.class})
+public class GroovyMappingTestCase extends MappingTestCase {}

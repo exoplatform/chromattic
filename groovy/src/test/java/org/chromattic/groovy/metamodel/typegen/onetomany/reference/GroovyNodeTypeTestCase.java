@@ -19,17 +19,16 @@
 
 package org.chromattic.groovy.metamodel.typegen.onetomany.reference;
 
-import junit.framework.TestCase;
-import org.chromattic.groovy.relaunch.annotations.FromClass;
-import org.chromattic.groovy.relaunch.classloader.ChromatticTestClassLoader;
 import org.chromattic.metamodel.typegen.onetomany.reference.NodeTypeTestCase;
+import org.chromattic.metamodel.typegen.onetomany.reference.C1;
+import org.chromattic.metamodel.typegen.onetomany.reference.C2;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@FromClass(
-  sourceClass = NodeTypeTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) public class GroovyNodeTypeTestCase extends TestCase {}
+@UniversalTest(
+  sourceClass = NodeTypeTestCase.class,
+  chromatticClasses = {C1.class, C2.class})
+public class GroovyNodeTypeTestCase extends NodeTypeTestCase {}
