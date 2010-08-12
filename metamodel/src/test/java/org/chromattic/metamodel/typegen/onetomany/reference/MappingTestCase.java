@@ -31,15 +31,10 @@ import java.util.Map;
  */
 public class MappingTestCase extends AbstractMappingTestCase {
 
-  public void testA() { testA(A1.class, A2.class); }
-  public void testB() { testB(B1.class, B2.class); }
-  public void testC() throws Exception { testC(C1.class, C2.class); }
-  public void testD() { testD(D.class); }
-
-  protected void testA(Class<?> a1class, Class<?> a2class) {
-    Map<Class<?>, BeanMapping> mappings = assertValid(a1class, a2class);
-    BeanMapping _1 = mappings.get(a1class);
-    BeanMapping _2 = mappings.get(a2class);
+  public void testA() {
+    Map<Class<?>, BeanMapping> mappings = assertValid(A1.class, A2.class);
+    BeanMapping _1 = mappings.get(A1.class);
+    BeanMapping _2 = mappings.get(A2.class);
     RelationshipMapping.OneToMany.Reference r1 = _1.getPropertyMapping("referents", RelationshipMapping.OneToMany.Reference.class);
     assertSame(_2.getBean(), r1.getRelatedBean());
     assertEquals("ref", r1.getMappedBy());
@@ -47,10 +42,10 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals(0, _2.getProperties().size());
   }
 
-  protected void testB(Class<?> b1class, Class<?> b2class) {
-    Map<Class<?>, BeanMapping> mappings = assertValid(b1class, b2class);
-    BeanMapping _1 = mappings.get(b1class);
-    BeanMapping _2 = mappings.get(b2class);
+  public void testB() {
+    Map<Class<?>, BeanMapping> mappings = assertValid(B1.class, B2.class);
+    BeanMapping _1 = mappings.get(B1.class);
+    BeanMapping _2 = mappings.get(B2.class);
     assertEquals(0, _1.getProperties().size());
     RelationshipMapping.ManyToOne.Reference r2 = _2.getPropertyMapping("referenced", RelationshipMapping.ManyToOne.Reference.class);
     assertSame(_1.getBean(), r2.getRelatedBean());
@@ -58,10 +53,10 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertNull(r2.getRelatedRelationshipMapping());
   }
 
-  protected void testC(Class<?> c1class, Class<?> c2class) throws Exception {
-    Map<Class<?>, BeanMapping> mappings = assertValid(c1class, c2class);
-    BeanMapping _1 = mappings.get(c1class);
-    BeanMapping _2 = mappings.get(c2class);
+  public void testC() throws Exception {
+    Map<Class<?>, BeanMapping> mappings = assertValid(C1.class, C2.class);
+    BeanMapping _1 = mappings.get(C1.class);
+    BeanMapping _2 = mappings.get(C2.class);
     RelationshipMapping.OneToMany.Reference r1 = _1.getPropertyMapping("referents", RelationshipMapping.OneToMany.Reference.class);
     RelationshipMapping.ManyToOne.Reference r2 = _2.getPropertyMapping("referenced", RelationshipMapping.ManyToOne.Reference.class);
     assertSame(_2.getBean(), r1.getRelatedBean());
@@ -72,9 +67,9 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertSame(r1, r2.getRelatedRelationshipMapping());
   }
 
-  protected void testD(Class<?> dclass) {
-    Map<Class<?>, BeanMapping> mappings = assertValid(dclass);
-    BeanMapping _1 = mappings.get(dclass);
+  public void testD() {
+    Map<Class<?>, BeanMapping> mappings = assertValid(D.class);
+    BeanMapping _1 = mappings.get(D.class);
     RelationshipMapping.OneToMany.Reference r1 = _1.getPropertyMapping("referents", RelationshipMapping.OneToMany.Reference.class);
     RelationshipMapping.ManyToOne.Reference r2 = _1.getPropertyMapping("referenced", RelationshipMapping.ManyToOne.Reference.class);
     assertSame(_1.getBean(), r1.getRelatedBean());
