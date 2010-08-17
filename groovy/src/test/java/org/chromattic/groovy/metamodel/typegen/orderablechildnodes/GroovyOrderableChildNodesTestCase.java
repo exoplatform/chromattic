@@ -29,5 +29,7 @@ import org.chromattic.testgenerator.UniversalTest;
  */
 @UniversalTest(
   sourceClass = OrderableChildNodesTestCase.class,
+  baseDir = "metamodel",
+  suffix = "MetamodelTest",
   chromatticClasses = {A.class})
-public class GroovyOrderableChildNodesTestCase extends OrderableChildNodesTestCase {}
+public class GroovyOrderableChildNodesTestCase {}

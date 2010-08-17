@@ -19,52 +19,21 @@
 
 package org.chromattic.groovy.core.property.defaultvalue;
 
+import org.chromattic.core.api.ChromatticSessionImpl;
+import org.chromattic.test.AbstractTestCase;
+import org.chromattic.test.property.defaultvalue.A;
+import org.chromattic.test.property.defaultvalue.DefaultValueTestCase;
+import org.chromattic.testgenerator.UniversalTest;
+
+import javax.jcr.Node;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyDefaultValueTestCase /*extends DefaultValueTestCase*/ {
- /*   GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
-    GroovyShell groovyShell = new GroovyShell(groovyClassLoader);
-
-  public GroovyDefaultValueTestCase() {
-    groovyClassLoader.parseClass(
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "import org.chromattic.api.annotations.Property\n" +
-      "import org.chromattic.api.annotations.DefaultValue\n" +
-      "import org.chromattic.api.annotations.SetterDelegation\n" +
-      "import org.chromattic.groovy.ChromatticGroovyInvocation\n" +
-      "@PrimaryType(name = \"property_defaultvalue:a\")\n" +
-      "public class A {\n" +
-      "  @Property(name = \"primitive_int_property\") @DefaultValue(\"5\") Integer primitiveInt\n" +
-      "}"
-    );
-  }
-
-  protected void createDomain() {
-    addClass((Class<?>) groovyShell.evaluate("A.class"));
-  }
-
-  public void testPrimitiveInt2() throws Exception {
-    groovyShell.setVariable("session", login());
-    groovyShell.setVariable("a", groovyShell.evaluate("session.insert(A.class, \"a\")"));
-    groovyShell.setVariable("aNode", groovyShell.evaluate("session.getRoot().getNode(\"a\")"));
-
-    //
-    assertEquals(5, groovyShell.evaluate("a.getPrimitiveInt()"));
-    assertFalse((Boolean) groovyShell.evaluate("aNode.hasProperty(\"primitive_int_property\")"));
-
-    //
-    groovyShell.evaluate("a.setPrimitiveInt(3)");
-    assertEquals(3, groovyShell.evaluate("a.getPrimitiveInt()"));
-    assertEquals(3, groovyShell.evaluate("(int) aNode.getProperty(\"primitive_int_property\").getLong()"));
-    assertEquals(3, groovyShell.evaluate("a.getPrimitiveInt()"));
-    groovyShell.evaluate("a.setPrimitiveInt(5)");
-
-    //
-    groovyShell.evaluate("a.primitiveInt = 12");
-    assertEquals(12, groovyShell.evaluate("a.primitiveInt"));
-    groovyShell.evaluate("a.primitiveInt += 30");
-    assertEquals(42, groovyShell.evaluate("a.primitiveInt"));
-  }
-*/}
+@UniversalTest(
+  sourceClass = DefaultValueTestCase.class,
+  baseDir = "core",
+  suffix = "CoreTest",
+  chromatticClasses = {A.class})
+public class GroovyDefaultValueTestCase {}

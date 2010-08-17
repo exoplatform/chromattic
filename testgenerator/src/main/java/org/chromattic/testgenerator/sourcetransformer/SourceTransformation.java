@@ -20,6 +20,7 @@
 package org.chromattic.testgenerator.sourcetransformer;
 
 import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.expr.ArrayCreationExpr;
 import japa.parser.ast.expr.MethodCallExpr;
 
 import java.util.List;
@@ -31,4 +32,5 @@ import java.util.List;
 public interface SourceTransformation {
   List<AnnotationExpr> getAnnotationExprs();
   List<MethodCallExpr> getMethodCallExprs();
+  List<ArrayCreationExpr> getArrayCreationExprs();
 }

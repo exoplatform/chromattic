@@ -19,12 +19,7 @@
 
 package org.chromattic.metamodel.typegen.inheritance;
 
-import junit.framework.TestCase;
-import org.chromattic.metamodel.mapping.InvalidMappingException;
 import org.chromattic.metamodel.typegen.*;
-import org.reflext.api.ClassTypeInfo;
-
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -75,6 +70,7 @@ public class InheritanceTestCase extends TypeGenTestCase {
   }
 
   public void testChildNodeDefinitions() throws Exception {
+    assertTrue(true);
     assertEquals(2, a1NT.getChildNodeDefinitions().size());
     assertEquals(0, a3NT.getChildNodeDefinitions().size());
     assertEquals(2, a5NT.getChildNodeDefinitions().size());

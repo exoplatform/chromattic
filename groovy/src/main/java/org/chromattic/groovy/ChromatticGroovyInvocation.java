@@ -46,7 +46,7 @@ public class ChromatticGroovyInvocation {
       method = target.getClass().getMethod(m, args2Class(p));
     } catch (NoSuchMethodException _) {
       // If method cannot be found, the method is getter or setter and the field is public and not annoted by chrommatic.
-      // We directly access to him.
+      // We directly access to it.
       try {
         Field field = target.getClass().getField(GroovyUtils.fieldName(m));
         return field.get(target);

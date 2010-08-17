@@ -267,6 +267,22 @@
         <version>${reflext.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.metamodel</artifactId>
+        <version>${version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.core</artifactId>
+        <version>${version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
     </dependencies>
 
   </dependencyManagement>

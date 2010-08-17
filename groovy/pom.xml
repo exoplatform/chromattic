@@ -67,23 +67,26 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.metamodel</artifactId>
-      <version>${version}</version>
       <type>test-jar</type>
-      <scope>test</scope>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
-      <version>${version}</version>
       <type>test-jar</type>
-      <scope>test</scope>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
-        <version>1.6.5</version>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>1.6.5</version>
     </dependency>
 
     <dependency>
@@ -92,7 +95,7 @@
       <version>1.0.8</version>
     </dependency>
 
-    <dependency>
+    <!--<dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
       <version>${version}</version>
@@ -106,7 +109,7 @@
       <version>${version}</version>
       <classifier>test-sources</classifier>
       <scope>compile</scope>
-    </dependency>
+    </dependency>-->
 
   </dependencies>
 
@@ -171,8 +174,8 @@
 
           <!-- Groovy universal tests -->
           <execution>
-            <id>test-compile</id>
-            <phase>test-compile</phase>
+            <id>process-test-classes</id>
+            <phase>process-test-classes</phase>
             <configuration>
               <tasks>
                 <taskdef
@@ -181,7 +184,7 @@
                   <classpath refid="maven.compile.classpath"/>
                 </taskdef>
                 <groovyc
-                        destdir="${project.build.outputDirectory}"
+                        destdir="${basedir}/target/test-classes/"
                         srcdir="${basedir}/target/test-classes/"
                         listfiles="true">
                   <classpath refid="maven.compile.classpath"/>
@@ -199,15 +202,15 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <compilerArguments>
-            <sourcepath>${project.basedir}/../metamodel/src/test/java</sourcepath>
+            <sourcepath>${project.basedir}/../</sourcepath>
           </compilerArguments>
         </configuration>
       </plugin>
     </plugins>
   </build>
 
-  <!--<properties>
+  <properties>
     <maven.test.skip>true</maven.test.skip>
-  </properties>-->
+  </properties>
   
 </project>

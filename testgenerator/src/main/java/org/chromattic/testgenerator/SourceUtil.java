@@ -25,6 +25,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.ExecutableElement;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,10 @@ public class SourceUtil {
       paths.add(classnameToPath(currentClass.toString()));
     }
     return paths;
+  }
+
+  public static String getTestPath(Element classElement) {
+    return classnameToPath(getUniversalTestConfig(classElement, "sourceClass").toString() + ".class");
   }
 
   public static <T> T getUniversalTestConfig(Element classElement, String key) {
@@ -62,5 +68,20 @@ public class SourceUtil {
 
   public static String groovyPath(String javaPath) {
     return javaPath.replaceAll("\\.java", ".groovy");
+  }
+
+  public static String sourceBaseDirectory(Element classElement) {
+    return getUniversalTestConfig(classElement, "baseDir");
+  }
+
+  public static String suffixOf(Element classElement) {
+    return getUniversalTestConfig(classElement, "suffix");
+  }
+
+  public static void writeSource(String code, OutputStream os) {
+    PrintWriter printWriter = new PrintWriter(os);
+    printWriter.append(code);
+    printWriter.flush();
+    printWriter.close();
   }
 }

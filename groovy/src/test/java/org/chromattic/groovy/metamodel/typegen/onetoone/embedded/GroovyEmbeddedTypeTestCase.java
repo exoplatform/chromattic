@@ -34,5 +34,7 @@ import org.chromattic.testgenerator.UniversalTest;
  */
 @UniversalTest(
   sourceClass = EmbeddedTypeTestCase.class,
+  baseDir = "metamodel",
+  suffix = "MetamodelTest",
   chromatticClasses = {A1.class, A2.class, A3.class, A4.class, B1.class, B2.class})
-public class GroovyEmbeddedTypeTestCase extends EmbeddedTypeTestCase {}
+public class GroovyEmbeddedTypeTestCase {}

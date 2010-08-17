@@ -33,4 +33,6 @@ import java.lang.annotation.Target;
 public @interface UniversalTest {
   Class<?> sourceClass();
   Class<?>[] chromatticClasses() default {};
+  String suffix();
+  String baseDir() default "";
 }

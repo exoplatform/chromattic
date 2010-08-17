@@ -23,6 +23,7 @@ import japa.parser.JavaParser;
 import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 import org.chromattic.testgenerator.sourcetransformer.GroovyFromJavaSourceChromatticBuilder;
+import org.chromattic.testgenerator.sourcetransformer.GroovyFromJavaSourceTestBuilder;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.FilerException;
@@ -51,24 +52,34 @@ public class TestGeneratorProcessor extends AbstractProcessor {
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     for (Element element : roundEnv.getElementsAnnotatedWith(UniversalTest.class)) {
-      for (String chromatticSourcePath : SourceUtil.getChromatticPaths(element)) {
-        String groovyPath = SourceUtil.groovyPath(chromatticSourcePath);
-        try {
-          InputStream is = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", chromatticSourcePath).openInputStream();
-          CompilationUnit compilationUnit = JavaParser.parse(is);
-          OutputStream os = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", groovyPath, element).openOutputStream();
-          PrintWriter printWriter = new PrintWriter(os);
-          GroovyFromJavaSourceChromatticBuilder builder = new GroovyFromJavaSourceChromatticBuilder(compilationUnit);
-          builder.build();
-          printWriter.append(builder.toString());
-          printWriter.flush();
-          printWriter.close();
-        } catch (FilerException ignore) { // Source is already generated
-        } catch (IOException e) {
-          throw new TestGeneratorException(e.getMessage(), e);
-        } catch (ParseException e) {
-          throw new TestGeneratorException(e.getMessage(), e);
-        } 
+      String suffix = SourceUtil.suffixOf(element);
+      String sourceBase = String.format("%s/src/test/java/", SourceUtil.sourceBaseDirectory(element));
+      String testCompletSourcePath =  sourceBase + SourceUtil.getTestPath(element);
+      String testGroovyPath = SourceUtil.groovyPath(testCompletSourcePath).replace(sourceBase, "").replaceAll("\\.groovy", "_" + suffix + ".groovy");
+      try {
+        InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", testCompletSourcePath).openInputStream();
+        CompilationUnit testUnit = JavaParser.parse(testIs);
+        OutputStream testOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", testGroovyPath, element).openOutputStream();
+        GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, suffix);
+        testBuilder.build();
+        SourceUtil.writeSource(testBuilder.toString(), testOs);
+
+        //
+        for (String chromatticSourcePath : SourceUtil.getChromatticPaths(element)) {
+          String chromatticCompletSourcePath = sourceBase + chromatticSourcePath;
+          String chromatticGroovyPath = SourceUtil.groovyPath(chromatticSourcePath);
+          InputStream chromatticIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", chromatticCompletSourcePath).openInputStream();
+          CompilationUnit chromatticUnit = JavaParser.parse(chromatticIs);
+          OutputStream chromatticOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", chromatticGroovyPath, element).openOutputStream();
+          GroovyFromJavaSourceChromatticBuilder chromatticBuilder = new GroovyFromJavaSourceChromatticBuilder(chromatticUnit);
+          chromatticBuilder.build();
+          SourceUtil.writeSource(chromatticBuilder.toString(), chromatticOs);
+        }
+      } catch (FilerException ignore) { // Source is already generated
+      } catch (IOException e) {
+        throw new TestGeneratorException(e.getMessage(), e);
+      } catch (ParseException e) {
+        throw new TestGeneratorException(e.getMessage(), e);
       }
     }
     return true;

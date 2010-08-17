@@ -37,6 +37,7 @@ public class JavaToGroovySyntaxTransformer {
     String dst = source;
     dst = annotationBracket(dst);
     dst = genericCall(dst);
+    //dst = arrayCreation(dst);
     return dst;
   }
 
@@ -61,5 +62,14 @@ public class JavaToGroovySyntaxTransformer {
       }
     }
     return tmpSrc;
+  }
+
+  private String arrayCreation(String source) {
+    String tmpSrc = source;
+    /*for (Array : sourceTransformation.getArrayCreationExprs()) {
+      
+    }*/
+    return tmpSrc;
+    //return source.replace(source.toString(), "[\"a\", \"b\"]");
   }
 }

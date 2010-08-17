@@ -19,8 +19,11 @@
 
 package org.chromattic.groovy.metamodel;
 
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyInterceptable;
+import groovy.lang.GroovyShell;
 import junit.framework.TestCase;
+import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.testgenerator.UniversalTest;
 
 import java.lang.reflect.Modifier;
@@ -41,9 +44,11 @@ public class ImplementTestCase extends TestCase {
     assertTrue((B.class.getInterfaces()[0].equals(GroovyInterceptable.class)));
   }
 
-  public void testPrivateConstructor() throws Exception {
+  public void testConstructors() throws Exception {
     assertEquals(Modifier.PROTECTED, A.class.getDeclaredConstructor().getModifiers());
+    assertEquals(Modifier.PUBLIC, A.class.getDeclaredConstructor(MethodHandler.class).getModifiers());
     assertEquals(Modifier.PROTECTED, B.class.getDeclaredConstructor().getModifiers());
+    assertEquals(Modifier.PUBLIC, B.class.getDeclaredConstructor(MethodHandler.class).getModifiers());
   }
 
   public void testNoChromatticMethod() throws Exception {
@@ -52,5 +57,9 @@ public class ImplementTestCase extends TestCase {
 
   public void testNoChromatticField() throws Exception {
     assertEquals(5, new B().f);
+  }
+
+  public void testExistInvokeMethod() throws Exception {
+    assertNotNull(A.class.getMethod("invokeMethod", String.class, Object.class));
   }
 }

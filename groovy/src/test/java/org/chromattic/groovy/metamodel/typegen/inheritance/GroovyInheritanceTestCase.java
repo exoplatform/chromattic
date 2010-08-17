@@ -27,11 +27,15 @@ import org.chromattic.metamodel.typegen.inheritance.A4;
 import org.chromattic.metamodel.typegen.inheritance.A5;
 import org.chromattic.testgenerator.UniversalTest;
 
+import java.util.Map;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 @UniversalTest(
   sourceClass = InheritanceTestCase.class,
+  baseDir = "metamodel",
+  suffix = "MetamodelTest",
   chromatticClasses = {A1.class, A2.class, A3.class, A4.class, A5.class})
-public class GroovyInheritanceTestCase extends InheritanceTestCase {}
+public class GroovyInheritanceTestCase {}

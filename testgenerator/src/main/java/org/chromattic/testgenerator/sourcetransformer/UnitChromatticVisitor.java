@@ -26,6 +26,7 @@ import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.VariableDeclarator;
 import japa.parser.ast.body.VariableDeclaratorId;
 import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.expr.ArrayCreationExpr;
 import japa.parser.ast.expr.MethodCallExpr;
 import japa.parser.ast.type.Type;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
@@ -44,8 +45,9 @@ public class UnitChromatticVisitor extends VoidVisitorAdapter implements SourceT
 
   @Override
   public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+    if (n.getAnnotations() != null)  annotationExprs.addAll(n.getAnnotations());
     List<FieldInfo> fieldInfos = new ArrayList<FieldInfo>();
-    n.setModifiers(n.getModifiers() & ~Modifier.ABSTRACT);
+    n.setModifiers(n.getModifiers() & ~Modifier.ABSTRACT & ~Modifier.PUBLIC);
 
     for (BodyDeclaration bodyDeclaration : n.getMembers()) {
       if (bodyDeclaration instanceof MethodDeclaration) {
@@ -61,7 +63,10 @@ public class UnitChromatticVisitor extends VoidVisitorAdapter implements SourceT
         fieldDeclaration.setAnnotations(new ArrayList<AnnotationExpr>());
         if (fieldInfo.getAnnotationExprs() != null) {
           for (AnnotationExpr annotationExpr : fieldInfo.getAnnotationExprs()) {
-            if (!annotationExpr.getName().getName().equals("Override")) {
+            if (
+                    !annotationExpr.getName().getName().equals("Override")
+                    && !annotationExpr.getName().getName().equals("Skip") 
+                    ) {
               fieldDeclaration.getAnnotations().add(annotationExpr);
             }
           }
@@ -115,6 +120,7 @@ public class UnitChromatticVisitor extends VoidVisitorAdapter implements SourceT
   }
 
   public static String fieldName(String getsetName) {
+    System.out.println(getsetName);
     if (
             !"get".equals(getsetName.substring(0 , 3))
             &&
@@ -129,5 +135,9 @@ public class UnitChromatticVisitor extends VoidVisitorAdapter implements SourceT
 
   public List<MethodCallExpr> getMethodCallExprs() {
     return methodCallExprs;
+  }
+
+  public List<ArrayCreationExpr> getArrayCreationExprs() {
+    return new ArrayList<ArrayCreationExpr>();
   }
 }

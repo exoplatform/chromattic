@@ -38,9 +38,4 @@ class ChromatticASTTransformation implements ASTTransformation {
   public void visit(ASTNode[] nodes, SourceUnit sourceUnit) {
     visitor.visit nodes, sourceUnit
   }
-
-  /*Object getProperty(String p) {
-    if ("class".equals(p)) return this.class
-  }*/
-
 }

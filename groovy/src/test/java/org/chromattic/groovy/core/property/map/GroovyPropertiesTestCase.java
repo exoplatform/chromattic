@@ -19,133 +19,19 @@
 
 package org.chromattic.groovy.core.property.map;
 
+import org.chromattic.test.property.map.PropertiesTestCase;
+import org.chromattic.testgenerator.UniversalTest;
+import org.chromattic.test.property.map.A;
+import org.chromattic.test.property.map.B;
+
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-/*@FromClass(
-  sourceClass = PropertiesTestCase.class
-  , classloader = ChromatticTestClassLoader.class
-
-) */
-public class GroovyPropertiesTestCase /*extends TestCase*/ {}
-/*public class GroovyPropertiesTestCase extends AbstractTestCase {
-  GroovyClassLoader classLoader = new GroovyClassLoader();
-
-  GroovyShell groovyShell = new GroovyShell(classLoader);
-
-  public GroovyPropertiesTestCase() {
-    classLoader.parseClass(
-      "import org.chromattic.metamodel.annotations.Skip\n" +
-      "import org.chromattic.api.annotations.PrimaryType\n" +
-      "import org.chromattic.api.annotations.Properties\n" +
-      "import org.chromattic.api.annotations.Property\n" +
-      "import org.chromattic.groovy.GroovyUtils\n" +
-      "@Skip\n" +
-      "@PrimaryType(name = \"property_map:a\")\n" +
-      "public class A {\n" +
-      "  @Properties public abstract Map<String, Object> properties\n" +
-      "  @Property(name = \"string_property\") String string\n" +
-      "}\n" +
-      "@Skip\n" +
-      "@PrimaryType(name = \"property_map:b\")\n" +
-      "public class B {\n" +
-      "  @Properties Map<String, Object> properties\n" +
-      "  @Property(name = \"string_array_property\")\n String[] string\n" +
-      "}"
-    );
-  }
-
-  protected void createDomain() {
-    addClass((Class<?>) groovyShell.evaluate("A.class"));
-    addClass((Class<?>) groovyShell.evaluate("B.class"));
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    //
-    groovyShell.setVariable("session", login());
-
-    groovyShell.setVariable("b", groovyShell.evaluate("session.insert(A.class, \"a\")"));
-    groovyShell.setVariable("c", groovyShell.evaluate("session.insert(B.class, \"b\")"));
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-
-    //
-    groovyShell.setVariable("b", null);
-    groovyShell.evaluate("session.close()");
-    groovyShell.setVariable("session", null);
-  }
-
-  public void testGetString() throws Exception {
-    groovyShell.evaluate("b.setString(\"bar\");");
-    groovyShell.setVariable("properties", groovyShell.evaluate("b.getProperties()"));
-    groovyShell.setVariable("value", groovyShell.evaluate("properties.get(\"string_property\")"));
-    assertEquals("bar", groovyShell.evaluate("b.getProperties().get(\"string_property\")"));
-  }
-
-  public void testPutString() throws Exception {
-    groovyShell.setVariable("properties", groovyShell.evaluate("b.getProperties()"));
-    groovyShell.evaluate("properties.put(\"string_property\", \"bar\")");
-    assertEquals(null, groovyShell.getVariable("value"));
-    assertEquals("bar",groovyShell.evaluate("b.getString()"));
-  }
-
-  public void testRemoveString() throws Exception {
-    groovyShell.evaluate("b.setString(\"bar\")");
-    groovyShell.setVariable("properties", groovyShell.evaluate("b.getProperties()"));
-    groovyShell.setVariable("value", groovyShell.evaluate("properties.remove(\"string_property\")"));
-    assertEquals("bar", groovyShell.getVariable("value"));
-    assertEquals(null,groovyShell.evaluate("b.getString()"));
-  }
-
-  public void testPutWrongType() throws Exception {
-    groovyShell.setVariable("properties", groovyShell.evaluate("b.getProperties()"));
-    try {
-      groovyShell.evaluate("properties.put(\"string_property\", 5)");
-      fail();
-    }
-    catch (ClassCastException ignore) {
-    }
-  }
-
-  public void testGetInvalidKey() throws Exception {
-    groovyShell.setVariable("properties", groovyShell.evaluate("b.getProperties()"));
-    try {
-      groovyShell.evaluate("properties.get(\"/invalid\")");
-      fail();
-    }
-    catch (IllegalArgumentException ignore) {
-    }
-  }
-
-
-  public void testPutInvalidKey() throws Exception {
-    groovyShell.setVariable("properties", groovyShell.evaluate("b.getProperties()"));
-    try {
-      groovyShell.evaluate("properties.put(\"/invalid\", \"foo\")");
-      fail();
-    }
-    catch (IllegalArgumentException ignore) {
-    }
-  }
-
-  public void testGetMultivaluedValue() throws Exception {
-    groovyShell.evaluate("c.setString((String[])[\"a\",\"b\"])");
-    groovyShell.setVariable("copy", new HashMap<String, Object>());
-    groovyShell.evaluate(
-      "for (Map.Entry<String, Object> entry : c.getProperties().entrySet()) {\n" +
-      "  copy.put(entry.getKey(), entry.getValue());\n" +
-      "}\n"
-    );
-    assertTrue((Boolean) groovyShell.evaluate("copy.containsKey(\"string_array_property\")"));
-    assertEquals("a", groovyShell.evaluate("copy.get(\"string_array_property\")"));
-  }
-}
-*/
+@UniversalTest(
+  sourceClass = PropertiesTestCase.class,
+  baseDir = "core",
+  suffix = "CoreTest",
+  chromatticClasses = {A.class, B.class})
+public class GroovyPropertiesTestCase {}

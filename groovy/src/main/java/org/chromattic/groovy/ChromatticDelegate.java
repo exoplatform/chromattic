@@ -64,6 +64,7 @@ public class ChromatticDelegate {
     methodNode.setCode(
       new BlockStatement(
         new Statement[] {
+                //new ThrowStatement(new ConstructorCallExpression(new ClassNode(RuntimeException.class), new EmptyExpression())),
           new ReturnStatement(
             new StaticMethodCallExpression(
               new ClassNode(ChromatticGroovyInvocation.class)
@@ -95,11 +96,12 @@ public class ChromatticDelegate {
             methodNode == null
             || !classNode.equals(methodNode.getDeclaringClass())
             ) throw new NoSuchMethodException();
-
+    
     //
     methodNode.setCode(
       new BlockStatement(
         new Statement[] {
+                //new ThrowStatement(new ConstructorCallExpression(new ClassNode(RuntimeException.class), new EmptyExpression())),
           new ExpressionStatement(
             new StaticMethodCallExpression(
               new ClassNode(ChromatticGroovyInvocation.class)
@@ -132,7 +134,7 @@ public class ChromatticDelegate {
             methodNode == null
             || !classNode.equals(methodNode.getDeclaringClass())
             ) throw new NoSuchMethodException();
-
+    
     //
     methodNode.setCode(
       new BlockStatement(
@@ -198,5 +200,4 @@ public class ChromatticDelegate {
       plugInvokeMethod(classNode);
     } catch (NoSuchMethodException ignore) { }
   }
-  
 }

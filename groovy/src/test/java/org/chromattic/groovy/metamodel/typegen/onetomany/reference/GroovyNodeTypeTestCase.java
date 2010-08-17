@@ -30,5 +30,7 @@ import org.chromattic.testgenerator.UniversalTest;
  */
 @UniversalTest(
   sourceClass = NodeTypeTestCase.class,
+  baseDir = "metamodel",
+  suffix = "MetamodelTest",
   chromatticClasses = {C1.class, C2.class})
-public class GroovyNodeTypeTestCase extends NodeTypeTestCase {}
+public class GroovyNodeTypeTestCase {}
