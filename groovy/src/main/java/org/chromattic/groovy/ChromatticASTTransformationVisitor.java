@@ -53,8 +53,9 @@ public class ChromatticASTTransformationVisitor {
 
     // Browse children to adapt groovy structure
     for (FieldNode fieldNode : classNode.getFields()) {
-      if (GroovyUtils.isChromatticAnnoted(fieldNode)) {
-
+      if (
+              GroovyUtils.isChromatticAnnoted(fieldNode)
+              ) {
         //
         try {
           annotationMover.addSetterDelegationAnnotation(classNode, fieldNode);
@@ -73,6 +74,11 @@ public class ChromatticASTTransformationVisitor {
             annotationMover.generateGetter(classNode, fieldNode, annotationNode);
           }
         }
+      }
+
+      //
+      if (GroovyUtils.isChromatticAnnotedInHierarchy(null, fieldNode)) {
+        annotationMover.generateGetter(classNode, fieldNode, null);
       }
       annotationMover.removeChromatticAnnotation(fieldNode);
     }
@@ -94,6 +100,12 @@ public class ChromatticASTTransformationVisitor {
       delegate.plugInvokeMethod(classNode);
     } catch (NoSuchMethodException e) {
       delegate.generateInvokeMethod(classNode);
+    }
+
+    if (classNode.getName().equals("org.chromattic.metamodel.typegen.inheritance.A5")) {
+      for (MethodNode methodNode : classNode.getMethods()) {
+        System.out.println("AST : " + methodNode.getName() + /*" : " + methodNode.getReturnType().getName() +*/ " : " + methodNode.getAnnotations().size());
+      }
     }
   }
 

@@ -93,4 +93,15 @@ public class GroovyUtils {
     }
     return false;
   }
+
+  public static boolean isChromatticAnnotedInHierarchy(ClassNode classNode, FieldNode fieldNode) {
+    if (classNode == null) classNode = fieldNode.getDeclaringClass();
+    ClassNode superClassNode = classNode.getSuperClass(); 
+    if (!superClassNode.equals(ClassHelper.OBJECT_TYPE)) {
+      MethodNode superMethodNode = superClassNode.getMethod(getsetName(GetSet.GET, fieldNode.getName()), new Parameter[]{});
+      if (superMethodNode != null) return true;
+      else isChromatticAnnotedInHierarchy(superClassNode, fieldNode);
+    }
+    return false;
+  }
 }

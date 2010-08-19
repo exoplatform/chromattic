@@ -45,13 +45,17 @@ public class ChromatticGroovyInvocation {
     try {
       method = target.getClass().getMethod(m, args2Class(p));
     } catch (NoSuchMethodException _) {
-      // If method cannot be found, the method is getter or setter and the field is public and not annoted by chrommatic.
-      // We directly access to it.
       try {
-        Field field = target.getClass().getField(GroovyUtils.fieldName(m));
-        return field.get(target);
-      } catch (Exception e) {
-        throw new AssertionError(e);
+        method = foundMethod(target.getClass(), m, p);
+      } catch (NoSuchMethodException __) {
+        // If method cannot be found, the method is getter or setter and the field is public and not annoted by chrommatic.
+        // We directly access to it.
+        try {
+          Field field = target.getClass().getField(GroovyUtils.fieldName(m));
+          return field.get(target);
+        } catch (Exception e) {
+          throw new AssertionError(e);
+        }
       }
     }
 
@@ -61,18 +65,33 @@ public class ChromatticGroovyInvocation {
         return handler.invoke(target, method, (Object[]) p);
       }
       else
-        return target.getClass().getMethod(m, args2Class(p)).invoke(target, (Object[]) p);
-      } catch (Throwable t) {
-        throw new AssertionError(t);
-      }
+        return method.invoke(target, (Object[]) p);
+    } catch (RuntimeException re) {
+      throw re;
+    } catch (Error e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AssertionError(t);
     }
+  }
 
   private static Class[] args2Class (Object objs) {
     List<Class> classes = new ArrayList<Class>();
     for (Object o : (Object[]) objs) {
-        classes.add(o.getClass());
+      classes.add((o != null ? o.getClass() : Object.class));
     }
     return classes.toArray(new Class[]{});
+  }
+
+  private static Method foundMethod(Class<?> from, String m, Object args) throws NoSuchMethodException {
+    for (Method method : from.getMethods()) {
+      if (
+              method.getName().equals(m)
+              && method.getParameterTypes().length == ((Object[])args).length
+              // TODO : maybe check parameter type
+              ) return method;
+    }
+    throw new NoSuchMethodException("Cannot found " + from.getName() + "." + m);
   }
 
   public static boolean isChromatticAnnoted(Method method) {

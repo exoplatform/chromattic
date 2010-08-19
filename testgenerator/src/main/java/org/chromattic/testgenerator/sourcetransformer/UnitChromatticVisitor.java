@@ -120,7 +120,6 @@ public class UnitChromatticVisitor extends VoidVisitorAdapter implements SourceT
   }
 
   public static String fieldName(String getsetName) {
-    System.out.println(getsetName);
     if (
             !"get".equals(getsetName.substring(0 , 3))
             &&

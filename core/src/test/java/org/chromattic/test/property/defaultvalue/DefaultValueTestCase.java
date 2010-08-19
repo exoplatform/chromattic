@@ -43,7 +43,7 @@ public class DefaultValueTestCase extends AbstractTestCase {
     assertFalse(aNode.hasProperty("primitive_int_property"));
 
     //
-    a.setPrimitiveInt(3);
+    a.setPrimitiveInt((int) 3);
     assertEquals(3, a.getPrimitiveInt());
     assertEquals(3, aNode.getProperty("primitive_int_property").getLong());
     assertEquals(3, a.getPrimitiveInt());
