@@ -41,7 +41,6 @@ public class ChromatticGroovyInvocation {
   }
 
   public static Object invokeMethod(Object target, String m, Object p, MethodHandler handler) {
-    System.out.println(target.getClass().getName()+ "." + m);
     Method method;
     try {
       method = target.getClass().getMethod(m, args2Class(p));
