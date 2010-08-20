@@ -63,7 +63,7 @@ public class SourceUtil {
   public static String classnameToPath(String classname) {
     return classname
       .replaceAll("\\.", "/")
-      .replaceAll("/class", ".java");
+      .replaceAll("/class$", ".java");
   }
 
   public static String groovyPath(String javaPath) {

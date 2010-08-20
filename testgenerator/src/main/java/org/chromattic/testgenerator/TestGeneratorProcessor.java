@@ -70,12 +70,13 @@ public class TestGeneratorProcessor extends AbstractProcessor {
           String chromatticGroovyPath = SourceUtil.groovyPath(chromatticSourcePath);
           InputStream chromatticIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", chromatticCompletSourcePath).openInputStream();
           CompilationUnit chromatticUnit = JavaParser.parse(chromatticIs);
-          OutputStream chromatticOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", chromatticGroovyPath, element).openOutputStream();
-          GroovyFromJavaSourceChromatticBuilder chromatticBuilder = new GroovyFromJavaSourceChromatticBuilder(chromatticUnit);
-          chromatticBuilder.build();
-          SourceUtil.writeSource(chromatticBuilder.toString(), chromatticOs);
+          try {
+            OutputStream chromatticOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", chromatticGroovyPath, element).openOutputStream();
+            GroovyFromJavaSourceChromatticBuilder chromatticBuilder = new GroovyFromJavaSourceChromatticBuilder(chromatticUnit);
+            chromatticBuilder.build();
+            SourceUtil.writeSource(chromatticBuilder.toString(), chromatticOs);
+          } catch (FilerException ignore) { /* Source is already generated */ }
         }
-      } catch (FilerException ignore) { // Source is already generated
       } catch (IOException e) {
         throw new TestGeneratorException(e.getMessage(), e);
       } catch (ParseException e) {

@@ -17,18 +17,20 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.api.annotations;
+package org.chromattic.groovy.core.format.transform.property;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.chromattic.test.format.transform.property.A;
+import org.chromattic.test.format.transform.property.PropertyNameTransformTestCase;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface SetterDelegation {
+@UniversalTest(
+  sourceClass = PropertyNameTransformTestCase.class,
+  baseDir = "core",
+  suffix = "CoreTest",
+  chromatticClasses = {A.class})
+public class GroovyPropertyNameTransformTestCase {
 }

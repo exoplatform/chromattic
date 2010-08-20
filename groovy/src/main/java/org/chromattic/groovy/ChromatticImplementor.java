@@ -17,35 +17,22 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.instrument;
+package org.chromattic.groovy;
 
-import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.spi.instrument.ProxyFactory;
+import org.codehaus.groovy.ast.MethodNode;
+import org.codehaus.groovy.ast.expr.ConstantExpression;
+import org.codehaus.groovy.ast.stmt.ReturnStatement;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyInstrumentor implements Instrumentor {
-  public <O> ProxyFactory<O> getProxyClass(Class<O> clazz) {
-    return new GroovyProxyFactory(clazz);
-  }
-
-  public MethodHandler getInvoker(Object proxy) {
-    //if (proxy instanceof Instrumented) {
-      try {
-          return (MethodHandler) proxy.getClass().getMethod("getChromatticInvoker").invoke(proxy);
-      }
-      catch (NoSuchMethodException e) {
-        throw new IllegalArgumentException(e.getMessage(), e);
-      } catch (Exception e) {
-        throw new AssertionError(e);
-      }
-    /*} else {
-      return null;
-    }*/
+public class ChromatticImplementor {
+  public void implement(MethodNode methodNode) {
+    methodNode.setModifiers(methodNode.getModifiers() & ~Modifier.ABSTRACT);
+    methodNode.setCode(new ReturnStatement(new ConstantExpression(null)));
   }
 }

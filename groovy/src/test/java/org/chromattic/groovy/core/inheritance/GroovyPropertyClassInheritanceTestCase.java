@@ -17,35 +17,21 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.instrument;
+package org.chromattic.groovy.core.inheritance;
 
-import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.spi.instrument.ProxyFactory;
-
-import java.lang.reflect.InvocationTargetException;
+import org.chromattic.test.inheritance.B;
+import org.chromattic.test.inheritance.BImpl;
+import org.chromattic.test.inheritance.PropertyClassInheritanceTestCase;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyInstrumentor implements Instrumentor {
-  public <O> ProxyFactory<O> getProxyClass(Class<O> clazz) {
-    return new GroovyProxyFactory(clazz);
-  }
-
-  public MethodHandler getInvoker(Object proxy) {
-    //if (proxy instanceof Instrumented) {
-      try {
-          return (MethodHandler) proxy.getClass().getMethod("getChromatticInvoker").invoke(proxy);
-      }
-      catch (NoSuchMethodException e) {
-        throw new IllegalArgumentException(e.getMessage(), e);
-      } catch (Exception e) {
-        throw new AssertionError(e);
-      }
-    /*} else {
-      return null;
-    }*/
-  }
+@UniversalTest(
+  sourceClass = PropertyClassInheritanceTestCase.class,
+  baseDir = "core",
+  suffix = "CoreTest",
+  chromatticClasses = {B.class, BImpl.class})
+public class GroovyPropertyClassInheritanceTestCase {
 }

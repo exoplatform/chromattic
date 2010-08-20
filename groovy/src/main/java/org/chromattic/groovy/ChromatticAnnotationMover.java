@@ -19,7 +19,7 @@
 
 package org.chromattic.groovy;
 
-import org.chromattic.api.annotations.SetterDelegation;
+import org.chromattic.api.annotations.ChromatticDelegation;
 import org.chromattic.groovy.exceptions.NoSuchGetterException;
 import org.chromattic.groovy.exceptions.NoSuchSetterException;
 import org.codehaus.groovy.ast.*;
@@ -40,8 +40,8 @@ public class ChromatticAnnotationMover {
 
   public void addSetterDelegationAnnotation(ClassNode classNode, FieldNode fieldNode) throws NoSuchSetterException {
     MethodNode setterNode = GroovyUtils.getSetter(classNode, fieldNode);
-    if (setterNode == null || !setterNode.getDeclaringClass().equals(classNode)) throw new NoSuchSetterException("Cannot apply annotation @SetterDelegation because setter don't exist for : " + fieldNode.getName());
-    setterNode.addAnnotation(new AnnotationNode(new ClassNode(SetterDelegation.class)));
+    if (setterNode == null || !setterNode.getDeclaringClass().equals(classNode)) throw new NoSuchSetterException("Cannot apply annotation @ChromatticDelegation because setter don't exist for : " + fieldNode.getName());
+    setterNode.addAnnotation(new AnnotationNode(new ClassNode(ChromatticDelegation.class)));
   }
 
   public void generateGetter(ClassNode classNode, FieldNode fieldNode) {
@@ -51,7 +51,7 @@ public class ChromatticAnnotationMover {
   public void generateGetter(ClassNode classNode, FieldNode fieldNode, AnnotationNode defaultAnnotatedNode) {
     generateGetter(classNode, fieldNode);
     try {
-      if (defaultAnnotatedNode != null) addFieldAnnotationToMethod(classNode, fieldNode, defaultAnnotatedNode);
+      addFieldAnnotationToMethod(classNode, fieldNode, defaultAnnotatedNode);
     } catch (NoSuchGetterException ignore) { }
   }
 

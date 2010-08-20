@@ -52,10 +52,14 @@ public class UnitChromatticVisitor extends VoidVisitorAdapter implements SourceT
     for (BodyDeclaration bodyDeclaration : n.getMembers()) {
       if (bodyDeclaration instanceof MethodDeclaration) {
         MethodDeclaration methodDeclaration = (MethodDeclaration) bodyDeclaration;
-        if (methodDeclaration.getAnnotations() != null)  annotationExprs.addAll(methodDeclaration.getAnnotations());
+        if (methodDeclaration.getAnnotations() != null) {
+          annotationExprs.addAll(methodDeclaration.getAnnotations());
+        }
         fieldInfos.add(new FieldInfo(methodDeclaration.getType(), methodDeclaration.getName(), methodDeclaration.getAnnotations(), methodDeclaration));
       }
     }
+
+    List<MethodDeclaration> methodToRemove = new ArrayList<MethodDeclaration>();
 
     for(FieldInfo fieldInfo : fieldInfos) {
       try {
@@ -73,12 +77,24 @@ public class UnitChromatticVisitor extends VoidVisitorAdapter implements SourceT
         }
         if (fieldInfo.getName().startsWith("get")) {
           n.getMembers().add(fieldDeclaration);
+          for (BodyDeclaration bodyDeclaration : n.getMembers()) {
+            if (bodyDeclaration instanceof MethodDeclaration) {
+              MethodDeclaration methodDeclaration = (MethodDeclaration) bodyDeclaration;
+              if (methodDeclaration.getName().equals(fieldInfo.getName().replace("get", "set"))) {
+                if (methodDeclaration.getAnnotations() != null)
+                  fieldDeclaration.getAnnotations().addAll(methodDeclaration.getAnnotations());
+              }
+            }
+          }
         }
-        n.getMembers().remove(fieldInfo.getSourceDeclaration());
+        methodToRemove.add(fieldInfo.getSourceDeclaration());
       } catch (IllegalArgumentException e) {
         continue;
       }
     }
+
+    for (MethodDeclaration methodDeclaration : methodToRemove) n.getMembers().remove(methodDeclaration); 
+
     if (n.getAnnotations() != null) annotationExprs.addAll(n.getAnnotations());
     super.visit(n, arg);
   }

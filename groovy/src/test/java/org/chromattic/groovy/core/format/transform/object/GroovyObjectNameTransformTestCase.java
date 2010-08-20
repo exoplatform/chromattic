@@ -17,35 +17,23 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.instrument;
+package org.chromattic.groovy.core.format.transform.object;
 
-import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.spi.instrument.ProxyFactory;
-
-import java.lang.reflect.InvocationTargetException;
+import org.chromattic.test.format.A;
+import org.chromattic.test.format.B;
+import org.chromattic.test.format.transform.object.D1;
+import org.chromattic.test.format.transform.object.D2;
+import org.chromattic.test.format.transform.object.ObjectNameTransformTestCase;
+import org.chromattic.testgenerator.UniversalTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyInstrumentor implements Instrumentor {
-  public <O> ProxyFactory<O> getProxyClass(Class<O> clazz) {
-    return new GroovyProxyFactory(clazz);
-  }
-
-  public MethodHandler getInvoker(Object proxy) {
-    //if (proxy instanceof Instrumented) {
-      try {
-          return (MethodHandler) proxy.getClass().getMethod("getChromatticInvoker").invoke(proxy);
-      }
-      catch (NoSuchMethodException e) {
-        throw new IllegalArgumentException(e.getMessage(), e);
-      } catch (Exception e) {
-        throw new AssertionError(e);
-      }
-    /*} else {
-      return null;
-    }*/
-  }
+@UniversalTest(
+  sourceClass = ObjectNameTransformTestCase.class,
+  baseDir = "core",
+  suffix = "CoreTest",
+  chromatticClasses = {A.class, B.class, D1.class, D2.class})
+public class GroovyObjectNameTransformTestCase {
 }

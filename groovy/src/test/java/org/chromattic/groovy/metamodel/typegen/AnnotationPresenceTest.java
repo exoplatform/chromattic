@@ -19,12 +19,10 @@
 
 package org.chromattic.groovy.metamodel.typegen;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyShell;
 import junit.framework.TestCase;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.api.annotations.SetterDelegation;
+import org.chromattic.api.annotations.ChromatticDelegation;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -45,11 +43,11 @@ public class AnnotationPresenceTest extends TestCase {
   }
 
   public void testAnnotationImplicitSetterPresent() throws Exception {
-    assertTrue(B.class.getDeclaredMethod("setStringTypedChromattic", String.class).isAnnotationPresent(SetterDelegation.class));
+    assertTrue(B.class.getDeclaredMethod("setStringTypedChromattic", String.class).isAnnotationPresent(ChromatticDelegation.class));
   }
 
   public void testAnnotationExplicitSetterPresent() throws Exception {
-    assertTrue(B.class.getDeclaredMethod("setStringTypedChromatticExplicitGetter", String.class).isAnnotationPresent(SetterDelegation.class));
+    assertTrue(B.class.getDeclaredMethod("setStringTypedChromatticExplicitGetter", String.class).isAnnotationPresent(ChromatticDelegation.class));
   }
 
 }

@@ -19,6 +19,7 @@
 
 package org.chromattic.groovy;
 
+import org.chromattic.api.annotations.ChromatticDelegation;
 import org.chromattic.groovy.exceptions.*;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.control.SourceUnit;
@@ -34,10 +35,11 @@ public class ChromatticASTTransformationVisitor {
   private final ChromatticFieldChecker fieldChecker = new ChromatticFieldChecker();
   private final ChromatticDelegate delegate = new ChromatticDelegate();
   private final ChromatticConstructor constructor = new ChromatticConstructor();
+  private final ChromatticImplementor implementor = new ChromatticImplementor();
 
   public void visit(ASTNode[] nodes, SourceUnit sourceUnit) throws ChromatticASTTransformationException {
     for (ClassNode classNode : (List<ClassNode>) sourceUnit.getAST().getClasses()) {
-      if (!classNode.isScript() && isInChromatticHierarchy(classNode)) {
+      if (!classNode.isScript() && !classNode.isInterface() && isInChromatticHierarchy(classNode)) {
         visitClass(classNode);
       }
     }
@@ -62,23 +64,21 @@ public class ChromatticASTTransformationVisitor {
         } catch (NoSuchSetterException e) {
           annotationMover.generateSetter(classNode, fieldNode);
         }
-      }
-      for (AnnotationNode annotationNode : (List<AnnotationNode>) fieldNode.getAnnotations()) {
-        if (annotationNode.getClassNode().getName().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE)) {
-          fieldChecker.checkChromaticFieldType(fieldNode);
-
-          //
-          try {
-            annotationMover.addFieldAnnotationToMethod(classNode, fieldNode, annotationNode);
-          } catch (NoSuchGetterException e) {
-            annotationMover.generateGetter(classNode, fieldNode, annotationNode);
+        for (AnnotationNode annotationNode : (List<AnnotationNode>) fieldNode.getAnnotations()) {
+          if (annotationNode.getClassNode().getName().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE)) {
+            fieldChecker.checkChromaticFieldType(fieldNode);
+    
+            //
+            try {
+              annotationMover.addFieldAnnotationToMethod(classNode, fieldNode, annotationNode);
+            } catch (NoSuchGetterException e) {
+              annotationMover.generateGetter(classNode, fieldNode, annotationNode);
+            }
           }
         }
-      }
-
-      //
-      if (GroovyUtils.isChromatticAnnotedInHierarchy(null, fieldNode)) {
-        annotationMover.generateGetter(classNode, fieldNode, null);
+      } else if (GroovyUtils.isChromatticAnnotedInHierarchy(null, fieldNode)) {
+        annotationMover.generateGetter(classNode, fieldNode, new AnnotationNode(new ClassNode(ChromatticDelegation.class)));
+        annotationMover.generateSetter(classNode, fieldNode);
       }
       annotationMover.removeChromatticAnnotation(fieldNode);
     }
@@ -102,9 +102,9 @@ public class ChromatticASTTransformationVisitor {
       delegate.generateInvokeMethod(classNode);
     }
 
-    if (classNode.getName().equals("org.chromattic.metamodel.typegen.inheritance.A5")) {
-      for (MethodNode methodNode : classNode.getMethods()) {
-        System.out.println("AST : " + methodNode.getName() + /*" : " + methodNode.getReturnType().getName() +*/ " : " + methodNode.getAnnotations().size());
+    for (MethodNode methodNode : classNode.getMethods()) {
+      if (methodNode.isAbstract()) {
+        implementor.implement(methodNode);
       }
     }
   }

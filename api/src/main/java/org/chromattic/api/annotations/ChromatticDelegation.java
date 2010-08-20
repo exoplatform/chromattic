@@ -17,35 +17,18 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.instrument;
+package org.chromattic.api.annotations;
 
-import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.spi.instrument.ProxyFactory;
-
-import java.lang.reflect.InvocationTargetException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyInstrumentor implements Instrumentor {
-  public <O> ProxyFactory<O> getProxyClass(Class<O> clazz) {
-    return new GroovyProxyFactory(clazz);
-  }
-
-  public MethodHandler getInvoker(Object proxy) {
-    //if (proxy instanceof Instrumented) {
-      try {
-          return (MethodHandler) proxy.getClass().getMethod("getChromatticInvoker").invoke(proxy);
-      }
-      catch (NoSuchMethodException e) {
-        throw new IllegalArgumentException(e.getMessage(), e);
-      } catch (Exception e) {
-        throw new AssertionError(e);
-      }
-    /*} else {
-      return null;
-    }*/
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface ChromatticDelegation {
 }

@@ -19,6 +19,8 @@
 
 package org.chromattic.test.inheritance;
 
+import java.lang.annotation.Annotation;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -45,19 +47,23 @@ public class PropertyClassInheritanceTestCase extends AbstractPropertyInheritanc
     return b.getString2();
   }
 
-  protected String[] getStrings1(BImpl b) {
+  @Override
+  protected Object getStrings1(BImpl b) {
     return b.getStrings1();
   }
 
-  protected void setStrings1(BImpl b, String... s) {
-    b.setStrings1(s);
+  @Override
+  protected void setStrings1(BImpl b, Object s) {
+    b.setStrings1((String[])s);
   }
 
-  protected String[] getStrings2(BImpl b) {
+  @Override
+  protected Object getStrings2(BImpl b) {
     return b.getStrings2();
   }
 
-  protected void setStrings2(BImpl b, String... s) {
-    b.setStrings2(s);
+  @Override
+  protected void setStrings2(BImpl b, Object s) {
+    b.setStrings2((String[])s);
   }
 }
