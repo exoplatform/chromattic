@@ -33,7 +33,9 @@
   <description>Chromattic Framework Reference Guide</description>
 
   <properties>
-    <wikbook.version>0.9.25</wikbook.version>
+    <wikbook.version>0.9.28</wikbook.version>
+    <wikbook.source>${pom.basedir}/src/main/wikbook</wikbook.source>
+    <wikbook.target>${project.build.directory}/wikbook</wikbook.target>
   </properties>
 
   <dependencies>
@@ -127,86 +129,147 @@
        </executions>
      </plugin>
 
-     <!-- Dockbx plugin that generates content -->
-     <plugin>
-       <groupId>com.agilejava.docbkx</groupId>
-       <artifactId>docbkx-maven-plugin</artifactId>
-       <version>2.0.7</version>
-       <executions>
-         <execution>
-           <goals>
-             <goal>generate-html</goal>
-             <goal>generate-pdf</goal>
-           </goals>
-           <phase>package</phase>
-           <configuration>
-             <sourceDirectory>${project.build.directory}/wikbook/src</sourceDirectory>
-             <targetDirectory>${project.build.directory}/wikbook/output</targetDirectory>
-             <includes>index.xml</includes>
+      <!-- Dockbx plugin that generates content -->
+      <plugin>
+        <groupId>com.agilejava.docbkx</groupId>
+        <artifactId>docbkx-maven-plugin</artifactId>
+        <version>2.0.7</version>
+        <configuration>
 
-             <!-- HTML -->
-             <htmlCustomization>${project.build.directory}/wikbook/src/resources/xsl/html.xsl</htmlCustomization>
-             <htmlStylesheet>css/html.css</htmlStylesheet>
+          <!-- Source -->
+          <sourceDirectory>${wikbook.target}/src</sourceDirectory>
+          <includes>index.xml</includes>
 
-             <!-- PDF -->
-             <foCustomization>${project.build.directory}/wikbook/src/resources/xsl/fopdf.xsl</foCustomization>
-             <imgSrcPath>${pom.basedir}/src/main/wikbook/</imgSrcPath>
-             <admonGraphicsPath>${project.build.directory}/wikbook/src/resources/images/admons/</admonGraphicsPath>
+          <!-- Highlight source code -->
+          <highlightSource>1</highlightSource>
 
-             <!-- Highlight source code -->
-             <highlightSource>1</highlightSource>
+          <!-- We need to support xinclude -->
+          <xincludeSupported>true</xincludeSupported>
 
-             <!-- We need to support xinclude -->
-             <xincludeSupported>true</xincludeSupported>
+          <!--
+            |  See http://www.sagehill.net/docbookxsl/AnnotateListing.html
+            |  Callouts on imported text
+            -->
+          <useExtensions>1</useExtensions>
+          <calloutsExtension>1</calloutsExtension>
 
-             <!--
-               |  See http://www.sagehill.net/docbookxsl/AnnotateListing.html
-               |  Callouts on imported text
-               -->
-             <useExtensions>1</useExtensions>
-             <calloutsExtension>1</calloutsExtension>
+          <!-- Copy any docbook XML -->
+          <preProcess>
+            <copy todir="${wikbook.target}/src">
+              <fileset dir="${wikbook.source}/en/en-US">
+                <include name="**/*.xml" />
+              </fileset>
+            </copy>
+          </preProcess>
 
-             <!-- Copy any docbook XML -->
-             <preProcess>
-               <copy todir="${project.build.directory}/wikbook/src">
-                 <fileset dir="${pom.basedir}/src/main/wikbook/en/en-US">
-                   <include name="**/*.xml" />
-                 </fileset>
-               </copy>
-             </preProcess>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-html</id>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
 
-             <!-- Copy the image for HTML-->
-             <postProcess>
+              <!-- Output -->
+              <targetDirectory>${wikbook.target}/output/html</targetDirectory>
 
-               <copy todir="${project.build.directory}/wikbook/output/images">
-                 <fileset dir="${pom.basedir}/src/main/wikbook/images">
-                   <include name="**" />
-                 </fileset>
-               </copy>
-               <copy todir="${project.build.directory}/wikbook/output">
-                 <fileset dir="${project.build.directory}/wikbook/src/resources">
-                   <include name="**/*.css" />
-                   <include name="**/*.png" />
-                   <include name="**/*.gif" />
-                   <include name="**/*.jpg" />
-                 </fileset>
-               </copy>
+              <!-- Stylesheet -->
+              <htmlCustomization>${wikbook.target}/src/resources/xsl/html.xsl</htmlCustomization>
+              <htmlStylesheet>css/html.css</htmlStylesheet>
 
-             </postProcess>
+              <!-- Copy the image -->
+              <postProcess>
+                <copy todir="${wikbook.target}/output/html/images">
+                  <fileset dir="${wikbook.source}/images">
+                    <include name="**"/>
+                  </fileset>
+                </copy>
+                <copy todir="${wikbook.target}/output/html">
+                  <fileset dir="${wikbook.target}/src/resources">
+                    <include name="**/*.css"/>
+                    <include name="**/*.png"/>
+                    <include name="**/*.gif"/>
+                    <include name="**/*.jpg"/>
+                  </fileset>
+                </copy>
+              </postProcess>
 
-           </configuration>
-         </execution>
-       </executions>
-       <dependencies>
-         <dependency>
-           <groupId>org.docbook</groupId>
-           <artifactId>docbook-xml</artifactId>
-           <version>4.4</version>
-           <scope>runtime</scope>
-         </dependency>
-       </dependencies>
-     </plugin>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-pdf</id>
+            <goals>
+              <goal>generate-pdf</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+
+              <!-- Output -->
+              <targetDirectory>${wikbook.target}/output/pdf</targetDirectory>
+
+              <!-- Stylesheet -->
+              <foCustomization>${wikbook.target}/src/resources/xsl/fopdf.xsl</foCustomization>
+
+              <!-- Image configuration -->
+              <imgSrcPath>${wikbook.source}/</imgSrcPath>
+              <admonGraphicsPath>${wikbook.target}/src/resources/images/admons/</admonGraphicsPath>
+
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.docbook</groupId>
+            <artifactId>docbook-xml</artifactId>
+            <version>4.4</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
       
+      <!-- Attach the HTML zip -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/html.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Attach the PDF -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/wikbook/output/pdf/index.pdf</file>
+                  <type>pdf</type>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
 
    </build>
