@@ -45,23 +45,19 @@ public class PropertyInterfaceInheritanceTestCase extends AbstractPropertyInheri
     return b.getString2();
   }
 
-  @Override
-  protected Object getStrings1(AImpl b) {
+  protected String[] getStrings1(AImpl b) {
     return b.getStrings1();
   }
 
-  @Override
-  protected void setStrings1(AImpl b, Object s) {
-    b.setStrings1((String[])s);
+  protected void setStrings1(AImpl b, String... s) {
+    b.setStrings1(s);
   }
 
-  @Override
-  protected Object getStrings2(AImpl b) {
+  protected String[] getStrings2(AImpl b) {
     return b.getStrings2();
   }
 
-  @Override
-  protected void setStrings2(AImpl b, Object s) {
-    b.setStrings2((String[])s);
+  protected void setStrings2(AImpl b, String... s) {
+    b.setStrings2(s);
   }
 }
