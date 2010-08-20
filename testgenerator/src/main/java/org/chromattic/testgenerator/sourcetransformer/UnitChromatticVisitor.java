@@ -137,10 +137,14 @@ public class UnitChromatticVisitor extends VoidVisitorAdapter implements SourceT
 
   public static String fieldName(String getsetName) {
     if (
+          getsetName.length() <= 4
+          ||
+          (
             !"get".equals(getsetName.substring(0 , 3))
             &&
             !"set".equals(getsetName.substring(0 , 3))
-            ) throw new IllegalArgumentException("Invalid getter or setter name : " + getsetName);
+          )
+          ) throw new IllegalArgumentException("Invalid getter or setter name : " + getsetName);
     return String.format("%s%s", getsetName.substring(3, 4).toLowerCase(), getsetName.substring(4));
   }
 

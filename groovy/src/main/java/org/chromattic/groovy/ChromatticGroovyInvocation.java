@@ -41,6 +41,7 @@ public class ChromatticGroovyInvocation {
   }
 
   public static Object invokeMethod(Object target, String m, Object p, MethodHandler handler) {
+    System.out.println(target.getClass().getName()+ "." + m);
     Method method;
     try {
       method = target.getClass().getMethod(m, args2Class(p));
@@ -86,10 +87,10 @@ public class ChromatticGroovyInvocation {
   private static Method foundMethod(Class<?> from, String m, Object args) throws NoSuchMethodException {
     for (Method method : from.getMethods()) {
       if (
-              method.getName().equals(m)
-              && method.getParameterTypes().length == ((Object[])args).length
-              // TODO : maybe check parameter type
-              ) return method;
+            method.getName().equals(m)
+            && method.getParameterTypes().length == ((Object[])args).length
+            // TODO : maybe check parameter type
+            ) return method;
     }
     throw new NoSuchMethodException("Cannot found " + from.getName() + "." + m);
   }
