@@ -19,31 +19,19 @@
 
 package org.chromattic.testgenerator.sourcetransformer;
 
-import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.body.ClassOrInterfaceDeclaration;
+import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.expr.ArrayCreationExpr;
+import japa.parser.ast.expr.MethodCallExpr;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyFromJavaSourceTestBuilder {
-  private CompilationUnit compilationUnit;
-  private StringBuilder sb = new StringBuilder();
-  private String suffix;
-
-  public GroovyFromJavaSourceTestBuilder(CompilationUnit compilationUnit, String suffix) {
-    this.compilationUnit = compilationUnit;
-    this.suffix = suffix;
-  }
-
-  public void build(TransformationProcessor transformationProcessor) {
-    UnitTestVisitor unitTestVisitor = new UnitTestVisitor("_" + suffix);
-    unitTestVisitor.visit(compilationUnit, null);
-    transformationProcessor.setTransformationSource(unitTestVisitor);
-    sb.append(transformationProcessor.transform(compilationUnit.toString()));
-  }
-
-  @Override
-  public String toString() {
-    return sb.toString();
-  }
+public interface TransformationSource {
+  List<AnnotationExpr> getAnnotationExprs();
+  List<MethodCallExpr> getMethodCallExprs();
+  ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration();
 }

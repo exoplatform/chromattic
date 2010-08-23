@@ -34,11 +34,11 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class UnitTestVisitor extends VoidVisitorAdapter implements SourceTransformation {
+public class UnitTestVisitor extends VoidVisitorAdapter implements TransformationSource {
   private List<AnnotationExpr> annotationExprs = new ArrayList<AnnotationExpr>();
   private List<MethodCallExpr> methodCallExprs = new ArrayList<MethodCallExpr>();
-  private List<ArrayCreationExpr> arrayCreationExprs = new ArrayList<ArrayCreationExpr>();
   private String suffix;
+  private ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
 
   public UnitTestVisitor(String suffix) {
     this.suffix = suffix;
@@ -46,6 +46,7 @@ public class UnitTestVisitor extends VoidVisitorAdapter implements SourceTransfo
 
   @Override
   public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+    classOrInterfaceDeclaration = n;
     if (n.getAnnotations() != null)  annotationExprs.addAll(n.getAnnotations());
     n.setName(n.getName() + suffix);
     super.visit(n, arg);
@@ -65,13 +66,6 @@ public class UnitTestVisitor extends VoidVisitorAdapter implements SourceTransfo
 
   @Override
   public void visit(ArrayCreationExpr n, Object arg) {
-    arrayCreationExprs.add(n);
-    super.visit(n, arg);
-  }
-
-  @Override
-  public void visit(ArrayInitializerExpr n, Object arg) {
-    System.out.println(n);
     super.visit(n, arg);
   }
 
@@ -83,7 +77,7 @@ public class UnitTestVisitor extends VoidVisitorAdapter implements SourceTransfo
     return methodCallExprs;
   }
 
-  public List<ArrayCreationExpr> getArrayCreationExprs() {
-    return arrayCreationExprs;
+  public ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
+    return classOrInterfaceDeclaration;
   }
 }

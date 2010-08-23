@@ -26,24 +26,31 @@ import japa.parser.ast.expr.MethodCallExpr;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class JavaToGroovySyntaxTransformer {
-  private SourceTransformation sourceTransformation;
+public class JavaToGroovySyntaxTransformer implements TransformationProcessor {
+  protected TransformationSource transformationSource;
 
-  public JavaToGroovySyntaxTransformer(SourceTransformation sourceTransformation) {
-    this.sourceTransformation = sourceTransformation;
+  public JavaToGroovySyntaxTransformer() {
+  }
+
+  public JavaToGroovySyntaxTransformer(TransformationSource transformationSource) {
+    this.transformationSource = transformationSource;
+  }
+
+  public void setTransformationSource(TransformationSource transformationSource) {
+    this.transformationSource = transformationSource;
   }
 
   public String transform(String source) {
+    if (transformationSource == null) throw new IllegalStateException("transformationSource must be initialized before transformation.");
     String dst = source;
     dst = annotationBracket(dst);
     dst = genericCall(dst);
-    //dst = arrayCreation(dst);
     return dst;
   }
 
-  private String annotationBracket(String source) {
+  protected String annotationBracket(String source) {
     String tmpSrc = source;
-    for (AnnotationExpr expr : sourceTransformation.getAnnotationExprs()) {
+    for (AnnotationExpr expr : transformationSource.getAnnotationExprs()) {
       String tmpExpr = expr.toString();
       tmpExpr = tmpExpr.replaceAll("\\{", "[");
       tmpExpr = tmpExpr.replaceAll("\\}", "]");
@@ -52,9 +59,9 @@ public class JavaToGroovySyntaxTransformer {
     return tmpSrc;
   }
 
-  private String genericCall(String source) {
+  protected String genericCall(String source) {
     String tmpSrc = source;
-    for (MethodCallExpr methodCallExpr : sourceTransformation.getMethodCallExprs()) {
+    for (MethodCallExpr methodCallExpr : transformationSource.getMethodCallExprs()) {
       String tmpExpr = methodCallExpr.toString();
       if (methodCallExpr.getTypeArgs() != null) {
         tmpExpr = tmpExpr.replaceAll("<.*>", "");
@@ -62,14 +69,5 @@ public class JavaToGroovySyntaxTransformer {
       }
     }
     return tmpSrc;
-  }
-
-  private String arrayCreation(String source) {
-    String tmpSrc = source;
-    /*for (Array : sourceTransformation.getArrayCreationExprs()) {
-      
-    }*/
-    return tmpSrc;
-    //return source.replace(source.toString(), "[\"a\", \"b\"]");
   }
 }

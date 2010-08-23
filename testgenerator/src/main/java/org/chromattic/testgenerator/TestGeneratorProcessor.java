@@ -24,6 +24,8 @@ import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 import org.chromattic.testgenerator.sourcetransformer.GroovyFromJavaSourceChromatticBuilder;
 import org.chromattic.testgenerator.sourcetransformer.GroovyFromJavaSourceTestBuilder;
+import org.chromattic.testgenerator.sourcetransformer.JavaToGroovyPropertiesSyntaxTransformer;
+import org.chromattic.testgenerator.sourcetransformer.JavaToGroovySyntaxTransformer;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.FilerException;
@@ -56,13 +58,23 @@ public class TestGeneratorProcessor extends AbstractProcessor {
       String sourceBase = String.format("%s/src/test/java/", SourceUtil.sourceBaseDirectory(element));
       String testCompletSourcePath =  sourceBase + SourceUtil.getTestPath(element);
       String testGroovyPath = SourceUtil.groovyPath(testCompletSourcePath).replace(sourceBase, "").replaceAll("\\.groovy", "_" + suffix + ".groovy");
+      String testGroovyPath2 = SourceUtil.groovyPath(testCompletSourcePath).replace(sourceBase, "").replaceAll("\\.groovy", "_Property_" + suffix + ".groovy");
       try {
         InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", testCompletSourcePath).openInputStream();
         CompilationUnit testUnit = JavaParser.parse(testIs);
         OutputStream testOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", testGroovyPath, element).openOutputStream();
         GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, suffix);
-        testBuilder.build();
+        testBuilder.build(new JavaToGroovySyntaxTransformer());
         SourceUtil.writeSource(testBuilder.toString(), testOs);
+
+        //
+        InputStream testPropertiesIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", testCompletSourcePath).openInputStream();
+        CompilationUnit testPropertiesUnit = JavaParser.parse(testPropertiesIs);
+        OutputStream testPropertiesOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", testGroovyPath2, element).openOutputStream();
+        GroovyFromJavaSourceTestBuilder testPropertiesBuilder = new GroovyFromJavaSourceTestBuilder(testPropertiesUnit, "Property_" + suffix);
+        testPropertiesBuilder.build(new JavaToGroovyPropertiesSyntaxTransformer());
+        //System.out.println(testPropertiesBuilder.toString());
+        SourceUtil.writeSource(testPropertiesBuilder.toString(), testPropertiesOs);
 
         //
         for (String chromatticSourcePath : SourceUtil.getChromatticPaths(element)) {

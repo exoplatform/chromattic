@@ -19,18 +19,11 @@
 
 package org.chromattic.testgenerator.sourcetransformer;
 
-import japa.parser.ast.expr.AnnotationExpr;
-import japa.parser.ast.expr.ArrayCreationExpr;
-import japa.parser.ast.expr.MethodCallExpr;
-
-import java.util.List;
-
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public interface SourceTransformation {
-  List<AnnotationExpr> getAnnotationExprs();
-  List<MethodCallExpr> getMethodCallExprs();
-  List<ArrayCreationExpr> getArrayCreationExprs();
+public interface TransformationProcessor {
+  String transform(String source);
+  void setTransformationSource(TransformationSource transformationSource);
 }
