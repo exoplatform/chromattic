@@ -33,5 +33,6 @@ import org.chromattic.test.property.map.B;
   sourceClass = PropertiesTestCase.class,
   baseDir = "core",
   suffix = "CoreTest",
-  chromatticClasses = {A.class, B.class})
+  chromatticClasses = {A.class, B.class},
+  exclude = {"testGetMultivaluedValue"})
 public class GroovyPropertiesTestCase {}

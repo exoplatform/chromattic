@@ -42,11 +42,9 @@ import java.util.List;
 public class UnitChromatticVisitor extends VoidVisitorAdapter implements TransformationSource {
   private List<AnnotationExpr> annotationExprs = new ArrayList<AnnotationExpr>();
   private List<MethodCallExpr> methodCallExprs = new ArrayList<MethodCallExpr>();
-  private ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
 
   @Override
   public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-    classOrInterfaceDeclaration = n;
     if (n.getAnnotations() != null)  annotationExprs.addAll(n.getAnnotations());
     List<FieldInfo> fieldInfos = new ArrayList<FieldInfo>();
     n.setModifiers(n.getModifiers() & ~Modifier.ABSTRACT & ~Modifier.PUBLIC);
@@ -156,9 +154,5 @@ public class UnitChromatticVisitor extends VoidVisitorAdapter implements Transfo
 
   public List<ArrayCreationExpr> getArrayCreationExprs() {
     return new ArrayList<ArrayCreationExpr>();
-  }
-
-  public ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
-    return classOrInterfaceDeclaration;
   }
 }

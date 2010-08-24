@@ -127,8 +127,7 @@ public class PropertiesTestCase extends AbstractTestCase {
     }
   }
 
-  /*public void testGetMultivaluedValue() throws Exception
-  {
+  public void testGetMultivaluedValue() throws Exception {
     c.setString(new String[]{"a","b"});
     Map<String, Object> copy = new HashMap<String, Object>();
     for (Map.Entry<String, Object> entry : c.getProperties().entrySet()) {
@@ -137,5 +136,5 @@ public class PropertiesTestCase extends AbstractTestCase {
     assertTrue(copy.containsKey("string_array_property"));
     assertEquals("a", copy.get("string_array_property"));
 
-  }*/
+  }
 }

@@ -21,6 +21,8 @@ package org.chromattic.testgenerator.sourcetransformer;
 
 import japa.parser.ast.CompilationUnit;
 
+import java.util.List;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
@@ -35,9 +37,9 @@ public class GroovyFromJavaSourceTestBuilder {
     this.suffix = suffix;
   }
 
-  public void build(TransformationProcessor transformationProcessor) {
+  public void build(TransformationProcessor transformationProcessor, List<String> excludedMethods) {
     UnitTestVisitor unitTestVisitor = new UnitTestVisitor("_" + suffix);
-    unitTestVisitor.visit(compilationUnit, null);
+    unitTestVisitor.visit(compilationUnit, excludedMethods);
     transformationProcessor.setTransformationSource(unitTestVisitor);
     sb.append(transformationProcessor.transform(compilationUnit.toString()));
   }

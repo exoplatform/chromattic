@@ -33,5 +33,4 @@ import java.util.List;
 public interface TransformationSource {
   List<AnnotationExpr> getAnnotationExprs();
   List<MethodCallExpr> getMethodCallExprs();
-  ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration();
 }

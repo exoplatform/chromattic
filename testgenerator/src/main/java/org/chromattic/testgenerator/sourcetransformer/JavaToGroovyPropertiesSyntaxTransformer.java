@@ -26,12 +26,6 @@ import japa.parser.ast.expr.MethodCallExpr;
  * @version $Revision$
  */
 public class JavaToGroovyPropertiesSyntaxTransformer extends JavaToGroovySyntaxTransformer {
-  
-  @Override
-  public String transform(String source) {
-    String dst = super.transform(source);
-    return dst;
-  }
 
   @Override
   protected String genericCall(String source) {

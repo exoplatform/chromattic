@@ -35,4 +35,5 @@ public @interface UniversalTest {
   Class<?>[] chromatticClasses() default {};
   String suffix();
   String baseDir() default "";
+  String[] exclude() default {};
 }

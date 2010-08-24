@@ -19,6 +19,7 @@
 
 package org.chromattic.testgenerator.sourcetransformer;
 
+import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
@@ -34,38 +35,48 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class UnitTestVisitor extends VoidVisitorAdapter implements TransformationSource {
+public class UnitTestVisitor extends VoidVisitorAdapter<List<String>> implements TransformationSource {
   private List<AnnotationExpr> annotationExprs = new ArrayList<AnnotationExpr>();
   private List<MethodCallExpr> methodCallExprs = new ArrayList<MethodCallExpr>();
   private String suffix;
-  private ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
 
   public UnitTestVisitor(String suffix) {
     this.suffix = suffix;
   }
 
   @Override
-  public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-    classOrInterfaceDeclaration = n;
+  public void visit(ClassOrInterfaceDeclaration n, List<String> excludedMethods) {
+    List<MethodDeclaration> methodToRemove = new ArrayList<MethodDeclaration>();
+    for (BodyDeclaration bodyDeclaration : n.getMembers()) {
+      if(bodyDeclaration instanceof MethodDeclaration) {
+        MethodDeclaration methodDeclaration = (MethodDeclaration) bodyDeclaration;
+        if (excludedMethods.contains(methodDeclaration.getName())) {
+          methodToRemove.add(methodDeclaration);
+        }
+      }
+    }
+    n.getMembers().removeAll(methodToRemove);
+
+    //
     if (n.getAnnotations() != null)  annotationExprs.addAll(n.getAnnotations());
     n.setName(n.getName() + suffix);
-    super.visit(n, arg);
+    super.visit(n, excludedMethods);
   }
 
   @Override
-  public void visit(MethodDeclaration n, Object arg) {
+  public void visit(MethodDeclaration n, List<String> arg) {
     if (n.getAnnotations() != null)  annotationExprs.addAll(n.getAnnotations());
     super.visit(n, arg);
   }
 
   @Override
-  public void visit(MethodCallExpr n, Object arg) {
+  public void visit(MethodCallExpr n, List<String> arg) {
     methodCallExprs.add(n);
     super.visit(n, arg);
   }
 
   @Override
-  public void visit(ArrayCreationExpr n, Object arg) {
+  public void visit(ArrayCreationExpr n, List<String> arg) {
     super.visit(n, arg);
   }
 
@@ -75,9 +86,5 @@ public class UnitTestVisitor extends VoidVisitorAdapter implements Transformatio
 
   public List<MethodCallExpr> getMethodCallExprs() {
     return methodCallExprs;
-  }
-
-  public ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
-    return classOrInterfaceDeclaration;
   }
 }

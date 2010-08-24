@@ -74,6 +74,15 @@ public class SourceUtil {
     return getUniversalTestConfig(classElement, "baseDir");
   }
 
+  public static List<String> excludedMethods(Element classElement) {
+    List<String> excludedMethods = new ArrayList<String>();
+    List<AnnotationValue> annotationValues = getUniversalTestConfig(classElement, "exclude");
+    for(AnnotationValue currentExcluded : annotationValues) {
+      excludedMethods.add((String) currentExcluded.getValue());
+    }
+    return excludedMethods;
+  }
+
   public static String suffixOf(Element classElement) {
     return getUniversalTestConfig(classElement, "suffix");
   }

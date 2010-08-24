@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -57,23 +59,28 @@ public class TestGeneratorProcessor extends AbstractProcessor {
       String suffix = SourceUtil.suffixOf(element);
       String sourceBase = String.format("%s/src/test/java/", SourceUtil.sourceBaseDirectory(element));
       String testCompletSourcePath =  sourceBase + SourceUtil.getTestPath(element);
+      List<String> excludedMethods;
+      try {
+        excludedMethods = SourceUtil.excludedMethods(element);
+      } catch (TestGeneratorException tge) {
+        excludedMethods = new ArrayList<String>();
+      }
       String testGroovyPath = SourceUtil.groovyPath(testCompletSourcePath).replace(sourceBase, "").replaceAll("\\.groovy", "_" + suffix + ".groovy");
-      String testGroovyPath2 = SourceUtil.groovyPath(testCompletSourcePath).replace(sourceBase, "").replaceAll("\\.groovy", "_Property_" + suffix + ".groovy");
+      String testPropertiesGroovyPath = SourceUtil.groovyPath(testCompletSourcePath).replace(sourceBase, "").replaceAll("\\.groovy", "_Property_" + suffix + ".groovy");
       try {
         InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", testCompletSourcePath).openInputStream();
         CompilationUnit testUnit = JavaParser.parse(testIs);
         OutputStream testOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", testGroovyPath, element).openOutputStream();
         GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, suffix);
-        testBuilder.build(new JavaToGroovySyntaxTransformer());
+        testBuilder.build(new JavaToGroovySyntaxTransformer(), excludedMethods);
         SourceUtil.writeSource(testBuilder.toString(), testOs);
 
         //
         InputStream testPropertiesIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", testCompletSourcePath).openInputStream();
         CompilationUnit testPropertiesUnit = JavaParser.parse(testPropertiesIs);
-        OutputStream testPropertiesOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", testGroovyPath2, element).openOutputStream();
+        OutputStream testPropertiesOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", testPropertiesGroovyPath, element).openOutputStream();
         GroovyFromJavaSourceTestBuilder testPropertiesBuilder = new GroovyFromJavaSourceTestBuilder(testPropertiesUnit, "Property_" + suffix);
-        testPropertiesBuilder.build(new JavaToGroovyPropertiesSyntaxTransformer());
-        //System.out.println(testPropertiesBuilder.toString());
+        testPropertiesBuilder.build(new JavaToGroovyPropertiesSyntaxTransformer(), excludedMethods);
         SourceUtil.writeSource(testPropertiesBuilder.toString(), testPropertiesOs);
 
         //
