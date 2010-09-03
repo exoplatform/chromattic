@@ -20,6 +20,7 @@ the properties we want for the representation of a web page:
 {{important}}The Javabean properties needs to be modelled as abstract methods because it allows Chromattic to implement them to make
 the mapping between objects and node possible.{{/important}}
 
+{{anchor id=getting_started_page_object/}}
 {{example title="The Page class"}}
 {{java}}
 {@javadoc org.chromattic.docs.reference.gettingstarted.Page}

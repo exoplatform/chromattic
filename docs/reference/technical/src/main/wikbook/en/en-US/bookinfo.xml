@@ -1,6 +1,6 @@
 <bookinfo>
   <title>Chromattic</title>
-  <subtitle>Chromattic Reference Guide</subtitle>
+  <subtitle>Chromattic Reference Technical Documentation</subtitle>
   <edition>1.0</edition>
   <pubsnumber>1</pubsnumber>
   <productname>Chromattic</productname>
@@ -10,13 +10,6 @@
     <holder>eXo Platform SAS</holder>
   </copyright>
   <authorgroup>
-    <author>
-      <firstname>Julien</firstname>
-      <surname>Viet</surname>
-      <affiliation>
-        <shortaffil>eXo Platform</shortaffil>
-      </affiliation>
-    </author>
     <author>
       <firstname>Alain</firstname>
       <surname>Defrance</surname>

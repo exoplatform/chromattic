@@ -11,3 +11,6 @@
 
 = Reference mapping {{anchor id=reference_relationship_section/}} =
 {{include document=referencemapping.wiki/}}
+
+= Groovy integration =
+{{include document=groovy.wiki/}}

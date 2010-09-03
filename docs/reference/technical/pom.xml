@@ -27,13 +27,13 @@
     <version>1.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>chromattic.docs.reference.guide</artifactId>
+  <artifactId>chromattic.docs.reference.technical</artifactId>
 
-  <name>Chromattic Framework Reference Guide</name>
-  <description>Chromattic Framework Reference Guide</description>
+  <name>Chromattic Framework Reference Technical Documentation</name>
+  <description>Chromattic Framework Reference Technical Documentation</description>
 
   <properties>
-    <wikbook.version>0.9.29</wikbook.version>
+    <wikbook.version>0.9.29-SNAPSHOT</wikbook.version>
     <wikbook.source>${pom.basedir}/src/main/wikbook</wikbook.source>
     <wikbook.target>${project.build.directory}/wikbook</wikbook.target>
   </properties>
@@ -45,22 +45,7 @@
       <version>${wikbook.version}</version>
     </dependency>
 
-        <dependency>
-          <groupId>org.chromattic</groupId>
-          <artifactId>chromattic.api</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-          <groupId>org.chromattic</groupId>
-          <artifactId>chromattic.api</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-          <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-          <groupId>org.chromattic</groupId>
-          <artifactId>chromattic.docs.reference.examples</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-        </dependency>
+
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
@@ -69,15 +54,14 @@
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
-          <artifactId>chromattic.docs.reference.examples</artifactId>
+          <artifactId>chromattic.groovy</artifactId>
           <version>1.1.0-SNAPSHOT</version>
-          <type>test-jar</type>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
-          <artifactId>chromattic.docs.reference.examples</artifactId>
+          <artifactId>chromattic.groovy</artifactId>
           <version>1.1.0-SNAPSHOT</version>
-          <classifier>test-sources</classifier>
+          <classifier>sources</classifier>
         </dependency>
   </dependencies>
 
@@ -228,7 +212,7 @@
           </dependency>
         </dependencies>
       </plugin>
-      
+
       <!-- Attach the HTML zip -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -270,7 +254,7 @@
         </executions>
       </plugin>
 
-      
+
 
     </plugins>
 
