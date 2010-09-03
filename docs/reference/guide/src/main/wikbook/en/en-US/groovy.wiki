@@ -1,43 +1,64 @@
 = Differences with the java version =
-In the groovy version of chromattic, the types are not abstracts and annotations are used directly on the properties.
-The chromattic engine in the groovy version is exactly the same that the Java version. Thus before read this part, please read and understand the java version.
-A simple example of code using groovy version of chrommatic : ##Page.groovy## (the equivalent to [[Page.java>>#getting_started_page_object]]) in groovy is : (((
-{{code language=GROOVY href="org/chromattic/docs/reference/groovy/Page.groovy"}}{{/code}})))
-= Build groovy project with chromattic =
-Chromattic is plugged to groovy classes at the compile time (this operation is based on AST transformation). Thus the only thing to do is to have the chromattic.groovy jar in the classpath of the compilation.
-== Maven building ==
-Just add the maven dependencies in the pom.xml. (((
+
+In the Groovy version of Chromattic, the types are not abstract and annotations can be used directly on properties.
+The Chromattic engine in the Groovy version is exactly the same than the Java version. Actually Groovy and Java
+are interroperable
+
+* Groovy and Java Chromattic objects can be used in the same Chromattic application
+* A Chromattic application can be used by both Java or Groovy code
+
+Before reading this part, you should already be familliar with Chromattic described in this guide.
+A simple example of code with the Groovy version of Chromattic : ##Page.groovy## (the equivalent of [[Page.java>>#getting_started_page_object]]) in Groovy is
+
+{{code language=GROOVY href="org/chromattic/docs/reference/groovy/Page.groovy"}}{{/code}}
+
+= Building a Groovy project with Chromattic =
+
+Chromattic is plugged to Groovy classes at compile time (this operation is based on AST transformation). So the only thing
+to do is to have the //chromattic.groovy// jar in the compilation classpath.
+
+== Building with Maven ==
+
+Just add the Maven dependencies in the pom.xml.
+
 {{code language=XML}}...
 <dependency>
   <groupId>org.chromattic</groupId>
   <artifactId>chromattic.groovy</artifactId>
   <score>compile</score>
 </dependency>
-...{{/code}})))
-== Ant building ==
-Add the chromattic.groovy jar in the class path in the build.xml. (((
-{{code language=XML}}...
+...{{/code}}
+
+== Building with ANT ==
+
+Add the //chromattic.groovy// jar in the classpath in the //build.xml//.
+
+{{code language=XML}}
 <classpath>
   <pathelement path="${classpath}"/>
   <pathelement location="lib/chromattic.groovy-1.1.0-SNAPSHOT-jar-with-dependencies.jar"/>
 </classpath>
-...{{/code}})))
-== Groovyc building ==
-Just add the chromattic.groovy jar in the classpath with the ##-classpath## argument
+{{/code}}
+
+== Compiling with //groovyc// ==
+
+Just add the //chromattic.groovy// jar in the classpath with the ##-classpath## argument
 {{code}}groovyc Page.groovy -classpath chromattic.groovy-1.1.0-SNAPSHOT-jar-with-dependencies.jar{{/code}}
 
 = Runtime dependencies =
 
-To use Chromattic, you must specify a JCR implementation in the runtime classpath. For example chromattic.exo maven depepndency : (((
-{{code language=XML}}...
+To use Chromattic, you should have a JCR implementation in the runtime classpath. For example //chromattic.exo// Maven dependency:
+
+{{code language=XML}}
 <dependency>
   <groupId>org.chromattic</groupId>
   <artifactId>chromattic.exo</artifactId>
   <scope>runtime</scope>
 </dependency>
-...{{/code}})))
+{{/code}}
 
-= How to access to JCR data through chromattic objects in groovy =
+= How to access to JCR data through Chromattic objects in Groovy =
+
 Simply access to the property content thanks to getter, setter or property (((
 {{code language=groovy}}...
 /**
