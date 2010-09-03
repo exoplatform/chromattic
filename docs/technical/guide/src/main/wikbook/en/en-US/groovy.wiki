@@ -22,10 +22,10 @@ The following operations are made at compile time to have a well formed Chromatt
 * Override the ##getProperty(String propertyName)## and ##setProperty(String propertyName, Object propertyValue)##
 
 A simple input source file : (((
-{{code language=GROOVY href="org/chromattic/docs/reference/groovy/Page.groovy"}}{{/code}})))
+{{code language=GROOVY href="org/chromattic/docs/technical/groovy/Page.groovy"}}{{/code}})))
 
 The output source code after the AST Transformation : (((
-{{code language=GROOVY href="org/chromattic/docs/reference/groovy/CompiledPage.groovy"}}{{/code}})))
+{{code language=GROOVY href="org/chromattic/docs/technical/groovy/CompiledPage.groovy"}}{{/code}})))
 
 = Instrumentation =
 The Groovy port of chromattic requires its own instrumentor : ##org.chromattic.groovy.instrument.GroovyInstrumentor## which

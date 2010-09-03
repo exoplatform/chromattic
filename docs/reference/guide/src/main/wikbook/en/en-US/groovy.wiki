@@ -59,20 +59,5 @@ To use Chromattic, you should have a JCR implementation in the runtime classpath
 
 = How to access to JCR data through Chromattic objects in Groovy =
 
-Simply access to the property content thanks to getter, setter or property (((
-{{code language=groovy}}...
-/**
-  * Initialize "page", an instance of the Page type.
-  */
-
-// get the value
-String name1 = page.getName()
-// or
-String name2 = page.name
-
-
-// set the value
-page.setName("foo")
-// or
-page.name = "bar"
-...{{/code}})))
+Simply access to the property content thanks to getter, setter or property :
+{{code language=GROOVY href="org/chromattic/docs/reference/groovy/GroovyTestCase.groovy"}}{{/code}}

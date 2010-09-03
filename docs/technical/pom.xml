@@ -23,19 +23,19 @@
 
   <parent>
     <groupId>org.chromattic</groupId>
-    <artifactId>chromattic.parent</artifactId>
+    <artifactId>chromattic.docs</artifactId>
     <version>1.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>chromattic.docs</artifactId>
+  <artifactId>chromattic.docs.technical</artifactId>
   <packaging>pom</packaging>
 
-  <name>Chromattic Framework Documentation Aggregator</name>
-  <description>Chromattic Framework Documentation Aggregator</description>
+  <name>Chromattic Framework Technical Documentation</name>
+  <description>Chromattic Framework Technical Documentation</description>
 
   <modules>
-     <module>reference</module>
-    <module>technical</module>
+    <module>examples</module>
+    <module>guide</module>
   </modules>
 
 </project>
