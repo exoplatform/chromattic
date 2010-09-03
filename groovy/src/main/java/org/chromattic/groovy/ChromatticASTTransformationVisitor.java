@@ -19,7 +19,7 @@
 
 package org.chromattic.groovy;
 
-import org.chromattic.api.annotations.ChromatticDelegation;
+import org.chromattic.groovy.annotations.ChromatticDelegation;
 import org.chromattic.groovy.exceptions.*;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.control.SourceUnit;
@@ -52,6 +52,7 @@ public class ChromatticASTTransformationVisitor {
       constructor.generateProtectedDefaultConstructor(classNode);
     }
     constructor.generatePublicHandlerConstructor(classNode);
+    annotationMover.applyGroovyInstrumentor(classNode);
 
     // Browse children to adapt groovy structure
     for (FieldNode fieldNode : classNode.getFields()) {

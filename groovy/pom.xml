@@ -135,7 +135,7 @@
                 <groovyc
                         destdir="${project.build.outputDirectory}"
                         srcdir="${basedir}/src/main/groovy/"
-                        listfiles="true">
+                        listfiles="false">
                   <classpath refid="maven.compile.classpath"/>
                 </groovyc>
                 <copy
@@ -162,7 +162,7 @@
                 <groovyc
                         destdir="${project.build.outputDirectory}"
                         srcdir="${basedir}/src/test/java/"
-                        listfiles="true">
+                        listfiles="false">
                   <classpath refid="maven.compile.classpath"/>
                 </groovyc>
               </tasks>
@@ -186,7 +186,7 @@
                 <groovyc
                         destdir="${basedir}/target/test-classes/"
                         srcdir="${basedir}/target/test-classes/"
-                        listfiles="true">
+                        listfiles="false">
                   <classpath refid="maven.compile.classpath"/>
                 </groovyc>
               </tasks>
@@ -206,11 +206,17 @@
           </compilerArguments>
         </configuration>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-2</version>
+        <configuration>
+				  <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+	        </descriptorRefs>
+			  </configuration>
+      </plugin>
     </plugins>
   </build>
-
-  <properties>
-    <maven.test.skip>true</maven.test.skip>
-  </properties>
   
 </project>

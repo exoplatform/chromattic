@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.api.annotations;
+package org.chromattic.groovy.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

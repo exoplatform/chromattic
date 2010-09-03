@@ -37,8 +37,7 @@ public class GroovyUtils {
   public static enum GetSet {
     GET, SET;
   }
-
-  public static final String ANNOTATIONS_PACKAGE = "org.chromattic.api.annotations.";
+  public static final String ANNOTATIONS_PACKAGE = "org.chromattic.";
 
   public static String getsetName(GetSet getSet, String fieldName) {
     return String.format("%s%s%s",

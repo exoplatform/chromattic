@@ -21,14 +21,14 @@ package org.chromattic.cglib;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;
-import org.chromattic.spi.instrument.ProxyFactory;
+import org.chromattic.spi.instrument.ProxyType;
 import org.chromattic.spi.instrument.MethodHandler;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class CGLibProxyFactory<O> implements ProxyFactory<O> {
+public class CGLibProxyType<O> implements ProxyType<O> {
 
   /** . */
   private final Class<O> objectClass;
@@ -36,7 +36,7 @@ public class CGLibProxyFactory<O> implements ProxyFactory<O> {
   /** . */
   private final Factory factory;
 
-  public CGLibProxyFactory(Class<O> objectClass) {
+  public CGLibProxyType(Class<O> objectClass) {
 
     Enhancer enhancer = new Enhancer();
     if (objectClass.isInterface()) {
@@ -60,5 +60,9 @@ public class CGLibProxyFactory<O> implements ProxyFactory<O> {
 
   public O createProxy(MethodHandler invoker) {
     return (O)factory.newInstance(new MethodInterceptorInvoker(invoker));
+  }
+
+  public Class<? extends O> getType() {
+    return objectClass;
   }
 }

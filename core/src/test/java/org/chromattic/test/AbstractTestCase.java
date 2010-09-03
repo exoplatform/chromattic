@@ -189,13 +189,13 @@ public abstract class AbstractTestCase extends TestCase {
 //        configs.add(new Config(APT_INSTRUMENTOR, false, true, false));
 //        configs.add(new Config(APT_INSTRUMENTOR, false, false, true));
       }
-      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, false));
-      configs.add(new Config(CGLIB_INSTRUMENTOR, true, false, false));
-      configs.add(new Config(CGLIB_INSTRUMENTOR, false, true, false));
-      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, true));
+//      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, false));
+//      configs.add(new Config(CGLIB_INSTRUMENTOR, true, false, false));
+//      configs.add(new Config(CGLIB_INSTRUMENTOR, false, true, false));
+//      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, true));
     } else if (MODE_APT.equals(testMode)) {
       configs.add(new Config(APT_INSTRUMENTOR, false, false, false));
-    } else if (MODE_CGLIB.equals(testMode)) {
+    } /*else if (MODE_CGLIB.equals(testMode)) {
       configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, false));
     } else if (MODE_CACHE.equals(testMode)) {
       configs.add(new Config(CGLIB_INSTRUMENTOR, true, false, false));
@@ -203,7 +203,7 @@ public abstract class AbstractTestCase extends TestCase {
       configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, true));
     } else if (MODE_HAS_PROPERTY.equals(testMode)) {
       configs.add(new Config(CGLIB_INSTRUMENTOR, true, true, false));
-    }
+    }*/
 
     //
     for (Config config : configs) {

@@ -21,7 +21,7 @@ package org.chromattic.cglib;
 
 import net.sf.cglib.proxy.Callback;
 import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.ProxyFactory;
+import org.chromattic.spi.instrument.ProxyType;
 import org.chromattic.spi.instrument.MethodHandler;
 import net.sf.cglib.proxy.Factory;
 
@@ -31,8 +31,8 @@ import net.sf.cglib.proxy.Factory;
  */
 public class CGLibInstrumentor implements Instrumentor {
 
-  public <O> ProxyFactory<O> getProxyClass(Class<O> clazz) {
-    return new CGLibProxyFactory<O>(clazz);
+  public <O> ProxyType<O> getProxyClass(Class<O> clazz) {
+    return new CGLibProxyType<O>(clazz);
   }
 
   public MethodHandler getInvoker(Object proxy) {

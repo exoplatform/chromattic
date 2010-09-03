@@ -20,6 +20,7 @@
 package org.chromattic.core;
 
 import org.chromattic.api.BuilderException;
+import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
 import org.chromattic.core.mapper.MapperBuilder;
@@ -33,15 +34,43 @@ import org.chromattic.api.format.ObjectFormatter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
 import org.chromattic.common.collection.Collections;
+import org.chromattic.spi.instrument.MethodHandler;
+import org.chromattic.spi.instrument.ProxyType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class Domain {
+
+  /** . */
+  private static final ProxyType<?> NULL_PROXY_TYPE = new ProxyType<Object>() {
+    public Object createProxy(MethodHandler invoker) {
+      throw new UnsupportedOperationException("Cannot create proxy for " + invoker);
+    }
+
+    public Class<? extends Object> getType() {
+      throw new UnsupportedOperationException("Cannot get proxy type for NULL_PROXY_TYPE");
+    }
+  };
+
+  /** . */
+  private static final Instrumentor NULL_INSTRUMENTOR = new Instrumentor() {
+
+    // This is OK as the class is *stateless*
+    @SuppressWarnings("unchecked")
+    public <O> ProxyType<O> getProxyClass(Class<O> clazz) {
+      return (ProxyType<O>) NULL_PROXY_TYPE;
+    }
+
+    public MethodHandler getInvoker(Object proxy) {
+      throw new UnsupportedOperationException();
+    }
+  };
 
   /** . */
   public static int LAZY_CREATE_MODE = 0;
@@ -62,7 +91,10 @@ public class Domain {
   private final Map<Class<?>, ObjectMapper> typeMapperByClass;
 
   /** . */
-  private final Instrumentor instrumentor;
+  private final Instrumentor  defaultInstrumentor;
+
+  /** . */
+  private final Map<Class<?>, Instrumentor> instrumentors = new HashMap<Class<?>, Instrumentor>();
 
   /** . */
   final Collection<BeanMapping> mappings;
@@ -103,7 +135,7 @@ public class Domain {
   public Domain(
     SimpleTypeResolver resolver,
     Collection<BeanMapping> mappings,
-    Instrumentor instrumentor,
+    Instrumentor defaultInstrumentor,
     ObjectFormatter objectFormatter,
     boolean propertyCacheEnabled,
     boolean propertyReadAheadEnabled,
@@ -117,9 +149,34 @@ public class Domain {
     if (!CREATE_MODES.contains(rootCreateMode)) {
       throw new IllegalArgumentException("Invalid create mode " + rootCreateMode);
     }
+    
+    //
+    Map<BeanMapping, Instrumentor> instrumentorMapping = new HashMap<BeanMapping, Instrumentor>();
+    mapping: for (BeanMapping beanMapping : mappings) {
+      Class<?> clazz = (Class<?>)beanMapping.getBean().getClassType().unwrap();
+      for (Annotation annotation : clazz.getAnnotations()) {
+        if ("org.chromattic.groovy.annotations.GroovyInstrumentor".equals(annotation.annotationType().getName())) {
+          Class<?> instrumentorClass = null;
+          try {
+            instrumentorClass = (Class<?>)annotation.annotationType().getMethod("value").invoke(annotation);
+          } catch (Exception ignore) {}
+          Instrumentor i = ObjectInstantiator.newInstance(instrumentorClass.getName(), Instrumentor.class);
+          instrumentors.put(i.getProxyClass(clazz).getType(), i);
+          instrumentorMapping.put(beanMapping, i);
+          continue mapping;
+        }
+      }
+      if (Object.class.equals(clazz)) {
+        instrumentors.put(clazz, defaultInstrumentor);
+        instrumentorMapping.put(beanMapping, NULL_INSTRUMENTOR);
+      } else {
+        instrumentors.put(defaultInstrumentor.getProxyClass(clazz).getType(), defaultInstrumentor);
+        instrumentorMapping.put(beanMapping, defaultInstrumentor);
+      }
+    }
 
     //
-    MapperBuilder builder = new MapperBuilder(resolver, instrumentor);
+    MapperBuilder builder = new MapperBuilder(resolver, instrumentorMapping);
     Collection<ObjectMapper<?>> mappers = builder.build(mappings);
 
     //
@@ -146,7 +203,7 @@ public class Domain {
     this.mappings = mappings;
     this.typeMapperByClass = typeMapperByClass;
     this.typeMapperByNodeType = typeMapperByNodeType;
-    this.instrumentor = instrumentor;
+    this.defaultInstrumentor = defaultInstrumentor;
     this.objectFormatter = objectFormatter;
     this.propertyCacheEnabled = propertyCacheEnabled;
     this.propertyReadAheadEnabled = propertyReadAheadEnabled;
@@ -172,8 +229,8 @@ public class Domain {
     return hasNodeOptimized;
   }
 
-  public Instrumentor getInstrumentor() {
-    return instrumentor;
+  public MethodHandler getHandler(Object o) {
+    return instrumentors.get(o.getClass()).getInvoker(o);
   }
 
   public ObjectMapper getTypeMapper(String nodeTypeName) {

@@ -17,36 +17,21 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.instrument;
+package org.chromattic.groovy.annotations;
 
-import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.spi.instrument.ProxyFactory;
+import org.chromattic.spi.instrument.Instrumentor;
 
-import java.lang.reflect.Constructor;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyProxyFactory<O> implements ProxyFactory<O> {
-
-  /** . */
-  private final Constructor<? extends O> ctor;
-
-  public GroovyProxyFactory(Class<O> clazz) {
-    try {
-      ctor = clazz.getConstructor(MethodHandler.class);
-    } catch (Exception e) {
-      throw new AssertionError(e);
-    }
-  }
-
-  public O createProxy(MethodHandler invoker) {
-    try {
-      return ctor.newInstance(invoker);
-    }
-    catch (Exception e) {
-      throw new AssertionError(e);
-    }
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface GroovyInstrumentor {
+  Class<? extends Instrumentor> value() default org.chromattic.groovy.instrument.GroovyInstrumentor.class;
 }

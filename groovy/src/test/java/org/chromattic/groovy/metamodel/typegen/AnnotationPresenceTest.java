@@ -22,7 +22,7 @@ package org.chromattic.groovy.metamodel.typegen;
 import junit.framework.TestCase;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.api.annotations.ChromatticDelegation;
+import org.chromattic.groovy.annotations.ChromatticDelegation;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>

@@ -20,7 +20,7 @@
 package org.chromattic.apt;
 
 import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.ProxyFactory;
+import org.chromattic.spi.instrument.ProxyType;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import java.lang.reflect.Field;
@@ -31,8 +31,8 @@ import java.lang.reflect.Field;
  */
 public class InstrumentorImpl implements Instrumentor {
 
-  public <O> ProxyFactory<O> getProxyClass(Class<O> clazz) {
-    return new ProxyFactoryImpl<O>(clazz);
+  public <O> ProxyType<O> getProxyClass(Class<O> clazz) {
+    return new ProxyTypeImpl<O>(clazz);
   }
 
   public MethodHandler getInvoker(Object proxy) {

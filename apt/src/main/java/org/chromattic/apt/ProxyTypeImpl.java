@@ -19,7 +19,7 @@
 
 package org.chromattic.apt;
 
-import org.chromattic.spi.instrument.ProxyFactory;
+import org.chromattic.spi.instrument.ProxyType;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import java.lang.reflect.Constructor;
@@ -28,12 +28,12 @@ import java.lang.reflect.Constructor;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ProxyFactoryImpl<O> implements ProxyFactory<O> {
+public class ProxyTypeImpl<O> implements ProxyType<O> {
 
   /** . */
   private final Constructor<? extends O> ctor;
 
-  public ProxyFactoryImpl(Class<O> objectClass) {
+  public ProxyTypeImpl(Class<O> objectClass) {
 
     Constructor<? extends O> ctor;
     try {
@@ -54,5 +54,9 @@ public class ProxyFactoryImpl<O> implements ProxyFactory<O> {
     catch (Exception e) {
       throw new AssertionError(e);
     }
+  }
+
+  public Class<? extends O> getType() {
+    return ctor.getDeclaringClass();
   }
 }

@@ -19,27 +19,38 @@
 
 package org.chromattic.groovy.instrument;
 
-import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.spi.instrument.ProxyType;
+
+import java.lang.reflect.Constructor;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyInstrumentor implements Instrumentor {
-  public <O> ProxyType<O> getProxyClass(Class<O> clazz) {
-    return new GroovyProxyType(clazz);
-  }
+public class GroovyProxyType<O> implements ProxyType<O> {
 
-  public MethodHandler getInvoker(Object proxy) {
+  /** . */
+  private final Constructor<? extends O> ctor;
+
+  public GroovyProxyType(Class<O> clazz) {
     try {
-        return (MethodHandler) proxy.getClass().getMethod("getChromatticInvoker").invoke(proxy);
-    }
-    catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException(e.getMessage(), e);
+      ctor = clazz.getConstructor(MethodHandler.class);
     } catch (Exception e) {
       throw new AssertionError(e);
     }
+  }
+
+  public O createProxy(MethodHandler invoker) {
+    try {
+      return ctor.newInstance(invoker);
+    }
+    catch (Exception e) {
+      throw new AssertionError(e);
+    }
+  }
+
+  public Class<? extends O> getType() {
+    return ctor.getDeclaringClass();
   }
 }

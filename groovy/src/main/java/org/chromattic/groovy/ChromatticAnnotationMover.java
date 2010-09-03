@@ -19,7 +19,8 @@
 
 package org.chromattic.groovy;
 
-import org.chromattic.api.annotations.ChromatticDelegation;
+import org.chromattic.groovy.annotations.ChromatticDelegation;
+import org.chromattic.groovy.annotations.GroovyInstrumentor;
 import org.chromattic.groovy.exceptions.NoSuchGetterException;
 import org.chromattic.groovy.exceptions.NoSuchSetterException;
 import org.codehaus.groovy.ast.*;
@@ -67,5 +68,9 @@ public class ChromatticAnnotationMover {
     while(it.hasNext())
       if (it.next().getClassNode().getName().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE))
         it.remove();
+  }
+
+  public void applyGroovyInstrumentor(ClassNode classNode) {
+    classNode.addAnnotation(new AnnotationNode(new ClassNode(GroovyInstrumentor.class)));
   }
 }

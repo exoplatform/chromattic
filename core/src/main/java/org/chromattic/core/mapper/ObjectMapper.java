@@ -26,7 +26,7 @@ import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.ProxyFactory;
+import org.chromattic.spi.instrument.ProxyType;
 import org.reflext.api.MethodInfo;
 
 import java.lang.reflect.Method;
@@ -53,7 +53,7 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
   final Set<PropertyMapper<?, ?, C>> propertyMappers;
 
   /** . */
-  private final ProxyFactory factory;
+  private final ProxyType type;
 
   /** . */
   private final Map<Method, MethodInvoker<C>> dispatchers;
@@ -106,7 +106,7 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
     this.formatter = formatter;
     this.onDuplicate = onDuplicate;
     this.propertyMappers = propertyMappers;
-    this.factory = instrumentor.getProxyClass(objectClass);
+    this.type = instrumentor.getProxyClass(objectClass);
     this.nodeTypeName = typeName;
     this.kind = kind;
   }
@@ -153,7 +153,7 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
   }
 
   public Object createObject(C context) {
-    return factory.createProxy(context);
+    return type.createProxy(context);
   }
 
   public Set<MethodMapper<C>> getMethodMappers() {

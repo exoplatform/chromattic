@@ -390,7 +390,7 @@ public abstract class DomainSession {
     if (expectedClass == null) {
       throw new NullPointerException();
     }
-    MethodHandler handler = domain.getInstrumentor().getInvoker(o);
+    MethodHandler handler = domain.getHandler(o);
     if (handler == null) {
       throw new IllegalArgumentException("The object with class " + o.getClass().getName() + " is not instrumented");
     }

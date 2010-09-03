@@ -51,8 +51,6 @@ import org.chromattic.metamodel.mapping.PropertiesMapping;
 import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.spi.instrument.ProxyFactory;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
 import java.util.Collection;
@@ -68,41 +66,20 @@ import java.util.Set;
 public class MapperBuilder {
 
   /** . */
-  private static final ProxyFactory<?> NULL_PROXY_FACTORY = new ProxyFactory<Object>() {
-    public Object createProxy(MethodHandler invoker) {
-      throw new UnsupportedOperationException("Cannot create proxy for " + invoker);
-    }
-  };
-
-  /** . */
-  private static final Instrumentor NULL_INSTRUMENTOR = new Instrumentor() {
-
-    // This is OK as the class is *stateless*
-    @SuppressWarnings("unchecked")
-    public <O> ProxyFactory<O> getProxyClass(Class<O> clazz) {
-      return (ProxyFactory<O>)NULL_PROXY_FACTORY;
-    }
-
-    public MethodHandler getInvoker(Object proxy) {
-      throw new UnsupportedOperationException();
-    }
-  };
-
-  /** . */
   private final SimpleTypeResolver simpleTypeResolver;
 
   /** . */
   private final ValueTypeFactory valueTypeFactory;
 
   /** . */
-  private final Instrumentor instrumentor;
+  private final Map<BeanMapping, Instrumentor> instrumentorMapping;
 
   public MapperBuilder(
       SimpleTypeResolver simpleTypeResolver,
-      Instrumentor instrumentor) {
+      Map<BeanMapping, Instrumentor> instrumentorMapping) {
     this.simpleTypeResolver = simpleTypeResolver;
     this.valueTypeFactory = new ValueTypeFactory(simpleTypeResolver);
-    this.instrumentor = instrumentor;
+    this.instrumentorMapping = instrumentorMapping;
   }
 
   public Collection<ObjectMapper<?>> build(Collection<BeanMapping> beanMappings) {
@@ -288,12 +265,7 @@ public class MapperBuilder {
     @Override
     public void endBean() {
 
-      Instrumentor objectInstrumentor;
-      if (beanMapping.getBean().getClassType().getName().equals(Object.class.getName())) {
-        objectInstrumentor = NULL_INSTRUMENTOR;
-      } else {
-        objectInstrumentor = instrumentor;
-      }
+      Instrumentor objectInstrumentor = instrumentorMapping.get(beanMapping);
 
       ObjectMapper<?> mapper;
       if (beanMapping.getNodeTypeKind() == NodeTypeKind.PRIMARY) {

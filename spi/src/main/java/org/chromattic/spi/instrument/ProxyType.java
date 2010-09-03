@@ -23,8 +23,9 @@ package org.chromattic.spi.instrument;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface ProxyFactory<O> {
+public interface ProxyType<O> {
 
   O createProxy(MethodHandler invoker);
 
+  Class<? extends O> getType();
 }
