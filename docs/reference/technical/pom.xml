@@ -33,7 +33,7 @@
   <description>Chromattic Framework Reference Technical Documentation</description>
 
   <properties>
-    <wikbook.version>0.9.29-SNAPSHOT</wikbook.version>
+    <wikbook.version>0.9.29</wikbook.version>
     <wikbook.source>${pom.basedir}/src/main/wikbook</wikbook.source>
     <wikbook.target>${project.build.directory}/wikbook</wikbook.target>
   </properties>
