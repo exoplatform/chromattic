@@ -1,21 +1,25 @@
 = Groovy port motivation =
-Groovy version of chromattic framework have 2 motivations :
-* Because Chromattic use Annotation processing, and parse Java at the compile time. It's not possible to apply the same ast transformation in Groovy as Java.
-* The dynamic typing of groovy make possible a better integration according to the groovy's culture.
+The Groovy integration with Chromattic serves two purposes
+
+* Chromattic relies a lot on annotation processing available in the Java compiler at compile time, while the same feature
+is available in the Groovy compiler, the transformation performed are not the same.
+* Follow Groovy best principles and idioms to make the integration the most natural possible according to what Groovy developers
+ are used to.
 
 = AST Transformation =
-Thanks to AST Transformation, it was possible to transform the AST to adapt the metamodel at the compile time without developers interventions.
-In fact, through the AST transformation it's possible to adapt groovy models based on a simple class with properties annoted by the chromattic annotations.
-The following operations was made at the compile time to have a well formed model.
-* Create or Modify getter and setter to move annotations from fields to getter and/or setter.
-* Remove annotations from fields.
-* Add a Field "chromatticInvoker" of ##type org.chromattic.spi.instrument.MethodHandler## (The same as the java version).
-* Create getter for the field chromatticInvoker (used by the instrumentor to delegate the call to chromattic engine).
-* Create or modify the default constructor to a protected accessibility.
-* Create an initializer constructor for the field chromatticInvoker.
-* Do implements the GroovyInterceptable interface by the class.
-* Override the invokeMethod(String methodName, Object parameters) method (Delegate at the MOP level to the chromatticInvoker instance)
-* Override the getPerperty(String propertyName) and setProperty(String propertyName, Object propertyValue)
+Thanks to Abstract Syntax Tree Transformation (AST), the program is transformed to adapt the metamodel at compile time
+without requiring developer intervention.
+In fact, through AST transformation a simple Groovy class containing Chromattic annotated properties is adapted to Chromattic model.
+The following operations are made at compile time to have a well formed Chromattic model:
+* Create or modify getter and setter methods to comply to Chromattic
+* Move field annotations to getter and/or setter annotations.
+* Add a field ##chromatticInvoker## of ##type org.chromattic.spi.instrument.MethodHandler## (The same as the Java version).
+* Create a getter for the field ##chromatticInvoker## (used by the instrumentor to delegate the call to chromattic engine).
+* Create or modify the default constructor to provide a protected accessibility.
+* Create an initializer constructor for the field ##chromatticInvoker##.
+* Do implement the ##GroovyInterceptable## interface by the class.
+* Override the ##invokeMethod(String methodName, Object parameters)## method (Delegate at the MOP level to the ##chromatticInvoker instance)##.
+* Override the ##getProperty(String propertyName)## and ##setProperty(String propertyName, Object propertyValue)##
 
 A simple input source file : (((
 {{code language=GROOVY href="org/chromattic/docs/reference/groovy/Page.groovy"}}{{/code}})))
@@ -24,7 +28,8 @@ The output source code after the AST Transformation : (((
 {{code language=GROOVY href="org/chromattic/docs/reference/groovy/CompiledPage.groovy"}}{{/code}})))
 
 = Instrumentation =
-The groovy port of chromattic own a proper instrumentor : ##org.chromattic.groovy.instrument.GroovyInstrumentor## which allow to get the method handler of a given proxy instance (in groovy, the proxy is the model instance).
+The Groovy port of chromattic requires its own instrumentor : ##org.chromattic.groovy.instrument.GroovyInstrumentor## which
+allows to get the method handler of a given proxy instance (in Groovy, the proxy is the model instance).
 {{example title="The GroovyInstrumentor class"}}
 {{java}}
 {@javadoc org.chromattic.groovy.instrument.GroovyInstrumentor}
@@ -32,7 +37,8 @@ The groovy port of chromattic own a proper instrumentor : ##org.chromattic.groov
 {{/java}}{{/example}}
 
 = Instanciation =
-The instanciation was made by ##org.chromattic.groovy.instrument.GroovyProxyType<O>## class. This factory use the initializer constructor to initialize the chromatticInvoker field with the chromattic method handler (generated at the compile time).
+The instanciation was made by ##org.chromattic.groovy.instrument.GroovyProxyType<O>## class. This factory use the initializer
+constructor to initialize the ##chromatticInvoker## field with the Chromattic method handler (generated at compile time).
 {{example title="The GroovyProxyType class"}}
 {{java}}
 {@javadoc org.chromattic.groovy.instrument.GroovyProxyType}
@@ -40,7 +46,8 @@ The instanciation was made by ##org.chromattic.groovy.instrument.GroovyProxyType
 {{/java}}{{/example}}
 
 = Chromattic core delegation =
-All call was redirected to a single class : ##org.chromattic.groovy.ChromatticGroovyInvocation## which forward the MOP call to the MethodHandler.
+Any method invocation is redirected to a single entry point : the ##org.chromattic.groovy.ChromatticGroovyInvocation## that forwards
+the Meta Object Protocol (MOP) call to the ##MethodHandler##.
 {{example title="The ChromatticGroovyInvocation class"}}
 {{java}}
 {@javadoc org.chromattic.groovy.ChromatticGroovyInvocation}
