@@ -95,22 +95,6 @@
       <version>1.0.8</version>
     </dependency>
 
-    <!--<dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.core</artifactId>
-      <version>${version}</version>
-      <classifier>test-sources</classifier>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.metamodel</artifactId>
-      <version>${version}</version>
-      <classifier>test-sources</classifier>
-      <scope>compile</scope>
-    </dependency>-->
-
   </dependencies>
 
   
@@ -139,7 +123,7 @@
                   <classpath refid="maven.compile.classpath"/>
                 </groovyc>
                 <copy
-                        file="${basedir}/org.codehaus.groovy.transform.ASTTransformation"
+                        file="${basedir}/src/main/config/org.codehaus.groovy.transform.ASTTransformation"
                         todir="${project.build.outputDirectory}/META-INF/services"/>
               </tasks>
             </configuration>

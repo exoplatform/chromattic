@@ -108,12 +108,6 @@ public class ChromatticASTTransformationVisitor {
         implementor.implement(methodNode);
       }
     }
-
-    if (classNode.getName().equals("org.chromattic.test.inheritance.AImpl")) {
-      for (MethodNode methodNode : classNode.getMethods()) {
-        System.out.println(methodNode.getName());
-      }
-    }
   }
 
   private boolean isInChromatticHierarchy(ClassNode classNode) {
