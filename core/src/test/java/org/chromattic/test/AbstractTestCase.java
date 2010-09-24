@@ -185,9 +185,9 @@ public abstract class AbstractTestCase extends TestCase {
     if (MODE_ALL.equals(testMode)) {
       if (aptEnabled) {
         configs.add(new Config(APT_INSTRUMENTOR, false, false, false));
-//        configs.add(new Config(APT_INSTRUMENTOR, true, false, false));
-//        configs.add(new Config(APT_INSTRUMENTOR, false, true, false));
-//        configs.add(new Config(APT_INSTRUMENTOR, false, false, true));
+        configs.add(new Config(APT_INSTRUMENTOR, true, false, false));
+        configs.add(new Config(APT_INSTRUMENTOR, false, true, false));
+        configs.add(new Config(APT_INSTRUMENTOR, false, false, true));
       }
 //      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, false));
 //      configs.add(new Config(CGLIB_INSTRUMENTOR, true, false, false));

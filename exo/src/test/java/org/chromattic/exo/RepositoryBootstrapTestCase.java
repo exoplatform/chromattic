@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 
 import javax.jcr.Repository;
 import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -35,7 +36,7 @@ public class RepositoryBootstrapTestCase extends TestCase {
     RepositoryBootstrap bootstrap = new RepositoryBootstrap();
     bootstrap.bootstrap();
     Repository repo = bootstrap.getRepository();
-    Session session = repo.login();
+    Session session = repo.login(new SimpleCredentials("exo", "exo".toCharArray()));
     session.getRootNode().addNode("foo", "nt:base");
     session.save();
     session.logout();
