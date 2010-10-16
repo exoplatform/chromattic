@@ -1,0 +1,15 @@
+<nodeTypes>
+  <nodeType name="exo:groovyResourceContainer" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+   <supertypes>
+      <supertype>nt:resource</supertype>
+   </supertypes>
+   <propertyDefinitions>
+     <propertyDefinition name="exo:autoload" requiredType="Boolean" autoCreated="true"  mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+     <valueConstraints/>
+     <defaultValues>
+        <defaultValue>false</defaultValue>
+     </defaultValues>
+   </propertyDefinition>
+  </propertyDefinitions>
+ </nodeType>
+</nodeTypes>

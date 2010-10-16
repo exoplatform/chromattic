@@ -68,10 +68,7 @@ public abstract class NTFile extends NTHierarchyNode {
         contentResource = createResource();
         setContent(contentResource);
       }
-      contentResource.setLastModified(new Date());
-      contentResource.setMimeType(resource.getMimeType());
-      contentResource.setEncoding(resource.getEncoding());
-      contentResource.setData(new ByteArrayInputStream(resource.getData()));
+      contentResource.update(resource);
     } else {
       setContent(null);
     }

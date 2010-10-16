@@ -23,6 +23,7 @@ import org.exoplatform.container.StandaloneContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 
 import javax.jcr.Repository;
+import java.net.URL;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -34,9 +35,12 @@ public class RepositoryBootstrap {
   private Repository repository;
 
   public void bootstrap() throws Exception {
+    bootstrap(Thread.currentThread().getContextClassLoader().getResource("conf/chromattic/configuration.xml"));
+  }
 
+  public void bootstrap(URL url) throws Exception {
     // JCR configuration
-    String containerConf = Thread.currentThread().getContextClassLoader().getResource("conf/chromattic/configuration.xml").toString();
+    String containerConf = url.toString();
     StandaloneContainer.addConfigurationURL(containerConf);
 
     //

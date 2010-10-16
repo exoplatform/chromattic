@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,47 +16,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.ext.ntdef;
+
+package org.chromattic.ext.scripting;
 
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Date;
+import org.chromattic.ext.ntdef.NTResource;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "nt:resource")
-public abstract class NTResource {
+@PrimaryType(name = "exo:groovyResourceContainer")
+public abstract class GroovyResourceContainer extends NTResource {
 
-  @Property(name = "jcr:encoding")
-  public abstract String getEncoding();
+  @Property(name = "exo:autoload")
+  public abstract boolean getAutoLoad();
 
-  public abstract void setEncoding(String encoding);
-
-  @Property(name = "jcr:mimeType")
-  public abstract String getMimeType();
-
-  public abstract void setMimeType(String mimeType);
-
-  @Property(name = "jcr:data")
-  public abstract InputStream getData();
-
-  public abstract void setData(InputStream data);
-
-  @Property(name = "jcr:lastModified")
-  public abstract Date getLastModified();
-
-  public abstract void setLastModified(Date date);
-
-  public void update(Resource resource) {
-    setLastModified(new Date());
-    setMimeType(resource.getMimeType());
-    setEncoding(resource.getEncoding());
-    setData(new ByteArrayInputStream(resource.getData()));
-  }
+  public abstract void setAutoLoad(boolean autoLoad);
 
 }
