@@ -21,8 +21,13 @@ package org.chromattic.exo;
 
 import junit.framework.TestCase;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.Repository;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -36,8 +41,33 @@ public class RepositoryBootstrapTestCase extends TestCase {
     bootstrap.bootstrap();
     Repository repo = bootstrap.getRepository();
     Session session = repo.login();
-    session.getRootNode().addNode("foo", "nt:base");
+    NodeIterator j = session.getRootNode().getNodes();
+    while (j.hasNext()) {
+      System.out.println("Existing child " + j.nextNode().getName());
+    }
+    Node a = session.getRootNode().addNode("a", "a");
+    Node b = a.getNode("b");
+    b.addMixin("e");
+    b.setProperty("f", "g");
+    b.setProperty("f", "g");
     session.save();
+    session.logout();
+
+    session = repo.login();
+    b = session.getRootNode().getNode("a").getNode("b");
+    PropertyIterator i = b.getProperties();
+    while (i.hasNext()) {
+      Property p = i.nextProperty();
+      StringBuilder sb = new StringBuilder("Property ").append(p.getName()).append(" =");
+      if (p.getDefinition().isMultiple()) {
+        for (Value value : p.getValues()) {
+          sb.append(" ").append(value.getString());
+        }
+      } else {
+        sb.append(" ").append(p.getString());
+      }
+      System.out.println(sb);
+    }
     session.logout();
   }
 }
