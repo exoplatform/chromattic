@@ -22,9 +22,7 @@ package org.chromattic.exo;
 import junit.framework.TestCase;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
 import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -41,7 +39,6 @@ public class RepositoryBootstrapTestCase extends TestCase {
     bootstrap.bootstrap();
     Repository repo = bootstrap.getRepository();
     Session session = repo.login();
-    NodeIterator j = session.getRootNode().getNodes();
     Node a = session.getRootNode().addNode("a", "a");
     Node b = a.getNode("b");
     b.addMixin("e");
