@@ -21,6 +21,7 @@ package org.chromattic.exo;
 
 import junit.framework.TestCase;
 
+import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
@@ -37,7 +38,11 @@ public class RepositoryBootstrapTestCase extends TestCase {
     bootstrap.bootstrap();
     Repository repo = bootstrap.getRepository();
     Session session = repo.login(new SimpleCredentials("exo", "exo".toCharArray()));
-    session.getRootNode().addNode("foo", "nt:base");
+    Node a = session.getRootNode().addNode("a", "a");
+    Node b = a.getNode("b");
+    b.addMixin("e");
+    b.setProperty("f", "g");
+    b.setProperty("f", "g");
     session.save();
     session.logout();
   }
