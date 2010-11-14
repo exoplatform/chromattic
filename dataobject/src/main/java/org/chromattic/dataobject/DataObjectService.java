@@ -42,9 +42,9 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ChromatticMetaModelService {
+public class DataObjectService {
 
-  public ChromatticMetaModelService() {
+  public DataObjectService() {
   }
 
   public void start() {
