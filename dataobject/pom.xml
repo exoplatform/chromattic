@@ -54,7 +54,7 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.ext</artifactId>
+      <artifactId>chromattic.groovy</artifactId>
     </dependency>
 
     <dependency>
@@ -71,6 +71,12 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.ext</artifactId>
       <scope>test</scope>
     </dependency>
 

@@ -19,15 +19,11 @@
 
 package org.chromattic.dataobject;
 
-import groovy.lang.GroovyClassLoader;
-import org.chromattic.api.Chromattic;
-import org.chromattic.api.ChromatticBuilder;
-import org.chromattic.api.ChromatticSession;
-import org.chromattic.ext.ntdef.NTFile;
-import org.chromattic.ext.ntdef.NTFolder;
-import org.chromattic.ext.ntdef.NTHierarchyNode;
-import org.chromattic.ext.ntdef.NTResource;
+import org.exoplatform.services.jcr.ext.resource.UnifiedNodeReference;
+import org.exoplatform.services.jcr.ext.script.groovy.JcrGroovyCompiler;
+import org.exoplatform.services.jcr.ext.script.groovy.JcrGroovyResourceLoader;
 
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -36,34 +32,46 @@ import java.util.List;
  */
 public class ChromatticMetaModelService {
 
-  /** . */
-  private Chromattic chromattic;
-
   public ChromatticMetaModelService() {
   }
 
   public void start() {
-    ChromatticBuilder builder = ChromatticBuilder.create();
-    builder.add(NTFile.class);
-    builder.add(NTFolder.class);
-    builder.add(NTHierarchyNode.class);
-    builder.add(NTResource.class);
-    builder.add(GroovyResourceContainer.class);
-    chromattic = builder.build();
   }
 
   public void stop() {
 
   }
 
-  public void generateNodeType(List<String> dataObjectPaths) {
+  public Class[] generateClasses(
+    String repository,
+    String workspace,
+    String path,
+    String... dataObjectPaths) throws Exception {
 
-    ChromatticSession session = chromattic.openSession();
+    // Build the classloader url
+    URL url = new URL("jcr://" + repository + "/" + workspace + "#" + path);
+
+    //
+    JcrGroovyCompiler compiler = new JcrGroovyCompiler();
+    compiler.getGroovyClassLoader().setResourceLoader(new JcrGroovyResourceLoader(new java.net.URL[]{url}));
+
+    //
+    UnifiedNodeReference[] dataObjectRefs = new UnifiedNodeReference[dataObjectPaths.length];
+    for  (int i = 0;i < dataObjectPaths.length;i++) {
+      dataObjectRefs[i] = new UnifiedNodeReference(repository, workspace, dataObjectPaths[i]);
+    }
+
+    System.out.println("dataObjectRefs = " + dataObjectRefs);
+
+    // Compile to classes
+    Class[] classes = compiler.compile(dataObjectRefs);
+
+    //
+    return classes;
 
 
-    // application/x-chromattic+groovy
 
-
+/*
     try {
 
 
@@ -96,6 +104,7 @@ public class ChromatticMetaModelService {
     } finally {
       session.close();
     }
+*/
 
 
 
