@@ -17,11 +17,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.ext.scripting;
+package org.chromattic.dataobject;
 
 import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyResourceLoader;
-import groovy.lang.GroovyShell;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticSession;
@@ -29,10 +27,7 @@ import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.NTFolder;
 import org.chromattic.ext.ntdef.NTHierarchyNode;
 import org.chromattic.ext.ntdef.NTResource;
-import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 /**

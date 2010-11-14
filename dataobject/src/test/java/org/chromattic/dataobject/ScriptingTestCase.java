@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.ext.scripting;
+package org.chromattic.dataobject;
 
 import junit.framework.TestCase;
 import org.chromattic.api.Chromattic;
@@ -39,8 +39,6 @@ import org.exoplatform.services.rest.impl.RequestHandlerImpl;
 import org.exoplatform.services.rest.impl.ResourceBinder;
 import org.exoplatform.services.rest.tools.ByteArrayContainerResponseWriter;
 import org.exoplatform.services.rest.tools.ResourceLauncher;
-
-import java.lang.reflect.Field;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -64,7 +62,7 @@ public class ScriptingTestCase extends TestCase {
   protected void setUp() throws Exception {
 
     RepositoryBootstrap boostrap = new RepositoryBootstrap();
-    boostrap.bootstrap(Thread.currentThread().getContextClassLoader().getResource("conf/scripting/configuration.xml"));
+    boostrap.bootstrap(Thread.currentThread().getContextClassLoader().getResource("conf/dataobject/configuration.xml"));
 
     container = StandaloneContainer.getInstance();
     binder = (ResourceBinder)container.getComponentInstanceOfType(ResourceBinder.class);
