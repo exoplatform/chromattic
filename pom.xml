@@ -439,9 +439,10 @@
            <module>exo</module>
            <module>core</module>
            <module>ext</module>
-           <module>docs</module>
            <module>groovy</module>
+           <module>dataobject</module>
            <module>testgenerator</module>
+           <module>docs</module>
         </modules>
      </profile>
      
@@ -460,9 +461,10 @@
            <module>exo</module>
            <module>core</module>
            <module>ext</module>
-           <module>docs</module>
            <module>groovy</module>
+           <module>dataobject</module>
            <module>testgenerator</module>
+           <module>docs</module>
         </modules>
      </profile>
      
