@@ -46,6 +46,7 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.Session;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -183,11 +184,18 @@ public class ScriptingTestCase extends TestCase {
       "@org.chromattic.api.annotations.Property(name = \"a\") def String a;\n" +
       "}");
 
-
+    //
     ChromatticMetaModelService service = new ChromatticMetaModelService();
-    Class[] classes = service.generateClasses("db1", "ws", "/", "/DataObject.groovy");
-    assertEquals(1, classes.length);
-    Class<?> dataObjectClass = classes[0];
+
+    //
+    String s = service.generateNodeTypes(NodeTypeFormat.EXO, "db1", "ws", "/", "/DataObject.groovy");
+    System.out.println("Generated node types " + s);
+
+    //
+    Iterator<Class<?>> classes = service.generateClasses("db1", "ws", "/", "/DataObject.groovy").values().iterator();
+    assertTrue(classes.hasNext());
+    Class<?> dataObjectClass = classes.next();
+    assertFalse(classes.hasNext());
 
     //
     ChromatticBuilder builder = ChromatticBuilder.create();

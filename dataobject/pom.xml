@@ -49,12 +49,22 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.metamodel</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
       <artifactId>chromattic.common</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.groovy</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.jlr</artifactId>
     </dependency>
 
     <dependency>

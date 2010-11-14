@@ -19,12 +19,24 @@
 
 package org.chromattic.dataobject;
 
+import org.chromattic.metamodel.typegen.CNDNodeTypeSerializer;
+import org.chromattic.metamodel.typegen.NodeType;
+import org.chromattic.metamodel.typegen.NodeTypeSerializer;
+import org.chromattic.metamodel.typegen.SchemaBuilder;
+import org.chromattic.metamodel.typegen.XMLNodeTypeSerializer;
 import org.exoplatform.services.jcr.ext.resource.UnifiedNodeReference;
 import org.exoplatform.services.jcr.ext.script.groovy.JcrGroovyCompiler;
 import org.exoplatform.services.jcr.ext.script.groovy.JcrGroovyResourceLoader;
+import org.reflext.api.ClassTypeInfo;
+import org.reflext.api.TypeResolver;
+import org.reflext.core.TypeResolverImpl;
+import org.reflext.jlr.JavaLangReflectReflectionModel;
 
+import java.io.StringWriter;
+import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -39,14 +51,75 @@ public class ChromatticMetaModelService {
   }
 
   public void stop() {
-
   }
 
-  public Class[] generateClasses(
+  public String generateNodeTypes(
+    NodeTypeFormat format,
     String repository,
     String workspace,
     String path,
-    String... dataObjectPaths) throws Exception {
+    String... doPaths) throws Exception {
+
+    Map<String,  NodeType> doNodeTypes = generateNodeTypes(repository, workspace, path, doPaths);
+
+    //
+    NodeTypeSerializer serializer;
+    switch (format) {
+      case EXO:
+        serializer = new XMLNodeTypeSerializer();
+        break;
+      case CND:
+        serializer = new CNDNodeTypeSerializer();
+        break;
+      default:
+        throw new AssertionError();
+    }
+
+    //
+    for (NodeType nodeType : doNodeTypes.values()) {
+      serializer.addNodeType(nodeType);
+    }
+
+    //
+    StringWriter writer = new StringWriter();
+    serializer.writeTo(writer);
+    return writer.toString();
+  }
+
+  public Map<String, NodeType> generateNodeTypes(
+    String repository,
+    String workspace,
+    String path,
+    String... doPaths) throws Exception {
+
+    // Generate classes
+    Map<String, Class<?>> classes = generateClasses(repository, workspace, path, doPaths);
+
+    // Generate class types
+    TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
+    Map<ClassTypeInfo, String> doClassTypes = new HashMap<ClassTypeInfo, String>();
+    for (Map.Entry<String, Class<?>> entry : classes.entrySet()) {
+      doClassTypes.put((ClassTypeInfo)domain.resolve(entry.getValue()), entry.getKey());
+    }
+
+    // Generate bean mappings
+    Map<String, NodeType> doNodeTypes = new HashMap<String, NodeType>();
+    for (Map.Entry<ClassTypeInfo,  NodeType> entry : new SchemaBuilder().build(doClassTypes.keySet()).entrySet()) {
+      ClassTypeInfo doClassType = entry.getKey();
+      NodeType doNodeType = entry.getValue();
+      String doPath = doClassTypes.get(doClassType);
+      doNodeTypes.put(doPath, doNodeType);
+    }
+
+    //
+    return doNodeTypes;
+  }
+
+  public Map<String, Class<?>> generateClasses(
+    String repository,
+    String workspace,
+    String path,
+    String... doPath) throws Exception {
 
     // Build the classloader url
     URL url = new URL("jcr://" + repository + "/" + workspace + "#" + path);
@@ -56,61 +129,19 @@ public class ChromatticMetaModelService {
     compiler.getGroovyClassLoader().setResourceLoader(new JcrGroovyResourceLoader(new java.net.URL[]{url}));
 
     //
-    UnifiedNodeReference[] dataObjectRefs = new UnifiedNodeReference[dataObjectPaths.length];
-    for  (int i = 0;i < dataObjectPaths.length;i++) {
-      dataObjectRefs[i] = new UnifiedNodeReference(repository, workspace, dataObjectPaths[i]);
+    UnifiedNodeReference[] doRefs = new UnifiedNodeReference[doPath.length];
+    for  (int i = 0;i < doPath.length;i++) {
+      doRefs[i] = new UnifiedNodeReference(repository, workspace, doPath[i]);
     }
-
-    System.out.println("dataObjectRefs = " + dataObjectRefs);
 
     // Compile to classes
-    Class[] classes = compiler.compile(dataObjectRefs);
+    Class[] classes = compiler.compile(doRefs);
+    Map<String, Class<?>> doClasses = new HashMap<String, Class<?>>();
+    for (int i = 0;i< doPath.length;i++) {
+      doClasses.put(doPath[i], classes[i]);
+    }
 
     //
-    return classes;
-
-
-
-/*
-    try {
-
-
-
-//      BeanMappingBuilder mappingBuilder = new BeanMappingBuilder();
-//      mappingBuilder.
-
-      GroovyClassLoader loader = new GroovyClassLoader();
-
-
-
-//      loader.getResourceLoader()
-
-//      GroovyResourceLoader loader = new GroovyResourceLoader() {
-//        public URL loadGroovySource(String filename) throws MalformedURLException {
-//          return null;
-//        }
-//      };
-
-      StringBuilder sb = new StringBuilder();
-
-      for (String dataObjectPath : dataObjectPaths) {
-        GroovyResourceContainer dataObjectFile = session.findByPath(GroovyResourceContainer.class, dataObjectPath);
-        if (dataObjectFile == null) {
-          throw new IllegalArgumentException("The path " + dataObjectPath + " is not valid");
-        }
-      }
-
-
-    } finally {
-      session.close();
-    }
-*/
-
-
-
-
-
-
+    return doClasses;
   }
-
 }
