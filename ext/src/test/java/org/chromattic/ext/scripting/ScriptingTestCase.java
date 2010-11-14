@@ -78,17 +78,17 @@ public class ScriptingTestCase extends TestCase {
     launcher = new ResourceLauncher(requestHandler);
   }
 
+  @Override
+  protected void tearDown() throws Exception {
+
+  }
+
   final String script =
      "@javax.ws.rs.Path(\"a\")"
         + "class GroovyResource {"
         + "@javax.ws.rs.GET @javax.ws.rs.Path(\"{who}\")"
         + "def m0(@javax.ws.rs.PathParam(\"who\") String who) { return (\"hello \" + who)}"
         + "}";
-
-  @Override
-  protected void tearDown() throws Exception {
-
-  }
 
   public void testLoad() throws Exception {
 
@@ -127,4 +127,10 @@ public class ScriptingTestCase extends TestCase {
     assertEquals(200, resp.getStatus());
     assertEquals("hello groovy", new String(writer.getBody()));
   }
+
+  final String s2 =
+      "@org.chromattic.api.annotations.PrimaryType(name = 'nt:unstructured')" +
+      "class Unstructured {\n" +
+      "}";
+
 }
