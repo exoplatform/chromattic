@@ -96,7 +96,7 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Redefine dependencies -->
+    <!-- Redefine dependencies to use snapshots -->
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.component.command</artifactId>
