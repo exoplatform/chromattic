@@ -57,7 +57,7 @@ public class DataObjectServiceTestCase extends AbstractDataObjectTestCase {
   }
 
   public void testNodeTypeGenration() throws Exception {
-    String s = service.generateNodeTypes(NodeTypeFormat.EXO, source, "/DataObject.groovy");
+    String s = service.generateSchema(NodeTypeFormat.EXO, source, "/DataObject.groovy");
     System.out.println("Generated node types " + s);
   }
 

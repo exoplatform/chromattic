@@ -40,6 +40,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * The data object service.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
@@ -54,12 +56,24 @@ public class DataObjectService {
   public void stop() {
   }
 
-  public String generateNodeTypes(
+  /**
+   * Generates the node types for the specified data object paths. This operation returns the schema source
+   * in the specified format.
+   *
+   * @param format the schema output format
+   * @param source the compilation source
+   * @param doPaths the data object paths
+   * @return the data object paths
+   * @throws DataObjectException anything that would prevent data object compilation
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if any data object path is null
+   */
+  public String generateSchema(
     NodeTypeFormat format,
     CompilationSource source,
-    String... doPaths) throws DataObjectException, NullPointerException {
+    String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
 
-    Map<String,  NodeType> doNodeTypes = generateNodeTypes(source, doPaths);
+    Map<String,  NodeType> doNodeTypes = generateSchema(source, doPaths);
 
     //
     NodeTypeSerializer serializer;
@@ -90,7 +104,18 @@ public class DataObjectService {
     }
   }
 
-  public Map<String, NodeType> generateNodeTypes(
+  /**
+   * Generates the node types for the specified data object paths. This operations returns a map
+   * with the data object path as keys and the related node type as values.
+   *
+   * @param source the compilation source
+   * @param doPaths the data object paths
+   * @return the data object paths
+   * @throws DataObjectException anything that would prevent data object compilation
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if any data object path is null
+   */
+  public Map<String, NodeType> generateSchema(
     CompilationSource source,
     String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
 
