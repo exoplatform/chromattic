@@ -32,6 +32,7 @@ import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -55,12 +56,10 @@ public class DataObjectService {
 
   public String generateNodeTypes(
     NodeTypeFormat format,
-    String repository,
-    String workspace,
-    String path,
-    String... doPaths) throws Exception {
+    CompilationSource source,
+    String... doPaths) throws DataObjectException, NullPointerException {
 
-    Map<String,  NodeType> doNodeTypes = generateNodeTypes(repository, workspace, path, doPaths);
+    Map<String,  NodeType> doNodeTypes = generateNodeTypes(source, doPaths);
 
     //
     NodeTypeSerializer serializer;
@@ -81,19 +80,22 @@ public class DataObjectService {
     }
 
     //
-    StringWriter writer = new StringWriter();
-    serializer.writeTo(writer);
-    return writer.toString();
+    try {
+      StringWriter writer = new StringWriter();
+      serializer.writeTo(writer);
+      return writer.toString();
+    }
+    catch (Exception e) {
+      throw new DataObjectException("Unexpected io exception", e);
+    }
   }
 
   public Map<String, NodeType> generateNodeTypes(
-    String repository,
-    String workspace,
-    String path,
-    String... doPaths) throws Exception {
+    CompilationSource source,
+    String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
 
     // Generate classes
-    Map<String, Class<?>> classes = generateClasses(repository, workspace, path, doPaths);
+    Map<String, Class<?>> classes = generateClasses(source, doPaths);
 
     // Generate class types
     TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
@@ -115,33 +117,55 @@ public class DataObjectService {
     return doNodeTypes;
   }
 
+  /**
+   * Compiles the specified classes and returns a map with a data object path as key and
+   * the corresponding compiled data object class.
+   *
+   * @param source the compilation source
+   * @param doPaths the data object paths
+   * @return the compiled data object classes
+   * @throws DataObjectException anything that would prevent data object compilation
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if any data object path is null
+   */
   public Map<String, Class<?>> generateClasses(
-    String repository,
-    String workspace,
-    String path,
-    String... doPath) throws Exception {
+    CompilationSource source,
+    String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
+    if (source == null) {
+      throw new NullPointerException("No null source accepted");
+    }
+    for (String doPath : doPaths) {
+      if (doPath == null) {
+        throw new IllegalArgumentException("Data object paths must not contain a null value");
+      }
+    }
 
     // Build the classloader url
-    URL url = new URL("jcr://" + repository + "/" + workspace + "#" + path);
+    try {
+      URL url = new URL("jcr://" + source.getRepositoryRef() + "/" + source.getWorkspaceRef() + "#" + source.getPath());
 
-    //
-    JcrGroovyCompiler compiler = new JcrGroovyCompiler();
-    compiler.getGroovyClassLoader().setResourceLoader(new JcrGroovyResourceLoader(new java.net.URL[]{url}));
+      //
+      JcrGroovyCompiler compiler = new JcrGroovyCompiler();
+      compiler.getGroovyClassLoader().setResourceLoader(new JcrGroovyResourceLoader(new URL[]{url}));
 
-    //
-    UnifiedNodeReference[] doRefs = new UnifiedNodeReference[doPath.length];
-    for  (int i = 0;i < doPath.length;i++) {
-      doRefs[i] = new UnifiedNodeReference(repository, workspace, doPath[i]);
+      //
+      UnifiedNodeReference[] doRefs = new UnifiedNodeReference[doPaths.length];
+      for  (int i = 0;i < doPaths.length;i++) {
+        doRefs[i] = new UnifiedNodeReference(source.getRepositoryRef(), source.getWorkspaceRef(), doPaths[i]);
+      }
+
+      // Compile to classes
+      Class[] classes = compiler.compile(doRefs);
+      Map<String, Class<?>> doClasses = new HashMap<String, Class<?>>();
+      for (int i = 0;i< doPaths.length;i++) {
+        doClasses.put(doPaths[i], classes[i]);
+      }
+
+      //
+      return doClasses;
     }
-
-    // Compile to classes
-    Class[] classes = compiler.compile(doRefs);
-    Map<String, Class<?>> doClasses = new HashMap<String, Class<?>>();
-    for (int i = 0;i< doPath.length;i++) {
-      doClasses.put(doPath[i], classes[i]);
+    catch (IOException e) {
+      throw new DataObjectException("Could not generate data object classes", e);
     }
-
-    //
-    return doClasses;
   }
 }
