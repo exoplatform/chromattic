@@ -51,6 +51,14 @@ public class Resource {
     this.data = data;
   }
 
+  public Resource(String mimeType, String encoding, String data) throws UnsupportedEncodingException {
+    this(mimeType, encoding, data.getBytes(encoding));
+  }
+
+  public Resource(String mimeType, String data) throws UnsupportedEncodingException {
+    this(mimeType, "UTF8", data);
+  }
+
   public String getMimeType() {
     return mimeType;
   }

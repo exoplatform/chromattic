@@ -240,8 +240,8 @@ public abstract class ChromatticBuilder {
    * @param <D> the option data type
    * @throws NullPointerException if any argument is null
    */
-  public <D> void setOptionStringValue(Option<D> option, String value) throws NullPointerException {
-    options.setStringValue(option, value, true);
+  public <D> void setOptionValue(Option<D> option, String value) throws NullPointerException {
+    options.setValue(option, value, true);
   }
 
   /**
@@ -297,7 +297,7 @@ public abstract class ChromatticBuilder {
       for (Option<?> option : getSystemOptions()) {
         String value = System.getProperty(option.getName());
         if (value != null) {
-          options.setStringValue(option, value, false);
+          options.setValue(option, value, false);
         }
       }
     }
@@ -491,7 +491,12 @@ public abstract class ChromatticBuilder {
       return instance;
     }
 
-    public <D> void setStringValue(Option<D> option, String value, boolean overwrite) throws NullPointerException {
+    public <D> D getValue(Option<D> option) throws NullPointerException {
+      Option.Instance<D> instance = getInstance(option);
+      return instance != null ? instance.value : null;
+    }
+
+    public <D> void setValue(Option<D> option, String value, boolean overwrite) throws NullPointerException {
       if (option == null) {
         throw new NullPointerException("Cannot set null option");
       }
@@ -499,11 +504,6 @@ public abstract class ChromatticBuilder {
         throw new NullPointerException("Cannot set null value");
       }
       setValue(option, option.getType().parse(value), overwrite);
-    }
-
-    public <D> D getValue(Option<D> option) throws NullPointerException {
-      Option.Instance<D> instance = getInstance(option);
-      return instance != null ? instance.value : null;
     }
 
     public <D> void setValue(Option<D> option, D value, boolean overwrite) throws NullPointerException {
