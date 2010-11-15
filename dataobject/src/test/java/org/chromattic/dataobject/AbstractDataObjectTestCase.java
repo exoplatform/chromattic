@@ -19,6 +19,7 @@
 
 package org.chromattic.dataobject;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
@@ -111,29 +112,43 @@ public abstract class AbstractDataObjectTestCase extends TestCase {
   }
 
   protected final void saveService(String scriptName, String scriptText) throws UnsupportedEncodingException {
-    saveScript(scriptName, "script/groovy", scriptText, true);
+    saveScript(null, scriptName, "script/groovy", scriptText, true);
   }
 
   protected final void saveDataObject(String scriptName, String scriptText) throws UnsupportedEncodingException {
-    saveScript(scriptName, "application/x-chromattic+groovy", scriptText, false);
+    saveScript("dependencies", scriptName, "application/x-chromattic+groovy", scriptText, false);
   }
 
   private void saveScript(
+    String folderName,
     String scriptName,
     String scriptContentType,
     String scriptText,
     boolean autoload) throws UnsupportedEncodingException {
     ChromatticSession session = chromattic.openSession();
     try {
-      Object previous = session.findByPath(Object.class, scriptName);
-      if (previous != null) {
-        session.remove(previous);
+
+      //
+      NTFolder parent = null;
+      if (folderName != null) {
+        parent = session.findByPath(NTFolder.class, folderName);
+        if (parent == null) {
+          parent = session.insert(NTFolder.class, folderName);
+        }
       }
-      NTFile file = session.insert(NTFile.class, scriptName);
+
+      // Remove any prior object
+      NTFile file = session.findByPath(parent, NTFile.class, scriptName);
+      if (file != null) {
+        session.remove(file);
+      }
+
+      //
+      file = session.insert(parent, NTFile.class, scriptName);
       GroovyResourceContainer resource = session.create(GroovyResourceContainer.class);
       file.setContent(resource);
       resource.setAutoLoad(autoload);
-      resource.update(new Resource(scriptContentType, "UTF8", scriptText.getBytes("UTF8")));
+      resource.update(new Resource(scriptContentType, scriptText));
       session.save();
     }
     finally {

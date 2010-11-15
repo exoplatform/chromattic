@@ -46,7 +46,7 @@ public class DataObjectServiceTestCase extends AbstractDataObjectTestCase {
   private final DataObjectService service = new DataObjectService();
 
   /** . */
-  private final CompilationSource source = new CompilationSource("db1", "ws", "/");
+  private final CompilationSource source = new CompilationSource("db1", "ws", "/dependencies");
 
   @Override
   protected void setUp() throws Exception {
@@ -58,12 +58,12 @@ public class DataObjectServiceTestCase extends AbstractDataObjectTestCase {
   }
 
   public void testNodeTypeGenration() throws Exception {
-    String s = service.generateSchema(NodeTypeFormat.EXO, source, "/DataObject.groovy");
+    String s = service.generateSchema(NodeTypeFormat.EXO, source, "/dependencies/DataObject.groovy");
     System.out.println("Generated node types " + s);
   }
 
   public void testCompilation() throws Exception {
-    Iterator<Class<?>> classes = service.generateClasses(source, "/DataObject.groovy").values().iterator();
+    Iterator<Class<?>> classes = service.generateClasses(source, "/dependencies/DataObject.groovy").values().iterator();
     assertTrue(classes.hasNext());
     Class<?> dataObjectClass = classes.next();
     assertEquals("DataObject", dataObjectClass.getName());

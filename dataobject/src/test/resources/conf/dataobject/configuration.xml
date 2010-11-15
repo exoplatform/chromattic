@@ -29,6 +29,21 @@
   </component>
   <component>
     <type>org.exoplatform.services.jcr.ext.script.groovy.GroovyScript2RestLoader</type>
+    <component-plugins>
+      <component-plugin>
+         <name>add groovy repo</name>
+         <set-method>addPlugin</set-method>
+         <type>org.exoplatform.services.jcr.ext.script.groovy.GroovyScriptAddRepoPlugin</type>
+         <init-params>
+            <properties-param>
+               <name>repo1</name>
+               <property name="repository" value="db1"/>
+               <property name="workspace" value="ws"/>
+               <property name="path" value="/dependencies"/>
+            </properties-param>
+         </init-params>
+      </component-plugin>
+    </component-plugins>
     <init-params>
       <object-param>
         <name>observation.config</name>
