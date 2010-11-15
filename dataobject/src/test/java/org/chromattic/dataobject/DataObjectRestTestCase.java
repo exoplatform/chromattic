@@ -31,21 +31,24 @@ public class DataObjectRestTestCase extends AbstractDataObjectTestCase {
 
   /** . */
   private static final String dataObjectGroovy =
-    "@org.chromattic.api.annotations.PrimaryType(name=\"nt:unstructured\")\n" +
+    "import org.chromattic.api.annotations.PrimaryType;\n" +
+    "import org.chromattic.api.annotations.Property;\n" +
+    "@PrimaryType(name=\"nt:unstructured\")\n" +
     "class DataObject {\n" +
-    "@org.chromattic.api.annotations.Property(name = \"a\") def String a;\n" +
+    "@Property(name = \"a\") def String a;\n" +
     "}\n";
 
   /** . */
   private static final String serviceGroovy =
+    "import org.chromattic.api.ChromatticBuilder;\n" +
     "@javax.ws.rs.Path(\"a\")\n" +
     "class GroovyService {\n" +
     "  @javax.ws.rs.GET\n" +
     "  def get() {\n" +
-    "    def builder = org.chromattic.api.ChromatticBuilder.create();\n" +
+    "    def builder = ChromatticBuilder.create();\n" +
     "    builder.add(DataObject.class);\n" +
     "    def chromattic = builder.build();\n" +
-    "    org.chromattic.api.ChromatticSession session = chromattic.openSession();\n" +
+    "    def session = chromattic.openSession();\n" +
     "    try {\n" +
     "      def o = session.findByPath(DataObject.class, \"o\");\n" +
     "      return o.a;\n" +
@@ -55,7 +58,7 @@ public class DataObjectRestTestCase extends AbstractDataObjectTestCase {
     "  }\n" +
     "  @javax.ws.rs.PUT\n" +
     "  def put() {\n" +
-    "    def builder = org.chromattic.api.ChromatticBuilder.create();\n" +
+    "    def builder = ChromatticBuilder.create();\n" +
     "    builder.add(DataObject.class);\n" +
     "    def chromattic = builder.build();\n" +
     "    def session = chromattic.openSession();\n" +
