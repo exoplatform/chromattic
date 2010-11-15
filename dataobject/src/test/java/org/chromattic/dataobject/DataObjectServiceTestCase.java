@@ -19,6 +19,7 @@
 
 package org.chromattic.dataobject;
 
+import groovy.lang.GroovyShell;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticSession;
@@ -65,6 +66,7 @@ public class DataObjectServiceTestCase extends AbstractDataObjectTestCase {
     Iterator<Class<?>> classes = service.generateClasses(source, "/DataObject.groovy").values().iterator();
     assertTrue(classes.hasNext());
     Class<?> dataObjectClass = classes.next();
+    assertEquals("DataObject", dataObjectClass.getName());
     assertFalse(classes.hasNext());
 
     //
@@ -74,10 +76,11 @@ public class DataObjectServiceTestCase extends AbstractDataObjectTestCase {
 
     //
     ChromatticSession session = chromattic.openSession();
+    GroovyShell shell = new GroovyShell(dataObjectClass.getClassLoader());
+    shell.setVariable("session", session);
     try {
-      Object dataObject = session.insert(dataObjectClass, "dataobject");
-      Method setter = dataObject.getClass().getMethod("setA", String.class);
-      setter.invoke(dataObject, "a_value");
+      shell.evaluate("dataObject = session.insert(DataObject.class, \"dataobject\");");
+      shell.evaluate("dataObject.a = \"a_value\";");
       session.save();
     }
     finally {
@@ -88,6 +91,6 @@ public class DataObjectServiceTestCase extends AbstractDataObjectTestCase {
     Session jcrSession = bootstrap.getRepository().login();
     Node dataObjectNode = jcrSession.getRootNode().getNode("dataobject");
     assertNotNull(dataObjectNode);
-//    assertEquals("a_value", dataObjectNode.getProperty("a").getString());
+    assertEquals("a_value", dataObjectNode.getProperty("a").getString());
   }
 }
