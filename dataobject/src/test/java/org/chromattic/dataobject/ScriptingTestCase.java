@@ -36,42 +36,6 @@ import org.exoplatform.services.rest.tools.ResourceLauncher;
  */
 public class ScriptingTestCase extends AbstractDataObjectTestCase {
 
-
-  /** . */
-  protected StandaloneContainer container;
-
-  /** . */
-  protected ProviderBinder providers;
-
-  /** . */
-  protected ResourceBinder binder;
-
-  /** . */
-  protected RequestHandlerImpl requestHandler;
-
-  /** . */
-  protected GroovyJaxrsPublisher groovyPublisher;
-
-  /** . */
-  protected ResourceLauncher launcher;
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    //
-    container = StandaloneContainer.getInstance();
-    binder = (ResourceBinder)container.getComponentInstanceOfType(ResourceBinder.class);
-    requestHandler = (RequestHandlerImpl)container.getComponentInstanceOfType(RequestHandlerImpl.class);
-    // reset providers to be sure it is clean
-    ProviderBinder.setInstance(new ProviderBinder());
-    providers = ProviderBinder.getInstance();
-    ApplicationContextImpl.setCurrent(new ApplicationContextImpl(null, null, providers));
-    binder.clear();
-    groovyPublisher = (GroovyJaxrsPublisher)container.getComponentInstanceOfType(GroovyJaxrsPublisher.class);
-    launcher = new ResourceLauncher(requestHandler);
-  }
-
   private static final String script =
     "@javax.ws.rs.Path(\"a\")"
       + "class GroovyResource {"

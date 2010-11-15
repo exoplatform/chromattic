@@ -29,6 +29,13 @@ import org.chromattic.ext.ntdef.NTFolder;
 import org.chromattic.ext.ntdef.NTHierarchyNode;
 import org.chromattic.ext.ntdef.NTResource;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.container.StandaloneContainer;
+import org.exoplatform.services.rest.ext.groovy.GroovyJaxrsPublisher;
+import org.exoplatform.services.rest.impl.ApplicationContextImpl;
+import org.exoplatform.services.rest.impl.ProviderBinder;
+import org.exoplatform.services.rest.impl.RequestHandlerImpl;
+import org.exoplatform.services.rest.impl.ResourceBinder;
+import org.exoplatform.services.rest.tools.ResourceLauncher;
 
 import java.io.UnsupportedEncodingException;
 
@@ -45,11 +52,49 @@ public abstract class AbstractDataObjectTestCase extends TestCase {
   /** . */
   protected RepositoryBootstrap bootstrap;
 
+  /** . */
+  protected StandaloneContainer container;
+
+  /** . */
+  protected ProviderBinder providers;
+
+  /** . */
+  protected ResourceBinder binder;
+
+  /** . */
+  protected RequestHandlerImpl requestHandler;
+
+  /** . */
+  protected GroovyJaxrsPublisher groovyPublisher;
+
+  /** . */
+  protected ResourceLauncher launcher;
+
   @Override
   protected void setUp() throws Exception {
 
     RepositoryBootstrap bootstrap = new RepositoryBootstrap();
     bootstrap.bootstrap(Thread.currentThread().getContextClassLoader().getResource("conf/dataobject/configuration.xml"));
+
+    // Rest setup
+    StandaloneContainer container = StandaloneContainer.getInstance();
+    ResourceBinder binder = (ResourceBinder)container.getComponentInstanceOfType(ResourceBinder.class);
+    RequestHandlerImpl requestHandler = (RequestHandlerImpl)container.getComponentInstanceOfType(RequestHandlerImpl.class);
+    // reset providers to be sure it is clean
+    ProviderBinder.setInstance(new ProviderBinder());
+    ProviderBinder providers = ProviderBinder.getInstance();
+    ApplicationContextImpl.setCurrent(new ApplicationContextImpl(null, null, providers));
+    binder.clear();
+    GroovyJaxrsPublisher groovyPublisher = (GroovyJaxrsPublisher)container.getComponentInstanceOfType(GroovyJaxrsPublisher.class);
+    ResourceLauncher launcher = new ResourceLauncher(requestHandler);
+
+    //
+    this.providers = providers;
+    this.container = container;
+    this.requestHandler = requestHandler;
+    this.binder = binder;
+    this.groovyPublisher  = groovyPublisher;
+    this.launcher = launcher;
 
     //
     ChromatticBuilder builder = ChromatticBuilder.create();
