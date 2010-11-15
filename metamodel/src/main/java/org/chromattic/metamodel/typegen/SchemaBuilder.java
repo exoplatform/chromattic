@@ -21,6 +21,7 @@ package org.chromattic.metamodel.typegen;
 
 import org.chromattic.api.RelationshipType;
 import org.chromattic.common.collection.SetMap;
+import org.chromattic.metamodel.annotations.NotReferenceable;
 import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.mapping.BeanMapping;
@@ -100,7 +101,8 @@ public class SchemaBuilder {
       NodeType nodeType = nodeTypes.get(mapping.getBean().getClassType());
       if (nodeType == null) {
         if (mapping.getBean().getAnnotation(Skip.class) == null) {
-          nodeType = new NodeType(mapping);
+          boolean referenceable = mapping.getBean().getAnnotation(NotReferenceable.class) == null;
+          nodeType = new NodeType(mapping, referenceable);
           nodeTypes.put(mapping.getBean().getClassType(), nodeType);
         }
       }

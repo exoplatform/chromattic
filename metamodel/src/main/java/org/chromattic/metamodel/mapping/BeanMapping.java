@@ -72,9 +72,6 @@ public class BeanMapping {
   /** . */
   final NameConflictResolution onDuplicate;
 
-  /** . */
-  final boolean referenceable;
-
   public BeanMapping(
       BeanInfo bean,
       NodeTypeKind nodeTypeKind,
@@ -82,14 +79,12 @@ public class BeanMapping {
       NameConflictResolution onDuplicate,
       ClassTypeInfo formatterClassType,
       boolean orderable,
-      boolean abstract_,
-      boolean referenceable) {
+      boolean abstract_) {
     this.bean = bean;
     this.nodeTypeKind = nodeTypeKind;
     this.nodeTypeName = nodeTypeName;
     this.orderable = orderable;
     this.abstract_ = abstract_;
-    this.referenceable = referenceable;
     this.properties = new HashMap<String, PropertyMapping<?,?>>();
     this.unmodifiableProperties = Collections.unmodifiableMap(properties);
     this.methods = new ArrayList<MethodMapping>();
@@ -120,10 +115,6 @@ public class BeanMapping {
 
   public boolean isAbstract() {
     return abstract_;
-  }
-
-  public boolean isReferenceable() {
-    return referenceable;
   }
 
   public BeanInfo getBean() {

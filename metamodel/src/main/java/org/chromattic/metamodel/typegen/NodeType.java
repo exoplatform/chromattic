@@ -60,7 +60,7 @@ public class NodeType {
   /** . */
   final boolean referenceable;
 
-  NodeType(BeanMapping mapping) {
+  NodeType(BeanMapping mapping, boolean referenceable) {
     this.mapping = mapping;
     this.name = mapping.getNodeTypeName();
     this.className = mapping.getBean().getClassType().getName();
@@ -70,7 +70,7 @@ public class NodeType {
     this.properties = new HashMap<String, PropertyDefinition>();
     this.superTypes = new HashSet<NodeType>();
     this.declaredSuperTypes = new HashSet<NodeType>();
-    this.referenceable = mapping.isReferenceable();
+    this.referenceable = referenceable;
   }
 
   public String getClassName() {
