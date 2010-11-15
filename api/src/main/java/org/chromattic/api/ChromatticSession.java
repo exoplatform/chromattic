@@ -186,7 +186,7 @@ public interface ChromatticSession {
    * @throws ClassCastException if the object cannot be cast to the specified class
    * @throws ChromatticException any chromattic exception
    */
-  <O> O findByPath(Object origin, Class<O> clazz, String relPath) throws IllegalArgumentException, NullPointerException, IllegalArgumentException, ClassCastException, ChromatticException;
+  <O> O findByPath(Object origin, Class<O> clazz, String relPath) throws IllegalArgumentException, NullPointerException, ClassCastException, ChromatticException;
 
   /**
    * Finds an object with a path relative to a chromattic root object. If the object is not found then the method returns null.
