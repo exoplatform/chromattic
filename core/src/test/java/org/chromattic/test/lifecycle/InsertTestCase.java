@@ -64,26 +64,42 @@ public class InsertTestCase extends AbstractTestCase {
     }
   }
 
-  public void testFromRelative() throws Exception {
+  public void testWithParent() throws Exception {
+    testWithParent(false);
+  }
+
+  public void testWithNullParent() throws Exception {
+    testWithParent(true);
+  }
+
+  private void testWithParent(boolean nullParent) throws Exception {
     ChromatticSessionImpl session = login();
 
     //
-    A a = session.insert(A.class, "tlf_a");
-    assertNotNull(a);
-    assertEquals("tlf_a", session.getName(a));
-    assertEquals(Status.PERSISTENT, session.getStatus(a));
+    A parent;
+    String childPath;
+    if (nullParent) {
+      parent = null;
+      childPath = "child";
+    } else {
+      parent = session.insert(A.class, "parent");
+      assertNotNull(parent);
+      assertEquals("parent", session.getName(parent));
+      assertEquals(Status.PERSISTENT, session.getStatus(parent));
+      childPath = "parent/child";
+    }
 
     //
-    A b = session.insert(a, A.class, "b");
-    assertNotNull(b);
-    assertEquals("b", session.getName(b));
-    assertEquals(Status.PERSISTENT, session.getStatus(b));
-    Node bNode = session.getRoot().getNode("tlf_a/b");
-    assertEquals(session.getId(b), bNode.getUUID());
+    A child = session.insert(parent, A.class, "child");
+    assertNotNull(child);
+    assertEquals("child", session.getName(child));
+    assertEquals(Status.PERSISTENT, session.getStatus(child));
+    Node bNode = session.getRoot().getNode(childPath);
+    assertEquals(session.getId(child), bNode.getUUID());
 
     //
     try {
-      session.insert(a, A.class, "/");
+      session.insert(parent, A.class, "/");
       fail();
     }
     catch (IllegalArgumentException ignore) {
@@ -91,7 +107,7 @@ public class InsertTestCase extends AbstractTestCase {
 
     //
     try {
-      session.insert(a, A.class, ".");
+      session.insert(parent, A.class, ".");
       fail();
     }
     catch (IllegalArgumentException ignore) {

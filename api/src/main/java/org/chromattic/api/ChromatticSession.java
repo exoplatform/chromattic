@@ -89,11 +89,12 @@ public interface ChromatticSession {
   <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
-   * Persists a transient object.
+   * Persists a transient object with the specified name. The parent of the persisted object will implicitely be the
+   * root node of the session.
    *
    * @param o the object to persist
    * @param name the object relative path to the root
-   * @return the object id
+   * @return the id of the inserted object
    * @throws NullPointerException if any argument is null
    * @throws IllegalArgumentException if the name is not valid or the object is not a chromattic transient object
    * @throws ChromatticException any chromattic exception
@@ -101,22 +102,25 @@ public interface ChromatticSession {
   String persist(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
-   * Persists a transient object.
+   * Persists a transient object as a child of the specified parent. The parent argument is optional and null can be
+   * passed, in that case it is equivalent to call the {@link #persist(Object)} method. Since no name is provided, this
+   * method implicitely expects a name associated with the object.
    *
    * @param parent the parent object
    * @param child the object to persist
-   * @return the object id
-   * @throws NullPointerException if any argument is not valid
+   * @return the id of the inserted object
+   * @throws NullPointerException if the child argument is null
    * @throws IllegalArgumentException if the parent is not a persistent object or the object is not a chromattic transient object
    * @throws ChromatticException any chromattic exception
    */
   String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
-   * Persists a transient object relative to the root node.
+   * Persists a transient object relative to the root node. The parent of the persisted object will implicitely be the
+   * root node of the session. Since no name is provided, this method implicitely expects a name associated with the object.
    *
    * @param o the object to persist
-   * @return the object id
+   * @return the id of the inserted object
    * @throws NullPointerException if any argument is not valid
    * @throws IllegalArgumentException if the object is not a chromattic transient object
    * @throws ChromatticException any chromattic exception
@@ -124,13 +128,14 @@ public interface ChromatticSession {
   String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
-   * Persists a transient object.
+   * Persists a transient object as a child of the specified parent with the specified name. The parent argument is
+   * optional and null can be passed, in that case it is equivalent to call the {@link #persist(Object, String)} method.
    *
    * @param parent the parent object
    * @param o the object to persist
    * @param name the object relative name to the parent
-   * @return the object id
-   * @throws NullPointerException if the parent or object argument is null
+   * @return the id of the inserted object
+   * @throws NullPointerException if the object argument is null
    * @throws IllegalArgumentException if the parent is not a persistent object or the name is not valid or the object
    * is not a chromattic transient object
    * @throws ChromatticException any chromattic exception
@@ -294,13 +299,19 @@ public interface ChromatticSession {
   String getName(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
-   * Updates the name of the specified entity.
+   * Rename a chromattic object, the behavior of this method depends on the current object status:
+   *
+   * <ul>
+   * <li>{@link Status#TRANSIENT}: the object is merely associated with the name until it is persisted.</li>
+   * <li>{@link Status#PERSISTENT}: the object will be renamed with the new name.</li>
+   * <li>{@link Status#REMOVED}: An illegal state exception is thrown.</li>
+   * <lI>
    *
    * @param o the entity to get the name
    * @param name the new entity name
    * @throws ChromatticException any chromattic exception
    * @throws NullPointerException if the specified object is null
-   * @throws IllegalArgumentException if the specified object is not a chromattic object
+   * @throws IllegalArgumentException if the specified object is not a chromattic object or has been destroyed.
    */
   void setName(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 

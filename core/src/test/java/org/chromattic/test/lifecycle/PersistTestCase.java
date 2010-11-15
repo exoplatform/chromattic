@@ -67,30 +67,46 @@ public class PersistTestCase extends AbstractTestCase {
     }
   }
 
-  public void testFromParent() throws Exception {
+  public void testWithParent() throws Exception {
+    testWithParent(false);
+  }
+
+  public void testWithNullParent() throws Exception {
+    testWithParent(true);
+  }
+
+  public void testWithParent(boolean nullParent) throws Exception {
     ChromatticSessionImpl session = login();
 
     //
-    A a = session.insert(A.class, "tlf_a");
-    assertNotNull(a);
-    assertEquals("tlf_a", session.getName(a));
-    assertEquals(Status.PERSISTENT, session.getStatus(a));
+    A parent;
+    String childPath;
+    if (nullParent) {
+      parent = null;
+      childPath = "child";
+    } else {
+      parent = session.insert(A.class, "parent");
+      assertNotNull(parent);
+      assertEquals("parent", session.getName(parent));
+      assertEquals(Status.PERSISTENT, session.getStatus(parent));
+      childPath = "parent/child";
+    }
 
     //
-    A b = session.create(A.class);
-    session.persist(a, b, "b");
-    assertNotNull(b);
-    assertEquals("b", session.getName(b));
-    assertEquals(Status.PERSISTENT, session.getStatus(b));
-    Node bNode = session.getRoot().getNode("tlf_a/b");
-    assertEquals(session.getId(b), bNode.getUUID());
+    A child = session.create(A.class);
+    session.persist(parent, child, "child");
+    assertNotNull(child);
+    assertEquals("child", session.getName(child));
+    assertEquals(Status.PERSISTENT, session.getStatus(child));
+    Node bNode = session.getRoot().getNode(childPath);
+    assertEquals(session.getId(child), bNode.getUUID());
 
     //
     A c = session.create(A.class);
 
     //
     try {
-      session.persist(a, c, "/");
+      session.persist(parent, c, "/");
       fail();
     }
     catch (IllegalArgumentException e) {
@@ -98,37 +114,59 @@ public class PersistTestCase extends AbstractTestCase {
 
     //
     try {
-      session.persist(a, c, ".");
+      session.persist(parent, c, ".");
       fail();
     }
     catch (IllegalArgumentException e) {
     }
   }
 
-  public void testWithParentWithImplicitName() throws Exception {
+  public void testWithParentAndImplicitName() throws Exception {
+    testWithParentWithImplicitName(false);
+  }
+
+  public void testWithNullParentAndImplicitName() throws Exception {
+    testWithParentWithImplicitName(true);
+  }
+
+  public void testWithParentWithImplicitName(boolean nullParent) throws Exception {
     ChromatticSessionImpl session = login();
 
     //
-    A a = session.insert(A.class, "tlf_a");
-    assertNotNull(a);
-    assertEquals("tlf_a", session.getName(a));
-    assertEquals(Status.PERSISTENT, session.getStatus(a));
-    A b = session.create(A.class, "b");
-    assertEquals("b", session.getName(b));
-    assertEquals(Status.TRANSIENT, session.getStatus(b));
-    String bId = session.persist(a, b);
-    assertNotNull(b);
-    assertEquals("b", session.getName(b));
-    assertEquals(Status.PERSISTENT, session.getStatus(b));
-    assertEquals(bId, session.getId(b));
+    A parent;
+    if (nullParent) {
+      parent = null;
+    } else {
+      parent = session.insert(A.class, "parent");
+      assertNotNull(parent);
+      assertEquals("parent", session.getName(parent));
+      assertEquals(Status.PERSISTENT, session.getStatus(parent));
+    }
 
     //
-    Node aNode = session.getRoot().getNode("tlf_a");
-    Node bNode = aNode.getNode("b");
+    A child = session.create(A.class, "child");
+    assertEquals("child", session.getName(child));
+    assertEquals(Status.TRANSIENT, session.getStatus(child));
 
     //
-    assertEquals(session.getId(a), aNode.getUUID());
-    assertEquals(session.getId(b), bNode.getUUID());
+    String bId = session.persist(parent, child);
+    assertNotNull(child);
+    assertEquals("child", session.getName(child));
+    assertEquals(Status.PERSISTENT, session.getStatus(child));
+    assertEquals(bId, session.getId(child));
+
+    //
+    Node parentNode;
+    if (nullParent) {
+      parentNode = session.getRoot();
+    } else {
+      parentNode = session.getRoot().getNode("parent");
+      assertEquals(session.getId(parent), parentNode.getUUID());
+    }
+
+    //
+    Node childNode = parentNode.getNode("child");
+    assertEquals(session.getId(child), childNode.getUUID());
   }
 
   public void testWithImplicitName() throws Exception {

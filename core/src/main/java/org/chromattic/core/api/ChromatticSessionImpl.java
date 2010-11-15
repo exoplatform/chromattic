@@ -107,53 +107,49 @@ public final class ChromatticSessionImpl implements ChromatticSession {
   }
 
   public <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    EntityContext parentCtx = domainSession.unwrapEntity(parent);
     O child = create(clazz);
-    EntityContext childtx = domainSession.unwrapEntity(child);
-    domainSession.persist(parentCtx, childtx, name);
+    persist(parent, child, name);
     return child;
   }
 
   public <O> O insert(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
-    O child = create(clazz);
-    persist(child, name);
-    return child;
+    return insert(null, clazz, name);
   }
 
   public String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    EntityContext parentCtx = domainSession.unwrapEntity(parent);
     EntityContext childCtx = domainSession.unwrapEntity(child);
-    domainSession.persist(parentCtx, childCtx, name);
+    if (parent != null) {
+      EntityContext parentCtx = domainSession.unwrapEntity(parent);
+      domainSession.persist(parentCtx, childCtx, name);
+    } else {
+      domainSession.persist(childCtx, name);
+    }
     return childCtx.getId();
   }
 
   public String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    EntityContext parentCtx = domainSession.unwrapEntity(parent);
     EntityContext childCtx = domainSession.unwrapEntity(child);
     String name = childCtx.getName();
     if (name == null) {
       String msg = "Attempt to persist non named object " + childCtx;
       throw new IllegalArgumentException(msg);
     }
-    domainSession.persist(parentCtx, childCtx, name);
+    if (parent != null) {
+      EntityContext parentCtx = domainSession.unwrapEntity(parent);
+      domainSession.persist(parentCtx, childCtx, name);
+    } else {
+      domainSession.persist(childCtx, name);
+    }
     return childCtx.getId();
   }
 
   public String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    EntityContext ctx = domainSession.unwrapEntity(o);
-    String name = ctx.getName();
-    if (name == null) {
-      String msg = "Attempt to persist non named object " + ctx;
-      throw new IllegalArgumentException(msg);
-    }
-    domainSession.persist(ctx, name);
-    return ctx.getId();
+    return persist(null, o);
   }
 
+  // relpath : danger non consistency
   public String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    EntityContext ctx = domainSession.unwrapEntity(o);
-    domainSession.persist(ctx, relPath);
-    return ctx.getId();
+    return persist(null, o, relPath);
   }
 
   public <O> O copy(O o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
