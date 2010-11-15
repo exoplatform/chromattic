@@ -19,7 +19,7 @@
 
 package org.chromattic.groovy.core.find.query;
 
-import org.chromattic.test.find.TFI_A;
+import org.chromattic.test.find.A;
 import org.chromattic.test.find.query.QueryTestCase;
 import org.chromattic.testgenerator.UniversalTest;
 
@@ -31,6 +31,6 @@ import org.chromattic.testgenerator.UniversalTest;
   sourceClass = QueryTestCase.class,
   baseDir = "core",
   suffix = "CoreTest",
-  chromatticClasses = {TFI_A.class})
+  chromatticClasses = {A.class})
 public class GroovyQueryTestCase {
 }

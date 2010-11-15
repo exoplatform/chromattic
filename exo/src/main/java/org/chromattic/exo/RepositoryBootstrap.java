@@ -34,6 +34,9 @@ public class RepositoryBootstrap {
   /** . */
   private Repository repository;
 
+  /** . */
+  private String repositoryName;
+
   public void bootstrap() throws Exception {
     bootstrap(Thread.currentThread().getContextClassLoader().getResource("conf/chromattic/configuration.xml"));
   }
@@ -50,10 +53,17 @@ public class RepositoryBootstrap {
     //
     StandaloneContainer container = StandaloneContainer.getInstance();
     RepositoryService repositoryService = (RepositoryService)container.getComponentInstanceOfType(RepositoryService.class);
-    repository = repositoryService.getDefaultRepository();
+
+    //
+    this.repository = repositoryService.getDefaultRepository();
+    this.repositoryName = repositoryService.getDefaultRepository().getConfiguration().getName();
   }
 
   public Repository getRepository() {
     return repository;
+  }
+
+  public String getRepositoryName() {
+    return repositoryName;
   }
 }

@@ -19,7 +19,7 @@
 
 package org.chromattic.groovy.core.find.path;
 
-import org.chromattic.test.find.TFI_A;
+import org.chromattic.test.find.A;
 import org.chromattic.test.find.path.FindByPathTestCase;
 import org.chromattic.testgenerator.UniversalTest;
 
@@ -31,6 +31,6 @@ import org.chromattic.testgenerator.UniversalTest;
   sourceClass = FindByPathTestCase.class,
   baseDir = "core",
   suffix = "CoreTest",
-  chromatticClasses = {TFI_A.class})
+  chromatticClasses = {A.class})
 public class GroovyFindByPathTestCase {
 }
