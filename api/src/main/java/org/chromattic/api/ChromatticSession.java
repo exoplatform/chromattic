@@ -168,18 +168,20 @@ public interface ChromatticSession {
 
   /**
    * Finds an object with a path relative to a specified origin object. If the object is not found then the method returns null.
+   * The origin argument is optional and null can be passed, in that case it is equivalent to call the {@link #findById(Class, String)}
+   * method.
    *
    * @param origin the origin object
    * @param clazz the expected class
    * @param relPath the path relative to the origin
    * @param <O> the object type
    * @return the object
-   * @throws NullPointerException if any argument is null
    * @throws IllegalArgumentException if the origin object is not a chromattic object
+   * @throws NullPointerException if any argument except the origin is null
    * @throws ClassCastException if the object cannot be cast to the specified class
    * @throws ChromatticException any chromattic exception
    */
-  <O> O findByPath(Object origin, Class<O> clazz, String relPath) throws NullPointerException, IllegalArgumentException, ClassCastException, ChromatticException;
+  <O> O findByPath(Object origin, Class<O> clazz, String relPath) throws IllegalArgumentException, NullPointerException, IllegalArgumentException, ClassCastException, ChromatticException;
 
   /**
    * Finds an object with a path relative to a chromattic root object. If the object is not found then the method returns null.

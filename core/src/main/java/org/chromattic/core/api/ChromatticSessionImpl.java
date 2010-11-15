@@ -182,16 +182,16 @@ public final class ChromatticSessionImpl implements ChromatticSession {
   }
 
   public <O> O findByPath(Object origin, Class<O> clazz, String relPath) throws ChromatticException {
-    if (origin == null) {
-      throw new NullPointerException();
-    }
     if (clazz == null) {
       throw new NullPointerException();
     }
     if (relPath == null) {
       throw new NullPointerException();
     }
-    EntityContext ctx = domainSession.unwrapEntity(origin);
+    EntityContext ctx = null;
+    if (origin != null) {
+      ctx =  domainSession.unwrapEntity(origin);
+    }
     return domainSession.findByPath(ctx, clazz, relPath);
   }
 

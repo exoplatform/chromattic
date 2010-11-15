@@ -19,6 +19,9 @@
 
 package org.chromattic.test.find;
 
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.FindById;
 import org.chromattic.api.annotations.Property;
@@ -37,5 +40,12 @@ public abstract class TFI_A {
   public abstract void setFoo(String foo);
 
   public abstract String getFoo();
+
+  @OneToOne
+  @MappedBy("child")
+  @Owner
+  public abstract TFI_A getChild();
+
+  public abstract void setChild(TFI_A child);
 
 }

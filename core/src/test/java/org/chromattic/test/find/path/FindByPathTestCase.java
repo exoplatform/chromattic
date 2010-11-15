@@ -19,6 +19,7 @@
 
 package org.chromattic.test.find.path;
 
+import org.chromattic.api.ChromatticException;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.TFI_A;
 import org.chromattic.api.ChromatticSession;
@@ -116,6 +117,31 @@ public class FindByPathTestCase extends AbstractTestCase {
       fail();
     }
     catch (NullPointerException e) {
+    }
+  }
+
+  public void testFindWithOrigin() throws Exception {
+    ChromatticSession session = login();
+    TFI_A a = session.insert(TFI_A.class, "a");
+    TFI_A b = session.create(TFI_A.class);
+    a.setChild(b);
+    assertSame(b, session.findByPath(a, TFI_A.class, "child"));
+  }
+
+  public void testFindWithNullOrigin() throws Exception {
+    ChromatticSession session = login();
+    TFI_A a = session.insert(TFI_A.class, "a");
+    assertSame(a, session.findByPath(null, TFI_A.class, "a"));
+  }
+
+  public void testFindWithNonInstrumentedOrigin() throws Exception {
+    ChromatticSession session = login();
+    session.insert(TFI_A.class, "a");
+    try {
+      session.findByPath(new Object(), TFI_A.class, "a");
+      fail();
+    }
+    catch (IllegalArgumentException ignore) {
     }
   }
 }
