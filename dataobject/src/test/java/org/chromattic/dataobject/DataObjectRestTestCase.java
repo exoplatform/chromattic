@@ -79,14 +79,16 @@ public class DataObjectRestTestCase extends AbstractDataObjectTestCase {
     saveDataObject("DataObject.groovy", dataObjectGroovy);
 
     // Save the groovy script that uses the data object
-    saveService("script.groovy", serviceGroovy);
+    saveService("GroovyService.groovy", serviceGroovy);
   }
 
-  public void testFoo() throws Exception {
+  public void testService() throws Exception {
 
+    // First let's put data in JCR
     ContainerResponse resp = launcher.service("PUT", "/a", "", null, null, null, null);
     assertEquals(200, resp.getStatus());
 
+    // Then retrieve this data
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
     ContainerResponse getResp = launcher.service("GET", "/a", "", null, null, writer, null);
     assertEquals(200, getResp.getStatus());
