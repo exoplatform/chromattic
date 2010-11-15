@@ -31,10 +31,10 @@ import org.chromattic.api.annotations.Property;
  * @version $Revision$
  */
 @PrimaryType(name = "find:a")
-public abstract class TFI_A {
+public abstract class A {
 
   @FindById
-  public abstract TFI_A findById(String id);
+  public abstract A findById(String id);
 
   @Property(name = "foo")
   public abstract void setFoo(String foo);
@@ -44,8 +44,8 @@ public abstract class TFI_A {
   @OneToOne
   @MappedBy("child")
   @Owner
-  public abstract TFI_A getChild();
+  public abstract A getChild();
 
-  public abstract void setChild(TFI_A child);
+  public abstract void setChild(A child);
 
 }

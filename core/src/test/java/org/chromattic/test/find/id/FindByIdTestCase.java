@@ -20,7 +20,7 @@
 package org.chromattic.test.find.id;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.test.find.TFI_A;
+import org.chromattic.test.find.A;
 import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.RepositoryException;
@@ -32,28 +32,28 @@ import javax.jcr.RepositoryException;
 public class FindByIdTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TFI_A.class);
+    addClass(A.class);
   }
 
   public void testMethodFind() throws RepositoryException {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
+    A a = session.insert(A.class, "a");
     String id = session.getId(a);
-    TFI_A b = a.findById(id);
+    A b = a.findById(id);
     assertSame(a, b);
   }
 
   public void testSessionFind() throws RepositoryException {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
+    A a = session.insert(A.class, "a");
     String id = session.getId(a);
-    TFI_A b = session.findById(TFI_A.class, id);
+    A b = session.findById(A.class, id);
     assertSame(a, b);
   }
 
   public void testCCE() throws Exception {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
+    A a = session.insert(A.class, "a");
     String id = session.getId(a);
     try {
       session.findById(String.class, id);
@@ -65,20 +65,20 @@ public class FindByIdTestCase extends AbstractTestCase {
 
   public void testNotFound() throws RepositoryException {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "a");
+    A a = session.insert(A.class, "a");
     assertNotNull(a);
     String id = session.getId(a);
     session.remove(a);
-    a = session.findById(TFI_A.class, id);
+    a = session.findById(A.class, id);
     assertNull(a);
   }
 
   public void testNPE() throws Exception {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
+    A a = session.insert(A.class, "a");
     String id = session.getId(a);
     try {
-      session.findById(TFI_A.class, null);
+      session.findById(A.class, null);
       fail();
     }
     catch (NullPointerException e) {

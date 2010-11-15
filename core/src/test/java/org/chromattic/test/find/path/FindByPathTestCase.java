@@ -19,9 +19,8 @@
 
 package org.chromattic.test.find.path;
 
-import org.chromattic.api.ChromatticException;
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.test.find.TFI_A;
+import org.chromattic.test.find.A;
 import org.chromattic.api.ChromatticSession;
 
 import javax.jcr.RepositoryException;
@@ -33,29 +32,29 @@ import javax.jcr.RepositoryException;
 public class FindByPathTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TFI_A.class);
+    addClass(A.class);
   }
 
   public void testSessionRelativeFind() throws RepositoryException {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
-    TFI_A b = session.findByPath(TFI_A.class, "tfi_a_a", false);
+    A a = session.insert(A.class, "a");
+    A b = session.findByPath(A.class, "a", false);
     assertSame(a, b);
   }
 
   public void testSessionAbsoluteFind() throws RepositoryException {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
+    A a = session.insert(A.class, "a");
     String path = session.getPath(a);
-    TFI_A b = session.findByPath(TFI_A.class, path, true);
+    A b = session.findByPath(A.class, path, true);
     assertSame(a, b);
   }
 
   public void testCCERelative() throws Exception {
     ChromatticSession session = login();
-    session.insert(TFI_A.class, "tfi_a_a");
+    session.insert(A.class, "a");
     try {
-      session.findByPath(String.class, "tfi_a_a", false);
+      session.findByPath(String.class, "a", false);
       fail();
     }
     catch (ClassCastException e) {
@@ -64,7 +63,7 @@ public class FindByPathTestCase extends AbstractTestCase {
 
   public void testCCEAbsolute() throws Exception {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "tfi_a_a");
+    A a = session.insert(A.class, "a");
     String path = session.getPath(a);
     try {
       session.findByPath(String.class, path, true);
@@ -76,27 +75,27 @@ public class FindByPathTestCase extends AbstractTestCase {
 
   public void testRelativeNotFound() throws RepositoryException {
     ChromatticSession session = login();
-    TFI_A a = session.findByPath(TFI_A.class, "foo", false);
+    A a = session.findByPath(A.class, "foo", false);
     assertNull(a);
   }
 
   public void testAbsoluteNotFound() throws RepositoryException {
     ChromatticSession session = login();
-    TFI_A a = session.findByPath(TFI_A.class, "/foo", true);
+    A a = session.findByPath(A.class, "/foo", true);
     assertNull(a);
   }
 
   public void testRelativeNPE() throws Exception {
     ChromatticSession session = login();
-    session.insert(TFI_A.class, "tfi_a_a");
+    session.insert(A.class, "a");
     try {
-      session.findByPath(TFI_A.class, null, false);
+      session.findByPath(A.class, null, false);
       fail();
     }
     catch (NullPointerException e) {
     }
     try {
-      session.findByPath(null, "tfi_a_a", false);
+      session.findByPath(null, "a", false);
       fail();
     }
     catch (NullPointerException e) {
@@ -105,15 +104,15 @@ public class FindByPathTestCase extends AbstractTestCase {
 
   public void testAbsoluteNPE() throws Exception {
     ChromatticSession session = login();
-    session.insert(TFI_A.class, "tfi_a_a");
+    session.insert(A.class, "a");
     try {
-      session.findByPath(TFI_A.class, null, true);
+      session.findByPath(A.class, null, true);
       fail();
     }
     catch (NullPointerException e) {
     }
     try {
-      session.findByPath(null, "tfi_a_a", true);
+      session.findByPath(null, "a", true);
       fail();
     }
     catch (NullPointerException e) {
@@ -122,23 +121,23 @@ public class FindByPathTestCase extends AbstractTestCase {
 
   public void testFindWithOrigin() throws Exception {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "a");
-    TFI_A b = session.create(TFI_A.class);
+    A a = session.insert(A.class, "a");
+    A b = session.create(A.class);
     a.setChild(b);
-    assertSame(b, session.findByPath(a, TFI_A.class, "child"));
+    assertSame(b, session.findByPath(a, A.class, "child"));
   }
 
   public void testFindWithNullOrigin() throws Exception {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "a");
-    assertSame(a, session.findByPath(null, TFI_A.class, "a"));
+    A a = session.insert(A.class, "a");
+    assertSame(a, session.findByPath(null, A.class, "a"));
   }
 
   public void testFindWithNonInstrumentedOrigin() throws Exception {
     ChromatticSession session = login();
-    session.insert(TFI_A.class, "a");
+    session.insert(A.class, "a");
     try {
-      session.findByPath(new Object(), TFI_A.class, "a");
+      session.findByPath(new Object(), A.class, "a");
       fail();
     }
     catch (IllegalArgumentException ignore) {
