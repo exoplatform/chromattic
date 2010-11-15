@@ -147,9 +147,8 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     return persist(null, o);
   }
 
-  // relpath : danger non consistency
-  public String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    return persist(null, o, relPath);
+  public String persist(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    return persist(null, o, name);
   }
 
   public <O> O copy(O o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
