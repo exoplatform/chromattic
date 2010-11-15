@@ -233,18 +233,6 @@ public abstract class ChromatticBuilder {
   }
 
   /**
-   * Set the option value as a string.
-   *
-   * @param option the option to set
-   * @param value the option value
-   * @param <D> the option data type
-   * @throws NullPointerException if any argument is null
-   */
-  public <D> void setOptionValue(Option<D> option, String value) throws NullPointerException {
-    options.setValue(option, value, true);
-  }
-
-  /**
    * Set the option value.
    *
    * @param option the option to set
@@ -297,7 +285,7 @@ public abstract class ChromatticBuilder {
       for (Option<?> option : getSystemOptions()) {
         String value = System.getProperty(option.getName());
         if (value != null) {
-          options.setValue(option, value, false);
+          options._setValue(option, value, false);
         }
       }
     }
@@ -496,7 +484,8 @@ public abstract class ChromatticBuilder {
       return instance != null ? instance.value : null;
     }
 
-    public <D> void setValue(Option<D> option, String value, boolean overwrite) throws NullPointerException {
+    // An internal form
+    private <D> void _setValue(Option<D> option, String value, boolean overwrite) throws NullPointerException {
       if (option == null) {
         throw new NullPointerException("Cannot set null option");
       }
