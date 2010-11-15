@@ -41,6 +41,7 @@ import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.api.annotations.WorkspaceName;
+import org.chromattic.metamodel.annotations.NotReferenceable;
 import org.chromattic.metamodel.bean.BeanInfo;
 import org.chromattic.metamodel.bean.BeanValueInfo;
 import org.chromattic.metamodel.bean.PropertyInfo;
@@ -132,7 +133,8 @@ public class BeanMappingBuilder {
         NameConflictResolution.FAIL,
         null,
         false,
-        true);
+        true,
+        false);
     ctx.beanMappings.put(objectBean, objectMapping);
 
     // Build mappings
@@ -361,22 +363,25 @@ public class BeanMappingBuilder {
       String nodeTypeName;
       boolean orderable;
       boolean abstract_;
+      boolean referenceable;
       if (mappingAnnotation instanceof PrimaryType) {
         PrimaryType primaryTypeAnnotation = (PrimaryType)mappingAnnotation;
         nodeTypeKind = NodeTypeKind.PRIMARY;
         nodeTypeName = primaryTypeAnnotation.name();
         orderable = primaryTypeAnnotation.orderable();
         abstract_ = primaryTypeAnnotation.abstract_();
+        referenceable = bean.getAnnotation(NotReferenceable.class) == null;
       } else {
         MixinType primaryTypeAnnotation = (MixinType)mappingAnnotation;
         nodeTypeKind = NodeTypeKind.MIXIN;
         nodeTypeName = primaryTypeAnnotation.name();
         orderable = false;
         abstract_ = true;
+        referenceable = false;
       }
 
       //
-      return new BeanMapping(bean, nodeTypeKind, nodeTypeName, onDuplicate, formatter, orderable, abstract_);
+      return new BeanMapping(bean, nodeTypeKind, nodeTypeName, onDuplicate, formatter, orderable, abstract_, referenceable);
     }
 
     private void build(BeanMapping beanMapping) {

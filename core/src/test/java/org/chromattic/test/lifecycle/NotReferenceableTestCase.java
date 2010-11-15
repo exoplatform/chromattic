@@ -22,6 +22,9 @@ package org.chromattic.test.lifecycle;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.test.AbstractTestCase;
 
+import javax.jcr.Node;
+import javax.jcr.Session;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -31,6 +34,7 @@ public class NotReferenceableTestCase extends AbstractTestCase {
   @Override
   protected void createDomain() {
     addClass(NR.class);
+    addClass(B.class);
   }
 
   public void testCreate() {
@@ -44,5 +48,22 @@ public class NotReferenceableTestCase extends AbstractTestCase {
     NR a = session.insert(NR.class, "a");
     assertNotNull(a);
     session.save();
+  }
+
+  public void testRootNodeMappedButNotReferenceable() throws Exception {
+    ChromatticSession session = login();
+
+    //  Setup state
+    Session jcrSession = session.getJCRSession();
+    Node root = (Node)jcrSession.getItem(getRootNodePath());
+    Node aNode = root.addNode("a");
+    aNode.addMixin("mix:referenceable");
+    String id = aNode.getUUID();
+    jcrSession.save();
+
+    //
+    B b = session.findByPath(B.class, "a");
+    assertNotNull(b);
+    assertEquals(id, session.getId(b));
   }
 }

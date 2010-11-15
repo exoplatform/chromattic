@@ -156,15 +156,20 @@ public abstract class NodeTypeSerializer {
   private void write(NodeType nodeType) throws Exception {
     LinkedHashSet<String> superTypeNames = new LinkedHashSet<String>();
 
-    //
+    // Add nt:base if necessary
     if (nodeType.declaredSuperTypes.isEmpty()) {
       superTypeNames.add("nt:base");
     }
+
+    // Add super node types
     for (NodeType superType : nodeType.declaredSuperTypes) {
       superTypeNames.add(superType.getName());
     }
-    // Add nt:base and mix:referenceable
-    superTypeNames.add("mix:referenceable");
+
+    // Add mix:referenceable if required
+    if (nodeType.isReferenceable()) {
+      superTypeNames.add("mix:referenceable");
+    }
 
     //
     startNodeType(

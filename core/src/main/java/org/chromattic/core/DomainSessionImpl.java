@@ -106,7 +106,6 @@ public class DomainSessionImpl extends DomainSession {
       origin = ctx.state.getNode();
     } else {
       origin = _getRoot();
-      nodeRead(origin);
     }
     Node node = sessionWrapper.getNode(origin, relPath);
     if (node != null) {
@@ -787,6 +786,23 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
+  /**
+   * <p>Read the node and returns a related entity context.</p>
+   *
+   * </p>When the node is mapped to a chromattic type the following occurs:
+   * <ul>
+   * <li>any entity context already present in the current session is returned</li>
+   * <li>otherwise an entity context is created from the related chromattic type and is inserted in the session</li>
+   * <li>a load event is broadcasted to listeners</li>
+   * </ul>
+   * The node must have the mixin mix:referenceable otherwise a repositoty exception will be thrown.</p>
+   *
+   * <p>When the node is not mapped, null is returned.</p>
+   *
+   * @param node the node to read
+   * @return the corresponding entity context
+   * @throws RepositoryException any repository exception
+   */
   private EntityContext nodeRead(Node node) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();

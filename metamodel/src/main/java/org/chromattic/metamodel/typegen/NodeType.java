@@ -57,6 +57,9 @@ public class NodeType {
   /** . */
   final boolean orderable;
 
+  /** . */
+  final boolean referenceable;
+
   NodeType(BeanMapping mapping) {
     this.mapping = mapping;
     this.name = mapping.getNodeTypeName();
@@ -67,6 +70,7 @@ public class NodeType {
     this.properties = new HashMap<String, PropertyDefinition>();
     this.superTypes = new HashSet<NodeType>();
     this.declaredSuperTypes = new HashSet<NodeType>();
+    this.referenceable = mapping.isReferenceable();
   }
 
   public String getClassName() {
@@ -75,6 +79,10 @@ public class NodeType {
 
   public boolean isOrderable() {
     return orderable;
+  }
+
+  public boolean isReferenceable() {
+    return referenceable;
   }
 
   public Collection<NodeType> getSuperTypes() {
