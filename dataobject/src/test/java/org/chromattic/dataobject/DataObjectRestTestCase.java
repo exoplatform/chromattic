@@ -75,8 +75,11 @@ public class DataObjectRestTestCase extends AbstractDataObjectTestCase {
 
     super.setUp();
 
-    // Insert
-    saveService("script.groovy", serviceGroovy + dataObjectGroovy);
+    // Save data object first
+    saveDataObject("DataObject.groovy", dataObjectGroovy);
+
+    // Save the groovy script that uses the data object
+    saveService("script.groovy", serviceGroovy);
   }
 
   public void testFoo() throws Exception {
