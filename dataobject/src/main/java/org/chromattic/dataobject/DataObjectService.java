@@ -167,7 +167,8 @@ public class DataObjectService {
 
     // Build the classloader url
     try {
-      URL url = new URL("jcr://" + source.getRepositoryRef() + "/" + source.getWorkspaceRef() + "#" + source.getPath());
+      // see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4648098
+      URL url = new UnifiedNodeReference(source.getRepositoryRef(), source.getWorkspaceRef(), source.getPath()).getURL();
 
       //
       JcrGroovyCompiler compiler = new JcrGroovyCompiler();
