@@ -142,22 +142,25 @@ class ProxyTypeGenerator {
       code.append(" ").append(methodName).append("(");
 
       //
-      StringBuffer sb1 = new StringBuffer("Object[] args = new Object[]{");
       for (int i = 0; i < parameterTypes.size(); i++) {
         TypeInfo parameterType = parameterTypes.get(i);
         if (i > 0) {
           code.append(",");
-          sb1.append(",");
         }
         new TypeFormatter(type, FormatterStyle.TYPE_PARAMETER, code).format(parameterType);
         code.append(" arg_").append(i);
-        sb1.append("arg_").append(i);
       }
-      sb1.append("};\n");
-
       code.append(") {\n");
 
-      code.append(sb1.toString());
+      //
+      code.append("Object[] args = new Object[]{");
+      for (int i = 0; i < parameterTypes.size(); i++) {
+        if (i > 0) {
+          code.append(",");
+        }
+        code.append("arg_").append(i);
+      }
+      code.append("};\n");
 
       if (rti instanceof VoidTypeInfo) {
         code.append(methodId).append(".invoke(handler, this, args);");
