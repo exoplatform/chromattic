@@ -41,9 +41,9 @@ public class GroovyProxyType<O> implements ProxyType<O> {
     }
   }
 
-  public O createProxy(MethodHandler invoker) {
+  public O createProxy(MethodHandler handler) {
     try {
-      return ctor.newInstance(invoker);
+      return ctor.newInstance(handler);
     }
     catch (Exception e) {
       throw new AssertionError(e);

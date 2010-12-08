@@ -29,15 +29,8 @@ import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.NodeTypeSerializer;
 import org.chromattic.metamodel.typegen.SchemaBuilder;
 import org.chromattic.metamodel.typegen.XMLNodeTypeSerializer;
-import org.chromattic.spi.instrument.MethodHandler;
-import org.reflext.api.ClassKind;
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.MethodInfo;
-import org.reflext.api.TypeInfo;
 import org.reflext.api.TypeResolver;
-import org.reflext.api.VoidTypeInfo;
-import org.reflext.api.introspection.MethodIntrospector;
-import org.reflext.api.visit.HierarchyScope;
 import org.reflext.apt.JavaxLangReflectionModel;
 import org.reflext.core.TypeResolverImpl;
 
@@ -183,7 +176,7 @@ public class ChromatticProcessor extends AbstractProcessor {
         JavaFileObject jfo = filer.createSourceFile(typeElt.getQualifiedName() + "_Chromattic", typeElt);
         PrintWriter out = new PrintWriter(jfo.openWriter());
         StringBuilder builder = new StringBuilder();
-        writeClass(roundEnv, builder, cti);
+        new ProxyTypeGenerator(cti).build(builder);
         out.write(builder.toString());
         out.close();
       }
@@ -231,142 +224,6 @@ public class ChromatticProcessor extends AbstractProcessor {
       Writer xmlWriter = xmlFile.openWriter();
       xmlSerializer.writeTo(xmlWriter);
       xmlWriter.close();
-    }
-  }
-
-  private void writeClass(RoundEnvironment roundEnv, StringBuilder out, ClassTypeInfo cti) {
-    String simpleClassName = cti.getSimpleName() + "_Chromattic";
-    out.append("package ").append(cti.getPackageName()).append(";\n");
-    out.append("import ").append(Invoker.class.getName()).append(";\n");
-    out.append("import ").append(Instrumented.class.getName()).append(";\n");
-
-    //
-    StringBuffer sb = new StringBuffer("public class ");
-    sb.append(simpleClassName);
-    sb.append(" extends ");
-    if (cti.getKind() == ClassKind.INTERFACE) {
-      sb.append(Object.class.getName());
-      sb.append(" implements ");
-      sb.append(cti.getSimpleName());
-      sb.append(",");
-      sb.append(Instrumented.class.getSimpleName());
-    }
-    else {
-      sb.append(cti.getSimpleName());
-      sb.append(" implements ");
-      sb.append(Instrumented.class.getSimpleName());
-    }
-    sb.append(" {\n");
-
-    //
-    out.append(sb.toString());
-
-    appendContructor(roundEnv, out, cti);
-    appendAbstractMethods(simpleClassName, roundEnv, out, cti);
-    out.append("}\n");
-  }
-
-  private void appendContructor(RoundEnvironment roundEnv, StringBuilder out, ClassTypeInfo cti) {
-    out.append("public final ").append(MethodHandler.class.getName()).append(" handler;\n");
-    out.append("public ").append(cti.getSimpleName()).append("_Chromattic(").append(MethodHandler.class.getName()).append(" handler) {\n");
-    out.append("this.handler = handler;\n");
-    out.append("}\n");
-  }
-
-  private Iterable<MethodInfo> getMethodsToImplement(ClassTypeInfo cti) {
-    List<MethodInfo> methods = new ArrayList<MethodInfo>();
-    MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL, true);
-    for (MethodInfo method : introspector.getMethods(cti)) {
-      if (method.isAbstract()) {
-        methods.add(method);
-      }
-    }
-    return methods;
-  }
-
-  private void appendAbstractMethods(String simpleClassName, RoundEnvironment roundEnv, StringBuilder out, ClassTypeInfo cti) {
-
-
-    //
-    int id = 0;
-
-    //
-    Iterable<MethodInfo> methods = getMethodsToImplement(cti);
-
-    for (MethodInfo method : methods) {
-
-      String methodId = "method_" + id++;
-      String methodName = method.getName();
-      List<TypeInfo> parameterTypes = method.getParameterTypes();
-      TypeInfo rti = method.getReturnType();
-
-      //
-      String scope;
-      switch (method.getAccess()) {
-        case PACKAGE_PROTECTED:
-          scope = "";
-          break;
-        case PROTECTED:
-          scope = "protected";
-          break;
-        case PUBLIC:
-          scope = "public";
-          break;
-        default:
-          throw new AssertionError();
-      }
-
-      //
-      out.append("private static final ").
-          append(Invoker.class.getSimpleName()).
-          append(" ").append(methodId).append(" = ").
-          append(Invoker.class.getSimpleName()).
-          append(".getDeclaredMethod(").
-          append(method.getOwner().getName()).
-          append(".class,").
-          append('"').
-          append(methodName).
-          append('"');
-      for (TypeInfo parameterType : parameterTypes) {
-        out.append(",");
-        new TypeFormatter(cti, FormatterStyle.LITERAL, out).format(parameterType);
-        out.append(".class");
-      }
-      out.append(");\n");
-
-      //
-      out.append(scope).append(" ");
-      new TypeFormatter(cti, FormatterStyle.RETURN_TYPE, out).format(rti);
-      out.append(" ").append(methodName).append("(");
-
-      //
-      StringBuffer sb1 = new StringBuffer("Object[] args = new Object[]{");
-      for (int i = 0; i < parameterTypes.size(); i++) {
-        TypeInfo parameterType = parameterTypes.get(i);
-        if (i > 0) {
-          out.append(",");
-          sb1.append(",");
-        }
-        new TypeFormatter(cti, FormatterStyle.TYPE_PARAMETER, out).format(parameterType);
-        out.append(" arg_").append(i);
-        sb1.append("arg_").append(i);
-      }
-      sb1.append("};\n");
-
-      out.append(") {\n");
-
-      out.append(sb1.toString());
-
-      if (rti instanceof VoidTypeInfo) {
-        out.append(methodId).append(".invoke(handler, this, args);");
-      }
-      else {
-        out.append("return (");
-        new TypeFormatter(cti, FormatterStyle.CAST, out).format(rti);
-        out.append(")").append(methodId).append(".invoke(handler, this, args);");
-      }
-
-      out.append("}\n");
     }
   }
 }

@@ -58,8 +58,8 @@ public class CGLibProxyType<O> implements ProxyType<O> {
   }
 
 
-  public O createProxy(MethodHandler invoker) {
-    return (O)factory.newInstance(new MethodInterceptorInvoker(invoker));
+  public O createProxy(MethodHandler handler) {
+    return (O)factory.newInstance(new MethodInterceptorInvoker(handler));
   }
 
   public Class<? extends O> getType() {

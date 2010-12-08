@@ -25,6 +25,8 @@ import org.chromattic.spi.instrument.MethodHandler;
 import java.lang.reflect.Constructor;
 
 /**
+ * Implements the SPI {@link ProxyType} interface.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
@@ -47,9 +49,9 @@ public class ProxyTypeImpl<O> implements ProxyType<O> {
     this.ctor = ctor;
   }
 
-  public O createProxy(MethodHandler invoker) {
+  public O createProxy(MethodHandler handler) {
     try {
-      return ctor.newInstance(invoker);
+      return ctor.newInstance(handler);
     }
     catch (Exception e) {
       throw new AssertionError(e);

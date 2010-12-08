@@ -49,8 +49,8 @@ public class Domain {
 
   /** . */
   private static final ProxyType<?> NULL_PROXY_TYPE = new ProxyType<Object>() {
-    public Object createProxy(MethodHandler invoker) {
-      throw new UnsupportedOperationException("Cannot create proxy for " + invoker);
+    public Object createProxy(MethodHandler handler) {
+      throw new UnsupportedOperationException("Cannot create proxy for " + handler);
     }
 
     public Class<? extends Object> getType() {
