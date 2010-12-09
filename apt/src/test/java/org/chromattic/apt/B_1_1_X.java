@@ -31,17 +31,87 @@ import java.io.IOException;
 @PrimaryType(name = "foo.bar")
 public abstract class B_1_1_X {
 
-  public abstract void a();
+  public abstract void a1();
 
-  public abstract void b() throws IOException;
+  public abstract void b1() throws IOException;
 
-  public abstract void c() throws Exception;
+  public abstract void c1() throws Exception;
 
-  public abstract void d() throws RuntimeException;
+  public abstract void d1() throws RuntimeException;
 
-  public abstract void e() throws IndexOutOfBoundsException;
+  public abstract void e1() throws IndexOutOfBoundsException;
 
-  public abstract void f() throws IOError;
+  public abstract void f1() throws IOError;
 
-  public abstract void g() throws Error;
+  public abstract void g1() throws Error;
+
+  public abstract String a2();
+
+  public abstract String b2() throws IOException;
+
+  public abstract String c2() throws Exception;
+
+  public abstract String d2() throws RuntimeException;
+
+  public abstract String e2() throws IndexOutOfBoundsException;
+
+  public abstract String f2() throws IOError;
+
+  public abstract String g2() throws Error;
+
+  public abstract void a1(Object o);
+
+  public abstract void b1(Object o) throws IOException;
+
+  public abstract void c1(Object o) throws Exception;
+
+  public abstract void d1(Object o) throws RuntimeException;
+
+  public abstract void e1(Object o) throws IndexOutOfBoundsException;
+
+  public abstract void f1(Object o) throws IOError;
+
+  public abstract void g1(Object o) throws Error;
+
+  public abstract String a2(Object o);
+
+  public abstract String b2(Object o) throws IOException;
+
+  public abstract String c2(Object o) throws Exception;
+
+  public abstract String d2(Object o) throws RuntimeException;
+
+  public abstract String e2(Object o) throws IndexOutOfBoundsException;
+
+  public abstract String f2(Object o) throws IOError;
+
+  public abstract String g2(Object o) throws Error;
+
+  public abstract void a1(Object o1, Object o2);
+
+  public abstract void b1(Object o1, Object o2) throws IOException;
+
+  public abstract void c1(Object o1, Object o2) throws Exception;
+
+  public abstract void d1(Object o1, Object o2) throws RuntimeException;
+
+  public abstract void e1(Object o1, Object o2) throws IndexOutOfBoundsException;
+
+  public abstract void f1(Object o1, Object o2) throws IOError;
+
+  public abstract void g1(Object o1, Object o2) throws Error;
+
+  public abstract String a2(Object o1, Object o2);
+
+  public abstract String b2(Object o1, Object o2) throws IOException;
+
+  public abstract String c2(Object o1, Object o2) throws Exception;
+
+  public abstract String d2(Object o1, Object o2) throws RuntimeException;
+
+  public abstract String e2(Object o1, Object o2) throws IndexOutOfBoundsException;
+
+  public abstract String f2(Object o1, Object o2) throws IOError;
+
+  public abstract String g2(Object o1, Object o2) throws Error;
 }

@@ -19,12 +19,18 @@
 
 package org.chromattic.apt;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import org.chromattic.spi.instrument.MethodHandler;
 
+import java.io.IOError;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -32,19 +38,6 @@ import java.util.LinkedList;
  * @version $Revision$
  */
 public class ThrowableProxyTestCase extends TestCase {
-
-  /** . */
-  private Handler handler;
-
-  /** . */
-  private B_1_1_X proxy;
-
-  @Override
-  protected void setUp() throws Exception {
-    ProxyTypeImpl<B_1_1_X> pf = new ProxyTypeImpl<B_1_1_X>(B_1_1_X.class);
-    handler = new Handler();
-    proxy = pf.createProxy(handler);
-  }
 
   private static class MethodInvocation {
 
@@ -56,225 +49,139 @@ public class ThrowableProxyTestCase extends TestCase {
     }
   }
 
-  private static class Handler implements MethodHandler {
+  private static class Handler<P> {
 
     /** . */
     private LinkedList<MethodInvocation> expectedMethods = new LinkedList<MethodInvocation>();
 
-    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-      assertTrue(expectedMethods.size() > 0);
-      MethodInvocation invocation = expectedMethods.removeFirst();
-      throw invocation.throwed;
+    /** . */
+    private final Class<P> proxiedType;
+
+    /** . */
+    private final P proxy;
+
+    /** . */
+    private final MethodHandler handler = new MethodHandler() {
+      public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+        assertTrue(expectedMethods.size() > 0);
+        MethodInvocation invocation = expectedMethods.removeFirst();
+        throw invocation.throwed;
+      }
+      public Object invoke(Object o, Method method) throws Throwable {
+        return invoke(o, method, new Object[0]);
+      }
+      public Object invoke(Object o, Method method, Object arg) throws Throwable {
+        return invoke(o, method, new Object[]{arg});
+      }
+    };
+
+    public Handler(Class<P> proxiedType) {
+      ProxyTypeImpl<P> pf = new ProxyTypeImpl<P>(proxiedType);
+      this.proxy = pf.createProxy(handler);
+      this.proxiedType = proxiedType;
     }
 
-    public Object invoke(Object o, Method method) throws Throwable {
-      return invoke(o, method, new Object[0]);
+    public <T extends Throwable> void invoke(MethodSignature sign, T throwable, Object... args) {
+      addExpectedInvocation(throwable);
+      Method m;
+      try {
+        m = sign.getMethod(proxiedType);
+      }
+      catch (NoSuchMethodException e) {
+        AssertionFailedError afe = new AssertionFailedError();
+        afe.initCause(e);
+        throw afe;
+      }
+      try {
+        m.invoke(proxy, args);
+        fail();
+      }
+      catch (InvocationTargetException e) {
+        Throwable cause = e.getCause();
+        HashSet<Class<?>> notUndeclaredList = new HashSet<Class<?>>(Arrays.asList(m.getExceptionTypes()));
+        notUndeclaredList.add(RuntimeException.class);
+        notUndeclaredList.add(Error.class);
+        boolean expectingUndeclared = true;
+        for (Class<?> notUndeclared : notUndeclaredList) {
+          if (notUndeclared.isInstance(throwable)) {
+            expectingUndeclared = false;
+          }
+        }
+        if (cause instanceof UndeclaredThrowableException) {
+          cause = cause.getCause();
+        } else {
+          if (expectingUndeclared) {
+            fail();
+          }
+        }
+        assertEquals(throwable, cause);
+      }
+      catch (Exception e) {
+        AssertionFailedError afe = new AssertionFailedError();
+        afe.initCause(e);
+        throw afe;
+      }
+      assertEquals(Collections.<MethodInvocation>emptyList(), expectedMethods);
     }
 
-    public Object invoke(Object o, Method method, Object arg) throws Throwable {
-      return invoke(o, method, new Object[]{arg});
-    }
-
-    public <T extends Throwable> T addExpectedInvocation(T throwed) {
+    public void addExpectedInvocation(Throwable throwed) {
       expectedMethods.add(new MethodInvocation(throwed));
-      return throwed;
     }
   }
 
-  public void testA() {
-    Exception expectedEx = handler.addExpectedInvocation(new Exception());
-    try {
-      proxy.a();
-      fail();
-    }
-    catch (UndeclaredThrowableException t) {
-      assertSame(expectedEx, t.getCause());
-    }
-    Error expectedErr = handler.addExpectedInvocation(new Error());
-    try {
-      proxy.a();
-      fail();
-    }
-    catch (Error t) {
-      assertSame(expectedErr, t);
-    }
-    RuntimeException expectedREx = handler.addExpectedInvocation(new RuntimeException());
-    try {
-      proxy.a();
-      fail();
-    }
-    catch (RuntimeException t) {
-      assertSame(expectedREx, t);
+  public void testB_1_0_X() throws ClassNotFoundException {
+    Class type = Thread.currentThread().getContextClassLoader().loadClass("org.chromattic.apt.B_1_0_X");
+    Handler<?> proxy = new Handler<Object>(type);
+    for (String s : new String[]{"a","b","c","d","e","f"}) {
+      MethodSignature sign = MethodSignature.get(s);
+      proxy.invoke(sign, new Exception());
+      proxy.invoke(sign, new IOException());
+      proxy.invoke(sign, new Error());
+      proxy.invoke(sign, new IOError(new RuntimeException()));
+      proxy.invoke(sign, new RuntimeException());
+      proxy.invoke(sign, new IndexOutOfBoundsException());
     }
   }
 
-  public void testB() throws IOException {
-    Exception expectedEx = handler.addExpectedInvocation(new Exception());
-    try {
-      proxy.b();
-      fail();
-    }
-    catch (UndeclaredThrowableException t) {
-      assertSame(expectedEx, t.getCause());
-    }
-    IOException expectedIOEx = handler.addExpectedInvocation(new IOException());
-    try {
-      proxy.b();
-      fail();
-    }
-    catch (UndeclaredThrowableException t) {
-      assertSame(expectedIOEx, t.getCause());
-    }
-    Error expectedErr = handler.addExpectedInvocation(new Error());
-    try {
-      proxy.b();
-      fail();
-    }
-    catch (Error t) {
-      assertSame(expectedErr, t);
-    }
-    RuntimeException expectedREx = handler.addExpectedInvocation(new RuntimeException());
-    try {
-      proxy.b();
-      fail();
-    }
-    catch (RuntimeException t) {
-      assertSame(expectedREx, t);
+  public void testB_1_1_XNoArg() throws Throwable {
+    Handler<B_1_1_X> proxy = new Handler<B_1_1_X>(B_1_1_X.class);
+    for (String s : new String[]{"a1","b1","c1","d1","e1","f1","g1", "a2","b2","c2","d2","e2","f2","g2"}) {
+      MethodSignature sign = MethodSignature.get(s);
+      proxy.invoke(sign, new Exception());
+      proxy.invoke(sign, new IOException());
+      proxy.invoke(sign, new Error());
+      proxy.invoke(sign, new IOError(new RuntimeException()));
+      proxy.invoke(sign, new RuntimeException());
+      proxy.invoke(sign, new IndexOutOfBoundsException());
     }
   }
 
-  public void testC() throws Exception {
-    Exception expectedEx = handler.addExpectedInvocation(new Exception());
-    try {
-      proxy.c();
-      fail();
-    }
-    catch (UndeclaredThrowableException t) {
-      assertSame(expectedEx, t.getCause());
-    }
-    Error expectedErr = handler.addExpectedInvocation(new Error());
-    try {
-      proxy.c();
-      fail();
-    }
-    catch (Error t) {
-      assertSame(expectedErr, t);
-    }
-    RuntimeException expectedREx = handler.addExpectedInvocation(new RuntimeException());
-    try {
-      proxy.c();
-      fail();
-    }
-    catch (RuntimeException t) {
-      assertSame(expectedREx, t);
+  public void testB_1_1_XOneArg() throws Throwable {
+    Handler<B_1_1_X> proxy = new Handler<B_1_1_X>(B_1_1_X.class);
+    Object o = new Object();
+    for (String s : new String[]{"a1","b1","c1","d1","e1","f1","g1", "a2","b2","c2","d2","e2","f2","g2"}) {
+      MethodSignature sign = MethodSignature.get(s, Object.class);
+      proxy.invoke(sign, new Exception(), o);
+      proxy.invoke(sign, new IOException(), o);
+      proxy.invoke(sign, new Error(), o);
+      proxy.invoke(sign, new IOError(new RuntimeException()), o);
+      proxy.invoke(sign, new RuntimeException(), o);
+      proxy.invoke(sign, new IndexOutOfBoundsException(), o);
     }
   }
 
-  public void testD() {
-    Exception expectedEx = handler.addExpectedInvocation(new Exception());
-    try {
-      proxy.d();
-      fail();
-    }
-    catch (UndeclaredThrowableException t) {
-      assertSame(expectedEx, t.getCause());
-    }
-    Error expectedErr = handler.addExpectedInvocation(new Error());
-    try {
-      proxy.d();
-      fail();
-    }
-    catch (Error t) {
-      assertSame(expectedErr, t);
-    }
-    RuntimeException expectedREx = handler.addExpectedInvocation(new RuntimeException());
-    try {
-      proxy.d();
-      fail();
-    }
-    catch (RuntimeException t) {
-      assertSame(expectedREx, t);
-    }
-  }
-
-  public void testE() {
-    Exception expectedEx = handler.addExpectedInvocation(new Exception());
-    try {
-      proxy.e();
-      fail();
-    }
-    catch (UndeclaredThrowableException t) {
-      assertSame(expectedEx, t.getCause());
-    }
-    Error expectedErr = handler.addExpectedInvocation(new Error());
-    try {
-      proxy.e();
-      fail();
-    }
-    catch (Error t) {
-      assertSame(expectedErr, t);
-    }
-    RuntimeException expectedREx = handler.addExpectedInvocation(new RuntimeException());
-    try {
-      proxy.e();
-      fail();
-    }
-    catch (RuntimeException t) {
-      assertSame(expectedREx, t);
-    }
-  }
-
-  public void testF() {
-    Exception expectedEx = handler.addExpectedInvocation(new Exception());
-    try {
-      proxy.f();
-      fail();
-    }
-    catch (UndeclaredThrowableException t) {
-      assertSame(expectedEx, t.getCause());
-    }
-    Error expectedErr = handler.addExpectedInvocation(new Error());
-    try {
-      proxy.f();
-      fail();
-    }
-    catch (Error t) {
-      assertSame(expectedErr, t);
-    }
-    RuntimeException expectedREx = handler.addExpectedInvocation(new RuntimeException());
-    try {
-      proxy.f();
-      fail();
-    }
-    catch (RuntimeException t) {
-      assertSame(expectedREx, t);
-    }
-  }
-
-  public void testG() {
-    Exception expectedEx = handler.addExpectedInvocation(new Exception());
-    try {
-      proxy.g();
-      fail();
-    }
-    catch (UndeclaredThrowableException t) {
-      assertSame(expectedEx, t.getCause());
-    }
-    Error expectedErr = handler.addExpectedInvocation(new Error());
-    try {
-      proxy.g();
-      fail();
-    }
-    catch (Error t) {
-      assertSame(expectedErr, t);
-    }
-    RuntimeException expectedREx = handler.addExpectedInvocation(new RuntimeException());
-    try {
-      proxy.g();
-      fail();
-    }
-    catch (RuntimeException t) {
-      assertSame(expectedREx, t);
+  public void testB_1_1_XArgs() throws Throwable {
+    Handler<B_1_1_X> proxy = new Handler<B_1_1_X>(B_1_1_X.class);
+    Object o1 = new Object();
+    Object o2 = new Object();
+    for (String s : new String[]{"a1","b1","c1","d1","e1","f1","g1", "a2","b2","c2","d2","e2","f2","g2"}) {
+      MethodSignature sign = MethodSignature.get(s, Object.class, Object.class);
+      proxy.invoke(sign, new Exception(), o1, o2);
+      proxy.invoke(sign, new IOException(), o1, o2);
+      proxy.invoke(sign, new Error(), o1, o2);
+      proxy.invoke(sign, new IOError(new RuntimeException()), o1, o2);
+      proxy.invoke(sign, new RuntimeException(), o1, o2);
+      proxy.invoke(sign, new IndexOutOfBoundsException(), o1, o2);
     }
   }
 }

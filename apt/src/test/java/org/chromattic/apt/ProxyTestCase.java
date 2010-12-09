@@ -35,28 +35,10 @@ import java.util.List;
  */
 public class ProxyTestCase extends TestCase {
 
-  public static class MethodId {
-
-    /** . */
-    private final String name;
-
-    /** . */
-    private final Class<?>[] types;
-
-    private MethodId(String name, Class<?>... types) {
-      this.name = name;
-      this.types = types;
-    }
-
-    public static MethodId get(String name, Class<?>... types) {
-      return new MethodId(name, types);
-    }
-  }
-
   private static class MethodInvocation {
 
     /** . */
-    private final MethodId id;
+    private final MethodSignature id;
 
     /** . */
     private final List<Object> args;
@@ -64,7 +46,7 @@ public class ProxyTestCase extends TestCase {
     /** . */
     private final Object returnValue;
 
-    private MethodInvocation(MethodId id, Object returnValue, Object[] args) {
+    private MethodInvocation(MethodSignature id, Object returnValue, Object[] args) {
       this.id = id;
       this.args = Arrays.asList(args);
       this.returnValue = returnValue;
@@ -95,8 +77,7 @@ public class ProxyTestCase extends TestCase {
       public Object invoke(Object o, Method method, Object[] args) throws Throwable {
         assertTrue(expectedMethods.size() > 0);
         MethodInvocation expectedInvocation = expectedMethods.removeFirst();
-        assertEquals(expectedInvocation.id.name, method.getName());
-        assertEquals(Arrays.asList(expectedInvocation.id.types), Arrays.asList(method.getParameterTypes()));
+        expectedInvocation.id.assertSameSignature(method);
         assertEquals(expectedInvocation.args, Arrays.asList(args));
         return expectedInvocation.returnValue;
       }
@@ -108,10 +89,10 @@ public class ProxyTestCase extends TestCase {
       this.proxiedType = proxiedType;
     }
 
-    public void invoke(MethodId mid, Object ret, Object... args) {
+    public void invoke(MethodSignature mid, Object ret, Object... args) {
       expectedMethods.add(new MethodInvocation(mid, ret, args));
       try {
-        Method m = proxiedType.getMethod(mid.name, mid.types);
+        Method m = mid.getMethod(proxiedType);
         Object actualRet = m.invoke(proxy, args);
         assertEquals(actualRet, ret);
         assertEquals(Collections.<MethodInvocation>emptyList(), expectedMethods);
@@ -125,53 +106,53 @@ public class ProxyTestCase extends TestCase {
   }
 
   public void testA_1_0_X() throws Exception {
-    Class aType = Thread.currentThread().getContextClassLoader().loadClass("org.chromattic.apt.A_1_0_X");
-    Proxy<?> proxy = new Proxy<Object>(aType);
+    Class type = Thread.currentThread().getContextClassLoader().loadClass("org.chromattic.apt.A_1_0_X");
+    Proxy<?> proxy = new Proxy<Object>(type);
 
     //
-    proxy.invoke(MethodId.get("a"), null);
-    proxy.invoke(MethodId.get("a", Object.class), null, new Object());
-    proxy.invoke(MethodId.get("a", int.class), null, 3);
-    proxy.invoke(MethodId.get("a", boolean.class), null, true);
-    proxy.invoke(MethodId.get("a", boolean.class), null, false);
-    proxy.invoke(MethodId.get("a", int.class, boolean.class), null, 3, true);
-    proxy.invoke(MethodId.get("a", Object[].class), null, (Object)new Object[0]);
-    proxy.invoke(MethodId.get("a", int[].class), null, new int[0]);
+    proxy.invoke(MethodSignature.get("a"), null);
+    proxy.invoke(MethodSignature.get("a", Object.class), null, new Object());
+    proxy.invoke(MethodSignature.get("a", int.class), null, 3);
+    proxy.invoke(MethodSignature.get("a", boolean.class), null, true);
+    proxy.invoke(MethodSignature.get("a", boolean.class), null, false);
+    proxy.invoke(MethodSignature.get("a", int.class, boolean.class), null, 3, true);
+    proxy.invoke(MethodSignature.get("a", Object[].class), null, (Object)new Object[0]);
+    proxy.invoke(MethodSignature.get("a", int[].class), null, new int[0]);
 
     //
     Object ret = new Object();
-    proxy.invoke(MethodId.get("b"), ret);
-    proxy.invoke(MethodId.get("b", Object.class), ret, new Object());
-    proxy.invoke(MethodId.get("b", int.class), ret, 3);
-    proxy.invoke(MethodId.get("b", boolean.class), ret, true);
-    proxy.invoke(MethodId.get("b", boolean.class), ret, false);
-    proxy.invoke(MethodId.get("b", int.class, boolean.class), ret, 3, true);
-    proxy.invoke(MethodId.get("b", Object[].class), ret, (Object)new Object[0]);
-    proxy.invoke(MethodId.get("b", int[].class), ret, new int[0]);
+    proxy.invoke(MethodSignature.get("b"), ret);
+    proxy.invoke(MethodSignature.get("b", Object.class), ret, new Object());
+    proxy.invoke(MethodSignature.get("b", int.class), ret, 3);
+    proxy.invoke(MethodSignature.get("b", boolean.class), ret, true);
+    proxy.invoke(MethodSignature.get("b", boolean.class), ret, false);
+    proxy.invoke(MethodSignature.get("b", int.class, boolean.class), ret, 3, true);
+    proxy.invoke(MethodSignature.get("b", Object[].class), ret, (Object)new Object[0]);
+    proxy.invoke(MethodSignature.get("b", int[].class), ret, new int[0]);
   }
 
   public void testA_1_1_X() throws Exception {
     Proxy<A_1_1_X> proxy = new Proxy<A_1_1_X>(A_1_1_X.class);
 
     //
-    proxy.invoke(MethodId.get("a"), null);
-    proxy.invoke(MethodId.get("a", Object.class), null, new Object());
-    proxy.invoke(MethodId.get("a", int.class), null, 3);
-    proxy.invoke(MethodId.get("a", boolean.class), null, true);
-    proxy.invoke(MethodId.get("a", boolean.class), null, false);
-    proxy.invoke(MethodId.get("a", int.class, boolean.class), null, 3, true);
-    proxy.invoke(MethodId.get("a", Object[].class), null, (Object)new Object[0]);
-    proxy.invoke(MethodId.get("a", int[].class), null, new int[0]);
+    proxy.invoke(MethodSignature.get("a"), null);
+    proxy.invoke(MethodSignature.get("a", Object.class), null, new Object());
+    proxy.invoke(MethodSignature.get("a", int.class), null, 3);
+    proxy.invoke(MethodSignature.get("a", boolean.class), null, true);
+    proxy.invoke(MethodSignature.get("a", boolean.class), null, false);
+    proxy.invoke(MethodSignature.get("a", int.class, boolean.class), null, 3, true);
+    proxy.invoke(MethodSignature.get("a", Object[].class), null, (Object)new Object[0]);
+    proxy.invoke(MethodSignature.get("a", int[].class), null, new int[0]);
 
     //
     Object ret = new Object();
-    proxy.invoke(MethodId.get("b"), ret);
-    proxy.invoke(MethodId.get("b", Object.class), ret, new Object());
-    proxy.invoke(MethodId.get("b", int.class), ret, 3);
-    proxy.invoke(MethodId.get("b", boolean.class), ret, true);
-    proxy.invoke(MethodId.get("b", boolean.class), ret, false);
-    proxy.invoke(MethodId.get("b", int.class, boolean.class), ret, 3, true);
-    proxy.invoke(MethodId.get("b", Object[].class), ret, (Object)new Object[0]);
-    proxy.invoke(MethodId.get("b", int[].class), ret, new int[0]);
+    proxy.invoke(MethodSignature.get("b"), ret);
+    proxy.invoke(MethodSignature.get("b", Object.class), ret, new Object());
+    proxy.invoke(MethodSignature.get("b", int.class), ret, 3);
+    proxy.invoke(MethodSignature.get("b", boolean.class), ret, true);
+    proxy.invoke(MethodSignature.get("b", boolean.class), ret, false);
+    proxy.invoke(MethodSignature.get("b", int.class, boolean.class), ret, 3, true);
+    proxy.invoke(MethodSignature.get("b", Object[].class), ret, (Object)new Object[0]);
+    proxy.invoke(MethodSignature.get("b", int[].class), ret, new int[0]);
   }
 }

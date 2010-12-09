@@ -24,6 +24,7 @@ import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.relationship.TypeRelationship;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +42,14 @@ public class JLOTypeInfo implements ClassTypeInfo {
 
   public static JLOTypeInfo get() {
     return instance;
+  }
+
+  public Collection<FieldInfo> getDeclaredFields() {
+    return Collections.emptyList();
+  }
+
+  public FieldInfo getDeclaredField(String fieldName) {
+    return null;
   }
 
   public boolean isReified() {

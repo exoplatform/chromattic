@@ -28,7 +28,7 @@ import java.lang.reflect.UndeclaredThrowableException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class Invoker {
+public final class Invoker {
 
   private static class MethodFinder extends TypeHierarchyVisitor {
 
@@ -79,10 +79,14 @@ public class Invoker {
   }
 
   /** . */
-  private final Method method;
+  public final Method method;
 
   public Invoker(Method method) {
     this.method = method;
+  }
+
+  public Method getMethod() {
+    return method;
   }
 
   public Object invoke(MethodHandler methodInvoker, Object obj) {

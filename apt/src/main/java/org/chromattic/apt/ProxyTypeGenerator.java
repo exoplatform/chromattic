@@ -29,6 +29,7 @@ import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.visit.HierarchyScope;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -150,26 +151,53 @@ class ProxyTypeGenerator {
         new TypeFormatter(type, FormatterStyle.TYPE_PARAMETER, code).format(parameterType);
         code.append(" arg_").append(i);
       }
-      code.append(") {\n");
+      code.append(")");
+
+      // Build throws clause
+      LinkedHashSet<String> catched = new LinkedHashSet<String>();
+      boolean hasThrown = false;
+      for (ClassTypeInfo thrownCTI : method.getThrownTypes()) {
+        if (hasThrown) {
+          code.append(", ");
+        } else {
+          code.append(" throws ");
+          hasThrown = true;
+        }
+        code.append(thrownCTI.getName());
+        catched.add(thrownCTI.getName());
+      }
+
+      // Complete catched throwables
+      catched.add(RuntimeException.class.getName());
+      catched.add(Error.class.getName());
+
+
+      //
+      code.append(" {\n");
+
+      //
+      code.append("try {\n");
 
       //
       switch (parameterTypes.size()) {
         case 0:
           if (rti instanceof VoidTypeInfo) {
-            code.append(methodId).append(".invoke(handler, this);");
+            code.append("handler.invoke(this,").append(methodId).append(".getMethod());\n");
           } else {
             code.append("return (");
             new TypeFormatter(type, FormatterStyle.CAST, code).format(rti);
-            code.append(")").append(methodId).append(".invoke(handler, this);");
+            code.append(")");
+            code.append("handler.invoke(this,").append(methodId).append(".getMethod());\n");
           }
           break;
         case 1:
           if (rti instanceof VoidTypeInfo) {
-            code.append(methodId).append(".invoke(handler, this, (Object)arg_0);");
+            code.append("handler.invoke(this,").append(methodId).append(".getMethod(),(Object)arg_0);\n");
           } else {
             code.append("return (");
             new TypeFormatter(type, FormatterStyle.CAST, code).format(rti);
-            code.append(")").append(methodId).append(".invoke(handler, this, (Object)arg_0);");
+            code.append(")");
+            code.append("handler.invoke(this,").append(methodId).append(".getMethod(),(Object)arg_0);\n");
           }
           break;
         default:
@@ -182,16 +210,25 @@ class ProxyTypeGenerator {
           }
           code.append("};\n");
           if (rti instanceof VoidTypeInfo) {
-            code.append(methodId).append(".invoke(handler, this, args);");
+            code.append("handler.invoke(this,").append(methodId).append(".getMethod(),args);\n");
           } else {
             code.append("return (");
             new TypeFormatter(type, FormatterStyle.CAST, code).format(rti);
-            code.append(")").append(methodId).append(".invoke(handler, this, args);");
+            code.append(")");
+            code.append("handler.invoke(this,").append(methodId).append(".getMethod(),args);\n");
           }
           break;
       }
 
+      //
+      code.append("} catch(Throwable t) {\n");
+      for (String c : catched) {
+        code.append("if (t instanceof ").append(c).append(") throw (").append(c).append(")t;\n");
+      }
+      code.append("throw new java.lang.reflect.UndeclaredThrowableException(t);\n");
+      code.append("}\n");
 
+      //
       code.append("}\n");
     }
   }
