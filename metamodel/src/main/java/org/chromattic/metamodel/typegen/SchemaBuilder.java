@@ -35,6 +35,7 @@ import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -57,24 +58,22 @@ public class SchemaBuilder {
     this.simpleTypeResolver = simpleTypeResolver;
   }
 
-  public Map<ClassTypeInfo, NodeType> build(Set<ClassTypeInfo> classTypes) {
-    BeanMappingBuilder amp = new BeanMappingBuilder(simpleTypeResolver);
-    Map<ClassTypeInfo, BeanMapping> mappings = amp.build(classTypes);
-    Visitor visitor = new Visitor();
+  public Map<ClassTypeInfo, NodeType> build(Collection<BeanMapping> mappings) {
     Map<ClassTypeInfo, NodeType> schema = new HashMap<ClassTypeInfo, NodeType>();
-
-    //
-    for (BeanMapping mapping : mappings.values()) {
+    Visitor visitor = new Visitor();
+    for (BeanMapping mapping : mappings) {
       mapping.accept(visitor);
       ClassTypeInfo key = mapping.getBean().getClassType();
       schema.put(key, visitor.getNodeType(key));
     }
-
-    //
     visitor.end();
-
-    //
     return schema;
+  }
+
+  public Map<ClassTypeInfo, NodeType> build(Set<ClassTypeInfo> classTypes) {
+    BeanMappingBuilder amp = new BeanMappingBuilder(simpleTypeResolver);
+    Map<ClassTypeInfo, BeanMapping> mappings = amp.build(classTypes);
+    return build(mappings.values());
   }
 
   private static class Visitor extends MappingVisitor {

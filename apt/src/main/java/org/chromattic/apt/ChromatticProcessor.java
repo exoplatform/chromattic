@@ -24,6 +24,8 @@ import org.chromattic.api.annotations.NodeTypeDefs;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.common.collection.SetMap;
+import org.chromattic.metamodel.mapping.BeanMapping;
+import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.typegen.CNDNodeTypeSerializer;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.NodeTypeSerializer;
@@ -185,8 +187,19 @@ public class ChromatticProcessor extends AbstractProcessor {
       }
     }
 
+    // Build mapping
+    BeanMappingBuilder amp = new BeanMappingBuilder();
+    Map<ClassTypeInfo, BeanMapping> beanMappings = amp.build(classTypes);
+
     // Validate model
-    Map<ClassTypeInfo, NodeType> schema = new SchemaBuilder().build(classTypes);
+    Map<ClassTypeInfo, NodeType> schema = new SchemaBuilder().build(beanMappings.values());
+
+    // Build property literals
+    for (BeanMapping beanMapping : beanMappings.values()) {
+      if (!beanMapping.isAbstract()) {
+        new PropertyLiteralGenerator(beanMapping).build(filer);
+      }
+    }
 
     //
     for (String packageName : packageToClassTypes.keySet()) {
