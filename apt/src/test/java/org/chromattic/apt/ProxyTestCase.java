@@ -85,11 +85,11 @@ public class ProxyTestCase extends TestCase {
     /** . */
     private final MethodHandler handler = new MethodHandler() {
       public Object invoke(Object o, Method method) throws Throwable {
-        return invoke(o, method, (Object[])new Object[0]);
+        return invoke(o, method, new Object[0]);
       }
 
       public Object invoke(Object o, Method method, Object arg) throws Throwable {
-        return invoke(o, method, (Object[])new Object[]{arg});
+        return invoke(o, method, new Object[]{arg});
       }
 
       public Object invoke(Object o, Method method, Object[] args) throws Throwable {
