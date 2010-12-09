@@ -38,7 +38,7 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
+public class ObjectMapper<C extends ObjectContext<C>> {
 
   /** . */
   protected final Class<?> objectClass;
@@ -87,11 +87,11 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
       PropertyMapping<?, ?> info = propertyMapper.getInfo();
       MethodInfo getter = info.getProperty().getGetter();
       if (getter != null) {
-        dispatchers.put((Method)getter.unwrap(), propertyMapper);
+        dispatchers.put((Method)getter.unwrap(), propertyMapper.getGetter());
       }
       MethodInfo setter = info.getProperty().getSetter();
       if (setter != null) {
-        dispatchers.put((Method)setter.unwrap(), propertyMapper);
+        dispatchers.put((Method)setter.unwrap(), propertyMapper.getSetter());
       }
     }
     for (MethodMapper<C> methodMapper : methodMappers) {
@@ -111,51 +111,9 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
     this.kind = kind;
   }
 
-  private AssertionError createCannotInvokeError(Method method, Object... args) {
-    StringBuilder msg = new StringBuilder("Cannot invoke method ").append(method.getName()).append("(");
-    Class[] parameterTypes = method.getParameterTypes();
-    for (int i = 0;i < parameterTypes.length;i++) {
-      if (i > 0) {
-        msg.append(',');
-      }
-      msg.append(parameterTypes[i].getName());
-    }
-    msg.append(") with arguments (");
-    for (int i = 0;i < args.length;i++) {
-      if (i > 0) {
-        msg.append(',');
-      }
-      msg.append(String.valueOf(args[i]));
-    }
-    msg.append(")");
-    return new AssertionError(msg);
-  }
 
-  public Object invoke(C ctx, Method method, Object[] args) throws Throwable {
-    MethodInvoker<C> invoker = dispatchers.get(method);
-    if (invoker != null) {
-      return invoker.invoke(ctx, method, args);
-    } else {
-      throw createCannotInvokeError(method, args);
-    }
-  }
-
-  public Object invoke(C ctx, Method method) throws Throwable {
-    MethodInvoker<C> invoker = dispatchers.get(method);
-    if (invoker != null) {
-      return invoker.invoke(ctx, method);
-    } else {
-      throw createCannotInvokeError(method);
-    }
-  }
-
-  public Object invoke(C ctx, Method method, Object arg) throws Throwable {
-    MethodInvoker<C> invoker = dispatchers.get(method);
-    if (invoker != null) {
-      return invoker.invoke(ctx, method, arg);
-    } else {
-      throw createCannotInvokeError(method, arg);
-    }
+  public MethodInvoker<C> getInvoker(Method method) {
+    return dispatchers.get(method);
   }
 
   public boolean isAbstract() {

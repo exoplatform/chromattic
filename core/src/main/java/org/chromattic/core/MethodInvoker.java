@@ -18,18 +18,16 @@
  */
 package org.chromattic.core;
 
-import java.lang.reflect.Method;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public interface MethodInvoker<O extends ObjectContext> {
 
-  Object invoke(O ctx, Method method) throws Throwable;
+  Object invoke(O ctx) throws Throwable;
 
-  Object invoke(O ctx, Method method, Object arg) throws Throwable;
+  Object invoke(O ctx, Object arg) throws Throwable;
 
-  Object invoke(O ctx, Method method, Object[] args) throws Throwable;
+  Object invoke(O ctx, Object[] args) throws Throwable;
 
 }

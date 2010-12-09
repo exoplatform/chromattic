@@ -28,7 +28,7 @@ import org.chromattic.metamodel.mapping.PropertyMapping;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRNodeCollectionPropertyMapper<P extends MultiValuedPropertyInfo<BeanValueInfo>, O extends ObjectContext>
+public abstract class JCRNodeCollectionPropertyMapper<P extends MultiValuedPropertyInfo<BeanValueInfo>, O extends ObjectContext<O>>
   extends RelatedPropertyMapper<P, BeanValueInfo, O> {
 
   /** . */

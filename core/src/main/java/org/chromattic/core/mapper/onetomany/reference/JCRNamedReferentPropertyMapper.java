@@ -32,7 +32,7 @@ import org.chromattic.metamodel.mapping.RelationshipMapping;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRNamedReferentPropertyMapper<O extends ObjectContext> extends JCRNodePropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, BeanValueInfo, O> {
+public class JCRNamedReferentPropertyMapper<O extends ObjectContext<O>> extends JCRNodePropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, BeanValueInfo, O> {
 
   /** . */
   private final String propertyName;

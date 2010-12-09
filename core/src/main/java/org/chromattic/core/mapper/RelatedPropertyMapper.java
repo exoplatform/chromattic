@@ -25,16 +25,11 @@ import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.ValueInfo;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 
-import java.util.Set;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class RelatedPropertyMapper<P extends PropertyInfo<V>, V extends ValueInfo, C extends ObjectContext> extends PropertyMapper<P, V, C> {
-
-  /** . */
-  protected Set<ObjectMapper> relatedTypes;
+public abstract class RelatedPropertyMapper<P extends PropertyInfo<V>, V extends ValueInfo, C extends ObjectContext<C>> extends PropertyMapper<P, V, C> {
 
   protected RelatedPropertyMapper(Class<C> contextType, PropertyMapping<P, V> info) {
     super(contextType, info);

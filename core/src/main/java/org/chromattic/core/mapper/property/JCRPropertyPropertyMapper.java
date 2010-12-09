@@ -32,7 +32,7 @@ import org.chromattic.spi.type.SimpleTypeProvider;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyPropertyMapper<O extends ObjectContext, E, I> extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo,O> {
+public class JCRPropertyPropertyMapper<O extends ObjectContext<O>, E, I> extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo,O> {
 
   /** . */
   private final String jcrPropertyName;

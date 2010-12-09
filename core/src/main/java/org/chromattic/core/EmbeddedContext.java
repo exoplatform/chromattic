@@ -22,13 +22,11 @@ package org.chromattic.core;
 import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
 
-import java.lang.reflect.Method;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public final class EmbeddedContext extends ObjectContext {
+public final class EmbeddedContext extends ObjectContext<EmbeddedContext> {
 
   /** The object instance. */
   final Object object;
@@ -51,6 +49,11 @@ public final class EmbeddedContext extends ObjectContext {
     this.session = session;
   }
 
+  @Override
+  public ObjectMapper<EmbeddedContext> getMapper() {
+    return mapper;
+  }
+
   public DomainSession getSession() {
     return session;
   }
@@ -71,18 +74,6 @@ public final class EmbeddedContext extends ObjectContext {
   @Override
   public EntityContext getEntity() {
     return relatedEntity;
-  }
-
-  public Object invoke(Object o, Method method) throws Throwable {
-    return mapper.invoke(this, method);
-  }
-
-  public Object invoke(Object o, Method method, Object arg) throws Throwable {
-    return mapper.invoke(this, method, arg);
-  }
-
-  public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-    return mapper.invoke(this, method, args);
   }
 
   @Override

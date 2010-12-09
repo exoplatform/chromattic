@@ -35,7 +35,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyListPropertyMapper<O extends ObjectContext, E, I>
+public class JCRPropertyListPropertyMapper<O extends ObjectContext<O>, E, I>
   extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo, O> {
 
   /** . */

@@ -19,7 +19,6 @@
 
 package org.chromattic.core;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -39,7 +38,7 @@ import javax.jcr.RepositoryException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public final class EntityContext extends ObjectContext {
+public final class EntityContext extends ObjectContext<EntityContext> {
 
   /** The logger. */
   private static final Logger log = Logger.getLogger(EntityContext.class);
@@ -78,6 +77,11 @@ public final class EntityContext extends ObjectContext {
 
   public Status getStatus() {
     return state.getStatus();
+  }
+
+  @Override
+  public ObjectMapper<EntityContext> getMapper() {
+    return mapper;
   }
 
   public Object getObject() {
@@ -245,18 +249,6 @@ public final class EntityContext extends ObjectContext {
 
   public EntityContext getParent() {
     return state.getSession().getParent(this);
-  }
-
-  public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-    return mapper.invoke(this, method, args);
-  }
-
-  public Object invoke(Object o, Method method) throws Throwable {
-    return mapper.invoke(this, method);
-  }
-
-  public Object invoke(Object o, Method method, Object arg) throws Throwable {
-    return mapper.invoke(this, method, arg);
   }
 
   @Override

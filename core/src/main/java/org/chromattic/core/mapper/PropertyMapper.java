@@ -26,13 +26,11 @@ import org.chromattic.metamodel.bean.ValueInfo;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.reflext.api.MethodInfo;
 
-import java.lang.reflect.Method;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyMapper<P extends PropertyInfo<V>, V extends ValueInfo, O extends ObjectContext> implements MethodInvoker<O> {
+public abstract class PropertyMapper<P extends PropertyInfo<V>, V extends ValueInfo, O extends ObjectContext<O>> {
 
   /** . */
   protected final Class<O> contextType;
@@ -61,26 +59,36 @@ public abstract class PropertyMapper<P extends PropertyInfo<V>, V extends ValueI
     throw new UnsupportedOperationException();
   }
 
-  public Object invoke(O ctx, Method method) throws Throwable {
-    MethodInfo getter = info.getProperty().getGetter();
-    if (getter != null && method.equals(getter.unwrap())) {
-      return get(ctx);
-    } else {
-      throw new AssertionError();
-    }
+  public MethodInvoker<O> getGetter() {
+    return getter;
   }
 
-  public Object invoke(O ctx, Method method, Object arg) throws Throwable {
-    MethodInfo setter = info.getProperty().getSetter();
-    if (setter != null && method.equals(info.getProperty().getSetter().unwrap())) {
+  public MethodInvoker<O> getSetter() {
+    return setter;
+  }
+
+  private final MethodInvoker<O> getter = new MethodInvoker<O>() {
+    public Object invoke(O ctx) throws Throwable {
+      return get(ctx);
+    }
+    public Object invoke(O ctx, Object arg) throws Throwable {
+      throw new AssertionError();
+    }
+    public Object invoke(O ctx, Object[] args) throws Throwable {
+      throw new AssertionError();
+    }
+  };
+
+  private final MethodInvoker<O> setter = new MethodInvoker<O>() {
+    public Object invoke(O ctx) throws Throwable {
+      throw new AssertionError();
+    }
+    public Object invoke(O ctx, Object arg) throws Throwable {
       set(ctx, arg);
       return null;
-    } else {
+    }
+    public Object invoke(O ctx, Object[] args) throws Throwable {
       throw new AssertionError();
     }
-  }
-
-  public Object invoke(O ctx, Method method, Object[] args) throws Throwable {
-    throw new AssertionError();
-  }
+  };
 }

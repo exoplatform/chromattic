@@ -29,7 +29,7 @@ import org.chromattic.metamodel.mapping.PropertiesMapping;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMapPropertyMapper<V extends ValueInfo, O extends ObjectContext>
+public class JCRPropertyMapPropertyMapper<V extends ValueInfo, O extends ObjectContext<O>>
   extends PropertyMapper<MultiValuedPropertyInfo<V>, V, O> {
 
   public JCRPropertyMapPropertyMapper(Class<O> contextType, PropertiesMapping<V> info) {

@@ -23,25 +23,83 @@ import org.chromattic.api.ChromatticIOException;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.core.jcr.type.NodeTypeInfo;
+import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ObjectContext implements MethodHandler {
+public abstract class ObjectContext<O extends ObjectContext<O>> implements MethodHandler {
+
+  public abstract ObjectMapper<O> getMapper();
 
   public abstract Object getObject();
 
   public abstract EntityContext getEntity();
 
   public abstract NodeTypeInfo getTypeInfo();
+
+  public final Object invoke(Object o, Method method) throws Throwable {
+    MethodInvoker<O> invoker = getMapper().getInvoker(method);
+    if (invoker != null) {
+      return invoker.invoke((O)this);
+    } else {
+      throw createCannotInvokeError(method);
+    }
+  }
+
+  public final Object invoke(Object o, Method method, Object arg) throws Throwable {
+    MethodInvoker<O> invoker = getMapper().getInvoker(method);
+    if (invoker != null) {
+      return invoker.invoke((O)this, arg);
+    } else {
+      throw createCannotInvokeError(method, arg);
+    }
+  }
+
+  public final Object invoke(Object o, Method method, Object[] args) throws Throwable {
+    MethodInvoker<O> invoker = getMapper().getInvoker(method);
+    if (invoker != null) {
+      switch (args.length) {
+        case 0:
+          return invoker.invoke((O)this);
+        case 1:
+          return invoker.invoke((O)this, args[0]);
+        default:
+          return invoker.invoke((O)this, args);
+      }
+    } else {
+      throw createCannotInvokeError(method, (Object[])args);
+    }
+  }
+
+  private AssertionError createCannotInvokeError(Method method, Object... args) {
+    StringBuilder msg = new StringBuilder("Cannot invoke method ").append(method.getName()).append("(");
+    Class[] parameterTypes = method.getParameterTypes();
+    for (int i = 0;i < parameterTypes.length;i++) {
+      if (i > 0) {
+        msg.append(',');
+      }
+      msg.append(parameterTypes[i].getName());
+    }
+    msg.append(") with arguments (");
+    for (int i = 0;i < args.length;i++) {
+      if (i > 0) {
+        msg.append(',');
+      }
+      msg.append(String.valueOf(args[i]));
+    }
+    msg.append(")");
+    return new AssertionError(msg);
+  }
 
   public final <V> V getPropertyValue(String propertyName, ValueDefinition<?, V> type) throws RepositoryException {
     EntityContext ctx = getEntity();

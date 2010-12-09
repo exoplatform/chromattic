@@ -29,7 +29,7 @@ import org.chromattic.metamodel.mapping.RelationshipMapping;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRAnyChildParentPropertyMapper<O extends ObjectContext> extends JCRNodeCollectionPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo>, O> {
+public class JCRAnyChildParentPropertyMapper<O extends ObjectContext<O>> extends JCRNodeCollectionPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo>, O> {
 
   /** . */
   private final AnyChildMultiValueMapper valueMapper;

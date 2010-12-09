@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
+public class MethodMapper<C extends ObjectContext<C>> implements MethodInvoker<C> {
 
   /** . */
   private final MethodInfo method;
@@ -53,18 +53,6 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
     throw new UnsupportedOperationException();
   }
 
-  public final Object invoke(C ctx, Method method) throws Throwable {
-    return invoke(ctx);
-  }
-
-  public final Object invoke(C ctx, Method method, Object arg) throws Throwable {
-    return invoke(ctx, arg);
-  }
-
-  public final Object invoke(C ctx, Method method, Object[] args) throws Throwable {
-    return invoke(ctx, args);
-  }
-
   public MethodInfo getMethod() {
     return method;
   }
@@ -74,7 +62,7 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
     return "MethodMapper[" + ((Method)method.unwrap()).getDeclaringClass().getName() + "#" + method.getName() + "]";
   }
 
-  public static class Create<C extends ObjectContext> extends MethodMapper<C> {
+  public static class Create<C extends ObjectContext<C>> extends MethodMapper<C> {
 
     /** . */
     ObjectMapper<C> mapper;
@@ -104,7 +92,7 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
     }
   }
 
-  public static class FindById<C extends ObjectContext> extends MethodMapper<C> {
+  public static class FindById<C extends ObjectContext<C>> extends MethodMapper<C> {
 
     /** . */
     private final Class<?> typeClass;
