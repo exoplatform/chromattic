@@ -17,50 +17,72 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.value.multi.list;
+package org.chromattic.test.property.value.multi.array;
 
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_list:c1")
-public abstract class C1 {
+@PrimaryType(name = "property_array:c")
+public abstract class C {
 
   @Property(name = "string_array_property")
   @DefaultValue
-  public abstract List<String> getStringProperty();
+  public abstract String[] getStringProperty();
 
-  public abstract void setStringProperty(List<String> s);
+  public abstract void setStringProperty(String[] s);
+
+  @Property(name = "primitive_int_array_property")
+  @DefaultValue
+  public abstract int[] getIntProperty();
+
+  public abstract void setIntProperty(int[] s);
 
   @Property(name = "int_array_property")
   @DefaultValue
-  public abstract List<Integer> getIntegerProperty();
+  public abstract Integer[] getIntegerProperty();
 
-  public abstract void setIntegerProperty(List<Integer> s);
+  public abstract void setIntegerProperty(Integer[] s);
+
+  @Property(name = "primitive_long_array_property")
+  @DefaultValue
+  public abstract long[] getPrimitiveLongProperty();
+
+  public abstract void setPrimitiveLongProperty(long[] s);
 
   @Property(name = "long_array_property")
   @DefaultValue
-  public abstract List<Long> getLongProperty();
+  public abstract Long[] getLongProperty();
 
-  public abstract void setLongProperty(List<Long> s);
+  public abstract void setLongProperty(Long[] s);
+
+  @Property(name = "primitive_boolean_array_property")
+  @DefaultValue
+  public abstract boolean[] getPrimitiveBooleanProperty();
+
+  public abstract void setPrimitiveBooleanProperty(boolean[] s);
+
+  @Property(name = "primitive_boolean_array_property")
+  public abstract boolean[] getNullablePrimitiveBooleanProperty();
+
+  public abstract void setNullablePrimitiveBooleanProperty(boolean[] s);
 
   @Property(name = "boolean_array_property")
   @DefaultValue
-  public abstract List<Boolean> getBooleanProperty();
+  public abstract Boolean[] getBooleanProperty();
 
-  public abstract void setBooleanProperty(List<Boolean> s);
+  public abstract void setBooleanProperty(Boolean[] s);
 
   @Property(name = "date_array_property")
   @DefaultValue
-  public abstract List<Date> getDateProperty();
+  public abstract Date[] getDateProperty();
 
-  public abstract void setDateProperty(List<Date> s);
+  public abstract void sewtDateProperty(Date[] s);
 
 }

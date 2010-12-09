@@ -17,45 +17,44 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.value.multi.array;
+package org.chromattic.test.property.value.multi.list;
 
-import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.metamodel.annotations.Skip;
 
-import javax.jcr.PropertyType;
-import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_array:a")
-public abstract class A2 {
+@PrimaryType(name = "property_list:b")
+public abstract class B {
 
   @Property(name = "string_property")
-  public abstract String getStringProperty();
+  public abstract List<String> getStringProperty();
 
-  @Property(name = "primitive_int_property")
-  public abstract int getIntProperty();
+  public abstract void setStringProperty(List<String> s);
 
   @Property(name = "int_property")
-  public abstract Integer getIntegerProperty();
+  public abstract List<Integer> getIntegerProperty();
 
-  @Property(name = "primitive_long_property")
-  public abstract long getPrimitiveLongProperty();
+  public abstract void setIntegerProperty(List<Integer> s);
 
   @Property(name = "long_property")
-  public abstract Long getLongProperty();
+  public abstract List<Long> getLongProperty();
 
-  @Property(name = "primitive_boolean_property")
-  public abstract boolean getPrimitiveBooleanProperty();
+  public abstract void setLongProperty(List<Long> s);
 
   @Property(name = "boolean_property")
-  public abstract Boolean getBooleanProperty();
+  public abstract List<Boolean> getBooleanProperty();
+
+  public abstract void setBooleanProperty(List<Boolean> s);
 
   @Property(name = "date_property")
-  public abstract Date getDateProperty();
+  public abstract List<Date> getDateProperty();
+
+  public abstract void setDateProperty(List<Date> s);
+
 }

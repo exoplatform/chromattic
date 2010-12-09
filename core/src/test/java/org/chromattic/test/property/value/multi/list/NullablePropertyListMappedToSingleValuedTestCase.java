@@ -35,11 +35,11 @@ import javax.jcr.ValueFactory;
 public class NullablePropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(A2.class);
+    addClass(B.class);
   }
 
   /** . */
-  private A2 g;
+  private B g;
 
   /** . */
   private Node gNode;
@@ -54,8 +54,8 @@ public class NullablePropertyListMappedToSingleValuedTestCase extends AbstractTe
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    gNode = rootNode.addNode("tp_d_a", getNodeTypeName(A2.class));
-    g = session.findByNode(A2.class, gNode);
+    gNode = rootNode.addNode("tp_d_a", getNodeTypeName(B.class));
+    g = session.findByNode(B.class, gNode);
     assertNotNull(g);
     factory = session.getJCRSession().getValueFactory();
   }

@@ -29,8 +29,8 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_list:c2")
-public abstract class C2 {
+@PrimaryType(name = "property_list:d")
+public abstract class D {
 
   @Property(name = "string_array_property")
   public abstract List<String> getStringProperty();

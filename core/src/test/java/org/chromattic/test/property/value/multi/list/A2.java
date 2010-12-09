@@ -22,39 +22,30 @@ package org.chromattic.test.property.value.multi.list;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
+import javax.jcr.PropertyType;
+import java.io.InputStream;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_list:a2")
+@PrimaryType(name = "property_list:a")
 public abstract class A2 {
 
   @Property(name = "string_property")
-  public abstract List<String> getStringProperty();
-
-  public abstract void setStringProperty(List<String> s);
+  public abstract String getStringProperty();
 
   @Property(name = "int_property")
-  public abstract List<Integer> getIntegerProperty();
-
-  public abstract void setIntegerProperty(List<Integer> s);
+  public abstract Integer getIntegerProperty();
 
   @Property(name = "long_property")
-  public abstract List<Long> getLongProperty();
-
-  public abstract void setLongProperty(List<Long> s);
+  public abstract Long getLongProperty();
 
   @Property(name = "boolean_property")
-  public abstract List<Boolean> getBooleanProperty();
-
-  public abstract void setBooleanProperty(List<Boolean> s);
+  public abstract Boolean getBooleanProperty();
 
   @Property(name = "date_property")
-  public abstract List<Date> getDateProperty();
-
-  public abstract void setDateProperty(List<Date> s);
+  public abstract Date getDateProperty();
 
 }

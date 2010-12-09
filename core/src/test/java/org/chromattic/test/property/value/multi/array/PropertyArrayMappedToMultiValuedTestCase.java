@@ -35,11 +35,11 @@ import javax.jcr.PropertyType;
 public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(C1.class);
+    addClass(C.class);
   }
 
   /** . */
-  private C1 c;
+  private C c;
 
   /** . */
   private Node cNode;
@@ -54,8 +54,8 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    cNode = rootNode.addNode("tp_c_a", getNodeTypeName(C1.class));
-    c = session.findByNode(C1.class, cNode);
+    cNode = rootNode.addNode("tp_c_a", getNodeTypeName(C.class));
+    c = session.findByNode(C.class, cNode);
     factory = session.getJCRSession().getValueFactory();
   }
 
