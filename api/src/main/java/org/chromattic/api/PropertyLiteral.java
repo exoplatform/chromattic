@@ -20,10 +20,14 @@
 package org.chromattic.api;
 
 /**
+ * A property literal.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
+ * @param <O> the owner type
+ * @param <J> the property java type
  */
-public class PropertyLiteral<O, T> {
+public class PropertyLiteral<O, J> {
 
   /** . */
   private final Class<O> owner;
@@ -32,23 +36,34 @@ public class PropertyLiteral<O, T> {
   private final String name;
 
   /** . */
-  private final Class<T> type;
+  private final Class<J> javaType;
 
-  public PropertyLiteral(Class<O> owner, String name, Class<T> type) {
+  /**
+   * Build a new property literal.
+   *
+   * @param owner the property owner
+   * @param name the property name
+   * @param javaType the property java type
+   * @throws NullPointerException if any argument is null
+   */
+  public PropertyLiteral(
+    Class<O> owner,
+    String name,
+    Class<J> javaType) throws NullPointerException {
     if (owner == null) {
       throw new NullPointerException("No null owner type accepted");
     }
     if (name == null) {
       throw new NullPointerException("No null name accepted");
     }
-    if (type == null) {
-      throw new NullPointerException("No null type accepted");
+    if (javaType == null) {
+      throw new NullPointerException("No null java type accepted");
     }
 
     //
     this.owner = owner;
     this.name = name;
-    this.type = type;
+    this.javaType = javaType;
   }
 
   public Class<O> getOwner() {
@@ -59,12 +74,12 @@ public class PropertyLiteral<O, T> {
     return name;
   }
 
-  public Class<T> getType() {
-    return type;
+  public Class<J> getJavaType() {
+    return javaType;
   }
 
   @Override
   public String toString() {
-    return "PropertyLiteral[owner=" + owner.getName() + ",name=" + name + ",type=" + type.getName() + "]";
+    return "PropertyLiteral[owner=" + owner.getName() + ",name=" + name + ",type=" + javaType.getName() + "]";
   }
 }

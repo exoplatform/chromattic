@@ -30,7 +30,7 @@ public class PropertyLiteralTestCase extends TestCase {
 
   public void testFoo() {
     PropertyLiteral<C_1_1_X, String> literal = C_1_1_X__.FOO;
-    assertEquals(String.class, literal.getType());
+    assertEquals(String.class, literal.getJavaType());
     assertEquals("foo", literal.getName());
     assertEquals(C_1_1_X.class, literal.getOwner());
   }
