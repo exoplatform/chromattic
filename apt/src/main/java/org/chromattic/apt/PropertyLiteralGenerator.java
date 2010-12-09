@@ -44,7 +44,7 @@ class PropertyLiteralGenerator {
   }
 
   void build(Filer filer) throws IOException {
-    String qualifiedName = beanMapping.getBean().getClassType().getName() + "__";
+    String qualifiedName = beanMapping.getBean().getClassType().getName() + "_";
     JavaFileObject jfo = filer.createSourceFile(qualifiedName); // Lack of the originating elt!!!!
     PrintWriter out = new PrintWriter(jfo.openWriter());
     build(out);
@@ -59,7 +59,7 @@ class PropertyLiteralGenerator {
     code.append("import ").append(PropertyLiteral.class.getName()).append(";\n");
 
     //
-    code.append("public class ").append(owner.getSimpleName()).append("__ {\n");
+    code.append("public class ").append(owner.getSimpleName()).append("_ {\n");
 
     for (PropertyMapping pm : beanMapping.getProperties().values()) {
       TypeInfo type = pm.getValue().getEffectiveType();
@@ -70,7 +70,7 @@ class PropertyLiteralGenerator {
         append(owner.getName()).
         append(",").
         append(toto).
-        append("> ").append(pm.getName().toUpperCase()).append(" = new PropertyLiteral<").
+        append("> ").append(pm.getName()).append(" = new PropertyLiteral<").
         append(owner.getName()).
         append(",").
         append(toto).

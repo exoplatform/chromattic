@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,37 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetoone.embedded;
+package org.chromattic.test.pathbuilder;
 
-import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.MappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "onetoone_e:b")
-public abstract class B {
+@PrimaryType(name = "pathbuilder:a")
+public abstract class A {
 
   @OneToOne
+  @Owner
   @MappedBy("b")
-  public abstract C getParent();
-
-  public abstract void setParent(C b);
-
-  @OneToOne(type = RelationshipType.EMBEDDED)
-  @Owner
-  public abstract C getMixin();
-
-  public abstract void setMixin(C b);
-
-  @OneToOne(type = RelationshipType.EMBEDDED)
-  @Owner
-  public abstract A getSuperType();
-
-  public abstract void setSuperType(A a);
+  public abstract B getChild();
 
 }

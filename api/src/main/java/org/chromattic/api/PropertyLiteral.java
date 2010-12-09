@@ -25,9 +25,9 @@ package org.chromattic.api;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  * @param <O> the owner type
- * @param <J> the property java type
+ * @param <P> the property java type
  */
-public class PropertyLiteral<O, J> {
+public class PropertyLiteral<O, P> {
 
   /** . */
   private final Class<O> owner;
@@ -36,7 +36,7 @@ public class PropertyLiteral<O, J> {
   private final String name;
 
   /** . */
-  private final Class<J> javaType;
+  private final Class<P> javaType;
 
   /**
    * Build a new property literal.
@@ -49,7 +49,7 @@ public class PropertyLiteral<O, J> {
   public PropertyLiteral(
     Class<O> owner,
     String name,
-    Class<J> javaType) throws NullPointerException {
+    Class<P> javaType) throws NullPointerException {
     if (owner == null) {
       throw new NullPointerException("No null owner type accepted");
     }
@@ -74,7 +74,7 @@ public class PropertyLiteral<O, J> {
     return name;
   }
 
-  public Class<J> getJavaType() {
+  public Class<P> getJavaType() {
     return javaType;
   }
 

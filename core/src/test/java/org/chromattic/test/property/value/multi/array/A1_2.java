@@ -24,62 +24,38 @@ import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.metamodel.annotations.Skip;
 
+import javax.jcr.PropertyType;
+import java.io.InputStream;
 import java.util.Date;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Skip
 @PrimaryType(name = "property_array:a1")
-public abstract class A1 {
+public abstract class A1_2 {
 
   @Property(name = "string_property")
-  @DefaultValue
-  public abstract String[] getString();
-
-  public abstract void setString(String[] s);
+  public abstract String getStringProperty();
 
   @Property(name = "primitive_int_property")
-  @DefaultValue
-  public abstract int[] getPrimitiveInt();
-
-  public abstract void setPrimitiveInt(int[] s);
+  public abstract int getIntProperty();
 
   @Property(name = "int_property")
-  @DefaultValue
-  public abstract Integer[] getInt();
-
-  public abstract void setInt(Integer[] s);
+  public abstract Integer getIntegerProperty();
 
   @Property(name = "primitive_long_property")
-  @DefaultValue
-  public abstract long[] getPrimitiveLong();
-
-  public abstract void setPrimitiveLong(long[] s);
+  public abstract long getPrimitiveLongProperty();
 
   @Property(name = "long_property")
-  @DefaultValue
-  public abstract Long[] getLong();
-
-  public abstract void setLong(Long[] s);
+  public abstract Long getLongProperty();
 
   @Property(name = "primitive_boolean_property")
-  @DefaultValue
-  public abstract boolean[] getPrimitiveBoolean();
-
-  public abstract void setPrimitiveBoolean(boolean[] s);
+  public abstract boolean getPrimitiveBooleanProperty();
 
   @Property(name = "boolean_property")
-  @DefaultValue
-  public abstract Boolean[] getBoolean();
-
-  public abstract void setBoolean(Boolean[] s);
+  public abstract Boolean getBooleanProperty();
 
   @Property(name = "date_property")
-  @DefaultValue
-  public abstract Date[] getDate();
-
-  public abstract void setDate(Date[] s);
-
+  public abstract Date getDateProperty();
 }

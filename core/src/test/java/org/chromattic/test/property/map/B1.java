@@ -20,18 +20,26 @@
 package org.chromattic.test.property.map;
 
 import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.metamodel.annotations.Skip;
+
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_map:a")
-public abstract class A_ {
+@Skip
+@PrimaryType(name = "property_map:b")
+public abstract class B1 {
 
-  @Property(name = "string_property")
-  public abstract String getString();
+  @Properties
+  public abstract Map<String, Object> getProperties();
 
-  public abstract void setString(String s);
+  @Property(name = "string_array_property")
+  public abstract String[] getString();
+
+  public abstract void setString(String[] s);
 
 }

@@ -35,11 +35,11 @@ import javax.jcr.PropertyType;
 public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(org.chromattic.test.property.value.multi.list.A1.class);
+    addClass(A1_1.class);
   }
 
   /** . */
-  private org.chromattic.test.property.value.multi.list.A1 g;
+  private A1_1 g;
 
   /** . */
   private Node gNode;
@@ -54,8 +54,8 @@ public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    gNode = rootNode.addNode("tp_d_a", getNodeTypeName(A1.class));
-    g = session.findByNode(A1.class, gNode);
+    gNode = rootNode.addNode("tp_d_a", getNodeTypeName(A1_1.class));
+    g = session.findByNode(A1_1.class, gNode);
     assertNotNull(g);
     factory = session.getJCRSession().getValueFactory();
   }
@@ -66,8 +66,8 @@ public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
       g,
       gNode,
       "boolean_property",
-      "getBoolean",
-      "setBoolean",
+      "getBooleanProperty",
+      "setBooleanProperty",
       PropertyType.BOOLEAN,
       new MultiValue.List(true, false, true)
     ).run();
@@ -79,8 +79,8 @@ public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
       g,
       gNode,
       "int_property",
-      "getInt",
-      "setInt",
+      "getIntegerProperty",
+      "setIntegerProperty",
       PropertyType.LONG,
       new MultiValue.List(0, 1, 2)
     ).run();
@@ -92,8 +92,8 @@ public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
       g,
       gNode,
       "long_property",
-      "getLong",
-      "setLong",
+      "getLongProperty",
+      "setLongProperty",
       PropertyType.LONG,
       new MultiValue.List(0L, 1L, 2L)
     ).run();
@@ -105,8 +105,8 @@ public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
       g,
       gNode,
       "string_property",
-      "getString",
-      "setString",
+      "getStringProperty",
+      "setStringProperty",
       PropertyType.STRING,
       new MultiValue.List("foo", "bar1", "bar2")
     ).run();

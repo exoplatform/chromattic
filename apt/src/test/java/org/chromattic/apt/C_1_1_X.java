@@ -19,6 +19,8 @@
 
 package org.chromattic.apt;
 
+import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
@@ -34,4 +36,9 @@ public abstract class C_1_1_X {
 
   @Property(name = "bar")
   public abstract long getBar();
+
+  @OneToOne
+  @MappedBy("juu")
+  public abstract D_1_1_X getJuu();
+
 }

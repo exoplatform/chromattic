@@ -17,35 +17,43 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.value.multi.list;
+package org.chromattic.test.property.value.single;
 
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.metamodel.annotations.Skip;
 
-import javax.jcr.PropertyType;
-import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_list:a1")
-public abstract class A1_ {
+@PrimaryType(name = "property_single:c")
+public abstract class C2 {
 
-  @Property(name = "string_property")
-  public abstract String getString();
+  @Property(name = "string_array_property")
+  public abstract String[] getStringArrayProperty();
 
-  @Property(name = "int_property")
-  public abstract Integer getInt();
+  @Property(name = "primitive_int_array_property")
+  public abstract int[] getPrimitiveIntArrayProperty();
 
-  @Property(name = "long_property")
-  public abstract Long getLong();
+  @Property(name = "int_array_property")
+  public abstract Integer[] getIntegerArrayProperty();
 
-  @Property(name = "boolean_property")
-  public abstract Boolean getBoolean();
+  @Property(name = "primitive_long_array_property")
+  public abstract long[] getPrimitiveLongArrayProperty();
 
-  @Property(name = "date_property")
-  public abstract Date getDate();
+  @Property(name = "long_array_property")
+  public abstract Long[] getLongArrayProperty();
 
+  @Property(name = "primitive_boolean_array_property")
+  public abstract boolean[] getPrimitiveBooleanArrayProperty();
+
+  @Property(name = "boolean_array_property")
+  public abstract Boolean[] getBooleanArrayProperty();
+
+  @Property(name = "date_array_property")
+  public abstract Date[] getDateArrayProperty();
 }

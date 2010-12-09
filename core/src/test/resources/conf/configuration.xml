@@ -63,6 +63,7 @@
  		      <value>jar:/org/chromattic/test/format/transform/object/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/pom/nodetypes.xml</value>
  		      <value>jar:/org/chromattic/test/petgallery/nodetypes.xml</value>
+ 		      <value>jar:/org/chromattic/test/pathbuilder/nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
  		</component-plugin>
@@ -104,6 +105,7 @@
           <property name="format_object" value="format_object"/>
           <property name="pom" value="pom"/>
           <property name="petgallery" value="petgallery"/>
+          <property name="pathbuilder" value="pathbuilder"/>
         </properties-param>
       </init-params>
     </component-plugin>

@@ -65,8 +65,8 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
       c,
       cNode,
       "primitive_boolean_array_property",
-      "getPrimitiveBoolean",
-      "setPrimitiveBoolean",
+      "getPrimitiveBooleanProperty",
+      "setPrimitiveBooleanProperty",
       PropertyType.BOOLEAN,
       new MultiValue.Array(new boolean[]{true, false, true})
     ).run();
@@ -78,8 +78,8 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
       c,
       cNode,
       "boolean_array_property",
-      "getBoolean",
-      "setBoolean",
+      "getBooleanProperty",
+      "setBooleanProperty",
       PropertyType.BOOLEAN,
       new MultiValue.Array(new Boolean[]{true, false, true})
     ).run();
@@ -91,8 +91,8 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
       c,
       cNode,
       "primitive_int_array_property",
-      "getPrimitiveInt",
-      "setPrimitiveInt",
+      "getIntProperty",
+      "setIntProperty",
       PropertyType.LONG,
       new MultiValue.Array(new int[]{0, 1, 2})
     ).run();
@@ -104,8 +104,8 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
       c,
       cNode,
       "int_array_property",
-      "getInt",
-      "setInt",
+      "getIntegerProperty",
+      "setIntegerProperty",
       PropertyType.LONG,
       new MultiValue.Array(new Integer[]{0, 1, 2})
     ).run();
@@ -117,8 +117,8 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
       c,
       cNode,
       "primitive_long_array_property",
-      "getPrimitiveLong",
-      "setPrimitiveLong",
+      "getPrimitiveLongProperty",
+      "setPrimitiveLongProperty",
       PropertyType.LONG,
       new MultiValue.Array(new long[]{0, 1, 2})
     ).run();
@@ -130,8 +130,8 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
       c,
       cNode,
       "long_array_property",
-      "getLong",
-      "setLong",
+      "getLongProperty",
+      "setLongProperty",
       PropertyType.LONG,
       new MultiValue.Array(new Long[]{0L, 1L, 2L})
     ).run();
@@ -143,8 +143,8 @@ public class PropertyArrayMappedToMultiValuedTestCase extends AbstractTestCase {
       c,
       cNode,
       "string_array_property",
-      "getString",
-      "setString",
+      "getStringProperty",
+      "setStringProperty",
       PropertyType.STRING,
       new MultiValue.Array(new String[]{"foo", "bar1", "bar2"})
     ).run();

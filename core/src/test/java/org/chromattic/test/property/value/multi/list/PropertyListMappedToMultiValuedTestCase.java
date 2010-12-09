@@ -65,8 +65,8 @@ public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
       f,
       fNode,
       "boolean_array_property",
-      "getBoolean",
-      "setBoolean",
+      "getBooleanProperty",
+      "setBooleanProperty",
       PropertyType.BOOLEAN,
       new MultiValue.List(true, false, true)
     ).run();
@@ -78,8 +78,8 @@ public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
       f,
       fNode,
       "int_array_property",
-      "getInt",
-      "setInt",
+      "getIntegerProperty",
+      "setIntegerProperty",
       PropertyType.LONG,
       new MultiValue.List(0, 1, 2)
     ).run();
@@ -91,8 +91,8 @@ public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
       f,
       fNode,
       "long_array_property",
-      "getLong",
-      "setLong",
+      "getLongProperty",
+      "setLongProperty",
       PropertyType.LONG,
       new MultiValue.List(0L, 1L, 2L)
     ).run();
@@ -104,8 +104,8 @@ public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
       f,
       fNode,
       "string_array_property",
-      "getString",
-      "setString",
+      "getStringProperty",
+      "setStringProperty",
       PropertyType.STRING,
       new MultiValue.List("foo", "bar1", "bar2")
     ).run();

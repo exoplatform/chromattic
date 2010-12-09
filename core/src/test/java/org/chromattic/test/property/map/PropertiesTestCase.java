@@ -32,18 +32,18 @@ import java.util.Map;
 public class PropertiesTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(A.class);
-    addClass(B.class);
+    addClass(A1.class);
+    addClass(B1.class);
   }
 
   /** . */
   private ChromatticSession session;
 
   /** . */
-  private A b;
+  private A1 b;
 
   /** . */
-  private B c;
+  private B1 c;
 
   @Override
   protected void setUp() throws Exception {
@@ -51,8 +51,8 @@ public class PropertiesTestCase extends AbstractTestCase {
 
     //
     session = login();
-    b = session.insert(A.class, "a");
-    c = session.insert(B.class, "b");
+    b = session.insert(A1.class, "a");
+    c = session.insert(B1.class, "b");
   }
 
   @Override

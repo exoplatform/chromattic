@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,43 +17,19 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.value.single;
+package org.chromattic.apt;
 
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.metamodel.annotations.Skip;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_single:c")
-public abstract class C1_ {
+@PrimaryType(name = "foo")
+public abstract class E_1_1_X {
 
-  @Property(name = "string_array_property")
-  public abstract String[] getStrings();
+  @Property(name = "foo")
+  public abstract String getFoo();
 
-  @Property(name = "primitive_int_array_property")
-  public abstract int[] getPrimitiveInt();
-
-  @Property(name = "int_array_property")
-  public abstract Integer[] getInt();
-
-  @Property(name = "primitive_long_array_property")
-  public abstract long[] getPrimitiveLong();
-
-  @Property(name = "long_array_property")
-  public abstract Long[] getLong();
-
-  @Property(name = "primitive_boolean_array_property")
-  public abstract boolean[] getPrimitiveBoolean();
-
-  @Property(name = "boolean_array_property")
-  public abstract Boolean[] getBoolean();
-
-  @Property(name = "date_array_property")
-  public abstract Date[] getDate();
 }

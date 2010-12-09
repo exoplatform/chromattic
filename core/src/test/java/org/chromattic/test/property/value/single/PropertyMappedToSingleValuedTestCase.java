@@ -70,52 +70,52 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
   }
 
   public void testString() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "string_property", "getString", "setString", PropertyType.STRING, new MultiValue.List("foo", "bar"), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "string_property", "getStringProperty", "setStringProperty", PropertyType.STRING, new MultiValue.List("foo", "bar"), events).run();
   }
 
   public void testPath() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "path_property", "getPath", "setPath", PropertyType.PATH, new MultiValue.List("/foo", "/bar"), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "path_property", "getPathProperty", "setPathProperty", PropertyType.PATH, new MultiValue.List("/foo", "/bar"), events).run();
   }
 
   public void testPrimitiveBoolean() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_boolean_property", "getPrimitiveBoolean", "setPrimitiveBoolean", PropertyType.BOOLEAN, new MultiValue.List(true, false), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_boolean_property", "getPrimitiveBooleanProperty", "setPrimitiveBooleanProperty", PropertyType.BOOLEAN, new MultiValue.List(true, false), events).run();
   }
 
   public void testPrimitiveInt() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_int_property", "getPrimitiveInt", "setPrimitiveInt", PropertyType.LONG, new MultiValue.List(3, 5), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_int_property", "getIntProperty", "setIntProperty", PropertyType.LONG, new MultiValue.List(3, 5), events).run();
   }
 
   public void testPrimitiveLong() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_long_property", "getPrimitiveLong", "setPrimitiveLong", PropertyType.LONG, new MultiValue.List(3L, 5L), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_long_property", "getPrimitiveLongProperty", "setPrimitiveLongProperty", PropertyType.LONG, new MultiValue.List(3L, 5L), events).run();
   }
 
   public void testPrimitiveDouble() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_double_property", "getPrimitiveDouble", "setPrimitiveDouble", PropertyType.DOUBLE, new MultiValue.List(3D, 5D), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_double_property", "getPrimitiveDoubleProperty", "setPrimitiveDoubleProperty", PropertyType.DOUBLE, new MultiValue.List(3D, 5D), events).run();
   }
 
   public void testBoolean() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "boolean_property", "getBoolean", "setBoolean", PropertyType.BOOLEAN, new MultiValue.List(true, false), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "boolean_property", "getBooleanProperty", "setBooleanProperty", PropertyType.BOOLEAN, new MultiValue.List(true, false), events).run();
   }
 
   public void testInt() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "int_property", "getInt", "setInt", PropertyType.LONG, new MultiValue.List(4, 6), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "int_property", "getIntegerProperty", "setIntegerProperty", PropertyType.LONG, new MultiValue.List(4, 6), events).run();
   }
 
   public void testLong() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "long_property", "getLong", "setLong", PropertyType.LONG, new MultiValue.List(4L, 6L), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "long_property", "getLongProperty", "setLongProperty", PropertyType.LONG, new MultiValue.List(4L, 6L), events).run();
   }
 
   public void testDouble() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "double_property", "getDouble", "setDouble", PropertyType.DOUBLE, new MultiValue.List(4D, 6D), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "double_property", "getDoubleProperty", "setDoubleProperty", PropertyType.DOUBLE, new MultiValue.List(4D, 6D), events).run();
   }
 
   public void testDate() throws Exception {
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "date_property", "getDate", "setDate", PropertyType.DATE, new MultiValue.List(new Date(0), new Date(1)), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "date_property", "getDateProperty", "setDateProperty", PropertyType.DATE, new MultiValue.List(new Date(0), new Date(1)), events).run();
   }
 
   public void testStream() throws Exception {
     InputStream s1 = new ByteArrayInputStream(new byte[]{0, 1, 2});
     InputStream s2 = new ByteArrayInputStream(new byte[]{3, 4, 5});
-    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "bytes_property", "getBytes", "setBytes", PropertyType.BINARY, new MultiValue.List(s1, s2), events).run();
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "bytes_property", "getBytesProperty", "setBytesProperty", PropertyType.BINARY, new MultiValue.List(s1, s2), events).run();
   }
 }

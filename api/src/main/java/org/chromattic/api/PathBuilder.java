@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,25 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.map;
-
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Properties;
-import org.chromattic.api.annotations.Property;
-import org.chromattic.metamodel.annotations.Skip;
-
-import java.util.Map;
+package org.chromattic.api;
 
 /**
+ * Type safe builder API.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_map:b")
-public abstract class B_ {
+public interface PathBuilder<O> {
 
-  @Property(name = "string_array_property")
-  public abstract String[] getString();
+  <P> PathBuilder<P> parent(PropertyLiteral<O, P> property);
 
-  public abstract void setString(String[] s);
+  <P> PathBuilder<P> child(PropertyLiteral<O, P> property, String childName);
+
+  <P> PathBuilder<P> child(PropertyLiteral<O, P> property);
+
+  O get();
+
+  String toString();
 
 }

@@ -17,29 +17,35 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.map;
+package org.chromattic.test.property.value.multi.list;
 
 import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.metamodel.annotations.Skip;
 
-import java.util.Map;
+import javax.jcr.PropertyType;
+import java.io.InputStream;
+import java.util.Date;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Skip
-@PrimaryType(name = "property_map:b")
-public abstract class B {
+@PrimaryType(name = "property_list:a1")
+public abstract class A1_2 {
 
-  @Properties
-  public abstract Map<String, Object> getProperties();
+  @Property(name = "string_property")
+  public abstract String getStringProperty();
 
-  @Property(name = "string_array_property")
-  public abstract String[] getString();
+  @Property(name = "int_property")
+  public abstract Integer getIntegerProperty();
 
-  public abstract void setString(String[] s);
+  @Property(name = "long_property")
+  public abstract Long getLongProperty();
+
+  @Property(name = "boolean_property")
+  public abstract Boolean getBooleanProperty();
+
+  @Property(name = "date_property")
+  public abstract Date getDateProperty();
 
 }

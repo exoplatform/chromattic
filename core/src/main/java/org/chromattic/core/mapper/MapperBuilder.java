@@ -278,6 +278,7 @@ public class MapperBuilder {
         }
 
         mapper = new ObjectMapper(
+            beanMapping,
             beanMapping.isAbstract(),
             (Class<?>)beanMapping.getBean().getClassType().unwrap(),
             propertyMappers,
@@ -292,6 +293,7 @@ public class MapperBuilder {
       } else {
 
         mapper = new ObjectMapper(
+            beanMapping,
             beanMapping.isAbstract(),
             (Class<?>)beanMapping.getBean().getClassType().unwrap(),
             propertyMappers,

@@ -35,78 +35,78 @@ import java.io.InputStream;
 public abstract class A1 {
 
   @Property(name = "string_property")
-  public abstract String getString();
+  public abstract String getStringProperty();
 
-  public abstract void setString(String s);
+  public abstract void setStringProperty(String s);
 
   @Property(name = "path_property", type = PropertyType.PATH)
-  public abstract String getPath();
+  public abstract String getPathProperty();
 
-  public abstract void setPath(String s);
+  public abstract void setPathProperty(String s);
 
   @Property(name = "primitive_int_property")
-  public abstract int getPrimitiveInt();
+  public abstract int getIntProperty();
 
-  public abstract void setPrimitiveInt(int s);
+  public abstract void setIntProperty(int s);
 
   @Property(name = "int_property")
-  public abstract Integer getInt();
+  public abstract Integer getIntegerProperty();
 
-  public abstract void setInt(Integer s);
+  public abstract void setIntegerProperty(Integer s);
 
   @Property(name = "primitive_long_property")
-  public abstract long getPrimitiveLong();
+  public abstract long getPrimitiveLongProperty();
 
-  public abstract void setPrimitiveLong(long s);
+  public abstract void setPrimitiveLongProperty(long s);
 
   @Property(name = "long_property")
-  public abstract Long getLong();
+  public abstract Long getLongProperty();
 
-  public abstract void setLong(Long s);
+  public abstract void setLongProperty(Long s);
 
   @Property(name = "primitive_boolean_property")
-  public abstract boolean getPrimitiveBoolean();
+  public abstract boolean getPrimitiveBooleanProperty();
 
-  public abstract void setPrimitiveBoolean(boolean s);
+  public abstract void setPrimitiveBooleanProperty(boolean s);
 
   @Property(name = "boolean_property")
-  public abstract Boolean getBoolean();
+  public abstract Boolean getBooleanProperty();
 
-  public abstract void setBoolean(Boolean s);
+  public abstract void setBooleanProperty(Boolean s);
 
   @Property(name = "primitive_float_property")
-  public abstract float getPrimitiveFloat();
+  public abstract float getPrimitiveFloatProperty();
 
-  public abstract void setPrimitiveFloat(float s);
+  public abstract void setPrimitiveFloatProperty(float s);
 
   @Property(name = "float_property")
-  public abstract Float getFloat();
+  public abstract Float getFloatProperty();
 
-  public abstract void setFloat(Float s);
+  public abstract void setFloatProperty(Float s);
 
   @Property(name = "primitive_double_property")
-  public abstract double getPrimitiveDouble();
+  public abstract double getPrimitiveDoubleProperty();
 
-  public abstract void setPrimitiveDouble(double s);
+  public abstract void setPrimitiveDoubleProperty(double s);
 
   @Property(name = "double_property")
-  public abstract Double getDouble();
+  public abstract Double getDoubleProperty();
 
-  public abstract void setDouble(Double s);
+  public abstract void setDoubleProperty(Double s);
 
   @Property(name = "date_property")
-  public abstract Date getDate();
+  public abstract Date getDateProperty();
 
-  public abstract void setDate(Date s);
+  public abstract void setDateProperty(Date s);
 
   @Property(name = "bytes_property")
-  public abstract InputStream getBytes();
+  public abstract InputStream getBytesProperty();
 
-  public abstract void setBytes(InputStream s);
+  public abstract void setBytesProperty(InputStream s);
 
   @Property(name = "missing_property")
-  public abstract String getMissing();
+  public abstract String getMissingProperty();
 
-  public abstract void setMissing(String s);
+  public abstract void setMissingProperty(String s);
 
 }

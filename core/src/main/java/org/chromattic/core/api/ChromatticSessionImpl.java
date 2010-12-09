@@ -20,6 +20,7 @@
 package org.chromattic.core.api;
 
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.PathBuilder;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.event.EventListener;
@@ -276,6 +277,11 @@ public final class ChromatticSessionImpl implements ChromatticSession {
 
   public void addEventListener(EventListener listener) {
     domainSession.addEventListener(listener);
+  }
+
+  public <O> PathBuilder<O> createPathBuilder(O o) {
+    EntityContext ctx = domainSession.unwrapEntity(o);
+    return new AbstractPathBuilder.Root<O>(ctx);
   }
 
   //

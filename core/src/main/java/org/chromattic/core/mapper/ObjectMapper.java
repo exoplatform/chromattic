@@ -23,6 +23,7 @@ import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.ObjectContext;
+import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.spi.instrument.Instrumentor;
@@ -39,6 +40,9 @@ import java.util.Set;
  * @version $Revision$
  */
 public class ObjectMapper<C extends ObjectContext<C>> {
+
+  /** . */
+  private final BeanMapping mapping;
 
   /** . */
   protected final Class<?> objectClass;
@@ -70,7 +74,11 @@ public class ObjectMapper<C extends ObjectContext<C>> {
   /** . */
   private final boolean abstract_;
 
+  /** . */
+  private final Map<String, PropertyMapper<?, ?, C>> propertyMapperMap;
+
   public ObjectMapper(
+    BeanMapping mapping,
     boolean abstract_,
     Class<?> objectClass,
     Set<PropertyMapper<?, ?, C>> propertyMappers,
@@ -80,6 +88,12 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     Instrumentor instrumentor,
     String typeName,
     NodeTypeKind kind) {
+
+    // Build the mapper map
+    Map<String, PropertyMapper<?, ?, C>> propertyMapperMap = new HashMap<String, PropertyMapper<?, ?, C>>();
+    for (PropertyMapper<?, ?, C> propertyMapper : propertyMappers) {
+      propertyMapperMap.put(propertyMapper.getInfo().getName(), propertyMapper);
+    }
 
     // Build the dispatcher map
     Map<Method, MethodInvoker<C>> dispatchers = new HashMap<Method, MethodInvoker<C>>();
@@ -99,6 +113,7 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     }
 
     //
+    this.mapping = mapping;
     this.abstract_ = abstract_;
     this.dispatchers = dispatchers;
     this.objectClass = objectClass;
@@ -109,11 +124,15 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     this.type = instrumentor.getProxyClass(objectClass);
     this.nodeTypeName = typeName;
     this.kind = kind;
+    this.propertyMapperMap = propertyMapperMap;
   }
-
 
   public MethodInvoker<C> getInvoker(Method method) {
     return dispatchers.get(method);
+  }
+
+  public BeanMapping getMapping() {
+    return mapping;
   }
 
   public boolean isAbstract() {
@@ -142,6 +161,10 @@ public class ObjectMapper<C extends ObjectContext<C>> {
 
   public Set<PropertyMapper<?, ?, C>> getPropertyMappers() {
     return propertyMappers;
+  }
+
+  public PropertyMapper<?, ?, C> getPropertyMapper(String name) {
+    return propertyMapperMap.get(name);
   }
 
   public Class<?> getObjectClass() {

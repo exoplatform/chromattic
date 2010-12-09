@@ -20,6 +20,8 @@
 package org.chromattic.apt;
 
 import junit.framework.TestCase;
+import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.PathBuilder;
 import org.chromattic.api.PropertyLiteral;
 
 /**
@@ -29,10 +31,18 @@ import org.chromattic.api.PropertyLiteral;
 public class PropertyLiteralTestCase extends TestCase {
 
   public void testFoo() {
-    PropertyLiteral<C_1_1_X, String> literal = C_1_1_X__.FOO;
+    PropertyLiteral<C_1_1_X, String> literal = C_1_1_X_.foo;
     assertEquals(String.class, literal.getJavaType());
     assertEquals("foo", literal.getName());
     assertEquals(C_1_1_X.class, literal.getOwner());
   }
 
+  static {
+    if (false) {
+      ChromatticSession session = null;
+      C_1_1_X c = null;
+      PathBuilder<C_1_1_X> builder = session.createPathBuilder(c);
+      String s= builder.child(C_1_1_X_.juu).child(D_1_1_X_.daa).child(E_1_1_X_.foo).toString();
+    }
+  }
 }

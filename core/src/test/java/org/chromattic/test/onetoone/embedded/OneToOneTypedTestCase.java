@@ -30,7 +30,7 @@ public class OneToOneTypedTestCase extends AbstractOneToOneTestCase {
   @Override
   protected <E> void setEmbedded(ChromatticSession session, B b, Class<E> embeddedType, E e) {
     if (embeddedType == A.class) {
-      b.setSuper((A)e);
+      b.setSuperType((A)e);
     } else if (embeddedType == C.class) {
       b.setMixin((C)e);
     } else {
@@ -41,7 +41,7 @@ public class OneToOneTypedTestCase extends AbstractOneToOneTestCase {
   @Override
   protected <E> E getEmbedded(ChromatticSession session, B b, Class<E> embeddedType) {
     if (embeddedType == A.class) {
-      return embeddedType.cast(b.getSuper());
+      return embeddedType.cast(b.getSuperType());
     } else if (embeddedType == C.class) {
       return embeddedType.cast(b.getMixin());
     } else {

@@ -17,44 +17,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.value.multi.list;
+package org.chromattic.test.property.map;
 
 import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.metamodel.annotations.Skip;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "property_list:c2")
-public abstract class C2 {
+@PrimaryType(name = "property_map:b")
+public abstract class B2 {
 
   @Property(name = "string_array_property")
-  public abstract List<String> getStringProperty();
+  public abstract String[] getString();
 
-  public abstract void setStringProperty(List<String> s);
-
-  @Property(name = "int_array_property")
-  public abstract List<Integer> getIntegerProperty();
-
-  public abstract void setIntegerProperty(List<Integer> s);
-
-  @Property(name = "long_array_property")
-  public abstract List<Long> getLongProperty();
-
-  public abstract void setLongProperty(List<Long> s);
-
-  @Property(name = "boolean_array_property")
-  public abstract List<Boolean> getBooleanProperty();
-
-  public abstract void setBooleanProperty(List<Boolean> s);
-
-  @Property(name = "date_array_property")
-  public abstract List<Date> getDateProperty();
-
-  public abstract void setDateProperty(List<Date> s);
+  public abstract void setString(String[] s);
 
 }

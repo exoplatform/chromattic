@@ -17,52 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.value.multi.list;
+package org.chromattic.test.property.map;
 
-import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.metamodel.annotations.Skip;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Skip
-@PrimaryType(name = "property_list:a1")
-public abstract class A1 {
+@PrimaryType(name = "property_map:a")
+public abstract class A2 {
 
   @Property(name = "string_property")
-  @DefaultValue
-  public abstract List<String> getString();
+  public abstract String getString();
 
-  public abstract void setString(List<String> s);
-
-  @Property(name = "int_property")
-  @DefaultValue
-  public abstract List<Integer> getInt();
-
-  public abstract void setInt(List<Integer> s);
-
-  @Property(name = "long_property")
-  @DefaultValue
-  public abstract List<Long> getLong();
-
-  public abstract void setLong(List<Long> s);
-
-  @Property(name = "boolean_property")
-  @DefaultValue
-  public abstract List<Boolean> getBoolean();
-
-  public abstract void setBoolean(List<Boolean> s);
-
-  @Property(name = "date_property")
-  @DefaultValue
-  public abstract List<Date> getDate();
-
-  public abstract void setDate(List<Date> s);
+  public abstract void setString(String s);
 
 }

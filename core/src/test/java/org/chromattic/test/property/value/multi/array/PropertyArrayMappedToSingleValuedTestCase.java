@@ -35,11 +35,11 @@ import javax.jcr.PropertyType;
 public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(A1.class);
+    addClass(A1_1.class);
   }
 
   /** . */
-  private A1 d;
+  private A1_1 d;
 
   /** . */
   private Node dNode;
@@ -54,8 +54,8 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
     //
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    dNode = rootNode.addNode("tp_d_a", getNodeTypeName(A1.class));
-    d = session.findByNode(A1.class, dNode);
+    dNode = rootNode.addNode("tp_d_a", getNodeTypeName(A1_1.class));
+    d = session.findByNode(A1_1.class, dNode);
     assertNotNull(d);
     factory = session.getJCRSession().getValueFactory();
   }
@@ -66,8 +66,8 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
       d,
       dNode,
       "primitive_boolean_property",
-      "getPrimitiveBoolean",
-      "setPrimitiveBoolean",
+      "getPrimitiveBooleanProperty",
+      "setPrimitiveBooleanProperty",
       PropertyType.BOOLEAN,
       new MultiValue.Array(new boolean[]{true, false, true})
     ).run();
@@ -79,8 +79,8 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
       d,
       dNode,
       "boolean_property",
-      "getBoolean",
-      "setBoolean",
+      "getBooleanProperty",
+      "setBooleanProperty",
       PropertyType.BOOLEAN,
       new MultiValue.Array(new Boolean[]{true, false, true})
     ).run();
@@ -92,8 +92,8 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
       d,
       dNode,
       "primitive_int_property",
-      "getPrimitiveInt",
-      "setPrimitiveInt",
+      "getIntProperty",
+      "setIntProperty",
       PropertyType.LONG,
       new MultiValue.Array(new int[]{0, 1, 2})
     ).run();
@@ -105,8 +105,8 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
       d,
       dNode,
       "int_property",
-      "getInt",
-      "setInt",
+      "getIntegerProperty",
+      "setIntegerProperty",
       PropertyType.LONG,
       new MultiValue.Array(new Integer[]{0, 1, 2})
     ).run();
@@ -118,8 +118,8 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
       d,
       dNode,
       "primitive_long_property",
-      "getPrimitiveLong",
-      "setPrimitiveLong",
+      "getPrimitiveLongProperty",
+      "setPrimitiveLongProperty",
       PropertyType.LONG,
       new MultiValue.Array(new long[]{0, 1, 2})
     ).run();
@@ -131,8 +131,8 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
       d,
       dNode,
       "long_property",
-      "getLong",
-      "setLong",
+      "getLongProperty",
+      "setLongProperty",
       PropertyType.LONG,
       new MultiValue.Array(new Long[]{0L, 1L, 2L})
     ).run();
@@ -144,8 +144,8 @@ public class PropertyArrayMappedToSingleValuedTestCase extends AbstractTestCase 
       d,
       dNode,
       "string_property",
-      "getString",
-      "setString",
+      "getStringProperty",
+      "setStringProperty",
       PropertyType.STRING,
       new MultiValue.Array(new String[]{"foo", "bar1", "bar2"})
     ).run();

@@ -17,37 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.onetoone.embedded;
+@NodeTypeDefs(namespaces = @NamespaceMapping(prefix="pathbuilder", uri="pathbuilder")) package org.chromattic.test.pathbuilder;
 
-import org.chromattic.api.RelationshipType;
-import org.chromattic.api.annotations.Owner;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.MappedBy;
-
-/**
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- */
-@PrimaryType(name = "onetoone_e:b")
-public abstract class B {
-
-  @OneToOne
-  @MappedBy("b")
-  public abstract C getParent();
-
-  public abstract void setParent(C b);
-
-  @OneToOne(type = RelationshipType.EMBEDDED)
-  @Owner
-  public abstract C getMixin();
-
-  public abstract void setMixin(C b);
-
-  @OneToOne(type = RelationshipType.EMBEDDED)
-  @Owner
-  public abstract A getSuperType();
-
-  public abstract void setSuperType(A a);
-
-}
+import org.chromattic.api.annotations.NamespaceMapping;
+import org.chromattic.api.annotations.NodeTypeDefs;

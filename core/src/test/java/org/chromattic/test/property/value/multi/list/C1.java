@@ -35,32 +35,32 @@ public abstract class C1 {
 
   @Property(name = "string_array_property")
   @DefaultValue
-  public abstract List<String> getString();
+  public abstract List<String> getStringProperty();
 
-  public abstract void setString(List<String> s);
+  public abstract void setStringProperty(List<String> s);
 
   @Property(name = "int_array_property")
   @DefaultValue
-  public abstract List<Integer> getInt();
+  public abstract List<Integer> getIntegerProperty();
 
-  public abstract void setInt(List<Integer> s);
+  public abstract void setIntegerProperty(List<Integer> s);
 
   @Property(name = "long_array_property")
   @DefaultValue
-  public abstract List<Long> getLong();
+  public abstract List<Long> getLongProperty();
 
-  public abstract void setLong(List<Long> s);
+  public abstract void setLongProperty(List<Long> s);
 
   @Property(name = "boolean_array_property")
   @DefaultValue
-  public abstract List<Boolean> getBoolean();
+  public abstract List<Boolean> getBooleanProperty();
 
-  public abstract void setBoolean(List<Boolean> s);
+  public abstract void setBooleanProperty(List<Boolean> s);
 
   @Property(name = "date_array_property")
   @DefaultValue
-  public abstract List<Date> getDate();
+  public abstract List<Date> getDateProperty();
 
-  public abstract void setDate(List<Date> s);
+  public abstract void setDateProperty(List<Date> s);
 
 }
