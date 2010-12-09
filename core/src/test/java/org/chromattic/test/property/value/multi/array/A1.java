@@ -36,50 +36,50 @@ public abstract class A1 {
 
   @Property(name = "string_property")
   @DefaultValue
-  public abstract String[] getStringProperty();
+  public abstract String[] getStringArrayProperty();
 
-  public abstract void setStringProperty(String[] s);
+  public abstract void setStringArrayProperty(String[] s);
 
   @Property(name = "primitive_int_property")
   @DefaultValue
-  public abstract int[] getIntProperty();
+  public abstract int[] getIntArrayProperty();
 
-  public abstract void setIntProperty(int[] s);
+  public abstract void setIntArrayProperty(int[] s);
 
   @Property(name = "int_property")
   @DefaultValue
-  public abstract Integer[] getIntegerProperty();
+  public abstract Integer[] getIntegerArrayProperty();
 
-  public abstract void setIntegerProperty(Integer[] s);
+  public abstract void setIntegerArrayProperty(Integer[] s);
 
   @Property(name = "primitive_long_property")
   @DefaultValue
-  public abstract long[] getPrimitiveLongProperty();
+  public abstract long[] getPrimitiveLongArrayProperty();
 
-  public abstract void setPrimitiveLongProperty(long[] s);
+  public abstract void setPrimitiveLongArrayProperty(long[] s);
 
   @Property(name = "long_property")
   @DefaultValue
-  public abstract Long[] getLongProperty();
+  public abstract Long[] getLongArrayProperty();
 
-  public abstract void setLongProperty(Long[] s);
+  public abstract void setLongArrayProperty(Long[] s);
 
   @Property(name = "primitive_boolean_property")
   @DefaultValue
-  public abstract boolean[] getPrimitiveBooleanProperty();
+  public abstract boolean[] getPrimitiveBooleanArrayProperty();
 
-  public abstract void setPrimitiveBooleanProperty(boolean[] s);
+  public abstract void setPrimitiveBooleanArrayProperty(boolean[] s);
 
   @Property(name = "boolean_property")
   @DefaultValue
-  public abstract Boolean[] getBooleanProperty();
+  public abstract Boolean[] getBooleanArrayProperty();
 
-  public abstract void setBooleanProperty(Boolean[] s);
+  public abstract void setBooleanArrayProperty(Boolean[] s);
 
   @Property(name = "date_property")
   @DefaultValue
-  public abstract Date[] getDateProperty();
+  public abstract Date[] getDateArrayProperty();
 
-  public abstract void setDateProperty(Date[] s);
+  public abstract void setDateArrayProperty(Date[] s);
 
 }

@@ -34,55 +34,55 @@ public abstract class C {
 
   @Property(name = "string_array_property")
   @DefaultValue
-  public abstract String[] getStringProperty();
+  public abstract String[] getStringArrayProperty();
 
-  public abstract void setStringProperty(String[] s);
+  public abstract void setStringArrayProperty(String[] s);
 
   @Property(name = "primitive_int_array_property")
   @DefaultValue
-  public abstract int[] getIntProperty();
+  public abstract int[] getIntArrayProperty();
 
-  public abstract void setIntProperty(int[] s);
+  public abstract void setIntArrayProperty(int[] s);
 
   @Property(name = "int_array_property")
   @DefaultValue
-  public abstract Integer[] getIntegerProperty();
+  public abstract Integer[] getIntegerArrayProperty();
 
-  public abstract void setIntegerProperty(Integer[] s);
+  public abstract void setIntegerArrayProperty(Integer[] s);
 
   @Property(name = "primitive_long_array_property")
   @DefaultValue
-  public abstract long[] getPrimitiveLongProperty();
+  public abstract long[] getPrimitiveLongArrayProperty();
 
-  public abstract void setPrimitiveLongProperty(long[] s);
+  public abstract void setPrimitiveLongArrayProperty(long[] s);
 
   @Property(name = "long_array_property")
   @DefaultValue
-  public abstract Long[] getLongProperty();
+  public abstract Long[] getLongArrayProperty();
 
-  public abstract void setLongProperty(Long[] s);
+  public abstract void setLongArrayProperty(Long[] s);
 
   @Property(name = "primitive_boolean_array_property")
   @DefaultValue
-  public abstract boolean[] getPrimitiveBooleanProperty();
+  public abstract boolean[] getPrimitiveBooleanArrayProperty();
 
-  public abstract void setPrimitiveBooleanProperty(boolean[] s);
+  public abstract void setPrimitiveBooleanArrayProperty(boolean[] s);
 
   @Property(name = "primitive_boolean_array_property")
-  public abstract boolean[] getNullablePrimitiveBooleanProperty();
+  public abstract boolean[] getNullablePrimitiveBooleanArrayProperty();
 
-  public abstract void setNullablePrimitiveBooleanProperty(boolean[] s);
+  public abstract void setNullablePrimitiveBooleanArrayProperty(boolean[] s);
 
   @Property(name = "boolean_array_property")
   @DefaultValue
-  public abstract Boolean[] getBooleanProperty();
+  public abstract Boolean[] getBooleanArrayProperty();
 
-  public abstract void setBooleanProperty(Boolean[] s);
+  public abstract void setBooleanArrayProperty(Boolean[] s);
 
   @Property(name = "date_array_property")
   @DefaultValue
-  public abstract Date[] getDateProperty();
+  public abstract Date[] getDateArrayProperty();
 
-  public abstract void sewtDateProperty(Date[] s);
+  public abstract void sewtDateArrayProperty(Date[] s);
 
 }

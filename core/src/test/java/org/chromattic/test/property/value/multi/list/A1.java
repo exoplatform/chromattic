@@ -37,32 +37,32 @@ public abstract class A1 {
 
   @Property(name = "string_property")
   @DefaultValue
-  public abstract List<String> getStringProperty();
+  public abstract List<String> getStringListProperty();
 
-  public abstract void setStringProperty(List<String> s);
+  public abstract void setStringListProperty(List<String> s);
 
   @Property(name = "int_property")
   @DefaultValue
-  public abstract List<Integer> getIntegerProperty();
+  public abstract List<Integer> getIntegerListProperty();
 
-  public abstract void setIntegerProperty(List<Integer> s);
+  public abstract void setIntegerListProperty(List<Integer> s);
 
   @Property(name = "long_property")
   @DefaultValue
-  public abstract List<Long> getLongProperty();
+  public abstract List<Long> getLongListProperty();
 
-  public abstract void setLongProperty(List<Long> s);
+  public abstract void setLongListProperty(List<Long> s);
 
   @Property(name = "boolean_property")
   @DefaultValue
-  public abstract List<Boolean> getBooleanProperty();
+  public abstract List<Boolean> getBooleanListProperty();
 
-  public abstract void setBooleanProperty(List<Boolean> s);
+  public abstract void setBooleanListProperty(List<Boolean> s);
 
   @Property(name = "date_property")
   @DefaultValue
-  public abstract List<Date> getDateProperty();
+  public abstract List<Date> getDateListProperty();
 
-  public abstract void setDateProperty(List<Date> s);
+  public abstract void setDateListProperty(List<Date> s);
 
 }

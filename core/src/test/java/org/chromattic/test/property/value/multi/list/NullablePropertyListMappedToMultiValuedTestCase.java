@@ -65,8 +65,8 @@ public class NullablePropertyListMappedToMultiValuedTestCase extends AbstractTes
       f,
       fNode,
       "boolean_array_property",
-      "getBooleanProperty",
-      "setBooleanProperty",
+      "getBooleanListProperty",
+      "setBooleanListProperty",
       PropertyType.BOOLEAN,
       new MultiValue.List(true, false, true)
     ).run();
@@ -78,8 +78,8 @@ public class NullablePropertyListMappedToMultiValuedTestCase extends AbstractTes
       f,
       fNode,
       "int_array_property",
-      "getIntegerProperty",
-      "setIntegerProperty",
+      "getIntegerListProperty",
+      "setIntegerListProperty",
       PropertyType.LONG,
       new MultiValue.List(0, 1, 2)
     ).run();
@@ -91,8 +91,8 @@ public class NullablePropertyListMappedToMultiValuedTestCase extends AbstractTes
       f,
       fNode,
       "long_array_property",
-      "getLongProperty",
-      "setLongProperty",
+      "getLongListProperty",
+      "setLongListProperty",
       PropertyType.LONG,
       new MultiValue.List(0L, 1L, 2L)
     ).run();
@@ -104,8 +104,8 @@ public class NullablePropertyListMappedToMultiValuedTestCase extends AbstractTes
       f,
       fNode,
       "string_array_property",
-      "getStringProperty",
-      "setStringProperty",
+      "getStringListProperty",
+      "setStringListProperty",
       PropertyType.STRING,
       new MultiValue.List("foo", "bar1", "bar2")
     ).run();
