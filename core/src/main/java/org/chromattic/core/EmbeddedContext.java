@@ -73,6 +73,14 @@ public final class EmbeddedContext extends ObjectContext {
     return relatedEntity;
   }
 
+  public Object invoke(Object o, Method method) throws Throwable {
+    return mapper.invoke(this, method);
+  }
+
+  public Object invoke(Object o, Method method, Object arg) throws Throwable {
+    return mapper.invoke(this, method, arg);
+  }
+
   public Object invoke(Object o, Method method, Object[] args) throws Throwable {
     return mapper.invoke(this, method, args);
   }

@@ -251,6 +251,14 @@ public final class EntityContext extends ObjectContext {
     return mapper.invoke(this, method, args);
   }
 
+  public Object invoke(Object o, Method method) throws Throwable {
+    return mapper.invoke(this, method);
+  }
+
+  public Object invoke(Object o, Method method, Object arg) throws Throwable {
+    return mapper.invoke(this, method, arg);
+  }
+
   @Override
   public String toString() {
     return "EntityContext[state=" + state + ",mapper=" + mapper + "]";

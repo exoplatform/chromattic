@@ -61,18 +61,26 @@ public abstract class PropertyMapper<P extends PropertyInfo<V>, V extends ValueI
     throw new UnsupportedOperationException();
   }
 
-  public Object invoke(O ctx, Method method, Object[] args) throws Throwable {
+  public Object invoke(O ctx, Method method) throws Throwable {
     MethodInfo getter = info.getProperty().getGetter();
     if (getter != null && method.equals(getter.unwrap())) {
       return get(ctx);
     } else {
-      MethodInfo setter = info.getProperty().getSetter();
-      if (setter != null && method.equals(info.getProperty().getSetter().unwrap())) {
-        set(ctx, args[0]);
-        return null;
-      } else {
-        throw new AssertionError();
-      }
+      throw new AssertionError();
     }
+  }
+
+  public Object invoke(O ctx, Method method, Object arg) throws Throwable {
+    MethodInfo setter = info.getProperty().getSetter();
+    if (setter != null && method.equals(info.getProperty().getSetter().unwrap())) {
+      set(ctx, arg);
+      return null;
+    } else {
+      throw new AssertionError();
+    }
+  }
+
+  public Object invoke(O ctx, Method method, Object[] args) throws Throwable {
+    throw new AssertionError();
   }
 }

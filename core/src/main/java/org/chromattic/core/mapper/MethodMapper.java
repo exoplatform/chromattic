@@ -41,16 +41,32 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
     this.method = method;
   }
 
+  public Object invoke(C context) throws Throwable {
+    throw new UnsupportedOperationException();
+  }
+
+  public Object invoke(C context, Object args) throws Throwable {
+    throw new UnsupportedOperationException();
+  }
+
   public Object invoke(C context, Object[] args) throws Throwable {
     throw new UnsupportedOperationException();
   }
 
-  public MethodInfo getMethod() {
-    return method;
+  public final Object invoke(C ctx, Method method) throws Throwable {
+    return invoke(ctx);
   }
 
-  public Object invoke(C ctx, Method method, Object[] args) throws Throwable {
+  public final Object invoke(C ctx, Method method, Object arg) throws Throwable {
+    return invoke(ctx, arg);
+  }
+
+  public final Object invoke(C ctx, Method method, Object[] args) throws Throwable {
     return invoke(ctx, args);
+  }
+
+  public MethodInfo getMethod() {
+    return method;
   }
 
   @Override
@@ -67,20 +83,24 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
       super(method);
     }
 
-    @Override
-    public Object invoke(C ctx, Object[] args) {
+    public Object invoke(C ctx) throws Throwable {
+      return invoke(ctx, (Object)null);
+    }
 
-      //
+    public Object invoke(C ctx, Object arg) throws Throwable {
       String name = null;
-      if (args.length == 1 && args[0] != null && args[0] instanceof String) {
-         name = (String)args[0];
+      if (arg instanceof String) {
+        name = (String)arg;
       }
-
-      //
       EntityContext entityCtx = ctx.getEntity();
       DomainSession session = entityCtx.getSession();
       Class<?> clazz = mapper.getObjectClass();
       return session.create(clazz, name);
+    }
+
+    @Override
+    public Object invoke(C ctx, Object[] args) {
+      throw new AssertionError();
     }
   }
 
@@ -96,22 +116,23 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
       this.typeClass = Thread.currentThread().getContextClassLoader().loadClass(type.getName());
     }
 
-    @Override
-    public Object invoke(C context, Object[] args) throws Throwable {
+    public Object invoke(C ctx) throws Throwable {
+      throw new AssertionError();
+    }
 
-      //
-      String id = (String)args[0];
-
-      //
-      Object o = context.getEntity().getSession().findById(Object.class, id);
-
-      //
+    public Object invoke(C ctx, Object arg) throws Throwable {
+      String id = (String)arg;
+      Object o = ctx.getEntity().getSession().findById(Object.class, id);
       if (typeClass.isInstance(o)) {
         return o;
+      } else {
+        return null;
       }
+    }
 
-      //
-      return null;
+    @Override
+    public Object invoke(C ctx, Object[] args) throws Throwable {
+      throw new AssertionError();
     }
   }
 
@@ -121,10 +142,18 @@ public class MethodMapper<C extends ObjectContext> implements MethodInvoker<C> {
       super(method);
     }
 
-    @Override
-    public Object invoke(EntityContext context, Object[] args) throws Throwable {
-      context.getEntity().remove();
+    public Object invoke(EntityContext ctx) throws Throwable {
+      ctx.getEntity().remove();
       return null;
+    }
+
+    public Object invoke(EntityContext ctx, Object arg) throws Throwable {
+      throw new AssertionError();
+    }
+
+    @Override
+    public Object invoke(EntityContext ctx, Object[] args) throws Throwable {
+      throw new AssertionError();
     }
   }
 }

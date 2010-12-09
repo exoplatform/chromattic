@@ -111,28 +111,50 @@ public class ObjectMapper<C extends ObjectContext> implements MethodInvoker<C> {
     this.kind = kind;
   }
 
+  private AssertionError createCannotInvokeError(Method method, Object... args) {
+    StringBuilder msg = new StringBuilder("Cannot invoke method ").append(method.getName()).append("(");
+    Class[] parameterTypes = method.getParameterTypes();
+    for (int i = 0;i < parameterTypes.length;i++) {
+      if (i > 0) {
+        msg.append(',');
+      }
+      msg.append(parameterTypes[i].getName());
+    }
+    msg.append(") with arguments (");
+    for (int i = 0;i < args.length;i++) {
+      if (i > 0) {
+        msg.append(',');
+      }
+      msg.append(String.valueOf(args[i]));
+    }
+    msg.append(")");
+    return new AssertionError(msg);
+  }
+
   public Object invoke(C ctx, Method method, Object[] args) throws Throwable {
     MethodInvoker<C> invoker = dispatchers.get(method);
     if (invoker != null) {
       return invoker.invoke(ctx, method, args);
     } else {
-      StringBuilder msg = new StringBuilder("Cannot invoke method ").append(method.getName()).append("(");
-      Class[] parameterTypes = method.getParameterTypes();
-      for (int i = 0;i < parameterTypes.length;i++) {
-        if (i > 0) {
-          msg.append(',');
-        }
-        msg.append(parameterTypes[i].getName());
-      }
-      msg.append(") with arguments (");
-      for (int i = 0;i < args.length;i++) {
-        if (i > 0) {
-          msg.append(',');
-        }
-        msg.append(String.valueOf(args[i]));
-      }
-      msg.append(")");
-      throw new AssertionError(msg);
+      throw createCannotInvokeError(method, args);
+    }
+  }
+
+  public Object invoke(C ctx, Method method) throws Throwable {
+    MethodInvoker<C> invoker = dispatchers.get(method);
+    if (invoker != null) {
+      return invoker.invoke(ctx, method);
+    } else {
+      throw createCannotInvokeError(method);
+    }
+  }
+
+  public Object invoke(C ctx, Method method, Object arg) throws Throwable {
+    MethodInvoker<C> invoker = dispatchers.get(method);
+    if (invoker != null) {
+      return invoker.invoke(ctx, method, arg);
+    } else {
+      throw createCannotInvokeError(method, arg);
     }
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2010 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,20 +16,34 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core;
 
-import java.lang.reflect.Method;
+package org.chromattic.apt;
+
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface MethodInvoker<O extends ObjectContext> {
+@PrimaryType(name = "foo.bar")
+public abstract class A_1_1_X {
 
-  Object invoke(O ctx, Method method) throws Throwable;
+  public abstract void a();
+  public abstract void a(Object o);
+  public abstract void a(int i);
+  public abstract void a(boolean b);
+  public abstract void a(int i, boolean b);
+  public abstract void a(Object o, long l);
+  public abstract void a(Object[] o);
+  public abstract void a(int[] o);
 
-  Object invoke(O ctx, Method method, Object arg) throws Throwable;
-
-  Object invoke(O ctx, Method method, Object[] args) throws Throwable;
+  public abstract Object b();
+  public abstract Object b(Object o);
+  public abstract Object b(int i);
+  public abstract Object b(boolean b);
+  public abstract Object b(int i, boolean b);
+  public abstract Object b(Object o, long l);
+  public abstract Object b(Object[] o);
+  public abstract Object b(int[] o);
 
 }

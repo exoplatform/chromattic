@@ -85,7 +85,35 @@ public class Invoker {
     this.method = method;
   }
 
-  public Object invoke(MethodHandler methodInvoker, Object obj, Object... args) {
+  public Object invoke(MethodHandler methodInvoker, Object obj) {
+    try {
+      return methodInvoker.invoke(obj, method);
+    }
+    catch (Throwable e) {
+      if (e instanceof RuntimeException) {
+        throw (RuntimeException)e;
+      } else if (e instanceof Error) {
+        throw (Error)e;
+      }
+      throw new UndeclaredThrowableException(e);
+    }
+  }
+
+  public Object invoke(MethodHandler methodInvoker, Object obj, Object arg) {
+    try {
+      return methodInvoker.invoke(obj, method, arg);
+    }
+    catch (Throwable e) {
+      if (e instanceof RuntimeException) {
+        throw (RuntimeException)e;
+      } else if (e instanceof Error) {
+        throw (Error)e;
+      }
+      throw new UndeclaredThrowableException(e);
+    }
+  }
+
+  public Object invoke(MethodHandler methodInvoker, Object obj, Object[] args) {
     try {
       return methodInvoker.invoke(obj, method, args);
     }

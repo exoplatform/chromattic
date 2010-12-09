@@ -137,7 +137,7 @@ class ProxyTypeGenerator {
       code.append(");\n");
 
       //
-      code.append(scope).append(" ");
+      code.append(scope).append(" final ");
       new TypeFormatter(type, FormatterStyle.RETURN_TYPE, code).format(rti);
       code.append(" ").append(methodName).append("(");
 
@@ -153,23 +153,44 @@ class ProxyTypeGenerator {
       code.append(") {\n");
 
       //
-      code.append("Object[] args = new Object[]{");
-      for (int i = 0; i < parameterTypes.size(); i++) {
-        if (i > 0) {
-          code.append(",");
-        }
-        code.append("arg_").append(i);
+      switch (parameterTypes.size()) {
+        case 0:
+          if (rti instanceof VoidTypeInfo) {
+            code.append(methodId).append(".invoke(handler, this);");
+          } else {
+            code.append("return (");
+            new TypeFormatter(type, FormatterStyle.CAST, code).format(rti);
+            code.append(")").append(methodId).append(".invoke(handler, this);");
+          }
+          break;
+        case 1:
+          if (rti instanceof VoidTypeInfo) {
+            code.append(methodId).append(".invoke(handler, this, (Object)arg_0);");
+          } else {
+            code.append("return (");
+            new TypeFormatter(type, FormatterStyle.CAST, code).format(rti);
+            code.append(")").append(methodId).append(".invoke(handler, this, (Object)arg_0);");
+          }
+          break;
+        default:
+          code.append("Object[] args = new Object[]{");
+          for (int i = 0; i < parameterTypes.size(); i++) {
+            if (i > 0) {
+              code.append(",");
+            }
+            code.append("arg_").append(i);
+          }
+          code.append("};\n");
+          if (rti instanceof VoidTypeInfo) {
+            code.append(methodId).append(".invoke(handler, this, args);");
+          } else {
+            code.append("return (");
+            new TypeFormatter(type, FormatterStyle.CAST, code).format(rti);
+            code.append(")").append(methodId).append(".invoke(handler, this, args);");
+          }
+          break;
       }
-      code.append("};\n");
 
-      if (rti instanceof VoidTypeInfo) {
-        code.append(methodId).append(".invoke(handler, this, args);");
-      }
-      else {
-        code.append("return (");
-        new TypeFormatter(type, FormatterStyle.CAST, code).format(rti);
-        code.append(")").append(methodId).append(".invoke(handler, this, args);");
-      }
 
       code.append("}\n");
     }
