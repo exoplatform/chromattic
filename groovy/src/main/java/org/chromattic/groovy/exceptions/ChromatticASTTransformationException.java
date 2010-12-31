@@ -23,7 +23,7 @@ package org.chromattic.groovy.exceptions;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ChromatticASTTransformationException extends Exception {
+public class ChromatticASTTransformationException extends RuntimeException {
   public ChromatticASTTransformationException() {
   }
   public ChromatticASTTransformationException(String message) {

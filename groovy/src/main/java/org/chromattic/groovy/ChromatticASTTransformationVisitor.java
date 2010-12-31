@@ -22,7 +22,10 @@ package org.chromattic.groovy;
 import org.chromattic.groovy.annotations.ChromatticDelegation;
 import org.chromattic.groovy.exceptions.*;
 import org.codehaus.groovy.ast.*;
+import org.codehaus.groovy.control.CompilePhase;
 import org.codehaus.groovy.control.SourceUnit;
+import org.codehaus.groovy.transform.ASTTransformation;
+import org.codehaus.groovy.transform.GroovyASTTransformation;
 
 import java.util.*;
 
@@ -30,7 +33,9 @@ import java.util.*;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ChromatticASTTransformationVisitor {
+@GroovyASTTransformation(phase= CompilePhase.INSTRUCTION_SELECTION)
+public class ChromatticASTTransformationVisitor implements ASTTransformation
+{
   private final ChromatticAnnotationMover annotationMover = new ChromatticAnnotationMover();
   private final ChromatticFieldChecker fieldChecker = new ChromatticFieldChecker();
   private final ChromatticDelegate delegate = new ChromatticDelegate();
