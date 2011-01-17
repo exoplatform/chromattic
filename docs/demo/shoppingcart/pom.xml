@@ -49,6 +49,7 @@
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.groovy</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
@@ -66,6 +67,27 @@
     </dependency>
   </dependencies>
 
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.groovy.maven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>generateTestStubs</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+<!--
   <build>
     <plugins>
       <plugin>
@@ -153,5 +175,6 @@
       </plugin>
     </plugins>
   </build>
+-->
 
 </project>
