@@ -34,10 +34,7 @@
   <description>Chromattic Framework Demo</description>
 
   <modules>
-    <!--
-    <module>examples</module>
-    <module>guide</module>
-    -->
+    <module>shoppingcart</module>
   </modules>
 
 </project>
