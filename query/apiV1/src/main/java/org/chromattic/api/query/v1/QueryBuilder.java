@@ -17,24 +17,30 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.api;
+package org.chromattic.api.query.v1;
+
+import org.chromattic.api.PropertyLiteral;
 
 /**
- * Type safe builder API.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface PathBuilder<O> {
+public interface QueryBuilder {
 
-  <P> PathBuilder<P> parent(PropertyLiteral<O, P> property);
+  public interface From {
 
-  <P> PathBuilder<P> child(PropertyLiteral<O, P> property, String childName);
+    void where();
 
-  <P> PathBuilder<P> child(PropertyLiteral<O, P> property);
+  }
 
-  O get();
+  interface Select {
 
-  String toString();
+    From from(Class<?>... types);
+
+  }
+
+  Select select(PropertyLiteral<?,?>... property);
+
+  From from(Class<?>... types);
 
 }

@@ -33,6 +33,12 @@
   <description>Chromattic Framework Query API V1</description>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.api</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

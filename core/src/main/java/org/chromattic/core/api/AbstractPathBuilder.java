@@ -19,11 +19,12 @@
 
 package org.chromattic.core.api;
 
-import org.chromattic.api.PathBuilder;
+import org.chromattic.api.Path;
 import org.chromattic.api.PropertyLiteral;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.core.EntityContext;
 import org.chromattic.metamodel.mapping.BeanMapping;
+import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
 import javax.jcr.RepositoryException;
@@ -32,7 +33,7 @@ import javax.jcr.RepositoryException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-abstract class AbstractPathBuilder<O> implements PathBuilder<O> {
+abstract class AbstractPathBuilder<O> implements Path<O> {
 
   /** . */
   private final BeanMapping mapping;
@@ -41,15 +42,39 @@ abstract class AbstractPathBuilder<O> implements PathBuilder<O> {
     this.mapping = mapping;
   }
 
-  public <P> PathBuilder<P> parent(PropertyLiteral<O, P> property) {
+  public Path<?> parent() {
     throw new UnsupportedOperationException();
   }
 
-  public <P> PathBuilder<P> child(PropertyLiteral<O, P> property, String childName) {
-    return null;
+  public <P> Path<P> parent(PropertyLiteral<O, P> property) {
+    throw new UnsupportedOperationException();
   }
 
-  public <P> PathBuilder<P> child(PropertyLiteral<O, P> property) {
+  public <P> Path<P> child(PropertyLiteral<O, P> property, String childName) {
+    RelationshipMapping.OneToMany.Hierarchic childMapping = mapping.getPropertyMapping(property.getName(), RelationshipMapping.OneToMany.Hierarchic.class);
+
+    //
+    if (childMapping == null) {
+      throw new IllegalArgumentException();
+    }
+
+    // Check that the child name cannot be used for other properties
+    for (PropertyMapping pm : mapping.getProperties().values()) {
+      if (pm instanceof RelationshipMapping.OneToOne.Hierarchic) {
+        RelationshipMapping.OneToOne.Hierarchic oto = (RelationshipMapping.OneToOne.Hierarchic)pm;
+        if (oto.isOwner()) {
+          if (oto.getMappedBy().equals(childName)) {
+            throw new IllegalArgumentException();
+          }
+        }
+      }
+    }
+
+    //
+    return new AnyChild<P>(this, childMapping, childName);
+  }
+
+  public <P> Path<P> child(PropertyLiteral<O, P> property) {
     RelationshipMapping.OneToOne.Hierarchic childMapping = mapping.getPropertyMapping(property.getName(), RelationshipMapping.OneToOne.Hierarchic.class);
     if (childMapping == null) {
       throw new IllegalArgumentException();
@@ -72,13 +97,43 @@ abstract class AbstractPathBuilder<O> implements PathBuilder<O> {
     }
   }
 
-  public O get() {
+  public O object() {
     throw new UnsupportedOperationException();
   }
 
   protected abstract void appendTo(StringBuilder sb) throws RepositoryException;
 
   //
+
+  static class AnyChild<O> extends AbstractPathBuilder<O> {
+
+    /** . */
+    private final AbstractPathBuilder<?> parent;
+
+    /** . */
+    private final RelationshipMapping.OneToMany.Hierarchic relationship;
+
+    /** . */
+    private final String name;
+
+    AnyChild(
+      AbstractPathBuilder<?> parent,
+      RelationshipMapping.OneToMany.Hierarchic relationship,
+      String name) {
+      super(relationship.getRelatedBeanMapping());
+
+      //
+      this.parent = parent;
+      this.relationship = relationship;
+      this.name = name;
+    }
+
+    @Override
+    protected void appendTo(StringBuilder sb) throws RepositoryException {
+      parent.appendTo(sb);
+      sb.append('/').append(name);
+    }
+  }
 
   static class Child<O> extends AbstractPathBuilder<O> {
 

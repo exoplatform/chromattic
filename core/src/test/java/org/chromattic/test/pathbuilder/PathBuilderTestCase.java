@@ -20,7 +20,7 @@
 package org.chromattic.test.pathbuilder;
 
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.PathBuilder;
+import org.chromattic.api.Path;
 import org.chromattic.test.AbstractTestCase;
 
 /**
@@ -38,8 +38,8 @@ public class PathBuilderTestCase extends AbstractTestCase {
   public void testFoo() {
     ChromatticSession session = login();
     A a = session.insert(A.class, "a");
-    PathBuilder<A> builder1 = session.createPathBuilder(a);
-    PathBuilder<B> builder2 = builder1.child(A_.child);
+    Path<A> builder1 = session.createPathBuilder(a);
+    Path<B> builder2 = builder1.child(A_.child);
     String s = builder2.toString();
     System.out.println("s = " + s);
   }

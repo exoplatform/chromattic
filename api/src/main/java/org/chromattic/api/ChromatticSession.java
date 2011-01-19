@@ -381,6 +381,6 @@ public interface ChromatticSession {
    */
   Session getJCRSession();
 
-  <O> PathBuilder<O> createPathBuilder(O o);
+  <O> Path<O> createPathBuilder(O o);
 
 }

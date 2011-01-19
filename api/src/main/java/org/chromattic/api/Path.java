@@ -17,32 +17,49 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.apt;
-
-import junit.framework.TestCase;
-import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.Path;
-import org.chromattic.api.PropertyLiteral;
+package org.chromattic.api;
 
 /**
+ * A path representation allowing type safe navigation.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertyLiteralTestCase extends TestCase {
+public interface Path<O> {
 
-  public void testFoo() {
-    PropertyLiteral<C_1_1_X, String> literal = C_1_1_X_.foo;
-    assertEquals(String.class, literal.getJavaType());
-    assertEquals("foo", literal.getName());
-    assertEquals(C_1_1_X.class, literal.getOwner());
-  }
+  /**
+   * Returns the parent.
+   *
+   * @return the parent path
+   */
+  Path<?> parent();
 
-  static {
-    if (false) {
-      ChromatticSession session = null;
-      C_1_1_X c = null;
-      Path<C_1_1_X> builder = session.createPathBuilder(c);
-      String s= builder.child(C_1_1_X_.juu).child(D_1_1_X_.daa).child(E_1_1_X_.foo).toString();
-    }
-  }
+  /**
+   * Returns the parent assuming is has the specified type.
+   *
+   * @param property the property
+   * @param <P> the property type
+   * @return the parent path
+   */
+  <P> Path<P> parent(PropertyLiteral<O, P> property);
+
+  <P> Path<P> child(PropertyLiteral<O, P> property, String childName);
+
+
+  <P> Path<P> child(PropertyLiteral<O, P> property);
+
+  /**
+   * Returns the object referenced by this path or null if it does not exist.
+   *
+   * @return the referenced object
+   */
+  O object();
+
+  /**
+   * Returns a string representation of the path.
+   *
+   * @return the string representation
+   */
+  String toString();
+
 }
