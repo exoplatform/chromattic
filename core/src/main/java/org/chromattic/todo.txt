@@ -1,3 +1,29 @@
+Should not be NPE I think
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 8.093 sec <<< FAILURE!
+testFoo(org.chromattic.docs.demo.shoppingcart.ShoppingCartTestCase)  Time elapsed: 7.359 sec  <<< ERROR!
+java.lang.NullPointerException: Attempt to insert context EntityContext[state=ObjectStatus[status=TRANSIENT],mapper=EntityMapper[class=class org.chromattic.docs.demo.shoppingcart.ItemToPurchase,typeName=shop:itemtopurchase]] with no relative path to EntityContext[state=ObjectStatus[path=/julien,status=PERSISTENT],mapper=EntityMapper[class=class org.chromattic.docs.demo.shoppingcart.ShoppingCart,typeName=shop:shoppingcart]]
+        at org.chromattic.core.DomainSessionImpl._persist(DomainSessionImpl.java:168)
+        at org.chromattic.core.DomainSession.persist(DomainSession.java:406)
+        at org.chromattic.core.EntityContext.addChild(EntityContext.java:238)
+        at org.chromattic.core.EntityContext.addChild(EntityContext.java:228)
+        at org.chromattic.core.mapper.onetomany.hierarchical.AnyChildList.add(AnyChildList.java:87)
+        at java.util.AbstractList.add(AbstractList.java:91)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite$PojoCachedMethodSiteNoUnwrapNoCoerce.invoke(PojoMetaMethodSite.java:229)
+        at org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite.call(PojoMetaMethodSite.java:52)
+        at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:40)
+        at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:117)
+        at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
+        at org.chromattic.docs.demo.shoppingcart.ShoppingCartTestCase.testFoo(ShoppingCartTestCase.groovy:72)
+
+
+
+
+
+
 - split APT plugin into two jars, one for compile time and one for runtime
 
 - auto generated IDs for Map<String, A> for one to many hierarchical
