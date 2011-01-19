@@ -36,6 +36,4 @@ public interface Query<O> {
    */
   QueryResult<O> objects() throws ChromatticException;
 
-  // QueryResult<Map<String, ?>> getRows() throws ChromatticException;
-
 }
