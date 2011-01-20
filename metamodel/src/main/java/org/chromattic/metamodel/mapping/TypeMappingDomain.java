@@ -471,7 +471,7 @@ public class TypeMappingDomain {
               throw new IllegalStateException();
             }
           }
-          ClassTypeInfo cti = (ClassTypeInfo)javaClass.resolve(method.getReturnType());
+          ClassTypeInfo cti = Utils.resolveToClassType(javaClass, method.getReturnType());
           methodMappings.add(new CreateMapping(method, cti));
         } else {
           throw new IllegalStateException();
