@@ -88,91 +88,91 @@ public class ProxyTestCase extends TestCase {
   }
 
   public void testA() {
-    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A.a()", null);
+    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A_1_0_X.a()", null);
     proxy.a();
     handler.assertEmpty();
 
     //
     Object o = new Object();
-    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A.a(java.lang.Object)", null, o);
+    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A_1_0_X.a(java.lang.Object)", null, o);
     proxy.a(o);
     handler.assertEmpty();
 
     //
-    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A.a(int)", null, 3);
+    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A_1_0_X.a(int)", null, 3);
     proxy.a(3);
     handler.assertEmpty();
 
     //
-    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A.a(boolean)", null, true);
+    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A_1_0_X.a(boolean)", null, true);
     proxy.a(true);
     handler.assertEmpty();
-    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A.a(boolean)", null, false);
+    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A_1_0_X.a(boolean)", null, false);
     proxy.a(false);
     handler.assertEmpty();
 
     //
-    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A.a(int,boolean)", null, 3, true);
+    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A_1_0_X.a(int,boolean)", null, 3, true);
     proxy.a(3, true);
     handler.assertEmpty();
 
     //
     Object[] objectArray = new Object[0];
-    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A.a(java.lang.Object[])", null, (Object)objectArray);
+    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A_1_0_X.a(java.lang.Object[])", null, (Object)objectArray);
     proxy.a(objectArray);
     handler.assertEmpty();
 
     //
     int[] intArray = new int[0];
-    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A.a(int[])", null, (Object)intArray);
+    handler.addExpectedInvocation("public abstract void org.chromattic.apt.A_1_0_X.a(int[])", null, (Object)intArray);
     proxy.a(intArray);
     handler.assertEmpty();
   }
 
   public void testB() {
     Object ret = new Object();
-    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A.b()", ret);
+    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A_1_0_X.b()", ret);
     assertEquals(ret, proxy.b());
     handler.assertEmpty();
 
     //
     Object o = new Object();
-    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A.b(java.lang.Object)", ret, o);
+    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A_1_0_X.b(java.lang.Object)", ret, o);
     assertEquals(ret, proxy.b(o));
     handler.assertEmpty();
 
     //
-    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A.b(int)", ret, 3);
+    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A_1_0_X.b(int)", ret, 3);
     assertEquals(ret, proxy.b(3));
     handler.assertEmpty();
 
     //
-    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A.b(boolean)", ret, true);
+    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A_1_0_X.b(boolean)", ret, true);
     assertEquals(ret, proxy.b(true));
     handler.assertEmpty();
-    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A.b(boolean)", ret, false);
+    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A_1_0_X.b(boolean)", ret, false);
     assertEquals(ret, proxy.b(false));
     handler.assertEmpty();
 
     //
-    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A.b(int,boolean)", ret, 3, true);
+    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A_1_0_X.b(int,boolean)", ret, 3, true);
     assertEquals(ret, proxy.b(3, true));
     handler.assertEmpty();
 
     //
-    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A.b(java.lang.Object,long)", ret, o, 5L);
+    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A_1_0_X.b(java.lang.Object,long)", ret, o, 5L);
     assertEquals(ret, proxy.b(o, 5L));
     handler.assertEmpty();
 
     //
     Object[] objectArray = new Object[0];
-    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A.b(java.lang.Object[])", ret, (Object)objectArray);
+    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A_1_0_X.b(java.lang.Object[])", ret, (Object)objectArray);
     assertEquals(ret, proxy.b(objectArray));
     handler.assertEmpty();
 
     //
     int[] intArray = new int[0];
-    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A.b(int[])", ret, (Object)intArray);
+    handler.addExpectedInvocation("public abstract java.lang.Object org.chromattic.apt.A_1_0_X.b(int[])", ret, (Object)intArray);
     assertEquals(ret, proxy.b(intArray));
     handler.assertEmpty();
   }
