@@ -40,14 +40,18 @@ public class BeanInfo {
   /** . */
   final ClassTypeInfo classType;
 
+  /** Declared means it was build by declaration and not by implicit resolution. */
+  final boolean declared;
+
   /** . */
   final Map<String, PropertyInfo<?>> properties;
 
   /** . */
   final Map<String, PropertyInfo<?>> unmodifiableProperties;
 
-  public BeanInfo(ClassTypeInfo classType) {
+  public BeanInfo(ClassTypeInfo classType, boolean declared) {
     this.classType = classType;
+    this.declared = declared;
     this.properties = new HashMap<String, PropertyInfo<?>>();
     this.unmodifiableProperties = Collections.unmodifiableMap(properties);
   }
@@ -58,6 +62,10 @@ public class BeanInfo {
 
   public ClassTypeInfo getClassType() {
     return classType;
+  }
+
+  public boolean isDeclared() {
+    return declared;
   }
 
   public PropertyInfo<?> getProperty(String name) {

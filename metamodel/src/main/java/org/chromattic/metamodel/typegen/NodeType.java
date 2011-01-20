@@ -77,6 +77,10 @@ public class NodeType {
     return className;
   }
 
+  public boolean isDeclared() {
+    return mapping.getBean().isDeclared();
+  }
+
   public boolean isOrderable() {
     return orderable;
   }

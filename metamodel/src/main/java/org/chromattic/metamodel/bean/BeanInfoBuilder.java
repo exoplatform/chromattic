@@ -35,14 +35,29 @@ import java.util.*;
 public class BeanInfoBuilder {
 
   /** . */
+//  private final Logger log = Logger.getLogger(BeanInfoBuilder.class);
+
+  /** . */
   private final SimpleTypeResolver simpleTypeResolver;
 
+  /** . */
+  private final BeanFilter filter;
+
   public BeanInfoBuilder() {
-    this(new SimpleTypeResolver());
+    this((BeanFilter)null);
   }
 
   public BeanInfoBuilder(SimpleTypeResolver simpleTypeResolver) {
+    this(simpleTypeResolver, null);
+  }
+
+  public BeanInfoBuilder(SimpleTypeResolver simpleTypeResolver, BeanFilter filter) {
     this.simpleTypeResolver = simpleTypeResolver;
+    this.filter = filter;
+  }
+
+  public BeanInfoBuilder(BeanFilter filter) {
+    this(new SimpleTypeResolver(), filter);
   }
 
   public Map<ClassTypeInfo, BeanInfo> build(ClassTypeInfo... classTypes) {
@@ -118,8 +133,40 @@ public class BeanInfoBuilder {
     BeanInfo resolve(ClassTypeInfo classType) {
       BeanInfo bean = beans.get(classType);
       if (bean == null) {
-        if (classTypes.remove(classType)) {
-          bean = new BeanInfo(classType);
+        boolean accept;
+        Boolean declared;
+
+        if (classType.getKind() == ClassKind.CLASS || classType.getKind() == ClassKind.INTERFACE) {
+          if (classType instanceof SimpleTypeInfo) {
+            accept = false;
+            declared = null;
+//            log.debug("rejected simple type " + classType.getName());
+          } else if (classType instanceof VoidTypeInfo) {
+            accept = false;
+            declared = null;
+//            log.debug("rejected void " + classType.getName());
+          } else {
+            if (classTypes.remove(classType)) {
+//              log.debug("resolved declared " + classType.getName());
+              accept = true;
+              declared = true;
+            } else if (filter != null && filter.accept(classType)) {
+              accept = true;
+              declared = false;
+//              log.debug("resolved transitively " + classType.getName());
+            } else {
+              accept = false;
+              declared = null;
+//              log.debug("rejected " + classType.getName());
+            }
+          }
+        } else {
+          accept = false;
+          declared = null;
+//          log.debug("rejected non class or non interface " + classType.getName());
+        }
+        if (accept) {
+          bean = new BeanInfo(classType, declared);
           beans.put(classType, bean);
           build(bean);
         }

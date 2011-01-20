@@ -112,9 +112,9 @@ public class InheritanceTestCase extends TypeGenTestCase {
     assertEquals("i4", i2ChildDef.getNodeTypeName());
   }
 
-  public void testInvalidAbstractManyToOne() {
-    assertInvalid(B2.class);
-  }
+//  public void testInvalidAbstractManyToOne() {
+//    assertInvalid(B2.class);
+//  }
 
 //  public void testInvalidAbstractProperty() {
 //    assertInvalid(C2.class);

@@ -23,6 +23,7 @@ import org.chromattic.api.RelationshipType;
 import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.annotations.NotReferenceable;
 import org.chromattic.metamodel.annotations.Skip;
+import org.chromattic.metamodel.bean.BeanInfo;
 import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.MappingVisitor;
@@ -63,8 +64,11 @@ public class SchemaBuilder {
     Visitor visitor = new Visitor();
     for (BeanMapping mapping : mappings) {
       mapping.accept(visitor);
-      ClassTypeInfo key = mapping.getBean().getClassType();
-      schema.put(key, visitor.getNodeType(key));
+      BeanInfo bean = mapping.getBean();
+      if (bean.isDeclared()) {
+        ClassTypeInfo key = bean.getClassType();
+        schema.put(key, visitor.getNodeType(key));
+      }
     }
     visitor.end();
     return schema;

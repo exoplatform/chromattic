@@ -44,6 +44,9 @@ public class TypeGen {
   /** . */
   private final Set<ClassTypeInfo> classTypes = new HashSet<ClassTypeInfo>();
 
+  public TypeGen() {
+  }
+
   public ClassTypeInfo addType(Class<?> type) {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.resolve(type);
     classTypes.add(typeInfo);

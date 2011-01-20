@@ -146,7 +146,9 @@ public abstract class NodeTypeSerializer {
     }
 
     // Now process output
-    write(nodeType);
+//    if (nodeType.isDeclared()) {
+      write(nodeType);
+//    }
 
     // Update context : queued -> done
     queued.remove(nodeType.getName());

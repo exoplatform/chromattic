@@ -41,6 +41,7 @@ import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.api.annotations.WorkspaceName;
+import org.chromattic.metamodel.bean.BeanFilter;
 import org.chromattic.metamodel.bean.BeanInfo;
 import org.chromattic.metamodel.bean.BeanValueInfo;
 import org.chromattic.metamodel.bean.PropertyInfo;
@@ -71,6 +72,7 @@ import org.reflext.jlr.JavaLangReflectReflectionModel;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The bean mapping builder.
@@ -109,31 +111,40 @@ public class BeanMappingBuilder {
     // Clone for modification
     classTypes = new HashSet<ClassTypeInfo>(classTypes);
 
-    // Get object type
-    ClassTypeInfo objectClassType = (ClassTypeInfo)domain.resolve(Object.class);
-
-    // Add object type
-    classTypes.add((ClassTypeInfo)domain.resolve(Object.class));
-
     // Build beans
-    Map<ClassTypeInfo, BeanInfo> beans = new BeanInfoBuilder(simpleTypeResolver).build(classTypes);
-
-    // Remove object bean
-    BeanInfo objectBean = beans.remove(objectClassType);
+    final AtomicReference<ClassTypeInfo> objectCTI = new AtomicReference<ClassTypeInfo>();
+    BeanFilter filter = new BeanFilter() {
+      public boolean accept(ClassTypeInfo cti) {
+        boolean accept = false;
+        if (cti.getName().equals(Object.class.getName())) {
+          objectCTI.set(cti);
+          accept = true;
+        } else {
+          accept |= cti.getDeclaredAnnotation(AnnotationType.get(PrimaryType.class)) != null;
+          accept |= cti.getDeclaredAnnotation(AnnotationType.get(MixinType.class)) != null;
+        }
+        return accept;
+      }
+    };
+    Map<ClassTypeInfo, BeanInfo> beans = new BeanInfoBuilder(simpleTypeResolver, filter).build(classTypes);
 
     // Create context
     Context ctx = new Context(new SimpleTypeResolver(), new HashSet<BeanInfo>(beans.values()));
 
     // Build object bean info ahead as it does not contain any annotation
-    BeanMapping objectMapping = new BeanMapping(
-        objectBean,
-        NodeTypeKind.PRIMARY,
-        "nt:base",
-        NameConflictResolution.FAIL,
-        null,
-        false,
-        true);
-    ctx.beanMappings.put(objectBean, objectMapping);
+    if (objectCTI.get() != null) {
+      BeanInfo objectBean = beans.remove(objectCTI.get());
+      BeanMapping objectMapping = new BeanMapping(
+          objectBean,
+          NodeTypeKind.PRIMARY,
+          "nt:base",
+          NameConflictResolution.FAIL,
+          null,
+          false,
+          true);
+      ctx.beanMappings.put(objectBean, objectMapping);
+      ctx.beans.remove(objectBean);
+    }
 
     // Build mappings
     Map<BeanInfo, BeanMapping> beanMappings = ctx.build();
