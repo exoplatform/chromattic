@@ -22,7 +22,7 @@
    
    <groupId>org.chromattic</groupId>
    <artifactId>chromattic.parent</artifactId>
-   <version>1.0.5-SNAPSHOT</version>
+   <version>1.0.5</version>
    <packaging>pom</packaging>
 
    <name>Chromattic Framework</name>
@@ -112,55 +112,55 @@
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.5</version>
       </dependency>
       
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.5</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.cglib</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.5</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.common</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.5</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.metamodel</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.5</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.core</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.5</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.exo</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.5</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.spi</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.5</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.ext</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.5</version>
       </dependency>
 
       <!-- External dependencies -->
