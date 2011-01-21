@@ -36,8 +36,12 @@ public abstract class JCRNodePropertyMapper<P extends SingleValuedPropertyInfo<V
   protected JCRNodePropertyMapper(Class<O> contextType, PropertyMapping<P, V> info) throws ClassNotFoundException {
     super(contextType, info);
 
+    // We use the classloader from the bean
+    Class<?> clazz = (Class<Object>)info.getOwner().getBean().getClassType().unwrap();
+    ClassLoader cl = clazz.getClassLoader();
+
     //
-    relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getEffectiveType().getName());
+    relatedClass = cl.loadClass(info.getValue().getEffectiveType().getName());
   }
 
   public Class<?> getRelatedClass() {

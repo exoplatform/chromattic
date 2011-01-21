@@ -39,7 +39,8 @@ public class ProxyTypeImpl<O> implements ProxyType<O> {
 
     Constructor<? extends O> ctor;
     try {
-      Class<? extends O> proxyClass = (Class<? extends O>)Thread.currentThread().getContextClassLoader().loadClass(objectClass.getName() + "_Chromattic");
+      ClassLoader classLoader = objectClass.getClassLoader();
+      Class<? extends O> proxyClass = (Class<? extends O>)classLoader.loadClass(objectClass.getName() + "_Chromattic");
       ctor = proxyClass.getConstructor(MethodHandler.class);
     }
     catch (Exception e) {

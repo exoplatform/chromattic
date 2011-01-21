@@ -101,7 +101,7 @@ public class MethodMapper<C extends ObjectContext<C>> implements MethodInvoker<C
       super(method);
 
       //
-      this.typeClass = Thread.currentThread().getContextClassLoader().loadClass(type.getName());
+      this.typeClass = (Class<?>)type.unwrap();
     }
 
     public Object invoke(C ctx) throws Throwable {

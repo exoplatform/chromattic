@@ -37,8 +37,12 @@ public class JCREmbeddedParentPropertyMapper extends RelatedPropertyMapper<Singl
   public JCREmbeddedParentPropertyMapper(RelationshipMapping.OneToOne.Embedded info) throws ClassNotFoundException {
     super(EntityContext.class, info);
 
+    // We use the classloader from the bean
+    Class<?> clazz = (Class<?>)info.getOwner().getBean().getClassType().unwrap();
+    ClassLoader cl = clazz.getClassLoader();
+
     //
-    this.relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getClassType().getName());
+    this.relatedClass = cl.loadClass(info.getValue().getClassType().getName());
   }
 
   @Override
