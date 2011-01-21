@@ -28,7 +28,7 @@ import org.chromattic.metamodel.typegen.SchemaBuilder;
 import org.chromattic.metamodel.typegen.XMLNodeTypeSerializer;
 import org.exoplatform.services.jcr.ext.resource.UnifiedNodeReference;
 import org.exoplatform.services.jcr.ext.script.groovy.JcrGroovyCompiler;
-import org.exoplatform.services.jcr.ext.script.groovy.JcrGroovyResourceLoader;
+import org.exoplatform.services.rest.ext.groovy.SourceFolder;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.TypeResolver;
 import org.reflext.core.TypeResolverImpl;
@@ -37,7 +37,6 @@ import org.reflext.jlr.JavaLangReflectReflectionModel;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,15 +85,6 @@ public class DataObjectCompiler {
       if (doPath == null) {
         throw new IllegalArgumentException("Data object paths must not contain a null value");
       }
-    }
-
-    // see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4648098
-    try {
-      URL url = new UnifiedNodeReference(source.getRepositoryRef(), source.getWorkspaceRef(), source.getPath()).getURL();
-      compiler.getGroovyClassLoader().setResourceLoader(new JcrGroovyResourceLoader(new URL[]{url}));
-    }
-    catch (MalformedURLException e) {
-      throw new DataObjectException(e);
     }
 
     //
@@ -244,8 +234,10 @@ public class DataObjectCompiler {
           doRefs[i] = new UnifiedNodeReference(source.getRepositoryRef(), source.getWorkspaceRef(), doPaths[i]);
         }
 
+        // see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4648098
+        URL url = new UnifiedNodeReference(source.getRepositoryRef(), source.getWorkspaceRef(), source.getPath()).getURL();
         // Compile to classes and return
-        return compiler.compile(doRefs);
+        return compiler.compile(new SourceFolder[]{new SourceFolder(url)}, doRefs);
       }
       catch (IOException e) {
         throw new DataObjectException("Could not generate data object classes", e);
