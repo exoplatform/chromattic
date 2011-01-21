@@ -230,7 +230,8 @@ public class Domain {
   }
 
   public MethodHandler getHandler(Object o) {
-    return instrumentors.get(o.getClass()).getInvoker(o);
+    Instrumentor instrumentor = instrumentors.get(o.getClass());
+    return instrumentor != null ? instrumentor.getInvoker(o) : null;
   }
 
   public ObjectMapper getTypeMapper(String nodeTypeName) {
