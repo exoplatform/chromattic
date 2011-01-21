@@ -19,26 +19,8 @@
 
 package org.chromattic.dataobject;
 
-import org.chromattic.api.annotations.MixinType;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.metamodel.typegen.CNDNodeTypeSerializer;
 import org.chromattic.metamodel.typegen.NodeType;
-import org.chromattic.metamodel.typegen.NodeTypeSerializer;
-import org.chromattic.metamodel.typegen.SchemaBuilder;
-import org.chromattic.metamodel.typegen.XMLNodeTypeSerializer;
-import org.exoplatform.services.jcr.ext.resource.UnifiedNodeReference;
-import org.exoplatform.services.jcr.ext.script.groovy.JcrGroovyCompiler;
-import org.exoplatform.services.jcr.ext.script.groovy.JcrGroovyResourceLoader;
-import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.TypeResolver;
-import org.reflext.core.TypeResolverImpl;
-import org.reflext.jlr.JavaLangReflectReflectionModel;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -50,12 +32,6 @@ import java.util.Map;
 public class DataObjectService {
 
   public DataObjectService() {
-  }
-
-  public void start() {
-  }
-
-  public void stop() {
   }
 
   /**
@@ -75,35 +51,8 @@ public class DataObjectService {
     CompilationSource source,
     String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
 
-    Map<String,  NodeType> doNodeTypes = generateSchema(source, doPaths);
-
     //
-    NodeTypeSerializer serializer;
-    switch (format) {
-      case EXO:
-        serializer = new XMLNodeTypeSerializer();
-        break;
-      case CND:
-        serializer = new CNDNodeTypeSerializer();
-        break;
-      default:
-        throw new AssertionError();
-    }
-
-    //
-    for (NodeType nodeType : doNodeTypes.values()) {
-      serializer.addNodeType(nodeType);
-    }
-
-    //
-    try {
-      StringWriter writer = new StringWriter();
-      serializer.writeTo(writer);
-      return writer.toString();
-    }
-    catch (Exception e) {
-      throw new DataObjectException("Unexpected io exception", e);
-    }
+    return new DataObjectCompiler(source, doPaths).generateSchema(format);
   }
 
   /**
@@ -121,27 +70,8 @@ public class DataObjectService {
     CompilationSource source,
     String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
 
-    // Generate classes
-    Map<String, Class<?>> classes = generateClasses(source, doPaths);
-
-    // Generate class types
-    TypeResolver<Type> domain = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
-    Map<ClassTypeInfo, String> doClassTypes = new HashMap<ClassTypeInfo, String>();
-    for (Map.Entry<String, Class<?>> entry : classes.entrySet()) {
-      doClassTypes.put((ClassTypeInfo)domain.resolve(entry.getValue()), entry.getKey());
-    }
-
-    // Generate bean mappings
-    Map<String, NodeType> doNodeTypes = new HashMap<String, NodeType>();
-    for (Map.Entry<ClassTypeInfo,  NodeType> entry : new SchemaBuilder().build(doClassTypes.keySet()).entrySet()) {
-      ClassTypeInfo doClassType = entry.getKey();
-      NodeType doNodeType = entry.getValue();
-      String doPath = doClassTypes.get(doClassType);
-      doNodeTypes.put(doPath, doNodeType);
-    }
-
     //
-    return doNodeTypes;
+    return new DataObjectCompiler(source, doPaths).generateSchema();
   }
 
   /**
@@ -159,19 +89,7 @@ public class DataObjectService {
     String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
 
     //
-    Class<?>[] classes = generateAllClasses(source, doPaths);
-
-    //
-    int i = 0;
-    Map<String, Class<?>> doClasses = new HashMap<String, Class<?>>();
-    for (Class<?> clazz : classes) {
-      if (clazz.isAnnotationPresent(PrimaryType.class) || clazz.isAnnotationPresent(MixinType.class)) {
-        doClasses.put(doPaths[i++], clazz);
-      }
-    }
-
-    //
-    return doClasses;
+    return new DataObjectCompiler(source, doPaths).generateClasses();
   }
 
   /**
@@ -189,35 +107,8 @@ public class DataObjectService {
   public Class[] generateAllClasses(
     CompilationSource source,
     String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
-    if (source == null) {
-      throw new NullPointerException("No null source accepted");
-    }
-    for (String doPath : doPaths) {
-      if (doPath == null) {
-        throw new IllegalArgumentException("Data object paths must not contain a null value");
-      }
-    }
 
-    // Build the classloader url
-    try {
-      // see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4648098
-      URL url = new UnifiedNodeReference(source.getRepositoryRef(), source.getWorkspaceRef(), source.getPath()).getURL();
-
-      //
-      JcrGroovyCompiler compiler = new JcrGroovyCompiler();
-      compiler.getGroovyClassLoader().setResourceLoader(new JcrGroovyResourceLoader(new URL[]{url}));
-
-      //
-      UnifiedNodeReference[] doRefs = new UnifiedNodeReference[doPaths.length];
-      for  (int i = 0;i < doPaths.length;i++) {
-        doRefs[i] = new UnifiedNodeReference(source.getRepositoryRef(), source.getWorkspaceRef(), doPaths[i]);
-      }
-
-      // Compile to classes and return
-      return compiler.compile(doRefs);
-    }
-    catch (IOException e) {
-      throw new DataObjectException("Could not generate data object classes", e);
-    }
+    //
+    return new DataObjectCompiler(source, doPaths).generateAllClasses();
   }
 }
