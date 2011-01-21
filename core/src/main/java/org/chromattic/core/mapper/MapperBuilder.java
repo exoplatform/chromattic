@@ -108,10 +108,7 @@ public class MapperBuilder {
     private Class<? extends ObjectContext> contextType;
 
     Set<MethodMapper<?>> methodMappers;
-//    Set<MethodMapper<EntityContext>> methodMappersForE;
     Set<PropertyMapper<?, ?, ?>> propertyMappers;
-//    Set<PropertyMapper<?, ?, EntityContext>> propertyMappersForEntity;
-//    Set<PropertyMapper<?, ?, EmbeddedContext>> propertyMappersForEmbedded;
 
     public void start() {
       this.beanMappers = new HashMap<BeanMapping, ObjectMapper<?>>();
@@ -124,9 +121,6 @@ public class MapperBuilder {
       this.contextType = mapping.getNodeTypeKind() == NodeTypeKind.PRIMARY ? EntityContext.class : EmbeddedContext.class;
       this.propertyMappers = new HashSet<PropertyMapper<?,?,?>>();
       this.methodMappers = new HashSet<MethodMapper<?>>();
-//      this.methodMappersForE = new HashSet<MethodMapper<EntityContext>>();
-//      this.propertyMappersForEntity = new HashSet<PropertyMapper<?, ?, EntityContext>>();
-//      this.propertyMappersForEmbedded = new HashSet<PropertyMapper<?, ?, EmbeddedContext>>();
     }
 
     @Override
