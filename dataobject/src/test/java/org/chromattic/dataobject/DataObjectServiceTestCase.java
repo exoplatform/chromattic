@@ -28,6 +28,7 @@ import javax.jcr.Node;
 import javax.jcr.Session;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -39,7 +40,14 @@ public class DataObjectServiceTestCase extends AbstractDataObjectTestCase {
   private static final String dataObjectGroovy =
       "@org.chromattic.api.annotations.PrimaryType(name=\"nt:unstructured\")\n" +
       "class DataObject {\n" +
-      "@org.chromattic.api.annotations.Property(name = \"a\") def String a;\n" +
+      "@org.chromattic.api.annotations.Property(name = \"a\") def String a\n" +
+      "}";
+
+  /** . */
+  private static final String dataObjectWithClosureGroovy =
+      "@org.chromattic.api.annotations.PrimaryType(name=\"nt:unstructured\")\n" +
+      "class DataObjectWithClosure {\n" +
+      "void a() { [0,1,2].each { -> print(it) } }\n" +
       "}";
 
   /** . */
@@ -55,11 +63,25 @@ public class DataObjectServiceTestCase extends AbstractDataObjectTestCase {
 
     // Insert data object
     saveDataObject("DataObject.groovy", dataObjectGroovy);
+    saveDataObject("DataObjectWithClosure.groovy", dataObjectWithClosureGroovy);
   }
 
-  public void testNodeTypeGenration() throws Exception {
+  public void testNodeTypeGeneration() throws Exception {
     String s = service.generateSchema(NodeTypeFormat.EXO, source, "/dependencies/DataObject.groovy");
     System.out.println("Generated node types " + s);
+  }
+
+  public void testNodeTypeGenerationWithClosure() throws Exception {
+    // First let's check that compilation produce 3 classes for the 2 groovy files (one of them is a closure)
+    Class<?>[] classes = service.generateAllClasses(source,
+      "/dependencies/DataObjectWithClosure.groovy",
+      "/dependencies/DataObject.groovy");
+    assertEquals(3, classes.length);
+
+    // Now generate the schema
+    service.generateSchema(NodeTypeFormat.EXO, source,
+      "/dependencies/DataObjectWithClosure.groovy",
+      "/dependencies/DataObject.groovy");
   }
 
   public void testCompilation() throws Exception {

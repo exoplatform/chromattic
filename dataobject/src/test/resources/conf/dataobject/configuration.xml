@@ -81,6 +81,10 @@
   <component>
     <type>org.exoplatform.services.script.groovy.GroovyScriptInstantiator</type>
   </component>
+  
+  <component>
+  <type>org.chromattic.dataobject.DataObjectService</type>
+  </component>
 
   <external-component-plugins>
  		<target-component>org.exoplatform.services.jcr.RepositoryService</target-component>

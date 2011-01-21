@@ -19,6 +19,8 @@
 
 package org.chromattic.dataobject;
 
+import org.chromattic.api.annotations.MixinType;
+import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.metamodel.typegen.CNDNodeTypeSerializer;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.NodeTypeSerializer;
@@ -153,7 +155,38 @@ public class DataObjectService {
    * @throws NullPointerException if any argument is null
    * @throws IllegalArgumentException if any data object path is null
    */
-  public Map<String, Class<?>> generateClasses(
+  public Map<String, Class<?>> generateClasses(CompilationSource source,
+    String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
+
+    //
+    Class<?>[] classes = generateAllClasses(source, doPaths);
+
+    //
+    int i = 0;
+    Map<String, Class<?>> doClasses = new HashMap<String, Class<?>>();
+    for (Class<?> clazz : classes) {
+      if (clazz.isAnnotationPresent(PrimaryType.class) || clazz.isAnnotationPresent(MixinType.class)) {
+        doClasses.put(doPaths[i++], clazz);
+      }
+    }
+
+    //
+    return doClasses;
+  }
+
+  /**
+   * Compiles the specified classes and returns an array containing all the classes generated during
+   * the compilation. Note that the number of returned class can be greater than the number of provided
+   * paths (classes can be generated for specific groovy needs, such as closure).
+   *
+   * @param source the compilation source
+   * @param doPaths the data object paths
+   * @return the compiled data object classes
+   * @throws DataObjectException anything that would prevent data object compilation
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if any data object path is null
+   */
+  public Class[] generateAllClasses(
     CompilationSource source,
     String... doPaths) throws DataObjectException, NullPointerException, IllegalArgumentException {
     if (source == null) {
@@ -180,15 +213,8 @@ public class DataObjectService {
         doRefs[i] = new UnifiedNodeReference(source.getRepositoryRef(), source.getWorkspaceRef(), doPaths[i]);
       }
 
-      // Compile to classes
-      Class[] classes = compiler.compile(doRefs);
-      Map<String, Class<?>> doClasses = new HashMap<String, Class<?>>();
-      for (int i = 0;i< doPaths.length;i++) {
-        doClasses.put(doPaths[i], classes[i]);
-      }
-
-      //
-      return doClasses;
+      // Compile to classes and return
+      return compiler.compile(doRefs);
     }
     catch (IOException e) {
       throw new DataObjectException("Could not generate data object classes", e);
