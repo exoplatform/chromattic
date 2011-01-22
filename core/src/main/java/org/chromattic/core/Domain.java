@@ -98,7 +98,7 @@ public class Domain {
 
   /** . */
   final Collection<BeanMapping> mappings;
-  
+
   /** . */
   final ObjectFormatter objectFormatter;
 

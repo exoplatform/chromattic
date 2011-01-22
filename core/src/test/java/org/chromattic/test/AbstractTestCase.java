@@ -129,17 +129,17 @@ public abstract class AbstractTestCase extends TestCase {
     boolean pingRootNode = pingRootNode();
 
     //
-    builder.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
-    builder.setOptionValue(ChromatticBuilder.ROOT_NODE_TYPE, "nt:unstructured");
-    builder.setOptionValue(ChromatticBuilder.PROPERTY_CACHE_ENABLED, config.propertyCacheEnabled);
-    builder.setOptionValue(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
-    builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, config.optimizeHasPropertyEnabled);
-    builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, config.optimizeHasNodeEnabled);
+    builder.getConfiguration().setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
+    builder.getConfiguration().setOptionValue(ChromatticBuilder.ROOT_NODE_TYPE, "nt:unstructured");
+    builder.getConfiguration().setOptionValue(ChromatticBuilder.PROPERTY_CACHE_ENABLED, config.propertyCacheEnabled);
+    builder.getConfiguration().setOptionValue(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
+    builder.getConfiguration().setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, config.optimizeHasPropertyEnabled);
+    builder.getConfiguration().setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, config.optimizeHasNodeEnabled);
 
     //
     if (pingRootNode) {
-      builder.setOptionValue(ChromatticBuilder.CREATE_ROOT_NODE, true);
-      builder.setOptionValue(ChromatticBuilder.LAZY_CREATE_ROOT_NODE, false);
+      builder.getConfiguration().setOptionValue(ChromatticBuilder.CREATE_ROOT_NODE, true);
+      builder.getConfiguration().setOptionValue(ChromatticBuilder.LAZY_CREATE_ROOT_NODE, false);
     }
 
     //
@@ -236,7 +236,7 @@ public abstract class AbstractTestCase extends TestCase {
   }
 
   protected final <D> void setOptionValue(ChromatticBuilder.Option<D> option, D value) throws NullPointerException {
-    builder.setOptionValue(option, value);
+    builder.getConfiguration().setOptionValue(option, value);
   }
 
   protected final ChromatticBuilder getBuilder() {

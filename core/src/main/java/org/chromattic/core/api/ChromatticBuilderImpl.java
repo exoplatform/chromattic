@@ -59,21 +59,21 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   }
 
   @Override
-  protected Chromattic boot(Options options, Set<Class> classes) throws BuilderException {
+  protected Chromattic boot(Configuration options, Set<Class> classes) throws BuilderException {
     TypeResolver<Type> typeResolver = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
     //
     SimpleTypeResolver propertyTypeResolver = new SimpleTypeResolver();
 
     //
-    Boolean optimizeJCREnabled = options.getValue(JCR_OPTIMIZE_ENABLED);
+    Boolean optimizeJCREnabled = options.getOptionValue(JCR_OPTIMIZE_ENABLED);
 
     //
     final boolean hasPropertyOptimized;
     if (optimizeJCREnabled != null) {
       hasPropertyOptimized = optimizeJCREnabled;
     } else {
-      hasPropertyOptimized = options.getValue(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED);
+      hasPropertyOptimized = options.getOptionValue(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED);
     }
 
     //
@@ -81,13 +81,13 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     if (optimizeJCREnabled != null) {
       hasNodeOptimized = optimizeJCREnabled;
     } else {
-      hasNodeOptimized = options.getValue(JCR_OPTIMIZE_HAS_NODE_ENABLED);
+      hasNodeOptimized = options.getOptionValue(JCR_OPTIMIZE_HAS_NODE_ENABLED);
     }
 
     //
     String rootNodePath;
     try {
-      rootNodePath = Path.normalizeAbsolutePath(options.getValue(ROOT_NODE_PATH));
+      rootNodePath = Path.normalizeAbsolutePath(options.getOptionValue(ROOT_NODE_PATH));
     }
     catch (PathException e) {
       throw new BuilderException("Root node path must be valid");
@@ -95,8 +95,8 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
     //
     int rootCreateMode;
-    if (options.getValue(CREATE_ROOT_NODE)) {
-      boolean lazyCreateMode = options.getValue(LAZY_CREATE_ROOT_NODE);
+    if (options.getOptionValue(CREATE_ROOT_NODE)) {
+      boolean lazyCreateMode = options.getOptionValue(LAZY_CREATE_ROOT_NODE);
       if (lazyCreateMode) {
         rootCreateMode = Domain.LAZY_CREATE_MODE;
       } else {
@@ -107,20 +107,20 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     }
 
     //
-    String rootNodeType = options.getValue(ROOT_NODE_TYPE);
+    String rootNodeType = options.getOptionValue(ROOT_NODE_TYPE);
 
     //
-    boolean propertyCacheEnabled = options.getValue(PROPERTY_CACHE_ENABLED);
-    boolean propertyReadAheadEnabled = options.getValue(PROPERTY_READ_AHEAD_ENABLED);
+    boolean propertyCacheEnabled = options.getOptionValue(PROPERTY_CACHE_ENABLED);
+    boolean propertyReadAheadEnabled = options.getOptionValue(PROPERTY_READ_AHEAD_ENABLED);
 
     //
-    Instrumentor instrumentor = create(options.getInstance(INSTRUMENTOR_CLASSNAME), Instrumentor.class);
+    Instrumentor instrumentor = create(options.getOptionInstance(INSTRUMENTOR_CLASSNAME), Instrumentor.class);
 
     //
-    ObjectFormatter objectFormatter = create(options.getInstance(OBJECT_FORMATTER_CLASSNAME), ObjectFormatter.class);
+    ObjectFormatter objectFormatter = create(options.getOptionInstance(OBJECT_FORMATTER_CLASSNAME), ObjectFormatter.class);
 
     //
-    SessionLifeCycle sessionLifeCycle = create(options.getInstance(SESSION_LIFECYCLE_CLASSNAME), SessionLifeCycle.class);
+    SessionLifeCycle sessionLifeCycle = create(options.getOptionInstance(SESSION_LIFECYCLE_CLASSNAME), SessionLifeCycle.class);
 
     // Build mappings
     Set<ClassTypeInfo> classTypes = new HashSet<ClassTypeInfo>();
