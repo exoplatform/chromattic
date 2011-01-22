@@ -23,6 +23,8 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
+import org.chromattic.core.mapper.MapperBuilder;
+import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
@@ -58,12 +60,35 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     return ObjectInstantiator.newInstance(s, expectedClass);
   }
 
+  /** The mappers. */
+  private Collection<ObjectMapper<?>> mappers;
+
   @Override
-  protected Chromattic boot(Configuration options, Set<Class> classes) throws BuilderException {
+  protected void init(Set<Class<?>> classes) throws BuilderException {
+
+    // Create resolvers
+    SimpleTypeResolver propertyTypeResolver = new SimpleTypeResolver();
     TypeResolver<Type> typeResolver = TypeResolverImpl.create(JavaLangReflectReflectionModel.getInstance());
 
+    // Build mappings
+    Set<ClassTypeInfo> classTypes = new HashSet<ClassTypeInfo>();
+    for (Class clazz : classes) {
+      ClassTypeInfo typeInfo = (ClassTypeInfo)typeResolver.resolve(clazz);
+      classTypes.add(typeInfo);
+    }
+    Map<ClassTypeInfo, BeanMapping> beanMappings = new BeanMappingBuilder().build(classTypes);
+    Collection<BeanMapping> mappings = beanMappings.values();
+
+    // Build mappers
+    MapperBuilder builder = new MapperBuilder(propertyTypeResolver);
+    Collection<ObjectMapper<?>> mappers = builder.build(mappings);
+
     //
-    SimpleTypeResolver propertyTypeResolver = new SimpleTypeResolver();
+    this.mappers = mappers;
+  }
+
+  @Override
+  protected Chromattic boot(Configuration options) throws BuilderException {
 
     //
     Boolean optimizeJCREnabled = options.getOptionValue(JCR_OPTIMIZE_ENABLED);
@@ -115,28 +140,12 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
     //
     Instrumentor instrumentor = create(options.getOptionInstance(INSTRUMENTOR_CLASSNAME), Instrumentor.class);
-
-    //
     ObjectFormatter objectFormatter = create(options.getOptionInstance(OBJECT_FORMATTER_CLASSNAME), ObjectFormatter.class);
-
-    //
     SessionLifeCycle sessionLifeCycle = create(options.getOptionInstance(SESSION_LIFECYCLE_CLASSNAME), SessionLifeCycle.class);
-
-    // Build mappings
-    Set<ClassTypeInfo> classTypes = new HashSet<ClassTypeInfo>();
-    for (Class clazz : classes) {
-      ClassTypeInfo typeInfo = (ClassTypeInfo)typeResolver.resolve(clazz);
-      classTypes.add(typeInfo);
-    }
-    Map<ClassTypeInfo, BeanMapping> beanMappings = new BeanMappingBuilder().build(classTypes);
-    Collection<BeanMapping> mappings = beanMappings.values();
-
-    // Build mappers
 
     // Build domain
     Domain domain = new Domain(
-      propertyTypeResolver,
-      mappings,
+      mappers,
       instrumentor,
       objectFormatter,
       propertyCacheEnabled,

@@ -203,11 +203,17 @@ public abstract class ChromatticBuilder {
     }
   }
 
-  /** . */
+  /** The domain classes. */
   private final Set<Class<?>> classes = new HashSet<Class<?>>();
 
-  /** . */
+  /** The default configuration. */
   private final Configuration config = new Configuration();
+
+  /** . */
+  private boolean initialized = false;
+
+  /** For stuff that need to happen under synchronization. */
+  private final Object lock = new Object();
 
   public Configuration getConfiguration() {
     return config;
@@ -218,12 +224,51 @@ public abstract class ChromatticBuilder {
    *
    * @param clazz the class to add
    * @throws NullPointerException if the provided class is null
+   * @throws IllegalStateException if the builder is already initialized
    */
-  public void add(Class<?> clazz) throws NullPointerException {
-    if (clazz == null) {
+  public void add(Class<?> clazz) throws NullPointerException, IllegalStateException {
+    add(clazz, new Class<?>[0]);
+  }
+
+  /**
+   * Adds a class definition.
+   *
+   * @param first the first class to add
+   * @param other the other classes to add
+   * @throws NullPointerException if the provided class is null
+   * @throws IllegalStateException if the builder is already initialized
+   */
+  public void add(Class<?> first, Class<?>... other) throws NullPointerException, IllegalStateException {
+    if (first == null) {
       throw new NullPointerException();
     }
-    classes.add(clazz);
+    if (other == null) {
+      throw new NullPointerException();
+    }
+    Set<Class<?>> toAdd = new HashSet<Class<?>>(1 + other.length);
+    toAdd.add(first);
+    for (Class<?> clazz : other) {
+      if (clazz == null) {
+        throw new IllegalArgumentException("No array containing a null class accepted");
+      }
+      toAdd.add(clazz);
+    }
+    synchronized (lock) {
+      if (initialized) {
+        throw new IllegalStateException("Cannot add a class to an initialized builder");
+      }
+      classes.addAll(toAdd);
+    }
+  }
+
+  /**
+   * Builds the runtime and return a configured {@link org.chromattic.api.Chromattic} instance.
+   *
+   * @return the chromattic instance
+   * @throws BuilderException any builder exception
+   */
+  public final Chromattic build() throws BuilderException {
+    return build(config);
   }
 
   /**
@@ -234,6 +279,9 @@ public abstract class ChromatticBuilder {
    * @throws BuilderException any builder exception
    */
   public final Chromattic build(Configuration config) throws BuilderException {
+
+    // Init if needed
+    init();
 
     // Copy options
     config = new Configuration(config);
@@ -261,20 +309,33 @@ public abstract class ChromatticBuilder {
     config.setOptionValue(LAZY_CREATE_ROOT_NODE, false, false);
 
     //
-    return boot(config, new HashSet<Class>(classes));
+    return boot(config);
   }
 
   /**
-   * Builds the runtime and return a configured {@link org.chromattic.api.Chromattic} instance.
+   * Initialize the builder, this operation should be called once per builder, unlike the {@link #build(Configuration)}
+   * operation that can be called several times with different configurations. This operation is used to perform the
+   * initialization that is common to any configuration such as building the meta model from the classes.
    *
-   * @return the chromattic instance
-   * @throws BuilderException any builder exception
+   * @return whether or not initialization occured
+   * @throws BuilderException any exception that would prevent the initialization to happen correctly
    */
-  public final Chromattic build() throws BuilderException {
-    return build(config);
+  public final boolean init() throws BuilderException {
+    // Init if needed
+    synchronized (lock) {
+      if (!initialized) {
+        init(classes);
+        initialized = true;
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 
-  protected abstract Chromattic boot(Configuration options, Set<Class> classes) throws BuilderException;
+  protected abstract void init(Set<Class<?>> classes) throws BuilderException;
+
+  protected abstract Chromattic boot(Configuration options) throws BuilderException;
 
     /**
    * A configuration option.

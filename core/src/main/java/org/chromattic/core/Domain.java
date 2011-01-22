@@ -23,12 +23,10 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
-import org.chromattic.core.mapper.MapperBuilder;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.jcr.type.TypeManager;
 import org.chromattic.core.query.QueryManager;
 import org.chromattic.metamodel.mapping.BeanMapping;
-import org.chromattic.metamodel.type.SimpleTypeResolver;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.api.format.ObjectFormatter;
 
@@ -36,7 +34,12 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.chromattic.common.collection.Collections;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.spi.instrument.ProxyType;
@@ -100,9 +103,6 @@ public class Domain {
   private final Map<Class<?>, Instrumentor> chromatticTypeToInstrumentor;
 
   /** . */
-  final Collection<BeanMapping> mappings;
-
-  /** . */
   final ObjectFormatter objectFormatter;
 
   /** . */
@@ -136,8 +136,7 @@ public class Domain {
   final QueryManager queryManager;
 
   public Domain(
-    SimpleTypeResolver resolver,
-    Collection<BeanMapping> mappings,
+    Collection<ObjectMapper<?>> mappers,
     Instrumentor defaultInstrumentor,
     ObjectFormatter objectFormatter,
     boolean propertyCacheEnabled,
@@ -156,7 +155,8 @@ public class Domain {
     //
     Map<Class<?>, Instrumentor> proxyTypeToInstrumentor = new HashMap<Class<?>, Instrumentor>();
     Map<Class<?>, Instrumentor> chromatticTypeToInstrumentor = new HashMap<Class<?>, Instrumentor>();
-    mapping: for (BeanMapping beanMapping : mappings) {
+    mapping: for (ObjectMapper<?> mapper : mappers) {
+      BeanMapping beanMapping = mapper.getMapping();
       Class<?> clazz = (Class<?>)beanMapping.getBean().getClassType().unwrap();
       for (Annotation annotation : clazz.getAnnotations()) {
         if ("org.chromattic.groovy.annotations.GroovyInstrumentor".equals(annotation.annotationType().getName())) {
@@ -180,10 +180,6 @@ public class Domain {
     }
 
     //
-    MapperBuilder builder = new MapperBuilder(resolver);
-    Collection<ObjectMapper<?>> mappers = builder.build(mappings);
-
-    //
     Map<String, ObjectMapper> typeMapperByNodeType = new HashMap<String, ObjectMapper>();
     Map<Class<?>, ObjectMapper> typeMapperByClass = new HashMap<Class<?>, ObjectMapper>();
     for (ObjectMapper typeMapper : mappers) {
@@ -204,7 +200,6 @@ public class Domain {
     }
 
     //
-    this.mappings = mappings;
     this.typeMapperByClass = typeMapperByClass;
     this.typeMapperByNodeType = typeMapperByNodeType;
     this.defaultInstrumentor = defaultInstrumentor;
@@ -221,10 +216,6 @@ public class Domain {
     this.rootNodeType = rootNodeType;
     this.proxyTypeToInstrumentor = proxyTypeToInstrumentor;
     this.chromatticTypeToInstrumentor = chromatticTypeToInstrumentor;
-  }
-
-  public Collection<BeanMapping> getMappings() {
-    return mappings;
   }
 
   public boolean isHasPropertyOptimized() {

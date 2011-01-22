@@ -22,7 +22,6 @@ package org.chromattic.core.api;
 import org.chromattic.core.DomainSessionImpl;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.SessionWrapperImpl;
-import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
 import org.chromattic.api.ChromatticSession;
@@ -32,7 +31,6 @@ import org.chromattic.api.UndeclaredRepositoryException;
 import javax.jcr.Credentials;
 import javax.jcr.Session;
 import javax.jcr.RepositoryException;
-import java.util.Collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -98,14 +96,5 @@ public class ChromatticImpl implements Chromattic {
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
-  }
-
-  /**
-   * Returns the set of mappings related to this chromattic objet.
-   *
-   * @return the set of mappings
-   */
-  public Collection<? extends BeanMapping> getMappings() {
-    return domain.getMappings();
   }
 }
