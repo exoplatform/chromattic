@@ -30,6 +30,7 @@ import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
+import org.chromattic.spi.instrument.ProxyType;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -59,9 +60,15 @@ public final class EntityContext extends ObjectContext<EntityContext> {
   EntityContextState state;
 
   EntityContext(ObjectMapper<EntityContext> mapper, EntityContextState state) throws RepositoryException {
+
+    // Create our proxy
+    ProxyType pt = state.getSession().domain.getProxyType(mapper.getObjectClass());
+    Object object = pt.createProxy(this);
+
+    //
     this.state = null;
     this.mapper = mapper;
-    this.object = mapper.createObject(this);
+    this.object = object;
     this.state = state;
     this.properties = new PropertyMap(this);
     this.embeddeds = new HashMap<ObjectMapper<EmbeddedContext>, EmbeddedContext>();

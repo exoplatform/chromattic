@@ -53,7 +53,7 @@ public class Domain {
       throw new UnsupportedOperationException("Cannot create proxy for " + handler);
     }
 
-    public Class<? extends Object> getType() {
+    public Class<?> getType() {
       throw new UnsupportedOperationException("Cannot get proxy type for NULL_PROXY_TYPE");
     }
   };
@@ -94,7 +94,10 @@ public class Domain {
   private final Instrumentor  defaultInstrumentor;
 
   /** . */
-  private final Map<Class<?>, Instrumentor> instrumentors = new HashMap<Class<?>, Instrumentor>();
+  private final Map<Class<?>, Instrumentor> proxyTypeToInstrumentor;
+
+  /** . */
+  private final Map<Class<?>, Instrumentor> chromatticTypeToInstrumentor;
 
   /** . */
   final Collection<BeanMapping> mappings;
@@ -151,7 +154,8 @@ public class Domain {
     }
     
     //
-    Map<BeanMapping, Instrumentor> instrumentorMapping = new HashMap<BeanMapping, Instrumentor>();
+    Map<Class<?>, Instrumentor> proxyTypeToInstrumentor = new HashMap<Class<?>, Instrumentor>();
+    Map<Class<?>, Instrumentor> chromatticTypeToInstrumentor = new HashMap<Class<?>, Instrumentor>();
     mapping: for (BeanMapping beanMapping : mappings) {
       Class<?> clazz = (Class<?>)beanMapping.getBean().getClassType().unwrap();
       for (Annotation annotation : clazz.getAnnotations()) {
@@ -161,22 +165,22 @@ public class Domain {
             instrumentorClass = (Class<?>)annotation.annotationType().getMethod("value").invoke(annotation);
           } catch (Exception ignore) {}
           Instrumentor i = ObjectInstantiator.newInstance(instrumentorClass.getName(), Instrumentor.class);
-          instrumentors.put(i.getProxyClass(clazz).getType(), i);
-          instrumentorMapping.put(beanMapping, i);
+          proxyTypeToInstrumentor.put(i.getProxyClass(clazz).getType(), i);
+          chromatticTypeToInstrumentor.put(clazz, i);
           continue mapping;
         }
       }
       if (Object.class.equals(clazz)) {
-        instrumentors.put(clazz, defaultInstrumentor);
-        instrumentorMapping.put(beanMapping, NULL_INSTRUMENTOR);
+        proxyTypeToInstrumentor.put(clazz, defaultInstrumentor);
+        chromatticTypeToInstrumentor.put(clazz, defaultInstrumentor);
       } else {
-        instrumentors.put(defaultInstrumentor.getProxyClass(clazz).getType(), defaultInstrumentor);
-        instrumentorMapping.put(beanMapping, defaultInstrumentor);
+        proxyTypeToInstrumentor.put(defaultInstrumentor.getProxyClass(clazz).getType(), defaultInstrumentor);
+        chromatticTypeToInstrumentor.put(clazz, defaultInstrumentor);
       }
     }
 
     //
-    MapperBuilder builder = new MapperBuilder(resolver, instrumentorMapping);
+    MapperBuilder builder = new MapperBuilder(resolver);
     Collection<ObjectMapper<?>> mappers = builder.build(mappings);
 
     //
@@ -215,6 +219,8 @@ public class Domain {
     this.queryManager = new QueryManager(rootNodePath);
     this.rootCreateMode = rootCreateMode;
     this.rootNodeType = rootNodeType;
+    this.proxyTypeToInstrumentor = proxyTypeToInstrumentor;
+    this.chromatticTypeToInstrumentor = chromatticTypeToInstrumentor;
   }
 
   public Collection<BeanMapping> getMappings() {
@@ -230,8 +236,13 @@ public class Domain {
   }
 
   public MethodHandler getHandler(Object o) {
-    Instrumentor instrumentor = instrumentors.get(o.getClass());
+    Instrumentor instrumentor = proxyTypeToInstrumentor.get(o.getClass());
     return instrumentor != null ? instrumentor.getInvoker(o) : null;
+  }
+
+  public <O> ProxyType<O> getProxyType(Class<O> type) {
+    Instrumentor instrumentor = chromatticTypeToInstrumentor.get(type);
+    return instrumentor.getProxyClass(type);
   }
 
   public ObjectMapper getTypeMapper(String nodeTypeName) {

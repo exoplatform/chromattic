@@ -50,7 +50,6 @@ import org.chromattic.metamodel.mapping.MappingVisitor;
 import org.chromattic.metamodel.mapping.PropertiesMapping;
 import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
-import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
 import java.util.Collection;
@@ -71,15 +70,9 @@ public class MapperBuilder {
   /** . */
   private final ValueTypeFactory valueTypeFactory;
 
-  /** . */
-  private final Map<BeanMapping, Instrumentor> instrumentorMapping;
-
-  public MapperBuilder(
-      SimpleTypeResolver simpleTypeResolver,
-      Map<BeanMapping, Instrumentor> instrumentorMapping) {
+  public MapperBuilder(SimpleTypeResolver simpleTypeResolver) {
     this.simpleTypeResolver = simpleTypeResolver;
     this.valueTypeFactory = new ValueTypeFactory(simpleTypeResolver);
-    this.instrumentorMapping = instrumentorMapping;
   }
 
   public Collection<ObjectMapper<?>> build(Collection<BeanMapping> beanMappings) {
@@ -259,8 +252,6 @@ public class MapperBuilder {
     @Override
     public void endBean() {
 
-      Instrumentor objectInstrumentor = instrumentorMapping.get(beanMapping);
-
       ObjectMapper<?> mapper;
       if (beanMapping.getNodeTypeKind() == NodeTypeKind.PRIMARY) {
 
@@ -279,7 +270,6 @@ public class MapperBuilder {
             methodMappers,
             beanMapping.getOnDuplicate(),
             formatter,
-            objectInstrumentor,
             beanMapping.getNodeTypeName(),
             beanMapping.getNodeTypeKind()
         );
@@ -294,7 +284,6 @@ public class MapperBuilder {
             methodMappers,
             beanMapping.getOnDuplicate(),
             null,
-            objectInstrumentor,
             beanMapping.getNodeTypeName(),
             beanMapping.getNodeTypeKind()
         );

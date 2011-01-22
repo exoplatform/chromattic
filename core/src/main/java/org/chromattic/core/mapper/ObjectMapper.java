@@ -57,9 +57,6 @@ public class ObjectMapper<C extends ObjectContext<C>> {
   final Set<PropertyMapper<?, ?, C>> propertyMappers;
 
   /** . */
-  private final ProxyType type;
-
-  /** . */
   private final Map<Method, MethodInvoker<C>> dispatchers;
 
   /** The optional formatter for this object. */
@@ -85,7 +82,7 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     Set<MethodMapper<C>> methodMappers,
     NameConflictResolution onDuplicate,
     ObjectFormatter formatter,
-    Instrumentor instrumentor,
+//    Instrumentor instrumentor,
     String typeName,
     NodeTypeKind kind) {
 
@@ -121,7 +118,6 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     this.formatter = formatter;
     this.onDuplicate = onDuplicate;
     this.propertyMappers = propertyMappers;
-    this.type = instrumentor.getProxyClass(objectClass);
     this.nodeTypeName = typeName;
     this.kind = kind;
     this.propertyMapperMap = propertyMapperMap;
@@ -149,10 +145,6 @@ public class ObjectMapper<C extends ObjectContext<C>> {
 
   public ObjectFormatter getFormatter() {
     return formatter;
-  }
-
-  public Object createObject(C context) {
-    return type.createProxy(context);
   }
 
   public Set<MethodMapper<C>> getMethodMappers() {

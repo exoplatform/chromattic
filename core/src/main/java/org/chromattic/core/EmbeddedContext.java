@@ -21,6 +21,7 @@ package org.chromattic.core;
 
 import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
+import org.chromattic.spi.instrument.ProxyType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -44,8 +45,14 @@ public final class EmbeddedContext extends ObjectContext<EmbeddedContext> {
   final DomainSession session;
 
   EmbeddedContext(ObjectMapper<EmbeddedContext> mapper, DomainSession session) {
+
+    // Create our proxy
+    ProxyType pt = session.domain.getProxyType(mapper.getObjectClass());
+    Object object = pt.createProxy(this);
+
+    //
     this.mapper = mapper;
-    this.object = mapper.createObject(this);
+    this.object = object;
     this.session = session;
   }
 
