@@ -76,10 +76,10 @@ public abstract class AbstractTestCase extends TestCase {
     String path = "/" + getClass().getSimpleName() + "/" + testName;
 
     //
-    builder.getConfiguration().setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, path);
-    builder.getConfiguration().setOptionValue(ChromatticBuilder.ROOT_NODE_TYPE, "nt:unstructured");
-    builder.getConfiguration().setOptionValue(ChromatticBuilder.CREATE_ROOT_NODE, true);
-    builder.getConfiguration().setOptionValue(ChromatticBuilder.LAZY_CREATE_ROOT_NODE, false);
+    builder.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, path);
+    builder.setOptionValue(ChromatticBuilder.ROOT_NODE_TYPE, "nt:unstructured");
+    builder.setOptionValue(ChromatticBuilder.CREATE_ROOT_NODE, true);
+    builder.setOptionValue(ChromatticBuilder.LAZY_CREATE_ROOT_NODE, false);
 
     //
     for (Class<?> chromatticClass : classes()) {

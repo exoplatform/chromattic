@@ -337,7 +337,19 @@ public abstract class ChromatticBuilder {
 
   protected abstract Chromattic boot(Configuration options) throws BuilderException;
 
-    /**
+  /**
+   * Set the option value.
+   *
+   * @param option the option to set
+   * @param value the option value
+   * @param <D> the option data type
+   * @throws NullPointerException if any argument is null
+   */
+  public <D> void setOptionValue(Option<D> option, D value) throws NullPointerException {
+    config.setOptionValue(option, value, true);
+  }
+
+  /**
    * A configuration option.
    *
    * @param <D> the option data type
@@ -549,18 +561,6 @@ public abstract class ChromatticBuilder {
         throw new NullPointerException("Cannot set null value");
       }
       setOptionValue(option, option.getType().parse(value), overwrite);
-    }
-
-    /**
-     * Set the option value.
-     *
-     * @param option the option to set
-     * @param value the option value
-     * @param <D> the option data type
-     * @throws NullPointerException if any argument is null
-     */
-    public <D> void setOptionValue(Option<D> option, D value) throws NullPointerException {
-      setOptionValue(option, value, true);
     }
 
     /**

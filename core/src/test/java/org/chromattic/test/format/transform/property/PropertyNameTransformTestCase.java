@@ -33,7 +33,7 @@ public class PropertyNameTransformTestCase extends AbstractTestCase {
 
   @Override
   protected void createDomain() {
-    getBuilder().getConfiguration().setOptionValue(ChromatticBuilder.OBJECT_FORMATTER_CLASSNAME, FooPrefixerFormatter.class.getName());
+    getBuilder().setOptionValue(ChromatticBuilder.OBJECT_FORMATTER_CLASSNAME, FooPrefixerFormatter.class.getName());
     addClass(A.class);
   }
 
