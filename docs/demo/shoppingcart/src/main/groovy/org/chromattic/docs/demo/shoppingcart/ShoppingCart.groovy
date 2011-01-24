@@ -32,7 +32,7 @@ class ShoppingCart {
 
   int getTotalMoney() {
     def money = 0
-    this.items.each { money += it.quantity * it.product.price }
+    items.each { money += it.quantity * it.product.price }
     return money
   }
 }
