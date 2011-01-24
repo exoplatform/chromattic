@@ -29,9 +29,15 @@ import org.chromattic.groovy.annotations.ChromatticDelegation;
  * @version $Revision$
  */
 public class AnnotationPresenceTest extends TestCase {
-  
+
   public void testAnnotationFieldPresent() throws Exception {
-    assertEquals(0, B.class.getDeclaredField("stringTypedChromattic").getAnnotations().length);
+    try {
+      B.class.getDeclaredField("stringTypedChromattic");
+      fail();
+    } catch (NoSuchFieldException e) {
+      // It's ok
+    }
+    assertEquals(1, B.class.getDeclaredMethod("getStringTypedChromattic").getAnnotations().length);
   }
 
   public void testAnnotationImplicitGetterPresent() throws Exception {

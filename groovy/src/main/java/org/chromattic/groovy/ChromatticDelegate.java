@@ -26,6 +26,7 @@ import org.codehaus.groovy.ast.expr.*;
 import org.codehaus.groovy.ast.stmt.*;
 
 import java.lang.reflect.Modifier;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -199,5 +200,16 @@ public class ChromatticDelegate {
     try {
       plugInvokeMethod(classNode);
     } catch (NoSuchMethodException ignore) { }
+  }
+
+  public void removeChromatticField(ClassNode classNode) {
+    Iterator<FieldNode> it = classNode.getFields().iterator();
+    while(it.hasNext()) {
+      FieldNode fieldNode = it.next();
+      if (GroovyUtils.isChromatticAnnoted(GroovyUtils.getGetter(classNode, fieldNode))) {
+        it.remove();
+        fieldNode.getOwner().redirect().renameField(fieldNode.getName(), fieldNode.getName() + "_");
+      }
+    }
   }
 }

@@ -108,6 +108,8 @@ public class ChromatticASTTransformationVisitor implements ASTTransformation
       delegate.generateInvokeMethod(classNode);
     }
 
+     delegate.removeChromatticField(classNode);
+
     for (MethodNode methodNode : classNode.getMethods()) {
       if (methodNode.isAbstract()) {
         implementor.implement(methodNode);

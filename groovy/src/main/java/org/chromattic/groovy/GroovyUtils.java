@@ -93,6 +93,14 @@ public class GroovyUtils {
     return false;
   }
 
+  public static boolean isChromatticAnnoted(MethodNode methodNode) {
+     if (methodNode == null) return false;
+    for (AnnotationNode annotationNode : (List<AnnotationNode>) methodNode.getAnnotations()) {
+      if (annotationNode.getClassNode().getName().startsWith(GroovyUtils.ANNOTATIONS_PACKAGE)) return true;
+    }
+    return false;
+  }
+
   public static boolean isChromatticAnnotedInHierarchy(ClassNode classNode, FieldNode fieldNode) {
     if (classNode == null) classNode = fieldNode.getDeclaringClass();
     ClassNode superClassNode = classNode.getSuperClass(); 

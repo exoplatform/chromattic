@@ -50,6 +50,13 @@ public class TypeTestCase extends TestCase {
   }
 
   public void testWithChromatticStaticType() throws Exception {
-    assertEquals(String.class, A.class.getField("stringTypedChromattic").getType());
+    try {
+      B.class.getDeclaredField("stringTypedChromattic");
+      fail();
+    } catch (NoSuchFieldException e)
+    {
+       // It's ok
+    }
+    assertEquals(String.class, A.class.getMethod("getStringTypedChromattic").getReturnType());
   }
 }

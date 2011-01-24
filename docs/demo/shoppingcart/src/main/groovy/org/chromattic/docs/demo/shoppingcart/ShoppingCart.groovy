@@ -32,8 +32,7 @@ class ShoppingCart {
 
   int getTotalMoney() {
     def money = 0
-    System.out.println("cart: $items [should not be null]")
-    items.each { money += it.quantity * it.product.price }
+    this.items.each { money += it.quantity * it.product.price }
     return money
   }
 }

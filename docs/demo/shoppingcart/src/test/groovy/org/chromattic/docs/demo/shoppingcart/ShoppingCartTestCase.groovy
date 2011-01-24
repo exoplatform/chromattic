@@ -77,9 +77,7 @@ class ShoppingCartTestCase extends TestCase {
     purchase2.quantity = 2;
     session.save()
 
-    System.out.println("cart: " + purchase1.cart.items);
-
     //
-    assertEquals(0, cart.totalMoney)
+    assertEquals(8500, cart.totalMoney)
   }
 }
