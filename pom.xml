@@ -483,53 +483,7 @@
      </profile>
      
     <profile>
-      <!-- Ensure our build is following some maven best practices and the environment is following some constraints -->
-      <!-- Controls can be inactivated by adding -P-enforce or -Dskip-enforce in the command line -->
-      <id>enforce</id>
-      <activation>
-        <property>
-          <name>!skip-enforce</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-<!--
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>enforce-plugin-versions</id>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <requireJavaVersion>
-                      <message>Chromattic requires at least Java 1.5 to build.</message>
-                      <version>1.5</version>
-                    </requireJavaVersion>
-                    <requirePluginVersions>
-                      <message>Best practice is to always define plugin versions!</message>
-                      <banLatest>true</banLatest>
-                      <banRelease>true</banRelease>
-                      <phases>deploy,site</phases>
-                    </requirePluginVersions>
-                    <requireMavenVersion>
-                      &lt;!&ndash; Version 2.0.9 started specifying default versions for all core plugins in the super pom. &ndash;&gt;
-                      <version>2.0.9</version>
-                    </requireMavenVersion>
-                  </rules>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
--->
-        </plugins>
-      </build>
-    </profile>
 
-    <profile>
       <!-- Generation of a jar containing the source code -->
       <!-- Generation can be inactivated by adding -P-sources or -Dskip-sources in the command line -->
       <id>sources</id>
