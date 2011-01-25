@@ -214,15 +214,51 @@
       </dependency>
 
       <dependency>
-        <groupId>org.exoplatform.jcr</groupId>
-        <artifactId>exo.jcr.component.core</artifactId>
-        <version>1.14.0-Beta01</version>
+        <groupId>org.exoplatform.kernel</groupId>
+        <artifactId>exo.kernel.container</artifactId>
+        <version>2.3.0-Beta03</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>exo.kernel.container</artifactId>
-        <version>2.3.0-Beta01</version>
+        <artifactId>exo.kernel.component.command</artifactId>
+        <version>2.3.0-Beta03</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.jcr</groupId>
+        <artifactId>exo.jcr.component.core</artifactId>
+        <version>1.14.0-Beta03</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.jcr</groupId>
+        <artifactId>exo.jcr.component.ext</artifactId>
+        <version>1.14.0-Beta03</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.commons</artifactId>
+        <version>2.2.0-Beta03</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.rest.core</artifactId>
+        <version>2.2.0-Beta03</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.rest.ext</artifactId>
+        <version>2.2.0-Beta03</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.testframework</artifactId>
+        <version>2.2.0-Beta03</version>
       </dependency>
 
       <dependency>
@@ -436,7 +472,7 @@
   </build>
 
   <profiles>
-  
+
      <profile>
         <id>Java5</id>
         <activation>

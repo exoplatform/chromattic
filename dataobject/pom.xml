@@ -32,6 +32,7 @@
   <name>Chromattic Data Object</name>
   <description>Chromattic Data Object</description>
 
+<!--
   <repositories>
     <repository>
       <id>exo-central</id>
@@ -39,6 +40,7 @@
       <url>http://repository.exoplatform.org/content/groups/all/</url>
     </repository>
   </repositories>
+-->
 
   <dependencies>
 
@@ -81,7 +83,39 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.apt</artifactId>
-      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.component.command</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.component.ext</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.ws</groupId>
+      <artifactId>exo.ws.commons</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.ws</groupId>
+      <artifactId>exo.ws.rest.core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.ws</groupId>
+      <artifactId>exo.ws.rest.ext</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.ws</groupId>
+      <artifactId>exo.ws.testframework</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -100,38 +134,6 @@
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.exo</artifactId>
       <scope>test</scope>
-    </dependency>
-
-    <!-- Redefine dependencies to use snapshots -->
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.component.command</artifactId>
-      <version>2.3.0-Beta03</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.ext</artifactId>
-      <version>1.14.0-Beta03</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ws</groupId>
-      <artifactId>exo.ws.commons</artifactId>
-      <version>2.2.0-Beta03</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ws</groupId>
-      <artifactId>exo.ws.rest.core</artifactId>
-      <version>2.2.0-Beta03</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ws</groupId>
-      <artifactId>exo.ws.rest.ext</artifactId>
-      <version>2.2.0-Beta03</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ws</groupId>
-      <artifactId>exo.ws.testframework</artifactId>
-      <version>2.2.0-Beta03</version>
     </dependency>
 
   </dependencies>
