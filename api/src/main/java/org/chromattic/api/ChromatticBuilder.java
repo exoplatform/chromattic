@@ -19,14 +19,15 @@
 
 package org.chromattic.api;
 
-import org.chromattic.api.format.DefaultObjectFormatter;
-
+import java.util.Iterator;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Collections;
-import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The builder configures and create a Chromattic runtime.
@@ -35,6 +36,9 @@ import java.util.Arrays;
  * @version $Revision$
  */
 public abstract class ChromatticBuilder {
+
+  /** . */
+  private static final Logger log = Logger.getLogger(ChromatticBuilder.class.getName());
 
   /**
    * A special option that will lookup system properties when set to true to configure options by default.
@@ -160,62 +164,80 @@ public abstract class ChromatticBuilder {
       "the root node type when it is created by Chromattic");
 
   /**
-   * Options configurable via system properties.
-   */
-  private final static Set<Option> systemOptions = Collections.unmodifiableSet(new HashSet<Option>(Arrays.asList(
-    PROPERTY_CACHE_ENABLED,
-    PROPERTY_READ_AHEAD_ENABLED,
-    JCR_OPTIMIZE_ENABLED,
-    JCR_OPTIMIZE_HAS_PROPERTY_ENABLED,
-    JCR_OPTIMIZE_HAS_NODE_ENABLED,
-    SESSION_LIFECYCLE_CLASSNAME
-  )));
-
-  private static Set<Option> getSystemOptions() {
-    return systemOptions;
-  }
-
-  /**
    * Create and return an instance of the builder.
    *
    * @return the chromattic builder instance
    */
   public static ChromatticBuilder create() {
-    String builderClassName = "org.chromattic.core.api.ChromatticBuilderImpl";
-    try {
-      Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(builderClassName);
-      if (ChromatticBuilder.class.isAssignableFrom(clazz)) {
-        Class<? extends ChromatticBuilder> builderClass = clazz.asSubclass(ChromatticBuilder.class);
-        return builderClass.newInstance();
-      } else {
-        throw new BuilderException("Instrumentor class " + builderClassName + " does not extends the " +
-          ChromatticBuilder.class.getName() + " class");
+    ServiceLoader<ChromatticBuilder> loader = ServiceLoader.load(ChromatticBuilder.class);
+    Iterator<ChromatticBuilder> i =  loader.iterator();
+    Throwable throwable = null;
+    while (i.hasNext()) {
+      try {
+        ChromatticBuilder builder = i.next();
+        log.log(Level.FINER, "Found ChromatticBuilder implementation " + builder.getClass().getName());
+        return builder;
+      }
+      catch (ServiceConfigurationError error) {
+        if (throwable == null) {
+          throwable = error;
+        }
+        log.log(Level.FINER, "Could not load ChromatticBuilder implementation, will use next provider", error);
       }
     }
-    catch (InstantiationException e) {
-      throw new BuilderException("Could not instanciate builder " + builderClassName, e);
-    }
-    catch (IllegalAccessException e) {
-      throw new BuilderException("Could not instanciate builder " + builderClassName, e);
-    }
-    catch (ClassNotFoundException e) {
-      throw new BuilderException("Could not load builder class " + builderClassName, e);
-    }
+    throw new BuilderException("Could not instanciate builder", throwable);
   }
 
   /** The domain classes. */
-  private final Set<Class<?>> classes = new HashSet<Class<?>>();
+  private final Set<Class<?>> classes;
 
   /** The default configuration. */
-  private final Configuration config = new Configuration();
+  private final Configuration config;
 
   /** . */
-  private boolean initialized = false;
+  private boolean initialized;
 
   /** For stuff that need to happen under synchronization. */
   private final Object lock = new Object();
 
-  public Configuration getConfiguration() {
+  public ChromatticBuilder() {
+    this.config = createDefaultConfiguration();
+    this.initialized = false;
+    this.classes = new HashSet<Class<?>>();
+  }
+
+  /**
+   * <p>Create the default configuration. Subclass can override it to provide a suitable default configuration.
+   * The returned object will likely be modified and therefore a new copy should be created every time this
+   * method is invoked.</p>
+   *
+   * <p>The default implementation relies on the {@link ServiceLoader} to load an instance of {@link Configuration.Factory}
+   * If no configuration is found then a builder exception is thrown./<p>
+   *
+   * @return the default configuration
+   */
+  protected Configuration createDefaultConfiguration() {
+    ServiceLoader loader = ServiceLoader.load(Configuration.Factory.class);
+    Iterator<Configuration.Factory> i = loader.iterator();
+    while (i.hasNext()) {
+      try {
+        Configuration.Factory builder = i.next();
+        log.log(Level.FINER, "Found ChromatticBuilder implementation " + builder.getClass().getName());
+        return builder.create();
+      }
+      catch (ServiceConfigurationError ignore) {
+        log.log(Level.FINER, "Could not load ChromatticBuilder implementation, will use next provider", ignore);
+      }
+    }
+    throw new BuilderException("Could not instanciate configuration factory");
+  }
+
+  /**
+   * Return the current configuration.
+   *
+   * @return the configuration
+   */
+  public final Configuration getConfiguration() {
     return config;
   }
 
@@ -285,28 +307,6 @@ public abstract class ChromatticBuilder {
 
     // Copy options
     config = new Configuration(config);
-
-    // Configure system properties options
-    if (!Boolean.FALSE.equals(config.getOptionValue(USE_SYSTEM_PROPERTIES))) {
-      for (Option<?> option : getSystemOptions()) {
-        String value = System.getProperty(option.getName());
-        if (value != null) {
-          config._setValue(option, value, false);
-        }
-      }
-    }
-
-    // Configuration default options
-    config.setOptionValue(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl", false);
-    config.setOptionValue(SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle", false);
-    config.setOptionValue(OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName(), false);
-    config.setOptionValue(PROPERTY_CACHE_ENABLED, false, false);
-    config.setOptionValue(PROPERTY_READ_AHEAD_ENABLED, false, false);
-    config.setOptionValue(JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, false, false);
-    config.setOptionValue(JCR_OPTIMIZE_HAS_NODE_ENABLED, false, false);
-    config.setOptionValue(ROOT_NODE_PATH, "/", false);
-    config.setOptionValue(CREATE_ROOT_NODE, false, false);
-    config.setOptionValue(LAZY_CREATE_ROOT_NODE, false, false);
 
     //
     return boot(config);
@@ -487,10 +487,25 @@ public abstract class ChromatticBuilder {
 
   public static class Configuration {
 
+
+    /**
+     * The configuration factory.
+     */
+    public abstract static class Factory {
+
+      /**
+       * Returns a configuration. The returned object will likely be modified so a new instance should
+       * be provided on each invocation and no caching should be done.
+       *
+       * @return the configuration
+       */
+      public abstract Configuration create();
+    }
+
     /** . */
     protected final Map<String, Option.Instance<?>> entries = new HashMap<String, Option.Instance<?>>();
 
-    private Configuration() {
+    public Configuration() {
     }
 
     /**
@@ -550,17 +565,6 @@ public abstract class ChromatticBuilder {
     public <D> D getOptionValue(Option<D> option) throws NullPointerException {
       Option.Instance<D> instance = getOptionInstance(option);
       return instance != null ? instance.value : null;
-    }
-
-    // An internal form
-    private <D> void _setValue(Option<D> option, String value, boolean overwrite) throws NullPointerException {
-      if (option == null) {
-        throw new NullPointerException("Cannot set null option");
-      }
-      if (value == null) {
-        throw new NullPointerException("Cannot set null value");
-      }
-      setOptionValue(option, option.getType().parse(value), overwrite);
     }
 
     /**
