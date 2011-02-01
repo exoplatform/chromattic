@@ -186,13 +186,13 @@
       <dependency>
         <groupId>org.exoplatform.jcr</groupId>
         <artifactId>exo.jcr.component.core</artifactId>
-        <version>1.12.6-GA</version>
+        <version>1.12.7-GA</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
         <artifactId>exo.kernel.container</artifactId>
-        <version>2.2.6-GA</version>
+        <version>2.2.7-GA</version>
       </dependency>
 
       <dependency>

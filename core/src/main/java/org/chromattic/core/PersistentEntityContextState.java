@@ -19,16 +19,15 @@
 
 package org.chromattic.core;
 
-import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.NoSuchPropertyException;
 import org.chromattic.core.jcr.info.NodeTypeInfo;
 import org.chromattic.core.jcr.info.PrimaryTypeInfo;
 import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
-import org.chromattic.common.CloneableInputStream;
 import org.chromattic.core.vt.ValueType;
 
+import javax.jcr.InvalidItemStateException;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
@@ -36,12 +35,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Date;
-import java.io.InputStream;
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -53,19 +50,32 @@ class PersistentEntityContextState extends EntityContextState {
   private final DomainSession session;
 
   /** . */
-  private final Map<String, Object> propertyCache;
-
-  /** . */
   private final Node node;
 
   /** . */
   private final PrimaryTypeInfo typeInfo;
 
+  /** . */
+  private final boolean readAhead;
+
+  /** . */
+  private final boolean cache;
+
+  /** . */
+  private Map<String, Property> propertyCache;
+
   PersistentEntityContextState(Node node, DomainSession session) throws RepositoryException {
+
+    PrimaryTypeInfo primaryTypeInfo = session.domain.nodeInfoManager.getPrimaryTypeInfo(node.getPrimaryNodeType());
+
+
+    //
     this.session = session;
-    this.propertyCache = session.domain.propertyCacheEnabled ? new HashMap<String, Object>() : null;
+    this.propertyCache = null;
     this.node = node;
-    this.typeInfo = session.domain.nodeInfoManager.getPrimaryTypeInfo(node.getPrimaryNodeType());
+    this.typeInfo = primaryTypeInfo;
+    this.readAhead = primaryTypeInfo.isReadAhead();
+    this.cache = session.domain.propertyCacheEnabled;
   }
 
   String getId() {
@@ -125,49 +135,76 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      V value = null;
-
-      //
-      if (propertyCache != null) {
-        // That must be ok
-        value = (V)propertyCache.get(propertyName);
+      Property property = null;
+      if (cache) {
+        if (readAhead) {
+          if (propertyCache == null) {
+            Map<String, Property> propertyCache = new HashMap<String, Property>();
+            Iterator<Property> i = session.getSessionWrapper().getProperties(node);
+            while (i.hasNext()) {
+              Property p = i.next();
+              String name = p.getName();
+              propertyCache.put(name, p);
+              if (name.equals(propertyName)) {
+                property = p;
+              }
+            }
+            this.propertyCache = propertyCache;
+          } else {
+            property = propertyCache.get(propertyName);
+          }
+        } else {
+          if (propertyCache != null) {
+            property = propertyCache.get(propertyName);
+          }
+          if (property == null) {
+            property = session.getSessionWrapper().getProperty(node, propertyName);
+            if (property != null) {
+              if (propertyCache == null) {
+                propertyCache = new HashMap<String, Property>();
+                propertyCache.put(property.getName(), property);
+              }
+            }
+          }
+        }
+      } else {
+        property = session.getSessionWrapper().getProperty(node, propertyName);
       }
 
       //
-      if (value == null) {
-        Value jcrValue;
-        Property property = session.getSessionWrapper().getProperty(node, propertyName);
-        if (property != null) {
-          if (def.isMultiple()) {
-            Value[] values = property.getValues();
+      Value jcrValue;
+      if (property != null) {
+        if (def.isMultiple()) {
+          Value[] values = new Value[0];
+          try {
+            values = property.getValues();
             if (values.length == 0) {
               jcrValue = null;
             } else {
               jcrValue = values[0];
             }
-          } else {
-            jcrValue = property.getValue();
+          }
+          catch (InvalidItemStateException e) {
+            // The property was deleted
+            jcrValue = null;
           }
         } else {
-          jcrValue = null;
-        }
-
-        //
-        if (jcrValue != null) {
-          value = vt.get(jcrValue);
-
-          //
-          if (propertyCache != null) {
-            if (value instanceof InputStream) {
-              try {
-                value = (V)new CloneableInputStream((InputStream)value);
-              }
-              catch (IOException e) {
-                throw new AssertionError(e);
-              }
-            }
+          try {
+            jcrValue = property.getValue();
+          }
+          catch (InvalidItemStateException e) {
+            // The property was deleted
+            jcrValue = null;
           }
         }
+      } else {
+        jcrValue = null;
+      }
+
+      //
+      V value = null;
+      if (jcrValue != null) {
+        value = vt.get(jcrValue);
       }
 
       //
@@ -184,14 +221,6 @@ class PersistentEntityContextState extends EntityContextState {
           //
           if (value == null && vt.isPrimitive()) {
             throw new IllegalStateException("Cannot convert null to primitive type " + vt);
-          }
-        }
-      } else {
-        if (propertyCache != null) {
-          if (value instanceof InputStream) {
-            value = (V)((CloneableInputStream)value).clone();
-          } else if (value instanceof Date) {
-            value = (V)((Date)value).clone();
           }
         }
       }
@@ -251,18 +280,6 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      if (propertyCache != null) {
-        if (propertyValue instanceof InputStream && (propertyValue instanceof CloneableInputStream)) {
-          try {
-            propertyValue = (V)new CloneableInputStream((InputStream)propertyValue);
-          }
-          catch (IOException e) {
-            throw new ChromatticIOException("Could not read stream", e);
-          }
-        }
-      }
-
-      //
       Value jcrValue;
       if (propertyValue != null) {
         ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
@@ -282,29 +299,20 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
+      Property property;
       if (def.isMultiple()) {
         if (jcrValue == null) {
-          node.setProperty(propertyName, new Value[0]);
+          property = node.setProperty(propertyName, new Value[0]);
         } else {
-          node.setProperty(propertyName, new Value[]{jcrValue});
+          property = node.setProperty(propertyName, new Value[]{jcrValue});
         }
       } else {
-        node.setProperty(propertyName, jcrValue);
+        property = node.setProperty(propertyName, jcrValue);
       }
 
       //
       if (propertyCache != null) {
-        if (propertyValue != null) {
-          if (propertyValue instanceof InputStream) {
-            CloneableInputStream stream = ((CloneableInputStream)propertyValue);
-            propertyValue = (V)stream.clone();
-          } else if (propertyValue instanceof Date) {
-            propertyValue = (V)((Date)propertyValue).clone();
-          }
-          propertyCache.put(propertyName, propertyValue);
-        } else {
-          propertyCache.remove(propertyName);
-        }
+        propertyCache.put(propertyName, property);
       }
     }
     catch (RepositoryException e) {

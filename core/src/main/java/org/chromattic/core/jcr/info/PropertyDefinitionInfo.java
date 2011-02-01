@@ -18,6 +18,9 @@
  */
 package org.chromattic.core.jcr.info;
 
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.PropertyDefinition;
 
 /**
@@ -57,5 +60,18 @@ public class PropertyDefinitionInfo {
 
   public boolean isMultiple() {
     return multiple;
+  }
+
+  public Value getValue(Property property) throws RepositoryException {
+    if (multiple) {
+      Value[] values = property.getValues();
+      if (values.length == 0) {
+        return null;
+      } else {
+        return values[0];
+      }
+    } else {
+      return property.getValue();
+    }
   }
 }
