@@ -41,9 +41,6 @@ public class PrimaryTypeInfo extends NodeTypeInfo
   /** . */
   private final Map<String, NodeTypeInfo> superTypesMap;
 
-  /** . */
-  private final boolean readAhead;
-
   public PrimaryTypeInfo(NodeType nodeType, Set<NodeTypeInfo> superTypes) {
     super(nodeType);
 
@@ -67,17 +64,9 @@ public class PrimaryTypeInfo extends NodeTypeInfo
     }
 
     //
-    boolean readAhead = "true".equals(System.getProperty(nodeType.getName(), "false"));
-
-    //
     this.mixinNames = Collections.unmodifiableSet(mixinNames);
     this.superTypes = superTypes;
     this.superTypesMap = Collections.unmodifiableMap(superTypesMap);
-    this.readAhead = readAhead;
-  }
-
-  public boolean isReadAhead() {
-    return readAhead;
   }
 
   public Set<String> getSuperTypeNames() {
