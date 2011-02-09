@@ -81,6 +81,7 @@ public class DataObjectCompiler {
     if (source == null) {
       throw new NullPointerException("No null source accepted");
     }
+    doPaths = doPaths.clone();
     for (String doPath : doPaths) {
       if (doPath == null) {
         throw new IllegalArgumentException("Data object paths must not contain a null value");
@@ -90,7 +91,7 @@ public class DataObjectCompiler {
     //
     this.compiler = compiler;
     this.source = source;
-    this.doPaths = doPaths.clone();
+    this.doPaths = doPaths;
     this.classes = null;
   }
 
