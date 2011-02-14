@@ -20,6 +20,7 @@
 package org.chromattic.groovy;
 
 import groovy.lang.GroovyInterceptable;
+import org.chromattic.groovy.exceptions.NoSuchSetterException;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.expr.*;
@@ -201,6 +202,40 @@ public class ChromatticDelegate {
       plugInvokeMethod(classNode);
     } catch (NoSuchMethodException ignore) { }
   }
+
+  public void plugInjector(FieldNode fieldNode, ClassNode injectorClass) throws NoSuchSetterException
+  {
+    ClassNode classNode = fieldNode.getDeclaringClass();
+    MethodNode methodNode = GroovyUtils.getSetter(classNode, fieldNode);
+    if (methodNode == null) {
+      throw new NoSuchSetterException(
+              "setter should exists to plug injector : " + classNode.getName() + "." + fieldNode.getName());
+    }
+    Statement oldCode = methodNode.getCode();
+
+    //
+    methodNode.setCode(
+      new BlockStatement(
+        new Statement[] {
+          new ExpressionStatement(
+            new StaticMethodCallExpression(
+              injectorClass
+              , "contextualize"
+              , new ArgumentListExpression(
+                  new Expression[] {
+                    new VariableExpression(methodNode.getParameters()[0].getName())
+                    , new VariableExpression("this")
+                  }
+              )
+            )
+          )
+          , oldCode
+        }
+        ,new VariableScope()
+      )
+    );
+  }
+
 
   public void removeChromatticField(ClassNode classNode) {
     Iterator<FieldNode> it = classNode.getFields().iterator();
