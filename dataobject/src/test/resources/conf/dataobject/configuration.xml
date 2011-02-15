@@ -83,7 +83,11 @@
   </component>
   
   <component>
-  <type>org.chromattic.dataobject.DataObjectService</type>
+    <type>org.chromattic.dataobject.DataObjectService</type>
+  </component>
+
+  <component>
+    <type>org.chromattic.dataobject.runtime.ChromatticProvider</type>
   </component>
 
   <external-component-plugins>

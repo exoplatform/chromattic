@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.dataobject;
+package org.chromattic.dataobject.runtime;
 
 import org.chromattic.groovy.ChromatticDelegate;
 import org.chromattic.groovy.GroovyUtils;
@@ -39,7 +39,7 @@ import java.util.List;
  * @version $Revision$
  */
 @GroovyASTTransformation(phase= CompilePhase.INSTRUCTION_SELECTION)
-public class DomainBuilder implements ASTTransformation {
+public class ChromatticTransformer implements ASTTransformation {
   private final ChromatticDelegate delegate = new ChromatticDelegate();
 
   public void visit(final ASTNode[] nodes, final SourceUnit source) {
@@ -51,7 +51,7 @@ public class DomainBuilder implements ASTTransformation {
           }
           try
           {
-            delegate.plugInjector(fieldNode, new ClassNode(Foo.class));
+            delegate.plugInjector(fieldNode, new ClassNode(ChromatticInjector.class));
           }
           catch (NoSuchSetterException ignore){ ignore.printStackTrace();}
         }

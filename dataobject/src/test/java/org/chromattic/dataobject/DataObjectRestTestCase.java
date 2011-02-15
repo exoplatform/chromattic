@@ -43,32 +43,17 @@ public class DataObjectRestTestCase extends AbstractDataObjectTestCase {
     "import org.chromattic.api.ChromatticBuilder;\n" +
     "@javax.ws.rs.Path(\"a\")\n" +
     "class GroovyService {\n" +
+    "  def @javax.inject.Inject org.chromattic.api.ChromatticSession session;\n" +
     "  @javax.ws.rs.GET\n" +
     "  def get() {\n" +
-    "    def builder = ChromatticBuilder.create();\n" +
-    "    builder.add(DataObject.class);\n" +
-    "    def chromattic = builder.build();\n" +
-    "    def session = chromattic.openSession();\n" +
-    "    try {\n" +
-    "      def o = session.findByPath(DataObject.class, \"o\");\n" +
-    "      return o.a;\n" +
-    "    } finally {\n" +
-    "      session.close();\n" +
-    "    }\n" +
+    "    def o = session.findByPath(DataObject.class, \"o\");\n" +
+    "    return o.a;\n" +
     "  }\n" +
     "  @javax.ws.rs.PUT\n" +
     "  def put() {\n" +
-    "    def builder = ChromatticBuilder.create();\n" +
-    "    builder.add(DataObject.class);\n" +
-    "    def chromattic = builder.build();\n" +
-    "    def session = chromattic.openSession();\n" +
-    "    try {\n" +
-    "      def o = session.insert(DataObject.class, \"o\");\n" +
-    "      o.a = \"a_value\";\n" +
-    "      session.save();\n" +
-    "    } finally {\n" +
-    "      session.close();\n" +
-    "    }\n" +
+    "    def o = session.insert(DataObject.class, \"o\");\n" +
+    "    o.a = \"a_value\";\n" +
+    "    session.save();\n" +
     "    return \"done\";\n" +
     "  }\n" +
     "}\n";

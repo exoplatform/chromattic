@@ -36,8 +36,8 @@ public class SessionInjectTestCase extends TestCase {
    protected void setUp() throws Exception
    {
       super.setUp();
-      groovyClassLoader.parseClass("class A { @inject.Injec Integer i; }");
-      groovyClassLoader.parseClass("class B { @inject.Injec Integer i; public void setI(Integer i) {this.i = i} }");
+      groovyClassLoader.parseClass("class A { @javax.inject.Inject Integer i; }");
+      groovyClassLoader.parseClass("class B { @javax.inject.Inject Integer i; public void setI(Integer i) {this.i = i} }");
    }
 
    public void testDelegateA() throws Exception {
