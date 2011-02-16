@@ -20,12 +20,10 @@
 package org.chromattic.dataobject.runtime;
 
 import groovy.lang.GroovyClassLoader;
-import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,12 +34,12 @@ import java.util.List;
 public class ChromatticInjector {
 
   public static void contextualize(Object obj, Object injected) {
-    if (obj instanceof DelegatingChromatticSession) {
+    if (obj instanceof ChromatticSessionProxy) {
       // The delegating chromattic session
-      DelegatingChromatticSession session = (DelegatingChromatticSession)obj;
+      ChromatticSessionProxy session = (ChromatticSessionProxy)obj;
 
       // Do we need to contextualize ?
-      if (session.effective == null) {
+      if (session.chromattic == null) {
 
         // Get injected type
         Class<?> injectedType = injected.getClass();
@@ -60,10 +58,7 @@ public class ChromatticInjector {
           }
 
           //
-          Chromattic chromattic = builder.build();
-
-          //
-          session.effective = chromattic.openSession();
+          session.chromattic = builder.build();
         }
         catch (Exception e) {
           throw new AssertionError(e);

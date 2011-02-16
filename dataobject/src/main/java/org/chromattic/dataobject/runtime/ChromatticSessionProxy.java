@@ -19,6 +19,7 @@
 
 package org.chromattic.dataobject.runtime;
 
+import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Path;
@@ -33,16 +34,32 @@ import javax.jcr.Session;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DelegatingChromatticSession implements ChromatticSession {
+public class ChromatticSessionProxy implements ChromatticSession {
 
   /** The effective session. */
-  ChromatticSession effective;
+  private ChromatticSession effective;
+
+  /** . */
+  Chromattic chromattic;
+
+  /** . */
+  private static final ThreadLocal<ChromatticSessionProxy> current = new ThreadLocal<ChromatticSessionProxy>();
 
   private ChromatticSession safeGet() throws IllegalStateException {
     if (effective == null) {
-      throw new IllegalStateException("No session currently associated");
-    } else {
-      return effective;
+      if (chromattic == null) {
+        throw new IllegalStateException("Chromattic session proxy is currently not associated");
+      }
+      effective = chromattic.openSession();
+      current.set(this);
+    }
+    return effective;
+  }
+
+  static void cleanup() {
+    ChromatticSessionProxy proxy = current.get();
+    if (current != null) {
+      proxy.effective.close();
     }
   }
 

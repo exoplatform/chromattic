@@ -35,15 +35,13 @@ public class ChromatticProvider implements Provider<ChromatticSession>, Componen
   }
 
   public ChromatticSession get() {
-    return new DelegatingChromatticSession();
+    return new ChromatticSessionProxy();
   }
 
   public void startRequest(ExoContainer container) {
   }
 
   public void endRequest(ExoContainer container) {
-
-    // Automatically close the current thread local session
-
+    ChromatticSessionProxy.cleanup();
   }
 }
