@@ -212,7 +212,7 @@ public abstract class ChromatticBuilder {
    * method is invoked.</p>
    *
    * <p>The default implementation relies on the {@link ServiceLoader} to load an instance of {@link Configuration.Factory}
-   * If no configuration is found then a builder exception is thrown./<p>
+   * If no configuration is found then a builder exception is thrown.</p>
    *
    * @return the default configuration
    */
@@ -221,24 +221,24 @@ public abstract class ChromatticBuilder {
     Iterator<Configuration.Factory> i = loader.iterator();
     while (i.hasNext()) {
       try {
-        Configuration.Factory builder = i.next();
-        log.log(Level.FINER, "Found ChromatticBuilder implementation " + builder.getClass().getName());
-        return builder.create();
+        Configuration.Factory factory = i.next();
+        log.log(Level.FINER, "Found ChromatticBuilder factory implementation " + factory.getClass().getName());
+        return factory.create();
       }
       catch (ServiceConfigurationError ignore) {
-        log.log(Level.FINER, "Could not load ChromatticBuilder implementation, will use next provider", ignore);
+        log.log(Level.FINER, "Could not load ChromatticBuilder factory implementation, will use next provider", ignore);
       }
     }
     throw new BuilderException("Could not instanciate configuration factory");
   }
 
   /**
-   * Return the current configuration.
+   * Returns a copy of the current configuration.
    *
    * @return the configuration
    */
   public final Configuration getConfiguration() {
-    return config;
+    return new Configuration(config);
   }
 
   /**
@@ -304,9 +304,6 @@ public abstract class ChromatticBuilder {
 
     // Init if needed
     init();
-
-    // Copy options
-    config = new Configuration(config);
 
     //
     return boot(config);
