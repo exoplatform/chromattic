@@ -25,6 +25,10 @@ import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -40,26 +44,30 @@ public class ChromatticInjector {
       if (session.effective == null) {
 
         // Get injected type
-        Class<?> injectedType = obj.getClass();
-
-        // It should always be a groovy classloader
-        GroovyClassLoader loader = (GroovyClassLoader)injectedType.getClassLoader();
+        Class<?> injectedType = injected.getClass();
+        GroovyClassLoader.InnerLoader cl = (GroovyClassLoader.InnerLoader)injectedType.getClassLoader();
+        List<Class> classes = Arrays.asList(cl.getLoadedClasses());
 
         //
-        ChromatticBuilder builder = ChromatticBuilder.create();
+        try {
+          ChromatticBuilder builder = ChromatticBuilder.create();
 
-        // Add all chromattic type we can find in the classloader
-        for (Class<?> loaded : loader.getLoadedClasses()) {
-          if (loaded.isAnnotationPresent(PrimaryType.class) || loaded.isAnnotationPresent(MixinType.class)) {
-            builder.add(loaded);
+          // Add all chromattic type we can find in the classloader
+          for (Class<?> clazz : classes) {
+            if (clazz.isAnnotationPresent(PrimaryType.class) || clazz.isAnnotationPresent(MixinType.class)) {
+              builder.add(clazz);
+            }
           }
+
+          //
+          Chromattic chromattic = builder.build();
+
+          //
+          session.effective = chromattic.openSession();
         }
-
-        //
-        Chromattic chromattic = builder.build();
-
-        //
-        session.effective = chromattic.openSession();
+        catch (Exception e) {
+          throw new AssertionError(e);
+        }
       }
     }
   }

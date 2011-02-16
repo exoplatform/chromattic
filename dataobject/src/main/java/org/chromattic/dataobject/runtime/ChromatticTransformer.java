@@ -49,20 +49,20 @@ public class ChromatticTransformer implements ASTTransformation {
   private final ChromatticDelegate delegate = new ChromatticDelegate();
 
   public void visit(final ASTNode[] nodes, final SourceUnit source) {
-    List<ClassExpression> chromatticClassesExpressions = new ArrayList<ClassExpression>();
 
-    for (ClassNode classNode : (List<ClassNode>) source.getAST().getClasses()) {
+    List<ClassNode> classes = (List<ClassNode>)source.getAST().getClasses();
+
+    //
+    List<ClassExpression> chromatticClassesExpressions = new ArrayList<ClassExpression>();
+    for (ClassNode classNode : classes) {
       if (isChromatticClass(classNode)) {
          chromatticClassesExpressions.add(new ClassExpression(classNode));
       }
     }
+    ArrayExpression arrayExpression = new ArrayExpression(new ClassNode(Class.class), chromatticClassesExpressions);
 
-    ArrayExpression arrayExpression = new ArrayExpression(
-         new ClassNode(Class.class),
-         chromatticClassesExpressions
-    );
-    
-    for (ClassNode classNode : (List<ClassNode>) source.getAST().getClasses()) {
+    //
+    for (ClassNode classNode : classes) {
       boolean currentIsInjected  = false;
       for (FieldNode fieldNode : classNode.getFields()) {
         if (isInjected(fieldNode)) {
