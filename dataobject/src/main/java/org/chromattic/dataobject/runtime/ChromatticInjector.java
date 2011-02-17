@@ -39,7 +39,7 @@ public class ChromatticInjector {
       ChromatticSessionProxy session = (ChromatticSessionProxy)obj;
 
       // Do we need to contextualize ?
-      if (session.chromattic == null) {
+      if (session.builder == null) {
 
         // Get injected type
         Class<?> injectedType = injected.getClass();
@@ -57,8 +57,16 @@ public class ChromatticInjector {
             }
           }
 
+          // Configure default options
+          builder.setOptionValue(ChromatticBuilder.CREATE_ROOT_NODE, true);
+          builder.setOptionValue(ChromatticBuilder.LAZY_CREATE_ROOT_NODE, true);
+          builder.setOptionValue(ChromatticBuilder.SESSION_LIFECYCLE_CLASSNAME, DataObjectSessionLifeCycle.class.getName());
+
+          // Initialize the builder
+          builder.init();
+
           //
-          session.chromattic = builder.build();
+          session.builder = builder;
         }
         catch (Exception e) {
           throw new AssertionError(e);

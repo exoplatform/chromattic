@@ -20,15 +20,18 @@
 package org.chromattic.dataobject.runtime;
 
 import org.chromattic.api.Chromattic;
+import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Path;
 import org.chromattic.api.Status;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.query.QueryBuilder;
+import org.exoplatform.services.security.ConversationState;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
+import javax.ws.rs.core.SecurityContext;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -36,20 +39,39 @@ import javax.jcr.Session;
  */
 public class ChromatticSessionProxy implements ChromatticSession {
 
+  /** Our provider. */
+  private final ChromatticProvider provider;
+
   /** The effective session. */
   private ChromatticSession effective;
 
   /** . */
-  Chromattic chromattic;
+  ChromatticBuilder builder;
 
   /** . */
   private static final ThreadLocal<ChromatticSessionProxy> current = new ThreadLocal<ChromatticSessionProxy>();
 
+  ChromatticSessionProxy(ChromatticProvider provider) {
+    this.provider = provider;
+  }
+
   private ChromatticSession safeGet() throws IllegalStateException {
     if (effective == null) {
-      if (chromattic == null) {
+      if (builder == null) {
         throw new IllegalStateException("Chromattic session proxy is currently not associated");
       }
+
+      //
+      ConversationState cs = ConversationState.getCurrent();
+      String userId = cs.getIdentity().getUserId();
+      String rootNodePath = provider.rootNodePath + userId;
+
+      //
+      ChromatticBuilder.Configuration config = new ChromatticBuilder.Configuration(builder.getConfiguration());
+      config.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath, true);
+      Chromattic chromattic = builder.build(config);
+
+      //
       effective = chromattic.openSession();
       current.set(this);
     }

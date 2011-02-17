@@ -22,6 +22,9 @@ package org.chromattic.dataobject.runtime;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.component.ComponentRequestLifecycle;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValueParam;
+import org.exoplatform.services.jcr.RepositoryService;
 
 import javax.inject.Provider;
 
@@ -31,17 +34,46 @@ import javax.inject.Provider;
  */
 public class ChromatticProvider implements Provider<ChromatticSession>, ComponentRequestLifecycle {
 
-  public ChromatticProvider() {
+  /** . */
+  private static final ThreadLocal<ChromatticProvider> current = new ThreadLocal<ChromatticProvider>();
+
+  /** . */
+  final RepositoryService repositoryService;
+
+  static ChromatticProvider getCurrent() {
+    return current.get();
+  }
+
+  /** . */
+  final String rootNodePath;
+
+  /** . */
+  final String workspaceName;
+
+  public ChromatticProvider(InitParams params, RepositoryService repositoryService) {
+    ValueParam rootNodePathVP = params.getValueParam("rootNodePath");
+    String rootNodePath = rootNodePathVP != null ? rootNodePathVP.getValue() : "/";
+
+    //
+    ValueParam workspaceNameVP = params.getValueParam("workspaceName");
+    String workspaceName = workspaceNameVP != null ? workspaceNameVP.getValue() : null;
+
+    //
+    this.repositoryService = repositoryService;
+    this.rootNodePath = rootNodePath;
+    this.workspaceName = workspaceName;
   }
 
   public ChromatticSession get() {
-    return new ChromatticSessionProxy();
+    return new ChromatticSessionProxy(this);
   }
 
   public void startRequest(ExoContainer container) {
+    current.set(this);
   }
 
   public void endRequest(ExoContainer container) {
+    current.set(null);
     ChromatticSessionProxy.cleanup();
   }
 }
