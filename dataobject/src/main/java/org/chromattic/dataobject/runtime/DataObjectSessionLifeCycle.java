@@ -33,7 +33,7 @@ import javax.jcr.Session;
 public class DataObjectSessionLifeCycle implements SessionLifeCycle {
 
   public Session login() throws RepositoryException {
-    ChromatticProvider provider = ChromatticProvider.getCurrent();
+    ChromatticSessionProvider provider = ChromatticSessionProvider.getCurrent();
     String workspaceName = provider.workspaceName;
     ManageableRepository current = provider.repositoryService.getCurrentRepository();
     if (workspaceName != null) {

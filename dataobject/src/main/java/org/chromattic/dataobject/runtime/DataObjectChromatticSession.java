@@ -31,16 +31,15 @@ import org.exoplatform.services.security.ConversationState;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
-import javax.ws.rs.core.SecurityContext;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ChromatticSessionProxy implements ChromatticSession {
+public class DataObjectChromatticSession implements ChromatticSession {
 
   /** Our provider. */
-  private final ChromatticProvider provider;
+  private final ChromatticSessionProvider provider;
 
   /** The effective session. */
   private ChromatticSession effective;
@@ -49,9 +48,9 @@ public class ChromatticSessionProxy implements ChromatticSession {
   ChromatticBuilder builder;
 
   /** . */
-  private static final ThreadLocal<ChromatticSessionProxy> current = new ThreadLocal<ChromatticSessionProxy>();
+  private static final ThreadLocal<DataObjectChromatticSession> current = new ThreadLocal<DataObjectChromatticSession>();
 
-  ChromatticSessionProxy(ChromatticProvider provider) {
+  DataObjectChromatticSession(ChromatticSessionProvider provider) {
     this.provider = provider;
   }
 
@@ -79,7 +78,7 @@ public class ChromatticSessionProxy implements ChromatticSession {
   }
 
   static void cleanup() {
-    ChromatticSessionProxy proxy = current.get();
+    DataObjectChromatticSession proxy = current.get();
     if (current != null) {
       proxy.effective.close();
     }

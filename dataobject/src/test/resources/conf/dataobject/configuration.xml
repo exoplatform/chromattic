@@ -87,7 +87,7 @@
   </component>
 
   <component>
-    <type>org.chromattic.dataobject.runtime.ChromatticProvider</type>
+    <type>org.chromattic.dataobject.runtime.ChromatticSessionProvider</type>
     <init-params>
       <value-param>
         <name>rootNodePath</name>

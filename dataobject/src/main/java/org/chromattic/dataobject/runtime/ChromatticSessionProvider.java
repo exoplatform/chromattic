@@ -32,15 +32,15 @@ import javax.inject.Provider;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ChromatticProvider implements Provider<ChromatticSession>, ComponentRequestLifecycle {
+public class ChromatticSessionProvider implements Provider<ChromatticSession>, ComponentRequestLifecycle {
 
   /** . */
-  private static final ThreadLocal<ChromatticProvider> current = new ThreadLocal<ChromatticProvider>();
+  private static final ThreadLocal<ChromatticSessionProvider> current = new ThreadLocal<ChromatticSessionProvider>();
 
   /** . */
   final RepositoryService repositoryService;
 
-  static ChromatticProvider getCurrent() {
+  static ChromatticSessionProvider getCurrent() {
     return current.get();
   }
 
@@ -50,7 +50,7 @@ public class ChromatticProvider implements Provider<ChromatticSession>, Componen
   /** . */
   final String workspaceName;
 
-  public ChromatticProvider(InitParams params, RepositoryService repositoryService) {
+  public ChromatticSessionProvider(InitParams params, RepositoryService repositoryService) {
     ValueParam rootNodePathVP = params.getValueParam("rootNodePath");
     String rootNodePath = rootNodePathVP != null ? rootNodePathVP.getValue() : "/";
 
@@ -65,7 +65,7 @@ public class ChromatticProvider implements Provider<ChromatticSession>, Componen
   }
 
   public ChromatticSession get() {
-    return new ChromatticSessionProxy(this);
+    return new DataObjectChromatticSession(this);
   }
 
   public void startRequest(ExoContainer container) {
@@ -74,6 +74,6 @@ public class ChromatticProvider implements Provider<ChromatticSession>, Componen
 
   public void endRequest(ExoContainer container) {
     current.set(null);
-    ChromatticSessionProxy.cleanup();
+    DataObjectChromatticSession.cleanup();
   }
 }

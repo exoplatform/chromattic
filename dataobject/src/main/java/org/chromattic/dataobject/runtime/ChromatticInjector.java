@@ -34,9 +34,9 @@ import java.util.List;
 public class ChromatticInjector {
 
   public static void contextualize(Object obj, Object injected) {
-    if (obj instanceof ChromatticSessionProxy) {
+    if (obj instanceof DataObjectChromatticSession) {
       // The delegating chromattic session
-      ChromatticSessionProxy session = (ChromatticSessionProxy)obj;
+      DataObjectChromatticSession session = (DataObjectChromatticSession)obj;
 
       // Do we need to contextualize ?
       if (session.builder == null) {
