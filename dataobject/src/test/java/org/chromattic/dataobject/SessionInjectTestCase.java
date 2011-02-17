@@ -35,12 +35,9 @@ public class SessionInjectTestCase extends TestCase {
    @Override
    protected void setUp() throws Exception
    {
-     super.setUp();
-     groovyClassLoader.parseClass(
-         "@org.chromattic.api.annotations.PrimaryType(name=\"\") class D {}\n" +
-         "class A { @javax.inject.Inject Integer i; }\n" +
-         "class B { @javax.inject.Inject Integer i; public void setI(Integer i) {this.i = i} }"
-     );
+      super.setUp();
+      groovyClassLoader.parseClass("class A { @javax.inject.Inject Integer i; }");
+      groovyClassLoader.parseClass("class B { @javax.inject.Inject Integer i; public void setI(Integer i) {this.i = i} }");
    }
 
    public void testDelegateA() throws Exception {
@@ -64,6 +61,7 @@ public class SessionInjectTestCase extends TestCase {
   }
 
    public void testDelegateB() throws Exception {
+     assertTrue(true);
      groovyShell.setProperty("b", groovyShell.evaluate("new B()"));
 
      // Setter
@@ -79,17 +77,5 @@ public class SessionInjectTestCase extends TestCase {
 
      groovyShell.evaluate("b.i = 45");
      assertEquals(45, groovyShell.evaluate("b.i"));
-   }
-
-   public void testInjectChromatticClasses() {
-      groovyShell.setProperty("a", groovyShell.evaluate("new A()"));
-
-      assertEquals(1, groovyShell.evaluate("a.CHROMATTIC_CLASSES.length"));
-      assertEquals(groovyShell.evaluate("D.class"), groovyShell.evaluate("a.CHROMATTIC_CLASSES[0]"));
-
-      groovyShell.setProperty("b", groovyShell.evaluate("new B()"));
-
-      assertEquals(1, groovyShell.evaluate("b.CHROMATTIC_CLASSES.length"));
-      assertEquals(groovyShell.evaluate("D.class"), groovyShell.evaluate("b.CHROMATTIC_CLASSES[0]"));
-   }
+  }
 }

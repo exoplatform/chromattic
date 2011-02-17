@@ -19,8 +19,6 @@
 
 package org.chromattic.dataobject.runtime;
 
-import org.chromattic.api.annotations.MixinType;
-import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.groovy.ChromatticDelegate;
 import org.chromattic.groovy.GroovyUtils;
 import org.chromattic.groovy.exceptions.NoSuchSetterException;
@@ -28,16 +26,12 @@ import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.AnnotationNode;
 import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.ast.FieldNode;
-import org.codehaus.groovy.ast.expr.ArrayExpression;
-import org.codehaus.groovy.ast.expr.ClassExpression;
 import org.codehaus.groovy.control.CompilePhase;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.ASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
 
 import javax.inject.Inject;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,20 +47,9 @@ public class ChromatticTransformer implements ASTTransformation {
     List<ClassNode> classes = (List<ClassNode>)source.getAST().getClasses();
 
     //
-    List<ClassExpression> chromatticClassesExpressions = new ArrayList<ClassExpression>();
     for (ClassNode classNode : classes) {
-      if (isChromatticClass(classNode)) {
-         chromatticClassesExpressions.add(new ClassExpression(classNode));
-      }
-    }
-    ArrayExpression arrayExpression = new ArrayExpression(new ClassNode(Class.class), chromatticClassesExpressions);
-
-    //
-    for (ClassNode classNode : classes) {
-      boolean currentIsInjected  = false;
       for (FieldNode fieldNode : classNode.getFields()) {
         if (isInjected(fieldNode)) {
-          currentIsInjected = true;
           if (GroovyUtils.getSetter(classNode, fieldNode) == null) {
             GroovyUtils.createSetter(classNode, fieldNode);
           }
@@ -77,7 +60,6 @@ public class ChromatticTransformer implements ASTTransformation {
           catch (NoSuchSetterException ignore){ ignore.printStackTrace();}
         }
       }
-      if (currentIsInjected) addChromatticClassesField(classNode, arrayExpression);
     }
   }
 
@@ -88,25 +70,5 @@ public class ChromatticTransformer implements ASTTransformation {
       }
     }
     return false;
-  }
-
-  private boolean isChromatticClass(ClassNode classNode) {
-    for (AnnotationNode annotationNode : (List<AnnotationNode>) classNode.getAnnotations()) {
-      if (
-              annotationNode.getClassNode().equals(new ClassNode(PrimaryType.class)) ||
-              annotationNode.getClassNode().equals(new ClassNode(MixinType.class))) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private void addChromatticClassesField(ClassNode classNode, ArrayExpression expression) {
-    classNode.addField(
-       "CHROMATTIC_CLASSES",
-       Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
-       expression.getType(),
-       expression
-    );
   }
 }
