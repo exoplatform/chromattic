@@ -64,10 +64,14 @@ public class DataObjectChromatticSession implements ChromatticSession {
       ConversationState cs = ConversationState.getCurrent();
       String userId = cs.getIdentity().getUserId();
       String rootNodePath = provider.rootNodePath + userId;
+      String rootNodeType = provider.rootNodeType;
 
       //
       ChromatticBuilder.Configuration config = new ChromatticBuilder.Configuration(builder.getConfiguration());
       config.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath, true);
+      if (rootNodeType != null) {
+        config.setOptionValue(ChromatticBuilder.ROOT_NODE_TYPE, rootNodeType, true);
+      }
       Chromattic chromattic = builder.build(config);
 
       //

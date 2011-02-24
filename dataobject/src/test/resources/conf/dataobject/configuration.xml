@@ -97,6 +97,10 @@
         <name>workspaceName</name>
         <value>ws</value>
       </value-param>
+      <value-param>
+        <name>rootNodeType</name>
+        <value>nt:unstructured</value>
+      </value-param>
     </init-params>
   </component>
 

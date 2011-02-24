@@ -50,6 +50,9 @@ public class ChromatticSessionProvider implements Provider<ChromatticSession>, C
   /** . */
   final String workspaceName;
 
+  /** . */
+  final String rootNodeType;
+
   public ChromatticSessionProvider(InitParams params, RepositoryService repositoryService) {
     ValueParam rootNodePathVP = params.getValueParam("rootNodePath");
     String rootNodePath = rootNodePathVP != null ? rootNodePathVP.getValue() : "/";
@@ -59,9 +62,14 @@ public class ChromatticSessionProvider implements Provider<ChromatticSession>, C
     String workspaceName = workspaceNameVP != null ? workspaceNameVP.getValue() : null;
 
     //
+    ValueParam rootNodeTypeVP = params.getValueParam("rootNodeType");
+    String rootNodeType = rootNodeTypeVP != null ? rootNodeTypeVP.getValue() : null;
+
+    //
     this.repositoryService = repositoryService;
     this.rootNodePath = rootNodePath;
     this.workspaceName = workspaceName;
+    this.rootNodeType = rootNodeType;
   }
 
   public ChromatticSession get() {
