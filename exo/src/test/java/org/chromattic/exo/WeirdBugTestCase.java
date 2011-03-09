@@ -39,7 +39,8 @@ public class WeirdBugTestCase extends TestCase {
     Repository repo = bootstrap.getRepository();
     Session session = repo.login();
     Node list = session.getRootNode().addNode("list", "list");
-    assertTrue(list.getDefinition().getDeclaringNodeType().hasOrderableChildNodes());
+    assertEquals("list", list.getPrimaryNodeType().getName());
+    assertTrue(list.getPrimaryNodeType().hasOrderableChildNodes());
     list.addNode("foo", "nt:unstructured");
     list.addNode("bar", "nt:unstructured");
     list.addNode("juu", "nt:unstructured");
