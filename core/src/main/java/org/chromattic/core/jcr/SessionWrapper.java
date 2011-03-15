@@ -24,6 +24,8 @@ import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.Property;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import java.util.Iterator;
 import java.util.List;
 
@@ -79,4 +81,9 @@ public interface SessionWrapper {
 
   boolean isClosed();
 
+  Query createQuery(String statement) throws RepositoryException;
+
+  QueryResult executeQuery(Query query, Long offset, Long limit) throws RepositoryException;
+
+  int hits(QueryResult result) throws RepositoryException;
 }

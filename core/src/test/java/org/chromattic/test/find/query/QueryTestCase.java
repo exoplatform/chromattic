@@ -18,6 +18,7 @@
  */
 package org.chromattic.test.find.query;
 
+import org.chromattic.api.query.QueryResult;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
@@ -80,5 +81,109 @@ public class QueryTestCase extends AbstractTestCase {
     assertEquals(1, r2.size());
     Iterator<A> i2 = r2.iterator();
     assertSame(a, i2.next());
+  }
+
+  public void testNoOffsetnoLimit() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    A a = session.insert(A.class, "a");
+    a.setFoo("bilto_offset");
+    A b = session.insert(A.class, "b");
+    b.setFoo("bilto_offset");
+    A c = session.insert(A.class, "c");
+    c.setFoo("bilto_offset");
+    session.save();
+
+    //
+    QueryResult<A> it1 = session.createQueryBuilder(A.class).where("foo='bilto_offset'").get().objects();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertFalse(it1.hasNext());
+
+    //
+    assertEquals(3, it1.size());
+    assertEquals(3, it1.hits());
+  }
+
+  public void testOffset() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    A a = session.insert(A.class, "a");
+    a.setFoo("bilto_offset");
+    A b = session.insert(A.class, "b");
+    b.setFoo("bilto_offset");
+    A c = session.insert(A.class, "c");
+    c.setFoo("bilto_offset");
+    session.save();
+
+    //
+    QueryResult<A> it1 = session.createQueryBuilder(A.class).where("foo='bilto_offset'").get().objects(1L, null);
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertFalse(it1.hasNext());
+
+    //
+    assertEquals(2, it1.size());
+    assertEquals(3, it1.hits());
+  }
+
+  public void testLimit() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    A a = session.insert(A.class, "a");
+    a.setFoo("bilto_offset");
+    A b = session.insert(A.class, "b");
+    b.setFoo("bilto_offset");
+    A c = session.insert(A.class, "c");
+    c.setFoo("bilto_offset");
+    session.save();
+
+    //
+    QueryResult<A> it1 = session.createQueryBuilder(A.class).where("foo='bilto_offset'").get().objects(null, 2L);
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertFalse(it1.hasNext());
+
+    //
+    assertEquals(2, it1.size());
+    assertEquals(3, it1.hits());
+  }
+
+  public void testOffsetLimit() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    A a = session.insert(A.class, "a");
+    a.setFoo("bilto_offset");
+    A b = session.insert(A.class, "b");
+    b.setFoo("bilto_offset");
+    A c = session.insert(A.class, "c");
+    c.setFoo("bilto_offset");
+    session.save();
+
+    //
+    QueryResult<A> it1 = session.createQueryBuilder(A.class).where("foo='bilto_offset'").get().objects(1L, 1L);
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertFalse(it1.hasNext());
+
+    //
+    assertEquals(1, it1.size());
+    assertEquals(3, it1.hits());
   }
 }
