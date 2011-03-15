@@ -27,6 +27,8 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -310,10 +312,12 @@ public class SessionWrapperImpl implements SessionWrapper {
     sessionLifeCycle.close(session);
   }
 
-  public Query createQuery(String statement, Long offset, Long limit) throws RepositoryException {
+  public Query createQuery(String statement) throws RepositoryException {
     QueryManager queryMgr = session.getWorkspace().getQueryManager();
-    Query query = queryMgr.createQuery(statement, Query.SQL);
+    return queryMgr.createQuery(statement, Query.SQL);
+  }
 
+  public QueryResult executeQuery(Query query, Long offset, Long limit) throws RepositoryException {
     if (offset != null && offset > 0)
     {
       invokeLongSetter(query, "setOffset", offset);
@@ -322,20 +326,52 @@ public class SessionWrapperImpl implements SessionWrapper {
     {
       invokeLongSetter(query, "setLimit", limit);
     }
-    return query;
+    return query.execute();
+  }
+
+  public int hits(QueryResult result) throws RepositoryException
+  {
+    int hits = invokeIntGetter(result, "getTotalSize");
+    if (hits < 0)
+    {
+      hits = (int)result.getNodes().getSize();
+    }
+    return hits;
+  }
+
+  private int invokeIntGetter(Object o, String methodName)
+  {
+    Class<?> clazz = o.getClass();
+    int hits = -1;
+    try {
+      Method getter = clazz.getMethod(methodName);
+      Class<?> ret = getter.getReturnType();
+      if (ret.equals(int.class))
+      {
+        hits = (Integer)getter.invoke(o);
+      }
+    }
+    catch (NoSuchMethodException ignore) {
+      log.trace("Could not find method " + methodName + " on " + clazz.getName(), ignore);
+    }
+    catch (Exception e) {
+      log.error("Could not invoke " + methodName + " of class " + clazz.getName() +  " on " + o, e);
+    }
+    return hits;
   }
 
   private void invokeLongSetter(Object o, String methodName, Long value)
   {
+    Class<?> clazz = o.getClass();
     try {
-      Method setter = o.getClass().getMethod(methodName, long.class);
+      Method setter = clazz.getMethod(methodName, long.class);
       setter.invoke(o, value);
     }
     catch (NoSuchMethodException ignore) {
-      //
+      log.trace("Could not find method " + methodName + " on " + clazz.getName(), ignore);
     }
     catch (Exception e) {
-      log.error("Could not invoke " + methodName + " setter on " + o + " with value " + value, e);
+      log.error("Could not invoke " + methodName + " of class " + clazz.getName() +  " on " + o + " with value " + value, e);
     }
   }
 }

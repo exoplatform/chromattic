@@ -36,6 +36,16 @@ public interface Query<O> {
    */
   QueryResult<O> objects() throws ChromatticException;
 
-  // QueryResult<Map<String, ?>> getRows() throws ChromatticException;
+  /**
+   * Executes the query and return the result as a serie of Chromattic entities with the specified
+   * limit and offset.
+   *
+   * @param offset the optional offset
+   * @param limit the optional limit
+   * @return the query result
+   * @throws ChromatticException any chromattic exception
+   * @throws IllegalArgumentException if the offset or limit argument is negative
+   */
+  QueryResult<O> objects(Long offset, Long limit) throws ChromatticException;
 
 }

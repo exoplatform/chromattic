@@ -18,6 +18,7 @@
  */
 package org.chromattic.test.find.query;
 
+import org.chromattic.api.query.QueryResult;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
@@ -96,7 +97,7 @@ public class QueryTestCase extends AbstractTestCase {
     session.save();
 
     //
-    Iterator<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get().objects();
+    QueryResult<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get().objects();
     assertTrue(it1.hasNext());
     it1.next();
     assertTrue(it1.hasNext());
@@ -104,6 +105,10 @@ public class QueryTestCase extends AbstractTestCase {
     assertTrue(it1.hasNext());
     it1.next();
     assertFalse(it1.hasNext());
+
+    //
+    assertEquals(3, it1.size());
+    assertEquals(3, it1.hits());
   }
 
   public void testOffset() throws Exception {
@@ -120,12 +125,16 @@ public class QueryTestCase extends AbstractTestCase {
     session.save();
 
     //
-    Iterator<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get(1L, null).objects();
+    QueryResult<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get().objects(1L, null);
     assertTrue(it1.hasNext());
     it1.next();
     assertTrue(it1.hasNext());
     it1.next();
     assertFalse(it1.hasNext());
+
+    //
+    assertEquals(2, it1.size());
+    assertEquals(3, it1.hits());
   }
 
   public void testLimit() throws Exception {
@@ -142,12 +151,16 @@ public class QueryTestCase extends AbstractTestCase {
     session.save();
 
     //
-    Iterator<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get(null, 2L).objects();
+    QueryResult<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get().objects(null, 2L);
     assertTrue(it1.hasNext());
     it1.next();
     assertTrue(it1.hasNext());
     it1.next();
     assertFalse(it1.hasNext());
+
+    //
+    assertEquals(2, it1.size());
+    assertEquals(3, it1.hits());
   }
 
   public void testOffsetLimit() throws Exception {
@@ -164,9 +177,13 @@ public class QueryTestCase extends AbstractTestCase {
     session.save();
 
     //
-    Iterator<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get(1L, 1L).objects();
+    QueryResult<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get().objects(1L, 1L);
     assertTrue(it1.hasNext());
     it1.next();
     assertFalse(it1.hasNext());
+
+    //
+    assertEquals(1, it1.size());
+    assertEquals(3, it1.hits());
   }
 }

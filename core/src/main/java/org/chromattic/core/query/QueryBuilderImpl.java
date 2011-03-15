@@ -94,10 +94,6 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
   private static final Pattern JCR_LIKE_PATH = Pattern.compile("jcr:path[\\s]*[^\\s]+[\\s]*'[^']*'");
 
   public Query<O> get() {
-    return get(null, null);
-  }
-
-  public Query<O> get(Long offset, Long limit) {
     if (fromClass == null) {
       throw new IllegalStateException();
     }
@@ -124,6 +120,6 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
     }
 
     //
-    return session.getDomain().getQueryManager().getObjectQuery(session, fromClass, sb.toString(), offset, limit);
+    return session.getDomain().getQueryManager().getObjectQuery(session, fromClass, sb.toString());
   }
 }

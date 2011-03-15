@@ -22,8 +22,8 @@ import org.chromattic.api.ChromatticException;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Query;
 import org.chromattic.core.DomainSession;
+import org.chromattic.core.jcr.SessionWrapper;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 
@@ -49,11 +49,25 @@ public class QueryImpl<O> implements Query<O> {
   }
 
   public org.chromattic.api.query.QueryResult<O> objects() throws ChromatticException {
-    final NodeIterator iterator;
+    return objects(null, null);
+  }
+
+  public org.chromattic.api.query.QueryResult<O> objects(Long offset, Long limit) throws ChromatticException {
+    if (offset != null && offset < 0)
+    {
+      throw new IllegalArgumentException();
+    }
+    if (offset != null && offset < 0)
+    {
+      throw new IllegalArgumentException();
+    }
+
+    //
     try {
-      QueryResult result = jcrQuery.execute();
-      iterator = result.getNodes();
-      return new QueryResultImpl<O>(session, iterator, clazz);
+      SessionWrapper wrapper = session.getSessionWrapper();
+      QueryResult result = wrapper.executeQuery(jcrQuery, offset, limit);
+      int hits = wrapper.hits(result);
+      return new QueryResultImpl<O>(session, result.getNodes(), hits, clazz);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

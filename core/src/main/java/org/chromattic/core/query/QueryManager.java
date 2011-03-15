@@ -49,26 +49,13 @@ public class QueryManager {
    * @param session the current session
    * @param objectClass the expected object class
    * @param statement the query statement
-   * @param offset the offset
-   * @param limit the limit
    * @param <O> the object generic type
    * @return the query
-   * @throws IllegalArgumentException when limit or offset are negative numbers
    */
-  public <O> Query<O> getObjectQuery(DomainSession session, Class<O> objectClass, String statement, Long offset, Long limit) throws IllegalArgumentException {
-    if (offset != null && offset < 0)
-    {
-      throw new IllegalArgumentException();
-    }
-    if (offset != null && offset < 0)
-    {
-      throw new IllegalArgumentException();
-    }
-
-    //
+  public <O> Query<O> getObjectQuery(DomainSession session, Class<O> objectClass, String statement) {
     try {
       // For now we support on SQL
-      javax.jcr.query.Query jcrQuery = session.getSessionWrapper().createQuery(statement, offset, limit);
+      javax.jcr.query.Query jcrQuery = session.getSessionWrapper().createQuery(statement);
       Query<?> query = new QueryImpl<O>(session, objectClass, jcrQuery);
 
       //
