@@ -25,6 +25,10 @@ import org.chromattic.spi.jcr.SessionLifeCycle;
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
@@ -304,5 +308,34 @@ public class SessionWrapperImpl implements SessionWrapper {
       mgr.clear();
     }
     sessionLifeCycle.close(session);
+  }
+
+  public Query createQuery(String statement, Long offset, Long limit) throws RepositoryException {
+    QueryManager queryMgr = session.getWorkspace().getQueryManager();
+    Query query = queryMgr.createQuery(statement, Query.SQL);
+
+    if (offset != null && offset > 0)
+    {
+      invokeLongSetter(query, "setOffset", offset);
+    }
+    if (limit != null && limit >= 0)
+    {
+      invokeLongSetter(query, "setLimit", limit);
+    }
+    return query;
+  }
+
+  private void invokeLongSetter(Object o, String methodName, Long value)
+  {
+    try {
+      Method setter = o.getClass().getMethod(methodName, long.class);
+      setter.invoke(o, value);
+    }
+    catch (NoSuchMethodException ignore) {
+      //
+    }
+    catch (Exception e) {
+      log.error("Could not invoke " + methodName + " setter on " + o + " with value " + value, e);
+    }
   }
 }

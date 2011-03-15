@@ -52,4 +52,15 @@ public interface QueryBuilder<O> {
    */
   Query<O> get() throws IllegalStateException;
 
+  /**
+   * <p>Compute and returns the <tt>ObjectQuery</tt> for this builder.</p>
+   *
+   * @param offset the optional offset
+   * @param limit the optional limit
+   * @return this object query
+   * @throws IllegalStateException if the builder cannot build the query
+   * @throws IllegalArgumentException if the offset or limit argument is negative
+   */
+  Query<O> get(Long offset, Long limit) throws IllegalStateException, IllegalArgumentException;
+
 }

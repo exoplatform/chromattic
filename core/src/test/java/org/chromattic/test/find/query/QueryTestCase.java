@@ -81,4 +81,92 @@ public class QueryTestCase extends AbstractTestCase {
     Iterator<TFI_A> i2 = r2.iterator();
     assertSame(a, i2.next());
   }
+
+  public void testNoOffsetnoLimit() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    TFI_A a = session.insert(TFI_A.class, "a");
+    a.setFoo("bilto_offset");
+    TFI_A b = session.insert(TFI_A.class, "b");
+    b.setFoo("bilto_offset");
+    TFI_A c = session.insert(TFI_A.class, "c");
+    c.setFoo("bilto_offset");
+    session.save();
+
+    //
+    Iterator<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get().objects();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertFalse(it1.hasNext());
+  }
+
+  public void testOffset() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    TFI_A a = session.insert(TFI_A.class, "a");
+    a.setFoo("bilto_offset");
+    TFI_A b = session.insert(TFI_A.class, "b");
+    b.setFoo("bilto_offset");
+    TFI_A c = session.insert(TFI_A.class, "c");
+    c.setFoo("bilto_offset");
+    session.save();
+
+    //
+    Iterator<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get(1L, null).objects();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertFalse(it1.hasNext());
+  }
+
+  public void testLimit() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    TFI_A a = session.insert(TFI_A.class, "a");
+    a.setFoo("bilto_offset");
+    TFI_A b = session.insert(TFI_A.class, "b");
+    b.setFoo("bilto_offset");
+    TFI_A c = session.insert(TFI_A.class, "c");
+    c.setFoo("bilto_offset");
+    session.save();
+
+    //
+    Iterator<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get(null, 2L).objects();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertFalse(it1.hasNext());
+  }
+
+  public void testOffsetLimit() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    TFI_A a = session.insert(TFI_A.class, "a");
+    a.setFoo("bilto_offset");
+    TFI_A b = session.insert(TFI_A.class, "b");
+    b.setFoo("bilto_offset");
+    TFI_A c = session.insert(TFI_A.class, "c");
+    c.setFoo("bilto_offset");
+    session.save();
+
+    //
+    Iterator<TFI_A> it1 = session.createQueryBuilder(TFI_A.class).where("foo='bilto_offset'").get(1L, 1L).objects();
+    assertTrue(it1.hasNext());
+    it1.next();
+    assertFalse(it1.hasNext());
+  }
 }

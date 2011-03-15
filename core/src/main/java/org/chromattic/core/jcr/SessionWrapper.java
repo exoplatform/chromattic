@@ -19,13 +19,12 @@
 
 package org.chromattic.core.jcr;
 
-import org.chromattic.core.jcr.info.NodeInfo;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.Property;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.Query;
 import java.util.Iterator;
 import java.util.List;
 
@@ -78,5 +77,7 @@ public interface SessionWrapper {
   Session getSession();
 
   void close();
+
+  Query createQuery(String statement, Long offset, Long limit) throws RepositoryException;
 
 }
