@@ -32,8 +32,8 @@ import javax.jcr.Node;
 public class ToOneTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TOTO_A_2.class);
-    addClass(TOTO_B_2.class);
+    addClass(A2.class);
+    addClass(B2.class);
   }
 
   public void testChildToParentAdd() throws Exception {
@@ -41,13 +41,13 @@ public class ToOneTestCase extends AbstractTestCase {
     Node rootNode = session.getRoot();
 
     //
-    Node aNode = rootNode.addNode("toto_a_a", getNodeTypeName(TOTO_A_2.class));
-    TOTO_A_2 a = session.findByNode(TOTO_A_2.class, aNode);
+    Node aNode = rootNode.addNode("toto_a_a", getNodeTypeName(A2.class));
+    A2 a = session.findByNode(A2.class, aNode);
     assertNotNull(a);
 
     //
-    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_2.class));
-    TOTO_B_2 b = session.findByNode(TOTO_B_2.class, bNode);
+    Node bNode = aNode.addNode("b", getNodeTypeName(B2.class));
+    B2 b = session.findByNode(B2.class, bNode);
     assertNotNull(b);
     assertSame(a, b.getA());
   }
@@ -55,32 +55,32 @@ public class ToOneTestCase extends AbstractTestCase {
   public void testChildToParentLoad() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("toto_a_b", getNodeTypeName(TOTO_A_2.class));
+    Node aNode = rootNode.addNode("toto_a_b", getNodeTypeName(A2.class));
     String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_2.class));
+    Node bNode = aNode.addNode("b", getNodeTypeName(B2.class));
     String bId = bNode.getUUID();
     rootNode.save();
 
     //
     session = login();
-    TOTO_B_2 b = session.findById(TOTO_B_2.class, bId);
+    B2 b = session.findById(B2.class, bId);
     assertNotNull(b);
-    TOTO_A_2 a = b.getA();
+    A2 a = b.getA();
     assertNotNull(a);
-    assertSame(a, session.findById(TOTO_A_2.class, aId));
+    assertSame(a, session.findById(A2.class, aId));
   }
 
   public void testTyped() throws Exception {
     ChromatticSession session = login();
 
     //
-    TOTO_A_2 a = session.create(TOTO_A_2.class, getNodeTypeName(TOTO_A_2.class));
+    A2 a = session.create(A2.class, getNodeTypeName(A2.class));
     String aId = session.persist(a);
     Node aNode = session.getJCRSession().getNodeByUUID(aId);
     assertNotNull(aNode);
 
     //
-    TOTO_B_2 b = session.create(TOTO_B_2.class);
+    B2 b = session.create(B2.class);
     b.setA(a);
 
     //

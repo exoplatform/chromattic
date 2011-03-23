@@ -31,8 +31,8 @@ import javax.jcr.Node;
 public class OneToOneTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TOTO_A_3.class);
-    addClass(TOTO_B_3.class);
+    addClass(A3.class);
+    addClass(B3.class);
   }
 
   public void testChildAndParentAdd() throws Exception {
@@ -40,14 +40,14 @@ public class OneToOneTestCase extends AbstractTestCase {
     Node rootNode = session.getRoot();
 
     //
-    Node aNode = rootNode.addNode("toto_a_a", getNodeTypeName(TOTO_A_3.class));
-    TOTO_A_3 a = session.findByNode(TOTO_A_3.class, aNode);
+    Node aNode = rootNode.addNode("toto_a_a", getNodeTypeName(A3.class));
+    A3 a = session.findByNode(A3.class, aNode);
     assertNotNull(a);
     assertNull(a.getB());
 
     //
-    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_3.class));
-    TOTO_B_3 b = session.findByNode(TOTO_B_3.class, bNode);
+    Node bNode = aNode.addNode("b", getNodeTypeName(B3.class));
+    B3 b = session.findByNode(B3.class, bNode);
     assertNotNull(b);
     assertSame(a, b.getA());
     assertSame(b, a.getB());
@@ -56,19 +56,19 @@ public class OneToOneTestCase extends AbstractTestCase {
   public void testChildAndParentLoad() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("toto_a_b", getNodeTypeName(TOTO_A_3.class));
+    Node aNode = rootNode.addNode("toto_a_b", getNodeTypeName(A3.class));
     String aId = aNode.getUUID();
-    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_3.class));
+    Node bNode = aNode.addNode("b", getNodeTypeName(B3.class));
     String bId = bNode.getUUID();
     rootNode.save();
 
     //
     session = login();
-    TOTO_B_3 b = session.findById(TOTO_B_3.class, bId);
+    B3 b = session.findById(B3.class, bId);
     assertNotNull(b);
-    TOTO_A_3 a = b.getA();
+    A3 a = b.getA();
     assertNotNull(a);
-    assertSame(a, session.findById(TOTO_A_3.class, aId));
+    assertSame(a, session.findById(A3.class, aId));
     assertSame(b, a.getB());
   }
 }

@@ -35,8 +35,8 @@ import javax.jcr.ItemNotFoundException;
 public class OneToTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TOTO_A_1.class);
-    addClass(TOTO_B_1.class);
+    addClass(A1.class);
+    addClass(B1.class);
   }
 
   public void testJCR() throws Exception {
@@ -44,26 +44,26 @@ public class OneToTestCase extends AbstractTestCase {
 
     //
     Node rootNode = session.getRoot();
-    Node aNode = rootNode.addNode("toto_a_a", getNodeTypeName(TOTO_A_1.class));
+    Node aNode = rootNode.addNode("toto_a_a", getNodeTypeName(A1.class));
     String aId = aNode.getUUID();
-    TOTO_A_1 a = session.findByNode(TOTO_A_1.class, aNode);
+    A1 a = session.findByNode(A1.class, aNode);
     assertNotNull(a);
     assertNull(a.getB());
 
     //
-    Node bNode = aNode.addNode("b", getNodeTypeName(TOTO_B_1.class));
+    Node bNode = aNode.addNode("b", getNodeTypeName(B1.class));
     String bId = bNode.getUUID();
-    TOTO_B_1 b = a.getB();
+    B1 b = a.getB();
     assertNotNull(b);
 
     //
     rootNode.save();
 
     session = login();
-    a = session.findById(TOTO_A_1.class, aId);
+    a = session.findById(A1.class, aId);
     assertNotNull(a);
     b = a.getB();
-    assertSame(b, session.findById(TOTO_B_1.class, bId));
+    assertSame(b, session.findById(B1.class, bId));
 
     //
     bNode = session.getJCRSession().getNodeByUUID(bId);
@@ -76,7 +76,7 @@ public class OneToTestCase extends AbstractTestCase {
 
     //
     session = login();
-    a = session.findById(TOTO_A_1.class, aId);
+    a = session.findById(A1.class, aId);
     b = a.getB();
     assertNull(b);
   }
@@ -85,13 +85,13 @@ public class OneToTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    TOTO_A_1 a = session.create(TOTO_A_1.class, getNodeTypeName(TOTO_A_1.class));
+    A1 a = session.create(A1.class, getNodeTypeName(A1.class));
     String aId = session.persist(a);
     Node aNode = session.getJCRSession().getNodeByUUID(aId);
     assertNotNull(aNode);
 
     //
-    TOTO_B_1 b = session.create(TOTO_B_1.class);
+    B1 b = session.create(B1.class);
     a.setB(b);
     assertSame(b, a.getB());
     Node bNode = aNode.getNode("b");
@@ -99,7 +99,7 @@ public class OneToTestCase extends AbstractTestCase {
     String bId = bNode.getUUID();
 
     //
-    TOTO_B_1 b2 = session.create(TOTO_B_1.class);
+    B1 b2 = session.create(B1.class);
     try {
       a.setB(b2);
     }

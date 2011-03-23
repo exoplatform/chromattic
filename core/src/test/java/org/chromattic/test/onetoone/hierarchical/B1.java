@@ -19,22 +19,12 @@
 
 package org.chromattic.test.onetoone.hierarchical;
 
-import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.MappedBy;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "onetoone_h:a1")
-public abstract class TOTO_A_1 {
-
-  @OneToOne
-  @Owner
-  @MappedBy("b")
-  public abstract TOTO_B_1 getB();
-
-  public abstract void setB(TOTO_B_1 b);
+@PrimaryType(name = "onetoone_h:b1")
+public class B1 {
 }

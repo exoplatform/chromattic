@@ -28,11 +28,11 @@ import org.chromattic.api.annotations.MappedBy;
  * @version $Revision$
  */
 @PrimaryType(name = "onetoone_h:b2")
-public abstract class TOTO_B_2 {
+public abstract class B2 {
 
   @OneToOne
   @MappedBy("b")
-  public abstract TOTO_A_2 getA();
+  public abstract A2 getA();
 
-  public abstract void setA(TOTO_A_2 a);
+  public abstract void setA(A2 a);
 }
