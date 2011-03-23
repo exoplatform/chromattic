@@ -62,7 +62,19 @@ public abstract class DomainSession {
 
   protected abstract void _persist(EntityContext ctx, String name) throws RepositoryException;
 
-  protected abstract void _persist(ObjectContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
+  /**
+   * Insert a context as a child of a parent context.
+   *
+   * @param srcCtx the source context
+   * @param name the destination path relative to the source context
+   * @param dstCtx the destination context
+   * @throws NullPointerException if the destination context or the name is null
+   * @throws IllegalArgumentException if the destination context is not transient
+   * @throws IllegalStateException if the source context is not persistent
+   * @throws RepositoryException any repository exception
+   */
+  protected abstract void _persist(ObjectContext srcCtx, String name, EntityContext dstCtx) throws
+    NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException;
 
   protected abstract EntityContext _copy(EntityContext srcCtx, String name) throws RepositoryException;
 
@@ -100,7 +112,19 @@ public abstract class DomainSession {
 
   protected abstract Node _getRoot() throws RepositoryException;
 
-  protected abstract void _move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws RepositoryException;
+  /**
+   * Move the source context to the destination context.
+   *
+   * @param srcCtx the source context
+   * @param dstCtx the destination context
+   * @param dstName the destination name
+   * @throws NullPointerException if the destination context or the name is null
+   * @throws IllegalArgumentException if the destination context is not persistent
+   * @throws IllegalStateException if the source context is not persistent
+   * @throws RepositoryException any repository excxeption
+   */
+  protected abstract void _move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws
+    NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException, RepositoryException;
 
   protected abstract void _addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws RepositoryException;
 

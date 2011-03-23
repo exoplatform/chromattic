@@ -137,22 +137,8 @@ public class DomainSessionImpl extends DomainSession {
     _persist(_getRoot(), name, ctx);
   }
 
-  /**
-   * Insert a context as a child of a parent context.
-   *
-   * @param srcCtx the source context
-   * @param name the destination path relative to the source context
-   * @param dstCtx the destination context
-   * @throws NullPointerException if the destination context or the name is null
-   * @throws IllegalArgumentException if the destination context is not transient
-   * @throws IllegalStateException if the source context is not persistent
-   * @throws RepositoryException any repository exception
-   */
   protected void _persist(ObjectContext srcCtx, String name, EntityContext dstCtx) throws
-    NullPointerException,
-    IllegalArgumentException,
-    IllegalStateException,
-    RepositoryException {
+    NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException {
     if (srcCtx == null) {
       String msg = "Cannot insert context " + dstCtx + " as a child of a null context";
       log.error(msg);
@@ -401,7 +387,8 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected void _move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws RepositoryException {
+  protected void _move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws
+    NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException {
     if (dstCtx == null) {
       String msg = "Cannot move to null context";
       log.error(msg);
