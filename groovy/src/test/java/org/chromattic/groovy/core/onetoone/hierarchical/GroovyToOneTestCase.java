@@ -19,8 +19,8 @@
 
 package org.chromattic.groovy.core.onetoone.hierarchical;
 
-import org.chromattic.test.onetoone.hierarchical.TOTO_A_2;
-import org.chromattic.test.onetoone.hierarchical.TOTO_B_2;
+import org.chromattic.test.onetoone.hierarchical.A2;
+import org.chromattic.test.onetoone.hierarchical.B2;
 import org.chromattic.test.onetoone.hierarchical.ToOneTestCase;
 import org.chromattic.testgenerator.UniversalTest;
 
@@ -32,6 +32,6 @@ import org.chromattic.testgenerator.UniversalTest;
   sourceClass = ToOneTestCase.class,
   baseDir = "core",
   suffix = "CoreTest",
-  chromatticClasses = {TOTO_A_2.class, TOTO_B_2.class})
+  chromatticClasses = {A2.class, B2.class})
 public class GroovyToOneTestCase {
 }

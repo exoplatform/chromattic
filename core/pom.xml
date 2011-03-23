@@ -81,6 +81,12 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
       <artifactId>chromattic.exo</artifactId>
       <scope>test</scope>
     </dependency>

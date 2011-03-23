@@ -82,19 +82,11 @@
       <artifactId>reflext.jlr</artifactId>
     </dependency>
 
-<!--
-    <dependency>
-      <groupId>org.reflext</groupId>
-      <artifactId>reflext.apt</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.apt</artifactId>
+      <artifactId>chromattic.test</artifactId>
       <scope>test</scope>
     </dependency>
--->
 
   </dependencies>
 

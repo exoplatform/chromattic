@@ -69,6 +69,12 @@
       <artifactId>reflext.apt</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

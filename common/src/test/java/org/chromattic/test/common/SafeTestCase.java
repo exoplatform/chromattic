@@ -20,6 +20,7 @@ package org.chromattic.test.common;
 
 import junit.framework.TestCase;
 import org.chromattic.common.Safe;
+import org.chromattic.common.logging.Logger;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -28,6 +29,13 @@ import org.chromattic.common.Safe;
 public class SafeTestCase extends TestCase {
 
   public void testEquals() {
+
+    Logger.getLogger("FOO").trace("--TRACE--");
+    Logger.getLogger("FOO").debug("--DEBUG--");
+    Logger.getLogger("FOO").info("--INFO--");
+    Logger.getLogger("FOO").warn("--WARN--");
+    Logger.getLogger("FOO").error("--ERROR--");
+
     Object o1 = new Object();
     Object o2 = new Object();
     assertTrue(Safe.equals(null, null));

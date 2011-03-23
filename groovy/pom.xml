@@ -82,6 +82,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
       <version>1.6.5</version>

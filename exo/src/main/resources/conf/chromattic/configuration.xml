@@ -23,6 +23,7 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+<!--
   <component>
     <key>org.exoplatform.services.log.LogConfigurationInitializer</key>
     <type>org.exoplatform.services.log.LogConfigurationInitializer</type>
@@ -56,19 +57,19 @@
 
         <property name="log4j.category.jcr.FileCleaner" value="DEBUG"/>
 
-        <!-- property name="log4j.category.jcr.JDBCStorageConnection" value="DEBUG"/>
-        <property name="log4j.category.jcr.NodeImpl" value="DEBUG"/ -->
+        &lt;!&ndash; property name="log4j.category.jcr.JDBCStorageConnection" value="DEBUG"/>
+        <property name="log4j.category.jcr.NodeImpl" value="DEBUG"/ &ndash;&gt;
 
-        <!-- property name="log4j.category.jcr.WorkspaceStorageCacheImpl" value="DEBUG"/ -->
-        <!-- property name="log4j.category.database.DBSchemaCreator" value="DEBUG"/ -->
-        <!-- property name="log4j.category.jcr.WorkspaceDataReplicator" value="DEBUG"/ -->
+        &lt;!&ndash; property name="log4j.category.jcr.WorkspaceStorageCacheImpl" value="DEBUG"/ &ndash;&gt;
+        &lt;!&ndash; property name="log4j.category.database.DBSchemaCreator" value="DEBUG"/ &ndash;&gt;
+        &lt;!&ndash; property name="log4j.category.jcr.WorkspaceDataReplicator" value="DEBUG"/ &ndash;&gt;
 
-        <!-- property name="log4j.category.jcr.WorkspaceStorageCacheImpl" value="DEBUG"/ -->
-        <!-- property name="log4j.category.jcr.WorkspacePersistentDataManager" value="DEBUG"/ -->
-        <!-- property name="log4j.category.jcr.SessionDataManager" value="DEBUG"/ -->
+        &lt;!&ndash; property name="log4j.category.jcr.WorkspaceStorageCacheImpl" value="DEBUG"/ &ndash;&gt;
+        &lt;!&ndash; property name="log4j.category.jcr.WorkspacePersistentDataManager" value="DEBUG"/ &ndash;&gt;
+        &lt;!&ndash; property name="log4j.category.jcr.SessionDataManager" value="DEBUG"/ &ndash;&gt;
       </properties-param>
 
-      <!-- value-param>
+      &lt;!&ndash; value-param>
       <name>logger</name>
       <value>org.exoplatform.services.log.impl.BufferedSimpleLog</value>
       </value-param>
@@ -81,9 +82,9 @@
       <description>SimpleLog properties</description>
       <property name="org.apache.commons.logging.simplelog.defaultlog" value="debug"/>
       <property name="org.apache.commons.logging.simplelog.showdatetime" value="true"/>
-      </properties-param -->
+      </properties-param &ndash;&gt;
 
-      <!-- value-param>
+      &lt;!&ndash; value-param>
       <name>logger</name>
       <value>org.exoplatform.services.log.impl.BufferedJdk14Logger</value>
       </value-param>
@@ -97,10 +98,11 @@
       <property name="handlers" value="java.util.logging.ConsoleHandler"/>
       <property name=".level" value="FINE"/>
       <property name="java.util.logging.ConsoleHandler.level" value="FINE"/>
-      </properties-param -->
+      </properties-param &ndash;&gt;
 
     </init-params>
   </component>
+-->
 
   <component>
     <key>org.exoplatform.services.jcr.RepositoryService</key>
