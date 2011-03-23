@@ -62,7 +62,7 @@ public abstract class DomainSession {
 
   protected abstract void _persist(EntityContext ctx, String name) throws RepositoryException;
 
-  protected abstract void _persist(EntityContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
+  protected abstract void _persist(ObjectContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
 
   protected abstract EntityContext _copy(EntityContext srcCtx, String name) throws RepositoryException;
 

@@ -19,6 +19,7 @@
 
 package org.chromattic.core;
 
+import org.chromattic.api.Status;
 import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.spi.instrument.ProxyType;
@@ -54,6 +55,21 @@ public final class EmbeddedContext extends ObjectContext<EmbeddedContext> {
     this.mapper = mapper;
     this.object = object;
     this.session = session;
+  }
+
+  /**
+   * Returns the status of the related entity when the context is attached to an entity otherwise it returns
+   * the {@link Status#TRANSIENT} value.
+   *
+   * @return the status
+   */
+  @Override
+  public Status getStatus() {
+    if (relatedEntity == null) {
+      return Status.TRANSIENT;
+    } else {
+      return relatedEntity.getStatus();
+    }
   }
 
   @Override

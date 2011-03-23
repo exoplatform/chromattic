@@ -20,6 +20,7 @@
 package org.chromattic.core;
 
 import org.chromattic.api.ChromatticIOException;
+import org.chromattic.api.Status;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.core.jcr.type.NodeTypeInfo;
@@ -46,6 +47,8 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
   public abstract EntityContext getEntity();
 
   public abstract NodeTypeInfo getTypeInfo();
+
+  public abstract Status getStatus();
 
   public final Object invoke(Object o, Method method) throws Throwable {
     MethodInvoker<O> invoker = getMapper().getInvoker(method);
