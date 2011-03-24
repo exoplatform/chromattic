@@ -107,13 +107,13 @@ public interface ChromatticSession {
    * method implicitely expects a name associated with the object.
    *
    * @param parent the parent object
-   * @param child the object to persist
+   * @param o the object to persist
    * @return the id of the inserted object
    * @throws NullPointerException if the child argument is null
    * @throws IllegalArgumentException if the parent is not a persistent object or the object is not a chromattic transient object
    * @throws ChromatticException any chromattic exception
    */
-  String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException;
+  String persist(Object parent, Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
    * Persists a transient object relative to the root node. The parent of the persisted object will implicitely be the
