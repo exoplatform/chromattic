@@ -19,6 +19,7 @@
 
 package org.chromattic.metamodel.typegen.onetomany.hierarchical;
 
+import org.chromattic.api.annotations.NamingPrefix;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.PrimaryType;
 
@@ -28,7 +29,8 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(prefix = "foo", name = "1")
+@NamingPrefix("foo")
+@PrimaryType(name = "1")
 public abstract class F1 {
 
   @OneToMany()

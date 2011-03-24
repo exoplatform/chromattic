@@ -45,6 +45,4 @@ public @interface MixinType {
    */
   String name();
 
-  String prefix() default ":";
-
 }

@@ -95,4 +95,16 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertNull(r1.getRelatedRelationshipMapping());
     assertEquals(0, _2.getProperties().size());
   }
+  public void testPrefixInheritedTransitively() {
+    Map<Class<?>, BeanMapping> mappings = assertValid(G1.class, G2.class, G3.class);
+    BeanMapping _1 = mappings.get(G1.class);
+    BeanMapping _2 = mappings.get(G2.class);
+    BeanMapping _3 = mappings.get(G3.class);
+    RelationshipMapping.OneToMany.Hierarchic r1 = _2.getPropertyMapping("children", RelationshipMapping.OneToMany.Hierarchic.class);
+    assertNotNull(r1);
+    assertEquals("foo", r1.getPrefix());
+    assertSame(_3.getBean(), r1.getRelatedBean());
+    assertNull(r1.getRelatedRelationshipMapping());
+    assertEquals(0, _3.getProperties().size());
+  }
 }

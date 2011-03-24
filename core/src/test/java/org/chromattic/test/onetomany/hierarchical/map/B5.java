@@ -21,6 +21,7 @@ package org.chromattic.test.onetomany.hierarchical.map;
 
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.NamingPrefix;
 import org.chromattic.api.annotations.PrimaryType;
 
 /**
@@ -33,7 +34,8 @@ public abstract class B5 {
   @Name
   public abstract String getName();
 
-  @ManyToOne(prefix = "onetomany_h_map")
+  @NamingPrefix("onetomany_h_map")
+  @ManyToOne
   public abstract A5 getParent();
 
   public abstract void setParent(A5 parent);

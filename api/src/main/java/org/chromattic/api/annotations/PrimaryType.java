@@ -56,6 +56,4 @@ public @interface PrimaryType {
    */
   boolean abstract_() default false;
 
-  String prefix() default ":";
-
 }

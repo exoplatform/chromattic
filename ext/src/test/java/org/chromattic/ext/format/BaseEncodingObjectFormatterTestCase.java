@@ -23,18 +23,52 @@
 
 package org.chromattic.ext.format;
 
-import org.chromattic.ext.format.AbstractEncodingObjectFormatter;
+import junit.framework.TestCase;
+import org.chromattic.api.format.ObjectFormatter;
 
 /**
  * @author <a href="mailto:theute@redhat.com">Thomas Heute</a>
  * @version $Revision$
- */public class NullPrefixEncodingObjectFormatter extends AbstractEncodingObjectFormatter
-{
+ */
+public class BaseEncodingObjectFormatterTestCase extends TestCase {
 
-   @Override
-   public String getPrefix()
-   {
-      return null;
-   }
+  /** . */
+  private final ObjectFormatter formatter = new BaseEncodingObjectFormatter();
 
+  private void assertString(String expected, String s) {
+    assertEquals(expected, formatter.encodeNodeName(null, s));
+    assertEquals(s, formatter.decodeNodeName(null, expected));
+  }
+
+  private void assertCannotDecode(String s) {
+    try {
+      formatter.decodeNodeName(null, s);
+      fail();
+    }
+    catch (IllegalStateException ignore) {
+    }
+  }
+
+  public void testStrings() {
+    assertString("", "");
+    assertString("a", "a");
+    assertString("%00", "{");
+    assertString("%01", "}");
+    assertString("%02", ".");
+    assertString("%03", "/");
+    assertString("%04", ":");
+    assertString("%05", "[");
+    assertString("%06", "]");
+    assertString("%07", "|");
+    assertString("%08", "*");
+    assertString("%09", "%");
+    assertString("a%03b", "a/b");
+  }
+
+  public void testDecodeFailure() {
+    assertCannotDecode("%0");
+    assertCannotDecode("%0" + (char)('0' - 1));
+    assertCannotDecode("%0" + (char)('9' + 1));
+    assertCannotDecode("%1");
+  }
 }

@@ -38,10 +38,6 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.METHOD)
 public @interface OneToMany {
 
-  // The default value is ":" that is an invalid value to indicate that nothing
-  // was specified
-  String prefix() default ":";
-
   /**
    * The type of the relationship.
    *
