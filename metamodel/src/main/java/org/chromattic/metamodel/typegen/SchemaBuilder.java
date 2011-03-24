@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.typegen;
 
 import org.chromattic.api.RelationshipType;
+import org.chromattic.common.JCR;
 import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.annotations.NotReferenceable;
 import org.chromattic.metamodel.annotations.Skip;
@@ -215,7 +216,7 @@ public class SchemaBuilder {
           BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
           if (mapping.isOwner()) {
             current.addChildNodeType(
-                mapping.getMappedBy(),
+                JCR.qualify(mapping.getMappedByPrefix(), mapping.getMappedByLocalName()),
                 mapping.getMandatory(),
                 mapping.getAutocreated(),
                 relatedBeanMapping);
@@ -223,7 +224,7 @@ public class SchemaBuilder {
             NodeType related = resolve(relatedBeanMapping);
             if (related != null) {
               related.addChildNodeType(
-                  mapping.getMappedBy(),
+                  JCR.qualify(mapping.getMappedByPrefix(), mapping.getMappedByLocalName()),
                   false,
                   mapping.getAutocreated(),
                   current.mapping);

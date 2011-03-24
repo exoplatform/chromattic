@@ -35,10 +35,14 @@ class AnyChildList<E> extends AbstractList<E> {
   private final EntityContext parentCtx;
 
   /** . */
+  private final String prefix;
+
+  /** . */
   private final Class<E> relatedClass;
 
-  public AnyChildList(EntityContext parentCtx, Class<E> relatedClass) {
+  public AnyChildList(EntityContext parentCtx, String prefix, Class<E> relatedClass) {
     this.relatedClass = relatedClass;
+    this.prefix = prefix;
     this.parentCtx = parentCtx;
   }
 
@@ -84,14 +88,14 @@ class AnyChildList<E> extends AbstractList<E> {
     //
     switch (addedCtx.getStatus()) {
       case TRANSIENT:
-        parentCtx.addChild(addedCtx);
+        parentCtx.addChild(prefix, addedCtx);
         break;
       case PERSISTENT:
         EntityContext addedParentCtx = addedCtx.getParent();
 
         // It's a move
         if (addedParentCtx != parentCtx) {
-          parentCtx.addChild(addedCtx);
+          parentCtx.addChild(prefix, addedCtx);
         }
         break;
       default:
@@ -131,14 +135,14 @@ class AnyChildList<E> extends AbstractList<E> {
     //
     switch (addedCtx.getStatus()) {
       case TRANSIENT:
-        parentCtx.addChild(addedCtx);
+        parentCtx.addChild(prefix, addedCtx);
         break;
       case PERSISTENT:
         EntityContext addedParentCtx = addedCtx.getParent();
 
         // It's a move
         if (addedParentCtx != parentCtx) {
-          parentCtx.addChild(addedCtx);
+          parentCtx.addChild(prefix, addedCtx);
         }
         break;
       default:

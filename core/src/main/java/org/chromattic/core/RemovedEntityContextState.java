@@ -40,7 +40,7 @@ class RemovedEntityContextState extends EntityContextState {
     this.path = path;
   }
 
-  String getName() {
+  String getLocalName() {
     throw new IllegalStateException();
   }
 

@@ -162,7 +162,7 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     DomainSession session = state.getSession();
     switch (type) {
       case NAME:
-        return session.getName(this);
+        return session.getLocalName(this);
       case ID:
         return state.getId();
       case PATH:
@@ -182,7 +182,7 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     return state.getSession().getReferents(this, name, filterClass, linkType);
   }
 
-  public String getName() {
+  public String getLocalName() {
     return getAttribute(NodeAttributeType.NAME);
   }
 
@@ -194,8 +194,8 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     return getAttribute(NodeAttributeType.PATH);
   }
 
-  public void setName(String name) {
-    state.getSession().setName(this, name);
+  public void setLocalName(String name) {
+    state.getSession().setLocalName(this, name);
   }
 
   public EntityContext getReferenced(String name, LinkType linkType) {

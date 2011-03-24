@@ -35,7 +35,7 @@ abstract class EntityContextState {
 
   abstract String getId();
 
-  abstract String getName();
+  abstract String getLocalName();
 
   abstract String getPath();
 

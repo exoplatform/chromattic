@@ -24,7 +24,6 @@ import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.common.logging.Logger;
-import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.spi.instrument.MethodHandler;
@@ -58,29 +57,30 @@ public abstract class DomainSession {
     this.sessionWrapper = sessionWrapper;
   }
 
-  protected abstract void _setName(EntityContext ctx, String name) throws RepositoryException;
+  protected abstract void _setLocalName(EntityContext ctx, String localName) throws RepositoryException;
 
-  protected abstract void _persist(EntityContext ctx, String name) throws RepositoryException;
+  protected abstract void _persist(EntityContext ctx, String prefix, String localName) throws RepositoryException;
 
   /**
    * Insert a context as a child of a parent context.
    *
+   *
    * @param srcCtx the source context
-   * @param name the destination path relative to the source context
-   * @param dstCtx the destination context
-   * @throws NullPointerException if the destination context or the name is null
+   * @param prefix
+   * @param localName
+   * @param dstCtx the destination context  @throws NullPointerException if the destination context or the name is null
    * @throws IllegalArgumentException if the destination context is not transient
    * @throws IllegalStateException if the source context is not persistent
    * @throws RepositoryException any repository exception
    */
-  protected abstract void _persist(ObjectContext srcCtx, String name, EntityContext dstCtx) throws
+  protected abstract void _persist(ObjectContext srcCtx, String prefix, String localName, EntityContext dstCtx) throws
     NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException;
 
-  protected abstract EntityContext _copy(EntityContext srcCtx, String name) throws RepositoryException;
+  protected abstract EntityContext _copy(EntityContext srcCtx, String prefix, String localName) throws RepositoryException;
 
-  protected abstract EntityContext _copy(EntityContext parentCtx, EntityContext srcCtx, String name) throws RepositoryException;
+  protected abstract EntityContext _copy(EntityContext parentCtx, EntityContext srcCtx, String prefix, String localName) throws RepositoryException;
 
-  protected abstract ObjectContext _create(Class<?> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
+  protected abstract ObjectContext _create(Class<?> clazz, String localName) throws NullPointerException, IllegalArgumentException, RepositoryException;
 
   protected abstract <E> E _findById(Class<E> clazz, String id) throws RepositoryException;
 
@@ -96,9 +96,9 @@ public abstract class DomainSession {
 
   protected abstract <T> Iterator<T> _getReferents(EntityContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException;
 
-  protected abstract void _removeChild(ObjectContext ctx, String name) throws RepositoryException;
+  protected abstract void _removeChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException;
 
-  protected abstract EntityContext _getChild(ObjectContext ctx, String name) throws RepositoryException;
+  protected abstract EntityContext _getChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException;
 
   protected abstract <T> Iterator<T> _getChildren(ObjectContext ctx, Class<T> filterClass) throws RepositoryException;
 
@@ -115,15 +115,17 @@ public abstract class DomainSession {
   /**
    * Move the source context to the destination context.
    *
+   *
+   *
    * @param srcCtx the source context
    * @param dstCtx the destination context
-   * @param dstName the destination name
-   * @throws NullPointerException if the destination context or the name is null
+   * @param dstPrefix
+   *@param dstLocalName  @throws NullPointerException if the destination context or the name is null
    * @throws IllegalArgumentException if the destination context is not persistent
    * @throws IllegalStateException if the source context is not persistent
    * @throws RepositoryException any repository excxeption
    */
-  protected abstract void _move(EntityContext srcCtx, ObjectContext dstCtx, String dstName) throws
+  protected abstract void _move(EntityContext srcCtx, ObjectContext dstCtx, String dstPrefix, String dstLocalName) throws
     NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException, RepositoryException;
 
   protected abstract void _addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws RepositoryException;
@@ -132,7 +134,7 @@ public abstract class DomainSession {
 
   protected abstract EntityContext _getEntity(Node node) throws RepositoryException;
 
-  protected abstract String _getName(EntityContext ctx) throws RepositoryException;
+  protected abstract String _getLocalName(EntityContext ctx) throws RepositoryException;
 
   protected abstract void _close() throws RepositoryException;
 
@@ -220,36 +222,36 @@ public abstract class DomainSession {
     }
   }
 
-  public void persist(EntityContext ctx, String name) throws UndeclaredRepositoryException {
+  public void persist(EntityContext ctx, String prefix, String localName) throws UndeclaredRepositoryException {
     try {
-      _persist(ctx, name);
+      _persist(ctx, prefix, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
   }
 
-  public EntityContext copy(EntityContext srcCtx, String name) throws UndeclaredRepositoryException {
+  public EntityContext copy(EntityContext srcCtx, String prefix, String localName) throws UndeclaredRepositoryException {
     try {
-      return _copy(srcCtx, name);
+      return _copy(srcCtx, prefix, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
   }
 
-  public EntityContext copy(EntityContext parentCtx, EntityContext srcCtx, String name) throws UndeclaredRepositoryException {
+  public EntityContext copy(EntityContext parentCtx, EntityContext srcCtx, String prefix, String localName) throws UndeclaredRepositoryException {
     try {
-      return _copy(parentCtx, srcCtx, name);
+      return _copy(parentCtx, srcCtx, prefix, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
   }
 
-  public <O> O create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
+  public <O> O create(Class<O> clazz, String localName) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
     try {
-      ObjectContext octx = _create(clazz, name);
+      ObjectContext octx = _create(clazz, localName);
       return clazz.cast(octx.getObject());
     }
     catch (RepositoryException e) {
@@ -257,9 +259,9 @@ public abstract class DomainSession {
     }
   }
 
-  public String getName(EntityContext ctx) throws UndeclaredRepositoryException {
+  public String getLocalName(EntityContext ctx) throws UndeclaredRepositoryException {
     try {
-      return _getName(ctx);
+      return _getLocalName(ctx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -275,9 +277,9 @@ public abstract class DomainSession {
     }
   }
 
-  public final void setName(EntityContext ctx, String name) throws UndeclaredRepositoryException {
+  public final void setLocalName(EntityContext ctx, String localName) throws UndeclaredRepositoryException {
     try {
-      _setName(ctx, name);
+      _setLocalName(ctx, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -293,9 +295,9 @@ public abstract class DomainSession {
     }
   }
 
-  public void move(EntityContext srcCtx, ObjectContext dstCtx, String dstName) throws UndeclaredRepositoryException {
+  public void move(EntityContext srcCtx, ObjectContext dstCtx, String dstPrefix, String dstLocalName) throws UndeclaredRepositoryException {
     try {
-      _move(srcCtx, dstCtx, dstName);
+      _move(srcCtx, dstCtx, dstPrefix, dstLocalName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -329,9 +331,9 @@ public abstract class DomainSession {
     }
   }
 
-  public final void removeChild(ObjectContext ctx, String name) throws UndeclaredRepositoryException {
+  public final void removeChild(ObjectContext ctx, String prefix, String localName) throws UndeclaredRepositoryException {
     try {
-      _removeChild(ctx, name);
+      _removeChild(ctx, prefix, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -347,9 +349,9 @@ public abstract class DomainSession {
     }
   }
 
-  public final EntityContext getChild(ObjectContext ctx, String name) throws UndeclaredRepositoryException {
+  public final EntityContext getChild(ObjectContext ctx, String prefix, String localName) throws UndeclaredRepositoryException {
     try {
-      return _getChild(ctx, name);
+      return _getChild(ctx, prefix, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -425,9 +427,9 @@ public abstract class DomainSession {
     }
   }
 
-  public final void persist(ObjectContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {
+  public final void persist(ObjectContext parentCtx, EntityContext childCtx, String prefix, String localName) throws UndeclaredRepositoryException {
     try {
-      _persist(parentCtx, name, childCtx);
+      _persist(parentCtx, prefix, localName, childCtx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

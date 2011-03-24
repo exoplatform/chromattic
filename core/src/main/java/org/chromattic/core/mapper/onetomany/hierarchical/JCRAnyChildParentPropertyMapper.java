@@ -34,6 +34,9 @@ public class JCRAnyChildParentPropertyMapper<O extends ObjectContext<O>> extends
   /** . */
   private final AnyChildMultiValueMapper valueMapper;
 
+  /** . */
+  private final String prefix;
+
   public JCRAnyChildParentPropertyMapper(
     Class<O> contextType,
     RelationshipMapping.OneToMany.Hierarchic info,
@@ -42,10 +45,11 @@ public class JCRAnyChildParentPropertyMapper<O extends ObjectContext<O>> extends
 
     //
     this.valueMapper = valueMapper;
+    this.prefix = info.getPrefix();
   }
 
   @Override
   public Object get(O context) throws Throwable {
-    return valueMapper.createValue(context.getEntity(), getRelatedClass());
+    return valueMapper.createValue(context.getEntity(), prefix, getRelatedClass());
   }
 }

@@ -63,7 +63,7 @@ abstract class AbstractPathBuilder<O> implements Path<O> {
       if (pm instanceof RelationshipMapping.OneToOne.Hierarchic) {
         RelationshipMapping.OneToOne.Hierarchic oto = (RelationshipMapping.OneToOne.Hierarchic)pm;
         if (oto.isOwner()) {
-          if (oto.getMappedBy().equals(childName)) {
+          if (oto.getMappedByLocalName().equals(childName)) {
             throw new IllegalArgumentException();
           }
         }
@@ -154,7 +154,11 @@ abstract class AbstractPathBuilder<O> implements Path<O> {
     @Override
     protected void appendTo(StringBuilder sb) throws RepositoryException {
       parent.appendTo(sb);
-      sb.append('/').append(relationship.getMappedBy());
+      sb.append('/');
+      if (relationship.getMappedByPrefix() != null) {
+        sb.append(relationship.getMappedByPrefix()).append(':');
+      }
+      sb.append(relationship.getMappedByLocalName());
     }
   }
 

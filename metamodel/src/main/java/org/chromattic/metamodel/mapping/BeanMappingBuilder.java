@@ -228,7 +228,9 @@ public class BeanMappingBuilder {
 
     @Override
     protected boolean resolves(RelationshipMapping.OneToOne.Hierarchic from, RelationshipMapping.OneToOne.Hierarchic to) {
-      return from.mappedBy.equals(to.mappedBy) && from.owner != to.owner;
+      String fromPrefix = from.getMappedByPrefix() == null ? "" : from.getMappedByPrefix();
+      String toPrefix = to.getMappedByPrefix() == null ? "" : to.getMappedByPrefix();
+      return fromPrefix.equals(toPrefix) && from.getMappedByLocalName().equals(to.getMappedByLocalName()) && from.owner != to.owner;
     }
   }
 
@@ -738,8 +740,18 @@ public class BeanMappingBuilder {
       boolean owner = property.getAnnotation(Owner.class) != null;
       boolean autocreated = property.getAnnotation(AutoCreated.class) != null;
       boolean mandatory = property.getAnnotation(Mandatory.class) != null;
+      String mappedByPrefix;
+      String mappedByLocalName;
+      int index = mappedBy.value().indexOf(':');
+      if (index == -1) {
+        mappedByPrefix = null;
+        mappedByLocalName = mappedBy.value();
+      } else {
+        mappedByPrefix = mappedBy.value().substring(0, index);
+        mappedByLocalName = mappedBy.value().substring(index + 1);
+      }
       RelationshipMapping.OneToOne.Hierarchic mapping;
-      mapping = new RelationshipMapping.OneToOne.Hierarchic(property, owner, mappedBy.value(), mandatory, autocreated);
+      mapping = new RelationshipMapping.OneToOne.Hierarchic(property, owner, mappedByPrefix, mappedByLocalName, mandatory, autocreated);
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }

@@ -29,6 +29,7 @@ import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
+import static org.chromattic.common.JCR.qualify;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -55,7 +56,7 @@ public class DomainSessionImpl extends DomainSession {
     this.contexts = new HashMap<String, EntityContext>();
   }
 
-  protected void _setName(EntityContext ctx, String name) throws RepositoryException {
+  protected void _setLocalName(EntityContext ctx, String localName) throws RepositoryException {
     if (ctx == null) {
       throw new NullPointerException();
     }
@@ -63,11 +64,14 @@ public class DomainSessionImpl extends DomainSession {
     //
     switch (ctx.getStatus()) {
       case TRANSIENT:
-        ((TransientEntityContextState)ctx.state).setName(name);
+        ((TransientEntityContextState)ctx.state).setLocalName(localName);
         break;
       case PERSISTENT:
         Node parentNode = ctx.getNode().getParent();
-        _move(ctx, parentNode, name);
+        String name = ctx.getNode().getName();
+        int index = name.indexOf(':');
+        String prefix = index == -1 ? null : name.substring(0, index);
+        _move(ctx, parentNode, prefix, localName);
         break;
       default:
         throw new IllegalStateException("Removed node cannot have its name updated");
@@ -75,7 +79,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected String _getName(EntityContext ctx) throws RepositoryException {
+  protected String _getLocalName(EntityContext ctx) throws RepositoryException {
     if (ctx == null) {
       throw new NullPointerException();
     }
@@ -83,7 +87,7 @@ public class DomainSessionImpl extends DomainSession {
     //
     switch (ctx.getStatus()) {
       default:
-        return ctx.state.getName();
+        return ctx.state.getLocalName();
       case PERSISTENT:
         Node node = ctx.state.getNode();
         Node parentNode = node.getParent();
@@ -114,11 +118,11 @@ public class DomainSessionImpl extends DomainSession {
     return null;
   }
 
-  protected void _persist(EntityContext ctx, String name) throws RepositoryException {
+  protected void _persist(EntityContext ctx, String prefix, String localName) throws RepositoryException {
     if (ctx == null) {
       throw new NullPointerException("No null object context accepted");
     }
-    if (name == null) {
+    if (localName == null) {
       throw new NullPointerException("No relative path specified");
     }
 
@@ -134,10 +138,10 @@ public class DomainSessionImpl extends DomainSession {
     log.trace("Adding node for context {} and node type {}", ctx, ctx.mapper);
 
     //
-    _persist(_getRoot(), name, ctx);
+    _persist(_getRoot(), prefix, localName, ctx);
   }
 
-  protected void _persist(ObjectContext srcCtx, String name, EntityContext dstCtx) throws
+  protected void _persist(ObjectContext srcCtx, String prefix, String localName, EntityContext dstCtx) throws
     NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException {
     if (srcCtx == null) {
       String msg = "Cannot insert context " + dstCtx + " as a child of a null context";
@@ -149,7 +153,7 @@ public class DomainSessionImpl extends DomainSession {
       log.error(msg);
       throw new IllegalArgumentException(msg);
     }
-    if (name == null) {
+    if (localName == null) {
       String msg = "Attempt to insert context " + dstCtx + " with no relative path to " + srcCtx;
       log.error(msg);
       throw new NullPointerException(msg);
@@ -164,14 +168,17 @@ public class DomainSessionImpl extends DomainSession {
     Node parentNode = srcCtx.getEntity().state.getNode();
 
     //
-    _persist(parentNode, name, dstCtx);
+    _persist(parentNode, prefix, localName, dstCtx);
   }
 
-  private void _persist(Node srcNode, String name, EntityContext dstCtx) throws RepositoryException {
+  private void _persist(Node srcNode, String prefix, String localName, EntityContext dstCtx) throws RepositoryException {
     ObjectMapper mapper = dstCtx.mapper;
 
     //
-    name = domain.encodeName(srcNode, name, NameKind.OBJECT);
+    localName = domain.encodeName(srcNode, localName, NameKind.OBJECT);
+
+    //
+    String name = qualify(prefix, localName);
 
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
@@ -217,21 +224,19 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected EntityContext _copy(EntityContext srcCtx, String name) throws RepositoryException {
-    return _copy(getRoot(), srcCtx, name);
+  protected EntityContext _copy(EntityContext srcCtx, String prefix, String localName) throws RepositoryException {
+    return _copy(getRoot(), srcCtx, qualify(prefix, localName));
   }
 
   @Override
-  protected EntityContext _copy(EntityContext parentCtx, EntityContext srcCtx, String name) throws RepositoryException {
+  protected EntityContext _copy(EntityContext parentCtx, EntityContext srcCtx, String prefix, String localName) throws RepositoryException {
     if (parentCtx == null) {
       throw new NullPointerException();
     }
     if (parentCtx.getStatus() == Status.PERSISTENT) {
       throw new IllegalArgumentException("Parent object is not persistent");
     }
-
-    //
-    return _copy(parentCtx.getNode(), srcCtx, name);
+    return _copy(parentCtx.getNode(), srcCtx, qualify(prefix, localName));
   }
 
   private EntityContext _copy(Node parentNode, EntityContext srcCtx, String name) throws RepositoryException {
@@ -249,7 +254,19 @@ public class DomainSessionImpl extends DomainSession {
     EntityContext dstCtx = (EntityContext)_create(srcCtx.mapper.getObjectClass(), null);
 
     //
-    _persist(parentNode, name, dstCtx);
+    String prefix;
+    String localName;
+    int index = name.indexOf(':');
+    if (index == -1) {
+      prefix = null;
+      localName = name;
+    } else {
+      prefix = name.substring(0, index);
+      localName = name.substring(index + 1);
+    }
+
+    //
+    _persist(parentNode, prefix, localName, dstCtx);
 
     //
     Node dstNode = dstCtx.getNode();
@@ -387,7 +404,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected void _move(EntityContext srcCtx, ObjectContext dstCtx, String dstName) throws
+  protected void _move(EntityContext srcCtx, ObjectContext dstCtx, String dstPrefix, String dstLocalName) throws
     NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException {
     if (dstCtx == null) {
       String msg = "Cannot move to null context";
@@ -404,10 +421,10 @@ public class DomainSessionImpl extends DomainSession {
     Node dstNode = dstCtx.getEntity().state.getNode();
 
     //
-    _move(srcCtx, dstNode, dstName);
+    _move(srcCtx, dstNode, dstPrefix, dstLocalName);
   }
 
-  private void _move(EntityContext srcCtx, Node dstNode, String dstName) throws RepositoryException {
+  private void _move(EntityContext srcCtx, Node dstNode, String dstPrefix, String dstLocalName) throws RepositoryException {
     if (srcCtx == null) {
       String msg = "Cannot move null context";
       log.error(msg);
@@ -420,7 +437,10 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    dstName = domain.encodeName(dstNode, dstName, NameKind.OBJECT);
+    dstLocalName = domain.encodeName(dstNode, dstLocalName, NameKind.OBJECT);
+
+    //
+    String dstName = qualify(dstPrefix, dstLocalName);
 
     //
     Node srcNode = srcCtx.state.getNode();
@@ -473,7 +493,7 @@ public class DomainSessionImpl extends DomainSession {
     sessionWrapper.orderBefore(parentNode, srcNode, dstNode);
   }
 
-  protected ObjectContext _create(Class<?> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException {
+  protected ObjectContext _create(Class<?> clazz, String localName) throws NullPointerException, IllegalArgumentException, RepositoryException {
     if (clazz == null) {
       throw new NullPointerException();
     }
@@ -498,8 +518,8 @@ public class DomainSessionImpl extends DomainSession {
       EntityContext ctx = new EntityContext((ObjectMapper<EntityContext>)typeMapper, state);
 
       //
-      if (name != null) {
-        ctx.setName(name);
+      if (localName != null) {
+        ctx.setLocalName(localName);
       }
 
       //
@@ -508,7 +528,7 @@ public class DomainSessionImpl extends DomainSession {
       //
       octx = ctx;
     } else {
-      if (name != null) {
+      if (localName != null) {
         throw new IllegalArgumentException("Cannot create a mixin type with a name");
       }
       octx = new EmbeddedContext((ObjectMapper<EmbeddedContext>)typeMapper, this);
@@ -592,13 +612,13 @@ public class DomainSessionImpl extends DomainSession {
 
     private final String id;
     private final String path;
-    private final String name;
+    private final String localName;
     private final EntityContext ctx;
 
-    private Removed(String id, String path, String name, EntityContext ctx) {
+    private Removed(String id, String path, String localName, EntityContext ctx) {
       this.id = id;
       this.path = path;
-      this.name = name;
+      this.localName = localName;
       this.ctx = ctx;
     }
   }
@@ -610,7 +630,7 @@ public class DomainSessionImpl extends DomainSession {
       EntityContext ctx = ctxEntry.getValue();
       Node ctxNode = ctx.state.getNode();
       if (ctxNode.getPath().startsWith(pathToRemove)) {
-        removeds.add(new Removed(ctx.getId(), ctx.getPath(), ctx.getName(), ctx));
+        removeds.add(new Removed(ctx.getId(), ctx.getPath(), ctx.getLocalName(), ctx));
       }
     }
 
@@ -627,7 +647,7 @@ public class DomainSessionImpl extends DomainSession {
       log.trace("Removing context for path {}", path);
       removed.ctx.state = new RemovedEntityContextState(path);
       ctxs.remove(removed.ctx);
-      broadcaster.removed(removed.id, removed.path, removed.name, removed.ctx.getObject());
+      broadcaster.removed(removed.id, removed.path, removed.localName, removed.ctx.getObject());
       log.trace("Removed context {} for path {}", removed.ctx, path);
     }
   }
@@ -686,8 +706,9 @@ public class DomainSessionImpl extends DomainSession {
     return new ReferentCollectionIterator<T>(this, referents, filterClass, name);
   }
 
-  protected void _removeChild(ObjectContext ctx, String name) throws RepositoryException {
-    name = domain.encodeName(ctx, name, NameKind.OBJECT);
+  protected void _removeChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException {
+    localName = domain.encodeName(ctx, localName, NameKind.OBJECT);
+    String name = qualify(prefix, localName);
     Node node = ctx.getEntity().state.getNode();
     Node childNode = sessionWrapper.getNode(node, name);
     if (childNode != null) {
@@ -695,8 +716,9 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected EntityContext _getChild(ObjectContext ctx, String name) throws RepositoryException {
-    name = domain.encodeName(ctx, name, NameKind.OBJECT);
+  protected EntityContext _getChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException {
+    localName = domain.encodeName(ctx, localName, NameKind.OBJECT);
+    String name = qualify(prefix, localName);
     Node node = ctx.getEntity().state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
     Node child = sessionWrapper.getChild(node, name);

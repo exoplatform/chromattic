@@ -82,8 +82,11 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
 
     public static class Hierarchic extends OneToOne<Hierarchic> {
 
-      /** Mapped by value. */
-      final String mappedBy;
+      /** . */
+      final String mappedByPrefix;
+
+      /** . */
+      final String mappedByLocalName;
 
       /** . */
       final boolean mandatory;
@@ -94,13 +97,15 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       public Hierarchic(
           SingleValuedPropertyInfo<BeanValueInfo> property,
           boolean owner,
-          String mappedBy,
+          String mappedByPrefix,
+          String mappedByLocalName,
           boolean mandatory,
           boolean autocreated) {
         super(property, owner);
 
         //
-        this.mappedBy = mappedBy;
+        this.mappedByPrefix = mappedByPrefix;
+        this.mappedByLocalName = mappedByLocalName;
         this.mandatory = mandatory;
         this.autocreated = autocreated;
       }
@@ -113,8 +118,12 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
         return autocreated;
       }
 
-      public String getMappedBy() {
-        return mappedBy;
+      public String getMappedByPrefix() {
+        return mappedByPrefix;
+      }
+
+      public String getMappedByLocalName() {
+        return mappedByLocalName;
       }
 
       @Override

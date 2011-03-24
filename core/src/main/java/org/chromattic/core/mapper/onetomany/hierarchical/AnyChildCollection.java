@@ -34,10 +34,14 @@ class AnyChildCollection<E> extends AbstractCollection<E> {
   private final EntityContext parentCtx;
 
   /** . */
+  private final String prefix;
+
+  /** . */
   private final Class<E> relatedClass;
 
-  public AnyChildCollection(EntityContext parentCtx, Class<E> relatedClass) {
+  public AnyChildCollection(EntityContext parentCtx, String prefix, Class<E> relatedClass) {
     this.relatedClass = relatedClass;
+    this.prefix = prefix;
     this.parentCtx = parentCtx;
   }
 
@@ -54,7 +58,7 @@ class AnyChildCollection<E> extends AbstractCollection<E> {
     EntityContext childCtx = parentCtx.getSession().unwrapEntity(child);
 
     //
-    parentCtx.addChild(childCtx);
+    parentCtx.addChild(prefix, childCtx);
 
     //
     return true;

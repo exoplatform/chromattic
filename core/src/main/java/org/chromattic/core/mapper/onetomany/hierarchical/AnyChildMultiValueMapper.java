@@ -26,23 +26,23 @@ import org.chromattic.core.EntityContext;
  */
 public abstract class AnyChildMultiValueMapper {
 
-  public abstract <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass);
+  public abstract <E> Object createValue(EntityContext parentCtx, String prefix, Class<E> relatedClass);
 
   public static class Map extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildMap<E>(parentCtx, relatedClass);
+    public <E> Object createValue(EntityContext parentCtx, String prefix, Class<E> relatedClass) {
+      return new AnyChildMap<E>(parentCtx, prefix, relatedClass);
     }
   }
 
   public static class Collection extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildCollection<E>(parentCtx, relatedClass);
+    public <E> Object createValue(EntityContext parentCtx, String prefix, Class<E> relatedClass) {
+      return new AnyChildCollection<E>(parentCtx, prefix, relatedClass);
     }
   }
 
   public static class List extends AnyChildMultiValueMapper {
-    public <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildList<E>(parentCtx, relatedClass);
+    public <E> Object createValue(EntityContext parentCtx, String prefix, Class<E> relatedClass) {
+      return new AnyChildList<E>(parentCtx, prefix, relatedClass);
     }
   }
 }

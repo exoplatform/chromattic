@@ -384,7 +384,7 @@ public class Domain {
     if (internal == null) {
       throw new IllegalArgumentException("Name " + externalName + " was converted to null");
     }
-    Path.validateName(internal);
+    Path.validateLocalName(internal);
     return internal;
   }
 }

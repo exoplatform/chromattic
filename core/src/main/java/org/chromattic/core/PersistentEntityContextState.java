@@ -85,7 +85,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  String getName() {
+  String getLocalName() {
     try {
       return node.getName();
     }

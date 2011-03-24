@@ -54,7 +54,7 @@ public class JCRNodeAttributePropertyMapper extends PropertyMapper<SingleValuedP
       throw new IllegalStateException("Node is removed");
     }
     if (type == NodeAttributeType.NAME) {
-      context.setName((String)value);
+      context.setLocalName((String)value);
     } else {
       throw new UnsupportedOperationException();
     }

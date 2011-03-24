@@ -34,7 +34,7 @@ import java.util.List;
 class TransientEntityContextState extends EntityContextState {
 
   /** . */
-  private String name;
+  private String localName;
 
   /** . */
   private final DomainSession session;
@@ -43,12 +43,12 @@ class TransientEntityContextState extends EntityContextState {
     this.session = session;
   }
 
-  public String getName() {
-    return name;
+  public String getLocalName() {
+    return localName;
   }
 
-  void setName(String name) {
-    this.name = name;
+  void setLocalName(String name) {
+    this.localName = name;
   }
 
   String getPath() {

@@ -36,11 +36,15 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper<Sing
   /** . */
   private final String relatedName;
 
+  /** . */
+  private final String relatedPrefix;
+
   public JCRNamedChildPropertyMapper(RelationshipMapping.OneToOne.Hierarchic info) throws ClassNotFoundException {
     super(info);
 
     //
-    this.relatedName = info.getMappedBy();
+    this.relatedName = info.getMappedByLocalName();
+    this.relatedPrefix = info.getMappedByPrefix();
   }
 
   @Override
@@ -54,7 +58,7 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper<Sing
       String externalRelatedName = parentCtx.decodeName(relatedName, NameKind.OBJECT);
 
       //
-      EntityContext parentChildWithRelatedNameCtx = parentCtx.getChild(externalRelatedName);
+      EntityContext parentChildWithRelatedNameCtx = parentCtx.getChild(relatedPrefix, externalRelatedName);
 
       // Find out if we are mapped on this parent by the related name
       if (parentChildWithRelatedNameCtx == context) {
@@ -81,7 +85,7 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper<Sing
       String externalRelatedName = parentCtx.decodeName(relatedName, NameKind.OBJECT);
 
       //
-      parentCtx.addChild(externalRelatedName, context);
+      parentCtx.addChild(relatedPrefix, externalRelatedName, context);
     }
   }
 }

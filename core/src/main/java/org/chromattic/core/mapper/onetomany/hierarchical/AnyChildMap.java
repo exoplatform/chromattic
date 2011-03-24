@@ -34,6 +34,9 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
   final EntityContext parentCtx;
 
   /** . */
+  final String prefix;
+
+  /** . */
   final Class<E> relatedClass;
 
   /** . */
@@ -41,8 +44,10 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
 
   public AnyChildMap(
     EntityContext parentCtx,
+    String prefix,
     Class<E> relatedClass) {
     this.relatedClass = relatedClass;
+    this.prefix = prefix;
     this.entries = new AnyChildEntrySet<E>(this);
     this.parentCtx = parentCtx;
   }
@@ -51,7 +56,7 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
   public E get(Object key) {
     if (key instanceof String) {
       String name = (String)key;
-      EntityContext childCtx = parentCtx.getChild(name);
+      EntityContext childCtx = parentCtx.getChild(prefix, name);
       if (childCtx != null) {
         Object child = childCtx.getObject();
         if (relatedClass.isInstance(child)) {
@@ -73,7 +78,7 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
 
   @Override
   public E put(String key, E value) {
-    EntityContext childCtx = parentCtx.getChild(key);
+    EntityContext childCtx = parentCtx.getChild(prefix, key);
 
     //
     if (value == null) {
@@ -82,7 +87,7 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
       }
     } else if (relatedClass.isInstance(value)) {
       EntityContext valueCtx = parentCtx.getSession().unwrapEntity(value);
-      parentCtx.addChild(key, valueCtx);
+      parentCtx.addChild(prefix, key, valueCtx);
     } else {
       throw new ClassCastException("Cannot put " + value + " with in map containing values of type " + relatedClass);
     }

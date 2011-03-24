@@ -95,7 +95,7 @@ public final class EventBroadcaster implements EventListener {
     }
     String id = ctx.getId();
     String path = ctx.getPath();
-    String name = ctx.getName();
+    String name = ctx.getLocalName();
     for (EventListener listener : lifeCycleListeners) {
       try {
         ((LifeCycleListener)listener).loaded(id, path, name, o);
@@ -111,7 +111,7 @@ public final class EventBroadcaster implements EventListener {
     }
     String id = ctx.getId();
     String path = ctx.getPath();
-    String name = ctx.getName();
+    String name = ctx.getLocalName();
     for (EventListener listener : lifeCycleListeners) {
       try {
         ((LifeCycleListener)listener).added(id, path, name, o);

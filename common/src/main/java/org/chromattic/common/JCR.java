@@ -127,4 +127,16 @@ public class JCR {
       return def;
     }
   }
+
+  public static String qualify(String prefix, String localName) {
+    if (localName == null) {
+      return null;
+    } else {
+      if (prefix != null && prefix.length() > 0) {
+        return prefix + ':' + localName;
+      } else {
+        return localName;
+      }
+    }
+  }
 }

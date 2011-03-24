@@ -38,6 +38,9 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext<O>> exten
   private String relatedName;
 
   /** . */
+  private final String relatedPrefix;
+
+  /** . */
   private final Logger log = Logger.getLogger(JCRNamedChildParentPropertyMapper.class);
 
   public JCRNamedChildParentPropertyMapper(
@@ -46,11 +49,8 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext<O>> exten
     super(contextType, info);
 
     //
-    this.relatedName = info.getMappedBy();
-  }
-
-  public String getRelatedName() {
-    return relatedName;
+    this.relatedName = info.getMappedByLocalName();
+    this.relatedPrefix = info.getMappedByPrefix();
   }
 
   @Override
@@ -62,7 +62,7 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext<O>> exten
     String externalRelatedName = entityCtx.decodeName(relatedName, NameKind.OBJECT);
 
     //
-    EntityContext childCtx = entityCtx.getChild(externalRelatedName);
+    EntityContext childCtx = entityCtx.getChild(relatedPrefix, externalRelatedName);
     if (childCtx != null) {
       Object o = childCtx.getObject();
       Class<?> relatedClass = getRelatedClass();
@@ -85,9 +85,9 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext<O>> exten
 
     if (child != null) {
       EntityContext entityCtx = entity.getSession().unwrapEntity(child);
-      entity.addChild(externalRelatedName, entityCtx);
+      entity.addChild(relatedPrefix, externalRelatedName, entityCtx);
     } else {
-      entity.removeChild(externalRelatedName);
+      entity.removeChild(relatedPrefix, externalRelatedName);
     }
   }
 }

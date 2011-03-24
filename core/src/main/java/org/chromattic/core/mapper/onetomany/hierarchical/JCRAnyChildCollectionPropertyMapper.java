@@ -32,8 +32,14 @@ import org.chromattic.metamodel.mapping.RelationshipMapping;
  */
 public class JCRAnyChildCollectionPropertyMapper extends JCRChildNodePropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>> {
 
+  /** . */
+  private final String prefix;
+
   public JCRAnyChildCollectionPropertyMapper(RelationshipMapping.ManyToOne.Hierarchic info) throws ClassNotFoundException {
     super(info);
+
+    //
+    this.prefix = info.getPrefix();
   }
 
   @Override
@@ -53,7 +59,7 @@ public class JCRAnyChildCollectionPropertyMapper extends JCRChildNodePropertyMap
     } else {
       DomainSession session = context.getSession();
       EntityContext parentContext = session.unwrapEntity(parent);
-      parentContext.addChild(context);
+      parentContext.addChild(prefix, context);
     }
   }
 }

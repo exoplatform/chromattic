@@ -183,38 +183,38 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     state.setPropertyValues(typeInfo, propertyName, type, listType, objects);
   }
 
-  public final void removeChild(String name) {
+  public final void removeChild(String prefix, String localName) {
     if (getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException("Can only insert/remove a child of a persistent object");
     }
 
     //
-    getSession().removeChild(this, name);
+    getSession().removeChild(this, prefix, localName);
   }
 
   public final void orderBefore(EntityContext srcCtx, EntityContext dstCtx) {
     getSession().orderBefore(this, srcCtx, dstCtx);
   }
 
-  public final void addChild(EntityContext childCtx) {
+  public final void addChild(String prefix, EntityContext childCtx) {
     if (childCtx.getStatus() == Status.TRANSIENT || childCtx.getStatus() == Status.PERSISTENT) {
-      String name = childCtx.getName();
-      addChild(name, childCtx);
+      String localName = childCtx.getLocalName();
+      addChild(prefix, localName, childCtx);
     } else {
       throw new IllegalArgumentException("The child does not have the good state to be added " + childCtx);
     }
   }
 
-  public final void addChild(String name, EntityContext childCtx) {
+  public final void addChild(String prefix, String localName, EntityContext childCtx) {
     if (childCtx.getStatus() == Status.PERSISTENT) {
-      getSession().move(childCtx, this, name);
+      getSession().move(childCtx, this, prefix, localName);
     } else {
-      getSession().persist(this, childCtx, name);
+      getSession().persist(this, childCtx, prefix, localName);
     }
   }
 
-  public final EntityContext getChild(String name) {
-    return getSession().getChild(this, name);
+  public final EntityContext getChild(String prefix, String localName) {
+    return getSession().getChild(this, prefix, localName);
   }
 
   public final <T> Iterator<T> getChildren(Class<T> filterClass) {
