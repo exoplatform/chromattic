@@ -123,7 +123,7 @@ public abstract class DomainSession {
    * @throws IllegalStateException if the source context is not persistent
    * @throws RepositoryException any repository excxeption
    */
-  protected abstract void _move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws
+  protected abstract void _move(EntityContext srcCtx, ObjectContext dstCtx, String dstName) throws
     NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException, RepositoryException;
 
   protected abstract void _addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws RepositoryException;

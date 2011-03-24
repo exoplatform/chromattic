@@ -387,7 +387,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected void _move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws
+  protected void _move(EntityContext srcCtx, ObjectContext dstCtx, String dstName) throws
     NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException {
     if (dstCtx == null) {
       String msg = "Cannot move to null context";
@@ -401,7 +401,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    Node dstNode = dstCtx.state.getNode();
+    Node dstNode = dstCtx.getEntity().state.getNode();
 
     //
     _move(srcCtx, dstNode, dstName);
