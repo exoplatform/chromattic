@@ -632,11 +632,11 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected EntityContext _getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws RepositoryException {
+  protected EntityContext _getReferenced(ObjectContext referentCtx, String name, LinkType linkType) throws RepositoryException {
     if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException();
     }
-    Node referent = referentCtx.state.getNode();
+    Node referent = referentCtx.getEntity().state.getNode();
     Node referenced = sessionWrapper.getReferenced(referent, name, linkType);
     if (referenced != null) {
       return _getEntity(referenced);
@@ -645,13 +645,13 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected boolean _setReferenced(EntityContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws RepositoryException {
+  protected boolean _setReferenced(ObjectContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws RepositoryException {
     if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException("Cannot create a relationship with a non persisted context " + this);
     }
 
     //
-    Node referent = referentCtx.state.getNode();
+    Node referent = referentCtx.getEntity().state.getNode();
 
     // Then create
     if (referencedCtx != null) {
@@ -680,24 +680,24 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected <T> Iterator<T> _getReferents(EntityContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
-    Node referenced = referencedCtx.state.getNode();
+  protected <T> Iterator<T> _getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
+    Node referenced = referencedCtx.getEntity().state.getNode();
     Iterator<Node> referents = sessionWrapper.getReferents(referenced, name, linkType);
     return new ReferentCollectionIterator<T>(this, referents, filterClass, name);
   }
 
-  protected void _removeChild(EntityContext ctx, String name) throws RepositoryException {
+  protected void _removeChild(ObjectContext ctx, String name) throws RepositoryException {
     name = domain.encodeName(ctx, name, NameKind.OBJECT);
-    Node node = ctx.state.getNode();
+    Node node = ctx.getEntity().state.getNode();
     Node childNode = sessionWrapper.getNode(node, name);
     if (childNode != null) {
       remove(childNode);
     }
   }
 
-  protected EntityContext _getChild(EntityContext ctx, String name) throws RepositoryException {
+  protected EntityContext _getChild(ObjectContext ctx, String name) throws RepositoryException {
     name = domain.encodeName(ctx, name, NameKind.OBJECT);
-    Node node = ctx.state.getNode();
+    Node node = ctx.getEntity().state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
     Node child = sessionWrapper.getChild(node, name);
     if (child != null) {

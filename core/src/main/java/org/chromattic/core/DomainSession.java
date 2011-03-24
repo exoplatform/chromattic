@@ -90,15 +90,15 @@ public abstract class DomainSession {
 
   protected abstract void _remove(EntityContext context) throws RepositoryException;
 
-  protected abstract EntityContext _getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws RepositoryException;
+  protected abstract EntityContext _getReferenced(ObjectContext referentCtx, String name, LinkType linkType) throws RepositoryException;
 
-  protected abstract boolean _setReferenced(EntityContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws RepositoryException;
+  protected abstract boolean _setReferenced(ObjectContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws RepositoryException;
 
-  protected abstract <T> Iterator<T> _getReferents(EntityContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException;
+  protected abstract <T> Iterator<T> _getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException;
 
-  protected abstract void _removeChild(EntityContext ctx, String name) throws RepositoryException;
+  protected abstract void _removeChild(ObjectContext ctx, String name) throws RepositoryException;
 
-  protected abstract EntityContext _getChild(EntityContext ctx, String name) throws RepositoryException;
+  protected abstract EntityContext _getChild(ObjectContext ctx, String name) throws RepositoryException;
 
   protected abstract <T> Iterator<T> _getChildren(EntityContext ctx, Class<T> filterClass) throws RepositoryException;
 
