@@ -49,8 +49,8 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext<O>> exten
     super(contextType, info);
 
     //
-    this.relatedName = info.getMappedByLocalName();
-    this.relatedPrefix = info.getMappedByPrefix();
+    this.relatedName = info.getLocalName();
+    this.relatedPrefix = info.getPrefix();
   }
 
   @Override

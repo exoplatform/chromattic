@@ -17,45 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.api.annotations;
+package org.chromattic.metamodel.typegen.onetomany.hierarchical;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.chromattic.api.annotations.PrimaryType;
 
 /**
- * Defines the mapping between a node type and a java class.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface PrimaryType {
-
-  /**
-   * The name of the primary node type to use.
-   *
-   * @return the primary node type name
-   */
-  String name();
-
-  /**
-   * Returns true if the node is ordereable. This information is used when generating the
-   * meta model or checking the meta model validity against the underlying model.
-   *
-   * @return the orderability
-   */
-  boolean orderable() default false;
-
-  /**
-   * Returns true if the type is abstract.
-   *
-   * @return the value true if the type is abstract
-   */
-  boolean abstract_() default false;
-
-  String prefix() default ":";
-
+@PrimaryType(name = "2")
+public abstract class F2 {
 }

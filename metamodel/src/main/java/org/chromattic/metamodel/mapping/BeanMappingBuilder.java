@@ -141,7 +141,8 @@ public class BeanMappingBuilder {
           NameConflictResolution.FAIL,
           null,
           false,
-          true);
+          true,
+          null);
       ctx.beanMappings.put(objectBean, objectMapping);
       ctx.beans.remove(objectBean);
     }
@@ -227,9 +228,9 @@ public class BeanMappingBuilder {
 
     @Override
     protected boolean resolves(RelationshipMapping.OneToOne.Hierarchic from, RelationshipMapping.OneToOne.Hierarchic to) {
-      String fromPrefix = from.getMappedByPrefix() == null ? "" : from.getMappedByPrefix();
-      String toPrefix = to.getMappedByPrefix() == null ? "" : to.getMappedByPrefix();
-      return fromPrefix.equals(toPrefix) && from.getMappedByLocalName().equals(to.getMappedByLocalName()) && from.owner != to.owner;
+      String fromPrefix = from.getPrefix() == null ? "" : from.getPrefix();
+      String toPrefix = to.getPrefix() == null ? "" : to.getPrefix();
+      return fromPrefix.equals(toPrefix) && from.getLocalName().equals(to.getLocalName()) && from.owner != to.owner;
     }
   }
 
@@ -374,22 +375,25 @@ public class BeanMappingBuilder {
       String nodeTypeName;
       boolean orderable;
       boolean abstract_;
+      String prefix;
       if (mappingAnnotation instanceof PrimaryType) {
-        PrimaryType primaryTypeAnnotation = (PrimaryType)mappingAnnotation;
+        PrimaryType typeAnnotation = (PrimaryType)mappingAnnotation;
         nodeTypeKind = NodeTypeKind.PRIMARY;
-        nodeTypeName = primaryTypeAnnotation.name();
-        orderable = primaryTypeAnnotation.orderable();
-        abstract_ = primaryTypeAnnotation.abstract_();
+        nodeTypeName = typeAnnotation.name();
+        orderable = typeAnnotation.orderable();
+        abstract_ = typeAnnotation.abstract_();
+        prefix = ":".equals(typeAnnotation.prefix()) ? null: typeAnnotation.prefix();
       } else {
-        MixinType primaryTypeAnnotation = (MixinType)mappingAnnotation;
+        MixinType typeAnnotation = (MixinType)mappingAnnotation;
         nodeTypeKind = NodeTypeKind.MIXIN;
-        nodeTypeName = primaryTypeAnnotation.name();
+        nodeTypeName = typeAnnotation.name();
         orderable = false;
         abstract_ = true;
+        prefix = ":".equals(typeAnnotation.prefix()) ? null: typeAnnotation.prefix();
       }
 
       //
-      return new BeanMapping(bean, nodeTypeKind, nodeTypeName, onDuplicate, formatter, orderable, abstract_);
+      return new BeanMapping(bean, nodeTypeKind, nodeTypeName, onDuplicate, formatter, orderable, abstract_, prefix);
     }
 
     private void build(BeanMapping beanMapping) {
@@ -449,7 +453,7 @@ public class BeanMappingBuilder {
                 OneToOne oneToOne =  (OneToOne)annotation;
                 switch (oneToOne.type()) {
                   case HIERARCHIC:
-                    mapping = createHierarchicOneToOne(oneToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createHierarchicOneToOne(beanMapping, oneToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   case EMBEDDED:
                     mapping = createEmbeddedOneToOne((SingleValuedPropertyInfo<BeanValueInfo>)property);
@@ -461,7 +465,7 @@ public class BeanMappingBuilder {
                 ManyToOne manyToOne = (ManyToOne)annotation;
                 switch (manyToOne.type()) {
                   case HIERARCHIC:
-                    mapping = createHierarchicManyToOne(manyToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createHierarchicManyToOne(beanMapping, manyToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   case PATH:
                   case REFERENCE:
@@ -491,7 +495,7 @@ public class BeanMappingBuilder {
                 OneToMany oneToMany = (OneToMany)annotation;
                 switch (oneToMany.type()) {
                   case HIERARCHIC:
-                    mapping = createHierarchicOneToMany(oneToMany, (MultiValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createHierarchicOneToMany(beanMapping, oneToMany, (MultiValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   case PATH:
                   case REFERENCE:
@@ -694,10 +698,11 @@ public class BeanMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping.OneToMany.Hierarchic createHierarchicOneToMany(OneToMany annotation, MultiValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.OneToMany.Hierarchic createHierarchicOneToMany(BeanMapping beanMapping, OneToMany annotation, MultiValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping.OneToMany.Hierarchic mapping;
-      String prefix = ":".equals(annotation.prefix()) ? null : annotation.prefix();
-      mapping = new RelationshipMapping.OneToMany.Hierarchic(property, prefix);
+      String declaredPrefix = ":".equals(annotation.prefix()) ? null : annotation.prefix();
+      String prefix = declaredPrefix == null ? beanMapping.getPrefix() : declaredPrefix;
+      mapping = new RelationshipMapping.OneToMany.Hierarchic(property, declaredPrefix, prefix);
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
@@ -713,10 +718,11 @@ public class BeanMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping.ManyToOne.Hierarchic createHierarchicManyToOne(ManyToOne annotation, SingleValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.ManyToOne.Hierarchic createHierarchicManyToOne(BeanMapping beanMapping, ManyToOne annotation, SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping.ManyToOne.Hierarchic mapping;
-      String prefix = ":".equals(annotation.prefix()) ? null : annotation.prefix();
-      mapping = new RelationshipMapping.ManyToOne.Hierarchic(property, prefix);
+      String declaredPrefix = ":".equals(annotation.prefix()) ? null : annotation.prefix();
+      String prefix = declaredPrefix == null ? beanMapping.getPrefix() : declaredPrefix;
+      mapping = new RelationshipMapping.ManyToOne.Hierarchic(property, declaredPrefix, prefix);
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
@@ -730,6 +736,7 @@ public class BeanMappingBuilder {
     }
 
     private RelationshipMapping.OneToOne.Hierarchic createHierarchicOneToOne(
+        BeanMapping beanMapping,
         OneToOne annotation,
         SingleValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
@@ -739,18 +746,19 @@ public class BeanMappingBuilder {
       boolean owner = property.getAnnotation(Owner.class) != null;
       boolean autocreated = property.getAnnotation(AutoCreated.class) != null;
       boolean mandatory = property.getAnnotation(Mandatory.class) != null;
-      String mappedByPrefix;
-      String mappedByLocalName;
+      String declaredPrefix;
+      String localName;
       int index = mappedBy.value().indexOf(':');
       if (index == -1) {
-        mappedByPrefix = null;
-        mappedByLocalName = mappedBy.value();
+        declaredPrefix = null;
+        localName = mappedBy.value();
       } else {
-        mappedByPrefix = mappedBy.value().substring(0, index);
-        mappedByLocalName = mappedBy.value().substring(index + 1);
+        declaredPrefix = mappedBy.value().substring(0, index);
+        localName = mappedBy.value().substring(index + 1);
       }
+      String prefix = declaredPrefix == null ? beanMapping.getPrefix() : declaredPrefix;
       RelationshipMapping.OneToOne.Hierarchic mapping;
-      mapping = new RelationshipMapping.OneToOne.Hierarchic(property, owner, mappedByPrefix, mappedByLocalName, mandatory, autocreated);
+      mapping = new RelationshipMapping.OneToOne.Hierarchic(property, owner, declaredPrefix, prefix, localName, mandatory, autocreated);
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }

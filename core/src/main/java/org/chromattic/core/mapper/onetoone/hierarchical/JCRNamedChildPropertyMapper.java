@@ -43,8 +43,8 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper<Sing
     super(info);
 
     //
-    this.relatedName = info.getMappedByLocalName();
-    this.relatedPrefix = info.getMappedByPrefix();
+    this.relatedName = info.getLocalName();
+    this.relatedPrefix = info.getPrefix();
   }
 
   @Override

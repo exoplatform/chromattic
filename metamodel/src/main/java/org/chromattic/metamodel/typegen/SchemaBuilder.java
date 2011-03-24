@@ -212,7 +212,7 @@ public class SchemaBuilder {
           BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
           if (mapping.isOwner()) {
             current.addChildNodeType(
-                JCR.qualify(mapping.getMappedByPrefix(), mapping.getMappedByLocalName()),
+                JCR.qualify(mapping.getPrefix(), mapping.getLocalName()),
                 mapping.getMandatory(),
                 mapping.getAutocreated(),
                 relatedBeanMapping);
@@ -220,7 +220,7 @@ public class SchemaBuilder {
             NodeType related = resolve(relatedBeanMapping);
             if (related != null) {
               related.addChildNodeType(
-                  JCR.qualify(mapping.getMappedByPrefix(), mapping.getMappedByLocalName()),
+                  JCR.qualify(mapping.getPrefix(), mapping.getLocalName()),
                   false,
                   mapping.getAutocreated(),
                   current.mapping);

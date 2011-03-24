@@ -38,8 +38,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.OneToOne.Hierarchic r1 = _1.getPropertyMapping("child", RelationshipMapping.OneToOne.Hierarchic.class);
     assertSame(_2.getBean(), r1.getRelatedBean());
     assertEquals(true, r1.isOwner());
-    assertNull(r1.getMappedByPrefix());
-    assertEquals("child", r1.getMappedByLocalName());
+    assertNull(r1.getPrefix());
+    assertEquals("child", r1.getLocalName());
     assertNull(r1.getRelatedRelationshipMapping());
     assertEquals(0, _2.getProperties().size());
   }
@@ -51,8 +51,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals(0, _1.getProperties().size());
     RelationshipMapping.OneToOne.Hierarchic r2 = _2.getPropertyMapping("parent", RelationshipMapping.OneToOne.Hierarchic.class);
     assertSame(_1.getBean(), r2.getRelatedBean());
-    assertNull(r2.getMappedByPrefix());
-    assertEquals("child", r2.getMappedByLocalName());
+    assertNull(r2.getPrefix());
+    assertEquals("child", r2.getLocalName());
     assertEquals(false, r2.isOwner());
     assertNull(r2.getRelatedRelationshipMapping());
   }
@@ -65,10 +65,10 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.OneToOne.Hierarchic r2 = _2.getPropertyMapping("parent", RelationshipMapping.OneToOne.Hierarchic.class);
     assertSame(_2.getBean(), r1.getRelatedBean());
     assertSame(_1.getBean(), r2.getRelatedBean());
-    assertNull(r1.getMappedByPrefix());
-    assertEquals("child", r1.getMappedByLocalName());
-    assertNull(r2.getMappedByPrefix());
-    assertEquals("child", r2.getMappedByLocalName());
+    assertNull(r1.getPrefix());
+    assertEquals("child", r1.getLocalName());
+    assertNull(r2.getPrefix());
+    assertEquals("child", r2.getLocalName());
     assertEquals(true, r1.isOwner());
     assertEquals(false, r2.isOwner());
     assertSame(r1, r2.getRelatedRelationshipMapping());
@@ -82,10 +82,10 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.OneToOne.Hierarchic r2 = _.getPropertyMapping("parent", RelationshipMapping.OneToOne.Hierarchic.class);
     assertSame(_.getBean(), r1.getRelatedBean());
     assertSame(_.getBean(), r2.getRelatedBean());
-    assertNull(r1.getMappedByPrefix());
-    assertEquals("child", r1.getMappedByLocalName());
-    assertNull(r2.getMappedByPrefix());
-    assertEquals("child", r2.getMappedByLocalName());
+    assertNull(r1.getPrefix());
+    assertEquals("child", r1.getLocalName());
+    assertNull(r2.getPrefix());
+    assertEquals("child", r2.getLocalName());
     assertEquals(true, r1.isOwner());
     assertEquals(false, r2.isOwner());
     assertSame(r1, r2.getRelatedRelationshipMapping());

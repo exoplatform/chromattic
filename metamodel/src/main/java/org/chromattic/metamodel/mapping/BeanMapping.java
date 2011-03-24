@@ -72,6 +72,9 @@ public class BeanMapping {
   /** . */
   final NameConflictResolution onDuplicate;
 
+  /** . */
+  final String prefix;
+
   public BeanMapping(
       BeanInfo bean,
       NodeTypeKind nodeTypeKind,
@@ -79,7 +82,8 @@ public class BeanMapping {
       NameConflictResolution onDuplicate,
       ClassTypeInfo formatterClassType,
       boolean orderable,
-      boolean abstract_) {
+      boolean abstract_,
+      String prefix) {
     this.bean = bean;
     this.nodeTypeKind = nodeTypeKind;
     this.nodeTypeName = nodeTypeName;
@@ -91,6 +95,7 @@ public class BeanMapping {
     this.unmodifiableMethods = Collections.unmodifiableList(methods);
     this.onDuplicate = onDuplicate;
     this.formatterClassType = formatterClassType;
+    this.prefix = prefix;
   }
 
   public NodeTypeKind getNodeTypeKind() {
@@ -127,6 +132,10 @@ public class BeanMapping {
 
   public Collection<MethodMapping> getMethods() {
     return methods;
+  }
+
+  public String getPrefix() {
+    return prefix;
   }
 
   public <M extends PropertyMapping<?, ?>> M getPropertyMapping(String name, Class<M> type) {

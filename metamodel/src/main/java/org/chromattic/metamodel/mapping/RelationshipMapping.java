@@ -83,10 +83,13 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     public static class Hierarchic extends OneToOne<Hierarchic> {
 
       /** . */
-      final String mappedByPrefix;
+      final String declaredPrefix;
 
       /** . */
-      final String mappedByLocalName;
+      final String prefix;
+
+      /** . */
+      final String localName;
 
       /** . */
       final boolean mandatory;
@@ -97,15 +100,17 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       public Hierarchic(
           SingleValuedPropertyInfo<BeanValueInfo> property,
           boolean owner,
-          String mappedByPrefix,
-          String mappedByLocalName,
+          String declaredPrefix,
+          String prefix,
+          String localName,
           boolean mandatory,
           boolean autocreated) {
         super(property, owner);
 
         //
-        this.mappedByPrefix = mappedByPrefix;
-        this.mappedByLocalName = mappedByLocalName;
+        this.declaredPrefix = declaredPrefix;
+        this.prefix = prefix;
+        this.localName = localName;
         this.mandatory = mandatory;
         this.autocreated = autocreated;
       }
@@ -118,12 +123,16 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
         return autocreated;
       }
 
-      public String getMappedByPrefix() {
-        return mappedByPrefix;
+      public String getDeclaredPrefix() {
+        return declaredPrefix;
       }
 
-      public String getMappedByLocalName() {
-        return mappedByLocalName;
+      public String getPrefix() {
+        return prefix;
+      }
+
+      public String getLocalName() {
+        return localName;
       }
 
       @Override
@@ -152,13 +161,21 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     public static class Hierarchic extends ManyToOne<OneToMany.Hierarchic> {
 
       /** . */
+      final String declaredPrefix;
+
+      /** . */
       final String prefix;
 
-      public Hierarchic(SingleValuedPropertyInfo<BeanValueInfo> property, String prefix) {
+      public Hierarchic(SingleValuedPropertyInfo<BeanValueInfo> property, String declaredPrefix, String prefix) {
         super(property);
 
         //
+        this.declaredPrefix = declaredPrefix;
         this.prefix = prefix;
+      }
+
+      public String getDeclaredPrefix() {
+        return declaredPrefix;
       }
 
       public String getPrefix() {
@@ -211,13 +228,21 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     public static class Hierarchic extends OneToMany<ManyToOne.Hierarchic> {
 
       /** . */
+      final String declaredPrefix;
+
+      /** . */
       final String prefix;
 
-      public Hierarchic(MultiValuedPropertyInfo<BeanValueInfo> property, String prefix) {
+      public Hierarchic(MultiValuedPropertyInfo<BeanValueInfo> property, String declaredPrefix, String prefix) {
         super(property);
 
         //
+        this.declaredPrefix = declaredPrefix;
         this.prefix = prefix;
+      }
+
+      public String getDeclaredPrefix() {
+        return declaredPrefix;
       }
 
       public String getPrefix() {
