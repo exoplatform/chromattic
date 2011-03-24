@@ -37,7 +37,6 @@ import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
-import org.chromattic.api.annotations.Prefix;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
@@ -697,8 +696,8 @@ public class BeanMappingBuilder {
 
     private RelationshipMapping.OneToMany.Hierarchic createHierarchicOneToMany(OneToMany annotation, MultiValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping.OneToMany.Hierarchic mapping;
-      Prefix prefix = property.getAnnotation(Prefix.class);
-      mapping = new RelationshipMapping.OneToMany.Hierarchic(property, prefix != null ? prefix.value() : null);
+      String prefix = ":".equals(annotation.prefix()) ? null : annotation.prefix();
+      mapping = new RelationshipMapping.OneToMany.Hierarchic(property, prefix);
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
@@ -716,8 +715,8 @@ public class BeanMappingBuilder {
 
     private RelationshipMapping.ManyToOne.Hierarchic createHierarchicManyToOne(ManyToOne annotation, SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping.ManyToOne.Hierarchic mapping;
-      Prefix prefix = property.getAnnotation(Prefix.class);
-      mapping = new RelationshipMapping.ManyToOne.Hierarchic(property, prefix != null ? prefix.value() : null);
+      String prefix = ":".equals(annotation.prefix()) ? null : annotation.prefix();
+      mapping = new RelationshipMapping.ManyToOne.Hierarchic(property, prefix);
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }

@@ -20,7 +20,6 @@
 package org.chromattic.metamodel.typegen.onetomany.hierarchical;
 
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.Prefix;
 import org.chromattic.api.annotations.PrimaryType;
 
 import java.util.Collection;
@@ -32,8 +31,7 @@ import java.util.Collection;
 @PrimaryType(name = "1")
 public abstract class E1 {
 
-  @Prefix("foo")
-  @OneToMany
+  @OneToMany(prefix = "foo")
   public abstract Collection<E2> getChildren();
 
 }

@@ -21,7 +21,6 @@ package org.chromattic.test.onetomany.hierarchical.map;
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.annotations.NamingPolicy;
 import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.Prefix;
 import org.chromattic.api.annotations.PrimaryType;
 
 import java.util.Map;
@@ -34,7 +33,6 @@ import java.util.Map;
 @NamingPolicy(onDuplicate = NameConflictResolution.REPLACE)
 public abstract class A5 {
 
-  @Prefix("onetomany_h_map")
-  @OneToMany
+  @OneToMany(prefix = "onetomany_h_map")
   public abstract Map<String, B5> getChildren();
 }
