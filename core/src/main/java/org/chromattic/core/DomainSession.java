@@ -108,7 +108,7 @@ public abstract class DomainSession {
 
   protected abstract <E> E _findByPath(Class<E> clazz, String path) throws RepositoryException;
 
-  protected abstract void _orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
+  protected abstract void _orderBefore(ObjectContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
 
   protected abstract Node _getRoot() throws RepositoryException;
 

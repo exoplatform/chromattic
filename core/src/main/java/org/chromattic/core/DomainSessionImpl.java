@@ -455,7 +455,7 @@ public class DomainSessionImpl extends DomainSession {
     // Generate some kind of event ????
   }
 
-  protected void _orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException {
+  protected void _orderBefore(ObjectContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException {
 
     if (parentCtx == null) {
       throw new NullPointerException();
@@ -465,7 +465,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    Node parentNode = parentCtx.state.getNode();
+    Node parentNode = parentCtx.getEntity().state.getNode();
     Node srcNode = srcCtx.state.getNode();
     Node dstNode = dstCtx != null ? dstCtx.state.getNode() : null;
 
