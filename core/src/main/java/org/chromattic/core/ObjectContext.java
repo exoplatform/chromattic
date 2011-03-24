@@ -32,6 +32,7 @@ import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -49,6 +50,8 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
   public abstract NodeTypeInfo getTypeInfo();
 
   public abstract Status getStatus();
+
+  public abstract DomainSession getSession();
 
   public final Object invoke(Object o, Method method) throws Throwable {
     MethodInvoker<O> invoker = getMapper().getInvoker(method);
@@ -178,5 +181,43 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
 
     //
     state.setPropertyValues(typeInfo, propertyName, type, listType, objects);
+  }
+
+  public final void removeChild(String name) {
+    if (getStatus() != Status.PERSISTENT) {
+      throw new IllegalStateException("Can only insert/remove a child of a persistent object");
+    }
+
+    //
+    getSession().removeChild(this, name);
+  }
+
+  public final void orderBefore(EntityContext srcCtx, EntityContext dstCtx) {
+    getSession().orderBefore(this, srcCtx, dstCtx);
+  }
+
+  public final void addChild(EntityContext childCtx) {
+    if (childCtx.getStatus() == Status.TRANSIENT || childCtx.getStatus() == Status.PERSISTENT) {
+      String name = childCtx.getName();
+      addChild(name, childCtx);
+    } else {
+      throw new IllegalArgumentException("The child does not have the good state to be added " + childCtx);
+    }
+  }
+
+  public final void addChild(String name, EntityContext childCtx) {
+    if (childCtx.getStatus() == Status.PERSISTENT) {
+      getSession().move(childCtx, this, name);
+    } else {
+      getSession().persist(this, childCtx, name);
+    }
+  }
+
+  public final EntityContext getChild(String name) {
+    return getSession().getChild(this, name);
+  }
+
+  public final <T> Iterator<T> getChildren(Class<T> filterClass) {
+    return getSession().getChildren(this, filterClass);
   }
 }

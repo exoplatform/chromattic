@@ -216,43 +216,43 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     return properties;
   }
 
-  public void removeChild(String name) {
-    if (getStatus() != Status.PERSISTENT) {
-      throw new IllegalStateException("Can only insert/remove a child of a persistent object");
-    }
-
-    //
-    state.getSession().removeChild(this, name);
-  }
-
-  public void orderBefore(EntityContext srcCtx, EntityContext dstCtx) {
-    state.getSession().orderBefore(this, srcCtx, dstCtx);
-  }
-
-  public void addChild(EntityContext childCtx) {
-    if (childCtx.getStatus() == Status.TRANSIENT || childCtx.getStatus() == Status.PERSISTENT) {
-      String name = childCtx.getName();
-      addChild(name, childCtx);
-    } else {
-      throw new IllegalArgumentException("The child does not have the good state to be added " + childCtx);
-    }
-  }
-
-  public void addChild(String name, EntityContext childCtx) {
-    if (childCtx.getStatus() == Status.PERSISTENT) {
-      state.getSession().move(childCtx, this, name);
-    } else {
-      state.getSession().persist(this, childCtx, name);
-    }
-  }
-
-  public EntityContext getChild(String name) {
-    return state.getSession().getChild(this, name);
-  }
-
-  public <T> Iterator<T> getChildren(Class<T> filterClass) {
-    return state.getSession().getChildren(this, filterClass);
-  }
+//  public void removeChild(String name) {
+//    if (getStatus() != Status.PERSISTENT) {
+//      throw new IllegalStateException("Can only insert/remove a child of a persistent object");
+//    }
+//
+//    //
+//    state.getSession().removeChild(this, name);
+//  }
+//
+//  public void orderBefore(EntityContext srcCtx, EntityContext dstCtx) {
+//    state.getSession().orderBefore(this, srcCtx, dstCtx);
+//  }
+//
+//  public void addChild(EntityContext childCtx) {
+//    if (childCtx.getStatus() == Status.TRANSIENT || childCtx.getStatus() == Status.PERSISTENT) {
+//      String name = childCtx.getName();
+//      addChild(name, childCtx);
+//    } else {
+//      throw new IllegalArgumentException("The child does not have the good state to be added " + childCtx);
+//    }
+//  }
+//
+//  public void addChild(String name, EntityContext childCtx) {
+//    if (childCtx.getStatus() == Status.PERSISTENT) {
+//      state.getSession().move(childCtx, this, name);
+//    } else {
+//      state.getSession().persist(this, childCtx, name);
+//    }
+//  }
+//
+//  public EntityContext getChild(String name) {
+//    return state.getSession().getChild(this, name);
+//  }
+//
+//  public <T> Iterator<T> getChildren(Class<T> filterClass) {
+//    return state.getSession().getChildren(this, filterClass);
+//  }
 
   public EntityContext getParent() {
     return state.getSession().getParent(this);
