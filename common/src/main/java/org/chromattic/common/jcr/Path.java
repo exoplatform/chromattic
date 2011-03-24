@@ -163,6 +163,24 @@ public class Path {
   }
 
   /** . */
+  private static final PathVisitor LOCAL_NAME_VALIDATOR = new PathVisitor() {
+    public void onPathSegment(String s, int start, int end, Integer number) {
+    }
+    public void onPrefixPathSegment(String s, int prefixStart, int prefixEnd, int start, int end, Integer number) throws PathException {
+      throw new PathException();
+    }
+    public void onURIPathSegment(String s, int uriStart, int uriEnd, int start, int end, Integer number) throws PathException {
+      throw new PathException();
+    }
+    public void onSelf() throws PathException {
+      throw new PathException();
+    }
+    public void onParent() throws PathException {
+      throw new PathException();
+    }
+  };
+
+  /** . */
   private static final PathVisitor NAME_VALIDATOR = new PathVisitor() {
     public void onPathSegment(String s, int start, int end, Integer number) {
     }
@@ -184,7 +202,18 @@ public class Path {
       parsePathSegment(name, NAME_VALIDATOR);
     }
     catch (PathException e) {
-      IllegalArgumentException iae = new IllegalArgumentException("Invalid name");
+      IllegalArgumentException iae = new IllegalArgumentException("Invalid name " + name);
+      iae.initCause(e);
+      throw iae;
+    }
+  }
+
+  public static void validateLocalName(String localName) {
+    try {
+      parsePathSegment(localName, LOCAL_NAME_VALIDATOR);
+    }
+    catch (PathException e) {
+      IllegalArgumentException iae = new IllegalArgumentException("Invalid local name " + localName);
       iae.initCause(e);
       throw iae;
     }

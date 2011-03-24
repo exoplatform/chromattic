@@ -38,6 +38,8 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.METHOD)
 public @interface ManyToOne {
 
+  String prefix() default "";
+
   /**
    * The type of relationship.
    *

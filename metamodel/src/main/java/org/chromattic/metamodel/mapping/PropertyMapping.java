@@ -63,5 +63,11 @@ public abstract class PropertyMapping<P extends PropertyInfo<V>, V extends Value
 
   public abstract void accept(MappingVisitor visitor);
 
-  public abstract boolean isNew();
+  /**
+   * Returns true if the property type is covariant, meaning that it redefines the type from an ancestor
+   * with a subclass.
+   *
+   * @return true if the property is type covariant
+   */
+  public abstract boolean isTypeCovariant();
 }

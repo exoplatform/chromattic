@@ -41,7 +41,7 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> exte
     this.propertyDefinition = propertyDefinition;
   }
 
-  public boolean isNew() {
+  public boolean isTypeCovariant() {
     if (parent == null) {
       return true;
     } else {

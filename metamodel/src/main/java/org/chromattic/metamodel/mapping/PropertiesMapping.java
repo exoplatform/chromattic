@@ -48,7 +48,7 @@ public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<Mult
     visitor.propertiesMapping(this);
   }
 
-  public boolean isNew() {
+  public boolean isTypeCovariant() {
 /*
     if (parent == null) {
       return true;

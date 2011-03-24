@@ -55,12 +55,12 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     return relatedRelationshipMapping;
   }
 
-  public boolean isNew() {
+  public boolean isTypeCovariant() {
     if (parent == null) {
       return true;
     } else {
-      RelationshipMapping<?, ?> a = (RelationshipMapping<?,?>)parent;
-      return property.getValue().getBean() != a.property.getValue().getBean();
+      RelationshipMapping<?, ?> parentRelationship = (RelationshipMapping<?,?>)parent;
+      return property.getValue().getBean() != parentRelationship.property.getValue().getBean();
     }
   }
 
@@ -141,8 +141,19 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     }
 
     public static class Hierarchic extends ManyToOne<OneToMany.Hierarchic> {
-      public Hierarchic(SingleValuedPropertyInfo<BeanValueInfo> property) {
+
+      /** . */
+      final String prefix;
+
+      public Hierarchic(SingleValuedPropertyInfo<BeanValueInfo> property, String prefix) {
         super(property);
+
+        //
+        this.prefix = prefix;
+      }
+
+      public String getPrefix() {
+        return prefix;
       }
 
       @Override
@@ -189,8 +200,19 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     }
 
     public static class Hierarchic extends OneToMany<ManyToOne.Hierarchic> {
-      public Hierarchic(MultiValuedPropertyInfo<BeanValueInfo> property) {
+
+      /** . */
+      final String prefix;
+
+      public Hierarchic(MultiValuedPropertyInfo<BeanValueInfo> property, String prefix) {
         super(property);
+
+        //
+        this.prefix = prefix;
+      }
+
+      public String getPrefix() {
+        return prefix;
       }
 
       @Override

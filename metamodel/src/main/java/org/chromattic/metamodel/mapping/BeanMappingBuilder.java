@@ -459,7 +459,7 @@ public class BeanMappingBuilder {
                 ManyToOne manyToOne = (ManyToOne)annotation;
                 switch (manyToOne.type()) {
                   case HIERARCHIC:
-                    mapping = createHierarchicManyToOne((SingleValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createHierarchicManyToOne(manyToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   case PATH:
                   case REFERENCE:
@@ -489,7 +489,7 @@ public class BeanMappingBuilder {
                 OneToMany oneToMany = (OneToMany)annotation;
                 switch (oneToMany.type()) {
                   case HIERARCHIC:
-                    mapping = createHierarchicOneToMany((MultiValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createHierarchicOneToMany(oneToMany, (MultiValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   case PATH:
                   case REFERENCE:
@@ -692,9 +692,9 @@ public class BeanMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping.OneToMany.Hierarchic createHierarchicOneToMany(MultiValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.OneToMany.Hierarchic createHierarchicOneToMany(OneToMany annotation, MultiValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping.OneToMany.Hierarchic mapping;
-      mapping = new RelationshipMapping.OneToMany.Hierarchic(property);
+      mapping = new RelationshipMapping.OneToMany.Hierarchic(property, annotation.prefix());
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }
@@ -710,9 +710,9 @@ public class BeanMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping.ManyToOne.Hierarchic createHierarchicManyToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.ManyToOne.Hierarchic createHierarchicManyToOne(ManyToOne annotation, SingleValuedPropertyInfo<BeanValueInfo> property) {
       RelationshipMapping.ManyToOne.Hierarchic mapping;
-      mapping = new RelationshipMapping.ManyToOne.Hierarchic(property);
+      mapping = new RelationshipMapping.ManyToOne.Hierarchic(property, annotation.prefix());
       mapping.relatedBeanMapping = resolve(property.getValue().getBean());
       return mapping;
     }

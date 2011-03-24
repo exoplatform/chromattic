@@ -39,14 +39,14 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.ManyToOne.Hierarchic r1 = _1.getPropertyMapping("parent2", RelationshipMapping.ManyToOne.Hierarchic.class);
     assertNotNull(r1);
     assertNull(r1.getParent());
-    assertTrue(r1.isNew());
+    assertTrue(r1.isTypeCovariant());
 
     //
     BeanMapping _2 = mappings.get(B2.class);
     RelationshipMapping.ManyToOne.Hierarchic r2 = _2.getPropertyMapping("parent2", RelationshipMapping.ManyToOne.Hierarchic.class);
     assertNotNull(r2);
     assertNotNull(r2.getParent());
-    assertFalse(r2.isNew());
+    assertFalse(r2.isTypeCovariant());
   }
 
 }

@@ -115,7 +115,7 @@ public class SchemaBuilder {
     @Override
     public void singleValueMapping(ValueMapping.Single mapping) {
       if (current != null) {
-        if (mapping.isNew() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+        if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
           current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), false));
         }
       }
@@ -123,7 +123,7 @@ public class SchemaBuilder {
 
     @Override
     public void oneToManyReference(RelationshipMapping.OneToMany.Reference mapping) {
-      if (mapping.isNew() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+      if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
         BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
         NodeType related = resolve(relatedBeanMapping);
         int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
@@ -133,7 +133,7 @@ public class SchemaBuilder {
 
     @Override
     public void manyToOneReference(RelationshipMapping.ManyToOne.Reference mapping) {
-      if (mapping.isNew() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+      if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
         int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
         current.properties.put(mapping.getMappedBy(), new PropertyDefinition(mapping.getMappedBy(), false, propertyType));
       }
@@ -142,7 +142,7 @@ public class SchemaBuilder {
     @Override
     public void multiValueMapping(ValueMapping.Multi mapping) {
       if (current != null) {
-        if (mapping.isNew() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+        if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
           current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), true));
         }
       }
@@ -168,11 +168,13 @@ public class SchemaBuilder {
     @Override
     public void manyToOneHierarchic(RelationshipMapping.ManyToOne.Hierarchic mapping) {
       if (current != null) {
-        if (mapping.isNew()) {
+        if (mapping.isTypeCovariant()) {
           BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
           NodeType related = resolve(relatedBeanMapping);
           if (related != null) {
-            related.addChildNodeType("*", false, false, current.mapping);
+            String prefix = mapping.getPrefix();
+            String name = prefix.length() > 0 ? (prefix + ":*") : "*";
+            related.addChildNodeType(name, false, false, current.mapping);
           }
         }
       }
@@ -182,8 +184,10 @@ public class SchemaBuilder {
     public void oneToManyHierarchic(RelationshipMapping.OneToMany.Hierarchic mapping) {
       if (current != null) {
         BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
-        if (mapping.isNew()) {
-          current.addChildNodeType("*", false, false, relatedBeanMapping);
+        if (mapping.isTypeCovariant()) {
+          String prefix = mapping.getPrefix();
+          String name = prefix.length() > 0 ? (prefix + ":*") : "*";
+          current.addChildNodeType(name, false, false, relatedBeanMapping);
         }
       }
     }
@@ -207,7 +211,7 @@ public class SchemaBuilder {
     @Override
     public void oneToOneHierarchic(RelationshipMapping.OneToOne.Hierarchic mapping) {
       if (current != null) {
-        if (mapping.isNew()) {
+        if (mapping.isTypeCovariant()) {
           BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
           if (mapping.isOwner()) {
             current.addChildNodeType(

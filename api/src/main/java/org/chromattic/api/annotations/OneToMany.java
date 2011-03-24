@@ -38,6 +38,8 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.METHOD)
 public @interface OneToMany {
 
+  String prefix() default "";
+
   /**
    * The type of the relationship.
    *

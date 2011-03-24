@@ -37,7 +37,7 @@ public class AttributeMapping extends PropertyMapping<SingleValuedPropertyInfo<S
   }
 
   @Override
-  public boolean isNew() {
+  public boolean isTypeCovariant() {
 
     // 
     return false;
