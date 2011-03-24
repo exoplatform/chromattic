@@ -85,7 +85,7 @@ public class OneToTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    A1 a = session.create(A1.class, getNodeTypeName(A1.class));
+    A1 a = session.create(A1.class, "a");
     String aId = session.persist(a);
     Node aNode = session.getJCRSession().getNodeByUUID(aId);
     assertNotNull(aNode);
