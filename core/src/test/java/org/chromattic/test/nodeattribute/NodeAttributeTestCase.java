@@ -47,6 +47,21 @@ public class NodeAttributeTestCase extends AbstractTestCase {
     }
   }
 
+  public void testQualifiedName() throws Exception {
+    ChromatticSessionImpl session = login();
+    Node rootNode = session.getRoot();
+    Node aNode = rootNode.addNode("jcr:foo", "nodeattribute:a");
+    String aId = aNode.getUUID();
+
+    //
+    TNA_A a = session.findById(TNA_A.class, aId);
+    assertEquals("foo", a.getName());
+
+    //
+    a.setName("bar");
+    assertEquals("jcr:bar", aNode.getName());
+  }
+
   public void testPersistent() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();

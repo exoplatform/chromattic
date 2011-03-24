@@ -91,7 +91,10 @@ public class DomainSessionImpl extends DomainSession {
       case PERSISTENT:
         Node node = ctx.state.getNode();
         Node parentNode = node.getParent();
-        return domain.decodeName(parentNode, node.getName(), NameKind.OBJECT);
+        String name = node.getName();
+        int index = name.indexOf(':');
+        String localName = index == -1 ? name : name.substring(index + 1);
+        return domain.decodeName(parentNode, localName, NameKind.OBJECT);
     }
   }
 
