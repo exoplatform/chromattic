@@ -29,7 +29,6 @@ import java.lang.annotation.ElementType;
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
- * @see org.chromattic.api.annotations.RelatedMappedBy
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
