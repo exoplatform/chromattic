@@ -104,6 +104,14 @@ public class DataObjectChromatticSession implements ChromatticSession {
     return safeGet().insert(parent, clazz, name);
   }
 
+  public <O> O insert(Object parent, Class<O> clazz, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    return safeGet().insert(parent, clazz, prefix, localName);
+  }
+
+  public <O> O insert(Class<O> clazz, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    return safeGet().insert(clazz, prefix, localName);
+  }
+
   public String persist(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     return safeGet().persist(o, name);
   }
@@ -118,6 +126,14 @@ public class DataObjectChromatticSession implements ChromatticSession {
 
   public String persist(Object parent, Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     return safeGet().persist(parent, o, name);
+  }
+
+  public String persist(Object o, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    return safeGet().persist(o, prefix, localName);
+  }
+
+  public String persist(Object parent, Object o, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    return safeGet().persist(parent, o, prefix, localName);
   }
 
   public <O> O copy(Object parent, O o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {

@@ -76,6 +76,20 @@ public interface ChromatticSession {
   /**
    * Creates a persistent instance of the specified object.
    *
+   * @param clazz the object class
+   * @param prefix the prefix under the root node
+   * @param localName the local name under root node
+   * @param <O> the object class parameter
+   * @return the persistent object
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if the name is not valid or the class is not a chromattic class
+   * @throws ChromatticException any chromattic exception
+   */
+  <O> O insert(Class<O> clazz, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException;
+
+  /**
+   * Creates a persistent instance of the specified object.
+   *
    * @param parent the parent object
    * @param clazz the object class
    * @param name the object name
@@ -89,6 +103,22 @@ public interface ChromatticSession {
   <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
+   * Creates a persistent instance of the specified object.
+   *
+   * @param parent the parent object
+   * @param clazz the object class
+   * @param prefix the object prefix
+   * @param localName the object local name
+   * @param <O> the object class parameter
+   * @return the persistent object
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if the name is not valid or the class is not a chromattic class or the parent is
+   * not a persistent object
+   * @throws ChromatticException any chromattic exception
+   */
+  <O> O insert(Object parent, Class<O> clazz, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException;
+
+  /**
    * Persists a transient object with the specified name. The parent of the persisted object will implicitely be the
    * root node of the session.
    *
@@ -100,6 +130,20 @@ public interface ChromatticSession {
    * @throws ChromatticException any chromattic exception
    */
   String persist(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
+
+  /**
+   * Persists a transient object with the specified name. The parent of the persisted object will implicitely be the
+   * root node of the session.
+   *
+   * @param o the object to persist
+   * @param prefix the object prefix
+   * @param localName the object relative path to the root
+   * @return the id of the inserted object
+   * @throws NullPointerException if any argument is null
+   * @throws IllegalArgumentException if the name is not valid or the object is not a chromattic transient object
+   * @throws ChromatticException any chromattic exception
+   */
+  String persist(Object o, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
    * Persists a transient object as a child of the specified parent. The parent argument is optional and null can be
@@ -141,6 +185,22 @@ public interface ChromatticSession {
    * @throws ChromatticException any chromattic exception
    */
   String persist(Object parent, Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
+
+  /**
+   * Persists a transient object as a child of the specified parent with the specified name. The parent argument is
+   * optional and null can be passed, in that case it is equivalent to call the {@link #persist(Object, String)} method.
+   *
+   * @param parent the parent object
+   * @param o the object to persist
+   * @param prefix the object prefix
+   * @param localName the object relative local name to the parent
+   * @return the id of the inserted object
+   * @throws NullPointerException if the object argument is null
+   * @throws IllegalArgumentException if the parent is not a persistent object or the name is not valid or the object
+   * is not a chromattic transient object
+   * @throws ChromatticException any chromattic exception
+   */
+  String persist(Object parent, Object o, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
    * Clones a persistent object into a new persistent object.

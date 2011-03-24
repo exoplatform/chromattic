@@ -113,17 +113,44 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     return child;
   }
 
+  public <O> O insert(Object parent, Class<O> clazz, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    O child = create(clazz);
+    persist(parent, child, prefix, localName);
+    return child;
+  }
+
   public <O> O insert(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
     return insert(null, clazz, name);
   }
 
-  public String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    EntityContext childCtx = domainSession.unwrapEntity(child);
+  public <O> O insert(Class<O> clazz, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    return insert(null, clazz, prefix, localName);
+  }
+
+  public String persist(Object parent, Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    if (name == null) {
+      throw new NullPointerException("No null name accepted");
+    }
+    String prefix;
+    String localName;
+    int index = name.indexOf(':');
+    if (index != -1) {
+      prefix = name.substring(0, index);
+      localName = name.substring(index + 1);
+    } else {
+      prefix = null;
+      localName = name;
+    }
+    return persist(parent, o, prefix, localName);
+  }
+
+  public String persist(Object parent, Object o, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    EntityContext childCtx = domainSession.unwrapEntity(o);
     if (parent != null) {
       EntityContext parentCtx = domainSession.unwrapEntity(parent);
-      domainSession.persist(parentCtx, childCtx, null, name);
+      domainSession.persist(parentCtx, childCtx, prefix, localName);
     } else {
-      domainSession.persist(childCtx, null, name);
+      domainSession.persist(childCtx, prefix, localName);
     }
     return childCtx.getId();
   }
@@ -150,6 +177,10 @@ public final class ChromatticSessionImpl implements ChromatticSession {
 
   public String persist(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     return persist(null, o, name);
+  }
+
+  public String persist(Object o, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    return persist(null, o, prefix, localName);
   }
 
   public <O> O copy(O o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
