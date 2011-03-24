@@ -94,13 +94,13 @@ public abstract class DomainSession {
 
   protected abstract boolean _setReferenced(ObjectContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws RepositoryException;
 
-  protected abstract <T> Iterator<T> _getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException;
+  protected abstract <T> Iterator<T> _getReferents(EntityContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException;
 
   protected abstract void _removeChild(ObjectContext ctx, String name) throws RepositoryException;
 
   protected abstract EntityContext _getChild(ObjectContext ctx, String name) throws RepositoryException;
 
-  protected abstract <T> Iterator<T> _getChildren(EntityContext ctx, Class<T> filterClass) throws RepositoryException;
+  protected abstract <T> Iterator<T> _getChildren(ObjectContext ctx, Class<T> filterClass) throws RepositoryException;
 
   protected abstract EntityContext _getParent(EntityContext ctx) throws RepositoryException;
 
@@ -284,7 +284,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final void orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) {
+  public final void orderBefore(ObjectContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) {
     try {
       _orderBefore(parentCtx, srcCtx, dstCtx);
     }
@@ -293,7 +293,7 @@ public abstract class DomainSession {
     }
   }
 
-  public void move(EntityContext srcCtx, EntityContext dstCtx, String dstName) throws UndeclaredRepositoryException {
+  public void move(EntityContext srcCtx, ObjectContext dstCtx, String dstName) throws UndeclaredRepositoryException {
     try {
       _move(srcCtx, dstCtx, dstName);
     }
@@ -311,7 +311,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final EntityContext getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws UndeclaredRepositoryException {
+  public final EntityContext getReferenced(ObjectContext referentCtx, String name, LinkType linkType) throws UndeclaredRepositoryException {
     try {
       return _getReferenced(referentCtx, name, linkType);
     }
@@ -320,7 +320,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final boolean setReferenced(EntityContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws UndeclaredRepositoryException {
+  public final boolean setReferenced(ObjectContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws UndeclaredRepositoryException {
     try {
       return _setReferenced(referentCtx, name, referencedCtx, linkType);
     }
@@ -329,7 +329,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final void removeChild(EntityContext ctx, String name) throws UndeclaredRepositoryException {
+  public final void removeChild(ObjectContext ctx, String name) throws UndeclaredRepositoryException {
     try {
       _removeChild(ctx, name);
     }
@@ -347,7 +347,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final EntityContext getChild(EntityContext ctx, String name) throws UndeclaredRepositoryException {
+  public final EntityContext getChild(ObjectContext ctx, String name) throws UndeclaredRepositoryException {
     try {
       return _getChild(ctx, name);
     }
@@ -356,7 +356,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final <T> Iterator<T> getChildren(EntityContext ctx, Class<T> filterClass) throws UndeclaredRepositoryException {
+  public final <T> Iterator<T> getChildren(ObjectContext ctx, Class<T> filterClass) throws UndeclaredRepositoryException {
     try {
       return _getChildren(ctx, filterClass);
     }
@@ -425,7 +425,7 @@ public abstract class DomainSession {
     }
   }
 
-  public final void persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {
+  public final void persist(ObjectContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {
     try {
       _persist(parentCtx, name, childCtx);
     }

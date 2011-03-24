@@ -680,7 +680,7 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected <T> Iterator<T> _getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
+  protected <T> Iterator<T> _getReferents(EntityContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
     Node referenced = referencedCtx.getEntity().state.getNode();
     Iterator<Node> referents = sessionWrapper.getReferents(referenced, name, linkType);
     return new ReferentCollectionIterator<T>(this, referents, filterClass, name);
@@ -709,8 +709,8 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected <T> Iterator<T> _getChildren(EntityContext ctx, Class<T> filterClass) throws RepositoryException {
-    Node node = ctx.state.getNode();
+  protected <T> Iterator<T> _getChildren(ObjectContext ctx, Class<T> filterClass) throws RepositoryException {
+    Node node = ctx.getEntity().state.getNode();
     Iterator<Node> iterator = sessionWrapper.getChildren(node);
     return new ChildCollectionIterator<T>(this, iterator, filterClass);
   }
