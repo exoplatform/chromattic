@@ -38,7 +38,7 @@ public class NodeTypeTestCase extends TypeGenTestCase {
     assertEquals(Collections.<String>set(), _1.getPropertyDefinitions().keySet());
     assertEquals(1, _1.getChildNodeDefinitions().size());
     NodeDefinition cnd = _1.getChildNodeDefinitions().values().iterator().next();
-    assertEquals("foo:*", cnd.getName());
+    assertEquals("*", cnd.getName());
     assertEquals("2", cnd.getNodeTypeName());
   }
 }

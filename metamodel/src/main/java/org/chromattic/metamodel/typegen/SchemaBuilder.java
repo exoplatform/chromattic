@@ -173,9 +173,7 @@ public class SchemaBuilder {
           BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
           NodeType related = resolve(relatedBeanMapping);
           if (related != null) {
-            String prefix = mapping.getPrefix();
-            String name = prefix != null && prefix.length() > 0 ? (prefix + ":*") : "*";
-            related.addChildNodeType(name, false, false, current.mapping);
+            related.addChildNodeType("*", false, false, current.mapping);
           }
         }
       }
@@ -186,9 +184,7 @@ public class SchemaBuilder {
       if (current != null) {
         BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
         if (mapping.isTypeCovariant()) {
-          String prefix = mapping.getPrefix();
-          String name = prefix != null && prefix.length() > 0 ? (prefix + ":*") : "*";
-          current.addChildNodeType(name, false, false, relatedBeanMapping);
+          current.addChildNodeType("*", false, false, relatedBeanMapping);
         }
       }
     }
