@@ -248,36 +248,32 @@ public class Domain {
     return queryManager;
   }
 
-  String decodeName(EntityContext ctx, String internal, NameKind nameKind) throws RepositoryException {
-    if (ctx == null) {
-      throw new NullPointerException();
-    }
-    return decodeName(ctx.state.getNode(), internal, nameKind);
-  }
-
-  /**
-   * Decodes an internal name that is owned by the specified node.
-   *
-   * @param ownerNode the owner node
-   * @param internal the internal name
-   * @param nameKind the kind of name
-   * @return the external name or null
-   * @throws RepositoryException any repository exception
-   */
-  String decodeName(Node ownerNode, String internal, NameKind nameKind) throws RepositoryException {
+  String decodeName(Node ownerNode, String internal, NameKind nameKind) throws
+    NullPointerException, UndeclaredThrowableException, IllegalStateException, RepositoryException {
     if (ownerNode == null) {
       throw new NullPointerException();
     }
+    String nodeTypeName = ownerNode.getPrimaryNodeType().getName();
+    ObjectMapper ownerMapper = getTypeMapper(nodeTypeName);
+    ObjectFormatter formatter = null;
+    if (ownerMapper != null) {
+      formatter = ownerMapper.getFormatter();
+    }
+    return decodeName(formatter, internal, nameKind);
+  }
+
+  String decodeName(ObjectContext ownerCtx, String internal, NameKind nameKind) throws
+    NullPointerException, UndeclaredThrowableException, IllegalStateException, RepositoryException {
+    if (ownerCtx == null) {
+      throw new NullPointerException();
+    }
+    return decodeName(ownerCtx.getMapper().getFormatter(), internal, nameKind);
+  }
+
+  private String decodeName(ObjectFormatter formatter, String internal, NameKind nameKind) throws
+    UndeclaredThrowableException, IllegalStateException, RepositoryException {
     if (nameKind == NameKind.PROPERTY) {
       return internal;
-    }
-
-    //
-    ObjectFormatter formatter = null;
-    String nodeTypeName = ownerNode.getPrimaryNodeType().getName();
-    ObjectMapper parentMapper = getTypeMapper(nodeTypeName);
-    if (parentMapper != null) {
-      formatter = parentMapper.getFormatter();
     }
     if (formatter == null) {
       formatter = objectFormatter;
@@ -310,52 +306,57 @@ public class Domain {
   /**
    * Encodes the name for the specified context.
    *
-   * @param ownerCtx the context
+   * @param ownerNode the node
    * @param externalName the external name
    * @param nameKind the name kind
    * @return the encoded name
    * @throws NullPointerException if the owner context argument is null
+   * @throws UndeclaredThrowableException when the formatter throws an exception
    * @throws RepositoryException any repository exception
    */
-  String encodeName(EntityContext ownerCtx, String externalName, NameKind nameKind) throws NullPointerException, RepositoryException {
-    if (ownerCtx == null) {
+  String encodeName(Node ownerNode, String externalName, NameKind nameKind) throws
+    NullPointerException, UndeclaredThrowableException, RepositoryException {
+    if (ownerNode == null) {
       throw new NullPointerException();
     }
-    return encodeName(ownerCtx.state.getNode(), externalName, nameKind);
+    String nodeTypeName = ownerNode.getPrimaryNodeType().getName();
+    ObjectMapper ownerMapper = getTypeMapper(nodeTypeName);
+    ObjectFormatter formatter = null;
+    if (ownerMapper != null) {
+      formatter = ownerMapper.getFormatter();
+    }
+    return encodeName(formatter, externalName, nameKind);
   }
 
   /**
    * Encodes the name for the specified context.
    *
-   * @param ownerNode the node
+   * @param ownerCtx the context
    * @param externalName the external name
    * @param nameKind the name kind
    * @return the encoded name
    * @throws NullPointerException if any argument is null
+   * @throws UndeclaredThrowableException when the formatter throws an exception
    * @throws RepositoryException any repository exception
    */
-  String encodeName(Node ownerNode, String externalName, NameKind nameKind) throws NullPointerException, RepositoryException {
-    if (ownerNode == null) {
+  String encodeName(ObjectContext ownerCtx, String externalName, NameKind nameKind) throws
+    NullPointerException, UndeclaredThrowableException, RepositoryException {
+    if (ownerCtx == null) {
       throw new NullPointerException("No null owner node accepted");
     }
+    return encodeName(ownerCtx.getMapper().getFormatter(), externalName, nameKind);
+  }
+
+  private String encodeName(ObjectFormatter formatter, String externalName, NameKind nameKind) throws
+    UndeclaredThrowableException, NullPointerException, RepositoryException {
     if (externalName == null) {
       throw new NullPointerException("No null name accepted");
     }
     if (nameKind == null) {
       throw new NullPointerException("No null name kind accepted");
     }
-
-    //
     if (nameKind == NameKind.PROPERTY) {
       return externalName;
-    }
-
-    //
-    ObjectFormatter formatter = null;
-    String nodeTypeName = ownerNode.getPrimaryNodeType().getName();
-    ObjectMapper parentMapper = getTypeMapper(nodeTypeName);
-    if (parentMapper != null) {
-      formatter = parentMapper.getFormatter();
     }
     if (formatter == null) {
       formatter = objectFormatter;
