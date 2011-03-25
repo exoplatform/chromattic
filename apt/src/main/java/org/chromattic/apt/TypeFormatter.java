@@ -107,18 +107,30 @@ public class TypeFormatter {
                   throw new UnsupportedOperationException();
               }
             } else {
-              s.append(cti.getName());
+              formatCompileTimeName(cti);
             }
           } else {
-            s.append(cti.getName());
+            formatCompileTimeName(cti);
           }
           break;
         case LITERAL:
         case TYPE_PARAMETER:
         case RETURN_TYPE:
-          s.append(cti.getName());
+          formatCompileTimeName(cti);
           break;
       }
+    }
+  }
+
+  private void formatCompileTimeName(ClassTypeInfo cti) {
+    ClassTypeInfo enclosing = cti.getEnclosing();
+    if (enclosing != null) {
+      formatCompileTimeName(enclosing);
+      s.append('.');
+      String classElementName = cti.getSimpleName().substring(enclosing.getSimpleName().length() + 1);
+      s.append(classElementName);
+    } else {
+      s.append(cti.getName());
     }
   }
 
