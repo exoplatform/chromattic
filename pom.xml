@@ -498,7 +498,6 @@
         <modules>
            <module>test</module>
            <module>api</module>
-           <module>query</module>
            <module>spi</module>
            <module>common</module>
            <module>metamodel</module>
@@ -521,7 +520,6 @@
         <modules>
            <module>test</module>
            <module>api</module>
-           <module>query</module>
            <module>spi</module>
            <module>common</module>
            <module>metamodel</module>
