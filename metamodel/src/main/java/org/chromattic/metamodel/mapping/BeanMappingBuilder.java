@@ -570,7 +570,7 @@ public class BeanMappingBuilder {
             if (returnTypeInfo != null) {
               BeanMapping createBeanMapping = resolve(returnTypeInfo);
               if (createBeanMapping == null) {
-                throw new UnsupportedOperationException();
+                throw new InvalidMappingException(bean.getClassType(), "Could not resolve the return type " + returnTypeInfo + " to a chromattic bean");
               }
               methodMappings.add(new CreateMapping(method, createBeanMapping));
             } else {
