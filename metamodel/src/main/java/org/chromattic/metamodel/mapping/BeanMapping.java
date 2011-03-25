@@ -157,4 +157,9 @@ public class BeanMapping {
     }
     visitor.endBean();
   }
+
+  @Override
+  public String toString() {
+    return "BeanMapping[info=" + bean + "]";
+  }
 }

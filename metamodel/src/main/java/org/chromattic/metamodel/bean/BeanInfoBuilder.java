@@ -140,11 +140,11 @@ public class BeanInfoBuilder {
           if (classType instanceof SimpleTypeInfo) {
             accept = false;
             declared = null;
-//            log.debug("rejected simple type " + classType.getName());
+//            BeanMappingBuilder.println("rejected simple type " + classType.getName());
           } else if (classType instanceof VoidTypeInfo) {
             accept = false;
             declared = null;
-//            log.debug("rejected void " + classType.getName());
+//            BeanMappingBuilder.println("rejected void " + classType.getName());
           } else {
             if (classTypes.remove(classType)) {
 //              log.debug("resolved declared " + classType.getName());
@@ -153,17 +153,17 @@ public class BeanInfoBuilder {
             } else if (filter != null && filter.accept(classType)) {
               accept = true;
               declared = false;
-//              log.debug("resolved transitively " + classType.getName());
+//              BeanMappingBuilder.println("resolved transitively " + classType.getName());
             } else {
               accept = false;
               declared = null;
-//              log.debug("rejected " + classType.getName());
+//              BeanMappingBuilder.println("rejected " + classType.getName());
             }
           }
         } else {
           accept = false;
           declared = null;
-//          log.debug("rejected non class or non interface " + classType.getName());
+//          BeanMappingBuilder.println("rejected non class or non interface " + classType.getName());
         }
         if (accept) {
           bean = new BeanInfo(classType, declared);
@@ -175,6 +175,8 @@ public class BeanInfoBuilder {
     }
 
     void build(BeanInfo bean) {
+
+      // Build parents
       for (ClassTypeInfo ancestorClassType = bean.classType.getSuperClass();ancestorClassType != null;ancestorClassType = ancestorClassType.getSuperClass()) {
 
         // Resolve the ancestor class type
@@ -189,6 +191,15 @@ public class BeanInfoBuilder {
 
       //
       buildProperties(bean);
+
+      // Now resolve types references by method return type
+      // this is needed for @Create for instance
+      for (MethodInfo mi : bean.classType.getDeclaredMethods()) {
+        TypeInfo rti = mi.getReturnType();
+        if (rti instanceof ClassTypeInfo) {
+          resolve((ClassTypeInfo)rti);
+        }
+      }
     }
 
     private PropertyInfo resolveProperty(BeanInfo bean, String propertyName) {
