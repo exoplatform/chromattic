@@ -22,7 +22,7 @@ java.lang.NullPointerException: Attempt to insert context EntityContext[state=Ob
 
 
 
-
+- collection mapping using JCR foo:* pattern
 
 - split APT plugin into two jars, one for compile time and one for runtime
 
