@@ -440,7 +440,4 @@ public interface ChromatticSession {
    * @return the JCR session.
    */
   Session getJCRSession();
-
-  <O> Path<O> createPathBuilder(O o);
-
 }

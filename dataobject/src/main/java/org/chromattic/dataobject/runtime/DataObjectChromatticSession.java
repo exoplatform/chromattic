@@ -23,7 +23,6 @@ import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.Path;
 import org.chromattic.api.Status;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.query.QueryBuilder;
@@ -218,9 +217,5 @@ public class DataObjectChromatticSession implements ChromatticSession {
 
   public Session getJCRSession() {
     return safeGet().getJCRSession();
-  }
-
-  public <O> Path<O> createPathBuilder(O o) {
-    return safeGet().createPathBuilder(o);
   }
 }
