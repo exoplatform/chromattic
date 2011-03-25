@@ -56,6 +56,10 @@ public class JLOTypeInfo implements ClassTypeInfo {
     return true;
   }
 
+  public ClassTypeInfo getEnclosing() {
+    return null;
+  }
+
   public String getName() {
     return Object.class.getName();
   }
