@@ -194,7 +194,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <L> L getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<L> listType) {
+  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType2 listType) {
     try {
       Value[] values;
       Property property = session.getSessionWrapper().getProperty(node, propertyName);
@@ -210,12 +210,11 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      Class<Object> elementType = (Class<Object>)simpleType.getTypeInfo().getType();
-      L list = listType.create(elementType, values.length);
+      List<V> list = listType.create(simpleType, values.length);
       for (int i = 0;i < values.length;i++) {
         Value value = values[i];
-        Object o = ValueMapper.instance.get(value, simpleType.getSimpleType());
-        listType.set(list, i, o);
+        V v = ValueMapper.instance.get(value, simpleType.getSimpleType());
+        list.set(i, v);
       }
       return list;
     }
@@ -291,18 +290,18 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <L> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<L> listType, L objects) {
+  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType2 listType, List<V> objects) {
     if (objects == null) {
       throw new NullPointerException();
     }
     try {
       ValueFactory valueFactory = session.getJCRSession().getValueFactory();
-      SimpleType st = type != null ? type.getSimpleType() : null;
+      SimpleType<V> st = type != null ? type.getSimpleType() : null;
       Value[] values;
-      int size = listType.size(objects);
+      int size = objects.size();
       values = new Value[size];
       for (int i = 0;i < size;i++) {
-        Object element = listType.get(objects, i);
+        V element = objects.get(i);
         values[i] = ValueMapper.instance.get(valueFactory, element, st);
       }
 

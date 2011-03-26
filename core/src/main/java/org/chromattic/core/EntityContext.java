@@ -21,6 +21,7 @@ package org.chromattic.core;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.io.InputStream;
 
@@ -151,7 +152,7 @@ public class EntityContext implements MethodHandler {
     return state.getPropertyValue(propertyName, type);
   }
 
-  public <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType) {
+  public <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType2 listType) {
     JCR.validateName(propertyName);
 
     //
@@ -176,7 +177,7 @@ public class EntityContext implements MethodHandler {
     }
   }
 
-  public <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects) {
+  public <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType2 listType, List<V> objects) {
     JCR.validateName(propertyName);
 
     //

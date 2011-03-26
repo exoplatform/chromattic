@@ -56,9 +56,13 @@ public class SimpleType<T> {
   public static final SimpleType<InputStream> BINARY = new SimpleType<InputStream>(InputStream.class);
 
   /** . */
-  private final Class<T> javaClass;
+  private final Class<T> javaType;
 
-  private SimpleType(Class<T> javaClass) {
-    this.javaClass = javaClass;
+  SimpleType(Class<T> javaType) {
+    this.javaType = javaType;
+  }
+
+  public Class<T> getJavaType() {
+    return javaType;
   }
 }

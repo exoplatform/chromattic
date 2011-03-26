@@ -17,40 +17,34 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core;
-
-import org.chromattic.api.Status;
-import org.chromattic.core.bean.SimpleValueInfo;
-
-import javax.jcr.Node;
-import java.util.List;
+package org.chromattic.common.collection;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-abstract class EntityContextState {
+class FloatWrappedArrayList extends PrimitiveWrappedArrayList<Float, float[]> {
 
-  abstract String getId();
+  public FloatWrappedArrayList(int size) {
+    this(new float[size]);
+  }
 
-  abstract String getName();
+  public FloatWrappedArrayList(float[] array) {
+    super(array);
+  }
 
-  abstract String getPath();
+  @Override
+  protected Float get(float[] array, int index) {
+    return array[index];
+  }
 
-  abstract void setName(String name);
+  @Override
+  protected int size(float[] array) {
+    return array.length;
+  }
 
-  abstract Node getNode();
-
-  abstract DomainSession getSession();
-
-  abstract Status getStatus();
-
-  abstract <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type);
-
-  abstract <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType2 listType);
-
-  abstract <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V o);
-
-  abstract <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType2 listType, List<V> objects);
-
+  @Override
+  protected void set(float[] array, int index, Float element) {
+    array[index] = element;
+  }
 }

@@ -19,13 +19,15 @@
 
 package org.chromattic.core.mapper.property;
 
+import org.chromattic.core.ListType2;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.MultiValuedPropertyInfo;
 import org.chromattic.core.bean.ArrayPropertyInfo;
 import org.chromattic.core.bean.ListPropertyInfo;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.EntityContext;
-import org.chromattic.core.ListType;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -37,17 +39,20 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
   private final String jcrPropertyName;
 
   /** . */
-  private final ListType listType;
+  private final ListType2 listType;
+
+  /** . */
+  private final SimpleValueInfo elementType;
 
   public JCRPropertyListPropertyMapper(MultiValuedPropertyInfo<SimpleValueInfo> info, String jcrPropertyName) {
     super(info);
 
     //
-    ListType listType;
+    ListType2 listType;
     if (info instanceof ArrayPropertyInfo) {
-      listType = ListType.ARRAY;
+      listType = ListType2.ARRAY;
     } else if (info instanceof ListPropertyInfo) {
-      listType = ListType.LIST;
+      listType = ListType2.LIST;
     } else {
       throw new AssertionError();
     }
@@ -55,15 +60,18 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
     //
     this.listType = listType;
     this.jcrPropertyName = jcrPropertyName;
+    this.elementType = info.getElementValue();
   }
 
   @Override
   public Object get(EntityContext context) throws Throwable {
-    return context.getPropertyValues(jcrPropertyName, info.getElementValue(), listType);
+    List list = context.getPropertyValues(jcrPropertyName, info.getElementValue(), listType);
+    return listType.unwrap(elementType, list);
   }
 
   @Override
   public void set(EntityContext context, Object value) throws Throwable {
-    context.setPropertyValues(jcrPropertyName, info.getElementValue(), listType, value);
+    List<?> list = listType.wrap(elementType, value);
+    context.setPropertyValues(jcrPropertyName, info.getElementValue(), listType, list);
   }
 }

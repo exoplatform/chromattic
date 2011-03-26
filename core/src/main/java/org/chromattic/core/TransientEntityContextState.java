@@ -23,6 +23,7 @@ import org.chromattic.api.Status;
 import org.chromattic.core.bean.SimpleValueInfo;
 
 import javax.jcr.Node;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -72,7 +73,7 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <L> L getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<L> listType) {
+  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType2 listType) {
     throw new IllegalStateException();
   }
 
@@ -80,7 +81,7 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <L> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<L> listType, L objects) {
+  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType2 listType, List<V> objects) {
     throw new IllegalStateException();
   }
 
