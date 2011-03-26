@@ -63,11 +63,11 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract void _remove(ObjectContext context) throws RepositoryException;
 
-  protected abstract Object _getRelated(ObjectContext ctx, String name, LinkType linkType) throws RepositoryException;
+  protected abstract Object _getReferenced(ObjectContext referentCtx, String name, LinkType linkType) throws RepositoryException;
 
-  protected abstract boolean _setRelated(ObjectContext ctx, String name, ObjectContext relatedCtx, LinkType linkType) throws RepositoryException;
+  protected abstract boolean _setReferenced(ObjectContext referentCtx, String name, ObjectContext referencedCtx, LinkType linkType) throws RepositoryException;
 
-  protected abstract <T> Iterator<T> _getRelateds(ObjectContext ctx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException;
+  protected abstract <T> Iterator<T> _getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException;
 
   protected abstract void _removeChild(ObjectContext ctx, String name) throws RepositoryException;
 
@@ -289,18 +289,18 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public final Object getRelated(ObjectContext ctx, String name, LinkType linkType) throws UndeclaredRepositoryException {
+  public final Object getReferenced(ObjectContext referentCtx, String name, LinkType linkType) throws UndeclaredRepositoryException {
     try {
-      return _getRelated(ctx, name, linkType);
+      return _getReferenced(referentCtx, name, linkType);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
   }
 
-  public final boolean setRelated(ObjectContext ctx, String name, ObjectContext relatedCtx, LinkType linkType) throws UndeclaredRepositoryException  {
+  public final boolean setReferenced(ObjectContext referentCtx, String name, ObjectContext referencedCtx, LinkType linkType) throws UndeclaredRepositoryException  {
     try {
-      return _setRelated(ctx, name, relatedCtx, linkType);
+      return _setReferenced(referentCtx, name, referencedCtx, linkType);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -343,9 +343,9 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public final <T> Iterator<T> getRelateds(ObjectContext ctx, String name, Class<T> filterClass, LinkType linkType) throws UndeclaredRepositoryException {
+  public final <T> Iterator<T> getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws UndeclaredRepositoryException {
     try {
-      return _getRelateds(ctx, name, filterClass, linkType);
+      return _getReferents(referencedCtx, name, filterClass, linkType);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

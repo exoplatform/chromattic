@@ -51,7 +51,7 @@ public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
   @Override
   public Object get(ObjectContext context) throws Throwable {
     Class<?> relatedClass = getRelatedClass();
-    Object related = context.getRelated(propertyName, linkType);
+    Object related = context.getReferenced(propertyName, linkType);
     if (related == null) {
       return null;
     } else {
@@ -65,6 +65,6 @@ public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
 
   @Override
   public void set(ObjectContext ctx, Object value) throws Throwable {
-    ctx.setRelated(propertyName, value, linkType);
+    ctx.setReferenced(propertyName, value, linkType);
   }
 }

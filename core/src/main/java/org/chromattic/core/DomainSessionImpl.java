@@ -276,49 +276,49 @@ class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected Object _getRelated(ObjectContext ctx, String name, LinkType linkType) throws RepositoryException {
-    if (ctx.getStatus() != Status.PERSISTENT) {
+  protected Object _getReferenced(ObjectContext referentCtx, String name, LinkType linkType) throws RepositoryException {
+    if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException();
     }
-    Node node = ctx.state.getNode();
-    Node related = sessionWrapper.getReferenced(node, name, linkType);
-    if (related != null) {
-      return findByNode(Object.class, related);
+    Node referent = referentCtx.state.getNode();
+    Node referenced = sessionWrapper.getReferenced(referent, name, linkType);
+    if (referenced != null) {
+      return findByNode(Object.class, referenced);
     } else {
       return null;
     }
   }
 
-  protected boolean _setRelated(ObjectContext ctx, String name, ObjectContext relatedCtx, LinkType linkType) throws RepositoryException {
-    if (ctx.getStatus() != Status.PERSISTENT) {
+  protected boolean _setReferenced(ObjectContext referentCtx, String name, ObjectContext referencedCtx, LinkType linkType) throws RepositoryException {
+    if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException("Cannot create a relationship with a non persisted context " + this);
     }
 
     //
-    Node node = ctx.state.getNode();
+    Node referent = referentCtx.state.getNode();
 
     // Then create
-    if (relatedCtx != null) {
-      if (relatedCtx.getStatus() != Status.PERSISTENT) {
+    if (referencedCtx != null) {
+      if (referencedCtx.getStatus() != Status.PERSISTENT) {
         throw new IllegalStateException();
       }
 
       // Should do some type checking probably!!!!
 
       //
-      Node relatedNode = relatedCtx.state.getNode();
+      Node referenced = referencedCtx.state.getNode();
 
       //
-      return relatedNode != sessionWrapper.setReferenced(node, name, relatedNode, linkType);
+      return referenced != sessionWrapper.setReferenced(referent, name, referenced, linkType);
     } else {
-      return null != sessionWrapper.setReferenced(node, name, null, linkType);
+      return null != sessionWrapper.setReferenced(referent, name, null, linkType);
     }
   }
 
-  protected <T> Iterator<T> _getRelateds(ObjectContext ctx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
-    Node node = ctx.state.getNode();
-    Iterator<Node> nodes = sessionWrapper.getReferents(node, name, linkType);
-    return new ReferentCollectionIterator<T>(this, nodes, filterClass, name);
+  protected <T> Iterator<T> _getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
+    Node referenced = referencedCtx.state.getNode();
+    Iterator<Node> referents = sessionWrapper.getReferents(referenced, name, linkType);
+    return new ReferentCollectionIterator<T>(this, referents, filterClass, name);
   }
 
   protected void _removeChild(ObjectContext ctx, String name) throws RepositoryException {

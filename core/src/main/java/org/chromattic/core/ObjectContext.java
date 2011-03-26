@@ -98,8 +98,8 @@ public class ObjectContext implements MethodHandler {
     state.getSession().remove(this);
   }
 
-  public <T> Iterator<T> getReferences(final String name, Class<T> filterClass, LinkType linkType) {
-    return state.getSession().getRelateds(this, name, filterClass, linkType);
+  public <T> Iterator<T> getReferents(final String name, Class<T> filterClass, LinkType linkType) {
+    return state.getSession().getReferents(this, name, filterClass, linkType);
   }
 
   public String getName() {
@@ -118,25 +118,25 @@ public class ObjectContext implements MethodHandler {
     state.setName(name);
   }
 
-  public Object getRelated(String name, LinkType linkType) {
-    return state.getSession().getRelated(this, name, linkType);
+  public Object getReferenced(String name, LinkType linkType) {
+    return state.getSession().getReferenced(this, name, linkType);
   }
 
-  public void setRelated(String name, Object related, LinkType linkType) {
+  public void setReferenced(String name, Object referenced, LinkType linkType) {
     DomainSession session = state.getSession();
-    ObjectContext relatedCtx = null;
-    if (related != null) {
-      relatedCtx = session.unwrap(related);
+    ObjectContext referencedCtx = null;
+    if (referenced != null) {
+      referencedCtx = session.unwrap(referenced);
     }
 
     //
-    session.setRelated(this, name, relatedCtx, linkType);
+    session.setReferenced(this, name, referencedCtx, linkType);
   }
 
-  public boolean addReference(String name, Object related, LinkType linkType) {
+  public boolean addReference(String name, Object referent, LinkType linkType) {
     DomainSession session = state.getSession();
-    ObjectContext relatedCtx = session.unwrap(related);
-    return session.setRelated(relatedCtx, name, this, linkType);
+    ObjectContext referentCtx = session.unwrap(referent);
+    return session.setReferenced(referentCtx, name, this, linkType);
   }
 
   public Map<String, Object> getPropertyMap() {
