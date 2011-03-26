@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.chromattic</groupId>
     <artifactId>chromattic.parent</artifactId>
-    <version>1.0.0-cr2-SNAPSHOT</version>
+    <version>1.0.0-cr2</version>
   </parent>
 
   <artifactId>chromattic.core</artifactId>
