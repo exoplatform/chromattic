@@ -57,7 +57,7 @@
 
   <properties>
     <!-- Dependencies versions -->
-    <reflext.version>1.0.0-beta2</reflext.version>
+    <reflext.version>1.0.0-SNAPSHOT</reflext.version>
     
     <!-- Plugins settings -->
 

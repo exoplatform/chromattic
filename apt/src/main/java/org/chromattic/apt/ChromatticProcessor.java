@@ -22,13 +22,12 @@ package org.chromattic.apt;
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.ClassIntrospector;
 import org.reflext.api.MethodInfo;
 import org.reflext.api.TypeInfo;
 import org.reflext.api.VoidTypeInfo;
 import org.reflext.api.ClassKind;
 import org.reflext.api.introspection.MethodIntrospector;
-import org.reflext.api.introspection.TypeScope;
+import org.reflext.api.introspection.HierarchyScope;
 import org.reflext.core.TypeDomain;
 import org.reflext.apt.JavaxLangTypeModel;
 import org.reflext.apt.JavaxLangMethodModel;
@@ -126,7 +125,7 @@ public class ChromatticProcessor extends AbstractProcessor {
 
   private Iterable<MethodInfo> getMethodsToImplement(ClassTypeInfo cti) {
     List<MethodInfo> methods = new ArrayList<MethodInfo>();
-    MethodIntrospector introspector = new MethodIntrospector(TypeScope.CLASS_HIERARCHY);
+    MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL, true);
     for (MethodInfo method : introspector.getMethods(cti)) {
       if (method.isAbstract()) {
         methods.add(method);

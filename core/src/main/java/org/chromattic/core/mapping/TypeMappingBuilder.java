@@ -57,11 +57,12 @@ import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.ClassIntrospector;
 import org.reflext.api.AnnotationIntrospector;
 import org.reflext.api.MethodInfo;
 import org.reflext.api.VoidTypeInfo;
 import org.reflext.api.TypeInfo;
+import org.reflext.api.introspection.MethodIntrospector;
+import org.reflext.api.introspection.HierarchyScope;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -304,10 +305,10 @@ public class TypeMappingBuilder {
     }
 
     //
-    ClassIntrospector introspector = new ClassIntrospector(javaClass);
+    MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL);
 
     // Create
-    for (MethodInfo method : introspector.resolveMethods(Create.class)) {
+    for (MethodInfo method : introspector.resolveMethods(javaClass, Create.class)) {
       if (!method.isStatic()) {
         List<TypeInfo> parameterTypes = method.getParameterTypes();
         if (parameterTypes.size() < 2) {
@@ -331,7 +332,7 @@ public class TypeMappingBuilder {
     }
 
     // Destroy
-    for (MethodInfo method : introspector.resolveMethods(Destroy.class)) {
+    for (MethodInfo method : introspector.resolveMethods(javaClass, Destroy.class)) {
       if (!method.isStatic()) {
         List<TypeInfo> parameterTypes = method.getParameterTypes();
         if (parameterTypes.size() != 0) {
@@ -345,7 +346,7 @@ public class TypeMappingBuilder {
     }
 
     // Find by id
-    for (MethodInfo method : introspector.resolveMethods(FindById.class)) {
+    for (MethodInfo method : introspector.resolveMethods(javaClass, FindById.class)) {
       if (!method.isStatic()) {
         List<TypeInfo> parameterTypes = method.getParameterTypes();
         if (parameterTypes.size() == 1) {

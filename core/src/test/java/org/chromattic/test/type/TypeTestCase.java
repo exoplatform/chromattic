@@ -21,17 +21,6 @@ package org.chromattic.test.type;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
-import org.reflext.core.TypeDomain;
-import org.reflext.jlr.JavaLangReflectTypeModel;
-import org.reflext.jlr.JavaLangReflectMethodModel;
-import org.reflext.api.TypeInfo;
-import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.MethodInfo;
-import org.reflext.api.ClassIntrospector;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

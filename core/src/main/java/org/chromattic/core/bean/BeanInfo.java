@@ -21,12 +21,13 @@ package org.chromattic.core.bean;
 
 import org.reflext.api.TypeInfo;
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.ClassIntrospector;
 import org.reflext.api.MethodInfo;
 import org.reflext.api.SimpleTypeInfo;
 import org.reflext.api.ParameterizedTypeInfo;
 import org.reflext.api.ArrayTypeInfo;
 import org.reflext.api.AnnotationIntrospector;
+import org.reflext.api.introspection.MethodIntrospector;
+import org.reflext.api.introspection.HierarchyScope;
 import org.chromattic.api.annotations.Path;
 
 import java.util.Map;
@@ -85,9 +86,9 @@ public class BeanInfo {
   }
 
   private static  Map<String, PropertyInfo> buildProperties(ClassTypeInfo type) {
-    ClassIntrospector introspector = new ClassIntrospector(type);
-    Map<String, MethodInfo> getterMap = introspector.getGetterMap();
-    Map<String, Set<MethodInfo>> setterMap = introspector.getSetterMap();
+    MethodIntrospector introspector = new MethodIntrospector(HierarchyScope.ALL, true);
+    Map<String, MethodInfo> getterMap = introspector.getGetterMap(type);
+    Map<String, Set<MethodInfo>> setterMap = introspector.getSetterMap(type);
 
     //
     Map<String, PropertyInfo> properties = new HashMap<String, PropertyInfo>();
