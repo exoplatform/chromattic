@@ -48,82 +48,64 @@ public class ValueMapper {
     int propertyType = value.getType();
     if (wantedType != null) {
       SimpleTypeKind<E, ?> typeKind = wantedType.getKind();
-      if (SimpleTypeKind.STREAM.class.isInstance(typeKind)) {
+      if (typeKind instanceof SimpleTypeKind.STREAM) {
+        SimpleTypeKind.STREAM<?> streamKind = (SimpleTypeKind.STREAM<?>)typeKind;
         if (propertyType == PropertyType.BINARY) {
-          return (E)value.getStream();
+          return (E)streamKind.toExternal(value.getStream());
         }
         else {
           throw new ClassCastException();
         }
       }
-      else if (SimpleTypeKind.STRING.class.isInstance(typeKind)) {
+      else if (typeKind instanceof SimpleTypeKind.STRING) {
+        SimpleTypeKind.STRING stringKind = (SimpleTypeKind.STRING)typeKind;
         if (propertyType == PropertyType.STRING || propertyType == PropertyType.NAME || propertyType == PropertyType.PATH) {
-          return (E)value.getString();
+          return (E)stringKind.toExternal(value.getString());
         }
         else {
           throw new ClassCastException();
         }
       }
-      else if (SimpleTypeKind.PATH.class.isInstance(typeKind)) {
+      else if (typeKind instanceof SimpleTypeKind.PATH) {
+        SimpleTypeKind.PATH pathKind = (SimpleTypeKind.PATH)typeKind;
         if (propertyType == PropertyType.PATH) {
-          return (E)value.getString();
+          return (E)pathKind.toExternal(value.getString());
         }
         else {
           throw new ClassCastException();
         }
       }
-      else if (SimpleTypeKind.LONG.class.isInstance(typeKind)) {
-        if (BaseSimpleTypes.INT == typeKind) {
-          if (propertyType == PropertyType.LONG) {
-            return (E)Integer.valueOf((int)value.getLong());
-          }
-          else {
-            throw new ClassCastException();
-          }
-        }
-        else if (BaseSimpleTypes.LONG == typeKind) {
-          if (propertyType == PropertyType.LONG) {
-            return (E)Long.valueOf(value.getLong());
-          }
-          else {
-            throw new ClassCastException();
-          }
+      else if (typeKind instanceof SimpleTypeKind.LONG) {
+        SimpleTypeKind.LONG longKind = (SimpleTypeKind.LONG)typeKind;
+        if (propertyType == PropertyType.LONG) {
+          return (E)longKind.toExternal(value.getLong());
         }
         else {
-          throw new AssertionError("Property type " + propertyType + " not handled");
+          throw new ClassCastException();
         }
       }
-      else if (SimpleTypeKind.DOUBLE.class.isInstance(typeKind)) {
-        if (BaseSimpleTypes.FLOAT == typeKind) {
-          if (propertyType == PropertyType.DOUBLE) {
-            return (E)Float.valueOf((float)value.getDouble());
-          }
-          else {
-            throw new ClassCastException();
-          }
+      else if (typeKind instanceof SimpleTypeKind.DOUBLE) {
+        SimpleTypeKind.DOUBLE doubleKind = (SimpleTypeKind.DOUBLE)typeKind;
+        if (propertyType == PropertyType.DOUBLE) {
+          return (E)doubleKind.toExternal(value.getDouble());
         }
-        else if (BaseSimpleTypes.DOUBLE == typeKind) {
-          if (propertyType == PropertyType.DOUBLE) {
-            return (E)Double.valueOf(value.getDouble());
-          }
-          else {
-            throw new ClassCastException();
-          }
-        } else {
-          throw new AssertionError("Property type " + propertyType + " not handled");
+        else {
+          throw new ClassCastException();
         }
       }
-      else if (SimpleTypeKind.BOOLEAN.class.isInstance(typeKind)) {
+      else if (typeKind instanceof SimpleTypeKind.BOOLEAN) {
+        SimpleTypeKind.BOOLEAN booleanKind = (SimpleTypeKind.BOOLEAN)typeKind;
         if (propertyType == PropertyType.BOOLEAN) {
-          return (E)Boolean.valueOf(value.getBoolean());
+          return (E)booleanKind.toExternal(value.getBoolean());
         }
         else {
           throw new ClassCastException();
         }
       }
-      else if (SimpleTypeKind.DATE.class.isInstance(typeKind)) {
+      else if (typeKind instanceof SimpleTypeKind.DATE) {
+        SimpleTypeKind.DATE dateKind = (SimpleTypeKind.DATE)typeKind;
         if (propertyType == PropertyType.DATE) {
-          return (E)value.getDate().getTime();
+          return (E)dateKind.toExternal(value.getDate().getTime());
         }
         else {
           throw new ClassCastException();

@@ -31,6 +31,10 @@ public abstract class SimpleTypeKind<E, I> {
 
   }
 
+  public abstract E toExternal(I internal);
+
+  public abstract I toInternal(E external);
+
   public abstract static class STRING<E> extends SimpleTypeKind<E, String> { }
 
   public abstract static class PATH<E> extends SimpleTypeKind<E, String> { }
