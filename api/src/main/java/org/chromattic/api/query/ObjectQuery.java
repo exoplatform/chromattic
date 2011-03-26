@@ -24,6 +24,6 @@ package org.chromattic.api.query;
  */
 public interface ObjectQuery<O> extends Query, Iterable<O> {
 
-  QueryResult<O> iterator();
+  ObjectQueryResult<O> iterator();
 
 }

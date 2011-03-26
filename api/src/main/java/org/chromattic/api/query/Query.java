@@ -19,6 +19,8 @@
 package org.chromattic.api.query;
 
 /**
+ * A base interface for all queries
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */

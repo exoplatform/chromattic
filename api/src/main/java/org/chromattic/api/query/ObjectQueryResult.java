@@ -21,11 +21,19 @@ package org.chromattic.api.query;
 import java.util.Iterator;
 
 /**
+ * <p>The query result for an object query.</p>
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
+ * @param <O> the object type parameter
  */
-public interface QueryResult<O> extends Iterator<O> {
+public interface ObjectQueryResult<O> extends Iterator<O> {
 
+  /**
+   * <p>Returns the result size.</p>
+   *
+   * @return the size
+   */
   int size();
 
 }

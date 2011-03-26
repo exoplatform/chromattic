@@ -18,18 +18,49 @@
  */
 package org.chromattic.api.query;
 
-import java.util.Iterator;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
+ * @param <O> the object type parameter
  */
 public interface ObjectQueryBuilder<O> extends Iterable<O> {
 
-  <O> ObjectQueryBuilder<O> from(Class<O> fromClass);
+  /**
+   * <p>Set the node type of the from clause of the query. It is possible to call that method only once and
+   * any attempt to call this method a second time will throw an <tt>IllegalStateException</tt>.</p>
+   *
+   * @param fromClass the node type of the from clause
+   * @param <O> the object type parameter
+   * @return this builder
+   * @throws NullPointerException if the argument is null
+   * @throws IllegalStateException if the builder already has a from clause
+   * @throws IllegalArgumentException if the from class cannot be mapped to a node type
+   */
+  <O> ObjectQueryBuilder<O> from(Class<O> fromClass) throws NullPointerException, IllegalStateException, IllegalArgumentException;
 
-  <O> ObjectQueryBuilder<O> where(String whereStatement);
+  /**
+   * <p>Set the where statement of the query.</p>
+   *
+   * @param whereStatement the where statement
+   * @param <O> the object type parameter
+   * @return this builder
+   * @throws NullPointerException if the argument is null
+   */
+  <O> ObjectQueryBuilder<O> where(String whereStatement) throws NullPointerException;
 
-  ObjectQuery<O> get();
+  /**
+   * <p>Compute and returns the <tt>ObjectQuery</tt> for this builder.</p>
+   *
+   * @return this object query
+   * @throws IllegalStateException if the builder cannot build the query
+   */
+  ObjectQuery<O> get() throws IllegalStateException;
 
+  /**
+   * <p>Compute and executes the query.</p>
+   *
+   * @return the query result
+   * @throws IllegalStateException if the builder cannot build the query to execute
+   */
+  ObjectQueryResult<O> iterator() throws IllegalStateException;
 }

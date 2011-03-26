@@ -20,6 +20,7 @@ package org.chromattic.core.query;
 
 import org.chromattic.api.query.ObjectQueryBuilder;
 import org.chromattic.api.query.ObjectQuery;
+import org.chromattic.api.query.ObjectQueryResult;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.Domain;
 
@@ -94,7 +95,8 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
     return manager.getObjectQuery(mapper.getObjectClass(), sb.toString());
   }
 
-  public Iterator iterator() {
-    return get().iterator();
+  public ObjectQueryResult iterator() {
+    ObjectQuery query = get();
+    return query.iterator();
   }
 }

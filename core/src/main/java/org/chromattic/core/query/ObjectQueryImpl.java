@@ -55,12 +55,12 @@ public class ObjectQueryImpl<O> implements ObjectQuery<O> {
     this.jcrQuery = jcrQuery;
   }
 
-  public org.chromattic.api.query.QueryResult<O> iterator() {
+  public org.chromattic.api.query.ObjectQueryResult<O> iterator() {
     final NodeIterator iterator;
     try {
       QueryResult result = jcrQuery.execute();
       iterator = result.getNodes();
-      return new QueryResultImpl<O>(domainSession, iterator, clazz);
+      return new ObjectQueryResultImpl<O>(domainSession, iterator, clazz);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
