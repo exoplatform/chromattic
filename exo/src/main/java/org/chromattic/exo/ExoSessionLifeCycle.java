@@ -20,7 +20,7 @@
 package org.chromattic.exo;
 
 import org.chromattic.exo.RepositoryBootstrap;
-import org.chromattic.spi.jcr.SessionProvider;
+import org.chromattic.spi.jcr.SessionLifeCycle;
 
 import javax.jcr.Repository;
 import javax.jcr.Session;
@@ -31,12 +31,12 @@ import javax.jcr.Credentials;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ExoSessionProvider implements SessionProvider {
+public class ExoSessionLifeCycle implements SessionLifeCycle {
 
   /** . */
   private Repository repo;
 
-  public ExoSessionProvider() throws Exception {
+  public ExoSessionLifeCycle() throws Exception {
     RepositoryBootstrap bootstrap = new RepositoryBootstrap();
     bootstrap.bootstrap();
     repo = bootstrap.getRepository();
@@ -56,5 +56,13 @@ public class ExoSessionProvider implements SessionProvider {
 
   public Session login(Credentials credentials) throws RepositoryException {
     return repo.login(credentials);
+  }
+
+  public void save(Session session) throws RepositoryException {
+    session.save();
+  }
+
+  public void close(Session session) {
+    session.logout();
   }
 }

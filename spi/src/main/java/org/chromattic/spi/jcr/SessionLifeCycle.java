@@ -27,7 +27,7 @@ import javax.jcr.RepositoryException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface SessionProvider {
+public interface SessionLifeCycle {
 
   Session login() throws RepositoryException;
 
@@ -37,4 +37,7 @@ public interface SessionProvider {
 
   Session login(Credentials credentials) throws RepositoryException;
 
+  void save(Session session) throws RepositoryException;
+
+  void close(Session session);
 }

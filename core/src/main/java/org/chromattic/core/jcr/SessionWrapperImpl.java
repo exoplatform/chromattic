@@ -20,8 +20,7 @@
 package org.chromattic.core.jcr;
 
 import org.chromattic.common.logging.Logger;
-import org.chromattic.core.jcr.SessionWrapper;
-import org.chromattic.core.jcr.NodeDef;
+import org.chromattic.spi.jcr.SessionLifeCycle;
 
 import javax.jcr.Session;
 import javax.jcr.Node;
@@ -54,9 +53,13 @@ public class SessionWrapperImpl implements SessionWrapper {
   /** . */
   private ReferenceManager refMgr;
 
-  public SessionWrapperImpl(Session session) {
+  /** . */
+  private SessionLifeCycle sessionLifeCycle;
+
+  public SessionWrapperImpl(SessionLifeCycle sessionLifeCycle, Session session) {
 
     //
+    this.sessionLifeCycle = sessionLifeCycle;
     this.session = session;
     this.refMgr = new ReferenceManager(session);
 
@@ -137,7 +140,7 @@ public class SessionWrapperImpl implements SessionWrapper {
   }
 
   public void save() throws RepositoryException {
-    session.save();
+    sessionLifeCycle.save(session);
     refMgr.clear();
   }
 
@@ -187,6 +190,6 @@ public class SessionWrapperImpl implements SessionWrapper {
 
   public void close() {
     refMgr.clear();
-    session.logout();
+    sessionLifeCycle.close(session);
   }
 }

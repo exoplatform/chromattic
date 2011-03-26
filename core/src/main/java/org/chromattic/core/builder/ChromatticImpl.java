@@ -21,7 +21,7 @@ package org.chromattic.core.builder;
 
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.SessionWrapperImpl;
-import org.chromattic.spi.jcr.SessionProvider;
+import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.SessionTask;
@@ -39,14 +39,14 @@ import javax.jcr.RepositoryException;
 public class ChromatticImpl implements Chromattic {
 
   /** . */
-  private SessionProvider sessionManager;
+  private SessionLifeCycle sessionLifeCycle;
 
   /** . */
   private Domain domain;
 
-  ChromatticImpl(Domain domain, SessionProvider sessionManager) {
+  ChromatticImpl(Domain domain, SessionLifeCycle sessionLifeCycle) {
     this.domain = domain;
-    this.sessionManager = sessionManager;
+    this.sessionLifeCycle = sessionLifeCycle;
   }
 
   public void stop() {
@@ -54,8 +54,8 @@ public class ChromatticImpl implements Chromattic {
 
   public ChromatticSession openSession() {
     try {
-      Session session = sessionManager.login();
-      SessionWrapper wrapper = new SessionWrapperImpl(session);
+      Session session = sessionLifeCycle.login();
+      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session);
       return domain.getSession(wrapper);
     }
     catch (RepositoryException e) {
@@ -65,8 +65,8 @@ public class ChromatticImpl implements Chromattic {
 
   public ChromatticSession openSession(String workspace) {
     try {
-      Session session = sessionManager.login(workspace);
-      SessionWrapper wrapper = new SessionWrapperImpl(session);
+      Session session = sessionLifeCycle.login(workspace);
+      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session);
       return domain.getSession(wrapper);
     }
     catch (RepositoryException e) {
@@ -76,8 +76,8 @@ public class ChromatticImpl implements Chromattic {
 
   public ChromatticSession openSession(Credentials credentials, String workspace) {
     try {
-      Session session = sessionManager.login(credentials, workspace);
-      SessionWrapper wrapper = new SessionWrapperImpl(session);
+      Session session = sessionLifeCycle.login(credentials, workspace);
+      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session);
       return domain.getSession(wrapper);
     }
     catch (RepositoryException e) {
@@ -87,8 +87,8 @@ public class ChromatticImpl implements Chromattic {
 
   public ChromatticSession openSession(Credentials credentials) {
     try {
-      Session session = sessionManager.login(credentials);
-      SessionWrapper wrapper = new SessionWrapperImpl(session);
+      Session session = sessionLifeCycle.login(credentials);
+      SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session);
       return domain.getSession(wrapper);
     }
     catch (RepositoryException e) {

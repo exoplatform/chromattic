@@ -20,7 +20,7 @@
 package org.chromattic.core.builder;
 
 import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.jcr.SessionProvider;
+import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
 import org.chromattic.core.mapping.TypeMapping;
 import org.chromattic.core.mapping.TypeMappingBuilder;
@@ -47,11 +47,11 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   private Instrumentor instrumentor;
 
   /** . */
-  private SessionProvider sessionProvider;
+  private SessionLifeCycle sessionProvider;
 
   public ChromatticBuilderImpl() {
     setOption(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl");
-    setOption(SESSION_PROVIDER_CLASSNAME, "org.chromattic.exo.ExoSessionProvider");
+    setOption(SESSION_PROVIDER_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle");
   }
 
   private <T> T create(OptionInstance<String> optionInstance, Class<T> expectedClass) {
@@ -83,7 +83,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     if (optionInstance.getOption() == INSTRUMENTOR_CLASSNAME) {
       instrumentor = create((OptionInstance<String>)optionInstance, Instrumentor.class);
     } else if (optionInstance.getOption() == SESSION_PROVIDER_CLASSNAME) {
-      sessionProvider = create((OptionInstance<String>)optionInstance, SessionProvider.class);
+      sessionProvider = create((OptionInstance<String>)optionInstance, SessionLifeCycle.class);
     }
   }
 
