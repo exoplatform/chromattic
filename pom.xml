@@ -22,7 +22,7 @@
    
    <groupId>org.chromattic</groupId>
    <artifactId>chromattic.parent</artifactId>
-   <version>1.0.0-beta10</version>
+   <version>1.0.0-beta11-SNAPSHOT</version>
    <packaging>pom</packaging>
 
    <name>Chromattic Framework</name>
@@ -92,19 +92,19 @@
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
-        <version>1.0.0-beta10</version>
+        <version>1.0.0-beta11-SNAPSHOT</version>
       </dependency>
       
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt</artifactId>
-        <version>1.0.0-beta10</version>
+        <version>1.0.0-beta11-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt</artifactId>
-        <version>1.0.0-beta10</version>
+        <version>1.0.0-beta11-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
 
@@ -117,37 +117,37 @@
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.cglib</artifactId>
-        <version>1.0.0-beta10</version>
+        <version>1.0.0-beta11-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.common</artifactId>
-        <version>1.0.0-beta10</version>
+        <version>1.0.0-beta11-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.core</artifactId>
-        <version>1.0.0-beta10</version>
+        <version>1.0.0-beta11-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.exo</artifactId>
-        <version>1.0.0-beta10</version>
+        <version>1.0.0-beta11-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.spi</artifactId>
-        <version>1.0.0-beta10</version>
+        <version>1.0.0-beta11-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.ntdef</artifactId>
-        <version>1.0.0-beta10</version>
+        <version>1.0.0-beta11-SNAPSHOT</version>
       </dependency>
 
       <!-- External dependencies -->
