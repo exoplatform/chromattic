@@ -26,6 +26,7 @@ import org.chromattic.cglib.CGLibInstrumentor;
 
 import javax.jcr.Session;
 import javax.jcr.Node;
+import javax.jcr.SimpleCredentials;
 
 import junit.framework.TestCase;
 import junit.framework.TestResult;
@@ -200,7 +201,8 @@ public abstract class AbstractTestCase extends TestCase {
   }
 
   public final DomainSession login() {
-    return (DomainSession)chromattic.openSession();
+    SimpleCredentials credentials = new SimpleCredentials("exo", "exo".toCharArray());
+    return (DomainSession)chromattic.openSession(credentials);
   }
 
   protected final ChromatticBuilder getBuilder() {
