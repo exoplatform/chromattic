@@ -29,6 +29,8 @@
 - Map iterators on relationship for maximum efficiency and allow skip
 - tester que les node type résiduels ont la bonne property type
 
+- a cache invalidation framework based on transforming node to object id + class
+
 *** Patrice
 - mapping of @Property for InputStream
 - mapping of @Property List<T> 
