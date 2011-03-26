@@ -63,7 +63,15 @@ public class Invoker {
 
     //
     if (visitor.method == null) {
-      throw new AssertionError("Could not find method " + methodName);
+      StringBuilder sb = new StringBuilder(methodName).append('(');
+      for (int i = 0;i < parameterTypes.length;i++) {
+        if (i > 0) {
+          sb.append(",");
+        }
+        sb.append(parameterTypes[i].getName());
+      }
+      sb.append(')');
+      throw new AssertionError("Could not find method " + sb + " on class " + clazz);
     }
 
     //
