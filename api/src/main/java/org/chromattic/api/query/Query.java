@@ -28,6 +28,12 @@ import org.chromattic.api.ChromatticException;
  */
 public interface Query<O> {
 
+  /**
+   * Executes the query and return the result as a serie of Chromattic entities.
+   *
+   * @return the query result
+   * @throws ChromatticException any chromattic exception
+   */
   QueryResult<O> objects() throws ChromatticException;
 
   // QueryResult<Map<String, ?>> getRows() throws ChromatticException;

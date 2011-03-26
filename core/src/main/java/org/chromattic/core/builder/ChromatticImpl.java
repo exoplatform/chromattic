@@ -25,7 +25,6 @@ import org.chromattic.core.jcr.SessionWrapperImpl;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.SessionTask;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.UndeclaredRepositoryException;
 
@@ -48,9 +47,6 @@ public class ChromatticImpl implements Chromattic {
   ChromatticImpl(Domain domain, SessionLifeCycle sessionLifeCycle) {
     this.domain = domain;
     this.sessionLifeCycle = sessionLifeCycle;
-  }
-
-  public void stop() {
   }
 
   public ChromatticSession openSession() {
@@ -94,18 +90,6 @@ public class ChromatticImpl implements Chromattic {
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public void execute(SessionTask task) throws Throwable {
-    ChromatticSession session = openSession();
-
-    //
-    try {
-      task.execute(session);
-    }
-    finally {
-      session.close();
     }
   }
 }

@@ -22,20 +22,46 @@ package org.chromattic.api;
 import javax.jcr.Credentials;
 
 /**
+ * The Chromattic object provides the entry points for runtime interactions.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public interface Chromattic {
 
-  void stop();
+  /**
+   * Opens a session and returns it.
+   *
+   * @return the session
+   * @throws ChromatticException any Chromattic exception
+   */
+  ChromatticSession openSession() throws ChromatticException;
 
-  ChromatticSession openSession();
+  /**
+   * Opens a session for the specified workspace and returns it.
+   *
+   * @param workspace the workspace name  
+   * @return the session
+   * @throws ChromatticException any Chromattic exception
+   */
+  ChromatticSession openSession(String workspace) throws ChromatticException;
 
-  ChromatticSession openSession(String workspace);
+  /**
+   * Opens with the specified credentials  a session for the specified workspace and returns it.
+   *
+   * @param credentials the credentials
+   * @param workspace the workspace name
+   * @return the session
+   * @throws ChromatticException any Chromattic exception
+   */
+  ChromatticSession openSession(Credentials credentials, String workspace) throws ChromatticException;
 
-  ChromatticSession openSession(Credentials credentials, String workspace);
-
-  ChromatticSession openSession(Credentials credentials);
-
-  void execute(SessionTask task) throws Throwable;
+  /**
+   * Opens with the specified credentials a session and returns it.
+   *
+   * @param credentials the credentials
+   * @return the session
+   * @throws ChromatticException any Chromattic exception
+   */
+  ChromatticSession openSession(Credentials credentials) throws ChromatticException;
 }

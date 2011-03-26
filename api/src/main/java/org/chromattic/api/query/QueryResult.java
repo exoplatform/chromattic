@@ -28,6 +28,11 @@ import java.util.Iterator;
  */
 public interface QueryResult<R> extends Iterator<R> {
 
+  /**
+   * Returns the number of results this query will returns until the iterator has no more elements to return.
+   *
+   * @return the result size
+   */
   int size();
 
 }
