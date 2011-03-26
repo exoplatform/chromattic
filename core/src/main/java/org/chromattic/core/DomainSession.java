@@ -24,24 +24,17 @@ import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.LifeCycleListener;
 import org.chromattic.api.ChromatticException;
-import org.chromattic.api.query.QueryLanguage;
-import org.chromattic.api.query.Query;
+import org.chromattic.api.query.ObjectQueryBuilder;
 import org.chromattic.core.jcr.LinkType;
+import org.chromattic.core.query.QueryManager;
+import org.chromattic.core.query.ObjectQueryBuilderImpl;
 import org.chromattic.common.JCR;
-import org.chromattic.common.AbstractFilterIterator;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
-import javax.jcr.Session;
-import javax.jcr.NodeIterator;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.lang.reflect.UndeclaredThrowableException;
 
 /**
@@ -56,9 +49,13 @@ public abstract class DomainSession implements ChromatticSession {
   /** . */
   private final Domain domain;
 
+  /** . */
+  private final QueryManager queryManager;
+
   protected DomainSession(Domain domain) {
     this.domain = domain;
     this.listeners = null;
+    this.queryManager = new QueryManager(this);
   }
 
   protected abstract String _persist(ObjectContext ctx, String relPath) throws RepositoryException;
@@ -287,76 +284,8 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  private EnumMap<QueryLanguage, Map<String, Query>> globalQueryCache;
-
-  private static EnumMap<QueryLanguage, String> bilto2 = new EnumMap<QueryLanguage, String>(QueryLanguage.class);
-
-  static {
-    bilto2.put(QueryLanguage.SQL, javax.jcr.query.Query.SQL);
-    bilto2.put(QueryLanguage.XPATH, javax.jcr.query.Query.XPATH);
-  }
-
-  private Query getQuery(final QueryLanguage language, final String statement) throws RepositoryException {
-    Query query = null;
-    if (globalQueryCache != null) {
-      Map<String, Query> queryCache = globalQueryCache.get(language);
-      if (queryCache != null) {
-        query = queryCache.get(statement);
-      }
-    }
-
-    //
-    if (query == null) {
-      Session session = getJCRSession();
-      QueryManager queryMgr = session.getWorkspace().getQueryManager();
-      final javax.jcr.query.Query jcrQuery = queryMgr.createQuery(statement, bilto2.get(language));
-      query = new Query() {
-        public <O> Iterator<O> execute(final Class<O> clazz) {
-          final NodeIterator iterator;
-          try {
-            QueryResult result = jcrQuery.execute();
-            iterator = result.getNodes();
-          }
-          catch (RepositoryException e) {
-            throw new UndeclaredRepositoryException(e);
-          }
-          return new AbstractFilterIterator<O, Node>(JCR.adapt(iterator)) {
-            protected O adapt(Node internal) {
-              Object o = findByNode(Object.class, internal);
-              if (clazz.isInstance(o)) {
-                return clazz.cast(o);
-              } else {
-                return null;
-              }
-            }
-          };
-        }
-      };
-
-      //
-      Map<String, Query> queryCache;
-      if (globalQueryCache == null) {
-        globalQueryCache = new EnumMap<QueryLanguage, Map<String, Query>>(QueryLanguage.class);
-        queryCache = new HashMap<String, Query>();
-        globalQueryCache.put(language, queryCache);
-      } else {
-        queryCache = globalQueryCache.get(language);
-        if (queryCache == null) {
-          globalQueryCache.put(language, queryCache);
-        }
-      }
-      queryCache.put(statement, query);
-    }
-    return query;
-  }
-
-  public Query createQuery(QueryLanguage language, String statement) throws ChromatticException {
-    try {
-      return getQuery(language, statement);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
+  public ObjectQueryBuilder<?> createQueryBuilder() throws ChromatticException {
+    return new ObjectQueryBuilderImpl(domain, queryManager);
   }
 
   public final Node getNode(Object o) {

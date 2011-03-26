@@ -21,10 +21,12 @@ package org.chromattic.test.find.query;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.TFI_A;
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.query.QueryLanguage;
-import org.chromattic.api.query.Query;
+import org.chromattic.api.query.ObjectQuery;
+import org.chromattic.api.query.ObjectQueryBuilder;
 
 import java.util.Iterator;
+import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -36,13 +38,32 @@ public class QueryTestCase extends AbstractTestCase {
     addClass(TFI_A.class);
   }
 
-  public void testQuery() {
+  public void testQuery() throws Exception {
     ChromatticSession session = login();
-    TFI_A a = session.insert(TFI_A.class, "a");
-    Query tmp = session.createQuery(QueryLanguage.SQL, "SELECT * FROM nt:base");
-    Iterator<TFI_A> i = tmp.execute(TFI_A.class);
-    assertTrue(i.hasNext());
+    if (session.getJCRSession().getRootNode().hasNode("tfi_a")) {
+      session.getJCRSession().getRootNode().getNode("tfi_a").remove(); // because of session save
+    }
+
+    TFI_A a = session.insert(TFI_A.class, "tfi_a");
+    a.setFoo("bar");
+    session.save();
+
+    //
+    Collection<TFI_A> r1 = new ArrayList<TFI_A>();
+    for (TFI_A b : session.createQueryBuilder().from(TFI_A.class)) {
+      r1.add(b);
+    }
+    assertEquals(1, r1.size());
+    Iterator<TFI_A> i = r1.iterator();
     assertSame(a, i.next());
-    assertFalse(i.hasNext());
+
+    //
+    Collection<TFI_A> r2 = new ArrayList<TFI_A>();
+    for (TFI_A b : session.createQueryBuilder().where("foo='bar'").from(TFI_A.class)) {
+      r2.add(b);
+    }
+    assertEquals(1, r2.size());
+    Iterator<TFI_A> i2 = r2.iterator();
+    assertSame(a, i2.next());
   }
 }

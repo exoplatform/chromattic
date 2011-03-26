@@ -630,6 +630,11 @@ tp          <requiredPrimaryType>exo:navigationtarget</requiredPrimaryType>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>
     </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="foo" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+    </propertyDefinitions>
   </nodeType>
 
   <nodeType name="tm_mixin" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">

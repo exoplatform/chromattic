@@ -16,26 +16,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.api.query;
 
-package org.chromattic.test.find;
-
-import org.chromattic.api.annotations.NodeMapping;
-import org.chromattic.api.annotations.FindById;
-import org.chromattic.api.annotations.Property;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tfi_a")
-public abstract class TFI_A {
+public interface ObjectQueryBuilder<O> extends Iterable<O> {
 
-  @FindById
-  public abstract TFI_A findById(String id);
+  <O> ObjectQueryBuilder<O> from(Class<O> fromClass);
 
-  @Property(name = "foo")
-  public abstract void setFoo(String foo);
+  <O> ObjectQueryBuilder<O> where(String whereStatement);
 
-  public abstract String getFoo();
+  ObjectQuery<O> get();
 
 }

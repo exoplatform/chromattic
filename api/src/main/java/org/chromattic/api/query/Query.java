@@ -18,14 +18,9 @@
  */
 package org.chromattic.api.query;
 
-import java.util.Iterator;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public interface Query {
-
-  <O> Iterator<O> execute(Class<O> clazz);
-
 }

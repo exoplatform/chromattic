@@ -21,6 +21,8 @@ package org.chromattic.api;
 
 import org.chromattic.api.query.QueryLanguage;
 import org.chromattic.api.query.Query;
+import org.chromattic.api.query.ObjectQuery;
+import org.chromattic.api.query.ObjectQueryBuilder;
 
 import javax.jcr.Session;
 import javax.jcr.Node;
@@ -140,7 +142,7 @@ public interface ChromatticSession {
 
   <O> O findById(Class<O> clazz, String id) throws ChromatticException;
 
-  Query createQuery(QueryLanguage language, String statement) throws ChromatticException; 
+  ObjectQueryBuilder<?> createQueryBuilder() throws ChromatticException;
 
   void remove(Object o) throws ChromatticException;
 

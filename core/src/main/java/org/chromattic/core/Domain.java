@@ -105,7 +105,7 @@ public class Domain {
     return typeMapperByNodeType.get(nodeTypeName);
   }
 
-  TypeMapper getTypeMapper(Class<?> clazz) {
+  public TypeMapper getTypeMapper(Class<?> clazz) {
     return typeMapperByClass.get(clazz);
   }
 }
