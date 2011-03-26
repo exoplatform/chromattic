@@ -509,7 +509,7 @@ public class DomainSessionImpl extends DomainSession {
     log.trace("About to load the name child {} of context {}", name, this);
     Node child = sessionWrapper.getChild(node, name);
     if (child != null) {
-      log.trace("Loaded named child {} of context {} with id {}", name, this, child.getUUID());
+      log.trace("Loaded named child {} of context {} with path {}", name, this, child.getPath());
       return findByNode(Object.class, child);
     } else {
       log.trace("No child named {} to load for context {}", name, this);
