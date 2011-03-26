@@ -34,10 +34,16 @@ public class RepositoryBootstrap {
   private Repository repository;
 
   public void bootstrap() throws Exception {
-    String containerConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/configuration-sjdbc.xml").toString();
+
+    // JCR configuration
+    String containerConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/configuration.xml").toString();
+    StandaloneContainer.addConfigurationURL(containerConf);
+
+    //
     String loginConf = Thread.currentThread().getContextClassLoader().getResource("login.conf").toString();
     System.setProperty("java.security.auth.login.config", loginConf);
-    StandaloneContainer.addConfigurationURL(containerConf);
+
+    //
     StandaloneContainer container = StandaloneContainer.getInstance();
     RepositoryService repositoryService = (RepositoryService)container.getComponentInstanceOfType(RepositoryService.class);
     repository = repositoryService.getDefaultRepository();
