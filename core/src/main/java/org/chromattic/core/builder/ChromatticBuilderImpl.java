@@ -57,10 +57,14 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   /** . */
   private boolean stateCacheEnabled;
 
+  /** . */
+  private String rootNodePath;
+
   public ChromatticBuilderImpl() {
     setOption(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl");
     setOption(SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle");
     setOption(OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName());
+    setOption(ROOT_NODE_PATH, "/");
   }
 
   private <T> T create(OptionInstance<String> optionInstance, Class<T> expectedClass) {
@@ -97,6 +101,8 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       objectFormatter = create((OptionInstance<String>)optionInstance, ObjectFormatter.class);
     } else if (optionInstance.getOption() == STATE_CACHE_ENABLED) {
       stateCacheEnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
+    } else if (optionInstance.getOption() == ROOT_NODE_PATH) {
+      rootNodePath = ((OptionInstance<String>)optionInstance).getValue();
     }
   }
 
@@ -120,7 +126,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     }
 
     // Build domain
-    Domain domain = new Domain(mappings, instrumentor, objectFormatter, stateCacheEnabled);
+    Domain domain = new Domain(mappings, instrumentor, objectFormatter, stateCacheEnabled, rootNodePath);
 
     //
     return new ChromatticImpl(domain, sessionProvider);

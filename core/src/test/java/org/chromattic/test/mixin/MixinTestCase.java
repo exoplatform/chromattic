@@ -20,7 +20,7 @@
 package org.chromattic.test.mixin;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.api.ChromatticSession;
+import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -39,13 +39,13 @@ public class MixinTestCase extends AbstractTestCase {
   }
 
   public void testPersistent() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
 
     //
     TM_A a = session.insert(TM_A.class, "tm_a");
     assertEquals(null, a.getMixinValue());
     a.setMixinValue("foo");
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.getNode("tm_a");
     assertNotNull(aNode);
     Set<String> mixinNames = new HashSet<String>();

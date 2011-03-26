@@ -52,7 +52,7 @@ public class PropertyListMappedToMultiValuedTestCase extends AbstractTestCase {
 
     //
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     fNode = rootNode.addNode("tp_c_a", "tp_c");
     f = session.findByNode(TP_F.class, fNode);
     factory = session.getJCRSession().getValueFactory();

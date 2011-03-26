@@ -48,7 +48,7 @@ public class NodeAttributeTestCase extends AbstractTestCase {
 
   public void testPersistent() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("tna_a_a", "tna_a");
     String aName = aNode.getName();
     String aId = aNode.getUUID();
@@ -121,7 +121,7 @@ public class NodeAttributeTestCase extends AbstractTestCase {
 
   public void testRemoved() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("tna_a_a", "tna_a");
     String aId = aNode.getUUID();
     session.save();

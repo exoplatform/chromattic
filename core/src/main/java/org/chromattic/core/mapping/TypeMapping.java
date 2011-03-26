@@ -20,6 +20,7 @@
 package org.chromattic.core.mapping;
 
 import org.reflext.api.ClassTypeInfo;
+import org.chromattic.api.NameConflictResolution;
 
 import java.util.Collections;
 import java.util.Set;
@@ -46,19 +47,24 @@ public class TypeMapping {
   /** . */
   private final Set<String> mixinNames;
 
+  /** . */
+  private final NameConflictResolution onDuplicate;
+
   public TypeMapping(
     ClassTypeInfo objectClass,
     Set<PropertyMapping> propertyMappings,
-    Set<MethodMapping> methhodMappings,
+    Set<MethodMapping> methodMappings,
     String nodeTypeName,
-    Set<String> mixinNames) {
+    Set<String> mixinNames,
+    NameConflictResolution onDuplicate) {
 
     //
     this.objectClass = objectClass;
     this.propertyMappings = Collections.unmodifiableSet(new HashSet<PropertyMapping>(propertyMappings));
-    this.methodMappings = Collections.unmodifiableSet(new HashSet<MethodMapping>(methhodMappings));
+    this.methodMappings = Collections.unmodifiableSet(new HashSet<MethodMapping>(methodMappings));
     this.nodeTypeName = nodeTypeName;
     this.mixinNames = mixinNames;
+    this.onDuplicate = onDuplicate;
   }
 
   public ClassTypeInfo getObjectClass() {
@@ -79,6 +85,10 @@ public class TypeMapping {
 
   public Set<MethodMapping> getMethodMappings() {
     return methodMappings;
+  }
+
+  public NameConflictResolution getOnDuplicate() {
+    return onDuplicate;
   }
 
   @Override

@@ -37,7 +37,7 @@ public class MultiParentTestCase extends AbstractTestCase {
 
   public void testLoad() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("parents_a", "parents_a");
     String aId = aNode.getUUID();
     Node bNode = aNode.addNode("b", "parents_b");

@@ -60,6 +60,7 @@ import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.ListPropertyInfo;
 import org.chromattic.api.RelationshipType;
+import org.chromattic.api.NameConflictResolution;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Set;
@@ -273,6 +274,7 @@ public class TypeMapperBuilder {
         propertyMappers,
         methodMappers,
         nodeDef,
+        typeMapping.getOnDuplicate(),
         instrumentor);
 
       // Finish wiring

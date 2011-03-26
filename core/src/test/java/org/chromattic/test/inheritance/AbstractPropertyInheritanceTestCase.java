@@ -20,7 +20,7 @@
 package org.chromattic.test.inheritance;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.api.ChromatticSession;
+import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -54,11 +54,11 @@ public abstract class AbstractPropertyInheritanceTestCase<T> extends AbstractTes
   protected abstract void setStrings2(T b, String... s);
 
   public void testITFDeclareSingleValuedProperty() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
     T b = session.insert(getType(), "tii_a");
     setString1(b, "string_value");
     assertEquals("string_value", getString1(b));
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.getNode("tii_a");
     assertNotNull(aNode);
     Property valueProperty = aNode.getProperty("string1");
@@ -66,11 +66,11 @@ public abstract class AbstractPropertyInheritanceTestCase<T> extends AbstractTes
   }
 
   public void testClassOverridesSingleValuedProperty() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
     T b = session.insert(getType(), "tii_a");
     setString2(b, "string_value");
     assertEquals("string_value", getString2(b));
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.getNode("tii_a");
     assertNotNull(aNode);
     Property valueProperty = aNode.getProperty("string2");
@@ -78,13 +78,13 @@ public abstract class AbstractPropertyInheritanceTestCase<T> extends AbstractTes
   }
 
   public void testITFDeclareMultiValuedProperty() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
     T b = session.insert(getType(), "tii_a");
     setStrings1(b, "string_value1","string_value2");
     assertEquals(2, getStrings1(b).length);
     assertEquals("string_value1", getStrings1(b)[0]);
     assertEquals("string_value2", getStrings1(b)[1]);
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.getNode("tii_a");
     assertNotNull(aNode);
     Property valueProperty = aNode.getProperty("strings1");
@@ -94,13 +94,13 @@ public abstract class AbstractPropertyInheritanceTestCase<T> extends AbstractTes
   }
 
   public void testClassOverridesMultiValuedProperty() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
     T b = session.insert(getType(), "tii_a");
     setStrings2(b, "string_value1","string_value2");
     assertEquals(2, getStrings2(b).length);
     assertEquals("string_value1", getStrings2(b)[0]);
     assertEquals("string_value2", getStrings2(b)[1]);
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.getNode("tii_a");
     assertNotNull(aNode);
     Property valueProperty = aNode.getProperty("strings2");

@@ -67,6 +67,14 @@ public abstract class ChromatticBuilder {
       "org.chromattic.api.Option.state_cache.enabled",
       "state cache enabled");
 
+  /**
+   * The path of the root node. The default value is the path of the JCR workspace root node.
+   */
+  public static final Option<String> ROOT_NODE_PATH =
+    new Option<String>(
+      "org.chromattic.api.Option.root_node_path",
+      "root node path");
+
   public static ChromatticBuilder create() {
     String builderClassName = "org.chromattic.core.builder.ChromatticBuilderImpl";
     try {

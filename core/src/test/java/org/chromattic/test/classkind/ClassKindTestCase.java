@@ -36,6 +36,6 @@ public class ClassKindTestCase extends AbstractTestCase {
     DomainSession session = login();
     TCK_A a =  session.insert(TCK_A.class, "tck_a");
     assertNotNull(a);
-    assertTrue(session.getJCRSession().getRootNode().hasNode("tck_a"));
+    assertTrue(session.getRoot().hasNode("tck_a"));
   }
 }

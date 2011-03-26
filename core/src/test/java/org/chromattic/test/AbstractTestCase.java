@@ -24,10 +24,14 @@ import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.Chromattic;
 import org.chromattic.cglib.CGLibInstrumentor;
 
-import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Node;
 
 import junit.framework.TestCase;
 import junit.framework.TestResult;
+import junit.framework.TestListener;
+import junit.framework.Test;
+import junit.framework.AssertionFailedError;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -68,17 +72,60 @@ public abstract class AbstractTestCase extends TestCase {
   /** . */
   private Config config;
 
+  /** . */
+  private String testName;
+
+  /** . */
+  private final TestListener listener = new TestListener() {
+    public void addError(Test test, Throwable throwable) {
+    }
+    public void addFailure(Test test, AssertionFailedError assertionFailedError) {
+    }
+    public void endTest(Test test) {
+      testName = null;
+    }
+    public void startTest(Test test) {
+      testName = ((AbstractTestCase)test).getName();
+    }
+  };
+
   public Config getConfig() {
     return config;
   }
 
   @Override
   protected void setUp() throws Exception {
+    String p1 = getClass().getName().replace('.', '_');
+    String p2 = config.stateCacheEnabled ? "cache" : "nocache";
+    String p3 = config.instrumentorClassName.lastIndexOf('.') == -1 ?
+      config.instrumentorClassName :
+      config.instrumentorClassName.substring(config.instrumentorClassName.lastIndexOf('.') + 1);
+    String p4 = testName;
+    String rootNodePath = "/" + p1 + "/" + p2 + "/" + p3 + "/" + p4;
+
+    //
     builder = ChromatticBuilder.create();
+
+    //
     builder.setOption(ChromatticBuilder.STATE_CACHE_ENABLED, config.stateCacheEnabled);
     builder.setOption(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
+    builder.setOption(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
+
+    //
     createDomain();
+
+    //
     chromattic = builder.build();
+
+    // Need to create virtual root node
+    DomainSession sess = login();
+    Session jcrSession = sess.getJCRSession();
+    Node n0 = jcrSession.getRootNode();
+    Node n1 = !n0.hasNode(p1) ? n0.addNode(p1) : n0.getNode(p1);
+    Node n2 = !n1.hasNode(p2) ? n1.addNode(p2) : n1.getNode(p2);
+    Node n3 = !n2.hasNode(p3) ? n2.addNode(p3) : n2.getNode(p3);
+    Node n4 = !n3.hasNode(p4) ? n3.addNode(p4) : n3.getNode(p4);
+    jcrSession.save();
   }
 
   @Override
@@ -89,9 +136,10 @@ public abstract class AbstractTestCase extends TestCase {
 
   @Override
   public final void run(TestResult result) {
+    result.addListener(listener);
 
+    //
     List<Config> configs = new LinkedList<Config>();
-
 
     //
     boolean aptEnabled = false;
@@ -128,6 +176,9 @@ public abstract class AbstractTestCase extends TestCase {
       this.config = config;
       super.run(result);
     }
+
+    //
+    result.removeListener(listener);
   }
 
   public final DomainSession login() {

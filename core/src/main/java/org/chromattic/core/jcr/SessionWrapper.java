@@ -33,8 +33,6 @@ public interface SessionWrapper {
 
   NodeType getNodeType(String nodeTypeName) throws RepositoryException;
 
-  Node addNode(String relPath, NodeDef nodeDef) throws RepositoryException;
-
   Node addNode(Node parentNode, String name, NodeDef nodeDef) throws RepositoryException;
 
   void orderBefore(Node parentNode, Node srcNode, Node dstNode) throws RepositoryException;

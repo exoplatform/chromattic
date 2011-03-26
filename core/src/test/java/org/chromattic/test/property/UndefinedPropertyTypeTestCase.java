@@ -46,7 +46,7 @@ public class UndefinedPropertyTypeTestCase extends AbstractTestCase {
 
     //
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     node = rootNode.addNode("tp_undefined", "tp_b");
     o = session.findByNode(TP_Undefined.class, node);
   }

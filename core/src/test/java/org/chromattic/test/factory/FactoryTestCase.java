@@ -40,7 +40,7 @@ public class FactoryTestCase extends AbstractTestCase {
     DomainSession session = login();
 
     //
-    Node aNode = session.getJCRSession().getRootNode().addNode("tf_a_a", "tf_a");
+    Node aNode = session.getRoot().addNode("tf_a_a", "tf_a");
     TF_A a = session.findByNode(TF_A.class, aNode);
     TF_B.constructed = 0;
     TF_B b = a.create();
@@ -75,7 +75,7 @@ public class FactoryTestCase extends AbstractTestCase {
     }
 
     //
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = session.insert(rootNode, a);
     assertEquals(3, TF_A.constructed);
     assertEquals(0, TF_A.called);

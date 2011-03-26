@@ -47,7 +47,7 @@ public class TypedResidualPropertyTestCase extends AbstractTestCase {
 
     //
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     node = rootNode.addNode("tp_typedresidual", "tp_e");
     o = session.findByNode(TP_TypedResidual.class, node);
   }

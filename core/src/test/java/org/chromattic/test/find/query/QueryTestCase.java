@@ -20,9 +20,7 @@ package org.chromattic.test.find.query;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.TFI_A;
-import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.query.ObjectQuery;
-import org.chromattic.api.query.ObjectQueryBuilder;
+import org.chromattic.core.DomainSession;
 
 import java.util.Iterator;
 import java.util.Collection;
@@ -39,9 +37,9 @@ public class QueryTestCase extends AbstractTestCase {
   }
 
   public void testQuery() throws Exception {
-    ChromatticSession session = login();
-    if (session.getJCRSession().getRootNode().hasNode("tfi_a")) {
-      session.getJCRSession().getRootNode().getNode("tfi_a").remove(); // because of session save
+    DomainSession session = login();
+    if (session.getRoot().hasNode("tfi_a")) {
+      session.getRoot().getNode("tfi_a").remove(); // because of session save
     }
 
     TFI_A a = session.insert(TFI_A.class, "tfi_a");

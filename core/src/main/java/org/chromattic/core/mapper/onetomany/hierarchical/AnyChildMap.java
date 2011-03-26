@@ -78,9 +78,6 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
         parentCtx.getSession().remove(child);
       }
     } else if (relatedClass.isInstance(value)) {
-      if (child != null) {
-        parentCtx.getSession().remove(child);
-      }
       parentCtx.addChild(key, value);
     } else {
       throw new ClassCastException("Cannot put " + value + " with in map containing values of type " + relatedClass);

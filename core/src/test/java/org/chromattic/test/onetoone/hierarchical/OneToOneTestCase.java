@@ -37,7 +37,7 @@ public class OneToOneTestCase extends AbstractTestCase {
 
   public void testChildAndParentAdd() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
 
     //
     Node aNode = rootNode.addNode("toto_a_a", "toto_a");
@@ -55,7 +55,7 @@ public class OneToOneTestCase extends AbstractTestCase {
 
   public void testChildAndParentLoad() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("toto_a_b", "toto_a");
     String aId = aNode.getUUID();
     Node bNode = aNode.addNode("b", "toto_b");

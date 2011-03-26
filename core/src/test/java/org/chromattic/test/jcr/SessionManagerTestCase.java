@@ -55,8 +55,8 @@ public class SessionManagerTestCase extends TestCase {
   }
 
   public void testRemoveTransientReferent() throws Exception {
-    Node a = mgr.addNode("a", blah);
-    Node b = mgr.addNode("b", blah);
+    Node a = mgr.addNode(mgr.getSession().getRootNode(), "a", blah);
+    Node b = mgr.addNode(mgr.getSession().getRootNode(), "b", blah);
     mgr.setReferenced(a, "ref", b, LinkType.REFERENCE);
     mgr.remove(a);
     Set<Node> referents = Collections.set(mgr.getReferents(b, "ref", LinkType.REFERENCE));
@@ -64,8 +64,8 @@ public class SessionManagerTestCase extends TestCase {
   }
 
   public void testRemovePersistentReferent() throws Exception {
-    Node a = mgr.addNode("a", blah);
-    Node b = mgr.addNode("b", blah);
+    Node a = mgr.addNode(mgr.getSession().getRootNode(), "a", blah);
+    Node b = mgr.addNode(mgr.getSession().getRootNode(), "b", blah);
     mgr.setReferenced(a, "ref", b, LinkType.REFERENCE);
     mgr.remove(a);
     mgr.save();

@@ -19,11 +19,29 @@
 package org.chromattic.api;
 
 /**
+ * The type of a relationship. It defines the semantics about how the relationship is maintained between
+ * nodes.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
+ * @see org.chromattic.api.annotations.OneToMany
+ * @see org.chromattic.api.annotations.ManyToOne
  */
 public enum RelationshipType {
 
-  HIERARCHIC, REFERENCE, PATH
+  /**
+   * A hierarchic relationship uses the natural parent child relationship to associate nodes.
+   */
+  HIERARCHIC,
+
+  /**
+   * A reference relationship uses reference a typed property to associate nodes.
+   */
+  REFERENCE,
+
+  /**
+   * A path relationship uses path a typed property to associate nodes.
+   */
+  PATH
 
 }

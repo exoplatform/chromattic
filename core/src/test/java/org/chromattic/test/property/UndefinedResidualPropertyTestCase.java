@@ -47,7 +47,7 @@ public class UndefinedResidualPropertyTestCase extends AbstractTestCase {
 
     //
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     node = rootNode.addNode("tp_undefinedresidual", "tp_d");
     o = session.findByNode(TP_UndefinedResidual.class, node);
   }

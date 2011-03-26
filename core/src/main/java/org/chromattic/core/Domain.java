@@ -55,11 +55,15 @@ public class Domain {
   /** . */
   final boolean stateCacheEnabled;
 
+  /** . */
+  final String rootNodePath;
+
   public Domain(
     Set<TypeMapping> typeMappings,
     Instrumentor instrumentor,
     ObjectFormatter objectFormatter,
-    boolean stateCacheEnabled) {
+    boolean stateCacheEnabled,
+    String rootNodePath) {
 
     //
     TypeMapperBuilder builder = new TypeMapperBuilder(typeMappings, instrumentor);
@@ -81,6 +85,7 @@ public class Domain {
     this.instrumentor = instrumentor;
     this.objectFormatter = objectFormatter;
     this.stateCacheEnabled = stateCacheEnabled;
+    this.rootNodePath = rootNodePath;
   }
 
   public DomainSession getSession(SessionWrapper jcrSession) {

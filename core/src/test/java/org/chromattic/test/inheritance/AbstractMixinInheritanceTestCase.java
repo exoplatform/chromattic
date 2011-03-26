@@ -20,7 +20,7 @@
 package org.chromattic.test.inheritance;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.api.ChromatticSession;
+import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
 import javax.jcr.nodetype.NodeType;
@@ -40,9 +40,9 @@ public abstract class AbstractMixinInheritanceTestCase<T> extends AbstractTestCa
   protected abstract Class<T> getType();
 
   public void testFoo() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
     T a = session.insert(getType(), "tii_a");
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.getNode("tii_a");
     assertNotNull(aNode);
     Set<String> mixinNames = new HashSet<String>();

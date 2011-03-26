@@ -88,6 +88,8 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract void _orderBefore(ObjectContext parentCtx, ObjectContext srcCtx, ObjectContext dstCtx) throws RepositoryException;
 
+  protected abstract Node _getRoot() throws RepositoryException;
+
   public final String getId(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
@@ -491,6 +493,15 @@ public abstract class DomainSession implements ChromatticSession {
       throw new NullPointerException("Cannot unwrap null object");
     }
     return (ObjectContext)domain.getInstrumentor().getInvoker(o);
+  }
+
+  public final Node getRoot() {
+    try {
+      return _getRoot();
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
   }
 
   public void addEventListener(EventListener listener) {

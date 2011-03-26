@@ -22,6 +22,7 @@ package org.chromattic.core;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
+import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.NodeDef;
@@ -41,7 +42,7 @@ import java.util.Iterator;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class DomainSessionImpl extends DomainSession {
+public class DomainSessionImpl extends DomainSession {
 
   /** . */
   final Domain domain;
@@ -74,7 +75,7 @@ class DomainSessionImpl extends DomainSession {
       ObjectContext ctx = unwrap(o);
       origin = ctx.state.getNode();
     } else {
-      origin = sessionWrapper.getSession().getRootNode();
+      origin = getRoot();
       nodeRead(origin);
     }
     try {
@@ -106,75 +107,105 @@ class DomainSessionImpl extends DomainSession {
     NodeDef nodeDef = ctx.mapper.getNodeDef();
     log.trace("Setting context {} for insertion", ctx);
     log.trace("Adding node for context {} and node type {}", ctx, nodeDef);
-    Node node = sessionWrapper.addNode(relPath, nodeDef);
-    nodeAdded(node, ctx);
-    String id = node.getUUID();
-    log.trace("Added context {} for id {}", ctx, id);
-    return id;
+
+    //
+    return _persist(getRoot(), relPath, ctx);
   }
 
   /**
    * Insert a context as a child of a parent context.
    *
-   * @param parentCtx the parent context
-   * @param relPath the child path relative to the parent context
-   * @param childCtx
+   * @param srcCtx the source context
+   * @param relPath the destination path relative to the source context
+   * @param dstCtx the destination context
    * @return the id of the inserted context
    * @throws NullPointerException
    * @throws IllegalArgumentException
    * @throws IllegalStateException
    * @throws RepositoryException
    */
-  protected String _persist(ObjectContext parentCtx, String relPath, ObjectContext childCtx) throws
+  protected String _persist(ObjectContext srcCtx, String relPath, ObjectContext dstCtx) throws
     NullPointerException,
     IllegalArgumentException,
     IllegalStateException,
     RepositoryException {
-    if (parentCtx == null) {
-      String msg = "Cannot insert context " + childCtx + " as a child of a null context";
+    if (srcCtx == null) {
+      String msg = "Cannot insert context " + dstCtx + " as a child of a null context";
       log.error(msg);
       throw new NullPointerException(msg);
     }
-    if (childCtx.getStatus() != Status.TRANSIENT) {
-      String msg = "Attempt to insert non transient context " + childCtx + " as child of " + parentCtx;
+    if (dstCtx.getStatus() != Status.TRANSIENT) {
+      String msg = "Attempt to insert non transient context " + dstCtx + " as child of " + srcCtx;
       log.error(msg);
       throw new IllegalStateException(msg);
     }
     if (relPath == null) {
-      String msg = "Attempt to insert context " + childCtx + " with no relative path to " + parentCtx;
+      String msg = "Attempt to insert context " + dstCtx + " with no relative path to " + srcCtx;
       log.error(msg);
       throw new NullPointerException(msg);
     }
-    if (parentCtx.getStatus() != Status.PERSISTENT) {
-      String msg = "Attempt to insert context " + childCtx + " as child of non persistent context " + parentCtx;
+    if (srcCtx.getStatus() != Status.PERSISTENT) {
+      String msg = "Attempt to insert context " + dstCtx + " as child of non persistent context " + srcCtx;
       log.error(msg);
       throw new IllegalStateException(msg);
     }
 
     //
-    Node parentNode = parentCtx.state.getNode();
+    Node parentNode = srcCtx.state.getNode();
 
-    // Check insertion capability
-    if (parentNode.hasNode(relPath)) {
-      String msg = "Attempt to insert context " + childCtx + " as an existing child with name " + relPath + " child of context " + parentCtx;
-      log.error(msg);
-      throw new DuplicateNameException(msg);
+    //
+    return _persist(parentNode, relPath, dstCtx);
+  }
+
+  private String _persist(Node srcNode, String relPath, ObjectContext dstCtx) throws RepositoryException {
+    Node dstParentNode;
+    String name;
+    int pos = relPath.indexOf('/');
+    if (pos == -1) {
+      dstParentNode = srcNode;
+      name = relPath;
+    } else {
+      String dstParentPath = relPath.substring(0, pos);
+      dstParentNode = srcNode.getNode(dstParentPath);
+      name = relPath.substring(pos + 1);
     }
 
     //
-    NodeDef nodeDef = childCtx.mapper.getNodeDef();
-    log.trace("Setting context {} for insertion", childCtx);
-    log.trace("Adding node for context {} and node type {} as child of context {}", childCtx, nodeDef, parentCtx);
+    NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
+    NodeType parentNodeType = dstParentNode.getPrimaryNodeType();
+    TypeMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
+    if (parentTypeMapper != null) {
+      onDuplicate = parentTypeMapper.getOnDuplicate();
+    }
+
+    // Check insertion capability
+    if (dstParentNode.hasNode(name)) {
+      log.trace("Found existing child with same name {}", name);
+      if (onDuplicate == NameConflictResolution.FAIL) {
+        String msg = "Attempt to insert context " + dstCtx + " as an existing child with name " + relPath + " child of node " + dstParentNode.getPath();
+        log.error(msg);
+        throw new DuplicateNameException(msg);
+      } else {
+        Node previousNode = dstParentNode.getNode(name);
+        log.trace("About to remove same name {} child with id {}", previousNode.getPath(), previousNode.getName());
+        previousNode.remove();
+      }
+    }
 
     //
-    Node childNode = sessionWrapper.addNode(parentNode, relPath, nodeDef);
+    NodeDef nodeDef = dstCtx.mapper.getNodeDef();
+    log.trace("Setting context {} for insertion", dstCtx);
+    log.trace("Adding node for context {} and node type {} as child of node {}", dstCtx, nodeDef, dstParentNode.getPath());
 
     //
-    nodeAdded(childNode, childCtx);
-    String relatedId = childNode.getUUID();
+    Node dstNode = sessionWrapper.addNode(dstParentNode, name, nodeDef);
 
     //
-    log.trace("Added context {} for id {}", childCtx, relatedId);
+    nodeAdded(dstNode, dstCtx);
+    String relatedId = dstNode.getUUID();
+
+    //
+    log.trace("Added context {} for id {} and path {}", dstCtx, relatedId, dstNode.getPath());
     return relatedId;
   }
 
@@ -384,6 +415,14 @@ class DomainSessionImpl extends DomainSession {
     Node node = ctx.state.getNode();
     Node parent = sessionWrapper.getParent(node);
     return findByNode(Object.class, parent);
+  }
+
+  protected Node _getRoot() throws RepositoryException {
+    if ("/".equals(domain.rootNodePath)) {
+      return sessionWrapper.getSession().getRootNode();
+    } else {
+      return (Node)sessionWrapper.getSession().getItem(domain.rootNodePath);
+    }
   }
 
   public void nodeRead(Node node) throws RepositoryException {

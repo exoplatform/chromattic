@@ -48,17 +48,13 @@ class AnyChildList<E> extends AbstractList<E> {
     if (index < 0) {
       throw new IndexOutOfBoundsException();
     }
-
-    //
     if (addedElement == null) {
       throw new NullPointerException("No null element can be inserted");
     }
 
-    //
-    Iterator<E> iterator = iterator();
-
     // Get the element that will be the next element of the inserted element
     E nextElement;
+    Iterator<E> iterator = iterator();
     while (true) {
       if (index == 0) {
         if (iterator.hasNext()) {
@@ -77,26 +73,28 @@ class AnyChildList<E> extends AbstractList<E> {
       }
     }
 
-    //
+    // Get the session
     DomainSession session = parentCtx.getSession();
 
-    //
+    // Get the added context
     ObjectContext addedCtx = session.unwrap(addedElement);
-    Status status = addedCtx.getStatus();
 
     //
-    if (status == Status.TRANSIENT) {
-      parentCtx.addChild(addedCtx);
-    } else if (status == Status.PERSISTENT) {
-      Object insertedParent = addedCtx.getParent();
-      ObjectContext addedParentCtx = session.unwrap(insertedParent);
+    switch (addedCtx.getStatus()) {
+      case TRANSIENT:
+        parentCtx.addChild(addedCtx);
+        break;
+      case PERSISTENT:
+        Object insertedParent = addedCtx.getParent();
+        ObjectContext addedParentCtx = session.unwrap(insertedParent);
 
-      //
-      if (addedParentCtx != parentCtx) {
-        throw new UnsupportedOperationException("Not yet supported but that should be a node move operation");
-      }
-    } else {
-      throw new IllegalArgumentException();
+        //
+        if (addedParentCtx != parentCtx) {
+          throw new UnsupportedOperationException("Not yet supported but that should be a node move operation");
+        }
+        break;
+      default:
+        throw new IllegalArgumentException("Cannot insert element with status " + addedCtx.getStatus());
     }
 
     //
@@ -106,25 +104,6 @@ class AnyChildList<E> extends AbstractList<E> {
       ObjectContext nextCtx = session.unwrap(nextElement);
       parentCtx.orderBefore(addedCtx, nextCtx);
     }
-  }
-
-  @Override
-  public E remove(int index) {
-
-    // Get the removed element
-    E removedElement = get(index);
-
-    // Get the session
-    DomainSession session = parentCtx.getSession();
-
-    // Unwrap the removed element
-    ObjectContext removedCtx = session.unwrap(removedElement);
-
-    // Remove the element
-    session.remove(removedCtx);
-
-    //
-    return removedElement;
   }
 
   @Override
@@ -143,13 +122,47 @@ class AnyChildList<E> extends AbstractList<E> {
     ObjectContext removedCtx = session.unwrap(removedElement);
 
     // Unwrap the added element
-    ObjectContext ctx = session.unwrap(addedElement);
+    ObjectContext addedCtx = session.unwrap(addedElement);
 
-    // Add as child
-    parentCtx.addChild(ctx);
+    //
+    switch (addedCtx.getStatus()) {
+      case TRANSIENT:
+        parentCtx.addChild(addedCtx);
+        break;
+      case PERSISTENT:
+        Object insertedParent = addedCtx.getParent();
+        ObjectContext addedParentCtx = session.unwrap(insertedParent);
+
+        //
+        if (addedParentCtx != parentCtx) {
+          throw new UnsupportedOperationException("Not yet supported but that should be a node move operation");
+        }
+        break;
+      default:
+        throw new IllegalArgumentException("Cannot insert element with status " + addedCtx.getStatus());
+    }
 
     // Order before the removed element
-    parentCtx.orderBefore(ctx, removedCtx);
+    parentCtx.orderBefore(addedCtx, removedCtx);
+
+    // Remove the element
+    session.remove(removedCtx);
+
+    //
+    return removedElement;
+  }
+
+  @Override
+  public E remove(int index) {
+
+    // Get the removed element
+    E removedElement = get(index);
+
+    // Get the session
+    DomainSession session = parentCtx.getSession();
+
+    // Unwrap the removed element
+    ObjectContext removedCtx = session.unwrap(removedElement);
 
     // Remove the element
     session.remove(removedCtx);

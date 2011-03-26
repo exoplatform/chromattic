@@ -52,7 +52,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
 
   public void testAdd() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
 
     //
     Node aNode = rootNode.addNode("totm_a_a", "totm_a");
@@ -67,7 +67,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
 
   public void testLoad() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totm_a_b", "totm_a");
     String aId = aNode.getUUID();
     Node bNode = aNode.addNode("b", "totm_b");
@@ -94,7 +94,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
 
   public void testRemovedGetParent() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totm_a_b", "totm_a");
     String aId = aNode.getUUID();
     Node bNode = aNode.addNode("b", "totm_b");

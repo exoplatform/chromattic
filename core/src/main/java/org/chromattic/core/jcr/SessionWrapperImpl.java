@@ -75,10 +75,6 @@ public class SessionWrapperImpl implements SessionWrapper {
     return mgr.getNodeType(nodeTypeName);
   }
 
-  public Node addNode(String relPath, NodeDef nodeType) throws RepositoryException {
-    return addNode(session.getRootNode(), relPath, nodeType);
-  }
-
   public Node addNode(Node parentNode, String relPath, NodeDef nodeType) throws RepositoryException {
     Node childNode = parentNode.addNode(relPath, nodeType.getPrimaryNodeTypeName());
     for (String mixinName : nodeType.getMixinNames()) {

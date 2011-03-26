@@ -52,7 +52,7 @@ public class PropertyListMappedToSingleValuedTestCase extends AbstractTestCase {
 
     //
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     gNode = rootNode.addNode("tp_d_a", "tp_a");
     g = session.findByNode(TP_G.class, gNode);
     assertNotNull(g);

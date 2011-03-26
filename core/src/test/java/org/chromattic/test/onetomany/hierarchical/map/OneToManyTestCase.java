@@ -23,6 +23,7 @@ import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
+import org.chromattic.api.DuplicateNameException;
 
 import javax.jcr.Node;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testLoad() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totm_a_b", "totm_a");
     String aId = aNode.getUUID();
     Node bNode = aNode.addNode("b", "totm_b");
@@ -135,5 +136,20 @@ public class OneToManyTestCase extends AbstractTestCase {
     assertSame(b, a.getChildren().remove("b"));
     assertEquals(Status.REMOVED, session.getStatus(b));
     assertTrue(a.getChildren().isEmpty());
+  }
+
+  public void testDuplicatePutFails() throws Exception {
+    ChromatticSession session = login();
+    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
+    TOTMHM_B b1 = session.create(TOTMHM_B.class);
+    TOTMHM_B b2 = session.create(TOTMHM_B.class);
+    a.getChildren().put("b", b1);
+    try {
+      a.getChildren().put("b", b2);
+      fail();
+    }
+    catch (DuplicateNameException ignore) {
+    }
+    assertSame(b1, a.getChildren().get("b"));
   }
 }

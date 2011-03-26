@@ -146,14 +146,35 @@ public class ListOneToManyTestCase extends AbstractTestCase {
     bs.set(0, b2);
 
     //
-    //
     Node aNode = session.getNode(a);
     NodeIterator i = aNode.getNodes();
     assertEquals("2", i.nextNode().getName());
     assertFalse(i.hasNext());
   }
 
-  public void testMoveFirst() throws Exception {
+  public void testSetWithExisting() throws Exception {
+    DomainSession session = login();
+    A a = session.insert(A.class, "aaa");
+    List<B> bs = a.getChildren();
+    B b1 = session.create(B.class, "1");
+    B b2 = session.create(B.class, "2");
+    B b3 = session.create(B.class, "3");
+    bs.add(b1);
+    bs.add(b2);
+    bs.add(b3);
+
+    //
+    bs.set(0, bs.get(2));
+
+    //
+    Node aNode = session.getNode(a);
+    NodeIterator i = aNode.getNodes();
+    assertEquals("3", i.nextNode().getName());
+    assertEquals("2", i.nextNode().getName());
+    assertFalse(i.hasNext());
+  }
+
+  public void _testMoveFirst() throws Exception {
     DomainSession session = login();
     A a = session.insert(A.class, "aaa");
     List<B> bs = a.getChildren();

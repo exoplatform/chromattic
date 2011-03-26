@@ -22,6 +22,7 @@ package org.chromattic.test.lifecycle;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
+import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
 
@@ -36,7 +37,7 @@ public class PersistTestCase extends AbstractTestCase {
   }
 
   public void testWithRelativePathFromRoot() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
 
     //
     TLF_A a = session.insert(TLF_A.class, "tlf_a");
@@ -53,7 +54,7 @@ public class PersistTestCase extends AbstractTestCase {
     assertEquals(bId, session.getId(b));
 
     //
-    Node aNode = session.getJCRSession().getRootNode().getNode("tlf_a");
+    Node aNode = session.getRoot().getNode("tlf_a");
     Node bNode = aNode.getNode("b");
 
     //
@@ -62,7 +63,7 @@ public class PersistTestCase extends AbstractTestCase {
   }
 
   public void testWithRelativePathFromParent() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
 
     //
     TLF_A a = session.insert(TLF_A.class, "tlf_a");
@@ -84,7 +85,7 @@ public class PersistTestCase extends AbstractTestCase {
     assertEquals(cId, session.getId(c));
 
     //
-    Node aNode = session.getJCRSession().getRootNode().getNode("tlf_a");
+    Node aNode = session.getRoot().getNode("tlf_a");
     Node bNode = aNode.getNode("b");
     Node cNode = aNode.getNode("c");
 
@@ -95,7 +96,7 @@ public class PersistTestCase extends AbstractTestCase {
   }
 
   public void testWithParentWithImplicitName() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
 
     //
     TLF_A a = session.insert(TLF_A.class, "tlf_a");
@@ -112,7 +113,7 @@ public class PersistTestCase extends AbstractTestCase {
     assertEquals(bId, session.getId(b));
 
     //
-    Node aNode = session.getJCRSession().getRootNode().getNode("tlf_a");
+    Node aNode = session.getRoot().getNode("tlf_a");
     Node bNode = aNode.getNode("b");
 
     //
@@ -121,7 +122,7 @@ public class PersistTestCase extends AbstractTestCase {
   }
 
   public void testWithImplicitName() throws Exception {
-    ChromatticSession session = login();
+    DomainSession session = login();
 
     //
     TLF_A a = session.create(TLF_A.class, "tlf_a");
@@ -134,7 +135,7 @@ public class PersistTestCase extends AbstractTestCase {
     assertEquals(aId, session.getId(a));
 
     //
-    Node aNode = session.getJCRSession().getRootNode().getNode("tlf_a");
+    Node aNode = session.getRoot().getNode("tlf_a");
 
     //
     assertEquals(session.getId(a), aNode.getUUID());

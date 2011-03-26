@@ -35,7 +35,9 @@ import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.FindById;
 import org.chromattic.api.annotations.Mixin;
 import org.chromattic.api.annotations.WorkspaceName;
+import org.chromattic.api.annotations.NamingPolicy;
 import org.chromattic.api.RelationshipType;
+import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.core.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.core.mapping.value.SimpleMapping;
@@ -367,11 +369,19 @@ public class TypeMappingBuilder {
     }
 
     //
+    NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
+    NamingPolicy namingPolicy = new AnnotationIntrospector<NamingPolicy>(NamingPolicy.class).resolve(javaClass);
+    if (namingPolicy != null) {
+      onDuplicate = namingPolicy.onDuplicate();
+    }
+
+    //
     return new TypeMapping(
       javaClass,
       propertyMappings,
       methodMappings,
       primaryNodeTypeName,
-      mixinNames);
+      mixinNames,
+      onDuplicate);
   }
 }

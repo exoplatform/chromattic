@@ -16,21 +16,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.onetomany.hierarchical.map.duplicate;
 
-package org.chromattic.api.annotations;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.chromattic.test.AbstractTestCase;
+import org.chromattic.api.ChromatticSession;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
- * @see org.chromattic.api.annotations.MappedBy
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RelatedMappedBy {
-  public abstract String value();
+public class DuplicateTestCase extends AbstractTestCase {
+
+  protected void createDomain() {
+    addClass(A.class);
+    addClass(B.class);
+  }
+
+  public void testDuplicatePutSucceeds() throws Exception {
+    ChromatticSession session = login();
+    A a = session.insert(A.class, "a");
+    B b1 = session.create(B.class);
+    B b2 = session.create(B.class);
+    a.getChildren().put("b", b1);
+    assertSame(b1, a.getChildren().put("b", b2));
+    assertSame(b2, a.getChildren().get("b"));
+  }
 }

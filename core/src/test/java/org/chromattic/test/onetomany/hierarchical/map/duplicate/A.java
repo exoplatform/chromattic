@@ -17,20 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.api.annotations;
+package org.chromattic.test.onetomany.hierarchical.map.duplicate;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.OneToMany;
+import org.chromattic.api.annotations.NamingPolicy;
+import org.chromattic.api.NameConflictResolution;
+
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
- * @see org.chromattic.api.annotations.MappedBy
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RelatedMappedBy {
-  public abstract String value();
+@NodeMapping(name = "totm_a")
+@NamingPolicy(onDuplicate = NameConflictResolution.REPLACE)
+public abstract class A {
+
+  @OneToMany
+  public abstract Map<String, B> getChildren();
 }

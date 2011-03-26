@@ -49,7 +49,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
 
   public void testLoad() throws RepositoryException {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     String id = rootNode.addNode("tlf_a_a", "tlf_a").getUUID();
     rootNode.save();
 

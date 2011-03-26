@@ -60,7 +60,7 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
 
     //
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     aNode = rootNode.addNode("tp_a_a", "tp_a");
     a = session.findByNode(TP_A.class, aNode);
     factory = session.getJCRSession().getValueFactory();

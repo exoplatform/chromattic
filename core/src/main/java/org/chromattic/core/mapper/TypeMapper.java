@@ -30,6 +30,7 @@ import org.chromattic.core.bean.PropertyInfo;
 import org.chromattic.core.jcr.NodeDef;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.ProxyFactory;
+import org.chromattic.api.NameConflictResolution;
 import org.reflext.api.MethodInfo;
 
 /**
@@ -56,11 +57,15 @@ public class TypeMapper implements MethodInvoker {
   /** . */
   private final Map<Method, MethodInvoker> dispatchers;
 
+  /** . */
+  private final NameConflictResolution onDuplicate;
+
   public TypeMapper(
     Class<?> objectClass,
     Set<PropertyMapper> propertyMappers,
     Set<MethodMapper> methodMappers,
     NodeDef nodeDef,
+    NameConflictResolution onDuplicate,
     Instrumentor instrumentor) {
 
     // Build the dispatcher map
@@ -85,6 +90,7 @@ public class TypeMapper implements MethodInvoker {
     this.objectClass = objectClass;
     this.methodMappers = methodMappers;
     this.nodeDef = nodeDef;
+    this.onDuplicate = onDuplicate;
     this.propertyMappers = propertyMappers;
     this.factory = instrumentor.getProxyClass(objectClass);
   }
@@ -132,6 +138,10 @@ public class TypeMapper implements MethodInvoker {
 
   public NodeDef getNodeDef() {
     return nodeDef;
+  }
+
+  public NameConflictResolution getOnDuplicate() {
+    return onDuplicate;
   }
 
   @Override

@@ -39,7 +39,7 @@ public abstract class AbstractOneToManyTestCase<O, M> extends AbstractLinkTestCa
 
   public void testAddPersistent() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode1 = rootNode.addNode("totmr_a_1", oneNT);
     Node aNode2 = rootNode.addNode("totmr_a_2", oneNT);
     Node bNode = rootNode.addNode("totmr_b", manyNT);

@@ -43,7 +43,7 @@ public class OneToTestCase extends AbstractTestCase {
     DomainSession session = login();
 
     //
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("toto_a_a", "toto_a");
     String aId = aNode.getUUID();
     TOTO_A_1 a = session.findByNode(TOTO_A_1.class, aNode);

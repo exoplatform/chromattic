@@ -36,7 +36,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O
 
   public void testLoad() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totmr_a", oneNT);
     Node bNode = rootNode.addNode("totmr_b", manyNT);
     createLink(bNode, "ref", aNode);
@@ -61,7 +61,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O
 
   public void testPersistent() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totmr_a", oneNT);
     Node bNode = rootNode.addNode("totmr_b", manyNT);
 
@@ -84,7 +84,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O
 
   public void testMove() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode1 = rootNode.addNode("totmr_a_1", oneNT);
     Node aNode2 = rootNode.addNode("totmr_a_2", oneNT);
     Node bNode = rootNode.addNode("totmr_b", manyNT);
@@ -116,7 +116,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O
 
   public void testTransient() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
+    Node rootNode = session.getRoot();
     Node aNode = rootNode.addNode("totmr_a", oneNT);
 
     //
