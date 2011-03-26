@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class AbstractBufferingListIterator<E> implements ListIterator<E> {
+public class BufferingListIterator<E> implements ListIterator<E> {
 
   /** . */
   private static final Object MARKER = new Object();
@@ -50,7 +50,7 @@ public class AbstractBufferingListIterator<E> implements ListIterator<E> {
   /** The last returned element or the value <tt>MARKER</tt>. */
   private E e;
 
-  public AbstractBufferingListIterator(ListModel<E> model) {
+  public BufferingListIterator(ListModel<E> model) {
     @SuppressWarnings("unchecked") E e = (E)MARKER;
 
     //
@@ -199,26 +199,26 @@ public class AbstractBufferingListIterator<E> implements ListIterator<E> {
     int index = elements.size() - offset;
 
     // Compute position
-    ElementPosition<E> position;
+    ElementInsertion<E> position;
     if (hasPrevious()) {
       E previous = peekPrevious();
       if  (hasNext()) {
         E next = peekNext();
-        position = new ElementPosition.Middle<E>(index, previous, next);
+        position = new ElementInsertion.Middle<E>(index, previous, e, next);
       } else {
-        position = new ElementPosition.Last<E>(index, previous);
+        position = new ElementInsertion.Last<E>(index, previous, e);
       }
     } else {
       if (hasNext()) {
         E next = peekNext();
-        position = new ElementPosition.First<E>(next);
+        position = new ElementInsertion.First<E>(e, next);
       } else {
-        position = null;
+        position = new ElementInsertion.Singleton<E>(e);
       }
     }
 
     // Update model state
-    model.add(position, e);
+    model.add(position);
 
     // Update local state
     elements.add(index, e);

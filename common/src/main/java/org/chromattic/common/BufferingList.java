@@ -35,7 +35,11 @@ public class BufferingList<E> extends AbstractSequentialList<E> {
   }
 
   public ListIterator<E> listIterator(int index) {
-    return new AbstractBufferingListIterator<E>(model);
+    BufferingListIterator<E> iterator = new BufferingListIterator<E>(model);
+    while (index-- > 0) {
+      iterator.next();
+    }
+    return iterator;
   }
 
   public int size() {

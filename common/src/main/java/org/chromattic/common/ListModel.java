@@ -30,7 +30,7 @@ public interface ListModel<E> {
 
   void set(int index, E removedElement, E addedElement);
 
-  void add(ElementPosition<E> position, E addedElement);
+  void add(ElementInsertion<E> insertion);
 
   void remove(int index, E removedElement);
 

@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import org.chromattic.common.AbstractBufferingListIterator;
+import org.chromattic.common.BufferingListIterator;
 import org.chromattic.common.ListModel;
-import org.chromattic.common.ElementPosition;
+import org.chromattic.common.ElementInsertion;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -44,28 +44,24 @@ public class BufferingListIteratorTestCase extends TestCase {
       public static class Added extends Event {
 
         /** . */
-        private final ElementPosition position;
+        private final ElementInsertion insertion;
 
-        /** . */
-        private final int element;
-
-        public Added(ElementPosition position, int element) {
-          this.position = position;
-          this.element = element;
+        public Added(ElementInsertion insertion) {
+          this.insertion = insertion;
         }
 
         @Override
         public boolean equals(Object obj) {
           if (obj instanceof Added) {
             Added that = (Added)obj;
-            return (position == null ? that.position == null : position.equals(that.position)) && element == that.element;
+            return (insertion == null ? that.insertion == null : insertion.equals(that.insertion));
           }
           return false;
         }
 
         @Override
         public String toString() {
-          return "Added[element=" + element + ",position=" + position + "]";
+          return "Added[insertion=" + insertion + "]";
         }
       }
 
@@ -133,7 +129,7 @@ public class BufferingListIteratorTestCase extends TestCase {
     }
 
     /** . */
-    private AbstractBufferingListIterator<Integer> i;
+    private BufferingListIterator<Integer> i;
 
     /** . */
     private int expectedPreviousIndex;
@@ -152,7 +148,7 @@ public class BufferingListIteratorTestCase extends TestCase {
 
     public State(Integer... values) {
       list = new ArrayList<Integer>(Arrays.asList(values));
-      i = new AbstractBufferingListIterator<Integer>(this);
+      i = new BufferingListIterator<Integer>(this);
       expectedPreviousIndex = -1;
       expectedNextIndex = 0;
       events = new LinkedList<Event>();
@@ -265,8 +261,8 @@ public class BufferingListIteratorTestCase extends TestCase {
       assertEquals("Event " + event + " is not equals to expected event " + expectedEvent, expectedEvent, event);
     }
 
-    public void assertAddedEvent(ElementPosition position, int addedElement) {
-      assertEvent(new Event.Added(position, addedElement));
+    public void assertAddedEvent(ElementInsertion position) {
+      assertEvent(new Event.Added(position));
     }
 
     public void assertRemovedEvent(int position, int removedElement) {
@@ -281,21 +277,38 @@ public class BufferingListIteratorTestCase extends TestCase {
       return list.iterator();
     }
 
-    public void add(ElementPosition<Integer> position, Integer addedElement) {
-      events.add(new Event.Added(position, addedElement));
-      if (position == null) {
-        list.add(addedElement);
-      } else {
-        list.add(position.getIndex(), addedElement);
+    public void add(ElementInsertion<Integer> insertion) {
+      if (insertion != null) {
+        if (insertion instanceof ElementInsertion.First) {
+          ElementInsertion.First<Integer> first = (ElementInsertion.First<Integer>)insertion;
+          assertEquals(0, (int)first.getNext());
+          assertEquals(list.get(0), first.getNext());
+        } else if (insertion instanceof ElementInsertion.Middle) {
+          ElementInsertion.Middle<Integer> middle = (ElementInsertion.Middle<Integer>)insertion;
+          int index = middle.getIndex();
+          assertEquals(list.get(index - 1), middle.getPrevious());
+          assertEquals(list.get(index), middle.getNext());
+        } else if (insertion instanceof ElementInsertion.Last) {
+          ElementInsertion.Last<Integer> last = (ElementInsertion.Last<Integer>)insertion;
+          assertEquals(list.size() - 1  , last.getIndex() - 1);
+          assertEquals(list.get(last.getIndex() - 1), last.getPrevious());
+        } else {
+          ElementInsertion.Singleton<Integer> last = (ElementInsertion.Singleton<Integer>)insertion;
+          assertTrue(list.isEmpty());
+        }
       }
+      events.add(new Event.Added(insertion));
+      list.add(insertion.getIndex(), insertion.getElement());
     }
 
     public void set(int index, Integer removedElement, Integer addedElement) {
+      assertEquals(list.get(index), removedElement);
       events.add(new Event.Replaced(index, removedElement, addedElement));
       list.set(index, addedElement);
     }
 
     public void remove(int position, Integer removedElement) {
+      assertEquals(list.get(position), removedElement);
       events.add(new Event.Removed(position, removedElement));
       list.remove(position);
     }
@@ -306,7 +319,7 @@ public class BufferingListIteratorTestCase extends TestCase {
   }
 
   public void testBrowse() {
-      State state = new State(0, 1, 2);
+    State state = new State(0, 1, 2);
     state.assertNext();
     state.assertNext();
     state.assertNext();
@@ -439,7 +452,7 @@ public class BufferingListIteratorTestCase extends TestCase {
     state.assertState(false, true);
     state.assertNext();
     state.assertState(true, false);
-    state.assertAddedEvent(null, -1);
+    state.assertAddedEvent(new ElementInsertion.Singleton<Integer>(-1));
     state.assertNoEvent();
   }
 
@@ -452,7 +465,7 @@ public class BufferingListIteratorTestCase extends TestCase {
     state.assertNext();
     state.assertNext();
     state.assertState(true, false);
-    state.assertAddedEvent(new ElementPosition.First<Integer>(0), -1);
+    state.assertAddedEvent(new ElementInsertion.First<Integer>(-1, 0));
     state.assertNoEvent();
   }
 
@@ -467,7 +480,7 @@ public class BufferingListIteratorTestCase extends TestCase {
     state.assertNext();
     state.assertNext();
     state.assertState(true, false);
-    state.assertAddedEvent(new ElementPosition.First<Integer>(0), -1);
+    state.assertAddedEvent(new ElementInsertion.First<Integer>(-1, 0));
     state.assertNoEvent();
   }
 
@@ -480,7 +493,7 @@ public class BufferingListIteratorTestCase extends TestCase {
     state.assertNext();
     state.assertNext();
     state.assertState(true, false);
-    state.assertAddedEvent(new ElementPosition.First<Integer>(0), -1);
+    state.assertAddedEvent(new ElementInsertion.First<Integer>(-1, 0));
     state.assertNoEvent();
   }
 
@@ -495,7 +508,7 @@ public class BufferingListIteratorTestCase extends TestCase {
     state.assertNext();
     state.assertNext();
     state.assertState(true, false);
-    state.assertAddedEvent(new ElementPosition.Middle<Integer>(1, 0, 2), 1);
+    state.assertAddedEvent(new ElementInsertion.Middle<Integer>(1, 0, 1, 2));
     state.assertNoEvent();
   }
 
@@ -512,7 +525,7 @@ public class BufferingListIteratorTestCase extends TestCase {
     state.assertPrevious();
     state.assertPrevious();
     state.assertState(false, true);
-    state.assertAddedEvent(new ElementPosition.Last<Integer>(2, 2), 3);
+    state.assertAddedEvent(new ElementInsertion.Last<Integer>(2, 2, 3));
     state.assertNoEvent();
   }
 

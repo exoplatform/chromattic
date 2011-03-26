@@ -19,25 +19,79 @@
 package org.chromattic.common;
 
 /**
+ * An object that indicates the insertion of an element in a list.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ElementPosition<E> {
+public abstract class ElementInsertion<E> {
 
-  private ElementPosition() {
+  /** . */
+  protected final E element;
+
+  private ElementInsertion(E element) {
+    this.element = element;
   }
 
+  /**
+   * <p>In case of a list addition the index indicates the value that would be returned by
+   * a call to the {@link java.util.ListIterator#nextIndex()} when the element is inserted
+   * in the list.</p>
+   *
+   * @return the index
+   */
   public abstract int getIndex();
 
-  public static class First<E> extends ElementPosition<E> {
+  /**
+   * <p>Returns the inserted element.</p>
+   *
+   * @return the inserted element
+   */
+  public E getElement() {
+    return element;
+  }
+
+  public final static class Singleton<E> extends ElementInsertion<E> {
+
+    public Singleton(E element) {
+      super(element);
+    }
+
+    public int getIndex() {
+      return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (obj instanceof Singleton) {
+        Singleton that = (Singleton)obj;
+        return element.equals(that.element);
+      }
+      return false;
+    }
+
+    @Override
+    public String toString() {
+      return "ElementInsertion.Singleton[element=" + element + "]";
+    }
+  }
+
+  public final static class First<E> extends ElementInsertion<E> {
 
     /** . */
     private final E next;
 
-    public First(E next) {
+    public First(E element, E next) {
+      super(element);
+
+      //
       this.next = next;
     }
 
+    @Override
     public int getIndex() {
       return 0;
     }
@@ -53,18 +107,18 @@ public abstract class ElementPosition<E> {
       }
       if (obj instanceof First) {
         First that = (First)obj;
-        return next.equals(that.next);
+        return next.equals(that.next) && element.equals(that.element);
       }
       return false;
     }
 
     @Override
     public String toString() {
-      return "ElementPosition.First[next=" + next + "]";
+      return "ElementInsertion.First[element=" + element + ",next=" + next + "]";
     }
   }
 
-  public static class Middle<E> extends ElementPosition<E> {
+  public final static class Middle<E> extends ElementInsertion<E> {
 
     /** . */
     private final int index;
@@ -75,12 +129,16 @@ public abstract class ElementPosition<E> {
     /** . */
     private final E next;
 
-    public Middle(int index, E previous, E next) {
+    public Middle(int index, E previous, E element, E next) {
+      super(element);
+
+      //
       this.index = index;
       this.previous = previous;
       this.next = next;
     }
 
+    @Override
     public int getIndex() {
       return index;
     }
@@ -100,18 +158,18 @@ public abstract class ElementPosition<E> {
       }
       if (obj instanceof Middle) {
         Middle that = (Middle)obj;
-        return previous.equals(that.previous) && next.equals(that.next);
+        return previous.equals(that.previous) && next.equals(that.next) && element.equals(that.element);
       }
       return false;
     }
 
     @Override
     public String toString() {
-      return "ElementPosition.Previous[previous=" + previous + ",next=" + next + "]";
+      return "ElementInsertion.Previous[previous=" + previous + ",element=" + element +  ",next=" + next + "]";
     }
   }
 
-  public static class Last<E> extends ElementPosition<E> {
+  public final static class Last<E> extends ElementInsertion<E> {
 
     /** . */
     private final int index;
@@ -119,11 +177,15 @@ public abstract class ElementPosition<E> {
     /** . */
     private final E previous;
 
-    public Last(int index, E previous) {
+    public Last(int index, E previous, E element) {
+      super(element);
+
+      //
       this.index = index;
       this.previous = previous;
     }
 
+    @Override
     public int getIndex() {
       return index;
     }
@@ -139,14 +201,14 @@ public abstract class ElementPosition<E> {
       }
       if (obj instanceof Last) {
         Last that = (Last)obj;
-        return previous.equals(that.previous);
+        return previous.equals(that.previous) && element.equals(that.element);
       }
       return false;
     }
 
     @Override
     public String toString() {
-      return "ElementPosition.Last[previous=" + previous + "]";
+      return "ElementInsertion.Last[previous=" + previous + ",element=" + element + "]";
     }
   }
 }
