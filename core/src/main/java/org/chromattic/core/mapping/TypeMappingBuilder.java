@@ -19,25 +19,10 @@
 
 package org.chromattic.core.mapping;
 
-import org.chromattic.api.annotations.MixinMapping;
-import org.chromattic.api.annotations.NodeMapping;
-import org.chromattic.api.annotations.Property;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.RelatedMappedBy;
-import org.chromattic.api.annotations.Id;
-import org.chromattic.api.annotations.Path;
-import org.chromattic.api.annotations.Destroy;
-import org.chromattic.api.annotations.Properties;
-import org.chromattic.api.annotations.FindById;
-import org.chromattic.api.annotations.WorkspaceName;
-import org.chromattic.api.annotations.NamingPolicy;
+import org.chromattic.api.annotations.*;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.bean.*;
 import org.chromattic.core.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.core.mapping.jcr.JCRPropertyMapping;
@@ -393,12 +378,17 @@ public class TypeMappingBuilder {
       String nodeTypeName = nodeMapping.name();
 
       //
+      FormattedBy formattedBy = info.getAnnotation(FormattedBy.class);
+      Class<? extends ObjectFormatter> formatter = formattedBy != null ? formattedBy.value() : null;
+
+      //
       return new NodeTypeMapping(
         javaClass,
         propertyMappings,
         methodMappings,
         onDuplicate,
-        nodeTypeName);
+        nodeTypeName,
+        formatter);
     }
   }
 }

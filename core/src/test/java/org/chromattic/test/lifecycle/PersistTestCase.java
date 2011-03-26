@@ -19,6 +19,7 @@
 
 package org.chromattic.test.lifecycle;
 
+import org.chromattic.api.ChromatticException;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
@@ -36,7 +37,7 @@ public class PersistTestCase extends AbstractTestCase {
     addClass(TLF_A.class);
   }
 
-  public void testWithRelativePathFromRoot() throws Exception {
+  public void testFromRoot() throws Exception {
     DomainSession session = login();
 
     //
@@ -44,25 +45,30 @@ public class PersistTestCase extends AbstractTestCase {
     assertNotNull(a);
     assertEquals("tlf_a", session.getName(a));
     assertEquals(Status.PERSISTENT, session.getStatus(a));
-    TLF_A b = session.create(TLF_A.class, "foo");
-    assertEquals("foo", session.getName(b));
-    assertEquals(Status.TRANSIENT, session.getStatus(b));
-    String bId = session.persist(b, "tlf_a/b");
-    assertNotNull(b);
-    assertEquals("b", session.getName(b));
-    assertEquals(Status.PERSISTENT, session.getStatus(b));
-    assertEquals(bId, session.getId(b));
-
-    //
     Node aNode = session.getRoot().getNode("tlf_a");
-    Node bNode = aNode.getNode("b");
+    assertEquals(session.getId(a), aNode.getUUID());
 
     //
-    assertEquals(session.getId(a), aNode.getUUID());
-    assertEquals(session.getId(b), bNode.getUUID());
+    TLF_A b = session.create(TLF_A.class, "foo");
+
+    //
+    try {
+      session.persist(b, "/");
+      fail();
+    }
+    catch (IllegalArgumentException e) {
+    }
+
+    //
+    try {
+      session.persist(b, ".");
+      fail();
+    }
+    catch (IllegalArgumentException e) {
+    }
   }
 
-  public void testWithRelativePathFromParent() throws Exception {
+  public void testFromParent() throws Exception {
     DomainSession session = login();
 
     //
@@ -70,29 +76,34 @@ public class PersistTestCase extends AbstractTestCase {
     assertNotNull(a);
     assertEquals("tlf_a", session.getName(a));
     assertEquals(Status.PERSISTENT, session.getStatus(a));
-    TLF_A b = session.insert(a, TLF_A.class, "b");
+
+    //
+    TLF_A b = session.create(TLF_A.class);
+    session.persist(a, b, "b");
     assertNotNull(b);
     assertEquals("b", session.getName(b));
     assertEquals(Status.PERSISTENT, session.getStatus(b));
-    TLF_A c = session.create(TLF_A.class, "foo");
-    assertNotNull(c);
-    assertEquals("foo", session.getName(c));
-    assertEquals(Status.TRANSIENT, session.getStatus(c));
-    String cId = session.persist(b, c, "../c");
-    assertNotNull(c);
-    assertEquals("c", session.getName(c));
-    assertEquals(Status.PERSISTENT, session.getStatus(c));
-    assertEquals(cId, session.getId(c));
-
-    //
-    Node aNode = session.getRoot().getNode("tlf_a");
-    Node bNode = aNode.getNode("b");
-    Node cNode = aNode.getNode("c");
-
-    //
-    assertEquals(session.getId(a), aNode.getUUID());
+    Node bNode = session.getRoot().getNode("tlf_a/b");
     assertEquals(session.getId(b), bNode.getUUID());
-    assertEquals(session.getId(c), cNode.getUUID());
+
+    //
+    TLF_A c = session.create(TLF_A.class);
+
+    //
+    try {
+      session.persist(a, c, "/");
+      fail();
+    }
+    catch (IllegalArgumentException e) {
+    }
+
+    //
+    try {
+      session.persist(a, c, ".");
+      fail();
+    }
+    catch (IllegalArgumentException e) {
+    }
   }
 
   public void testWithParentWithImplicitName() throws Exception {

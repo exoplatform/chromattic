@@ -20,12 +20,14 @@
 package org.chromattic.core;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.io.InputStream;
 
 import org.chromattic.api.Status;
+import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.common.JCR;
 import org.chromattic.common.CopyingInputStream;
@@ -213,7 +215,7 @@ public class EntityContext implements MethodHandler {
     if (childCtx.getStatus() == Status.PERSISTENT) {
       state.getSession().move(childCtx, this);
     } else {
-      state.getSession().persistWithName(this, name, childCtx);
+      state.getSession().persist(this, childCtx, name);
     }
   }
 
@@ -233,6 +235,24 @@ public class EntityContext implements MethodHandler {
 
   public Object getParent() {
     return state.getSession().getParent(this);
+  }
+
+
+  /**
+   * Finds a suitable formatter scoped for this entity context. The returned value might
+   * change over method calls (i.e it would not be a good idea to cache it for a long time).
+   *
+   * @return the object formatter
+   */
+  private ObjectFormatter getFormatter()
+  {
+    // Find a formatter
+    ObjectFormatter formatter = mapper.getFormatter();
+    if (formatter == null)
+    {
+      formatter = getSession().domain.objectFormatter;
+    }
+    return formatter;
   }
 
   @Override

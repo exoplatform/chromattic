@@ -19,6 +19,8 @@
 
 package org.chromattic.core.mapper;
 
+import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.core.mapper.onetoone.mixin.JCRMixinParentPropertyMapper;
 import org.chromattic.core.mapping.MixinTypeMapping;
 import org.chromattic.core.mapping.NodeTypeMapping;
@@ -277,6 +279,12 @@ public class TypeMapperBuilder {
       if (typeMapping instanceof NodeTypeMapping) {
         NodeTypeMapping nodeTypeMapping = (NodeTypeMapping)typeMapping;
 
+        // Get the formatter
+        ObjectFormatter formatter = null;
+        if (nodeTypeMapping.getFormatterClass() != null) {
+          formatter = ObjectInstantiator.newInstance(nodeTypeMapping.getFormatterClass());
+        }
+
         //
         mapper = new NodeTypeMapper(
           (Class<?>)typeMapping.getObjectClass().getType(),
@@ -284,6 +292,7 @@ public class TypeMapperBuilder {
           methodMappers,
           typeMapping.getOnDuplicate(),
           instrumentor,
+          formatter,
           nodeTypeMapping.getNodeTypeName());
       } else {
         MixinTypeMapping mixinTypeMapping = (MixinTypeMapping)typeMapping;

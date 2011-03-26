@@ -16,43 +16,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper;
+package org.chromattic.test.format;
 
-import org.chromattic.api.NameConflictResolution;
-import org.chromattic.spi.instrument.Instrumentor;
+import org.chromattic.api.annotations.FormattedBy;
+import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.OneToMany;
 
-import java.util.Set;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinTypeMapper extends TypeMapper {
+@NodeMapping(name = "format_c")
+@FormattedBy(BarPrefixerFormatter.class)
+public abstract class C {
 
-  /** . */
-  private final String mixinTypeName;
+  @OneToMany
+  public abstract Map<String, B> getChildren();
 
-  public MixinTypeMapper(
-    Class<?> objectClass,
-    Set<PropertyMapper> propertyMappers,
-    Set<MethodMapper> methodMappers,
-    NameConflictResolution onDuplicate,
-    Instrumentor instrumentor,
-    String mixinTypeName) {
-    super(
-      objectClass,
-      propertyMappers,
-      methodMappers,
-      onDuplicate,
-      null,
-      instrumentor);
-
-    //
-    this.mixinTypeName = mixinTypeName;
-  }
-
-  @Override
-  public String getTypeName() {
-    return mixinTypeName;
-  }
 }

@@ -19,6 +19,7 @@
 
 package org.chromattic.core.bean;
 
+import org.reflext.api.AnnotationIntrospector;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Map;
@@ -71,4 +72,15 @@ public class BeanInfo {
     return matched;
   }
 
+  public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+    if (annotationClass == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    AnnotationIntrospector<A> introspector = new AnnotationIntrospector<A>(annotationClass);
+
+    //
+    return introspector.resolve(typeInfo);
+  }
 }

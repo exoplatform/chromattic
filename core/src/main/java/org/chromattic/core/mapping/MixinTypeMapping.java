@@ -42,7 +42,8 @@ public class MixinTypeMapping extends TypeMapping {
       objectClass,
       propertyMappings,
       methodMappings,
-      onDuplicate);
+      onDuplicate,
+      null);
 
     //
     this.mixinTypeName = mixinTypeName;

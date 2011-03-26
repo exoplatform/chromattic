@@ -38,8 +38,9 @@ public class NodeAttributeTestCase extends AbstractTestCase {
   public void testInvalidName() throws Exception {
     DomainSession session = login();
     TNA_A a = session.create(TNA_A.class);
+    a.setName(".");
     try {
-      a.setName(".");
+      session.persist(a);
       fail();
     }
     catch (IllegalArgumentException e) {

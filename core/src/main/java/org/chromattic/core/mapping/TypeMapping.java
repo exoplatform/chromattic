@@ -19,6 +19,7 @@
 
 package org.chromattic.core.mapping;
 
+import org.chromattic.api.format.ObjectFormatter;
 import org.reflext.api.ClassTypeInfo;
 import org.chromattic.api.NameConflictResolution;
 
@@ -46,21 +47,30 @@ public abstract class TypeMapping {
   /** . */
   private final NameConflictResolution onDuplicate;
 
+  /** . */
+  private Class<? extends ObjectFormatter> formatterClass;
+
   public TypeMapping(
     ClassTypeInfo objectClass,
     Set<PropertyMapping> propertyMappings,
     Set<MethodMapping> methodMappings,
-    NameConflictResolution onDuplicate) {
+    NameConflictResolution onDuplicate,
+    Class<? extends ObjectFormatter> formatterClass) {
 
     //
     this.objectClass = objectClass;
     this.propertyMappings = Collections.unmodifiableSet(new HashSet<PropertyMapping>(propertyMappings));
     this.methodMappings = Collections.unmodifiableSet(new HashSet<MethodMapping>(methodMappings));
     this.onDuplicate = onDuplicate;
+    this.formatterClass = formatterClass;
   }
 
   public ClassTypeInfo getObjectClass() {
     return objectClass;
+  }
+
+  public Class<? extends ObjectFormatter> getFormatterClass() {
+    return formatterClass;
   }
 
   public Set<PropertyMapping> getPropertyMappings() {

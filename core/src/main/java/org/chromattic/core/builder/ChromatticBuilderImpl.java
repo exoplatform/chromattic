@@ -19,6 +19,7 @@
 
 package org.chromattic.core.builder;
 
+import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.core.bean.BeanInfoFactory;
 import org.chromattic.spi.instrument.Instrumentor;
@@ -26,7 +27,6 @@ import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
 import org.chromattic.core.mapping.TypeMapping;
 import org.chromattic.core.mapping.TypeMappingBuilder;
-import org.chromattic.api.BuilderException;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.format.DefaultObjectFormatter;
@@ -36,7 +36,6 @@ import org.reflext.jlr.JavaLangReflectTypeModel;
 import org.reflext.jlr.JavaLangReflectMethodModel;
 import org.reflext.core.TypeDomain;
 
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -97,26 +96,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   private <T> T create(OptionInstance<String> optionInstance, Class<T> expectedClass) {
     Option<String> option = optionInstance.getOption();
     String s = optionInstance.getValue();
-    try {
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      Class<?> instrumentorClass = classLoader.loadClass(s);
-      if (expectedClass.isAssignableFrom(instrumentorClass)) {
-        Class<? extends T> ic2 = instrumentorClass.asSubclass(expectedClass);
-        return ic2.newInstance();
-      } else {
-        throw new BuilderException("Class " + s + " does not implement the " +
-          expectedClass.getName() + " interface");
-      }
-    }
-    catch (InstantiationException e) {
-      throw new BuilderException("Could not instanciate " + option.getDisplayName() + " " + s, e);
-    }
-    catch (IllegalAccessException e) {
-      throw new BuilderException("Could not instanciate " + option.getDisplayName(), e);
-    }
-    catch (ClassNotFoundException e) {
-      throw new BuilderException("Could not load " + option.getDisplayName() + " class " + s, e);
-    }
+    return ObjectInstantiator.newInstance(s, expectedClass);
   }
 
   protected <T> void configure(OptionInstance<T> optionInstance) {

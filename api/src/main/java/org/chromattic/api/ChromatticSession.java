@@ -61,40 +61,40 @@ public interface ChromatticSession {
    * Creates a persistent instance of the specified object.
    *
    * @param clazz the object class
-   * @param relPath the path relative to the root node
+   * @param name the name under root node
    * @param <O> the object class parameter
    * @return the persistent object
    * @throws NullPointerException if any argument is null
    * @throws IllegalArgumentException if any argument is not valid
    * @throws ChromatticException any chromattic exception
    */
-  <O> O insert(Class<O> clazz, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException;
+  <O> O insert(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
    * Creates a persistent instance of the specified object.
    *
    * @param parent the parent object
    * @param clazz the object class
-   * @param relPath the object path
+   * @param name the object name
    * @param <O> the object class parameter
    * @return the persistent object
    * @throws NullPointerException if any argument is null
    * @throws IllegalArgumentException if any argument is not valid
    * @throws ChromatticException any chromattic exception
    */
-  <O> O insert(Object parent, Class<O> clazz, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException;
+  <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
    * Persists a transient object.
    *
    * @param o the object to persist
-   * @param relPath the object relative path to the root
+   * @param name the object relative path to the root
    * @return the object id
    * @throws NullPointerException if any argument is null
    * @throws IllegalArgumentException if any argument is not valid
    * @throws ChromatticException any chromattic exception
    */
-  String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException;
+  String persist(Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
    * Persists a transient object.
@@ -124,13 +124,13 @@ public interface ChromatticSession {
    *
    * @param parent the parent object
    * @param o the object to persist
-   * @param relPath the object relative path to the parent
+   * @param name the object relative name to the parent
    * @return the object id
    * @throws NullPointerException if the parent or object argument is null
    * @throws IllegalArgumentException if any argument is not valid
    * @throws ChromatticException any chromattic exception
    */
-  String persist(Object parent, Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException;
+  String persist(Object parent, Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   <O> O findByPath(Object o, Class<O> clazz, String relPath) throws ChromatticException;
 

@@ -19,6 +19,8 @@
 
 package org.chromattic.core;
 
+import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.common.JCR;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
@@ -33,6 +35,7 @@ import javax.jcr.Node;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.nodetype.NodeType;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
@@ -61,6 +64,36 @@ public class DomainSessionImpl extends DomainSession {
     this.contexts = new HashMap<String, EntityContext>();
   }
 
+  protected String _getName(EntityContext ctx) {
+    if (ctx == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    String name;
+    if (ctx.getStatus() == Status.PERSISTENT) {
+      name = ctx.state.getName();
+      Object parent = getParent(ctx);
+      EntityContext parentCtx = parent != null ? unwrap(parent) : null;
+      name = decodeName(parentCtx, name);
+    }
+    else {
+      name = ctx.state.getName();
+    }
+
+    //
+    return name;
+  }
+
+  protected void _setName(EntityContext ctx, String name) {
+    if (ctx == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    ctx.state.setName(name);
+  }
+
   protected <O> O _findByPath(EntityContext ctx, Class<O> clazz, String relPath) throws RepositoryException {
     Node origin;
     if (ctx != null) {
@@ -79,11 +112,11 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected String _persist(EntityContext ctx, String relPath) throws RepositoryException {
+  protected String _persist(EntityContext ctx, String name) throws RepositoryException {
     if (ctx == null) {
       throw new NullPointerException("No null object context accepted");
     }
-    if (relPath == null) {
+    if (name == null) {
       throw new NullPointerException("No relative path specified");
     }
 
@@ -99,14 +132,14 @@ public class DomainSessionImpl extends DomainSession {
     log.trace("Adding node for context {} and node type {}", ctx, ctx.mapper);
 
     //
-    return _persist(getRoot(), relPath, ctx);
+    return _persist(getRoot(), name, ctx);
   }
 
   /**
    * Insert a context as a child of a parent context.
    *
    * @param srcCtx the source context
-   * @param relPath the destination path relative to the source context
+   * @param name the destination path relative to the source context
    * @param dstCtx the destination context
    * @return the id of the inserted context
    * @throws NullPointerException
@@ -114,7 +147,7 @@ public class DomainSessionImpl extends DomainSession {
    * @throws IllegalStateException
    * @throws RepositoryException
    */
-  protected String _persist(EntityContext srcCtx, String relPath, EntityContext dstCtx) throws
+  protected String _persist(EntityContext srcCtx, String name, EntityContext dstCtx) throws
     NullPointerException,
     IllegalArgumentException,
     IllegalStateException,
@@ -129,7 +162,7 @@ public class DomainSessionImpl extends DomainSession {
       log.error(msg);
       throw new IllegalStateException(msg);
     }
-    if (relPath == null) {
+    if (name == null) {
       String msg = "Attempt to insert context " + dstCtx + " with no relative path to " + srcCtx;
       log.error(msg);
       throw new NullPointerException(msg);
@@ -144,42 +177,36 @@ public class DomainSessionImpl extends DomainSession {
     Node parentNode = srcCtx.state.getNode();
 
     //
-    return _persist(parentNode, relPath, dstCtx);
+    return _persist(parentNode, name, dstCtx);
   }
 
-  private String _persist(Node srcNode, String relPath, EntityContext dstCtx) throws RepositoryException {
+  private String _persist(Node srcNode, String name, EntityContext dstCtx) throws RepositoryException {
     if (!(dstCtx.mapper instanceof NodeTypeMapper)) {
       throw new IllegalArgumentException("Cannot persist an object mapper to a mixin type " + dstCtx.mapper);
     }
     NodeTypeMapper mapper = (NodeTypeMapper)dstCtx.mapper;
 
     //
-    Node dstParentNode;
-    String name;
-    int pos = relPath.indexOf('/');
-    if (pos == -1) {
-      dstParentNode = srcNode;
-      name = relPath;
-    } else {
-      String dstParentPath = relPath.substring(0, pos);
-      dstParentNode = srcNode.getNode(dstParentPath);
-      name = relPath.substring(pos + 1);
-    }
+    Object parent = findByNode(Object.class, srcNode);
+    EntityContext parentCtx = parent != null ? unwrap(parent) : null;
+
+    //
+    name = encodeName(parentCtx, name);
 
     //
     NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
-    NodeType parentNodeType = dstParentNode.getPrimaryNodeType();
+    NodeType parentNodeType = srcNode.getPrimaryNodeType();
     TypeMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
     if (parentTypeMapper != null) {
       onDuplicate = parentTypeMapper.getOnDuplicate();
     }
 
     // Check insertion capability
-    Node previousNode = sessionWrapper.getNode(dstParentNode, name);
+    Node previousNode = sessionWrapper.getNode(srcNode, name);
     if (previousNode != null) {
       log.trace("Found existing child with same name {}", name);
       if (onDuplicate == NameConflictResolution.FAIL) {
-        String msg = "Attempt to insert context " + dstCtx + " as an existing child with name " + relPath + " child of node " + dstParentNode.getPath();
+        String msg = "Attempt to insert context " + dstCtx + " as an existing child with name " + name + " child of node " + srcNode.getPath();
         log.error(msg);
         throw new DuplicateNameException(msg);
       } else {
@@ -191,10 +218,10 @@ public class DomainSessionImpl extends DomainSession {
     //
     String primaryNodeTypeName = mapper.getNodeTypeName();
     log.trace("Setting context {} for insertion", dstCtx);
-    log.trace("Adding node for context {} and node type {} as child of node {}", dstCtx, primaryNodeTypeName, dstParentNode.getPath());
+    log.trace("Adding node for context {} and node type {} as child of node {}", dstCtx, primaryNodeTypeName, srcNode.getPath());
 
     //
-    Node dstNode = sessionWrapper.addNode(dstParentNode, name, primaryNodeTypeName, Collections.<String>emptyList());
+    Node dstNode = sessionWrapper.addNode(srcNode, name, primaryNodeTypeName, Collections.<String>emptyList());
 
     //
     nodeAdded(dstNode, dstCtx);
@@ -424,7 +451,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected void _removeChild(EntityContext ctx, String name) throws RepositoryException {
-    name = encodeName(name);
+    name = encodeName(ctx, name);
     Node node = ctx.state.getNode();
     Node childNode = sessionWrapper.getNode(node, name);
     if (childNode != null) {
@@ -433,7 +460,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected Object _getChild(EntityContext ctx, String name) throws RepositoryException {
-    name = encodeName(name);
+    name = encodeName(ctx, name);
     Node node = ctx.state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
     Node child = sessionWrapper.getChild(node, name);
@@ -526,6 +553,67 @@ public class DomainSessionImpl extends DomainSession {
     } else {
       log.trace("Context absent for removal for id {}", ctx, nodeId);
     }
+  }
+
+  private String encodeName(EntityContext ctx, String external) {
+    if (external == null) {
+      throw new NullPointerException("No null name accepted");
+    }
+
+    //
+    ObjectFormatter formatter = null;
+    if (ctx != null) {
+      formatter = ctx.mapper.getFormatter();
+    }
+    if (formatter == null) {
+      formatter = domain.objectFormatter;
+    }
+
+    //
+    String internal;
+    try {
+      internal = formatter.encodeNodeName(null, external);
+    }
+    catch (Exception e) {
+      if (e instanceof NullPointerException) {
+        throw (NullPointerException)e;
+      }
+      if (e instanceof IllegalArgumentException) {
+        throw (IllegalArgumentException)e;
+      }
+      throw new UndeclaredThrowableException(e);
+    }
+    if (internal == null) {
+      throw new IllegalArgumentException("Name " + external + " was converted to null");
+    }
+    JCR.validateName(internal);
+    return internal;
+  }
+
+  private String decodeName(EntityContext ctx, String internal) {
+    ObjectFormatter formatter = null;
+    if (ctx != null) {
+      formatter = ctx.mapper.getFormatter();
+    }
+    if (formatter == null) {
+      formatter = domain.objectFormatter;
+    }
+
+    //
+    String external;
+    try {
+      external = formatter.decodeNodeName(null, internal);
+    }
+    catch (Exception e) {
+      if (e instanceof IllegalStateException) {
+        throw (IllegalStateException)e;
+      }
+      throw new UndeclaredThrowableException(e);
+    }
+    if (external == null) {
+      throw new IllegalStateException("Null name returned by decoder");
+    }
+    return external;
   }
 
   public void close() {

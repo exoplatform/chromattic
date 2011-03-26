@@ -28,13 +28,11 @@ import org.chromattic.api.query.ObjectQueryBuilder;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.query.ObjectQueryBuilderImpl;
-import org.chromattic.common.JCR;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import java.util.Iterator;
-import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -57,7 +55,12 @@ public abstract class DomainSession implements ChromatticSession {
     this.sessionWrapper = sessionWrapper;
   }
 
-  protected abstract String _persist(EntityContext ctx, String relPath) throws RepositoryException;
+
+  protected abstract String _getName(EntityContext ctx) throws RepositoryException;
+
+  protected abstract void _setName(EntityContext ctx, String name) throws RepositoryException;
+
+  protected abstract String _persist(EntityContext ctx, String name) throws RepositoryException;
 
   protected abstract String _persist(EntityContext parentCtx, String name, EntityContext childCtx) throws RepositoryException;
 
@@ -142,25 +145,30 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public final <O> O insert(Object parent, Class<O> clazz, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
-    EntityContext parentCtx = unwrap(parent);
+  public final <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    try {
+      EntityContext parentCtx = unwrap(parent);
+      O child = create(clazz);
+      EntityContext childtx = unwrap(child);
+      _persist(parentCtx, name, childtx);
+      return child;
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public final <O> O insert(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
     O child = create(clazz);
-    EntityContext childtx = unwrap(child);
-    persistWithRelativePath(parentCtx, relPath, childtx);
+    persist(child, name);
     return child;
   }
 
-  public final <O> O insert(Class<O> clazz, String relPath) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
-    O child = create(clazz);
-    persist(child, relPath);
-    return child;
-  }
-
-  public final String persist(Object parent, Object child, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public final String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
       EntityContext parentCtx = unwrap(parent);
       EntityContext childCtx = unwrap(child);
-      return _persist(parentCtx, relPath, childCtx);
+      return _persist(parentCtx, name, childCtx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException();
@@ -191,6 +199,8 @@ public abstract class DomainSession implements ChromatticSession {
         String msg = "Attempt to persist non named object " + ctx;
         throw new IllegalArgumentException(msg);
       }
+
+      //
       return _persist(ctx, name);
     }
     catch (RepositoryException e) {
@@ -218,7 +228,8 @@ public abstract class DomainSession implements ChromatticSession {
     try {
       if (domain.getTypeMapper(node.getPrimaryNodeType().getName()) != null) {
         return findById(clazz, node.getUUID());
-      } else {
+      }
+      else {
         return null;
       }
     }
@@ -314,83 +325,18 @@ public abstract class DomainSession implements ChromatticSession {
     return ctx.state.getNode();
   }
 
-  public final String encodeName(String external) {
-    if (external == null) {
-      throw new NullPointerException("No null name accepted");
-    }
-    String internal;
-    try {
-      internal = domain.objectFormatter.encodeNodeName(null, external);
-    }
-    catch (Exception e) {
-      if (e instanceof NullPointerException) {
-        throw (NullPointerException)e;
-      }
-      if (e instanceof IllegalArgumentException) {
-        throw (IllegalArgumentException)e;
-      }
-      throw new UndeclaredThrowableException(e);
-    }
-    if (internal == null) {
-      throw new IllegalArgumentException("Name " + external + " was converted to null");
-    }
-    JCR.validateName(internal);
-    return internal;
-  }
-
-  public final String decodeName(String internal) {
-    String external;
-    try {
-      external = domain.objectFormatter.decodeNodeName(null, internal);
-    }
-    catch (Exception e) {
-      if (e instanceof IllegalStateException) {
-        throw (IllegalStateException)e;
-      }
-      throw new UndeclaredThrowableException(e);
-    }
-    if (external == null) {
-      throw new IllegalStateException("Null name returned by decoder");
-    }
-    return external;
-  }
-
   public final String getName(EntityContext ctx) throws UndeclaredRepositoryException {
-    if (ctx == null) {
-      throw new NullPointerException();
+    try {
+      return _getName(ctx);
     }
-
-    //
-    String name = ctx.state.getName();
-    if (name != null) {
-      name = decodeName(name);
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
     }
-
-    //
-    return name;
   }
 
   public final void setName(EntityContext ctx, String name) throws UndeclaredRepositoryException {
-    if (ctx == null) {
-      throw new NullPointerException();
-    }
-
-    //
-    name = encodeName(name);
-
-    //
-    ctx.state.setName(name);
-  }
-
-  public final String persist(EntityContext relatativeCtx, String name, EntityContext siblingCtx) throws UndeclaredRepositoryException {
     try {
-      name = encodeName(name);
-
-      // Just to symbolise we convert the name to a path
-      String path = name;
-
-      //
-      return _persist(relatativeCtx, path, siblingCtx);
+      _setName(ctx, name);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -400,30 +346,6 @@ public abstract class DomainSession implements ChromatticSession {
   public final void orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) {
     try {
       _orderBefore(parentCtx, srcCtx, dstCtx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final String persistWithName(EntityContext parentCtx, String name, EntityContext childCtx) throws UndeclaredRepositoryException {
-    try {
-      name = encodeName(name);
-
-      // Just to symbolise we convert the name to a path
-      String path = name;
-
-      //
-      return _persist(parentCtx, path, childCtx);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public final String persistWithRelativePath(EntityContext parentCtx, String relPath, EntityContext childCtx) throws UndeclaredRepositoryException {
-    try {
-      return _persist(parentCtx, relPath, childCtx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -457,7 +379,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public final boolean setReferenced(EntityContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws UndeclaredRepositoryException  {
+  public final boolean setReferenced(EntityContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws UndeclaredRepositoryException {
     try {
       return _setReferenced(referentCtx, name, referencedCtx, linkType);
     }
@@ -516,6 +438,15 @@ public abstract class DomainSession implements ChromatticSession {
       throw new NullPointerException("Cannot unwrap null object");
     }
     return (EntityContext)domain.getInstrumentor().getInvoker(o);
+  }
+
+  public final String persist(EntityContext parentCtx, EntityContext childCtx, String name) throws UndeclaredRepositoryException {
+    try {
+      return _persist(parentCtx, name, childCtx);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
   }
 
   public final Node getRoot() {

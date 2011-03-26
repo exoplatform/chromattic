@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.lang.reflect.Method;
 
+import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.bean.PropertyInfo;
@@ -56,6 +57,9 @@ public abstract class TypeMapper implements MethodInvoker {
   /** . */
   private final Map<Method, MethodInvoker> dispatchers;
 
+  /** The optional formatter for this object. */
+  private final ObjectFormatter formatter;
+
   /** . */
   private final NameConflictResolution onDuplicate;
 
@@ -64,6 +68,7 @@ public abstract class TypeMapper implements MethodInvoker {
     Set<PropertyMapper> propertyMappers,
     Set<MethodMapper> methodMappers,
     NameConflictResolution onDuplicate,
+    ObjectFormatter formatter,
     Instrumentor instrumentor) {
 
     // Build the dispatcher map
@@ -87,6 +92,7 @@ public abstract class TypeMapper implements MethodInvoker {
     this.dispatchers = dispatchers;
     this.objectClass = objectClass;
     this.methodMappers = methodMappers;
+    this.formatter = formatter;
     this.onDuplicate = onDuplicate;
     this.propertyMappers = propertyMappers;
     this.factory = instrumentor.getProxyClass(objectClass);
@@ -118,6 +124,10 @@ public abstract class TypeMapper implements MethodInvoker {
   }
 
   public abstract String getTypeName();
+
+  public ObjectFormatter getFormatter() {
+    return formatter;
+  }
 
   public Object createObject(EntityContext context) {
     return factory.createProxy(context);

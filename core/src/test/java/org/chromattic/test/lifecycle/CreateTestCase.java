@@ -37,12 +37,9 @@ public class CreateTestCase extends AbstractTestCase {
     ChromatticSession session = login();
 
     //
-    try {
-      session.create(TLF_A.class, "./foo");
-      fail();
-    }
-    catch (IllegalArgumentException ignore) {
-    }
+    TLF_A a = session.create(TLF_A.class, "./foo");
+    assertEquals(Status.TRANSIENT, session.getStatus(a));
+    assertEquals("./foo", session.getName(a));
   }
 
   public void testCreateWithName() throws Exception {

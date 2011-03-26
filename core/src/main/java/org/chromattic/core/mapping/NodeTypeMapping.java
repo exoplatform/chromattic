@@ -19,6 +19,7 @@
 package org.chromattic.core.mapping;
 
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.format.ObjectFormatter;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Set;
@@ -37,12 +38,14 @@ public class NodeTypeMapping extends TypeMapping {
     Set<PropertyMapping> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
-    String nodeTypeName) {
+    String nodeTypeName,
+    Class<? extends ObjectFormatter> formatterClass) {
     super(
       objectClass,
       propertyMappings,
       methodMappings,
-      onDuplicate);
+      onDuplicate,
+      formatterClass);
 
     //
     this.nodeTypeName = nodeTypeName;

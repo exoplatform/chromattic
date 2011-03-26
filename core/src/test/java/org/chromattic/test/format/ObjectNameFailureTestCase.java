@@ -24,6 +24,7 @@ import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.format.FormatterContext;
 import org.chromattic.core.DomainSession;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.lang.reflect.UndeclaredThrowableException;
 
@@ -48,7 +49,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
       }
     };
     try {
-      session.create(A.class, "a");
+      session.insert(A.class, "a");
       fail();
     }
     catch (IllegalArgumentException e) {
@@ -64,7 +65,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
       }
     };
     try {
-      session.create(A.class, "a");
+      session.insert(A.class, "a");
       fail();
     }
     catch (NullPointerException e) {
@@ -80,7 +81,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
       }
     };
     try {
-      session.create(A.class, "a");
+      session.insert(A.class, "a");
       fail();
     }
     catch (Error e) {
@@ -96,7 +97,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
       }
     };
     try {
-      session.create(A.class, "a");
+      session.insert(A.class, "a");
       fail();
     }
     catch (IllegalArgumentException e) {
@@ -112,7 +113,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
       }
     };
     try {
-      session.create(A.class, "a");
+      session.insert(A.class, "a");
       fail();
     }
     catch (UndeclaredThrowableException e) {
@@ -129,7 +130,7 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
       }
     };
     try {
-      session.create(A.class, "a");
+      session.insert(A.class, "a");
       fail();
     }
     catch (IllegalArgumentException e) {
@@ -144,7 +145,8 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
         return null;
       }
     };
-    A a = session.insert(A.class, "a");
+    Node aNode = session.getRoot().addNode("a", "format_a");
+    A a = session.findByNode(A.class, aNode);
     try {
       a.getName();
       fail();
@@ -161,7 +163,8 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
         throw new RuntimeException();
       }
     };
-    A a = session.insert(A.class, "a");
+    Node aNode = session.getRoot().addNode("a", "format_a");
+    A a = session.findByNode(A.class, aNode);
     try {
       a.getName();
       fail();
@@ -179,7 +182,8 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
         throw new Error();
       }
     };
-    A a = session.insert(A.class, "a");
+    Node aNode = session.getRoot().addNode("a", "format_a");
+    A a = session.findByNode(A.class, aNode);
     try {
       a.getName();
       fail();
@@ -196,7 +200,8 @@ public class ObjectNameFailureTestCase extends AbstractTestCase {
         throw new IllegalStateException();
       }
     };
-    A a = session.insert(A.class, "a");
+    Node aNode = session.getRoot().addNode("a", "format_a");
+    A a = session.findByNode(A.class, aNode);
     try {
       a.getName();
       fail();

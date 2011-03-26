@@ -16,54 +16,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper;
+package org.chromattic.api.annotations;
 
-import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.format.ObjectFormatter;
-import org.chromattic.spi.instrument.Instrumentor;
 
-import java.util.Set;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeTypeMapper extends TypeMapper {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface FormattedBy {
 
-  /** . */
-  private final String nodeTypeName;
-
-  public NodeTypeMapper(
-    Class<?> objectClass,
-    Set<PropertyMapper> propertyMappers,
-    Set<MethodMapper> methodMappers,
-    NameConflictResolution onDuplicate,
-    Instrumentor instrumentor,
-    ObjectFormatter formatter,
-    String nodeTypeName) {
-    super(
-      objectClass,
-      propertyMappers,
-      methodMappers,
-      onDuplicate,
-      formatter,
-      instrumentor);
-
-    //
-    this.nodeTypeName = nodeTypeName;
-  }
-
-  @Override
-  public String getTypeName() {
-    return nodeTypeName;
-  }
-
-  public String getNodeTypeName() {
-    return nodeTypeName;
-  }
-
-  @Override
-  public String toString() {
-    return "NodeTypeMapper[class=" + objectClass + ",nodeTypeName=" + nodeTypeName + "]";
-  }
+  /**
+   * The optional object formatter for instances of this object.
+   *
+   * @return the object formatter
+   */
+  Class<? extends ObjectFormatter> value();
 }

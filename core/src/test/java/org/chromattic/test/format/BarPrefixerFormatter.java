@@ -16,43 +16,31 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.mapper;
 
-import org.chromattic.api.NameConflictResolution;
-import org.chromattic.spi.instrument.Instrumentor;
+package org.chromattic.test.format;
 
-import java.util.Set;
+import org.chromattic.api.format.FormatterContext;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinTypeMapper extends TypeMapper {
+public class BarPrefixerFormatter extends AbstractObjectFormatter {
 
-  /** . */
-  private final String mixinTypeName;
-
-  public MixinTypeMapper(
-    Class<?> objectClass,
-    Set<PropertyMapper> propertyMappers,
-    Set<MethodMapper> methodMappers,
-    NameConflictResolution onDuplicate,
-    Instrumentor instrumentor,
-    String mixinTypeName) {
-    super(
-      objectClass,
-      propertyMappers,
-      methodMappers,
-      onDuplicate,
-      null,
-      instrumentor);
-
-    //
-    this.mixinTypeName = mixinTypeName;
+  public String decodeNodeName(FormatterContext context, String internalName) {
+    if (internalName.startsWith("bar_")) {
+      return internalName.substring(4);
+    } else {
+      throw new IllegalStateException();
+    }
   }
 
-  @Override
-  public String getTypeName() {
-    return mixinTypeName;
+  public String encodeNodeName(FormatterContext context, String externalName) {
+    if (externalName.length() == 1) {
+      return "bar_" + externalName;
+    } else {
+      throw new IllegalArgumentException();
+    }
   }
+
 }
