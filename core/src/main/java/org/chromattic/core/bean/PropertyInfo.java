@@ -93,7 +93,8 @@ public abstract class PropertyInfo {
       A setterAnnotation = new AnnotationIntrospector<A>(annotationClass).resolve(setter);
       if (setterAnnotation != null) {
         if (annotation != null) {
-          throw new IllegalStateException();
+          throw new IllegalStateException("The same annotation " + annotation + " is present on a getter " +
+            getter + " and setter" + setter);
         }
         annotation = setterAnnotation;
       }
