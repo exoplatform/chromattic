@@ -16,23 +16,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.common;
+package org.chromattic.test.common;
 
-import java.io.ByteArrayInputStream;
+import junit.framework.TestCase;
+import org.chromattic.common.CloneableInputStream;
+import org.chromattic.common.IO;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public final class CloneableInputStream extends ByteArrayInputStream implements Cloneable {
+public class CloneableInputStreamTestCase extends TestCase {
 
-  public CloneableInputStream(byte buf[]) {
-    super(buf);
-  }
-
-  @Override
-  public CloneableInputStream clone() {
-    // We don't have to call super as this class is final
-    return new CloneableInputStream(buf);
+  public void testClone() throws IOException {
+    byte[] bytes = {0,1,2};
+    CloneableInputStream in = new CloneableInputStream(bytes);
+    assertTrue(Arrays.equals(bytes, IO.getBytes(in)));
+    assertTrue(Arrays.equals(bytes, IO.getBytes(in.clone())));
   }
 }
