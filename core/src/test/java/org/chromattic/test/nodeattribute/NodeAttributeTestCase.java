@@ -22,6 +22,7 @@ package org.chromattic.test.nodeattribute;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.format.NameSyntaxException;
 
 import javax.jcr.Node;
 
@@ -42,7 +43,7 @@ public class NodeAttributeTestCase extends AbstractTestCase {
       a.setName(".");
       fail();
     }
-    catch (IllegalArgumentException e) {
+    catch (NameSyntaxException e) {
     }
   }
 

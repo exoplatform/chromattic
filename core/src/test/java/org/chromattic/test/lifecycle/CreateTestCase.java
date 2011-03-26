@@ -22,6 +22,7 @@ package org.chromattic.test.lifecycle;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
+import org.chromattic.api.format.NameSyntaxException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -41,7 +42,7 @@ public class CreateTestCase extends AbstractTestCase {
       session.create(TLF_A.class, "./foo");
       fail();
     }
-    catch (IllegalArgumentException ignore) {
+    catch (NameSyntaxException ignore) {
     }
   }
 

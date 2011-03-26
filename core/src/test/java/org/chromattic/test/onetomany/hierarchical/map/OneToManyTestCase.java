@@ -22,6 +22,7 @@ package org.chromattic.test.onetomany.hierarchical.map;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.format.NameSyntaxException;
 
 import javax.jcr.Node;
 import java.util.Map;
@@ -81,7 +82,7 @@ public class OneToManyTestCase extends AbstractTestCase {
       a.getChildren().put("/foo", b);
       fail();
     }
-    catch (IllegalArgumentException e) {
+    catch (NameSyntaxException e) {
     }
   }
 }

@@ -180,15 +180,15 @@ class DomainSessionImpl extends DomainSession {
       throw new NullPointerException();
     }
 
-    // Validate the name
-    if (name != null) {
-      JCR.validateName(name);
-    }
-
     //
     TypeMapper typeMapper = domain.getTypeMapper(clazz);
     NodeType nodeType = sessionWrapper.getNodeType(typeMapper.getNodeDef().getPrimaryNodeTypeName());
-    TransientContextState state = new TransientContextState(name, nodeType);
+    TransientContextState state = new TransientContextState(typeMapper, nodeType);
+
+    //
+    state.setName(name);
+
+    //
     ObjectContext ctx = new ObjectContext(typeMapper, state);
     fireEvent(LifeCycleType.CREATED, ctx);
     return (O)ctx.getObject();
@@ -368,7 +368,7 @@ class DomainSessionImpl extends DomainSession {
         ctx = new ObjectContext(mapper);
         log.trace("Inserted context {} loaded from node id {}", ctx, id);
         contexts.put(id, ctx);
-        ctx.state = new PersistentContextState(node, this);
+        ctx.state = new PersistentContextState(mapper, node, this);
         fireEvent(LifeCycleType.LOADED, ctx);
       }
       else {
@@ -393,7 +393,7 @@ class DomainSessionImpl extends DomainSession {
       }
       log.trace("Inserted context {} for id {}", ctx, id);
       contexts.put(id, ctx);
-      ctx.state = new PersistentContextState(node, this);
+      ctx.state = new PersistentContextState(mapper, node, this);
       fireEvent(LifeCycleType.PERSISTED, ctx);
     }
     else {

@@ -58,6 +58,9 @@ import org.chromattic.core.bean.CollectionPropertyInfo;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.api.RelationshipType;
+import org.chromattic.api.BuilderException;
+import org.chromattic.api.format.CodecFormat;
+import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Set;
@@ -252,8 +255,25 @@ public class TypeMapperBuilder {
       NodeDef nodeDef = new NodeDef(typeMapping.getNodeTypeName(), mixinNames);
 
       //
+      CodecFormat<String, String> nameFormat;
+      if (typeMapping.getNameCodec() == DefaultNodeNameFormat.class) {
+        nameFormat = DefaultNodeNameFormat.getInstance();
+      } else {
+        try {
+          nameFormat = typeMapping.getNameCodec().newInstance();
+        }
+        catch (InstantiationException e) {
+          throw new BuilderException(e);
+        }
+        catch (IllegalAccessException e) {
+          throw new BuilderException(e);
+        }
+      }
+
+      //
       TypeMapper mapper = new TypeMapper(
         (Class<?>)typeMapping.getObjectClass().getType(),
+        nameFormat,
         propertyMappers,
         methodMappers,
         nodeDef,

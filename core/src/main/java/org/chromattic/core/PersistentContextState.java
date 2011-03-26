@@ -25,6 +25,7 @@ import org.chromattic.api.NoSuchPropertyException;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.mapper.ValueMapper;
+import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.common.JCR;
 
 import javax.jcr.Node;
@@ -45,10 +46,13 @@ import java.lang.reflect.Array;
 class PersistentContextState extends ContextState {
 
   /** . */
-  private String name;
+  private final TypeMapper mapper;
 
   /** . */
-  private String path;
+  private final String externalName;
+
+  /** . */
+  private final String path;
 
   /** . */
   private final String id;
@@ -59,11 +63,12 @@ class PersistentContextState extends ContextState {
   /** . */
   private final DomainSession session;
 
-  PersistentContextState(Node node, DomainSession session) throws RepositoryException {
+  PersistentContextState(TypeMapper mapper, Node node, DomainSession session) throws RepositoryException {
     super(node.getPrimaryNodeType());
 
     //
-    this.name = node.getName();
+    this.mapper = mapper;
+    this.externalName = mapper.decodeName(node.getName());
     this.id = node.getUUID();
     this.path = node.getPath();
     this.node = node;
@@ -79,7 +84,7 @@ class PersistentContextState extends ContextState {
   }
 
   String getName() {
-    return name;
+    return externalName;
   }
 
   void setName(String name) {

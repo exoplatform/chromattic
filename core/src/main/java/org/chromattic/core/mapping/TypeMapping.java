@@ -20,6 +20,7 @@
 package org.chromattic.core.mapping;
 
 import org.reflext.api.ClassTypeInfo;
+import org.chromattic.api.format.CodecFormat;
 
 import java.util.Collections;
 import java.util.Set;
@@ -35,6 +36,9 @@ public class TypeMapping {
   private final ClassTypeInfo objectClass;
 
   /** . */
+  private final Class<? extends CodecFormat<String, String>> nameCodec;
+
+  /** . */
   private final Set<PropertyMapping> propertyMappings;
 
   /** . */
@@ -48,6 +52,7 @@ public class TypeMapping {
 
   public TypeMapping(
     ClassTypeInfo objectClass,
+    Class<? extends CodecFormat<String, String>> nameCodec,
     Set<PropertyMapping> propertyMappings,
     Set<MethodMapping> methhodMappings,
     String nodeTypeName,
@@ -55,6 +60,7 @@ public class TypeMapping {
 
     //
     this.objectClass = objectClass;
+    this.nameCodec = nameCodec;
     this.propertyMappings = Collections.unmodifiableSet(new HashSet<PropertyMapping>(propertyMappings));
     this.methodMappings = Collections.unmodifiableSet(new HashSet<MethodMapping>(methhodMappings));
     this.nodeTypeName = nodeTypeName;
@@ -63,6 +69,10 @@ public class TypeMapping {
 
   public ClassTypeInfo getObjectClass() {
     return objectClass;
+  }
+
+  public Class<? extends CodecFormat<String, String>> getNameCodec() {
+    return nameCodec;
   }
 
   public Set<String> getMixinNames() {

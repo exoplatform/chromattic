@@ -193,7 +193,9 @@ public class ObjectContext implements MethodHandler {
   }
 
   public void addChild(String name, ObjectContext childCtx) {
-    JCR.validateName(name);
+    if (name != null) {
+      name = childCtx.mapper.encodeName(name);
+    }
 
     //
     state.getSession().insert(this, name, childCtx);

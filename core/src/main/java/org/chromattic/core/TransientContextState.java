@@ -19,9 +19,9 @@
 
 package org.chromattic.core;
 
-import org.chromattic.common.JCR;
 import org.chromattic.api.Status;
 import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.mapper.TypeMapper;
 
 import javax.jcr.Node;
 import javax.jcr.nodetype.NodeType;
@@ -34,27 +34,34 @@ import java.util.Map;
 class TransientContextState extends ContextState {
 
   /** . */
-  private String name;
+  private final TypeMapper mapper;
+
+  /** . */
+  private String internalName;
 
   /** . */
   private Map<String, Object> properties;
 
-  TransientContextState(String name, NodeType primaryNodeType) {
+  TransientContextState(TypeMapper mapper, NodeType primaryNodeType) {
     super(primaryNodeType);
 
     //
-    this.name = name;
+    this.mapper = mapper;
   }
 
   public String getName() {
-    return name;
+    if (internalName != null) {
+      return mapper.decodeName(internalName);
+    } else {
+      return null;
+    }
   }
 
   void setName(String name) {
     if (name != null) {
-      JCR.validateName(name);
+      name = mapper.encodeName(name);
     }
-    this.name = name;
+    this.internalName = name;
   }
 
   String getPath() {
