@@ -145,7 +145,7 @@ public class EntityContext implements MethodHandler {
     return properties;
   }
 
-  public Object getPropertyValue(String propertyName, SimpleValueInfo type) {
+  public <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type) {
     JCR.validateName(propertyName);
 
     //
@@ -159,7 +159,7 @@ public class EntityContext implements MethodHandler {
     return state.getPropertyValues(propertyName, simpleType, listType);
   }
 
-  public void setPropertyValue(String propertyName, SimpleValueInfo type, Object o) {
+  public <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V o) {
     JCR.validateName(propertyName);
 
     //
@@ -168,7 +168,8 @@ public class EntityContext implements MethodHandler {
     //
     if (o instanceof InputStream && broadcaster.hasStateChangeListeners()) {
       CopyingInputStream in = new CopyingInputStream((InputStream)o);
-      state.setPropertyValue(propertyName, type, in);
+      @SuppressWarnings("unchecked") V v = (V)in;
+      state.setPropertyValue(propertyName, type, v);
       byte[] bytes = in.getBytes();
       broadcaster.propertyChanged(object, propertyName, new CloneableInputStream(bytes));
     } else {

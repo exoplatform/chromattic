@@ -42,11 +42,23 @@ public class JCRPropertyPropertyMapper extends PropertyMapper<SingleValuedProper
 
   @Override
   public Object get(EntityContext context) throws Throwable {
-    return context.getPropertyValue(jcrPropertyName, info.getValue());
+    SimpleValueInfo<?> simpleValueInfo = info.getValue();
+    return get(context, simpleValueInfo);
+  }
+
+  private <V> V get(EntityContext context, SimpleValueInfo<V> d) throws Throwable {
+    return context.getPropertyValue(jcrPropertyName, d);
   }
 
   @Override
   public void set(EntityContext context, Object o) throws Throwable {
-    context.setPropertyValue(jcrPropertyName, info.getValue(), o);
+    SimpleValueInfo<?> simpleValueInfo = info.getValue();
+    set(context, simpleValueInfo, o);
+  }
+
+  private <V> void set(EntityContext context, SimpleValueInfo<V> simpleValueInfo, Object o) throws Throwable {
+    Class<V> javaType = simpleValueInfo.getSimpleType().getJavaType();
+    V v = javaType.cast(o);
+    context.setPropertyValue(jcrPropertyName, simpleValueInfo, v);
   }
 }
