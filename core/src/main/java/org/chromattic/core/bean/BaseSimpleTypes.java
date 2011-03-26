@@ -18,7 +18,7 @@
  */
 package org.chromattic.core.bean;
 
-import org.chromattic.api.SimpleTypeKind;
+import org.chromattic.core.bean.SimpleTypeKind;
 
 import java.io.InputStream;
 import java.util.Collections;

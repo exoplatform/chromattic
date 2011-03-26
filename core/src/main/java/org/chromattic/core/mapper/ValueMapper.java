@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper;
 
-import org.chromattic.api.SimpleTypeKind;
+import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.core.bean.BaseSimpleTypes;
 import org.chromattic.core.bean.SimpleType;
 

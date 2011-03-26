@@ -16,22 +16,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.bean;
+package org.chromattic.test.type.stringenum;
 
-import org.chromattic.core.bean.SimpleTypeKind;
+import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ObjectSimpleType<E> extends SimpleType<E> {
+@NodeMapping(name = "tts_a")
+public abstract class A {
 
-  public ObjectSimpleType(SimpleTypeKind<E, ?> kind, Class<E> javaType) {
-    super(kind, javaType, javaType);
-  }
+  @Property(name = "currency")
+  public abstract Currency getCurrency();
 
-  @Override
-  public boolean isPrimitive() {
-    return false;
-  }
+  public abstract void setCurrency(Currency te);
+
 }

@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.api;
+package org.chromattic.core.bean;
 
 import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
@@ -64,6 +64,15 @@ public abstract class SimpleTypeKind<E, I> {
     externalType = (Class<E>)externalType(getClass());
   }
 
+  protected SimpleTypeKind(Class<E> externalType) {
+    if (externalType == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    this.externalType = externalType;
+  }
+
   public final Class<E> getExternalType() {
     return externalType;
   }
@@ -72,18 +81,59 @@ public abstract class SimpleTypeKind<E, I> {
 
   public abstract I toInternal(E external);
 
-  public abstract static class STRING<E> extends SimpleTypeKind<E, String> { }
+  public abstract static class STRING<E> extends SimpleTypeKind<E, String> {
+    protected STRING(Class<E> externalType) {
+      super(externalType);
+    }
+    protected STRING() {
+    }
+  }
 
-  public abstract static class PATH<E> extends SimpleTypeKind<E, String> { }
+  public abstract static class PATH<E> extends SimpleTypeKind<E, String> {
+    protected PATH(Class<E> externalType) {
+      super(externalType);
+    }
+    protected PATH() {
+    }
+  }
 
-  public abstract static class BOOLEAN<E> extends SimpleTypeKind<E, Boolean> { }
+  public abstract static class BOOLEAN<E> extends SimpleTypeKind<E, Boolean> {
+    protected BOOLEAN(Class<E> externalType) {
+      super(externalType);
+    }
+    protected BOOLEAN() {
+    }
+  }
 
-  public abstract static class LONG<E> extends SimpleTypeKind<E, Long> { }
+  public abstract static class LONG<E> extends SimpleTypeKind<E, Long> {
+    protected LONG(Class<E> externalType) {
+      super(externalType);
+    }
+    protected LONG() {
+    }
+  }
 
-  public abstract static class DATE<E> extends SimpleTypeKind<E, Date> { }
+  public abstract static class DATE<E> extends SimpleTypeKind<E, Date> {
+    protected DATE(Class<E> externalType) {
+      super(externalType);
+    }
+    protected DATE() {
+    }
+  }
 
-  public abstract static class DOUBLE<E> extends SimpleTypeKind<E, Double> { }
+  public abstract static class DOUBLE<E> extends SimpleTypeKind<E, Double> {
+    protected DOUBLE(Class<E> externalType) {
+      super(externalType);
+    }
+    protected DOUBLE() {
+    }
+  }
 
-  public abstract static class STREAM<E> extends SimpleTypeKind<E, InputStream> { }
-
+  public abstract static class STREAM<E> extends SimpleTypeKind<E, InputStream> {
+    protected STREAM(Class<E> externalType) {
+      super(externalType);
+    }
+    protected STREAM() {
+    }
+  }
 }

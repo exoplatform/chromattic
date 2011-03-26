@@ -20,7 +20,7 @@
 package org.chromattic.core.bean;
 
 import org.chromattic.api.BuilderException;
-import org.chromattic.api.SimpleTypeKind;
+import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.Path;
 import org.reflext.api.*;
@@ -214,7 +214,8 @@ public class BeanInfoFactory {
       }
     } else if (
       type.getName().equals(InputStream.class.getName()) ||
-      type.getName().equals(Date.class.getName())) {
+      type.getName().equals(Date.class.getName()) ||
+      type.getKind() == ClassKind.ENUM) {
       return createSimpleValueInfo(type, defaultValue);
     } else {
       return new BeanValueInfo(type);
@@ -374,12 +375,23 @@ public class BeanInfoFactory {
 
       //
       SimpleTypeKind<?, ?> stk = null;
-      for (SimpleTypeKind<?, ?> entry : types.values()) {
-        if (entry.getExternalType().getName().equals(typeInfo.getName())) {
-          stk = entry;
+      switch (typeInfo.getKind()) {
+        case CLASS:
+        case INTERFACE:
+          for (SimpleTypeKind<?, ?> entry : types.values()) {
+            if (entry.getExternalType().getName().equals(typeInfo.getName())) {
+              stk = entry;
+              break;
+            }
+          }
           break;
-        }
+        case ENUM:
+          stk = new StringEnumTypeKind((Class)typeInfo.getType());
+          break;
+        case ANNOTATION:
+          break;
       }
+
       if (stk == null) {
         throw new AssertionError();
       }

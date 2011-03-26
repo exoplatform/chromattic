@@ -16,22 +16,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.bean;
-
-import org.chromattic.core.bean.SimpleTypeKind;
+package org.chromattic.test.type.stringenum;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ObjectSimpleType<E> extends SimpleType<E> {
+public enum Currency {
 
-  public ObjectSimpleType(SimpleTypeKind<E, ?> kind, Class<E> javaType) {
-    super(kind, javaType, javaType);
-  }
+  EURO, DOLLAR
 
-  @Override
-  public boolean isPrimitive() {
-    return false;
-  }
 }

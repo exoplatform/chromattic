@@ -19,7 +19,7 @@
 
 package org.chromattic.core.bean;
 
-import org.chromattic.api.SimpleTypeKind;
+import org.chromattic.core.bean.SimpleTypeKind;
 
 /**
  * A simple type as exposed to the programming model. A simple type is defined by:

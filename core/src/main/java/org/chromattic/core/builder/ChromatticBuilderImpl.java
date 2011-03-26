@@ -19,7 +19,7 @@
 
 package org.chromattic.core.builder;
 
-import org.chromattic.api.SimpleTypeKind;
+import org.chromattic.core.bean.SimpleTypeKind;
 import org.chromattic.core.bean.BeanInfoFactory;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.jcr.SessionLifeCycle;
@@ -146,15 +146,15 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       configure(optionInstance);
     }
 
-    // Build the custom simple types
+    // For now empty custom types
     Map<String, SimpleTypeKind<?, ?>> types = new HashMap<String, SimpleTypeKind<?,?>>();
-    for (Class<? extends SimpleTypeKind<?, ?>> customType : this.customTypeClasses.values()) {
-
-      Constructor<? extends SimpleTypeKind<?, ?>> ctor = customType.getConstructor();
-      SimpleTypeKind<?, ?> type = ctor.newInstance();
-      Class<?> key = type.getExternalType();
-      types.put(key.getName(), type);
-    }
+//    for (Class<? extends SimpleTypeKind<?, ?>> customType : this.customTypeClasses.values()) {
+//
+//      Constructor<? extends SimpleTypeKind<?, ?>> ctor = customType.getConstructor();
+//      SimpleTypeKind<?, ?> type = ctor.newInstance();
+//      Class<?> key = type.getExternalType();
+//      types.put(key.getName(), type);
+//    }
     BeanInfoFactory beanInfoBuilder = new BeanInfoFactory(types);
 
     //

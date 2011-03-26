@@ -18,20 +18,33 @@
  */
 package org.chromattic.core.bean;
 
-import org.chromattic.core.bean.SimpleTypeKind;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ObjectSimpleType<E> extends SimpleType<E> {
+public class StringEnumTypeKind<E extends Enum<E>> extends SimpleTypeKind.STRING<E> {
 
-  public ObjectSimpleType(SimpleTypeKind<E, ?> kind, Class<E> javaType) {
-    super(kind, javaType, javaType);
+  public StringEnumTypeKind(Class<E> externalType) {
+    super(externalType);
+
+    //
+    if (!externalType.isEnum()) {
+      throw new IllegalArgumentException("Provided class must be an enum");
+    }
   }
 
   @Override
-  public boolean isPrimitive() {
-    return false;
+  public E toExternal(String internal) {
+    try {
+      return Enum.valueOf(getExternalType(), internal);
+    }
+    catch (IllegalArgumentException e) {
+      throw new IllegalStateException("Enum value cannot be determined from the stored value", e);
+    }
+  }
+
+  @Override
+  public String toInternal(E external) {
+    return external.name();
   }
 }

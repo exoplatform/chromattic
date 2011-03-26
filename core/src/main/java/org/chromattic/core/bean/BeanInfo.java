@@ -19,29 +19,14 @@
 
 package org.chromattic.core.bean;
 
-import org.chromattic.api.BuilderException;
-import org.chromattic.api.SimpleTypeKind;
-import org.chromattic.api.annotations.DefaultValue;
-import org.reflext.api.TypeInfo;
 import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.MethodInfo;
-import org.reflext.api.SimpleTypeInfo;
-import org.reflext.api.ParameterizedTypeInfo;
-import org.reflext.api.ArrayTypeInfo;
-import org.reflext.api.AnnotationIntrospector;
-import org.reflext.api.introspection.MethodIntrospector;
-import org.reflext.api.introspection.HierarchyScope;
-import org.chromattic.api.annotations.Path;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 import java.lang.annotation.Annotation;
-import java.io.InputStream;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
