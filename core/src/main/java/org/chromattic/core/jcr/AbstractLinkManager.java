@@ -85,26 +85,28 @@ public abstract class AbstractLinkManager {
     if (referent.hasProperty(propertyName)) {
       Property property = referent.getProperty(propertyName);
       oldReferenced = _getReferenced(property);
-      Entry entry = getEntry(oldReferenced);
+      if (oldReferenced != null) {
+        Entry entry = getEntry(oldReferenced);
 
-      boolean scheduleForAddition = true;
-      Set<Node> propertyScheduledForAddition = entry.propertiesScheduledForAddition.get(propertyName);
-      if (propertyScheduledForAddition != null) {
-        if (propertyScheduledForAddition.contains(referent)) {
-          propertyScheduledForAddition.remove(referent);
-          scheduleForAddition = false;
+        boolean scheduleForAddition = true;
+        Set<Node> propertyScheduledForAddition = entry.propertiesScheduledForAddition.get(propertyName);
+        if (propertyScheduledForAddition != null) {
+          if (propertyScheduledForAddition.contains(referent)) {
+            propertyScheduledForAddition.remove(referent);
+            scheduleForAddition = false;
+          }
         }
-      }
 
-      //
-      if (scheduleForAddition) {
-        Set<Node> propertyScheduledForRemoval = entry.propertiesScheduledForRemoval.get(propertyName);
-        if (propertyScheduledForRemoval == null) {
-          propertyScheduledForRemoval = new HashSet<Node>();
-          entry.propertiesScheduledForRemoval.put(propertyName, propertyScheduledForRemoval);
+        //
+        if (scheduleForAddition) {
+          Set<Node> propertyScheduledForRemoval = entry.propertiesScheduledForRemoval.get(propertyName);
+          if (propertyScheduledForRemoval == null) {
+            propertyScheduledForRemoval = new HashSet<Node>();
+            entry.propertiesScheduledForRemoval.put(propertyName, propertyScheduledForRemoval);
+          }
+          propertyScheduledForRemoval.add(referent);
+          entry.version++;
         }
-        propertyScheduledForRemoval.add(referent);
-        entry.version++;
       }
     }
 

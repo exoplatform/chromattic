@@ -29,6 +29,8 @@
 - Map iterators on relationship for maximum efficiency and allow skip
 - tester que les node type résiduels ont la bonne property type
 
+- create nodetypes.xml from the mappings with an annotation processor
+
 - a cache invalidation framework based on transforming node to object id + class
 
 *** Patrice

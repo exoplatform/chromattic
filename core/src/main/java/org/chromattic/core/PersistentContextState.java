@@ -201,7 +201,7 @@ class PersistentContextState extends ContextState {
         int neededType = def.getRequiredType();
         if (neededType != PropertyType.UNDEFINED) {
           if (neededType != value.getType()) {
-            throw new ClassCastException();
+            throw new ClassCastException("Cannot cast type " + value.getType() + " to type " + neededType + " when setting property " + propertyName);
           }
         }
       }

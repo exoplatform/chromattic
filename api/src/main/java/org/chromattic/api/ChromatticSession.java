@@ -152,6 +152,16 @@ public interface ChromatticSession {
 
   String getPath(Object o) throws ChromatticException;
 
+  /**
+   * Returns a virtual object from the specified object
+   *
+   * @param o the real object
+   * @param <O> the object type parameter
+   * @return the corresponding virtual object
+   * @throws ChromatticException any exception
+   */
+  // <O> O getVirtualObject(O o) throws ChromatticException;
+
   <O> void addLifeCycleListener(LifeCycleListener<O> listener);
 
   void save() throws ChromatticException;
