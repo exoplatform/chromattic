@@ -16,39 +16,28 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
-package org.chromattic.test.property;
-
-import org.chromattic.test.support.MultiValue;
-
-import javax.jcr.Node;
-import javax.jcr.ValueFactory;
+package org.chromattic.test.support;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractMultiValuedTest extends AbstractValuedTest {
+public abstract class MultiValueType {
 
+  public static final MultiValueType LIST = new ListMultiValueType();
 
-  protected AbstractMultiValuedTest(
-    ValueFactory factory,
-    Object o,
-    Node node,
-    String propertyName,
-    String getterName,
-    String setterName,
-    int propertyType,
-    MultiValue values) throws Exception {
-    super(
-      factory,
-      o,
-      node,
-      propertyName,
-      getterName,
-      setterName,
-      propertyType,
-      values);
-  }
+  public static final MultiValueType ARRAY = new ArrayMultiValueType();
+
+  public abstract int size(Object nativeObj);
+
+  public abstract Object get(Object nativeObj, int index);
+
+  public abstract void set(Object nativeObj, int index, Object object);
+
+  public abstract Object create(Class<?> componentType, int size);
+
+  public abstract Object array(Class<?> componentType, int size);
+
+  public abstract Class<?> componentType(Object nativeObj);
 
 }

@@ -19,6 +19,8 @@
 
 package org.chromattic.test.property;
 
+import org.chromattic.test.support.MultiValue;
+
 import javax.jcr.ValueFactory;
 import javax.jcr.Node;
 import javax.jcr.Value;
@@ -35,17 +37,18 @@ public class MultiValuedMappedToMultiValuedTest extends AbstractMultiValuedTest 
   }
 
   protected void run() throws Exception {
-    safeArrayEquals(_objects.array(), MultiValue.create(getter.invoke(o)));
+    MultiValue aaa = values.sub();
+    safeArrayEquals(aaa, MultiValue.create(getter.invoke(o)));
 
     //
-    node.setProperty(propertyName, new Value[]{create(_objects.getObject(0))});
-    safeArrayEquals(_objects.array(0), MultiValue.create(getter.invoke(o)));
-    safeArrayEquals(_objects.array(0), node.getProperty(propertyName).getValues());
+    node.setProperty(propertyName, new Value[]{create(values.getObject(0))});
+    safeArrayEquals(values.sub(0), MultiValue.create(getter.invoke(o)));
+    safeArrayEquals(values.sub(0), node.getProperty(propertyName).getValues());
 
     //
-    setter.invoke(o, _objects.array(1, 2).objects());
-    safeArrayEquals(_objects.array(1, 2), MultiValue.create(getter.invoke(o)));
-    safeArrayEquals(_objects.array(1, 2), node.getProperty(propertyName).getValues());
+    setter.invoke(o, values.sub(1, 2).asNative());
+    safeArrayEquals(values.sub(1, 2), MultiValue.create(getter.invoke(o)));
+    safeArrayEquals(values.sub(1, 2), node.getProperty(propertyName).getValues());
 
     //
     try {
@@ -55,7 +58,7 @@ public class MultiValuedMappedToMultiValuedTest extends AbstractMultiValuedTest 
     catch (InvocationTargetException e) {
       assertTrue(e.getCause() instanceof NullPointerException);
     }
-    safeArrayEquals(_objects.array(1, 2), MultiValue.create(getter.invoke(o)));
-    safeArrayEquals(_objects.array(1, 2), node.getProperty(propertyName).getValues());
+    safeArrayEquals(values.sub(1, 2), MultiValue.create(getter.invoke(o)));
+    safeArrayEquals(values.sub(1, 2), node.getProperty(propertyName).getValues());
   }
 }

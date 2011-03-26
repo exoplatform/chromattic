@@ -20,6 +20,7 @@
 package org.chromattic.test.property;
 
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.test.support.MultiValue;
 import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;

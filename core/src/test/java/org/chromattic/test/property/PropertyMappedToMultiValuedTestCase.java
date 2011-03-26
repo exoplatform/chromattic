@@ -20,12 +20,12 @@
 package org.chromattic.test.property;
 
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.test.support.MultiValue;
 import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
-import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import java.util.Calendar;
+import javax.jcr.PropertyType;
 import java.util.Date;
 
 /**
@@ -60,103 +60,34 @@ public class PropertyMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testString() throws Exception {
-    assertEquals(null, e.getString());
-    eNode.setProperty("string_array_property", new String[]{"foo"});
-    assertEquals("foo", e.getString());
-    e.setString("bar");
-    assertEquals(1, eNode.getProperty("string_array_property").getValues().length);
-    assertEquals("bar", eNode.getProperty("string_array_property").getValues()[0].getString());
-    e.setString(null);
-    assertEquals(0, eNode.getProperty("string_array_property").getValues().length);
+    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "string_array_property", "getString", "setString", PropertyType.STRING, new MultiValue.List("foo", "bar")).run();
   }
 
   public void testPrimitiveBoolean() throws Exception {
-    try {
-      e.getPrimitiveBoolean();
-      fail();
-    }
-    catch (IllegalStateException expected) {
-    }
-    eNode.setProperty("primitive_boolean_array_property", new Value[]{factory.createValue(true)});
-    assertEquals(true, e.getPrimitiveBoolean());
-    e.setPrimitiveBoolean(false);
-    assertEquals(1, eNode.getProperty("primitive_boolean_array_property").getValues().length);
-    assertEquals(false, eNode.getProperty("primitive_boolean_array_property").getValues()[0].getBoolean());
+    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "primitive_boolean_array_property", "getPrimitiveBoolean", "setPrimitiveBoolean", PropertyType.BOOLEAN, new MultiValue.List(true, false)).run();
   }
 
   public void testPrimitiveInt() throws Exception {
-    try {
-      e.getPrimitiveInt();
-      fail();
-    }
-    catch (IllegalStateException expected) {
-    }
-    eNode.setProperty("primitive_int_array_property", new Value[]{factory.createValue(3)});
-    assertEquals(3, e.getPrimitiveInt());
-    e.setPrimitiveInt(5);
-    assertEquals(1, eNode.getProperty("primitive_int_array_property").getValues().length);
-    assertEquals(5, eNode.getProperty("primitive_int_array_property").getValues()[0].getLong());
+    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "primitive_int_array_property", "getPrimitiveInt", "setPrimitiveInt", PropertyType.LONG, new MultiValue.List(3, 5)).run();
   }
 
   public void testPrimitiveLong() throws Exception {
-    try {
-      e.getPrimitiveLong();
-      fail();
-    }
-    catch (IllegalStateException expected) {
-    }
-    eNode.setProperty("primitive_long_array_property", new Value[]{factory.createValue(3)});
-    assertEquals(3, e.getPrimitiveLong());
-    e.setPrimitiveLong(5);
-    assertEquals(1, eNode.getProperty("primitive_long_array_property").getValues().length);
-    assertEquals(5, eNode.getProperty("primitive_long_array_property").getValues()[0].getLong());
+    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "primitive_long_array_property", "getPrimitiveLong", "setPrimitiveLong", PropertyType.LONG, new MultiValue.List(3L, 5L)).run();
   }
 
   public void testBoolean() throws Exception {
-    assertNull(e.getBoolean());
-    eNode.setProperty("boolean_array_property", new Value[]{factory.createValue(true)});
-    assertEquals((Boolean)true, e.getBoolean());
-    e.setBoolean(false);
-    assertEquals(1, eNode.getProperty("boolean_array_property").getValues().length);
-    assertEquals(false, eNode.getProperty("boolean_array_property").getValues()[0].getBoolean());
-    e.setBoolean(null);
-    assertEquals(0, eNode.getProperty("boolean_array_property").getValues().length);
+    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "boolean_array_property", "getBoolean", "setBoolean", PropertyType.BOOLEAN, new MultiValue.List(true, false)).run();
   }
 
   public void testInt() throws Exception {
-    assertNull(e.getInt());
-    eNode.setProperty("int_array_property", new Value[]{factory.createValue(4)});
-    assertEquals((Integer)4, e.getInt());
-    e.setInt(6);
-    assertEquals(1, eNode.getProperty("int_array_property").getValues().length);
-    assertEquals(6, eNode.getProperty("int_array_property").getValues()[0].getLong());
-    e.setInt(null);
-    assertEquals(0, eNode.getProperty("int_array_property").getValues().length);
+    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "int_array_property", "getInt", "setInt", PropertyType.LONG, new MultiValue.List(4, 6)).run();
   }
 
   public void testLong() throws Exception {
-    assertNull(e.getLong());
-    eNode.setProperty("long_array_property", new Value[]{factory.createValue(4)});
-    assertEquals((Long)4L, e.getLong());
-    e.setLong(6L);
-    assertEquals(1, eNode.getProperty("long_array_property").getValues().length);
-    assertEquals(6, eNode.getProperty("long_array_property").getValues()[0].getLong());
-    e.setLong(null);
-    assertEquals(0, eNode.getProperty("long_array_property").getValues().length);
+    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "long_array_property", "getLong", "setLong", PropertyType.LONG, new MultiValue.List(4L, 6L)).run();
   }
 
   public void testDate() throws Exception {
-    Date d = new Date(0);
-    Calendar c = Calendar.getInstance();
-    c.setTime(d);
-
-    assertNull(e.getDate());
-    eNode.setProperty("date_array_property", new Value[]{factory.createValue(c)});
-    assertEquals(d, e.getDate());
-    e.setDate(new Date(1));
-    assertEquals(1, eNode.getProperty("date_array_property").getValues().length);
-    assertEquals(new Date(1), eNode.getProperty("date_array_property").getValues()[0].getDate().getTime());
-    e.setDate(null);
-    assertEquals(0, eNode.getProperty("date_array_property").getValues().length);
+    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "date_array_property", "getDate", "setDate", PropertyType.LONG, new MultiValue.List(new Date(0), new Date(0))).run();
   }
 }

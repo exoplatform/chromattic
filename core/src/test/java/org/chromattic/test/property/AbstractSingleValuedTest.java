@@ -28,10 +28,9 @@ import javax.jcr.ValueFactory;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractMultiValuedTest extends AbstractValuedTest {
+public abstract class AbstractSingleValuedTest extends AbstractValuedTest {
 
-
-  protected AbstractMultiValuedTest(
+  protected AbstractSingleValuedTest(
     ValueFactory factory,
     Object o,
     Node node,
@@ -40,15 +39,6 @@ public abstract class AbstractMultiValuedTest extends AbstractValuedTest {
     String setterName,
     int propertyType,
     MultiValue values) throws Exception {
-    super(
-      factory,
-      o,
-      node,
-      propertyName,
-      getterName,
-      setterName,
-      propertyType,
-      values);
+    super(factory, o, node, propertyName, getterName, setterName, propertyType, values);
   }
-
 }

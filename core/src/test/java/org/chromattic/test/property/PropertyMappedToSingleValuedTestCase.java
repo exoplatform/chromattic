@@ -20,14 +20,16 @@
 package org.chromattic.test.property;
 
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.test.support.MultiValue;
 import org.chromattic.core.DomainSession;
-import org.chromattic.common.IO;
 import org.chromattic.api.NoSuchPropertyException;
 
 import javax.jcr.Node;
-import java.util.Calendar;
+import javax.jcr.ValueFactory;
+import javax.jcr.PropertyType;
 import java.util.Date;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -45,6 +47,9 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
   /** . */
   private Node aNode;
 
+  /** . */
+  private ValueFactory factory;
+
   @Override
   protected void setUp() throws Exception {
     super.setUp();
@@ -54,142 +59,57 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
     Node rootNode = session.getJCRSession().getRootNode();
     aNode = rootNode.addNode("tp_a_a", "tp_a");
     a = session.findByNode(TP_A.class, aNode);
+    factory = session.getJCRSession().getValueFactory();
   }
 
   public void testString() throws Exception {
-    assertEquals(null, a.getString());
-    aNode.setProperty("string_property", "foo");
-    assertEquals("foo", a.getString());
-    a.setString("bar");
-    assertEquals("bar", aNode.getProperty("string_property").getString());
-    a.setString(null);
-    assertFalse(aNode.hasProperty("string_property"));
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "string_property", "getString", "setString", PropertyType.STRING, new MultiValue.List("foo", "bar")).run();
   }
 
   public void testPath() throws Exception {
-    assertEquals(null, a.getPath());
-    aNode.setProperty("path_property", "/foo");
-    assertEquals("/foo", a.getPath());
-    a.setPath("/bar");
-    assertEquals("/bar", aNode.getProperty("path_property").getString());
-    a.setPath(null);
-    assertFalse(aNode.hasProperty("path_property"));
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "path_property", "getPath", "setPath", PropertyType.PATH, new MultiValue.List("/foo", "/bar")).run();
   }
 
   public void testPrimitiveBoolean() throws Exception {
-    try {
-      a.getPrimitiveBoolean();
-      fail();
-    }
-    catch (IllegalStateException expected) {
-    }
-    aNode.setProperty("primitive_boolean_property", true);
-    assertEquals(true, a.getPrimitiveBoolean());
-    a.setPrimitiveBoolean(false);
-    assertEquals(false, aNode.getProperty("primitive_boolean_property").getBoolean());
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_boolean_property", "getPrimitiveBoolean", "setPrimitiveBoolean", PropertyType.BOOLEAN, new MultiValue.List(true, false)).run();
   }
 
   public void testPrimitiveInt() throws Exception {
-    try {
-      a.getPrimitiveInt();
-      fail();
-    }
-    catch (IllegalStateException expected) {
-    }
-    aNode.setProperty("primitive_int_property", 3);
-    assertEquals(3, a.getPrimitiveInt());
-    a.setPrimitiveInt(5);
-    assertEquals(5, aNode.getProperty("primitive_int_property").getLong());
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_int_property", "getPrimitiveInt", "setPrimitiveInt", PropertyType.LONG, new MultiValue.List(3, 5)).run();
   }
 
   public void testPrimitiveLong() throws Exception {
-    try {
-      a.getPrimitiveLong();
-      fail();
-    }
-    catch (IllegalStateException expected) {
-    }
-    aNode.setProperty("primitive_long_property", 3);
-    assertEquals(3, a.getPrimitiveLong());
-    a.setPrimitiveLong(5);
-    assertEquals(5, aNode.getProperty("primitive_long_property").getLong());
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_long_property", "getPrimitiveLong", "setPrimitiveLong", PropertyType.LONG, new MultiValue.List(3L, 5L)).run();
   }
 
   public void testPrimitiveDouble() throws Exception {
-    try {
-      a.getPrimitiveDouble();
-      fail();
-    }
-    catch (IllegalStateException expected) {
-    }
-    aNode.setProperty("primitive_double_property", 3D);
-    assertEquals(3D, a.getPrimitiveDouble());
-    a.setPrimitiveDouble(5D);
-    assertEquals(5D, aNode.getProperty("primitive_double_property").getDouble());
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "primitive_double_property", "getPrimitiveDouble", "setPrimitiveDouble", PropertyType.DOUBLE, new MultiValue.List(3D, 5D)).run();
   }
 
   public void testBoolean() throws Exception {
-    assertNull(a.getBoolean());
-    aNode.setProperty("boolean_property", true);
-    assertEquals((Boolean)true, a.getBoolean());
-    a.setBoolean(false);
-    assertEquals(false, aNode.getProperty("boolean_property").getBoolean());
-    a.setBoolean(null);
-    assertFalse(aNode.hasProperty("boolean_property"));
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "boolean_property", "getBoolean", "setBoolean", PropertyType.BOOLEAN, new MultiValue.List(true, false)).run();
   }
 
   public void testInt() throws Exception {
-    assertNull(a.getInt());
-    aNode.setProperty("int_property", 4);
-    assertEquals((Integer)4, a.getInt());
-    a.setInt(6);
-    assertEquals(6, aNode.getProperty("int_property").getLong());
-    a.setInt(null);
-    assertFalse(aNode.hasProperty("int_property"));
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "int_property", "getInt", "setInt", PropertyType.LONG, new MultiValue.List(4, 6)).run();
   }
 
   public void testLong() throws Exception {
-    assertNull(a.getLong());
-    aNode.setProperty("long_property", 4);
-    assertEquals((Long)4L, a.getLong());
-    a.setLong(6L);
-    assertEquals(6, aNode.getProperty("long_property").getLong());
-    a.setLong(null);
-    assertFalse(aNode.hasProperty("long_property"));
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "long_property", "getLong", "setLong", PropertyType.LONG, new MultiValue.List(4L, 6L)).run();
   }
 
   public void testDouble() throws Exception {
-    assertNull(a.getDouble());
-    aNode.setProperty("double_property", 4D);
-    assertEquals(4D, a.getDouble());
-    a.setDouble(6D);
-    assertEquals(6D, aNode.getProperty("double_property").getDouble());
-    a.setDouble(null);
-    assertFalse(aNode.hasProperty("double_property"));
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "double_property", "getDouble", "setDouble", PropertyType.DOUBLE, new MultiValue.List(4D, 6D)).run();
   }
 
   public void testDate() throws Exception {
-    Date d = new Date(0);
-    Calendar c = Calendar.getInstance();
-    c.setTime(d);
-
-    assertNull(a.getDate());
-    aNode.setProperty("date_property", c);
-    assertEquals(d, a.getDate());
-    a.setDate(new Date(1));
-    assertEquals(new Date(1), aNode.getProperty("date_property").getDate().getTime());
-    a.setDate(null);
-    assertFalse(aNode.hasProperty("date_property"));
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "date_property", "getDate", "setDate", PropertyType.DATE, new MultiValue.List(new Date(0), new Date(1))).run();
   }
 
   public void testStream() throws Exception {
-    assertNull(a.getBytes());
-    aNode.setProperty("bytes_property", new ByteArrayInputStream("foo".getBytes("UTF8")));
-    assertEquals("foo", new String(IO.getBytes(a.getBytes()), "UTF8"));
-    a.setBytes(new ByteArrayInputStream("bar".getBytes("UTF8")));
-    assertEquals("bar", new String(IO.getBytes(aNode.getProperty("bytes_property").getStream()), "UTF8"));
-    a.setBytes(null);
-    assertFalse(aNode.hasProperty("bytes_property"));
+    InputStream s1 = new ByteArrayInputStream("foo".getBytes("UTF8"));
+    InputStream s2 = new ByteArrayInputStream("bar".getBytes("UTF8"));
+    new SingleValuedMappedToSingleValuedTest(factory, a, aNode, "bytes_property", "getBytes", "setBytes", PropertyType.BINARY, new MultiValue.List(s1, s2)).run();
   }
 
   public void testMissing() throws Exception {

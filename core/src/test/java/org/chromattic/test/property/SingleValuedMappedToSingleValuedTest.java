@@ -16,22 +16,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.chromattic.test.property;
 
 import org.chromattic.test.support.MultiValue;
 
-import javax.jcr.Node;
 import javax.jcr.ValueFactory;
+import javax.jcr.Node;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractMultiValuedTest extends AbstractValuedTest {
+public class SingleValuedMappedToSingleValuedTest extends AbstractSingleValuedTest {
 
-
-  protected AbstractMultiValuedTest(
+  public SingleValuedMappedToSingleValuedTest(
     ValueFactory factory,
     Object o,
     Node node,
@@ -40,15 +39,33 @@ public abstract class AbstractMultiValuedTest extends AbstractValuedTest {
     String setterName,
     int propertyType,
     MultiValue values) throws Exception {
-    super(
-      factory,
-      o,
-      node,
-      propertyName,
-      getterName,
-      setterName,
-      propertyType,
-      values);
+    super(factory, o, node, propertyName, getterName, setterName, propertyType, values);
   }
 
+  protected void run() throws Exception {
+    try {
+      assertNull(getter.invoke(o));
+      assertFalse(primitive);
+    }
+    catch (InvocationTargetException e) {
+      if (e.getCause() instanceof IllegalStateException) {
+        assertTrue(primitive);
+      } else {
+        fail();
+      }
+    }
+
+    //
+    node.setProperty(propertyName, create(values.getObject(0)));
+    safeValueEquals(values.getObject(0), getter.invoke(o));
+    setter.invoke(o, values.getObject(1));
+    assertTrue(node.hasProperty(propertyName));
+    safeValueEquals(values.getObject(1), node.getProperty(propertyName).getValue());
+
+    //
+    if (!primitive) {
+      setter.invoke(o, (Object)null);
+      assertFalse(node.hasNode(propertyName));
+    }
+  }
 }

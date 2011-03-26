@@ -19,6 +19,8 @@
 
 package org.chromattic.test.property;
 
+import org.chromattic.test.support.MultiValue;
+
 import javax.jcr.ValueFactory;
 import javax.jcr.Node;
 import java.lang.reflect.InvocationTargetException;
@@ -34,32 +36,32 @@ public class MultiValuedMappedToSingleValuedTest extends AbstractMultiValuedTest
   }
 
   protected void run() throws Exception {
-    safeArrayEquals(_objects.array(), MultiValue.create(getter.invoke(o)));
+    safeArrayEquals(values.sub(), MultiValue.create(getter.invoke(o)));
 
     //
-    node.setProperty(propertyName, create(_objects.getObject(0)));
-    safeArrayEquals(_objects.array(0), MultiValue.create(getter.invoke(o)));
-    safeValueEquals(_objects.getObject(0), node.getProperty(propertyName).getValue());
+    node.setProperty(propertyName, create(values.getObject(0)));
+    safeArrayEquals(values.sub(0), MultiValue.create(getter.invoke(o)));
+    safeValueEquals(values.getObject(0), node.getProperty(propertyName).getValue());
 
     //
-    setter.invoke(o, _objects.array(1).objects());
-    safeArrayEquals(_objects.array(1), MultiValue.create(getter.invoke(o)));
-    safeValueEquals(_objects.getObject(1), node.getProperty(propertyName).getValue());
+    setter.invoke(o, values.sub(1).asNative());
+    safeArrayEquals(values.sub(1), MultiValue.create(getter.invoke(o)));
+    safeValueEquals(values.getObject(1), node.getProperty(propertyName).getValue());
 
     //
-    setter.invoke(o, _objects.array().objects());
-    safeArrayEquals(_objects.array(), MultiValue.create(getter.invoke(o)));
+    setter.invoke(o, values.sub().asNative());
+    safeArrayEquals(values.sub(), MultiValue.create(getter.invoke(o)));
     assertFalse(node.hasProperty(propertyName));
 
     //
     try {
-      setter.invoke(o, _objects.array(1, 2).objects());
+      setter.invoke(o, values.sub(1, 2).asNative());
       fail();
     }
     catch (InvocationTargetException e) {
       assertTrue(e.getCause() instanceof IllegalArgumentException);
     }
-    safeArrayEquals(_objects.array(), MultiValue.create(getter.invoke(o)));
+    safeArrayEquals(values.sub(), MultiValue.create(getter.invoke(o)));
     assertFalse(node.hasProperty(propertyName));
   }
 }

@@ -16,39 +16,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
-package org.chromattic.test.property;
-
-import org.chromattic.test.support.MultiValue;
-
-import javax.jcr.Node;
-import javax.jcr.ValueFactory;
+package org.chromattic.test.support;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractMultiValuedTest extends AbstractValuedTest {
+public class ArrayMultiValueType extends MultiValueType {
 
-
-  protected AbstractMultiValuedTest(
-    ValueFactory factory,
-    Object o,
-    Node node,
-    String propertyName,
-    String getterName,
-    String setterName,
-    int propertyType,
-    MultiValue values) throws Exception {
-    super(
-      factory,
-      o,
-      node,
-      propertyName,
-      getterName,
-      setterName,
-      propertyType,
-      values);
+  public int size(Object nativeObj) {
+    return java.lang.reflect.Array.getLength(nativeObj);
   }
 
+  public Object get(Object nativeObj, int index) {
+    return java.lang.reflect.Array.get(nativeObj, index);
+  }
+
+  public void set(Object nativeObj, int index, Object object) {
+    java.lang.reflect.Array.set(nativeObj, index, object);
+  }
+
+  public Object create(Class<?> componentType, int size) {
+    return java.lang.reflect.Array.newInstance(componentType, size);
+  }
+
+  public Object array(Class<?> componentType, int size) {
+    return java.lang.reflect.Array.newInstance(componentType, size);
+  }
+
+  public Class<?> componentType(Object nativeObj) {
+    return nativeObj.getClass().getComponentType();
+  }
 }
