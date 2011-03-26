@@ -72,4 +72,16 @@ public class OneToManyTestCase extends AbstractTestCase {
     assertSame(b, a.getChildren().get("totmhm_b"));
     assertEquals(1, a.getChildren().size());
   }
+
+  public void testPutWithInvalidName() throws Exception {
+    ChromatticSession session = login();
+    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
+    TOTMHM_B b = session.create(TOTMHM_B.class);
+    try {
+      a.getChildren().put("/foo", b);
+      fail();
+    }
+    catch (IllegalArgumentException e) {
+    }
+  }
 }

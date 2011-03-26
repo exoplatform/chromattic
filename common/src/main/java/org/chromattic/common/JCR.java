@@ -63,12 +63,12 @@ public class JCR {
     */
 
     if (name == null) {
-      throw new NullPointerException();
+      throw new NullPointerException("No null name accepted");
     }
 
     //
     if (name.length() == 0) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("No empty name accepted");
     }
 
     //
@@ -76,7 +76,7 @@ public class JCR {
     if (name.charAt(0) == '{') {
       int curlyBraceIndex = name.indexOf('}');
       if (curlyBraceIndex == -1) {
-        throw new IllegalArgumentException("Uri not closed in name " + name);
+        throw new IllegalArgumentException("Uri not closed in name value " + name);
       }
       String uri = name.substring(1, curlyBraceIndex);
       // validate URI ...
@@ -113,11 +113,11 @@ public class JCR {
         || (c >= 0xE000 && c <= 0xFFFD)
         || (c >= 0x10000 && c <= 0x10FFFF)) {
         if (c == '/' || c == ':' || c == '[' || c == ']' || c == '|' || c == '*') {
-          throw new IllegalArgumentException("Char " + c + " at position " + index + "not accepted");
+          throw new IllegalArgumentException("Illegal path value " + name + "  (char " + c + " at position " + index + " not accepted)");
         }
         continue;
       }
-      throw new IllegalArgumentException("Char " + c + " at position " + index + "not accepted");
+      throw new IllegalArgumentException("Illegal path value " + name + "  (char " + c + " at position " + index + " not accepted)");
     }
   }
 

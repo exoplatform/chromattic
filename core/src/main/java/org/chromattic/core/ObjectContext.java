@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.chromattic.api.Status;
 import org.chromattic.common.logging.Logger;
+import org.chromattic.common.JCR;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.mapper.MethodMapper;
 import org.chromattic.core.mapper.PropertyMapper;
@@ -180,6 +181,9 @@ public class ObjectContext implements MethodHandler {
   }
 
   public void addChild(String name, ObjectContext childCtx) {
+    JCR.validateName(name);
+
+    //
     state.getSession().insert(this, name, childCtx);
   }
 
