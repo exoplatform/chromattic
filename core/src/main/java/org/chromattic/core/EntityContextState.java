@@ -46,10 +46,10 @@ abstract class EntityContextState {
 
   abstract <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type);
 
-  abstract <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType);
+  abstract <L> L getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<L> listType);
 
   abstract <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V o);
 
-  abstract <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects);
+  abstract <L> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<L> listType, L objects);
 
 }

@@ -21,14 +21,13 @@ package org.chromattic.core;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ListType<T> {
+public abstract class ListType<L> {
 
   public static ListType<Object> ARRAY = new ListType<Object>() {
 
@@ -80,12 +79,12 @@ public abstract class ListType<T> {
     }
   };
 
-  public abstract T create(Class<?> elementType, int size);
+  public abstract L create(Class<?> elementType, int size);
 
-  public abstract void set(T t, int index, Object element);
+  public abstract void set(L t, int index, Object element);
 
-  public abstract int size(T t);
+  public abstract int size(L t);
 
-  public abstract Object get(T t, int index);
+  public abstract Object get(L t, int index);
 
 }

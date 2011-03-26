@@ -72,7 +72,7 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType) {
+  <L> L getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<L> listType) {
     throw new IllegalStateException();
   }
 
@@ -80,7 +80,7 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects) {
+  <L> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<L> listType, L objects) {
     throw new IllegalStateException();
   }
 
