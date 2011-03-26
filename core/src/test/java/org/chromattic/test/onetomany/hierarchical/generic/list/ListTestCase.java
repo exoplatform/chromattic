@@ -16,36 +16,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.onetomany.hierarchical.generic.list;
 
-package org.chromattic.test.onetomany.hierarchical.list;
-
-import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
+import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Arrays;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ListOneToManyTestCase extends AbstractTestCase {
+public class ListTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(A.class);
-    addClass(B.class);
+    addClass(A3.class);
+    addClass(B3.class);
   }
 
   public void testAddSingleton() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    B b = session.create(B.class, "1");
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    B3 b = session.create(B3.class, "1");
     bs.add(b);
 
     //
@@ -57,10 +53,10 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 
   public void testAddLast() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    B b1 = session.create(B.class, "1");
-    B b2 = session.create(B.class, "2");
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    B3 b1 = session.create(B3.class, "1");
+    B3 b2 = session.create(B3.class, "2");
     bs.add(b1);
     bs.add(b2);
 
@@ -74,10 +70,10 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 
   public void testAddFirst() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    B b1 = session.create(B.class, "1");
-    B b2 = session.create(B.class, "2");
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    B3 b1 = session.create(B3.class, "1");
+    B3 b2 = session.create(B3.class, "2");
     bs.add(b1);
     bs.add(0, b2);
 
@@ -91,11 +87,11 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 
   public void testAddMiddle() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    B b1 = session.create(B.class, "1");
-    B b2 = session.create(B.class, "2");
-    B b3 = session.create(B.class, "3");
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    B3 b1 = session.create(B3.class, "1");
+    B3 b2 = session.create(B3.class, "2");
+    B3 b3 = session.create(B3.class, "3");
     bs.add(b1);
     bs.add(b2);
     bs.add(1, b3);
@@ -111,17 +107,17 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 
   public void testIterator() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    B b1 = session.create(B.class, "1");
-    B b2 = session.create(B.class, "2");
-    B b3 = session.create(B.class, "3");
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    B3 b1 = session.create(B3.class, "1");
+    B3 b2 = session.create(B3.class, "2");
+    B3 b3 = session.create(B3.class, "3");
     bs.add(b1);
     bs.add(b2);
     bs.add(b3);
 
     //
-    ListIterator<B> i = bs.listIterator();
+    ListIterator<B3> i = bs.listIterator();
     assertSame(b1, i.next());
     assertSame(b1, i.previous());
     assertSame(b1, i.next());
@@ -138,10 +134,10 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 
   public void testSet() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    B b1 = session.create(B.class, "1");
-    B b2 = session.create(B.class, "2");
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    B3 b1 = session.create(B3.class, "1");
+    B3 b2 = session.create(B3.class, "2");
     bs.add(b1);
     bs.set(0, b2);
 
@@ -154,11 +150,11 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 
   public void testSetWithExisting() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    B b1 = session.create(B.class, "1");
-    B b2 = session.create(B.class, "2");
-    B b3 = session.create(B.class, "3");
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    B3 b1 = session.create(B3.class, "1");
+    B3 b2 = session.create(B3.class, "2");
+    B3 b3 = session.create(B3.class, "3");
     bs.add(b1);
     bs.add(b2);
     bs.add(b3);
@@ -176,11 +172,11 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 
   public void _testMoveFirst() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    B b1 = session.create(B.class, "1");
-    B b2 = session.create(B.class, "2");
-    B b3 = session.create(B.class, "3");
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    B3 b1 = session.create(B3.class, "1");
+    B3 b2 = session.create(B3.class, "2");
+    B3 b3 = session.create(B3.class, "3");
     bs.add(b1);
     bs.add(b2);
     bs.add(b3);
@@ -199,11 +195,11 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 
   public void testMoveLast() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    B b1 = session.create(B.class, "1");
-    B b2 = session.create(B.class, "2");
-    B b3 = session.create(B.class, "3");
+    A3 a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    B3 b1 = session.create(B3.class, "1");
+    B3 b2 = session.create(B3.class, "2");
+    B3 b3 = session.create(B3.class, "3");
     bs.add(b1);
     bs.add(b2);
     bs.add(b3);
@@ -225,13 +221,13 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 /*
   public void testSort() throws Exception {
     DomainSession session = login();
-    A a = session.insert(A.class, "aaa");
-    List<B> bs = a.getChildren();
-    bs.add(session.create(B.class, "3"));
-    bs.add(session.create(B.class, "2"));
-    bs.add(session.create(B.class, "1"));
+    A a = session.insert(A3.class, "aaa");
+    List<B3> bs = a.getChildren();
+    bs.add(session.create(B3.class, "3"));
+    bs.add(session.create(B3.class, "2"));
+    bs.add(session.create(B3.class, "1"));
 
-    Comparator<B> comparator = new Comparator<B>() {
+    Comparator<B3> comparator = new Comparator<B3>() {
       public int compare(B o1, B o2) {
         return o1.getName().compareTo(o2.getName());
       }
