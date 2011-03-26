@@ -25,6 +25,11 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Annotates a Chromattic entity getter having a return type equals to {@link java.util.Map<String,?>}. The generic
+ * value type of the map can be any type, it is used at runtime to filter the returned properties.   It allows a
+ * generic access to any property of the related jcr node when that type is compatible with the generic value type
+ * of the returned Map. 
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */

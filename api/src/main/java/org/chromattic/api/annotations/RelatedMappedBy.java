@@ -25,6 +25,9 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Defines the name of the property that is used on the other side of the relationship to maintain one to many
+ * relationship with path or reference.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  * @see org.chromattic.api.annotations.MappedBy
@@ -32,5 +35,11 @@ import java.lang.annotation.ElementType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RelatedMappedBy {
+
+  /**
+   * The name of the property of the related entity that maintains the relationship.
+   *
+   * @return the property name
+   */
   public abstract String value();
 }

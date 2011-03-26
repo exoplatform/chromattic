@@ -19,6 +19,8 @@
 package org.chromattic.api.query;
 
 /**
+ * The object query builder allows to create queries that will return entities under the form of objects.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  * @param <O> the object type parameter

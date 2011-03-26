@@ -19,6 +19,8 @@
 package org.chromattic.api.event;
 
 /**
+ * The generic class of an event listener that integrates with a Chromattic runtime.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */

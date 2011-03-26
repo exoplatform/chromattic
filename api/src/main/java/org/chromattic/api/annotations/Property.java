@@ -25,11 +25,19 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Defines the mapping between the property of a node type and a java bean property of the annotated class.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Property {
+
+  /**
+   * The jcr property name.
+   *
+   * @return the jcr property name
+   */
   String name();
 }

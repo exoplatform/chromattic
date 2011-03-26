@@ -19,18 +19,13 @@
 
 package org.chromattic.test.query;
 
-import org.chromattic.api.annotations.Finder;
-import org.chromattic.api.query.QueryLanguage;
-
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public interface A {
 
+/*
   @Finder
   Iterator<A> find1(String statement);
 
@@ -50,5 +45,6 @@ public interface A {
   @Finder(language = QueryLanguage.XPATH) Iterator<Map<String, Object>> find7(String statement);
 
   @Finder(statement = "some statement", language = QueryLanguage.XPATH) Iterator<Map<String, Object>> find8();
+*/
 
 }

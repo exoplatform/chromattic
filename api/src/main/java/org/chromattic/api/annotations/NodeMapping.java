@@ -25,6 +25,8 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
+ * Defines the mapping between a node type and a java class.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
@@ -32,6 +34,12 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.TYPE)
 public @interface NodeMapping {
 
+  /**
+   * The name of the node type to use.
+   *
+   * @return the node type name
+   */
   String name();
+  
 
 }

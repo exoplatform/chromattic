@@ -19,17 +19,47 @@
 package org.chromattic.api.format;
 
 /**
+ * The object formatter defines an interface used to filter the naming of the jcr nodes and properties.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public interface ObjectFormatter {
 
+  /**
+   * Converts a jcr node name to an entity name.
+   *
+   * @param context the context
+   * @param internalName the jcr node name
+   * @return the entity name
+   */
   String decodeNodeName(FormatterContext context, String internalName);
 
+  /**
+   * Converts an entity name to a jcr node name.
+   *
+   * @param context the context
+   * @param externalName the entity name
+   * @return the jcr node name
+   */
   String encodeNodeName(FormatterContext context, String externalName);
 
+  /**
+   * Converts a jcr property name to an entity property name.
+   *
+   * @param context the context
+   * @param internalName the jcr property name
+   * @return the entity property name
+   */
   String decodePropertyName(FormatterContext context, String internalName);
 
+  /**
+   * Converts an entity property name to a jcr property name.
+   *
+   * @param context the context
+   * @param externalName the entity property name
+   * @return the jcr property name
+   */
   String encodePropertyName(FormatterContext context, String externalName);
 
 }

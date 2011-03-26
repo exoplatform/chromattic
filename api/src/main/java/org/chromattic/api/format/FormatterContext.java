@@ -19,6 +19,7 @@
 package org.chromattic.api.format;
 
 /**
+ * The context provided when a formatting operation is invoked.
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
