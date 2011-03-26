@@ -20,41 +20,11 @@ package org.chromattic.core.bean;
 
 import org.chromattic.api.SimpleTypeKind;
 
-import java.io.InputStream;
-import java.util.Date;
-
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class ObjectSimpleType<E> extends SimpleType<E> {
-
-  /** . */
-  public static final ObjectSimpleType<String> STRING = new ObjectSimpleType<String>(BaseSimpleTypes.STRING, String.class);
-
-  /** . */
-  public static final ObjectSimpleType<String> PATH = new ObjectSimpleType<String>(BaseSimpleTypes.PATH, String.class);
-
-  /** . */
-  public static final ObjectSimpleType<Date> DATE = new ObjectSimpleType<Date>(BaseSimpleTypes.DATE, Date.class);
-
-  /** . */
-  public static final ObjectSimpleType<InputStream> BINARY = new ObjectSimpleType<InputStream>(BaseSimpleTypes.STREAM, InputStream.class);
-
-  /** . */
-  public static final ObjectSimpleType<Integer> INT = new ObjectSimpleType<Integer>(BaseSimpleTypes.INT, Integer.class);
-
-  /** . */
-  public static final ObjectSimpleType<Boolean> BOOLEAN = new ObjectSimpleType<Boolean>(BaseSimpleTypes.BOOLEAN, Boolean.class);
-
-  /** . */
-  public static final ObjectSimpleType<Long> LONG = new ObjectSimpleType<Long>(BaseSimpleTypes.LONG, Long.class);
-
-  /** . */
-  public static final ObjectSimpleType<Double> DOUBLE = new ObjectSimpleType<Double>(BaseSimpleTypes.DOUBLE, Double.class);
-
-  /** . */
-  public static final ObjectSimpleType<Float> FLOAT = new ObjectSimpleType<Float>(BaseSimpleTypes.FLOAT, Float.class);
 
   public ObjectSimpleType(SimpleTypeKind<E, ?> kind, Class<E> javaType) {
     super(kind, javaType, javaType);

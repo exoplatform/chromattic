@@ -65,18 +65,4 @@ public class SimpleValueInfo<V> extends ValueInfo {
   public String toString() {
     return "SimpleValueInfo[simpleType=" + simpleType + "]";
   }
-
-  public static SimpleValueInfo<String> createPath(ClassTypeInfo typeInfo) {
-    if (typeInfo == null) {
-      throw new NullPointerException();
-    }
-
-    //
-    if (typeInfo.getName().equals(String.class.getName())) {
-      return new SimpleValueInfo<String>(typeInfo, ObjectSimpleType.PATH, null);
-    } else {
-      throw new IllegalArgumentException("Simple value of type path must have a type of " + String.class.getName());
-    }
-  }
-
 }

@@ -35,7 +35,10 @@ import java.util.*;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class BeanInfoFactory<T> {
+public class BeanInfoFactory {
+
+  /** . */
+  private static final ObjectSimpleType<String> PATH = new ObjectSimpleType<String>(BaseSimpleTypes.PATH, String.class);
 
   /** . */
   private Map<String, SimpleTypeKind<?, ?>> types;
@@ -205,7 +208,7 @@ public class BeanInfoFactory<T> {
     } else if (type.getName().equals(String.class.getName())) {
       AnnotationIntrospector<Path> intro = new AnnotationIntrospector<Path>(Path.class);
       if ((getter != null && intro.resolve(getter) != null ) || (setter != null && intro.resolve(setter) != null)) {
-        return SimpleValueInfo.createPath(type);
+        return createPath(type);
       } else {
         return createSimpleValueInfo(type, defaultValue);
       }
@@ -304,98 +307,71 @@ public class BeanInfoFactory<T> {
     }
 
     //
-    if (typeInfo instanceof SimpleTypeInfo) {
-      boolean primitive = ((SimpleTypeInfo)typeInfo).isPrimitive();
-      if (!primitive) {
-        if (defaultValue != null) {
-          throw new BuilderException("Non primitive property cannot have a default value");
+    if (typeInfo instanceof SimpleTypeInfo && ((SimpleTypeInfo)typeInfo).isPrimitive()) {
+      switch (((SimpleTypeInfo)typeInfo).getLiteralType()) {
+        case BOOLEAN: {
+          List<Boolean> defaultBoolean = null;
+          if (defaultValue != null) {
+            if (defaultValue instanceof DefaultValue.Boolean) {
+              defaultBoolean = Arrays.asList(((DefaultValue.Boolean)defaultValue).value());
+            } else {
+              throw new BuilderException();
+            }
+          }
+          return new SimpleValueInfo<Boolean>(typeInfo, PrimitiveSimpleType.BOOLEAN, defaultBoolean);
         }
-        switch (((SimpleTypeInfo)typeInfo).getLiteralType()) {
-          case BOOLEAN: {
-            return new SimpleValueInfo<Boolean>(typeInfo, ObjectSimpleType.BOOLEAN, null);
+        case INT: {
+          List<Integer> defaultInteger = null;
+          if (defaultValue != null) {
+            if (defaultValue instanceof DefaultValue.Int) {
+              defaultInteger = Arrays.asList(((DefaultValue.Int)defaultValue).value());
+            } else {
+              throw new BuilderException();
+            }
           }
-          case INT: {
-            return new SimpleValueInfo<Integer>(typeInfo, ObjectSimpleType.INT, null);
-          }
-          case LONG: {
-            return new SimpleValueInfo<Long>(typeInfo, ObjectSimpleType.LONG, null);
-          }
-          case FLOAT: {
-            return new SimpleValueInfo<Float>(typeInfo, ObjectSimpleType.FLOAT, null);
-          }
-          case DOUBLE: {
-            return new SimpleValueInfo<Double>(typeInfo, ObjectSimpleType.DOUBLE, null);
-          }
-          default:
-            throw new AssertionError();
+          return new SimpleValueInfo<Integer>(typeInfo, PrimitiveSimpleType.INT, defaultInteger);
         }
-      } else {
-        switch (((SimpleTypeInfo)typeInfo).getLiteralType()) {
-          case BOOLEAN: {
-            List<Boolean> defaultBoolean = null;
-            if (defaultValue != null) {
-              if (defaultValue instanceof DefaultValue.Boolean) {
-                defaultBoolean = Arrays.asList(((DefaultValue.Boolean)defaultValue).value());
-              } else {
-                throw new BuilderException();
-              }
+        case LONG: {
+          List<Long> defaultLong = null;
+          if (defaultValue != null) {
+            if (defaultValue instanceof DefaultValue.Long) {
+              defaultLong = Arrays.asList(((DefaultValue.Long)defaultValue).value());
+            } else {
+              throw new BuilderException();
             }
-            return new SimpleValueInfo<Boolean>(typeInfo, PrimitiveSimpleType.BOOLEAN, defaultBoolean);
           }
-          case INT: {
-            List<Integer> defaultInteger = null;
-            if (defaultValue != null) {
-              if (defaultValue instanceof DefaultValue.Int) {
-                defaultInteger = Arrays.asList(((DefaultValue.Int)defaultValue).value());
-              } else {
-                throw new BuilderException();
-              }
-            }
-            return new SimpleValueInfo<Integer>(typeInfo, PrimitiveSimpleType.INT, defaultInteger);
-          }
-          case LONG: {
-            List<Long> defaultLong = null;
-            if (defaultValue != null) {
-              if (defaultValue instanceof DefaultValue.Long) {
-                defaultLong = Arrays.asList(((DefaultValue.Long)defaultValue).value());
-              } else {
-                throw new BuilderException();
-              }
-            }
-            return new SimpleValueInfo<Long>(typeInfo, PrimitiveSimpleType.LONG, defaultLong);
-          }
-          case FLOAT: {
-            List<Float> defaultFloat = null;
-            if (defaultValue != null) {
-              if (defaultValue instanceof DefaultValue.Float) {
-                defaultFloat = Arrays.asList(((DefaultValue.Float)defaultValue).value());
-              } else {
-                throw new BuilderException();
-              }
-            }
-            return new SimpleValueInfo<Float>(typeInfo, PrimitiveSimpleType.FLOAT, defaultFloat);
-          }
-          case DOUBLE: {
-            List<Double> defaultDouble = null;
-            if (defaultValue != null) {
-              if (defaultValue instanceof DefaultValue.Double) {
-                defaultDouble = Arrays.asList(((DefaultValue.Double)defaultValue).value());
-              } else {
-                throw new BuilderException();
-              }
-            }
-            return new SimpleValueInfo<Double>(typeInfo, PrimitiveSimpleType.DOUBLE, defaultDouble);
-          }
-          default:
-            throw new AssertionError();
+          return new SimpleValueInfo<Long>(typeInfo, PrimitiveSimpleType.LONG, defaultLong);
         }
+        case FLOAT: {
+          List<Float> defaultFloat = null;
+          if (defaultValue != null) {
+            if (defaultValue instanceof DefaultValue.Float) {
+              defaultFloat = Arrays.asList(((DefaultValue.Float)defaultValue).value());
+            } else {
+              throw new BuilderException();
+            }
+          }
+          return new SimpleValueInfo<Float>(typeInfo, PrimitiveSimpleType.FLOAT, defaultFloat);
+        }
+        case DOUBLE: {
+          List<Double> defaultDouble = null;
+          if (defaultValue != null) {
+            if (defaultValue instanceof DefaultValue.Double) {
+              defaultDouble = Arrays.asList(((DefaultValue.Double)defaultValue).value());
+            } else {
+              throw new BuilderException();
+            }
+          }
+          return new SimpleValueInfo<Double>(typeInfo, PrimitiveSimpleType.DOUBLE, defaultDouble);
+        }
+        default:
+          throw new AssertionError();
       }
     } else {
       if (defaultValue != null) {
         throw new BuilderException("Non primitive property cannot have a default value");
       }
 
-      //
       //
       SimpleTypeKind<?, ?> stk = null;
       for (SimpleTypeKind<?, ?> entry : types.values()) {
@@ -417,5 +393,16 @@ public class BeanInfoFactory<T> {
     Class<E> a = stk.getExternalType();
     SimpleType<E> st = new ObjectSimpleType<E>(stk, a);
     return new SimpleValueInfo<E>(typeInfo, st, null);
+  }
+
+  private static SimpleValueInfo<String> createPath(ClassTypeInfo typeInfo) {
+    if (typeInfo == null) {
+      throw new NullPointerException();
+    }
+    if (typeInfo.getName().equals(String.class.getName())) {
+      return new SimpleValueInfo<String>(typeInfo, PATH, null);
+    } else {
+      throw new IllegalArgumentException("Simple value of type path must have a type of " + String.class.getName());
+    }
   }
 }
