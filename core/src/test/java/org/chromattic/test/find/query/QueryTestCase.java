@@ -21,8 +21,8 @@ package org.chromattic.test.find.query;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.TFI_A;
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.QueryLanguage;
-import org.chromattic.api.Query;
+import org.chromattic.api.query.QueryLanguage;
+import org.chromattic.api.query.Query;
 
 import java.util.Iterator;
 

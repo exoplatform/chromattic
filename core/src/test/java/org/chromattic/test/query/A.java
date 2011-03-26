@@ -19,8 +19,8 @@
 
 package org.chromattic.test.query;
 
-import org.chromattic.api.annotations.Query;
-import org.chromattic.api.QueryLanguage;
+import org.chromattic.api.annotations.Finder;
+import org.chromattic.api.query.QueryLanguage;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -31,20 +31,24 @@ import java.util.Map;
  */
 public interface A {
 
-  @Query Iterator<A> find1(String statement);
+  @Finder
+  Iterator<A> find1(String statement);
 
-  @Query Iterator<A> find2(String statement, QueryLanguage language);
+  @Finder
+  Iterator<A> find2(String statement, QueryLanguage language);
 
-  @Query(language = QueryLanguage.XPATH) Iterator<A> find3(String statement);
+  @Finder(language = QueryLanguage.XPATH) Iterator<A> find3(String statement);
 
-  @Query(statement = "some statement", language = QueryLanguage.XPATH) Iterator<A> find4();
+  @Finder(statement = "some statement", language = QueryLanguage.XPATH) Iterator<A> find4();
 
-  @Query Iterator<Map<String, Object>> find5(String statement);
+  @Finder
+  Iterator<Map<String, Object>> find5(String statement);
 
-  @Query Iterator<Map<String, Object>> find6(String statement, QueryLanguage language);
+  @Finder
+  Iterator<Map<String, Object>> find6(String statement, QueryLanguage language);
 
-  @Query(language = QueryLanguage.XPATH) Iterator<Map<String, Object>> find7(String statement);
+  @Finder(language = QueryLanguage.XPATH) Iterator<Map<String, Object>> find7(String statement);
 
-  @Query(statement = "some statement", language = QueryLanguage.XPATH) Iterator<Map<String, Object>> find8();
+  @Finder(statement = "some statement", language = QueryLanguage.XPATH) Iterator<Map<String, Object>> find8();
 
 }

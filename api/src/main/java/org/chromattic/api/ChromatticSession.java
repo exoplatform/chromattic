@@ -19,9 +19,11 @@
 
 package org.chromattic.api;
 
+import org.chromattic.api.query.QueryLanguage;
+import org.chromattic.api.query.Query;
+
 import javax.jcr.Session;
 import javax.jcr.Node;
-import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

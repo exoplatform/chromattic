@@ -16,16 +16,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.api;
 
-import java.util.Iterator;
+package org.chromattic.api.annotations;
+
+import org.chromattic.api.query.QueryLanguage;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface Query {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Finder {
 
-  <O> Iterator<O> execute(Class<O> clazz);
+  String statement() default "";
+
+  QueryLanguage language() default QueryLanguage.XPATH;
 
 }
