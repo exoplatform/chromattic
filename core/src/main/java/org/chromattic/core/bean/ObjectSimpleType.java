@@ -18,6 +18,8 @@
  */
 package org.chromattic.core.bean;
 
+import org.chromattic.api.SimpleTypeKind;
+
 import java.io.InputStream;
 import java.util.Date;
 

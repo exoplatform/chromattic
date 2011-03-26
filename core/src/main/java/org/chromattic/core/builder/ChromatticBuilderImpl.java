@@ -19,6 +19,8 @@
 
 package org.chromattic.core.builder;
 
+import org.chromattic.api.SimpleTypeKind;
+import org.chromattic.core.bean.BeanInfoFactory;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
@@ -29,11 +31,14 @@ import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.format.DefaultObjectFormatter;
 import org.chromattic.api.format.ObjectFormatter;
+import org.reflext.api.*;
 import org.reflext.jlr.JavaLangReflectTypeModel;
 import org.reflext.jlr.JavaLangReflectMethodModel;
 import org.reflext.core.TypeDomain;
-import org.reflext.api.ClassTypeInfo;
 
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.lang.reflect.Method;
@@ -141,15 +146,26 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       configure(optionInstance);
     }
 
+    // Build the custom simple types
+    Map<String, SimpleTypeKind<?, ?>> types = new HashMap<String, SimpleTypeKind<?,?>>();
+    for (Class<? extends SimpleTypeKind<?, ?>> customType : this.customTypeClasses.values()) {
+
+      Constructor<? extends SimpleTypeKind<?, ?>> ctor = customType.getConstructor();
+      SimpleTypeKind<?, ?> type = ctor.newInstance();
+      Class<?> key = type.getExternalType();
+      types.put(key.getName(), type);
+    }
+    BeanInfoFactory beanInfoBuilder = new BeanInfoFactory(types);
+
     //
     TypeDomain<Type, Method> typeDomain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());
 
     //
+    TypeMappingBuilder mappingBuilder = new TypeMappingBuilder(beanInfoBuilder);
     Set<TypeMapping> mappings = new HashSet<TypeMapping>();
     for (Class clazz : classes) {
       ClassTypeInfo typeInfo = (ClassTypeInfo)typeDomain.getType(clazz);
-      TypeMappingBuilder mappingBuilder = new TypeMappingBuilder(typeInfo);
-      TypeMapping mapping = mappingBuilder.build();
+      TypeMapping mapping = mappingBuilder.build(typeInfo);
       mappings.add(mapping);
     }
 

@@ -21,6 +21,7 @@ package org.chromattic.test.bean;
 
 import org.chromattic.core.bean.BeanInfo;
 import org.chromattic.core.bean.AccessMode;
+import org.chromattic.core.bean.BeanInfoFactory;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Collections;
@@ -38,7 +39,7 @@ public class ReadOnlyPropertyTestCase extends AbstractBeanTestCase {
 
   public void testA() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(A.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
     assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_ONLY);
   }
@@ -49,7 +50,7 @@ public class ReadOnlyPropertyTestCase extends AbstractBeanTestCase {
 
   public void testB() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(B.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(new HashSet<String>(), beanInfo.getPropertyNames());
   }
 
@@ -58,7 +59,7 @@ public class ReadOnlyPropertyTestCase extends AbstractBeanTestCase {
 
   public void testC() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(C.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(Collections.singleton("a"), beanInfo.getPropertyNames());
     assertProperty(beanInfo.getProperty("a"), "a", String.class, AccessMode.READ_ONLY);
   }

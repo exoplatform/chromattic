@@ -70,20 +70,20 @@ import java.util.List;
 public class TypeMappingBuilder {
 
   /** . */
-  private final ClassTypeInfo javaClass;
+  private final BeanInfoFactory beanInfoBuilder;
 
-  public TypeMappingBuilder(ClassTypeInfo javaClass) {
-    this.javaClass = javaClass;
+  public TypeMappingBuilder(BeanInfoFactory beanInfoBuilder) {
+    this.beanInfoBuilder = beanInfoBuilder;
   }
 
-  public TypeMapping build() {
-    return _build();
+  public TypeMapping build(ClassTypeInfo javaClass) {
+    return _build(javaClass);
   }
 
-  private TypeMapping _build() {
+  private TypeMapping _build(ClassTypeInfo javaClass) {
     Set<PropertyMapping> propertyMappings = new HashSet<PropertyMapping>();
     Set<MethodMapping> methodMappings = new HashSet<MethodMapping>();
-    BeanInfo info = new BeanInfo(javaClass);
+    BeanInfo info = beanInfoBuilder.build(javaClass);
 
     // Property
     for (PropertyInfo propertyInfo : info.getProperties(Property.class)) {
@@ -150,11 +150,11 @@ public class TypeMappingBuilder {
             JCRNodeAttributeMapping memberMapping = new JCRNodeAttributeMapping(nat);
             SimpleType simpleType = svi.getSimpleType();
             if (nat == NodeAttributeType.PATH) {
-              if (simpleType != ObjectSimpleType.PATH) {
+              if (simpleType.getKind() != BaseSimpleTypes.PATH) {
                 throw new IllegalStateException("Type " + simpleType + " is not accepted for path attribute mapping");
               }
             } else {
-              if (simpleType != ObjectSimpleType.STRING) {
+              if (simpleType.getKind() != BaseSimpleTypes.STRING) {
                 throw new IllegalStateException("Type " + simpleType + " is not accepted for attribute mapping");
               }
             }
@@ -227,8 +227,8 @@ public class TypeMappingBuilder {
           if (!(mapProperty.getKeyValue() instanceof SimpleValueInfo)) {
             throw new IllegalStateException("Wrong key value type " + mapProperty.getKeyValue());
           }
-          SimpleValueInfo svi = (SimpleValueInfo)mapProperty.getKeyValue();
-          if (svi.getSimpleType() != ObjectSimpleType.STRING) {
+          SimpleValueInfo<?> svi = (SimpleValueInfo)mapProperty.getKeyValue();
+          if (svi.getSimpleType().getKind() != BaseSimpleTypes.STRING) {
             throw new IllegalStateException();
           }
         }

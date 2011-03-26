@@ -19,6 +19,8 @@
 
 package org.chromattic.api;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
@@ -153,6 +155,9 @@ public abstract class ChromatticBuilder {
   /** . */
   protected final Map<String, OptionInstance<?>> options = new HashMap<String, OptionInstance<?>>();
 
+  /** . */
+  protected final Map<String, Class<? extends SimpleTypeKind<?, ?>>> customTypeClasses = new HashMap<String, Class<? extends SimpleTypeKind<?, ?>>>();
+
   public OptionInstance<?> getOption(String name) {
     return options.get(name);
   }
@@ -173,7 +178,17 @@ public abstract class ChromatticBuilder {
   }
 
   public void add(Class<?> clazz) {
+    if (clazz == null) {
+      throw new NullPointerException();
+    }
     classes.add(clazz);
+  }
+
+  public void addType(Class<? extends SimpleTypeKind<?, ?>> type) {
+    if (type == null) {
+      throw new NullPointerException();
+    }
+    customTypeClasses.put(type.getName(), type);
   }
 
   public Chromattic build() throws Exception {

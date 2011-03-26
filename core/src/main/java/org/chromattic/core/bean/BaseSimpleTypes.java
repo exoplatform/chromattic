@@ -18,8 +18,13 @@
  */
 package org.chromattic.core.bean;
 
+import org.chromattic.api.SimpleTypeKind;
+
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -125,4 +130,21 @@ public class BaseSimpleTypes {
       return external;
     }
   };
+
+  public static Map<Class<?>, SimpleTypeKind<?, ?>> TYPES;
+
+  static {
+    Map<Class<?>, SimpleTypeKind<?, ?>> baseTypes = new HashMap<Class<?>, SimpleTypeKind<?, ?>>();
+    baseTypes.put(String.class, STRING);
+    baseTypes.put(Integer.class, INT);
+    baseTypes.put(Boolean.class, BOOLEAN);
+    baseTypes.put(Long.class, LONG);
+    baseTypes.put(Date.class, DATE);
+    baseTypes.put(Double.class, DOUBLE);
+    baseTypes.put(Float.class, FLOAT);
+    baseTypes.put(InputStream.class, STREAM);
+
+    //
+    TYPES = Collections.unmodifiableMap(baseTypes);
+  }
 }

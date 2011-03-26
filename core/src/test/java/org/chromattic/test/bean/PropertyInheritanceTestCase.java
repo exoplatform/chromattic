@@ -19,6 +19,7 @@
 
 package org.chromattic.test.bean;
 
+import org.chromattic.core.bean.BeanInfoFactory;
 import org.reflext.api.ClassTypeInfo;
 import org.chromattic.core.bean.BeanInfo;
 import org.chromattic.core.bean.AccessMode;
@@ -34,7 +35,7 @@ public class PropertyInheritanceTestCase extends AbstractBeanTestCase {
 
   public void testFoo5() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo5_2.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertProperty(beanInfo.getProperty("a"), "a", RuntimeException.class, AccessMode.READ_ONLY);
   }
@@ -44,7 +45,7 @@ public class PropertyInheritanceTestCase extends AbstractBeanTestCase {
 
   public void testFoo6() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo6_2.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertProperty(beanInfo.getProperty("a"), "a", Exception.class, AccessMode.READ_ONLY);
   }
@@ -56,7 +57,7 @@ public class PropertyInheritanceTestCase extends AbstractBeanTestCase {
 
   public void testFoo7() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo7_2.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertProperty(beanInfo.getProperty("a"), "a", Exception.class, AccessMode.READ_WRITE);
   }
@@ -69,7 +70,7 @@ public class PropertyInheritanceTestCase extends AbstractBeanTestCase {
 
   public void testFoo8() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo8_2.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertProperty(beanInfo.getProperty("a"), "a", RuntimeException.class, AccessMode.READ_WRITE);
   }
@@ -79,7 +80,7 @@ public class PropertyInheritanceTestCase extends AbstractBeanTestCase {
 
   public void testFoo9() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo9_2.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertProperty(beanInfo.getProperty("a"), "a", RuntimeException.class, AccessMode.READ_ONLY);
   }
@@ -89,7 +90,7 @@ public class PropertyInheritanceTestCase extends AbstractBeanTestCase {
 
   public void testFoo10() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo10_2.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertProperty(beanInfo.getProperty("a"), "a", Exception.class, AccessMode.READ_ONLY);
   }
@@ -99,7 +100,7 @@ public class PropertyInheritanceTestCase extends AbstractBeanTestCase {
 
   public void testFoo11() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo11_2.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertProperty(beanInfo.getProperty("a"), "a", RuntimeException.class, AccessMode.READ_ONLY);
   }
@@ -112,7 +113,7 @@ public class PropertyInheritanceTestCase extends AbstractBeanTestCase {
 
   public void testFoo12() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(Foo12_2.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertProperty(beanInfo.getProperty("number"), "number", RuntimeException.class, AccessMode.READ_WRITE);
   }
@@ -126,7 +127,7 @@ public class PropertyInheritanceTestCase extends AbstractBeanTestCase {
 
   public void testNav() {
     ClassTypeInfo typeInfo = (ClassTypeInfo)domain.getType(PortalImpl.class);
-    BeanInfo beanInfo = new BeanInfo(typeInfo);
+    BeanInfo beanInfo = new BeanInfoFactory().build(typeInfo);
     assertEquals(1, beanInfo.getPropertyNames().size());
     assertProperty(beanInfo.getProperty("navigation"), "navigation", NavigationImpl.class, AccessMode.READ_ONLY);
   }

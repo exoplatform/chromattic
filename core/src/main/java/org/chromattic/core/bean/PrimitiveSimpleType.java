@@ -18,6 +18,8 @@
  */
 package org.chromattic.core.bean;
 
+import org.chromattic.api.SimpleTypeKind;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$

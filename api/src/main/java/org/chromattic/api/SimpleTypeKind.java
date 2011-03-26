@@ -16,9 +16,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.core.bean;
+package org.chromattic.api;
 
 import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Date;
 
 /**
@@ -27,7 +29,43 @@ import java.util.Date;
  */
 public abstract class SimpleTypeKind<E, I> {
 
+  private static <E> Class<?> externalType(Class<?> typeKind) {
+    Type gst = typeKind.getGenericSuperclass();
+    if (gst instanceof ParameterizedType) {
+      ParameterizedType pt = (ParameterizedType)gst;
+      Type rpt = pt.getRawType();
+      if (rpt instanceof Class) {
+        Class rptc = (Class)rpt;
+        if (rptc.getSuperclass().equals(SimpleTypeKind.class)) {
+          Type[] typeArgs = pt.getActualTypeArguments();
+          if (typeArgs.length == 1) {
+            if (typeArgs[0] instanceof Class) {
+              return (Class<?>)typeArgs[0];
+            } else {
+              throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+            }
+          } else {
+            throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+          }
+        } else {
+          throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+        }
+      } else {
+        throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+      }
+    } else {
+      throw new IllegalArgumentException("The custom type should extends directly the " + SimpleTypeKind.class.getName() + " class");
+    }
+  }
+
+  private final Class<E> externalType;
+
   private SimpleTypeKind() {
+    externalType = (Class<E>)externalType(getClass());
+  }
+
+  public final Class<E> getExternalType() {
+    return externalType;
   }
 
   public abstract E toExternal(I internal);
