@@ -21,6 +21,7 @@ package org.chromattic.test.property;
 
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.api.annotations.Path;
 
 import java.util.Date;
 import java.io.InputStream;
@@ -36,6 +37,11 @@ public abstract class TP_A {
   public abstract String getString();
 
   public abstract void setString(String s);
+
+  @Path @Property(name = "path_property") 
+  public abstract String getPath();
+
+  public abstract void setPath(String s);
 
   @Property(name = "primitive_int_property")
   public abstract int getPrimitiveInt();

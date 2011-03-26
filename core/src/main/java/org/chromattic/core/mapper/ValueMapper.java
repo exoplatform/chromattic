@@ -25,6 +25,7 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.ValueFormatException;
 import java.util.Date;
 import java.util.Calendar;
 import java.io.InputStream;
@@ -53,6 +54,12 @@ public class ValueMapper {
           }
         case STRING:
           if (propertyType == PropertyType.STRING || propertyType == PropertyType.NAME || propertyType == PropertyType.PATH) {
+            return value.getString();
+          } else {
+            throw new ClassCastException();
+          }
+        case PATH:
+          if (propertyType == PropertyType.PATH) {
             return value.getString();
           } else {
             throw new ClassCastException();
@@ -118,7 +125,7 @@ public class ValueMapper {
     }
   }
 
-  public final Value get(ValueFactory valueFactory, Object o, SimpleType type) {
+  public final Value get(ValueFactory valueFactory, Object o, SimpleType type) throws ValueFormatException {
     if (type == null) {
       if (o instanceof String) {
         type = SimpleType.STRING;
@@ -137,7 +144,7 @@ public class ValueMapper {
       } else if (o instanceof Boolean) {
         type = SimpleType.BOOLEAN;
       } else {
-        throw new AssertionError();
+        throw new UnsupportedOperationException("Type " + o.getClass().getName() + " is not accepted");
       }
     }
 
@@ -145,6 +152,8 @@ public class ValueMapper {
     switch (type) {
       case STRING:
         return valueFactory.createValue((String)o);
+      case PATH:
+        return valueFactory.createValue((String)o, PropertyType.PATH);
       case LONG:
         return valueFactory.createValue((Long)o);
       case INT:
@@ -162,7 +171,7 @@ public class ValueMapper {
       case BOOLEAN:
         return valueFactory.createValue((Boolean)o);
       default:
-        throw new AssertionError("Simple type " + type + " not accepted");
+        throw new UnsupportedOperationException("Simple type " + type + " not accepted");
     }
   }
 }

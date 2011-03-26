@@ -37,10 +37,60 @@ public class SimpleValueInfo extends ValueInfo {
   /** . */
   private final boolean primitive;
 
-  public SimpleValueInfo(ClassTypeInfo typeInfo) {
+/*
+  private SimpleValueInfo(ClassTypeInfo typeInfo, SimpleType simpleType, boolean primitive) {
     super(typeInfo);
 
     //
+
+    //
+    this.simpleType = simpleType;
+    this.primitive = primitive;
+  }
+*/
+
+  private SimpleValueInfo(ClassTypeInfo typeInfo, SimpleType simpleType, boolean primitive) {
+    super(typeInfo);
+
+    //
+    this.simpleType = simpleType;
+    this.primitive = primitive;
+  }
+
+  public SimpleType getSimpleType() {
+    return simpleType;
+  }
+
+  public boolean isPrimitive() {
+    return primitive;
+  }
+
+  @Override
+  public String toString() {
+    return "SimpleValueInfo[simpleType=" + simpleType + ",primitive=" + primitive + "]";
+  }
+
+  public static SimpleValueInfo createPath(ClassTypeInfo typeInfo) {
+    if (typeInfo == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    if (typeInfo.getName().equals(String.class.getName())) {
+      return new SimpleValueInfo(typeInfo, SimpleType.PATH, false);
+    } else {
+      throw new IllegalArgumentException("Simple value of type path must have a type of " + String.class.getName());
+    }
+  }
+
+  public static SimpleValueInfo create(ClassTypeInfo typeInfo) {
+    if (typeInfo == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    SimpleType simpleType;
+    boolean primitive;
     if (typeInfo instanceof SimpleTypeInfo) {
       switch (((SimpleTypeInfo)typeInfo).getLiteralType()) {
         case BOOLEAN:
@@ -76,18 +126,8 @@ public class SimpleValueInfo extends ValueInfo {
         throw new AssertionError();
       }
     }
-  }
 
-  public SimpleType getSimpleType() {
-    return simpleType;
-  }
-
-  public boolean isPrimitive() {
-    return primitive;
-  }
-
-  @Override
-  public String toString() {
-    return "SimpleValueInfo[simpleType=" + simpleType + ",primitive=" + primitive + "]";
+    //
+    return new SimpleValueInfo(typeInfo, simpleType, primitive);
   }
 }

@@ -26,6 +26,8 @@ import org.reflext.api.MethodInfo;
 import org.reflext.api.SimpleTypeInfo;
 import org.reflext.api.ParameterizedTypeInfo;
 import org.reflext.api.ArrayTypeInfo;
+import org.reflext.api.AnnotationIntrospector;
+import org.chromattic.api.annotations.Path;
 
 import java.util.Map;
 import java.util.Set;
@@ -159,14 +161,23 @@ public class BeanInfo {
     return resolvedType instanceof ClassTypeInfo ? (ClassTypeInfo)resolvedType : null;
   }
 
-  private static ValueInfo createValue(ClassTypeInfo type) {
+  private static ValueInfo createValue(
+    ClassTypeInfo type,
+    MethodInfo getter,
+    MethodInfo setter) {
     if (type instanceof SimpleTypeInfo) {
-      return new SimpleValueInfo(type);
+      return SimpleValueInfo.create(type);
+    } else if (type.getName().equals(String.class.getName())) {
+      AnnotationIntrospector<Path> intro = new AnnotationIntrospector<Path>(Path.class);
+      if ((getter != null && intro.resolve(getter) != null ) || (setter != null && intro.resolve(setter) != null)) {
+        return SimpleValueInfo.createPath(type);
+      } else {
+        return SimpleValueInfo.create(type);
+      }
     } else if (
-      type.getName().equals(String.class.getName()) ||
       type.getName().equals(InputStream.class.getName()) ||
       type.getName().equals(Date.class.getName())) {
-      return new SimpleValueInfo(type);
+      return SimpleValueInfo.create(type);
     } else {
       return new BeanValueInfo(type);
     }
@@ -189,7 +200,7 @@ public class BeanInfo {
           TypeInfo elementTV = parameterizedTI.getTypeArguments().get(0);
           ClassTypeInfo elementTI = resolveClass(beanTypeInfo, elementTV);
           if (elementTI != null) {
-            ValueInfo resolvedElementTI = createValue(elementTI);
+            ValueInfo resolvedElementTI = createValue(elementTI, getter, setter);
             if (rawClassName.equals("java.util.Collection")) {
               return new CollectionPropertyInfo<ValueInfo>(
                 name,
@@ -208,11 +219,11 @@ public class BeanInfo {
           TypeInfo elementTV = parameterizedTI.getTypeArguments().get(1);
           ClassTypeInfo elementTI = resolveClass(beanTypeInfo, elementTV);
           if (elementTI != null) {
-            ValueInfo resolvedElementTI = createValue(elementTI);
+            ValueInfo resolvedElementTI = createValue(elementTI, getter, setter);
             TypeInfo keyTV = parameterizedTI.getTypeArguments().get(0);
             ClassTypeInfo keyTI = resolveClass(beanTypeInfo, keyTV);
             if (keyTI != null) {
-              ValueInfo resolvedKeyTI = createValue(keyTI);
+              ValueInfo resolvedKeyTI = createValue(keyTI, getter, setter);
               return new MapPropertyInfo<ValueInfo, ValueInfo>(
                 name,
                 resolvedElementTI,
@@ -224,7 +235,7 @@ public class BeanInfo {
         }
       }
     } else if (resolvedTI instanceof ClassTypeInfo) {
-      ValueInfo resolved = createValue((ClassTypeInfo)resolvedTI);
+      ValueInfo resolved = createValue((ClassTypeInfo)resolvedTI, getter, setter);
       return new SingleValuedPropertyInfo<ValueInfo>(
         name,
         resolved,
@@ -234,7 +245,7 @@ public class BeanInfo {
       TypeInfo componentTI = ((ArrayTypeInfo)resolvedTI).getComponentType();
       if (componentTI instanceof ClassTypeInfo) {
         ClassTypeInfo rawComponentTI = (ClassTypeInfo)componentTI;
-        ValueInfo resolved = createValue(rawComponentTI);
+        ValueInfo resolved = createValue(rawComponentTI, getter, setter);
         if (resolved instanceof SimpleValueInfo) {
           return new ArrayPropertyInfo<SimpleValueInfo>(name, (SimpleValueInfo)resolved, getter, setter);
         }

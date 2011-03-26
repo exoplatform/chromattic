@@ -66,6 +66,16 @@ public class PropertyMappedToSingleValuedTestCase extends AbstractTestCase {
     assertFalse(aNode.hasProperty("string_property"));
   }
 
+  public void testPath() throws Exception {
+    assertEquals(null, a.getPath());
+    aNode.setProperty("path_property", "/foo");
+    assertEquals("/foo", a.getPath());
+    a.setPath("/bar");
+    assertEquals("/bar", aNode.getProperty("path_property").getString());
+    a.setPath(null);
+    assertFalse(aNode.hasProperty("path_property"));
+  }
+
   public void testPrimitiveBoolean() throws Exception {
     try {
       a.getPrimitiveBoolean();

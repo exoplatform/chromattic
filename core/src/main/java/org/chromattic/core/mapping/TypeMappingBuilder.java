@@ -154,7 +154,10 @@ public class TypeMappingBuilder {
       } else if (propertyInfo.getAnnotation(Id.class) != null) {
         nat = NodeAttributeType.ID;
       } else if (propertyInfo.getAnnotation(Path.class) != null) {
-        nat = NodeAttributeType.PATH;
+        if (propertyInfo.getAnnotation(Property.class) == null) {
+          // Check it's not a property
+          nat = NodeAttributeType.PATH;
+        }
       } else if (propertyInfo.getAnnotation(WorkspaceName.class) != null) {
         nat = NodeAttributeType.WORKSPACE_NAME;
       }
@@ -165,13 +168,19 @@ public class TypeMappingBuilder {
           if (vi instanceof SimpleValueInfo) {
             SimpleValueInfo svi = (SimpleValueInfo)vi;
             JCRNodeAttributeMapping memberMapping = new JCRNodeAttributeMapping(nat);
-            if (svi.getSimpleType() == SimpleType.STRING) {
-              SimpleMapping<JCRNodeAttributeMapping> simpleMapping = new SimpleMapping<JCRNodeAttributeMapping>(memberMapping);
-              PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>>(propertyInfo, simpleMapping);
-              propertyMappings.add(propertyMapping);
+            SimpleType simpleType = svi.getSimpleType();
+            if (nat == NodeAttributeType.PATH) {
+              if (simpleType != SimpleType.PATH) {
+                throw new IllegalStateException("Type " + simpleType + " is not accepted for path attribute mapping");
+              }
             } else {
-              throw new IllegalStateException();
+              if (simpleType != SimpleType.STRING) {
+                throw new IllegalStateException("Type " + simpleType + " is not accepted for attribute mapping");
+              }
             }
+            SimpleMapping<JCRNodeAttributeMapping> simpleMapping = new SimpleMapping<JCRNodeAttributeMapping>(memberMapping);
+            PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>> propertyMapping = new PropertyMapping<SimpleMapping<JCRNodeAttributeMapping>>(propertyInfo, simpleMapping);
+            propertyMappings.add(propertyMapping);
           } else {
             throw new IllegalStateException();
           }

@@ -25,6 +25,6 @@ package org.chromattic.core.bean;
  */
 public enum SimpleType {
 
-  STRING, INT, BOOLEAN, LONG, DATE, DOUBLE, FLOAT, BINARY
+  STRING, PATH, INT, BOOLEAN, LONG, DATE, DOUBLE, FLOAT, BINARY
 
 }
