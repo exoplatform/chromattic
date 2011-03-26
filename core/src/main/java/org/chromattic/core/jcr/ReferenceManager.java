@@ -150,6 +150,8 @@ public class ReferenceManager {
 
     public Iterator<Node> iterator(final String name) throws RepositoryException {
 
+      // Julien : that looks like a query that would be executed each time
+      // does it make sense to cache it ?
       PropertyIterator properties = dst.getReferences();
 
       Set<Node> blah = propertiesScheduledForRemoval.get(name);
