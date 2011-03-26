@@ -121,13 +121,13 @@ public interface ChromatticSession {
    *
    * @param parent the parent object
    * @param o the object to persist
-   * @param name the optional name to use
+   * @param relPath the object relative path to the parent
    * @return the object id
    * @throws NullPointerException if the parent or object argument is null
    * @throws IllegalArgumentException if any argument is not valid
    * @throws ChromatticException any chromattic exception
    */
-  String persist(Object parent, Object o, String name) throws NullPointerException, IllegalArgumentException, ChromatticException;
+  String persist(Object parent, Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   <O> O findByPath(Object o, Class<O> clazz, String relPath) throws ChromatticException;
 

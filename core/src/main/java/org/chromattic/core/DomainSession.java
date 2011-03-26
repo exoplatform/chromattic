@@ -146,11 +146,11 @@ public abstract class DomainSession implements ChromatticSession {
     return child;
   }
 
-  public String persist(Object parent, Object child, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public String persist(Object parent, Object child, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
       ObjectContext parentCtx = unwrap(parent);
       ObjectContext childCtx = unwrap(child);
-      return _persist(parentCtx, name, childCtx);
+      return _persist(parentCtx, relPath, childCtx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException();
