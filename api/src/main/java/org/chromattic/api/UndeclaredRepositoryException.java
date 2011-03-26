@@ -19,6 +19,8 @@
 
 package org.chromattic.api;
 
+import javax.jcr.RepositoryException;
+
 /**
  * Wraps an unexpected <tt>RepositoryException</tt> that is a checked exception. 
  *
@@ -34,11 +36,25 @@ public final class UndeclaredRepositoryException extends ChromatticException {
     super(message);
   }
 
-  public UndeclaredRepositoryException(String message, Throwable cause) {
+  public UndeclaredRepositoryException(String message, RepositoryException cause) {
     super(message, cause);
   }
 
-  public UndeclaredRepositoryException(Throwable cause) {
+  public UndeclaredRepositoryException(RepositoryException cause) {
     super(cause);
+  }
+
+  @Override
+  public Throwable initCause(Throwable cause) {
+    if (cause instanceof RepositoryException) {
+      return super.initCause(cause);
+    } else {
+      throw new Error();
+    }
+  }
+
+  @Override
+  public RepositoryException getCause() {
+    return (RepositoryException)super.getCause();
   }
 }
