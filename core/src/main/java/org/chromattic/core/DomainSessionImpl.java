@@ -403,9 +403,13 @@ class DomainSessionImpl extends DomainSession {
   public void nodeRemoved(String nodeId) throws RepositoryException {
     log.trace("Removing context for id {}", nodeId);
     ObjectContext ctx = contexts.remove(nodeId);
-    ctx.state = new RemovedContextState(nodeId, ctx.state.getPrimaryNodeType());
-    fireEvent(LifeCycleType.REMOVED, ctx);
-    log.trace("Removed context {} for id {}", ctx, nodeId);
+    if (ctx != null) {
+      ctx.state = new RemovedContextState(nodeId, ctx.state.getPrimaryNodeType());
+      fireEvent(LifeCycleType.REMOVED, ctx);
+      log.trace("Removed context {} for id {}", ctx, nodeId);
+    } else {
+      log.trace("Context absent for removal for id {}", ctx, nodeId);
+    }
   }
 
   public void close() {
