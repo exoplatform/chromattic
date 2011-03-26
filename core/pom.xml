@@ -50,18 +50,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.exo</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.cglib</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.api</artifactId>
     </dependency>
@@ -84,6 +72,18 @@
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.exo</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.cglib</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
