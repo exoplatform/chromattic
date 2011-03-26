@@ -20,6 +20,8 @@
 package org.chromattic.api;
 
 /**
+ * The status of a Chromattic entity.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
