@@ -22,7 +22,7 @@
    
    <groupId>org.chromattic</groupId>
    <artifactId>chromattic.parent</artifactId>
-   <version>1.1.0-beta2</version>
+   <version>1.1.0-beta3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
    <name>Chromattic Framework</name>
@@ -111,19 +111,19 @@
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.test</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <!-- Internal dependencies -->
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
         <classifier>sources</classifier>
       </dependency>
 
@@ -142,61 +142,61 @@
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.cglib</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.common</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.metamodel</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.core</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.exo</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.spi</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.ext</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.groovy</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.testgenerator</artifactId>
-        <version>1.1.0-beta2</version>
+        <version>1.1.0-beta3-SNAPSHOT</version>
       </dependency>
 
       <!-- External dependencies -->
