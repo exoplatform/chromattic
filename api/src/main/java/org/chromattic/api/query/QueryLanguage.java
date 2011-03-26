@@ -20,6 +20,8 @@
 package org.chromattic.api.query;
 
 /**
+ * Enumerates the queries languages.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */

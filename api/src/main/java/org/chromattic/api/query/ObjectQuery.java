@@ -19,11 +19,20 @@
 package org.chromattic.api.query;
 
 /**
+ * An object query extends a query and returns objects. It extends the <tt>Iterable</tt>
+ * interface so it can be used easily in foreach blocks.</p>
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
+ * @param <O> the object type parameter
  */
 public interface ObjectQuery<O> extends Query, Iterable<O> {
 
+  /**
+   * Returns the result of the object query 
+   *
+   * @return the object query result
+   */
   ObjectQueryResult<O> iterator();
 
 }
