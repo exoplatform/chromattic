@@ -24,6 +24,7 @@ import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.LifeCycleListener;
 import org.chromattic.api.ChromatticException;
+import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.chromattic.core.jcr.LinkType;
 
 import javax.jcr.RepositoryException;
@@ -79,6 +80,15 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract <O> O _findByPath(Object o, Class<O> clazz, String relPath) throws RepositoryException;
 
+  public final String encodeName(ObjectContext ctx, String external) {
+    DefaultNodeNameFormat.validateName(external);
+    return external;
+  }
+
+  public final String decodeName(ObjectContext ctx, String internal) {
+    return internal;
+  }
+
   public final String getId(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
@@ -96,7 +106,7 @@ public abstract class DomainSession implements ChromatticSession {
 
     //
     ObjectContext ctx = unwrap(o);
-    return ctx.getName();
+    return getName(ctx);
   }
 
   public final String getPath(Object o) throws UndeclaredRepositoryException {
@@ -126,7 +136,7 @@ public abstract class DomainSession implements ChromatticSession {
     ObjectContext parentCtx = unwrap(parent);
     O child = create(clazz);
     ObjectContext childtx = unwrap(child);
-    insert(parentCtx, name, childtx);
+    insertWithRelativePath(parentCtx, name, childtx);
     return child;
   }
 
@@ -271,7 +281,42 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public final String insert(ObjectContext parentCtx, String relPath, ObjectContext childCtx) throws UndeclaredRepositoryException {
+  public final String getName(ObjectContext ctx) throws UndeclaredRepositoryException {
+    if (ctx == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    String name = ctx.state.getName();
+    name = decodeName(ctx, name);
+
+    //
+    return name;
+  }
+
+  public final void setName(ObjectContext ctx, String name) throws UndeclaredRepositoryException {
+    if (ctx == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    name = encodeName(ctx, name);
+
+    //
+    ctx.state.setName(name);
+  }
+
+  public final String insertWithName(ObjectContext parentCtx, String name, ObjectContext childCtx) throws UndeclaredRepositoryException {
+    try {
+      name = encodeName(parentCtx, name);
+      return _persist(parentCtx, name, childCtx);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public final String insertWithRelativePath(ObjectContext parentCtx, String relPath, ObjectContext childCtx) throws UndeclaredRepositoryException {
     try {
       return _persist(parentCtx, relPath, childCtx);
     }

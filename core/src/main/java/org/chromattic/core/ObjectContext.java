@@ -81,15 +81,16 @@ public class ObjectContext implements MethodHandler {
   }
 
   public String getAttribute(NodeAttributeType type) {
+    DomainSession session = state.getSession();
     switch (type) {
       case NAME:
-        return state.getName();
+        return session.getName(this);
       case ID:
         return state.getId();
       case PATH:
         return state.getPath();
       case WORKSPACE_NAME:
-        return state.getSession().getJCRSession().getWorkspace().getName();
+        return session.getJCRSession().getWorkspace().getName();
       default:
         throw new AssertionError();
     }
@@ -116,7 +117,7 @@ public class ObjectContext implements MethodHandler {
   }
 
   public void setName(String name) {
-    state.setName(name);
+    state.getSession().setName(this, name);
   }
 
   public Object getReferenced(String name, LinkType linkType) {
@@ -193,12 +194,7 @@ public class ObjectContext implements MethodHandler {
   }
 
   public void addChild(String name, ObjectContext childCtx) {
-    if (name != null) {
-      name = childCtx.mapper.encodeName(name);
-    }
-
-    //
-    state.getSession().insert(this, name, childCtx);
+    state.getSession().insertWithName(this, name, childCtx);
   }
 
   public void addChild(String name, Object child) {

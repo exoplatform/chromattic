@@ -184,13 +184,17 @@ class DomainSessionImpl extends DomainSession {
     //
     TypeMapper typeMapper = domain.getTypeMapper(clazz);
     NodeType nodeType = sessionWrapper.getNodeType(typeMapper.getNodeDef().getPrimaryNodeTypeName());
-    TransientContextState state = new TransientContextState(typeMapper, nodeType);
-
-    //
-    state.setName(name);
+    TransientContextState state = new TransientContextState(this, nodeType);
 
     //
     ObjectContext ctx = new ObjectContext(typeMapper, state);
+
+    //
+    if (name != null) {
+      ctx.setName(name);
+    }
+
+    //
     fireEvent(LifeCycleType.CREATED, ctx);
     return (O)ctx.getObject();
   }

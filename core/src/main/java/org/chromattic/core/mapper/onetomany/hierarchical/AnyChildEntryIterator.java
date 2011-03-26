@@ -44,15 +44,7 @@ public class AnyChildEntryIterator extends AbstractFilterIterator<Map.Entry<Stri
     return new Map.Entry<String, Object>() {
 
       /** . */
-      private final String name;
-
-      {
-        String name = map.parentCtx.getSession().getName(internal);
-        if (map.keyFormat != null) {
-          name = map.keyFormat.decode(name);
-        }
-        this.name = name;
-      }
+      private final String name = map.parentCtx.getSession().getName(internal);
 
       public String getKey() {
         return name;

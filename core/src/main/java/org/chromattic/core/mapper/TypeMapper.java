@@ -25,8 +25,6 @@ import org.chromattic.core.ObjectContext;
 import org.chromattic.core.jcr.NodeDef;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.ProxyFactory;
-import org.chromattic.api.format.CodecFormat;
-import org.chromattic.api.format.DefaultNodeNameFormat;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -36,12 +34,6 @@ public class TypeMapper {
 
   /** . */
   private final Class<?> objectClass;
-
-  /** . */
-  private final CodecFormat<String, String> nameFormat;
-
-  /** . */
-  private final boolean performDefaultValidation;
 
   /** . */
   private final NodeDef nodeDef;
@@ -57,7 +49,6 @@ public class TypeMapper {
 
   public TypeMapper(
     Class<?> objectClass,
-    CodecFormat<String, String> nameFormat,
     Set<PropertyMapper> propertyMappers,
     Set<MethodMapper> methodMappers,
     NodeDef nodeDef,
@@ -65,36 +56,10 @@ public class TypeMapper {
 
     //
     this.objectClass = objectClass;
-    this.nameFormat = nameFormat;
-    this.performDefaultValidation = !(nameFormat instanceof DefaultNodeNameFormat);
     this.methodMappers = methodMappers;
     this.nodeDef = nodeDef;
     this.propertyMappers = propertyMappers;
     this.factory = instrumentor.getProxyClass(objectClass);
-  }
-
-  public String encodeName(String name) {
-    name = nameFormat.encode(name);
-
-    //
-    if (performDefaultValidation) {
-      name = DefaultNodeNameFormat.getInstance().encode(name);
-    }
-
-    //
-    return name;
-  }
-
-  public String decodeName(String name) {
-    name = nameFormat.decode(name);
-
-    //
-    if (performDefaultValidation) {
-      name = DefaultNodeNameFormat.getInstance().decode(name);
-    }
-
-    //
-    return name;
   }
 
   public Object createObject(ObjectContext context) {

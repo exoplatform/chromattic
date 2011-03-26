@@ -16,9 +16,8 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.api.format;
 
-import javax.jcr.ValueFormatException;
+package org.chromattic.api.format;
 
 /**
  * Defines the default codec format that only performs validation of JCR names.
@@ -35,7 +34,7 @@ public class DefaultNodeNameFormat implements CodecFormat<String, String> {
     return INSTANCE;
   }
 
-  public static void validateName(String name) throws ValueFormatException {
+  public static void validateName(String name) throws FormatException {
     INSTANCE.encode(name);
   }
 

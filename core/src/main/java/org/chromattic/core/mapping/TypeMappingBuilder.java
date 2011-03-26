@@ -35,10 +35,7 @@ import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.FindById;
 import org.chromattic.api.annotations.Mixin;
 import org.chromattic.api.annotations.WorkspaceName;
-import org.chromattic.api.annotations.NameFormat;
 import org.chromattic.api.RelationshipType;
-import org.chromattic.api.format.CodecFormat;
-import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.chromattic.core.mapping.jcr.JCRNodeAttributeMapping;
 import org.chromattic.core.mapping.jcr.JCRPropertyMapping;
 import org.chromattic.core.mapping.value.SimpleMapping;
@@ -368,17 +365,9 @@ public class TypeMappingBuilder {
       }
     }
 
-    // Name format
-    Class<? extends CodecFormat<String, String>> nameCodec = DefaultNodeNameFormat.class;
-    NameFormat nf = new AnnotationIntrospector<NameFormat>(NameFormat.class).resolve(javaClass);
-    if (nf != null) {
-      nameCodec = nf.value();
-    }
-
     //
     return new TypeMapping(
       javaClass,
-      nameCodec,
       propertyMappings,
       methodMappings,
       primaryNodeTypeName,

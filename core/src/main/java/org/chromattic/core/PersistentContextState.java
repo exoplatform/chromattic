@@ -49,7 +49,7 @@ class PersistentContextState extends ContextState {
   private final TypeMapper mapper;
 
   /** . */
-  private final String externalName;
+  private final String name;
 
   /** . */
   private final String path;
@@ -68,10 +68,10 @@ class PersistentContextState extends ContextState {
 
     //
     this.mapper = mapper;
-    this.externalName = mapper.decodeName(node.getName());
     this.id = node.getUUID();
     this.path = node.getPath();
     this.node = node;
+    this.name = node.getName();
     this.session = session;
   }
 
@@ -84,7 +84,7 @@ class PersistentContextState extends ContextState {
   }
 
   String getName() {
-    return externalName;
+    return name;
   }
 
   void setName(String name) {

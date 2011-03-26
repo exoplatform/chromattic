@@ -34,34 +34,27 @@ import java.util.Map;
 class TransientContextState extends ContextState {
 
   /** . */
-  private final TypeMapper mapper;
+  private String name;
 
   /** . */
-  private String internalName;
+//  private Map<String, Object> properties;
 
   /** . */
-  private Map<String, Object> properties;
+  private final DomainSession session;
 
-  TransientContextState(TypeMapper mapper, NodeType primaryNodeType) {
+  TransientContextState(DomainSession session, NodeType primaryNodeType) {
     super(primaryNodeType);
 
     //
-    this.mapper = mapper;
+    this.session = session;
   }
 
   public String getName() {
-    if (internalName != null) {
-      return mapper.decodeName(internalName);
-    } else {
-      return null;
-    }
+    return name;
   }
 
   void setName(String name) {
-    if (name != null) {
-      name = mapper.encodeName(name);
-    }
-    this.internalName = name;
+    this.name = name;
   }
 
   String getPath() {
@@ -77,7 +70,7 @@ class TransientContextState extends ContextState {
   }
 
   DomainSession getSession() {
-    throw new IllegalStateException();
+    return session;
   }
 
   Status getStatus() {

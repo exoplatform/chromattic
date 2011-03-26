@@ -19,7 +19,6 @@
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.ObjectContext;
-import org.chromattic.api.format.CodecFormat;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -31,15 +30,8 @@ public abstract class AnyChildMultiValueMapper {
 
   public static class Map extends AnyChildMultiValueMapper {
 
-    /** . */
-    private final CodecFormat<String, String> keyFormat;
-
-    public Map(CodecFormat<String, String> keyFormat) {
-      this.keyFormat = keyFormat;
-    }
-
     Object createValue(ObjectContext parentCtx, Class<?> relatedClass) {
-      return new AnyChildMap(keyFormat, parentCtx, relatedClass);
+      return new AnyChildMap(parentCtx, relatedClass);
     }
   }
 
