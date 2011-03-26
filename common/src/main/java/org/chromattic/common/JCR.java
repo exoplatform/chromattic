@@ -72,14 +72,6 @@ public class JCR {
     }
   }
 
-  public static PropertyDefinition findPropertyDefinition(Node node, String propertyName) throws RepositoryException {
-    PropertyDefinition def = getPropertyDefinition(node, propertyName);
-    if (def == null) {
-      return getPropertyDefinition(node, "*");
-    }
-    return def;
-  }
-
   public static void validateName(String name) {
     /*
     PathSegment ::= ExpandedName [Index] | QualifiedName [Index] | SelfOrParent

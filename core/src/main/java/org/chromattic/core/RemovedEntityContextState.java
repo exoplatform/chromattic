@@ -23,7 +23,6 @@ import org.chromattic.api.Status;
 import org.chromattic.core.bean.SimpleValueInfo;
 
 import javax.jcr.Node;
-import javax.jcr.nodetype.NodeType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -34,10 +33,7 @@ class RemovedEntityContextState extends EntityContextState {
   /** . */
   private final String id;
 
-  RemovedEntityContextState(String id, NodeType primaryNodeType) {
-    super(primaryNodeType);
-
-    //
+  RemovedEntityContextState(String id) {
     this.id = id;
   }
 

@@ -25,10 +25,8 @@ import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
-import org.chromattic.core.jcr.NodeDef;
 import org.chromattic.core.jcr.LinkType;
 
-import javax.jcr.Session;
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.ItemNotFoundException;
@@ -37,6 +35,7 @@ import javax.jcr.nodetype.NodeType;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -48,25 +47,17 @@ public class DomainSessionImpl extends DomainSession {
   final Domain domain;
 
   /** . */
-  private final SessionWrapper sessionWrapper;
-
-  /** . */
   private final Map<String, EntityContext> contexts;
 
   /** . */
   private final Logger log = Logger.getLogger(DomainSession.class);
 
   public DomainSessionImpl(Domain domain, SessionWrapper sessionWrapper) {
-    super(domain);
+    super(domain, sessionWrapper);
 
     //
     this.domain = domain;
-    this.sessionWrapper = sessionWrapper;
     this.contexts = new HashMap<String, EntityContext>();
-  }
-
-  public Session getJCRSession() {
-    return sessionWrapper.getSession();
   }
 
   protected <O> O _findByPath(EntityContext ctx, Class<O> clazz, String relPath) throws RepositoryException {
@@ -103,9 +94,8 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    NodeDef nodeDef = ctx.mapper.getNodeDef();
     log.trace("Setting context {} for insertion", ctx);
-    log.trace("Adding node for context {} and node type {}", ctx, nodeDef);
+    log.trace("Adding node for context {} and node type {}", ctx, ctx.mapper.getPrimaryNodeTypeName());
 
     //
     return _persist(getRoot(), relPath, ctx);
@@ -192,12 +182,13 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    NodeDef nodeDef = dstCtx.mapper.getNodeDef();
+    String primaryNodeTypeName = dstCtx.mapper.getPrimaryNodeTypeName();
+    List<String> mixinNodeTypeNames = dstCtx.mapper.getMixinNodeTypeNames();
     log.trace("Setting context {} for insertion", dstCtx);
-    log.trace("Adding node for context {} and node type {} as child of node {}", dstCtx, nodeDef, dstParentNode.getPath());
+    log.trace("Adding node for context {} and node type {} as child of node {}", dstCtx, primaryNodeTypeName, dstParentNode.getPath());
 
     //
-    Node dstNode = sessionWrapper.addNode(dstParentNode, name, nodeDef);
+    Node dstNode = sessionWrapper.addNode(dstParentNode, name, primaryNodeTypeName, mixinNodeTypeNames);
 
     //
     nodeAdded(dstNode, dstCtx);
@@ -233,8 +224,7 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     TypeMapper typeMapper = domain.getTypeMapper(clazz);
-    NodeType nodeType = sessionWrapper.getNodeType(typeMapper.getNodeDef().getPrimaryNodeTypeName());
-    TransientEntityContextState state = new TransientEntityContextState(this, nodeType);
+    TransientEntityContextState state = new TransientEntityContextState(this);
 
     //
     EntityContext ctx = new EntityContext(typeMapper, state);
@@ -427,7 +417,7 @@ public class DomainSessionImpl extends DomainSession {
         ctx = new EntityContext(mapper);
         log.trace("Inserted context {} loaded from node id {}", ctx, id);
         contexts.put(id, ctx);
-        ctx.state = new PersistentEntityContextState(mapper, node, this, sessionWrapper);
+        ctx.state = new PersistentEntityContextState(node, this);
         broadcaster.loaded(ctx.getObject());
       }
       else {
@@ -452,7 +442,7 @@ public class DomainSessionImpl extends DomainSession {
       }
       log.trace("Inserted context {} for id {}", ctx, id);
       contexts.put(id, ctx);
-      ctx.state = new PersistentEntityContextState(mapper, node, this, sessionWrapper);
+      ctx.state = new PersistentEntityContextState(node, this);
       broadcaster.persisted(ctx.getObject());
     }
     else {
@@ -464,7 +454,7 @@ public class DomainSessionImpl extends DomainSession {
     log.trace("Removing context for id {}", nodeId);
     EntityContext ctx = contexts.remove(nodeId);
     if (ctx != null) {
-      ctx.state = new RemovedEntityContextState(nodeId, ctx.state.getPrimaryNodeType());
+      ctx.state = new RemovedEntityContextState(nodeId);
       broadcaster.removed(ctx.getObject());
       log.trace("Removed context {} for id {}", ctx, nodeId);
     } else {

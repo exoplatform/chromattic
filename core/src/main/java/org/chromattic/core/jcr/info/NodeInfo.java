@@ -16,40 +16,34 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
-package org.chromattic.core;
-
-import org.chromattic.api.Status;
-import org.chromattic.core.bean.SimpleValueInfo;
-
-import javax.jcr.Node;
+package org.chromattic.core.jcr.info;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-abstract class EntityContextState {
+public class NodeInfo {
 
-  abstract String getId();
+  /** . */
+  private final NodeTypeInfo primaryNodeTypeInfo;
 
-  abstract String getName();
+  protected NodeInfo(NodeTypeInfo primaryNodeTypeInfo) {
+    this.primaryNodeTypeInfo = primaryNodeTypeInfo;
+  }
 
-  abstract String getPath();
+  public NodeTypeInfo getPrimaryNodeTypeInfo() {
+    return primaryNodeTypeInfo;
+  }
 
-  abstract void setName(String name);
+  public PropertyDefinitionInfo getPropertyDefinitionInfo(String name) {
+    return primaryNodeTypeInfo.getPropertyDefinitionInfo(name);
+  }
 
-  abstract Node getNode();
-
-  abstract DomainSession getSession();
-
-  abstract Status getStatus();
-
-  abstract Object getPropertyValue(String propertyName, SimpleValueInfo type);
-
-  abstract <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType);
-
-  abstract void setPropertyValue(String propertyName, SimpleValueInfo type, Object o);
-
-  abstract <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects);
-
+  public PropertyDefinitionInfo findPropertyDefinition(String propertyName) {
+    PropertyDefinitionInfo propertyDefinitionInfo = getPropertyDefinitionInfo(propertyName);
+    if (propertyDefinitionInfo == null) {
+      return getPropertyDefinitionInfo("*");
+    }
+    return propertyDefinitionInfo;
+  }
 }

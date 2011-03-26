@@ -23,7 +23,6 @@ import org.chromattic.api.Status;
 import org.chromattic.core.bean.SimpleValueInfo;
 
 import javax.jcr.Node;
-import javax.jcr.nodetype.NodeType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -35,15 +34,9 @@ class TransientEntityContextState extends EntityContextState {
   private String name;
 
   /** . */
-//  private Map<String, Object> properties;
-
-  /** . */
   private final DomainSession session;
 
-  TransientEntityContextState(DomainSession session, NodeType primaryNodeType) {
-    super(primaryNodeType);
-
-    //
+  TransientEntityContextState(DomainSession session) {
     this.session = session;
   }
 

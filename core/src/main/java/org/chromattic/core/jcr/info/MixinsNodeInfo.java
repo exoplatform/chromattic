@@ -16,40 +16,33 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
-package org.chromattic.core;
-
-import org.chromattic.api.Status;
-import org.chromattic.core.bean.SimpleValueInfo;
-
-import javax.jcr.Node;
+package org.chromattic.core.jcr.info;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-abstract class EntityContextState {
+public class MixinsNodeInfo extends NodeInfo {
 
-  abstract String getId();
+  /** . */
+  private NodeTypeInfo[] mixinNodeTypeInfos;
 
-  abstract String getName();
+  public MixinsNodeInfo(NodeTypeInfo primaryNodeTypeInfo, NodeTypeInfo[] mixinNodeTypeInfos) {
+    super(primaryNodeTypeInfo);
+    this.mixinNodeTypeInfos = mixinNodeTypeInfos;
+  }
 
-  abstract String getPath();
-
-  abstract void setName(String name);
-
-  abstract Node getNode();
-
-  abstract DomainSession getSession();
-
-  abstract Status getStatus();
-
-  abstract Object getPropertyValue(String propertyName, SimpleValueInfo type);
-
-  abstract <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType);
-
-  abstract void setPropertyValue(String propertyName, SimpleValueInfo type, Object o);
-
-  abstract <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects);
-
+  @Override
+  public PropertyDefinitionInfo getPropertyDefinitionInfo(String name) {
+    PropertyDefinitionInfo propertyDefinitionInfo = super.getPropertyDefinitionInfo(name);
+    if (propertyDefinitionInfo == null) {
+      for (NodeTypeInfo nodeTypeInfo : mixinNodeTypeInfos) {
+        propertyDefinitionInfo = nodeTypeInfo.getPropertyDefinitionInfo(name);
+        if (propertyDefinitionInfo != null) {
+          break;
+        }
+      }
+    }
+    return propertyDefinitionInfo;
+  }
 }

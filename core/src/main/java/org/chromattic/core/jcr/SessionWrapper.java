@@ -19,12 +19,15 @@
 
 package org.chromattic.core.jcr;
 
+import org.chromattic.core.jcr.info.NodeInfo;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.Property;
 import javax.jcr.nodetype.NodeType;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -38,7 +41,7 @@ public interface SessionWrapper {
 
   NodeType getNodeType(String nodeTypeName) throws RepositoryException;
 
-  Node addNode(Node parentNode, String relPath, NodeDef nodeDef) throws RepositoryException;
+  Node addNode(Node parentNode, String relPath, String primartyNodeTypeName, List<String> mixinNodeTypeNames) throws RepositoryException;
 
   void orderBefore(Node parentNode, Node srcNode, Node dstNode) throws RepositoryException;
 

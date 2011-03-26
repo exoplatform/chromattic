@@ -16,40 +16,46 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.core.jcr.info;
 
-package org.chromattic.core;
-
-import org.chromattic.api.Status;
-import org.chromattic.core.bean.SimpleValueInfo;
-
-import javax.jcr.Node;
+import javax.jcr.nodetype.PropertyDefinition;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-abstract class EntityContextState {
+public class PropertyDefinitionInfo {
 
-  abstract String getId();
+  /** . */
+  private final String name;
 
-  abstract String getName();
+  /** . */
+  private final int type;
 
-  abstract String getPath();
+  /** . */
+  private final boolean multiple;
 
-  abstract void setName(String name);
+  public PropertyDefinitionInfo(PropertyDefinition propertyDefinition) {
+    this.name = propertyDefinition.getName();
+    this.type = propertyDefinition.getRequiredType();
+    this.multiple = propertyDefinition.isMultiple();
+  }
 
-  abstract Node getNode();
+  public PropertyDefinitionInfo(String name, int type, boolean multiple) {
+    this.name = name;
+    this.type = type;
+    this.multiple = multiple;
+  }
 
-  abstract DomainSession getSession();
+  public String getName() {
+    return name;
+  }
 
-  abstract Status getStatus();
+  public int getType() {
+    return type;
+  }
 
-  abstract Object getPropertyValue(String propertyName, SimpleValueInfo type);
-
-  abstract <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType);
-
-  abstract void setPropertyValue(String propertyName, SimpleValueInfo type, Object o);
-
-  abstract <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects);
-
+  public boolean isMultiple() {
+    return multiple;
+  }
 }

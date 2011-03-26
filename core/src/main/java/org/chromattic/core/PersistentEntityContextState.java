@@ -25,9 +25,8 @@ import org.chromattic.api.NoSuchPropertyException;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.mapper.ValueMapper;
-import org.chromattic.core.mapper.TypeMapper;
-import org.chromattic.core.jcr.SessionWrapper;
-import org.chromattic.common.JCR;
+import org.chromattic.core.jcr.info.NodeInfo;
+import org.chromattic.core.jcr.info.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.CopyingInputStream;
 
@@ -54,9 +53,6 @@ import java.io.IOException;
 class PersistentEntityContextState extends EntityContextState {
 
   /** . */
-  private final TypeMapper mapper;
-
-  /** . */
   private final String name;
 
   /** . */
@@ -75,20 +71,18 @@ class PersistentEntityContextState extends EntityContextState {
   private final Map<String, Object> propertyCache;
 
   /** . */
-  private final SessionWrapper sessionWrapper;
+  private final NodeInfo nodeInfo;
 
-  PersistentEntityContextState(TypeMapper mapper, Node node, DomainSession session, SessionWrapper sessionWrapper) throws RepositoryException {
-    super(node.getPrimaryNodeType());
+  PersistentEntityContextState(Node node, DomainSession session) throws RepositoryException {
 
     //
-    this.mapper = mapper;
     this.id = node.getUUID();
     this.path = node.getPath();
     this.node = node;
     this.name = node.getName();
     this.session = session;
-    this.sessionWrapper = sessionWrapper;
     this.propertyCache = session.domain.stateCacheEnabled ? new HashMap<String, Object>() : null;
+    this.nodeInfo = session.domain.nodeInfoManager.getNodeInfo(node);
   }
 
   String getId() {
@@ -131,7 +125,7 @@ class PersistentEntityContextState extends EntityContextState {
       //
       if (value == null) {
         Value jcrValue;
-        Property property = sessionWrapper.getProperty(node, propertyName);
+        Property property = session.getSessionWrapper().getProperty(node, propertyName);
         if (property != null) {
           PropertyDefinition def = property.getDefinition();
           if (def.isMultiple()) {
@@ -193,7 +187,7 @@ class PersistentEntityContextState extends EntityContextState {
   <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType) {
     try {
       Value[] values;
-      Property property = sessionWrapper.getProperty(node, propertyName);
+      Property property = session.getSessionWrapper().getProperty(node, propertyName);
       if (property != null) {
         PropertyDefinition def = property.getDefinition();
         if (def.isMultiple()) {
@@ -247,7 +241,7 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      PropertyDefinition def = JCR.findPropertyDefinition(node, propertyName);
+      PropertyDefinitionInfo def = nodeInfo.findPropertyDefinition(propertyName);
 
       //
       if (def == null) {
@@ -256,7 +250,7 @@ class PersistentEntityContextState extends EntityContextState {
 
       //
       if (jcrValue != null) {
-        int neededType = def.getRequiredType();
+        int neededType = def.getType();
         if (neededType != PropertyType.UNDEFINED) {
           if (neededType != jcrValue.getType()) {
             throw new ClassCastException("Cannot cast type " + jcrValue.getType() + " to type " + neededType + " when setting property " + propertyName);
@@ -319,7 +313,7 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      PropertyDefinition def = JCR.getPropertyDefinition(node, propertyName);
+      PropertyDefinitionInfo def = nodeInfo.getPropertyDefinitionInfo(propertyName);
       if (def.isMultiple()) {
         node.setProperty(propertyName, values);
       } else {

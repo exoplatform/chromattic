@@ -23,8 +23,7 @@ import org.chromattic.api.query.ObjectQuery;
 import org.chromattic.api.query.ObjectQueryResult;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.Domain;
-
-import java.util.Iterator;
+import org.chromattic.core.DomainSession;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -42,16 +41,12 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
   private TypeMapper mapper;
 
   /** . */
-  private QueryManager manager;
+  private DomainSession session;
 
-  /** . */
-  private Domain domain;
-
-  public ObjectQueryBuilderImpl(Domain domain, QueryManager manager) {
-    this.manager = manager;
+  public ObjectQueryBuilderImpl(DomainSession session) {
     this.fromClass = null;
     this.where = null;
-    this.domain = domain;
+    this.session = session;
   }
 
   public ObjectQueryBuilder from(Class fromClass) {
@@ -61,6 +56,7 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
     if (this.fromClass != null) {
       throw new IllegalStateException();
     }
+    Domain domain = session.getDomain();
     TypeMapper mapper = domain.getTypeMapper(fromClass);
     if (mapper == null) {
       throw new IllegalArgumentException("Class " + fromClass.getName() + " is not mapped");
@@ -89,14 +85,14 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
 
     //
     StringBuffer sb = new StringBuffer("SELECT * FROM ");
-    sb.append(mapper.getNodeDef().getPrimaryNodeTypeName());
+    sb.append(mapper.getPrimaryNodeTypeName());
     if (where != null) {
       sb.append(" WHERE ");
       sb.append(where);
     }
 
     //
-    return manager.getObjectQuery(mapper.getObjectClass(), sb.toString());
+    return session.getDomain().getQueryManager().getObjectQuery(session, mapper.getObjectClass(), sb.toString());
   }
 
   public ObjectQueryResult iterator() {

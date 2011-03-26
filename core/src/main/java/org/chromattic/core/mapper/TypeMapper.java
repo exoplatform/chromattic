@@ -22,12 +22,14 @@ package org.chromattic.core.mapper;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Collections;
+import java.util.ArrayList;
 import java.lang.reflect.Method;
 
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.bean.PropertyInfo;
-import org.chromattic.core.jcr.NodeDef;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.ProxyFactory;
 import org.chromattic.api.NameConflictResolution;
@@ -43,7 +45,10 @@ public class TypeMapper implements MethodInvoker {
   private final Class<?> objectClass;
 
   /** . */
-  private final NodeDef nodeDef;
+  private final String primaryNodeTypeName;
+
+  /** . */
+  private final List<String> mixinNodeTypeNames;
 
   /** . */
   final Set<MethodMapper> methodMappers;
@@ -64,7 +69,8 @@ public class TypeMapper implements MethodInvoker {
     Class<?> objectClass,
     Set<PropertyMapper> propertyMappers,
     Set<MethodMapper> methodMappers,
-    NodeDef nodeDef,
+    String primaryNodeTypeName,
+    Set<String> mixinNodeTypeNames,
     NameConflictResolution onDuplicate,
     Instrumentor instrumentor) {
 
@@ -89,7 +95,8 @@ public class TypeMapper implements MethodInvoker {
     this.dispatchers = dispatchers;
     this.objectClass = objectClass;
     this.methodMappers = methodMappers;
-    this.nodeDef = nodeDef;
+    this.primaryNodeTypeName = primaryNodeTypeName;
+    this.mixinNodeTypeNames = Collections.unmodifiableList(new ArrayList<String>(mixinNodeTypeNames));
     this.onDuplicate = onDuplicate;
     this.propertyMappers = propertyMappers;
     this.factory = instrumentor.getProxyClass(objectClass);
@@ -136,8 +143,12 @@ public class TypeMapper implements MethodInvoker {
     return objectClass;
   }
 
-  public NodeDef getNodeDef() {
-    return nodeDef;
+  public String getPrimaryNodeTypeName() {
+    return primaryNodeTypeName;
+  }
+
+  public List<String> getMixinNodeTypeNames() {
+    return mixinNodeTypeNames;
   }
 
   public NameConflictResolution getOnDuplicate() {
@@ -146,6 +157,6 @@ public class TypeMapper implements MethodInvoker {
 
   @Override
   public String toString() {
-    return "TypeMapper[class=" + objectClass + ",nodeType=" + nodeDef + "]";
+    return "TypeMapper[class=" + objectClass + ",primaryNodeTypeName=" + primaryNodeTypeName + "]";
   }
 }

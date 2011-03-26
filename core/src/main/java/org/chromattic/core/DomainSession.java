@@ -26,12 +26,13 @@ import org.chromattic.api.event.EventListener;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.ObjectQueryBuilder;
 import org.chromattic.core.jcr.LinkType;
-import org.chromattic.core.query.QueryManager;
+import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.query.ObjectQueryBuilderImpl;
 import org.chromattic.common.JCR;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
+import javax.jcr.Session;
 import java.util.Iterator;
 import java.lang.reflect.UndeclaredThrowableException;
 
@@ -48,12 +49,12 @@ public abstract class DomainSession implements ChromatticSession {
   final Domain domain;
 
   /** . */
-  private final QueryManager queryManager;
+  protected final SessionWrapper sessionWrapper;
 
-  protected DomainSession(Domain domain) {
+  protected DomainSession(Domain domain, SessionWrapper sessionWrapper) {
     this.domain = domain;
     this.broadcaster = new EventBroadcaster();
-    this.queryManager = new QueryManager(this);
+    this.sessionWrapper = sessionWrapper;
   }
 
   protected abstract String _persist(EntityContext ctx, String relPath) throws RepositoryException;
@@ -87,6 +88,14 @@ public abstract class DomainSession implements ChromatticSession {
   protected abstract void _orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
 
   protected abstract Node _getRoot() throws RepositoryException;
+
+  public final Domain getDomain() {
+    return domain;
+  }
+
+  public final Session getJCRSession() {
+    return sessionWrapper.getSession();
+  }
 
   public final String getId(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
@@ -290,7 +299,7 @@ public abstract class DomainSession implements ChromatticSession {
   }
 
   public ObjectQueryBuilder<?> createQueryBuilder() throws ChromatticException {
-    return new ObjectQueryBuilderImpl(domain, queryManager);
+    return new ObjectQueryBuilderImpl(this);
   }
 
   public final Node getNode(Object o) {
@@ -505,6 +514,10 @@ public abstract class DomainSession implements ChromatticSession {
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
+  }
+
+  public SessionWrapper getSessionWrapper() {
+    return sessionWrapper;
   }
 
   public void addEventListener(EventListener listener) {

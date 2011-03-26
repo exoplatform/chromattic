@@ -26,12 +26,13 @@ import javax.jcr.Node;
 import org.chromattic.exo.ExoSessionLifeCycle;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.SessionWrapperImpl;
-import org.chromattic.core.jcr.NodeDef;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.common.Collections;
 
 import java.util.Set;
+import java.util.List;
+import java.util.Arrays;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -43,7 +44,10 @@ public class SessionManagerTestCase extends TestCase {
   private SessionWrapper mgr;
 
   /** . */
-  private final NodeDef blah = new NodeDef("nt:unstructured", Collections.set("mix:referenceable"));
+  private final String primaryNodeTypeName = "nt:unstructured";
+
+  /** . */
+  private final List<String> mixinNodeTypeNames = Arrays.asList("mix:referenceable");
 
   @Override
   protected void setUp() throws Exception {
@@ -55,8 +59,8 @@ public class SessionManagerTestCase extends TestCase {
   }
 
   public void testRemoveTransientReferent() throws Exception {
-    Node a = mgr.addNode(mgr.getSession().getRootNode(), "a", blah);
-    Node b = mgr.addNode(mgr.getSession().getRootNode(), "b", blah);
+    Node a = mgr.addNode(mgr.getSession().getRootNode(), "a", primaryNodeTypeName, mixinNodeTypeNames);
+    Node b = mgr.addNode(mgr.getSession().getRootNode(), "b", primaryNodeTypeName, mixinNodeTypeNames);
     mgr.setReferenced(a, "ref", b, LinkType.REFERENCE);
     mgr.remove(a);
     Set<Node> referents = Collections.set(mgr.getReferents(b, "ref", LinkType.REFERENCE));
@@ -64,8 +68,8 @@ public class SessionManagerTestCase extends TestCase {
   }
 
   public void testRemovePersistentReferent() throws Exception {
-    Node a = mgr.addNode(mgr.getSession().getRootNode(), "a", blah);
-    Node b = mgr.addNode(mgr.getSession().getRootNode(), "b", blah);
+    Node a = mgr.addNode(mgr.getSession().getRootNode(), "a", primaryNodeTypeName, mixinNodeTypeNames);
+    Node b = mgr.addNode(mgr.getSession().getRootNode(), "b", primaryNodeTypeName, mixinNodeTypeNames);
     mgr.setReferenced(a, "ref", b, LinkType.REFERENCE);
     mgr.remove(a);
     mgr.save();

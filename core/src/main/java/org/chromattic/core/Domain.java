@@ -23,6 +23,8 @@ import org.chromattic.core.mapping.TypeMapping;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.mapper.TypeMapperBuilder;
 import org.chromattic.core.jcr.SessionWrapper;
+import org.chromattic.core.jcr.info.NodeInfoManager;
+import org.chromattic.core.query.QueryManager;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.api.format.ObjectFormatter;
 
@@ -48,7 +50,7 @@ public class Domain {
 
   /** . */
   private final Instrumentor instrumentor;
-
+  
   /** . */
   final ObjectFormatter objectFormatter;
 
@@ -63,6 +65,12 @@ public class Domain {
 
   /** . */
   final String rootNodePath;
+
+  /** . */
+  final NodeInfoManager nodeInfoManager;
+
+  /** . */
+  final QueryManager queryManager;
 
   public Domain(
     Set<TypeMapping> typeMappings,
@@ -80,10 +88,10 @@ public class Domain {
     Map<String, TypeMapper> typeMapperByNodeType = new HashMap<String, TypeMapper>();
     Map<Class<?>, TypeMapper> typeMapperByClass = new HashMap<Class<?>, TypeMapper>();
     for (TypeMapper typeMapper : builder.build()) {
-      if (typeMapperByNodeType.containsKey(typeMapper.getNodeDef().getPrimaryNodeTypeName())) {
-        throw new IllegalStateException("Duplicate node type name " + typeMapper.getNodeDef().getPrimaryNodeTypeName());
+      if (typeMapperByNodeType.containsKey(typeMapper.getPrimaryNodeTypeName())) {
+        throw new IllegalStateException("Duplicate node type name " + typeMapper.getPrimaryNodeTypeName());
       }
-      typeMapperByNodeType.put(typeMapper.getNodeDef().getPrimaryNodeTypeName(), typeMapper);
+      typeMapperByNodeType.put(typeMapper.getPrimaryNodeTypeName(), typeMapper);
       typeMapperByClass.put(typeMapper.getObjectClass(), typeMapper);
     }
 
@@ -96,6 +104,8 @@ public class Domain {
     this.hasPropertyOptimized = hasPropertyOptimized;
     this.hasNodeOptimized = hasNodeOptimized;
     this.rootNodePath = rootNodePath;
+    this.nodeInfoManager = new NodeInfoManager();
+    this.queryManager = new QueryManager();
   }
 
   public boolean isHasPropertyOptimized() {
@@ -135,5 +145,9 @@ public class Domain {
 
   public TypeMapper getTypeMapper(Class<?> clazz) {
     return typeMapperByClass.get(clazz);
+  }
+
+  public QueryManager getQueryManager() {
+    return queryManager;
   }
 }

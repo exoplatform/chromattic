@@ -45,14 +45,7 @@ public class QueryManager {
   /** . */
   private EnumMap<QueryLanguage, Map<ObjectQueryKey, ObjectQuery<?>>> globalQueryCache;
 
-  /** . */
-  private final DomainSession domainSession;
-
-  public QueryManager(DomainSession domainSession) {
-    this.domainSession = domainSession;
-  }
-
-  public <O> ObjectQuery<O> getObjectQuery(Class<O> objectClass, String statement) {
+  public <O> ObjectQuery<O> getObjectQuery(DomainSession session, Class<O> objectClass, String statement) {
     try {
       // For now we support on SQL
       QueryLanguage language = QueryLanguage.SQL;
@@ -70,7 +63,7 @@ public class QueryManager {
       //
       if (query == null) {
         String jcrLanguage = languages.get(language);
-        query = new ObjectQueryImpl<O>(objectClass, domainSession, statement);
+        query = new ObjectQueryImpl<O>(objectClass, session, statement);
 
         //
         Map<ObjectQueryKey, ObjectQuery<?>> queryCache;

@@ -35,6 +35,8 @@ import javax.jcr.nodetype.NodeTypeManager;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.RandomAccess;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -122,10 +124,19 @@ public class SessionWrapperImpl implements SessionWrapper {
     return mgr.getNodeType(nodeTypeName);
   }
 
-  public Node addNode(Node parentNode, String relPath, NodeDef nodeType) throws RepositoryException {
-    Node childNode = parentNode.addNode(relPath, nodeType.getPrimaryNodeTypeName());
-    for (String mixinName : nodeType.getMixinNames()) {
-      childNode.addMixin(mixinName);
+  public Node addNode(Node parentNode, String relPath, String primartyNodeTypeName, List<String> mixinNodeTypeNames) throws RepositoryException {
+
+    Node childNode = parentNode.addNode(relPath, primartyNodeTypeName);
+    if (mixinNodeTypeNames instanceof RandomAccess) {
+      int size = mixinNodeTypeNames.size();
+      for (int i = 0;i < size;i++) {
+        String mixinNodeTypeName = mixinNodeTypeNames.get(i);
+        childNode.addMixin(mixinNodeTypeName);
+      }
+    } else {
+      for (String mixinNodeTypeName : mixinNodeTypeNames) {
+        childNode.addMixin(mixinNodeTypeName);
+      }
     }
     return childNode;
   }

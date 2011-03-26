@@ -51,7 +51,6 @@ import org.chromattic.core.mapper.property.JCRPropertyMapPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyListPropertyMapper;
 import org.chromattic.core.mapper.nodeattribute.JCRNodeAttributePropertyMapper;
 import org.chromattic.core.mapper.embedded.JCREmbeddedPropertyMapper;
-import org.chromattic.core.jcr.NodeDef;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
@@ -270,14 +269,14 @@ public class TypeMapperBuilder {
       for (String mixinName : typeMapping.getMixinNames()) {
         mixinNames.add(mixinName);
       }
-      NodeDef nodeDef = new NodeDef(typeMapping.getNodeTypeName(), mixinNames);
 
       //
       TypeMapper mapper = new TypeMapper(
         (Class<?>)typeMapping.getObjectClass().getType(),
         propertyMappers,
         methodMappers,
-        nodeDef,
+        typeMapping.getNodeTypeName(),
+        mixinNames,
         typeMapping.getOnDuplicate(),
         instrumentor);
 
