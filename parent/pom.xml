@@ -36,7 +36,8 @@
   <packaging>pom</packaging>
   <version>1.0.0</version>
   <name>Chromattic Framework Parent</name>
-  <description>Chromattic Framework Parent</description>
+  <description>The Chromattic projects is an object mapper framework that use Java Content Repository as back end storage.</description>
+  <url>http://chromattic.googlecode.com/</url>
 
   <organization>
     <name>eXo Platform SAS</name>
@@ -50,6 +51,13 @@
   </licenses>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.8</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 

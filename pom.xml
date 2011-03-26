@@ -23,7 +23,20 @@
    <artifactId>main</artifactId>
    <packaging>pom</packaging>
    <name>Chromattic Framework Main</name>
+   <description>The Chromattic projects is an object mapper framework that use Java Content Repository as back end storage.</description>
    <version>1.0.0-SNAPSHOT</version>
+   <url>http://chromattic.googlecode.com/</url>
+
+  <organization>
+    <name>eXo Platform SAS</name>
+    <url>http://www.exoplatform.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>LGPL, version 2.1</name>
+      <url>http://www.opensource.org/licenses/lgpl-license.php</url>
+    </license>
+  </licenses>
 
   <profiles>
      <profile>

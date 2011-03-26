@@ -38,19 +38,19 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0-beta1</version>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.spi</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0-beta1</version>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.common</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0-beta1</version>
     </dependency>
 
     <dependency>
@@ -80,19 +80,19 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.exo</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0-beta1</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.cglib</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0-beta1</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>jcr</groupId>
+      <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
       <version>1.0</version>
     </dependency>
@@ -110,7 +110,7 @@
          <dependency>
            <groupId>org.chromattic</groupId>
            <artifactId>chromattic.apt</artifactId>
-           <version>1.0.0-SNAPSHOT</version>
+           <version>1.0.0-beta1</version>
            <scope>test</scope>
          </dependency>
 
