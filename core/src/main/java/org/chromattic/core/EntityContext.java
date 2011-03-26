@@ -152,7 +152,7 @@ public class EntityContext implements MethodHandler {
     return state.getPropertyValue(propertyName, type);
   }
 
-  public <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType2 listType) {
+  public <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType listType) {
     JCR.validateName(propertyName);
 
     //
@@ -177,7 +177,7 @@ public class EntityContext implements MethodHandler {
     }
   }
 
-  public <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType2 listType, List<V> objects) {
+  public <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType listType, List<V> objects) {
     JCR.validateName(propertyName);
 
     //

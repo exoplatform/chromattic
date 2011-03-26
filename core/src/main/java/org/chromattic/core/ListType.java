@@ -19,7 +19,6 @@
 package org.chromattic.core;
 
 import org.chromattic.common.collection.WrappedArrayList;
-import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.bean.SimpleValueInfo;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ListType2 {
+public abstract class ListType {
 
   public abstract <E> List<E> create(SimpleValueInfo<E> elementType, int size);
 
@@ -37,7 +36,7 @@ public abstract class ListType2 {
 
   public abstract <E> List<E> wrap(SimpleValueInfo<E> elementType, Object array);
 
-  public static final ListType2 ARRAY = new ListType2() {
+  public static final ListType ARRAY = new ListType() {
 
     @Override
     public <E> List<E> create(SimpleValueInfo<E> elementType, int size) {
@@ -58,7 +57,7 @@ public abstract class ListType2 {
     }
   };
 
-  public static final ListType2 LIST = new ListType2() {
+  public static final ListType LIST = new ListType() {
 
     @Override
     public <E> List<E> create(SimpleValueInfo<E> elementType, int size) {

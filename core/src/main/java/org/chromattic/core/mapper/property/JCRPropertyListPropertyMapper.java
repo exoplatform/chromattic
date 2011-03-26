@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper.property;
 
-import org.chromattic.core.ListType2;
+import org.chromattic.core.ListType;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.MultiValuedPropertyInfo;
 import org.chromattic.core.bean.ArrayPropertyInfo;
@@ -39,7 +39,7 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
   private final String jcrPropertyName;
 
   /** . */
-  private final ListType2 listType;
+  private final ListType listType;
 
   /** . */
   private final SimpleValueInfo elementType;
@@ -48,11 +48,11 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
     super(info);
 
     //
-    ListType2 listType;
+    ListType listType;
     if (info instanceof ArrayPropertyInfo) {
-      listType = ListType2.ARRAY;
+      listType = ListType.ARRAY;
     } else if (info instanceof ListPropertyInfo) {
-      listType = ListType2.LIST;
+      listType = ListType.LIST;
     } else {
       throw new AssertionError();
     }

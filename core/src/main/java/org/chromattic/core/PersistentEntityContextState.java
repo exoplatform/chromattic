@@ -194,7 +194,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType2 listType) {
+  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType listType) {
     try {
       Value[] values;
       Property property = session.getSessionWrapper().getProperty(node, propertyName);
@@ -290,7 +290,7 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType2 listType, List<V> objects) {
+  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType listType, List<V> objects) {
     if (objects == null) {
       throw new NullPointerException();
     }

@@ -70,7 +70,7 @@ class RemovedEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType2 listType) {
+  <V> List<V> getPropertyValues(String propertyName, SimpleValueInfo<V> simpleType, ListType listType) {
     throw new IllegalStateException();
   }
 
@@ -78,7 +78,7 @@ class RemovedEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType2 listType, List<V> objects) {
+  <V> void setPropertyValues(String propertyName, SimpleValueInfo<V> type, ListType listType, List<V> objects) {
     throw new IllegalStateException();
   }
 
