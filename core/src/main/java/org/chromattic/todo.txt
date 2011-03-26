@@ -5,7 +5,6 @@
 - transient / removed method invocations
 - more control over session with @Save annotation ?
 - protected methods instead of public
-- boolean properties with isXXX()
 - Map<String, ?> property mapping like Map<String, Integer> or Map<String, String>
 - spi for classloader integration
 - create relationship with non persistent contexts
