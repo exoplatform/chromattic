@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.chromattic</groupId>
     <artifactId>chromattic.parent</artifactId>
-    <version>1.0.0-beta10-SNAPSHOT</version>
+    <version>1.0.0-beta10</version>
   </parent>
 
   <artifactId>chromattic.cglib</artifactId>
