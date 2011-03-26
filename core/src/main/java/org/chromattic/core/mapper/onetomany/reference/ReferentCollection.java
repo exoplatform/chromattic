@@ -43,12 +43,12 @@ public class ReferentCollection extends AbstractCollection<Object> {
 
   @Override
   public boolean add(Object o) {
-    return context.addReference(mapper.propertyName, o);
+    return context.addReference(mapper.propertyName, o, mapper.linkType);
   }
 
   public Iterator<Object> iterator() {
     Class<?> filterClass = mapper.getRelatedClass();
-    return (Iterator<Object>)context.getReferences(mapper.propertyName, filterClass);
+    return (Iterator<Object>)context.getReferences(mapper.propertyName, filterClass, mapper.linkType);
   }
 
   public int size() {

@@ -21,6 +21,7 @@ package org.chromattic.core.mapper.onetomany.reference;
 
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.core.ObjectContext;
+import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 
@@ -33,17 +34,24 @@ public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
   /** . */
   private final String propertyName;
 
-  public JCRNamedReferentPropertyMapper(SingleValuedPropertyInfo<BeanValueInfo> info, String propertyName) throws ClassNotFoundException {
+  /** . */
+  private final LinkType linkType;
+
+  public JCRNamedReferentPropertyMapper(
+    SingleValuedPropertyInfo<BeanValueInfo> info,
+    String propertyName,
+    LinkType linkType) throws ClassNotFoundException {
     super(info);
 
     //
     this.propertyName = propertyName;
+    this.linkType = linkType;
   }
 
   @Override
   public Object get(ObjectContext context) throws Throwable {
     Class<?> relatedClass = getRelatedClass();
-    Object related = context.getRelated(propertyName);
+    Object related = context.getRelated(propertyName, linkType);
     if (related == null) {
       return null;
     } else {
@@ -57,6 +65,6 @@ public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
 
   @Override
   public void set(ObjectContext ctx, Object value) throws Throwable {
-    ctx.setRelated(propertyName, value);
+    ctx.setRelated(propertyName, value, linkType);
   }
 }

@@ -49,6 +49,7 @@ import org.chromattic.core.mapper.property.JCRPropertyMapPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyListPropertyMapper;
 import org.chromattic.core.mapper.nodeattribute.JCRNodeAttributePropertyMapper;
 import org.chromattic.core.jcr.NodeDef;
+import org.chromattic.core.jcr.LinkType;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.bean.MultiValuedPropertyInfo;
@@ -65,6 +66,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.lang.reflect.Method;
 
 /**
@@ -72,6 +74,16 @@ import java.lang.reflect.Method;
  * @version $Revision$
  */
 public class TypeMapperBuilder {
+
+  /** . */
+  private final static EnumMap<RelationshipType, LinkType> relationshipToLinkMapping;
+
+  static {
+    EnumMap<RelationshipType, LinkType> tmp = new EnumMap<RelationshipType, LinkType>(RelationshipType.class);
+    tmp.put(RelationshipType.REFERENCE, LinkType.REFERENCE);
+    tmp.put(RelationshipType.PATH, LinkType.PATH);
+    relationshipToLinkMapping = tmp;
+  }
 
   /** . */
   private final Set<TypeMapping> typeMappings;
@@ -153,8 +165,13 @@ public class TypeMapperBuilder {
           if (pmvm instanceof ManyToOneMapping) {
             if (pmvm instanceof NamedManyToOneMapping) {
               NamedManyToOneMapping nmtovm = (NamedManyToOneMapping)pmvm;
-              if (nmtovm.getType() == RelationshipType.REFERENCE) {
-                JCRNamedReferentPropertyMapper blah = new JCRNamedReferentPropertyMapper((SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo(), nmtovm.getRelatedName());
+              LinkType linkType = relationshipToLinkMapping.get(nmtovm.getType());
+              if (linkType != null) {
+                JCRNamedReferentPropertyMapper blah = new JCRNamedReferentPropertyMapper(
+                  (SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo(),
+                  nmtovm.getRelatedName(),
+                  linkType
+                  );
                 propertyMappers.add(blah);
                 relatedProperties.get(nmtovm.getRelatedType()).add(blah);
               }
@@ -172,9 +189,13 @@ public class TypeMapperBuilder {
 
               //
               if (pmhm instanceof NamedOneToManyMapping) {
-                if (pmhm.getType() == RelationshipType.REFERENCE) {
+                LinkType linkType = relationshipToLinkMapping.get(pmhm.getType());
+                if (linkType != null) {
                   NamedOneToManyMapping fff = (NamedOneToManyMapping)pmhm;
-                  JCRReferentCollectionPropertyMapper bilto = new JCRReferentCollectionPropertyMapper((CollectionPropertyInfo<BeanValueInfo>)pm.getInfo(), fff.getName());
+                  JCRReferentCollectionPropertyMapper bilto = new JCRReferentCollectionPropertyMapper(
+                    (CollectionPropertyInfo<BeanValueInfo>)pm.getInfo(),
+                    fff.getName(),
+                    linkType);
                   relatedProperties.get(pmhm.getRelatedType()).add(bilto);
                   propertyMappers.add(bilto);
                 }

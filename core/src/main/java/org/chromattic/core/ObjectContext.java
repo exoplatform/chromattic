@@ -31,6 +31,7 @@ import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.core.bean.PropertyInfo;
 import org.chromattic.core.bean.SimpleValueInfo;
+import org.chromattic.core.jcr.LinkType;
 import org.reflext.api.MethodInfo;
 
 /**
@@ -97,8 +98,8 @@ public class ObjectContext implements MethodHandler {
     state.getSession().remove(this);
   }
 
-  public <T> Iterator<T> getReferences(final String name, Class<T> filterClass) {
-    return state.getSession().getRelateds(this, name, filterClass);
+  public <T> Iterator<T> getReferences(final String name, Class<T> filterClass, LinkType linkType) {
+    return state.getSession().getRelateds(this, name, filterClass, linkType);
   }
 
   public String getName() {
@@ -117,11 +118,11 @@ public class ObjectContext implements MethodHandler {
     state.setName(name);
   }
 
-  public Object getRelated(String name) {
-    return state.getSession().getRelated(this, name);
+  public Object getRelated(String name, LinkType linkType) {
+    return state.getSession().getRelated(this, name, linkType);
   }
 
-  public void setRelated(String name, Object related) {
+  public void setRelated(String name, Object related, LinkType linkType) {
     DomainSession session = state.getSession();
     ObjectContext relatedCtx = null;
     if (related != null) {
@@ -129,13 +130,13 @@ public class ObjectContext implements MethodHandler {
     }
 
     //
-    session.setRelated(this, name, relatedCtx);
+    session.setRelated(this, name, relatedCtx, linkType);
   }
 
-  public boolean addReference(String name, Object related) {
+  public boolean addReference(String name, Object related, LinkType linkType) {
     DomainSession session = state.getSession();
     ObjectContext relatedCtx = session.unwrap(related);
-    return session.setRelated(relatedCtx, name, this);
+    return session.setRelated(relatedCtx, name, this, linkType);
   }
 
   public Map<String, Object> getPropertyMap() {

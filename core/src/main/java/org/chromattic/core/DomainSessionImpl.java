@@ -276,12 +276,12 @@ class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected Object _getRelated(ObjectContext ctx, String name) throws RepositoryException {
+  protected Object _getRelated(ObjectContext ctx, String name, LinkType linkType) throws RepositoryException {
     if (ctx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException();
     }
     Node node = ctx.state.getNode();
-    Node related = sessionWrapper.getReferenced(node, name, LinkType.REFERENCE);
+    Node related = sessionWrapper.getReferenced(node, name, linkType);
     if (related != null) {
       return findByNode(Object.class, related);
     } else {
@@ -289,7 +289,7 @@ class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected boolean _setRelated(ObjectContext ctx, String name, ObjectContext relatedCtx) throws RepositoryException {
+  protected boolean _setRelated(ObjectContext ctx, String name, ObjectContext relatedCtx, LinkType linkType) throws RepositoryException {
     if (ctx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException("Cannot create a relationship with a non persisted context " + this);
     }
@@ -309,15 +309,15 @@ class DomainSessionImpl extends DomainSession {
       Node relatedNode = relatedCtx.state.getNode();
 
       //
-      return relatedNode != sessionWrapper.setReferenced(node, name, relatedNode, LinkType.REFERENCE);
+      return relatedNode != sessionWrapper.setReferenced(node, name, relatedNode, linkType);
     } else {
-      return null != sessionWrapper.setReferenced(node, name, null, LinkType.REFERENCE);
+      return null != sessionWrapper.setReferenced(node, name, null, linkType);
     }
   }
 
-  protected <T> Iterator<T> _getRelateds(ObjectContext ctx, String name, Class<T> filterClass) throws RepositoryException {
+  protected <T> Iterator<T> _getRelateds(ObjectContext ctx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
     Node node = ctx.state.getNode();
-    Iterator<Node> nodes = sessionWrapper.getReferents(node, name, LinkType.REFERENCE);
+    Iterator<Node> nodes = sessionWrapper.getReferents(node, name, linkType);
     return new ReferentCollectionIterator<T>(this, nodes, filterClass, name);
   }
 
