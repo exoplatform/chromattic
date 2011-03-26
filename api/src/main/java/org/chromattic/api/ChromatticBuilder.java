@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
 import java.util.Arrays;
-import java.lang.reflect.ParameterizedType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -39,6 +38,7 @@ public abstract class ChromatticBuilder {
    */
   public static final Option<String>  INSTRUMENTOR_CLASSNAME =
     new Option<String>(
+      Option.Type.STRING,
       "org.chromattic.api.Option.instrumentor.classname",
       "intrumentor");
 
@@ -48,6 +48,7 @@ public abstract class ChromatticBuilder {
    */
   public static final Option<String> SESSION_LIFECYCLE_CLASSNAME =
     new Option<String>(
+      Option.Type.STRING,
       "org.chromattic.api.Option.session_lifecycle.classname",
       "session life cycle");
 
@@ -57,6 +58,7 @@ public abstract class ChromatticBuilder {
    */
   public static final Option<String> OBJECT_FORMATTER_CLASSNAME =
     new Option<String>(
+      Option.Type.STRING,
       "org.chromattic.api.Option.object_formatter.classname",
       "object formatter");
 
@@ -67,6 +69,7 @@ public abstract class ChromatticBuilder {
    */
   public static final Option<Boolean> CACHE_STATE_ENABLED =
     new Option<Boolean>(
+      Option.Type.BOOLEAN,
       "org.chromattic.api.Option.cache.state.enabled",
       "cache state enabled");
 
@@ -75,6 +78,7 @@ public abstract class ChromatticBuilder {
    */
   public static final Option<Boolean> JCR_OPTIMIZE_ENABLED =
     new Option<Boolean>(
+      Option.Type.BOOLEAN,
       "org.chromattic.api.Option.optimize.jcr.enabled",
       "jcr optmisation enabled");
 
@@ -83,6 +87,7 @@ public abstract class ChromatticBuilder {
    */
   public static final Option<Boolean> JCR_OPTIMIZE_HAS_PROPERTY_ENABLED =
     new Option<Boolean>(
+      Option.Type.BOOLEAN,
       "org.chromattic.api.Option.optimize.jcr.has_property.enabled",
       "jcr has property optimization enabled");
 
@@ -91,6 +96,7 @@ public abstract class ChromatticBuilder {
    */
   public static final Option<Boolean> JCR_OPTIMIZE_HAS_NODE_ENABLED =
     new Option<Boolean>(
+      Option.Type.BOOLEAN,
       "org.chromattic.api.Option.jcr.optimize.has_node.enabled",
       "jcr has node optimization enabled");
 
@@ -99,6 +105,7 @@ public abstract class ChromatticBuilder {
    */
   public static final Option<String> ROOT_NODE_PATH =
     new Option<String>(
+      Option.Type.STRING,
       "org.chromattic.api.Option.root_node_path",
       "root node path");
 
@@ -215,21 +222,7 @@ public abstract class ChromatticBuilder {
     /** . */
     private final Type<T> type;
 
-    private Option(String name, String displayName) {
-
-      //
-      ParameterizedType pt = (ParameterizedType)getClass().getGenericSuperclass();
-      Class clazz = (Class)pt.getActualTypeArguments()[0];
-      Type<T> type;
-      if (clazz == String.class) {
-        type = (Type<T>)Type.STRING;
-      } else if (clazz == Boolean.class) {
-        type = (Type<T>)Type.BOOLEAN;
-      } else {
-        throw new UnsupportedOperationException();
-      }
-
-      //
+    private Option(Type<T> type, String name, String displayName) {
       this.name = name;
       this.displayName = displayName;
       this.type = type;
