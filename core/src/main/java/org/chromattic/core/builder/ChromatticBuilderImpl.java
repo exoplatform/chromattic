@@ -57,7 +57,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   public ChromatticBuilderImpl() {
     setOption(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl");
     setOption(SESSION_PROVIDER_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle");
-    setOption(NAME_VALIDATOR_CLASSNAME, DefaultObjectFormatter.class.getName());
+    setOption(OBJECT_NAME_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName());
   }
 
   private <T> T create(OptionInstance<String> optionInstance, Class<T> expectedClass) {
@@ -90,7 +90,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       instrumentor = create((OptionInstance<String>)optionInstance, Instrumentor.class);
     } else if (optionInstance.getOption() == SESSION_PROVIDER_CLASSNAME) {
       sessionProvider = create((OptionInstance<String>)optionInstance, SessionLifeCycle.class);
-    } else if (optionInstance.getOption() == NAME_VALIDATOR_CLASSNAME) {
+    } else if (optionInstance.getOption() == OBJECT_NAME_FORMATTER_CLASSNAME) {
       objectFormatter = create((OptionInstance<String>)optionInstance, ObjectFormatter.class);
     }
   }

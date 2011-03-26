@@ -40,10 +40,10 @@ public abstract class ChromatticBuilder {
       "org.chromattic.api.Option.repository_provider.classname",
       "repository provider");
 
-  public static final Option<String> NAME_VALIDATOR_CLASSNAME =
+  public static final Option<String> OBJECT_NAME_FORMATTER_CLASSNAME =
     new Option<String>(
-      "org.chromattic.api.Option.name_validator.classname",
-      "name validator");
+      "org.chromattic.api.Option.object_name_formatter.classname",
+      "object name formatter");
 
   public static ChromatticBuilder create() {
     String builderClassName = "org.chromattic.core.builder.ChromatticBuilderImpl";
