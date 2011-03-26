@@ -44,11 +44,11 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     addClass(manySide);
   }
 
-  public abstract Class<O> getOneSideClass();
+  protected abstract Class<O> getOneSideClass();
 
-  public abstract Class<M> getManySideClass();
+  protected abstract Class<M> getManySideClass();
 
-  public abstract Collection<M> getMany(O many);
+  protected abstract Collection<M> getMany(O many);
 
   public void testAdd1() throws Exception {
 

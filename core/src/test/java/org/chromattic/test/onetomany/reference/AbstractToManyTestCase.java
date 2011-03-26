@@ -19,7 +19,6 @@
 
 package org.chromattic.test.onetomany.reference;
 
-import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 
 import javax.jcr.Node;
@@ -28,73 +27,72 @@ import javax.jcr.Node;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ToManyTestCase extends AbstractTestCase {
+public abstract class AbstractToManyTestCase<O, M> extends AbstractLinkTestCase<O, M> {
 
-  protected void createDomain() {
-    addClass(TOTMR_A_2.class);
-    addClass(TOTMR_B_2.class);
-  }
+  protected abstract O getOne(M many);
+
+  protected abstract void setOne(M many, O one);
 
   public void testLoad() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getJCRSession().getRootNode();
-    Node aNode = rootNode.addNode("totmr_a", "totmr_a");
-    Node bNode = rootNode.addNode("totmr_b", "totmr_b");
-    bNode.setProperty("ref", aNode);
+    Node aNode = rootNode.addNode("totmr_a", oneNT);
+    Node bNode = rootNode.addNode("totmr_b", manyNT);
+    createLink(bNode, "ref", aNode);
 
-    TOTMR_A_2 a = session.findByNode(TOTMR_A_2.class, aNode);
-    TOTMR_B_2 b = session.findByNode(TOTMR_B_2.class, bNode);
-    assertSame(a, b.getA());
+    O a = session.findByNode(oneClass, aNode);
+    M b = session.findByNode(manyClass, bNode);
+    assertSame(a, getOne(b));
   }
 
   public void testAddPersistent() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getJCRSession().getRootNode();
-    Node aNode = rootNode.addNode("totmr_a", "totmr_a");
-    Node bNode = rootNode.addNode("totmr_b", "totmr_b");
+    Node aNode = rootNode.addNode("totmr_a", oneNT);
+    Node bNode = rootNode.addNode("totmr_b", manyNT);
 
     //
-    TOTMR_A_2 a = session.findByNode(TOTMR_A_2.class, aNode);
-    TOTMR_B_2 b = session.findByNode(TOTMR_B_2.class, bNode);
+    O a = session.findByNode(oneClass, aNode);
+    M b = session.findByNode(manyClass, bNode);
 
     //
-    b.setA(a);
-    assertSame(a, b.getA());
+    setOne(b, a);
+    assertSame(a, getOne(b));
   }
 
   public void testAddTransient() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getJCRSession().getRootNode();
-    Node bNode = rootNode.addNode("totmr_b", "totmr_b");
+    Node bNode = rootNode.addNode("totmr_b", manyNT);
 
     //
-    TOTMR_A_2 a = session.create(TOTMR_A_2.class);
-    TOTMR_B_2 b = session.findByNode(TOTMR_B_2.class, bNode);
+    O a = session.create(oneClass);
+    M b = session.findByNode(manyClass, bNode);
 
     //
     try {
-      b.setA(a);
+      setOne(b, a);
     }
     catch (IllegalStateException e) {
     }
-    assertNull(b.getA());
+    assertNull(getOne(b));
   }
 
   public void testRemove() throws Exception {
     DomainSession session = login();
     Node rootNode = session.getJCRSession().getRootNode();
-    Node aNode = rootNode.addNode("totmr_a", "totmr_a");
-    Node bNode = rootNode.addNode("totmr_b", "totmr_b");
+    Node aNode = rootNode.addNode("totmr_a", oneNT);
+    Node bNode = rootNode.addNode("totmr_b", manyNT);
 
     //
-    TOTMR_A_2 a = session.findByNode(TOTMR_A_2.class, aNode);
-    TOTMR_B_2 b = session.findByNode(TOTMR_B_2.class, bNode);
+    O a = session.findByNode(oneClass, aNode);
+    M b = session.findByNode(manyClass, bNode);
 
     //
-    b.setA(a);
+    setOne(b, a);
 
     //
-    b.setA(null);
-    assertEquals(null, b.getA());
+    setOne(b, null);
+    assertEquals(null, getOne(b));
   }
 }
