@@ -21,6 +21,7 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.core.bean.BaseSimpleTypes;
 import org.chromattic.core.bean.SimpleType;
+import org.chromattic.core.bean.SimpleTypeKind;
 
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
@@ -43,139 +44,189 @@ public class ValueMapper {
   private ValueMapper() {
   }
 
-  public final <T> T get(Value value, SimpleType<T> wantedType) throws RepositoryException {
+  public final <E> E get(Value value, SimpleType<E> wantedType) throws RepositoryException {
     int propertyType = value.getType();
     if (wantedType != null) {
-      switch (wantedType.getKind()) {
-        case BINARY:
-          if (propertyType == PropertyType.BINARY) {
-            return (T)value.getStream();
-          } else {
-            throw new ClassCastException();
-          }
-        case STRING:
-          if (propertyType == PropertyType.STRING || propertyType == PropertyType.NAME || propertyType == PropertyType.PATH) {
-            return (T)value.getString();
-          } else {
-            throw new ClassCastException();
-          }
-        case PATH:
-          if (propertyType == PropertyType.PATH) {
-            return (T)value.getString();
-          } else {
-            throw new ClassCastException();
-          }
-        case INT:
-          if (propertyType == PropertyType.LONG) {
-            return (T)Integer.valueOf((int)value.getLong());
-          } else {
-            throw new ClassCastException();
-          }
-        case LONG:
-          if (propertyType == PropertyType.LONG) {
-            return (T)Long.valueOf(value.getLong());
-          } else {
-            throw new ClassCastException();
-          }
-        case FLOAT:
-          if (propertyType == PropertyType.DOUBLE) {
-            return (T)Float.valueOf((float)value.getDouble());
-          } else {
-            throw new ClassCastException();
-          }
-        case DOUBLE:
-          if (propertyType == PropertyType.DOUBLE) {
-            return (T)Double.valueOf(value.getDouble());
-          } else {
-            throw new ClassCastException();
-          }
-        case BOOLEAN:
-          if (propertyType == PropertyType.BOOLEAN) {
-            return (T)Boolean.valueOf(value.getBoolean());
-          } else {
-            throw new ClassCastException();
-          }
-        case DATE:
-          if (propertyType == PropertyType.DATE) {
-            return (T)value.getDate().getTime();
-          } else {
-            throw new ClassCastException();
-          }
-        default:
-          throw new AssertionError("Property type " + propertyType + " not handled");
+      SimpleTypeKind<E, ?> typeKind = wantedType.getKind();
+      if (SimpleTypeKind.STREAM.class.isInstance(typeKind)) {
+        if (propertyType == PropertyType.BINARY) {
+          return (E)value.getStream();
+        }
+        else {
+          throw new ClassCastException();
+        }
       }
-    } else {
+      else if (SimpleTypeKind.STRING.class.isInstance(typeKind)) {
+        if (propertyType == PropertyType.STRING || propertyType == PropertyType.NAME || propertyType == PropertyType.PATH) {
+          return (E)value.getString();
+        }
+        else {
+          throw new ClassCastException();
+        }
+      }
+      else if (SimpleTypeKind.PATH.class.isInstance(typeKind)) {
+        if (propertyType == PropertyType.PATH) {
+          return (E)value.getString();
+        }
+        else {
+          throw new ClassCastException();
+        }
+      }
+      else if (SimpleTypeKind.LONG.class.isInstance(typeKind)) {
+        if (BaseSimpleTypes.INT == typeKind) {
+          if (propertyType == PropertyType.LONG) {
+            return (E)Integer.valueOf((int)value.getLong());
+          }
+          else {
+            throw new ClassCastException();
+          }
+        }
+        else if (BaseSimpleTypes.LONG == typeKind) {
+          if (propertyType == PropertyType.LONG) {
+            return (E)Long.valueOf(value.getLong());
+          }
+          else {
+            throw new ClassCastException();
+          }
+        }
+        else {
+          throw new AssertionError("Property type " + propertyType + " not handled");
+        }
+      }
+      else if (SimpleTypeKind.DOUBLE.class.isInstance(typeKind)) {
+        if (BaseSimpleTypes.FLOAT == typeKind) {
+          if (propertyType == PropertyType.DOUBLE) {
+            return (E)Float.valueOf((float)value.getDouble());
+          }
+          else {
+            throw new ClassCastException();
+          }
+        }
+        else if (BaseSimpleTypes.DOUBLE == typeKind) {
+          if (propertyType == PropertyType.DOUBLE) {
+            return (E)Double.valueOf(value.getDouble());
+          }
+          else {
+            throw new ClassCastException();
+          }
+        } else {
+          throw new AssertionError("Property type " + propertyType + " not handled");
+        }
+      }
+      else if (SimpleTypeKind.BOOLEAN.class.isInstance(typeKind)) {
+        if (propertyType == PropertyType.BOOLEAN) {
+          return (E)Boolean.valueOf(value.getBoolean());
+        }
+        else {
+          throw new ClassCastException();
+        }
+      }
+      else if (SimpleTypeKind.DATE.class.isInstance(typeKind)) {
+        if (propertyType == PropertyType.DATE) {
+          return (E)value.getDate().getTime();
+        }
+        else {
+          throw new ClassCastException();
+        }
+      }
+      else {
+        throw new AssertionError("Property type " + propertyType + " not handled");
+      }
+    }
+    else {
       switch (propertyType) {
         case PropertyType.BOOLEAN:
-          return (T)Boolean.valueOf(value.getBoolean());
+          return (E)Boolean.valueOf(value.getBoolean());
         case PropertyType.LONG:
-          return (T)Integer.valueOf((int)value.getLong());
+          return (E)Integer.valueOf((int)value.getLong());
         case PropertyType.DOUBLE:
-          return (T)Double.valueOf(value.getDouble());
+          return (E)Double.valueOf(value.getDouble());
         case PropertyType.NAME:
         case PropertyType.PATH:
         case PropertyType.STRING:
-          return (T)value.getString();
+          return (E)value.getString();
         case PropertyType.BINARY:
-          return (T)value.getStream();
+          return (E)value.getStream();
         case PropertyType.DATE:
-          return (T)value.getDate().getTime();
+          return (E)value.getDate().getTime();
         default:
           throw new AssertionError("Property type " + propertyType + " not handled");
       }
     }
   }
 
-  public final <T> Value get(ValueFactory valueFactory, T o, SimpleType<T> type) throws ValueFormatException {
-    BaseSimpleTypes typeKind;
+  public final <E> Value get(ValueFactory valueFactory, E o, SimpleType<E> type) throws ValueFormatException {
+    SimpleTypeKind<E, ?> typeKind;
     if (type == null) {
       if (o instanceof String) {
-        typeKind = BaseSimpleTypes.STRING;
-      } else if (o instanceof Integer) {
-        typeKind = BaseSimpleTypes.INT;
-      } else if (o instanceof Long) {
-        typeKind = BaseSimpleTypes.LONG;
-      } else if (o instanceof Date) {
-        typeKind = BaseSimpleTypes.DATE;
-      } else if (o instanceof Double) {
-        typeKind = BaseSimpleTypes.DOUBLE;
-      }  else if (o instanceof Float) {
-        typeKind = BaseSimpleTypes.FLOAT;
-      }  else if (o instanceof InputStream) {
-        typeKind = BaseSimpleTypes.BINARY;
-      } else if (o instanceof Boolean) {
-        typeKind = BaseSimpleTypes.BOOLEAN;
-      } else {
+        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.STRING;
+      }
+      else if (o instanceof Integer) {
+        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.INT;
+      }
+      else if (o instanceof Long) {
+        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.LONG;
+      }
+      else if (o instanceof Date) {
+        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.DATE;
+      }
+      else if (o instanceof Double) {
+        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.DOUBLE;
+      }
+      else if (o instanceof Float) {
+        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.FLOAT;
+      }
+      else if (o instanceof InputStream) {
+        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.STREAM;
+      }
+      else if (o instanceof Boolean) {
+        typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.BOOLEAN;
+      }
+      else {
         throw new UnsupportedOperationException("Type " + o.getClass().getName() + " is not accepted");
       }
-    } else {
+    }
+    else {
       typeKind = type.getKind();
     }
 
     //
-    switch (typeKind) {
-      case STRING:
-        return valueFactory.createValue((String)o);
-      case PATH:
-        return valueFactory.createValue((String)o, PropertyType.PATH);
-      case LONG:
+    if (SimpleTypeKind.STRING.class.isInstance(typeKind)) {
+      return valueFactory.createValue((String)o);
+    }
+    else if (SimpleTypeKind.PATH.class.isInstance(typeKind)) {
+      return valueFactory.createValue((String)o, PropertyType.PATH);
+    } else if (SimpleTypeKind.LONG.class.isInstance(typeKind)) {
+      if (typeKind == BaseSimpleTypes.LONG) {
         return valueFactory.createValue((Long)o);
-      case INT:
+      }
+      else if (typeKind == BaseSimpleTypes.INT) {
         return valueFactory.createValue((Integer)o);
-      case DATE:
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime((Date)o);
-        return valueFactory.createValue(calendar);
-      case BINARY:
-        return valueFactory.createValue((InputStream)o);
-      case DOUBLE:
-        return valueFactory.createValue((Double)o);
-      case FLOAT:
-        return valueFactory.createValue((Float)o);
-      case BOOLEAN:
-        return valueFactory.createValue((Boolean)o);
-      default:
+      } else {
         throw new UnsupportedOperationException("Simple type " + type + " not accepted");
+      }
+    } else if (SimpleTypeKind.DATE.class.isInstance(typeKind)) {
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime((Date)o);
+      return valueFactory.createValue(calendar);
+    }
+    else if (SimpleTypeKind.STREAM.class.isInstance(typeKind)) {
+      return valueFactory.createValue((InputStream)o);
+    }
+    else if (SimpleTypeKind.DOUBLE.class.isInstance(typeKind)) {
+      if (typeKind == BaseSimpleTypes.DOUBLE) {
+        return valueFactory.createValue((Double)o);
+      }
+      else if (typeKind == BaseSimpleTypes.FLOAT) {
+        return valueFactory.createValue((Float)o);
+      } else {
+        throw new UnsupportedOperationException("Simple type " + type + " not accepted");
+      }
+    } else if (SimpleTypeKind.BOOLEAN.class.isInstance(typeKind)) {
+      return valueFactory.createValue((Boolean)o);
+    }
+    else {
+      throw new UnsupportedOperationException("Simple type " + type + " not accepted");
     }
   }
 }

@@ -35,18 +35,18 @@ package org.chromattic.core.bean;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class SimpleType<T> {
+public abstract class SimpleType<E> {
 
   /** . */
-  private final BaseSimpleTypes kind;
+  private final SimpleTypeKind<E, ?> kind;
 
   /** . */
-  private final Class<T> objectType;
+  private final Class<E> objectType;
 
   /** . */
   private final Class<?> realType;
 
-  SimpleType(BaseSimpleTypes kind, Class<T> objectType, Class<?> realType) {
+  SimpleType(SimpleTypeKind<E, ?> kind, Class<E> objectType, Class<?> realType) {
     this.kind = kind;
     this.objectType = objectType;
     this.realType = realType;
@@ -54,11 +54,11 @@ public abstract class SimpleType<T> {
 
   public abstract boolean isPrimitive();
 
-  public BaseSimpleTypes getKind() {
+  public SimpleTypeKind<E, ?> getKind() {
     return kind;
   }
 
-  public Class<T> getObjectType() {
+  public Class<E> getObjectType() {
     return objectType;
   }
 

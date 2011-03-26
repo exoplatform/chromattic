@@ -25,7 +25,7 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ObjectSimpleType<T> extends SimpleType<T> {
+public class ObjectSimpleType<E> extends SimpleType<E> {
 
   /** . */
   public static final ObjectSimpleType<String> STRING = new ObjectSimpleType<String>(BaseSimpleTypes.STRING, String.class);
@@ -37,7 +37,7 @@ public class ObjectSimpleType<T> extends SimpleType<T> {
   public static final ObjectSimpleType<Date> DATE = new ObjectSimpleType<Date>(BaseSimpleTypes.DATE, Date.class);
 
   /** . */
-  public static final ObjectSimpleType<InputStream> BINARY = new ObjectSimpleType<InputStream>(BaseSimpleTypes.BINARY, InputStream.class);
+  public static final ObjectSimpleType<InputStream> BINARY = new ObjectSimpleType<InputStream>(BaseSimpleTypes.STREAM, InputStream.class);
 
   /** . */
   public static final ObjectSimpleType<Integer> INT = new ObjectSimpleType<Integer>(BaseSimpleTypes.INT, Integer.class);
@@ -54,7 +54,7 @@ public class ObjectSimpleType<T> extends SimpleType<T> {
   /** . */
   public static final ObjectSimpleType<Float> FLOAT = new ObjectSimpleType<Float>(BaseSimpleTypes.FLOAT, Float.class);
 
-  public ObjectSimpleType(BaseSimpleTypes kind, Class<T> javaType) {
+  public ObjectSimpleType(SimpleTypeKind<E, ?> kind, Class<E> javaType) {
     super(kind, javaType, javaType);
   }
 

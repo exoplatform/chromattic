@@ -25,24 +25,24 @@ import java.util.Date;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class BaseSimpleTypes {
+public abstract class SimpleTypeKind<E, I> {
+  
+  private SimpleTypeKind() {
 
-  public static SimpleTypeKind.STRING<String> STRING = new SimpleTypeKind.STRING<String>() { };
+  }
 
-  public static SimpleTypeKind.PATH<String> PATH = new SimpleTypeKind.PATH<String>() { };
+  public abstract static class STRING<E> extends SimpleTypeKind<E, String> { }
 
-  public static SimpleTypeKind.LONG<Integer> INT = new SimpleTypeKind.LONG<Integer>() { };
+  public abstract static class PATH<E> extends SimpleTypeKind<E, String> { }
 
-  public static SimpleTypeKind.BOOLEAN<Boolean> BOOLEAN = new SimpleTypeKind.BOOLEAN<Boolean>() { };
+  public abstract static class BOOLEAN<E> extends SimpleTypeKind<E, Boolean> { }
 
-  public static SimpleTypeKind.LONG<Long> LONG = new SimpleTypeKind.LONG<Long>() { };
+  public abstract static class LONG<E> extends SimpleTypeKind<E, Long> { }
 
-  public static SimpleTypeKind.DATE<Date> DATE = new SimpleTypeKind.DATE<Date>() { };
+  public abstract static class DATE<E> extends SimpleTypeKind<E, Date> { }
 
-  public static SimpleTypeKind.DOUBLE<Double> DOUBLE = new SimpleTypeKind.DOUBLE<Double>() { };
+  public abstract static class DOUBLE<E> extends SimpleTypeKind<E, Double> { }
 
-  public static SimpleTypeKind.DOUBLE<Float> FLOAT = new SimpleTypeKind.DOUBLE<Float>() { };
-
-  public static SimpleTypeKind.STREAM<InputStream> STREAM = new SimpleTypeKind.STREAM<InputStream>() { };
+  public abstract static class STREAM<E> extends SimpleTypeKind<E, InputStream> { }
 
 }

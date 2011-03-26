@@ -22,7 +22,7 @@ package org.chromattic.core.bean;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PrimitiveSimpleType<T> extends SimpleType<T> {
+public class PrimitiveSimpleType<E> extends SimpleType<E> {
 
   /** . */
   public static final SimpleType<Integer> INT = new PrimitiveSimpleType<Integer>(BaseSimpleTypes.INT, Integer.class, int.class);
@@ -39,7 +39,7 @@ public class PrimitiveSimpleType<T> extends SimpleType<T> {
   /** . */
   public static final SimpleType<Float> FLOAT = new PrimitiveSimpleType<Float>(BaseSimpleTypes.FLOAT, Float.class, float.class);
 
-  public PrimitiveSimpleType(BaseSimpleTypes kind, Class<T> javaType, Class<?> listElementType) {
+  public PrimitiveSimpleType(SimpleTypeKind<E, ?> kind, Class<E> javaType, Class<?> listElementType) {
     super(kind, javaType, listElementType);
   }
 
