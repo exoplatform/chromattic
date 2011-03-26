@@ -733,5 +733,26 @@
     </supertypes>
   </nodeType>
 
+  <nodeType name="embedded_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+  </nodeType>
+
+  <nodeType name="embedded_b" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+      <supertype>embedded_c</supertype>
+    </supertypes>
+  </nodeType>
+
+  <nodeType name="embedded_c" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+    </supertypes>
+  </nodeType>
+
 </nodeTypes>
   

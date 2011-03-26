@@ -37,6 +37,7 @@ import org.chromattic.core.mapping.value.RelationshipMapping;
 import org.chromattic.core.mapping.value.OneToManyMapping;
 import org.chromattic.core.mapping.value.NamedOneToManyMapping;
 import org.chromattic.core.mapping.value.PropertyMapMapping;
+import org.chromattic.core.mapping.value.EmbeddedMapping;
 import org.chromattic.common.SetMap;
 import org.chromattic.core.mapper.onetomany.reference.JCRReferentCollectionPropertyMapper;
 import org.chromattic.core.mapper.onetomany.reference.JCRNamedReferentPropertyMapper;
@@ -49,6 +50,7 @@ import org.chromattic.core.mapper.property.JCRPropertyPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyMapPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyListPropertyMapper;
 import org.chromattic.core.mapper.nodeattribute.JCRNodeAttributePropertyMapper;
+import org.chromattic.core.mapper.embedded.JCREmbeddedPropertyMapper;
 import org.chromattic.core.jcr.NodeDef;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.spi.instrument.Instrumentor;
@@ -60,7 +62,6 @@ import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.ListPropertyInfo;
 import org.chromattic.api.RelationshipType;
-import org.chromattic.api.NameConflictResolution;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Set;
@@ -162,6 +163,9 @@ public class TypeMapperBuilder {
                 }
               }
             }
+          } else if (pmvm instanceof EmbeddedMapping) {
+            JCREmbeddedPropertyMapper mapper = new JCREmbeddedPropertyMapper((SingleValuedPropertyInfo<BeanValueInfo>)pm.getInfo());
+            propertyMappers.add(mapper);
           }
 
           //

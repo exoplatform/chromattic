@@ -36,6 +36,7 @@ import org.chromattic.api.annotations.FindById;
 import org.chromattic.api.annotations.Mixin;
 import org.chromattic.api.annotations.WorkspaceName;
 import org.chromattic.api.annotations.NamingPolicy;
+import org.chromattic.api.annotations.Embedded;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.mapping.jcr.JCRNodeAttributeMapping;
@@ -48,6 +49,7 @@ import org.chromattic.core.mapping.value.ManyToOneMapping;
 import org.chromattic.core.mapping.value.OneToManyMapping;
 import org.chromattic.core.mapping.value.NamedOneToManyMapping;
 import org.chromattic.core.mapping.value.PropertyMapMapping;
+import org.chromattic.core.mapping.value.EmbeddedMapping;
 import org.chromattic.core.NodeAttributeType;
 import org.chromattic.core.bean.BeanInfo;
 import org.chromattic.core.bean.PropertyInfo;
@@ -300,6 +302,31 @@ public class TypeMappingBuilder {
             PropertyMapping<NamedManyToOneMapping> manyToOneMapping = new PropertyMapping<NamedManyToOneMapping>(propertyInfo, referenceMapping);
             propertyMappings.add(manyToOneMapping);
           }
+        } else {
+          throw new IllegalStateException();
+        }
+      } else {
+        throw new IllegalStateException();
+      }
+    }
+
+    // Embedded
+    for (PropertyInfo propertyInfo : info.getProperties(Embedded.class)) {
+      if (propertyInfo instanceof SingleValuedPropertyInfo) {
+        SingleValuedPropertyInfo svpi = (SingleValuedPropertyInfo)propertyInfo;
+        ValueInfo vi = svpi.getValue();
+        if (vi instanceof BeanValueInfo) {
+          BeanValueInfo bvi = (BeanValueInfo)vi;
+
+          //
+          ClassTypeInfo embeddableTI = bvi.getTypeInfo();
+
+          //
+          EmbeddedMapping embeddedMapping = new EmbeddedMapping(embeddableTI);
+          PropertyMapping<EmbeddedMapping> a = new PropertyMapping<EmbeddedMapping>(propertyInfo, embeddedMapping);
+          propertyMappings.add(a);
+        } else {
+          throw new IllegalStateException();
         }
       } else {
         throw new IllegalStateException();
