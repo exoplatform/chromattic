@@ -21,6 +21,7 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.api.format.CodecFormat;
+import org.chromattic.common.JCR;
 
 import java.util.AbstractMap;
 import java.util.Set;
@@ -54,16 +55,53 @@ public class AnyChildMap extends AbstractMap<String, Object> {
   }
 
   @Override
-  public Object put(String key, Object value) {
-    if (keyFormat != null) {
-      key = keyFormat.encode(key);
+  public Object get(Object key) {
+    if (key instanceof String) {
+      String name = (String)key;
+      if (keyFormat != null) {
+        name = keyFormat.encode(name);
+      }
+      Object child = parentCtx.getChild(name);
+      if (relatedClass.isInstance(child)) {
+        return child;
+      }
     }
+    return null;
+  }
+
+  @Override
+  public Object remove(Object key) {
+    if (key instanceof String) {
+      return put((String)key, null);
+    } else {
+      return null;
+    }
+  }
+
+  @Override
+  public Object put(String key, Object value) {
+    Object child = parentCtx.getChild(key);
 
     //
-    parentCtx.addChild(key, value);
-
-    // We don't support replacement yet
-    return null;
+    if (value == null) {
+      if (child != null) {
+        parentCtx.getSession().remove(child);
+        return child;
+      } else {
+        return null;
+      }
+    } else if (relatedClass.isInstance(value)) {
+      if (child != null) {
+        parentCtx.getSession().remove(child);
+        parentCtx.addChild(key, value);
+        return child;
+      } else {
+        parentCtx.addChild(key, value);
+        return null;
+      }
+    } else {
+      throw new ClassCastException("Cannot put " + value + " with in map containing values of type " + relatedClass);
+    }
   }
 
   public Set<Entry<String, Object>> entrySet() {

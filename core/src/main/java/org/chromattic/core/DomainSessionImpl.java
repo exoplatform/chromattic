@@ -23,6 +23,7 @@ import org.chromattic.common.logging.Logger;
 import org.chromattic.common.JCR;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
+import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.NodeDef;
@@ -280,6 +281,7 @@ class DomainSessionImpl extends DomainSession {
     if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException();
     }
+    DefaultNodeNameFormat.validateName(name);
     Node referent = referentCtx.state.getNode();
     Node referenced = sessionWrapper.getReferenced(referent, name, linkType);
     if (referenced != null) {
@@ -293,6 +295,9 @@ class DomainSessionImpl extends DomainSession {
     if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException("Cannot create a relationship with a non persisted context " + this);
     }
+
+    //
+    DefaultNodeNameFormat.validateName(name);
 
     //
     Node referent = referentCtx.state.getNode();
@@ -316,12 +321,14 @@ class DomainSessionImpl extends DomainSession {
   }
 
   protected <T> Iterator<T> _getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
+    DefaultNodeNameFormat.validateName(name);
     Node referenced = referencedCtx.state.getNode();
     Iterator<Node> referents = sessionWrapper.getReferents(referenced, name, linkType);
     return new ReferentCollectionIterator<T>(this, referents, filterClass, name);
   }
 
   protected void _removeChild(ObjectContext ctx, String name) throws RepositoryException {
+    DefaultNodeNameFormat.validateName(name);
     Node node = ctx.state.getNode();
     if (node.hasNode(name)) {
       Node childNode = node.getNode(name);
@@ -330,6 +337,7 @@ class DomainSessionImpl extends DomainSession {
   }
 
   protected Object _getChild(ObjectContext ctx, String name) throws RepositoryException {
+    DefaultNodeNameFormat.validateName(name);
     Node node = ctx.state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
     Node child = sessionWrapper.getChild(node, name);

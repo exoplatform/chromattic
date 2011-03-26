@@ -18,6 +18,8 @@
  */
 package org.chromattic.api.format;
 
+import javax.jcr.ValueFormatException;
+
 /**
  * Defines the default codec format that only performs validation of JCR names.
  *
@@ -31,6 +33,10 @@ public class DefaultNodeNameFormat implements CodecFormat<String, String> {
 
   public static DefaultNodeNameFormat getInstance() {
     return INSTANCE;
+  }
+
+  public static void validateName(String name) throws ValueFormatException {
+    INSTANCE.encode(name);
   }
 
   protected DefaultNodeNameFormat() {

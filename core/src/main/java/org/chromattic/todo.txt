@@ -25,6 +25,7 @@
 - residual properties unit test for lists
 - check underlying property type in relationships
 - test for corrupted relationship
+- clarify semantic of class importance in one to many map mapping : I.E do we expect class cast or non existence ???
 
 *** Patrice
 - mapping of @Property for InputStream

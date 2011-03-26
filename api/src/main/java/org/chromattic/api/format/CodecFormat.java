@@ -28,6 +28,4 @@ public interface CodecFormat<I, E> {
 
   I encode(E external) throws FormatException;
 
-  Class NONE = DefaultNodeNameFormat.class;
-
 }

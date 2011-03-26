@@ -22,6 +22,7 @@ package org.chromattic.test.onetomany.hierarchical.map;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.Status;
 import org.chromattic.api.format.NameSyntaxException;
 
 import javax.jcr.Node;
@@ -84,5 +85,27 @@ public class OneToManyTestCase extends AbstractTestCase {
     }
     catch (NameSyntaxException e) {
     }
+  }
+
+  public void testRemoveTransient() throws Exception {
+    ChromatticSession session = login();
+    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
+    TOTMHM_B b = session.create(TOTMHM_B.class);
+    Map<String, TOTMHM_B> children = a.getChildren();
+    children.put("b", b);
+    assertSame(b, children.remove("b"));
+    assertEquals(Status.REMOVED, session.getStatus(b));
+    assertTrue(children.isEmpty());
+  }
+
+  public void testRemovePersistent() throws Exception {
+    ChromatticSession session = login();
+    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
+    TOTMHM_B b = session.create(TOTMHM_B.class);
+    a.getChildren().put("b", b);
+    session.save();
+    assertSame(b, a.getChildren().remove("b"));
+    assertEquals(Status.REMOVED, session.getStatus(b));
+    assertTrue(a.getChildren().isEmpty());
   }
 }
