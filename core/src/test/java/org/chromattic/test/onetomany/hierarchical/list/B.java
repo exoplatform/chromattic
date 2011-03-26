@@ -21,6 +21,7 @@ package org.chromattic.test.onetomany.hierarchical.list;
 
 import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.Name;
 import org.chromattic.test.onetomany.hierarchical.map.TOTMHM_A;
 
 /**
@@ -30,6 +31,14 @@ import org.chromattic.test.onetomany.hierarchical.map.TOTMHM_A;
 @NodeMapping(name = "totm_b")
 public abstract class B {
 
+  @Name
+  public abstract String getName();
+
   @ManyToOne
   public abstract A getParent();
+
+  @Override
+  public String toString() {
+    return getName();
+  }
 }

@@ -27,22 +27,22 @@ import java.util.Iterator;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class AnyChildEntrySet extends AbstractSet<Map.Entry<String, Object>> {
+public class AnyChildEntrySet<E> extends AbstractSet<Map.Entry<String, E>> {
 
   /** . */
-  private final AnyChildMap map;
+  private final AnyChildMap<E> map;
 
-  public AnyChildEntrySet(AnyChildMap map) {
+  public AnyChildEntrySet(AnyChildMap<E> map) {
     this.map = map;
   }
 
-  public Iterator<Map.Entry<String, Object>> iterator() {
-    return new AnyChildEntryIterator(map);
+  public Iterator<Map.Entry<String, E>> iterator() {
+    return new AnyChildEntryIterator<E>(map);
   }
 
   public int size() {
     int size = 0;
-    Iterator<Object> iterator = (Iterator<Object>)map.parentCtx.getChildren(map.relatedClass);
+    Iterator<E> iterator = map.parentCtx.getChildren(map.relatedClass);
     while (iterator.hasNext()) {
       iterator.next();
       size++;

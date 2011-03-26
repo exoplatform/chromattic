@@ -94,8 +94,8 @@ public class SessionWrapperImpl implements SessionWrapper {
     }
 
     //
-    Node dstParentNode = dstNode.getParent();
-    if (dstParentNode != null) {
+    if (dstNode != null) {
+      Node dstParentNode = dstNode.getParent();
       if (!dstParentNode.equals(parentNode)) {
         throw new IllegalArgumentException("Node must have the same prent");
       }
@@ -103,7 +103,10 @@ public class SessionWrapperImpl implements SessionWrapper {
       //
       parentNode.orderBefore(srcNode.getName(), dstNode.getName());
     } else {
-      parentNode.orderBefore(srcNode.getName(), null);
+      long size = parentNode.getNodes().getSize();
+      if (size > 1) {
+        parentNode.orderBefore(srcNode.getName(), null);
+      }
     }
   }
 

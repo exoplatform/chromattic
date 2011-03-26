@@ -28,20 +28,20 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class AnyChildEntryIterator extends AbstractFilterIterator<Map.Entry<String, Object>, Object> {
+public class AnyChildEntryIterator<E> extends AbstractFilterIterator<Map.Entry<String, E>, E> {
 
   /** . */
   private final AnyChildMap map;
 
-  public AnyChildEntryIterator(AnyChildMap map) throws NullPointerException {
-    super((Iterator<Object>)map.parentCtx.getChildren(map.relatedClass));
+  public AnyChildEntryIterator(AnyChildMap<E> map) throws NullPointerException {
+    super(map.parentCtx.getChildren(map.relatedClass));
 
     //
     this.map = map;
   }
 
-  protected Map.Entry<String, Object> adapt(final Object internal) {
-    return new Map.Entry<String, Object>() {
+  protected Map.Entry<String, E> adapt(final E internal) {
+    return new Map.Entry<String, E>() {
 
       /** . */
       private final String name = map.parentCtx.getSession().getName(internal);
@@ -50,11 +50,11 @@ public class AnyChildEntryIterator extends AbstractFilterIterator<Map.Entry<Stri
         return name;
       }
 
-      public Object getValue() {
+      public E getValue() {
         return internal;
       }
 
-      public Object setValue(Object value) {
+      public E setValue(E value) {
         throw new UnsupportedOperationException();
       }
     };

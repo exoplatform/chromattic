@@ -153,7 +153,6 @@ public class ListOneToManyTestCase extends AbstractTestCase {
     assertFalse(i.hasNext());
   }
 
-/*
   public void testMoveFirst() throws Exception {
     DomainSession session = login();
     A a = session.insert(A.class, "aaa");
@@ -190,8 +189,8 @@ public class ListOneToManyTestCase extends AbstractTestCase {
 
     assertEquals(3, bs.size());
 
-    // Move b3 to first position
-    bs.add(2, bs.get(0));
+    // Move b3 to last position
+    bs.add(3, bs.get(0));
 
     //
     Node aNode = session.getNode(a);
@@ -201,5 +200,4 @@ public class ListOneToManyTestCase extends AbstractTestCase {
     assertEquals("1", i.nextNode().getName());
     assertFalse(i.hasNext());
   }
-*/
 }

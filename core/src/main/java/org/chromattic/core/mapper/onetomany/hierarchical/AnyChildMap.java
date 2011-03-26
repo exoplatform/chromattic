@@ -28,39 +28,39 @@ import java.util.Set;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class AnyChildMap extends AbstractMap<String, Object> {
+public class AnyChildMap<E> extends AbstractMap<String, E> {
 
   /** . */
   final ObjectContext parentCtx;
 
   /** . */
-  final Class<?> relatedClass;
+  final Class<E> relatedClass;
 
   /** . */
-  private final AnyChildEntrySet entries;
+  private final AnyChildEntrySet<E> entries;
 
   public AnyChildMap(
     ObjectContext parentCtx,
-    Class<?> relatedClass) {
+    Class<E> relatedClass) {
     this.relatedClass = relatedClass;
-    this.entries = new AnyChildEntrySet(this);
+    this.entries = new AnyChildEntrySet<E>(this);
     this.parentCtx = parentCtx;
   }
 
   @Override
-  public Object get(Object key) {
+  public E get(Object key) {
     if (key instanceof String) {
       String name = (String)key;
       Object child = parentCtx.getChild(name);
       if (relatedClass.isInstance(child)) {
-        return child;
+        return relatedClass.cast(child);
       }
     }
     return null;
   }
 
   @Override
-  public Object remove(Object key) {
+  public E remove(Object key) {
     if (key instanceof String) {
       return put((String)key, null);
     } else {
@@ -69,32 +69,33 @@ public class AnyChildMap extends AbstractMap<String, Object> {
   }
 
   @Override
-  public Object put(String key, Object value) {
+  public E put(String key, E value) {
     Object child = parentCtx.getChild(key);
 
     //
     if (value == null) {
       if (child != null) {
         parentCtx.getSession().remove(child);
-        return child;
-      } else {
-        return null;
       }
     } else if (relatedClass.isInstance(value)) {
       if (child != null) {
         parentCtx.getSession().remove(child);
-        parentCtx.addChild(key, value);
-        return child;
-      } else {
-        parentCtx.addChild(key, value);
-        return null;
       }
+      parentCtx.addChild(key, value);
     } else {
       throw new ClassCastException("Cannot put " + value + " with in map containing values of type " + relatedClass);
     }
+
+    //
+    if (relatedClass.isInstance(child)) {
+      return relatedClass.cast(child);
+    } else {
+      // julien todo : unit test that
+      return null;
+    }
   }
 
-  public Set<Entry<String, Object>> entrySet() {
+  public Set<Entry<String, E>> entrySet() {
     return entries;
   }
 }

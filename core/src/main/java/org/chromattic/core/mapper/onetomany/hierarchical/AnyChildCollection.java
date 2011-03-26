@@ -28,15 +28,15 @@ import java.util.Iterator;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class AnyChildCollection extends AbstractCollection<Object> {
+class AnyChildCollection<E> extends AbstractCollection<E> {
 
   /** . */
   private final ObjectContext parentCtx;
 
   /** . */
-  private final Class<?> relatedClass;
+  private final Class<E> relatedClass;
 
-  public AnyChildCollection(ObjectContext parentCtx, Class<?> relatedClass) {
+  public AnyChildCollection(ObjectContext parentCtx, Class<E> relatedClass) {
     this.relatedClass = relatedClass;
     this.parentCtx = parentCtx;
   }
@@ -47,13 +47,13 @@ class AnyChildCollection extends AbstractCollection<Object> {
     return true;
   }
 
-  public Iterator<Object> iterator() {
-    return (Iterator<Object>)parentCtx.getChildren(relatedClass);
+  public Iterator<E> iterator() {
+    return parentCtx.getChildren(relatedClass);
   }
 
   public int size() {
     int size = 0;
-    Iterator<Object> iterator = iterator();
+    Iterator<E> iterator = iterator();
     while (iterator.hasNext()) {
       iterator.next();
       size++;

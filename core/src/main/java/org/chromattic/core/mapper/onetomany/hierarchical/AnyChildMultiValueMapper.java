@@ -30,22 +30,20 @@ public abstract class AnyChildMultiValueMapper {
   abstract <E> Object createValue(ObjectContext parentCtx, Class<E> relatedClass);
 
   public static class Map extends AnyChildMultiValueMapper {
-
     <E> Object createValue(ObjectContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildMap(parentCtx, relatedClass);
+      return new AnyChildMap<E>(parentCtx, relatedClass);
     }
   }
 
   public static class Collection extends AnyChildMultiValueMapper {
     <E> Object createValue(ObjectContext parentCtx, Class<E> relatedClass) {
-      return new AnyChildCollection(parentCtx, relatedClass);
+      return new AnyChildCollection<E>(parentCtx, relatedClass);
     }
   }
 
   public static class List extends AnyChildMultiValueMapper {
     <E> Object createValue(ObjectContext parentCtx, Class<E> relatedClass) {
-      AnyChildListModel<E> model = new AnyChildListModel<E>(parentCtx, relatedClass);
-      return new BufferingList<E>(model);
+      return new AnyChildList<E>(parentCtx, relatedClass);
     }
   }
 }
