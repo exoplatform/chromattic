@@ -131,16 +131,16 @@ public class EventBroadcaster implements EventListener {
     }
   }
 
-  public void propertyChanged(Object o, String propertyName, Object propertyValue) {
+  public void propertyChanged(String id, Object o, String propertyName, Object propertyValue) {
     if (stateChangeListeners == null) {
       return;
     }
     for (EventListener listener : stateChangeListeners) {
       try {
         if (propertyValue instanceof CloneableInputStream) {
-          ((StateChangeListener)listener).propertyChanged(o, propertyName, ((CloneableInputStream)propertyValue).clone());
+          ((StateChangeListener)listener).propertyChanged(id, o, propertyName, ((CloneableInputStream)propertyValue).clone());
         } else {
-          ((StateChangeListener)listener).propertyChanged(o, propertyName, propertyValue);
+          ((StateChangeListener)listener).propertyChanged(id, o, propertyName, propertyValue);
         }
       }
       catch (Exception ignore) {

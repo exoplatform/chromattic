@@ -53,11 +53,12 @@ public class EventQueue implements LifeCycleListener, StateChangeListener {
     Assert.assertEquals(object, lifeCycleEvent.getObject());
   }
 
-  public void assertPropertyChangedEvent(Object object, String name, Object value) {
+  public void assertPropertyChangedEvent(String id, Object object, String name, Object value) {
     assertNotEmpty();
     Event event = events.removeFirst();
     Assert.assertTrue(event instanceof PropertyChangedEvent);
     PropertyChangedEvent lifeCycleEvent = (PropertyChangedEvent)event;
+    Assert.assertEquals(id, lifeCycleEvent.getId());
     Assert.assertEquals(object, lifeCycleEvent.getObject());
     Assert.assertEquals(name, lifeCycleEvent.getName());
     if (value instanceof InputStream) {
@@ -106,7 +107,7 @@ public class EventQueue implements LifeCycleListener, StateChangeListener {
     events.add(new LifeCycleEvent(LifeCycleEventType.REMOVED, id, path, name, o));
   }
 
-  public void propertyChanged(Object o, String propertyName, Object propertyValue) {
-    events.add(new PropertyChangedEvent(o, propertyName, propertyValue));
+  public void propertyChanged(String id, Object o, String propertyName, Object propertyValue) {
+    events.add(new PropertyChangedEvent(id, o, propertyName, propertyValue));
   }
 }

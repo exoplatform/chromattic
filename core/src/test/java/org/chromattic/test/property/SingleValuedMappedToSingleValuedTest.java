@@ -64,14 +64,14 @@ public class SingleValuedMappedToSingleValuedTest extends AbstractSingleValuedTe
     setter.invoke(o, values.getObject(1));
     assertTrue(node.hasProperty(propertyName));
     safeValueEquals(values.getObject(1), node.getProperty(propertyName).getValue());
-    events.assertPropertyChangedEvent(o, propertyName, values.getObject(1));
+    events.assertPropertyChangedEvent(node.getUUID(), o, propertyName, values.getObject(1));
     events.assertEmpty();
 
     //
     if (!primitive) {
       setter.invoke(o, (Object)null);
       assertFalse(node.hasNode(propertyName));
-      events.assertPropertyChangedEvent(o, propertyName, null);
+      events.assertPropertyChangedEvent(node.getUUID(), o, propertyName, null);
       events.assertEmpty();
     }
   }

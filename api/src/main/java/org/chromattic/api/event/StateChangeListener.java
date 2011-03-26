@@ -19,17 +19,22 @@
 package org.chromattic.api.event;
 
 /**
+ * Allows for state change monitoring when the state of an object is changed.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public interface StateChangeListener extends EventListener {
 
-  void propertyChanged(Object o, String propertyName, Object propertyValue);
+  /**
+   * The value of a property changed
+   *
+   * @param id the object id
+   * @param o the object
+   * @param propertyName the property name
+   * @param propertyValue the property value
+   */
+  void propertyChanged(String id, Object o, String propertyName, Object propertyValue);
 
-  // void propertyChanged(Object o, String propertyName, List<Object> propertyValue);
-
-//  void onChildAdded(Object parent, Object child, String name);
-
-//  void onChildRemoved(Object parent, Object child, String name);
 
 }

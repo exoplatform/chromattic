@@ -25,6 +25,9 @@ package org.chromattic.test.support;
 public class PropertyChangedEvent extends StateChangeEvent {
 
   /** . */
+  private final String id;
+
+  /** . */
   private final Object object;
 
   /** . */
@@ -33,10 +36,15 @@ public class PropertyChangedEvent extends StateChangeEvent {
   /** . */
   private final Object value;
 
-  public PropertyChangedEvent(Object object, String name, Object value) {
+  public PropertyChangedEvent(String id, Object object, String name, Object value) {
+    this.id = id;
     this.object = object;
     this.name = name;
     this.value = value;
+  }
+
+  public String getId() {
+    return id;
   }
 
   public Object getObject() {

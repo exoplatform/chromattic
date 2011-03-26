@@ -171,10 +171,10 @@ public class EntityContext implements MethodHandler {
       @SuppressWarnings("unchecked") V v = (V)in;
       state.setPropertyValue(propertyName, type, v);
       byte[] bytes = in.getBytes();
-      broadcaster.propertyChanged(object, propertyName, new CloneableInputStream(bytes));
+      broadcaster.propertyChanged(state.getId(), object, propertyName, new CloneableInputStream(bytes));
     } else {
       state.setPropertyValue(propertyName, type, o);
-      broadcaster.propertyChanged(object, propertyName, o);
+      broadcaster.propertyChanged(state.getId(), object, propertyName, o);
     }
   }
 
