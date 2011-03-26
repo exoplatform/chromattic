@@ -38,56 +38,56 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.spi</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.common</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.api</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.core</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.spi</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.jlr</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.exo</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.cglib</artifactId>
-      <version>1.0.0-beta1</version>
+      <version>1.0.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -110,7 +110,7 @@
          <dependency>
            <groupId>org.chromattic</groupId>
            <artifactId>chromattic.apt</artifactId>
-           <version>1.0.0-beta1</version>
+           <version>1.0.0-SNAPSHOT</version>
            <scope>test</scope>
          </dependency>
 
