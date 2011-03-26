@@ -29,7 +29,7 @@ import javax.jcr.nodetype.NodeType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class TransientContextState extends ContextState {
+class TransientEntityContextState extends EntityContextState {
 
   /** . */
   private String name;
@@ -40,7 +40,7 @@ class TransientContextState extends ContextState {
   /** . */
   private final DomainSession session;
 
-  TransientContextState(DomainSession session, NodeType primaryNodeType) {
+  TransientEntityContextState(DomainSession session, NodeType primaryNodeType) {
     super(primaryNodeType);
 
     //

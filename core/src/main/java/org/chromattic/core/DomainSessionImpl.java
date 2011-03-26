@@ -51,7 +51,7 @@ public class DomainSessionImpl extends DomainSession {
   private final SessionWrapper sessionWrapper;
 
   /** . */
-  private final Map<String, ObjectContext> contexts;
+  private final Map<String, EntityContext> contexts;
 
   /** . */
   private final Logger log = Logger.getLogger(DomainSession.class);
@@ -62,14 +62,14 @@ public class DomainSessionImpl extends DomainSession {
     //
     this.domain = domain;
     this.sessionWrapper = sessionWrapper;
-    this.contexts = new HashMap<String, ObjectContext>();
+    this.contexts = new HashMap<String, EntityContext>();
   }
 
   public Session getJCRSession() {
     return sessionWrapper.getSession();
   }
 
-  protected <O> O _findByPath(ObjectContext ctx, Class<O> clazz, String relPath) throws RepositoryException {
+  protected <O> O _findByPath(EntityContext ctx, Class<O> clazz, String relPath) throws RepositoryException {
     Node origin;
     if (ctx != null) {
       origin = ctx.state.getNode();
@@ -87,7 +87,7 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected String _persist(ObjectContext ctx, String relPath) throws RepositoryException {
+  protected String _persist(EntityContext ctx, String relPath) throws RepositoryException {
     if (ctx == null) {
       throw new NullPointerException("No null object context accepted");
     }
@@ -123,7 +123,7 @@ public class DomainSessionImpl extends DomainSession {
    * @throws IllegalStateException
    * @throws RepositoryException
    */
-  protected String _persist(ObjectContext srcCtx, String relPath, ObjectContext dstCtx) throws
+  protected String _persist(EntityContext srcCtx, String relPath, EntityContext dstCtx) throws
     NullPointerException,
     IllegalArgumentException,
     IllegalStateException,
@@ -156,7 +156,7 @@ public class DomainSessionImpl extends DomainSession {
     return _persist(parentNode, relPath, dstCtx);
   }
 
-  private String _persist(Node srcNode, String relPath, ObjectContext dstCtx) throws RepositoryException {
+  private String _persist(Node srcNode, String relPath, EntityContext dstCtx) throws RepositoryException {
     Node dstParentNode;
     String name;
     int pos = relPath.indexOf('/');
@@ -208,7 +208,7 @@ public class DomainSessionImpl extends DomainSession {
     return relatedId;
   }
 
-  protected void _orderBefore(ObjectContext parentCtx, ObjectContext srcCtx, ObjectContext dstCtx) throws RepositoryException {
+  protected void _orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException {
 
     if (parentCtx == null) {
       throw new NullPointerException();
@@ -234,10 +234,10 @@ public class DomainSessionImpl extends DomainSession {
     //
     TypeMapper typeMapper = domain.getTypeMapper(clazz);
     NodeType nodeType = sessionWrapper.getNodeType(typeMapper.getNodeDef().getPrimaryNodeTypeName());
-    TransientContextState state = new TransientContextState(this, nodeType);
+    TransientEntityContextState state = new TransientEntityContextState(this, nodeType);
 
     //
-    ObjectContext ctx = new ObjectContext(typeMapper, state);
+    EntityContext ctx = new EntityContext(typeMapper, state);
 
     //
     if (name != null) {
@@ -260,7 +260,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    ObjectContext ctx = contexts.get(id);
+    EntityContext ctx = contexts.get(id);
 
     // Attempt to load the object
     if (ctx == null) {
@@ -299,7 +299,7 @@ public class DomainSessionImpl extends DomainSession {
     sessionWrapper.save();
   }
 
-  protected void _remove(ObjectContext context) throws RepositoryException {
+  protected void _remove(EntityContext context) throws RepositoryException {
     if (context == null) {
       throw new NullPointerException();
     }
@@ -325,7 +325,7 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected Object _getReferenced(ObjectContext referentCtx, String name, LinkType linkType) throws RepositoryException {
+  protected Object _getReferenced(EntityContext referentCtx, String name, LinkType linkType) throws RepositoryException {
     if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException();
     }
@@ -338,7 +338,7 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected boolean _setReferenced(ObjectContext referentCtx, String name, ObjectContext referencedCtx, LinkType linkType) throws RepositoryException {
+  protected boolean _setReferenced(EntityContext referentCtx, String name, EntityContext referencedCtx, LinkType linkType) throws RepositoryException {
     if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException("Cannot create a relationship with a non persisted context " + this);
     }
@@ -364,13 +364,13 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected <T> Iterator<T> _getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
+  protected <T> Iterator<T> _getReferents(EntityContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
     Node referenced = referencedCtx.state.getNode();
     Iterator<Node> referents = sessionWrapper.getReferents(referenced, name, linkType);
     return new ReferentCollectionIterator<T>(this, referents, filterClass, name);
   }
 
-  protected void _removeChild(ObjectContext ctx, String name) throws RepositoryException {
+  protected void _removeChild(EntityContext ctx, String name) throws RepositoryException {
     name = encodeName(name);
     Node node = ctx.state.getNode();
     Node childNode = sessionWrapper.getNode(node, name);
@@ -379,7 +379,7 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected Object _getChild(ObjectContext ctx, String name) throws RepositoryException {
+  protected Object _getChild(EntityContext ctx, String name) throws RepositoryException {
     name = encodeName(name);
     Node node = ctx.state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
@@ -393,13 +393,13 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  protected <T> Iterator<T> _getChildren(ObjectContext ctx, Class<T> filterClass) throws RepositoryException {
+  protected <T> Iterator<T> _getChildren(EntityContext ctx, Class<T> filterClass) throws RepositoryException {
     Node node = ctx.state.getNode();
     Iterator<Node> iterator = sessionWrapper.getChildren(node);
     return new ChildCollectionIterator<T>(this, iterator, filterClass);
   }
 
-  protected Object _getParent(ObjectContext ctx) throws RepositoryException {
+  protected Object _getParent(EntityContext ctx) throws RepositoryException {
     if (ctx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException();
     }
@@ -422,12 +422,12 @@ public class DomainSessionImpl extends DomainSession {
     TypeMapper mapper = domain.getTypeMapper(nodeTypeName);
     if (mapper != null) {
       String id = node.getUUID();
-      ObjectContext ctx = contexts.get(id);
+      EntityContext ctx = contexts.get(id);
       if (ctx == null) {
-        ctx = new ObjectContext(mapper);
+        ctx = new EntityContext(mapper);
         log.trace("Inserted context {} loaded from node id {}", ctx, id);
         contexts.put(id, ctx);
-        ctx.state = new PersistentContextState(mapper, node, this, sessionWrapper);
+        ctx.state = new PersistentEntityContextState(mapper, node, this, sessionWrapper);
         broadcaster.loaded(ctx.getObject());
       }
       else {
@@ -439,7 +439,7 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
-  public void nodeAdded(Node node, ObjectContext ctx) throws RepositoryException {
+  public void nodeAdded(Node node, EntityContext ctx) throws RepositoryException {
     NodeType nodeType = node.getPrimaryNodeType();
     String nodeTypeName = nodeType.getName();
     TypeMapper mapper = domain.getTypeMapper(nodeTypeName);
@@ -452,7 +452,7 @@ public class DomainSessionImpl extends DomainSession {
       }
       log.trace("Inserted context {} for id {}", ctx, id);
       contexts.put(id, ctx);
-      ctx.state = new PersistentContextState(mapper, node, this, sessionWrapper);
+      ctx.state = new PersistentEntityContextState(mapper, node, this, sessionWrapper);
       broadcaster.persisted(ctx.getObject());
     }
     else {
@@ -462,9 +462,9 @@ public class DomainSessionImpl extends DomainSession {
 
   public void nodeRemoved(String nodeId) throws RepositoryException {
     log.trace("Removing context for id {}", nodeId);
-    ObjectContext ctx = contexts.remove(nodeId);
+    EntityContext ctx = contexts.remove(nodeId);
     if (ctx != null) {
-      ctx.state = new RemovedContextState(nodeId, ctx.state.getPrimaryNodeType());
+      ctx.state = new RemovedEntityContextState(nodeId, ctx.state.getPrimaryNodeType());
       broadcaster.removed(ctx.getObject());
       log.trace("Removed context {} for id {}", ctx, nodeId);
     } else {

@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
@@ -31,12 +31,12 @@ import java.util.Iterator;
 class AnyChildCollection<E> extends AbstractCollection<E> {
 
   /** . */
-  private final ObjectContext parentCtx;
+  private final EntityContext parentCtx;
 
   /** . */
   private final Class<E> relatedClass;
 
-  public AnyChildCollection(ObjectContext parentCtx, Class<E> relatedClass) {
+  public AnyChildCollection(EntityContext parentCtx, Class<E> relatedClass) {
     this.relatedClass = relatedClass;
     this.parentCtx = parentCtx;
   }

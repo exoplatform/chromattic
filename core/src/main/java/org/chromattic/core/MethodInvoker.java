@@ -26,6 +26,6 @@ import java.lang.reflect.Method;
  */
 public interface MethodInvoker {
 
-  Object invoke(ObjectContext ctx, Method method, Object[] args) throws Throwable;
+  Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable;
 
 }

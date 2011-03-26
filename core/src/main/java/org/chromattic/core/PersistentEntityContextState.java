@@ -51,7 +51,7 @@ import java.io.IOException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class PersistentContextState extends ContextState {
+class PersistentEntityContextState extends EntityContextState {
 
   /** . */
   private final TypeMapper mapper;
@@ -77,7 +77,7 @@ class PersistentContextState extends ContextState {
   /** . */
   private final SessionWrapper sessionWrapper;
 
-  PersistentContextState(TypeMapper mapper, Node node, DomainSession session, SessionWrapper sessionWrapper) throws RepositoryException {
+  PersistentEntityContextState(TypeMapper mapper, Node node, DomainSession session, SessionWrapper sessionWrapper) throws RepositoryException {
     super(node.getPrimaryNodeType());
 
     //

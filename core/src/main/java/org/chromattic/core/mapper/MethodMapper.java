@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper;
 
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.MethodInvoker;
 import org.reflext.api.ClassTypeInfo;
 
@@ -41,7 +41,7 @@ public class MethodMapper implements MethodInvoker {
     this.method = method;
   }
 
-  public Object invoke(ObjectContext context, Object[] args) throws Throwable {
+  public Object invoke(EntityContext context, Object[] args) throws Throwable {
     throw new UnsupportedOperationException();
   }
 
@@ -49,7 +49,7 @@ public class MethodMapper implements MethodInvoker {
     return method;
   }
 
-  public Object invoke(ObjectContext ctx, Method method, Object[] args) throws Throwable {
+  public Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable {
     return invoke(ctx, args);
   }
 
@@ -68,7 +68,7 @@ public class MethodMapper implements MethodInvoker {
     }
 
     @Override
-    public Object invoke(ObjectContext context, Object[] args) {
+    public Object invoke(EntityContext context, Object[] args) {
 
       //
       String name = null;
@@ -102,7 +102,7 @@ public class MethodMapper implements MethodInvoker {
     }
 
     @Override
-    public Object invoke(ObjectContext context, Object[] args) throws Throwable {
+    public Object invoke(EntityContext context, Object[] args) throws Throwable {
 
       //
       String id = (String)args[0];
@@ -127,7 +127,7 @@ public class MethodMapper implements MethodInvoker {
     }
 
     @Override
-    public Object invoke(ObjectContext context, Object[] args) throws Throwable {
+    public Object invoke(EntityContext context, Object[] args) throws Throwable {
       context.remove();
       return null;
     }

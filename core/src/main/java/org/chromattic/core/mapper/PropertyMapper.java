@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper;
 
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.bean.PropertyInfo;
 import org.reflext.api.MethodInfo;
@@ -44,15 +44,15 @@ public class PropertyMapper<P extends PropertyInfo> implements MethodInvoker {
     return info;
   }
 
-  public Object get(ObjectContext context) throws Throwable {
+  public Object get(EntityContext context) throws Throwable {
     throw new UnsupportedOperationException();
   }
 
-  public void set(ObjectContext context, Object value) throws Throwable {
+  public void set(EntityContext context, Object value) throws Throwable {
     throw new UnsupportedOperationException();
   }
 
-  public Object invoke(ObjectContext ctx, Method method, Object[] args) throws Throwable {
+  public Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable {
     MethodInfo getter = info.getGetter();
     if (getter != null && method.equals(getter.getMethod())) {
       return get(ctx);

@@ -20,7 +20,7 @@
 package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.MapPropertyInfo;
 import org.chromattic.core.bean.SimpleValueInfo;
 
@@ -35,7 +35,7 @@ public class JCRPropertyMapPropertyMapper extends PropertyMapper<MapPropertyInfo
   }
 
   @Override
-  public Object get(ObjectContext context) throws Throwable {
+  public Object get(EntityContext context) throws Throwable {
     return context.getPropertyMap();
   }
 }

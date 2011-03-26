@@ -22,7 +22,7 @@ package org.chromattic.core.mapper.nodeattribute;
 import org.chromattic.api.Status;
 import org.chromattic.core.NodeAttributeType;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.bean.SimpleValueInfo;
 
@@ -43,12 +43,12 @@ public class JCRNodeAttributePropertyMapper extends PropertyMapper<SingleValuedP
   }
 
   @Override
-  public Object get(ObjectContext context) throws Throwable {
+  public Object get(EntityContext context) throws Throwable {
     return context.getAttribute(type);
   }
 
   @Override
-  public void set(ObjectContext context, Object value) {
+  public void set(EntityContext context, Object value) {
     if (context.getStatus() == Status.REMOVED) {
       throw new IllegalStateException("Node is removed");
     }

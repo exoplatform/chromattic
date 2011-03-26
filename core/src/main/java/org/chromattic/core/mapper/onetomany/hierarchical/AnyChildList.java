@@ -19,9 +19,8 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.DomainSession;
-import org.chromattic.api.Status;
 
 import java.util.Iterator;
 import java.util.AbstractList;
@@ -33,12 +32,12 @@ import java.util.AbstractList;
 class AnyChildList<E> extends AbstractList<E> {
 
   /** . */
-  private final ObjectContext parentCtx;
+  private final EntityContext parentCtx;
 
   /** . */
   private final Class<E> relatedClass;
 
-  public AnyChildList(ObjectContext parentCtx, Class<E> relatedClass) {
+  public AnyChildList(EntityContext parentCtx, Class<E> relatedClass) {
     this.relatedClass = relatedClass;
     this.parentCtx = parentCtx;
   }
@@ -77,7 +76,7 @@ class AnyChildList<E> extends AbstractList<E> {
     DomainSession session = parentCtx.getSession();
 
     // Get the added context
-    ObjectContext addedCtx = session.unwrap(addedElement);
+    EntityContext addedCtx = session.unwrap(addedElement);
 
     //
     switch (addedCtx.getStatus()) {
@@ -86,7 +85,7 @@ class AnyChildList<E> extends AbstractList<E> {
         break;
       case PERSISTENT:
         Object insertedParent = addedCtx.getParent();
-        ObjectContext addedParentCtx = session.unwrap(insertedParent);
+        EntityContext addedParentCtx = session.unwrap(insertedParent);
 
         //
         if (addedParentCtx != parentCtx) {
@@ -101,7 +100,7 @@ class AnyChildList<E> extends AbstractList<E> {
     if (nextElement == null) {
       parentCtx.orderBefore(addedCtx, null);
     } else {
-      ObjectContext nextCtx = session.unwrap(nextElement);
+      EntityContext nextCtx = session.unwrap(nextElement);
       parentCtx.orderBefore(addedCtx, nextCtx);
     }
   }
@@ -119,10 +118,10 @@ class AnyChildList<E> extends AbstractList<E> {
     DomainSession session = parentCtx.getSession();
 
     // Unwrap the removed element
-    ObjectContext removedCtx = session.unwrap(removedElement);
+    EntityContext removedCtx = session.unwrap(removedElement);
 
     // Unwrap the added element
-    ObjectContext addedCtx = session.unwrap(addedElement);
+    EntityContext addedCtx = session.unwrap(addedElement);
 
     //
     switch (addedCtx.getStatus()) {
@@ -131,7 +130,7 @@ class AnyChildList<E> extends AbstractList<E> {
         break;
       case PERSISTENT:
         Object insertedParent = addedCtx.getParent();
-        ObjectContext addedParentCtx = session.unwrap(insertedParent);
+        EntityContext addedParentCtx = session.unwrap(insertedParent);
 
         //
         if (addedParentCtx != parentCtx) {
@@ -162,7 +161,7 @@ class AnyChildList<E> extends AbstractList<E> {
     DomainSession session = parentCtx.getSession();
 
     // Unwrap the removed element
-    ObjectContext removedCtx = session.unwrap(removedElement);
+    EntityContext removedCtx = session.unwrap(removedElement);
 
     // Remove the element
     session.remove(removedCtx);

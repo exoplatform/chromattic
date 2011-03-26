@@ -20,7 +20,7 @@
 package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.bean.SimpleValueInfo;
 
@@ -41,12 +41,12 @@ public class JCRPropertyPropertyMapper extends PropertyMapper<SingleValuedProper
   }
 
   @Override
-  public Object get(ObjectContext context) throws Throwable {
+  public Object get(EntityContext context) throws Throwable {
     return context.getPropertyValue(jcrPropertyName, info.getValue());
   }
 
   @Override
-  public void set(ObjectContext context, Object o) throws Throwable {
+  public void set(EntityContext context, Object o) throws Throwable {
     context.setPropertyValue(jcrPropertyName, info.getValue(), o);
   }
 }

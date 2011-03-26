@@ -29,12 +29,12 @@ import javax.jcr.nodetype.NodeType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-class RemovedContextState extends ContextState {
+class RemovedEntityContextState extends EntityContextState {
 
   /** . */
   private final String id;
 
-  RemovedContextState(String id, NodeType primaryNodeType) {
+  RemovedEntityContextState(String id, NodeType primaryNodeType) {
     super(primaryNodeType);
 
     //

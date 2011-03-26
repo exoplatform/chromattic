@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Method;
 
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.bean.PropertyInfo;
 import org.chromattic.core.jcr.NodeDef;
@@ -95,7 +95,7 @@ public class TypeMapper implements MethodInvoker {
     this.factory = instrumentor.getProxyClass(objectClass);
   }
 
-  public Object invoke(ObjectContext ctx, Method method, Object[] args) throws Throwable {
+  public Object invoke(EntityContext ctx, Method method, Object[] args) throws Throwable {
     MethodInvoker invoker = dispatchers.get(method);
     if (invoker != null) {
       return invoker.invoke(ctx, method, args);
@@ -120,7 +120,7 @@ public class TypeMapper implements MethodInvoker {
     }
   }
 
-  public Object createObject(ObjectContext context) {
+  public Object createObject(EntityContext context) {
     return factory.createProxy(context);
   }
 

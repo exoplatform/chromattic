@@ -18,8 +18,7 @@
  */
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.ObjectContext;
-import org.chromattic.common.BufferingList;
+import org.chromattic.core.EntityContext;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -27,22 +26,22 @@ import org.chromattic.common.BufferingList;
  */
 public abstract class AnyChildMultiValueMapper {
 
-  abstract <E> Object createValue(ObjectContext parentCtx, Class<E> relatedClass);
+  abstract <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass);
 
   public static class Map extends AnyChildMultiValueMapper {
-    <E> Object createValue(ObjectContext parentCtx, Class<E> relatedClass) {
+    <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
       return new AnyChildMap<E>(parentCtx, relatedClass);
     }
   }
 
   public static class Collection extends AnyChildMultiValueMapper {
-    <E> Object createValue(ObjectContext parentCtx, Class<E> relatedClass) {
+    <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
       return new AnyChildCollection<E>(parentCtx, relatedClass);
     }
   }
 
   public static class List extends AnyChildMultiValueMapper {
-    <E> Object createValue(ObjectContext parentCtx, Class<E> relatedClass) {
+    <E> Object createValue(EntityContext parentCtx, Class<E> relatedClass) {
       return new AnyChildList<E>(parentCtx, relatedClass);
     }
   }

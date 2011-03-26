@@ -20,7 +20,7 @@
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 
@@ -35,7 +35,7 @@ public class JCRAnyChildCollectionPropertyMapper extends JCRChildNodePropertyMap
   }
 
   @Override
-  public void set(ObjectContext context, Object value) throws Throwable {
+  public void set(EntityContext context, Object value) throws Throwable {
     throw new UnsupportedOperationException();
   }
 }

@@ -20,7 +20,7 @@
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.MultiValuedPropertyInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 
@@ -41,7 +41,7 @@ public class JCRAnyChildParentPropertyMapper extends JCRNodeCollectionPropertyMa
   }
 
   @Override
-  public Object get(ObjectContext context) throws Throwable {
+  public Object get(EntityContext context) throws Throwable {
     return valueMapper.createValue(context, getRelatedClass());
   }
 }

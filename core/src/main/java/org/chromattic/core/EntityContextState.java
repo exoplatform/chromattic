@@ -29,12 +29,12 @@ import javax.jcr.nodetype.NodeType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-abstract class ContextState {
+abstract class EntityContextState {
 
   /** . */
   private final NodeType primaryNodeType;
 
-  protected ContextState(NodeType primaryNodeType) {
+  protected EntityContextState(NodeType primaryNodeType) {
     if (primaryNodeType == null) {
       throw new NullPointerException("No null primary node type accepted");
     }

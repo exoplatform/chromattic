@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper.onetomany.reference;
 
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
@@ -31,12 +31,12 @@ import java.util.Iterator;
 public class ReferentCollection extends AbstractCollection<Object> {
 
   /** . */
-  private final ObjectContext context;
+  private final EntityContext context;
 
   /** . */
   private final JCRReferentCollectionPropertyMapper mapper;
 
-  public ReferentCollection(ObjectContext context, JCRReferentCollectionPropertyMapper mapper) {
+  public ReferentCollection(EntityContext context, JCRReferentCollectionPropertyMapper mapper) {
     this.context = context;
     this.mapper = mapper;
   }

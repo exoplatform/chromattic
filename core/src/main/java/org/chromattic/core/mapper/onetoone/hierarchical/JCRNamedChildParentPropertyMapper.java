@@ -21,7 +21,7 @@ package org.chromattic.core.mapper.onetoone.hierarchical;
 
 import org.chromattic.common.logging.Logger;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 
@@ -49,7 +49,7 @@ public class JCRNamedChildParentPropertyMapper extends JCRNodePropertyMapper {
   }
 
   @Override
-  public Object get(ObjectContext ctx) throws Throwable {
+  public Object get(EntityContext ctx) throws Throwable {
     Object o = ctx.getChild(nodeName);
     if (o != null) {
       Class<?> relatedClass = getRelatedClass();
@@ -64,7 +64,7 @@ public class JCRNamedChildParentPropertyMapper extends JCRNodePropertyMapper {
   }
 
   @Override
-  public void set(ObjectContext context, Object child) throws Throwable {
+  public void set(EntityContext context, Object child) throws Throwable {
     if (child != null) {
       context.addChild(nodeName, child);
     } else {

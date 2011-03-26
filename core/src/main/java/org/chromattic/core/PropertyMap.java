@@ -23,7 +23,6 @@ import org.chromattic.common.JCR;
 import org.chromattic.common.TypeAdapter;
 import org.chromattic.common.AdaptingIterator;
 import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.core.bean.SimpleValueInfo;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
@@ -41,12 +40,12 @@ import java.util.Set;
 class PropertyMap extends AbstractMap<String, Object> {
 
   /** . */
-  private final ObjectContext ctx;
+  private final EntityContext ctx;
 
   /** . */
   private final SetImpl set = new SetImpl();
 
-  public PropertyMap(ObjectContext ctx) {
+  public PropertyMap(EntityContext ctx) {
     this.ctx = ctx;
   }
 

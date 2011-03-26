@@ -38,10 +38,10 @@ import org.chromattic.core.jcr.LinkType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ObjectContext implements MethodHandler {
+public class EntityContext implements MethodHandler {
 
   /** . */
-  private final Logger log = Logger.getLogger(ObjectContext.class);
+  private final Logger log = Logger.getLogger(EntityContext.class);
 
   /** . */
   final TypeMapper mapper;
@@ -53,13 +53,13 @@ public class ObjectContext implements MethodHandler {
   final PropertyMap properties;
 
   /** . */
-  ContextState state;
+  EntityContextState state;
 
-  public ObjectContext(TypeMapper mapper) {
+  public EntityContext(TypeMapper mapper) {
     this(mapper, null);
   }
 
-  public ObjectContext(TypeMapper mapper, TransientContextState state) {
+  public EntityContext(TypeMapper mapper, TransientEntityContextState state) {
     this.state = null;
     this.mapper = mapper;
     this.object = mapper.createObject(this);
@@ -125,7 +125,7 @@ public class ObjectContext implements MethodHandler {
 
   public void setReferenced(String name, Object referenced, LinkType linkType) {
     DomainSession session = state.getSession();
-    ObjectContext referencedCtx = null;
+    EntityContext referencedCtx = null;
     if (referenced != null) {
       referencedCtx = session.unwrap(referenced);
     }
@@ -136,7 +136,7 @@ public class ObjectContext implements MethodHandler {
 
   public boolean addReference(String name, Object referent, LinkType linkType) {
     DomainSession session = state.getSession();
-    ObjectContext referentCtx = session.unwrap(referent);
+    EntityContext referentCtx = session.unwrap(referent);
     return session.setReferenced(referentCtx, name, this, linkType);
   }
 
@@ -192,28 +192,28 @@ public class ObjectContext implements MethodHandler {
     state.getSession().removeChild(this, name);
   }
 
-  public void orderBefore(ObjectContext srcCtx, ObjectContext dstCtx) {
+  public void orderBefore(EntityContext srcCtx, EntityContext dstCtx) {
     state.getSession().orderBefore(this, srcCtx, dstCtx);
   }
 
-  public void addChild(ObjectContext childCtx) {
+  public void addChild(EntityContext childCtx) {
     String name = childCtx.state.getName();
     addChild(name, childCtx);
   }
 
   public void addChild(Object child) {
     DomainSession session = state.getSession();
-    ObjectContext childCtx = session.unwrap(child);
+    EntityContext childCtx = session.unwrap(child);
     addChild(childCtx);
   }
 
-  public void addChild(String name, ObjectContext childCtx) {
+  public void addChild(String name, EntityContext childCtx) {
     state.getSession().persistWithName(this, name, childCtx);
   }
 
   public void addChild(String name, Object child) {
     DomainSession session = state.getSession();
-    ObjectContext childCtx = session.unwrap(child);
+    EntityContext childCtx = session.unwrap(child);
     addChild(name, childCtx);
   }
 

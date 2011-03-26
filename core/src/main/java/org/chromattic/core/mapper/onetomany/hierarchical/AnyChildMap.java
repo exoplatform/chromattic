@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 
 import java.util.AbstractMap;
 import java.util.Set;
@@ -31,7 +31,7 @@ import java.util.Set;
 public class AnyChildMap<E> extends AbstractMap<String, E> {
 
   /** . */
-  final ObjectContext parentCtx;
+  final EntityContext parentCtx;
 
   /** . */
   final Class<E> relatedClass;
@@ -40,7 +40,7 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
   private final AnyChildEntrySet<E> entries;
 
   public AnyChildMap(
-    ObjectContext parentCtx,
+    EntityContext parentCtx,
     Class<E> relatedClass) {
     this.relatedClass = relatedClass;
     this.entries = new AnyChildEntrySet<E>(this);

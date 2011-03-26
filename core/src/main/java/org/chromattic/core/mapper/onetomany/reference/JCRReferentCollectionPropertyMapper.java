@@ -20,7 +20,7 @@
 package org.chromattic.core.mapper.onetomany.reference;
 
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.bean.CollectionPropertyInfo;
 import org.chromattic.core.bean.BeanValueInfo;
@@ -49,7 +49,7 @@ public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionProper
   }
 
   @Override
-  public Object get(final ObjectContext context) throws Throwable {
+  public Object get(final EntityContext context) throws Throwable {
     return new ReferentCollection(context, this);
   }
 }

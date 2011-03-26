@@ -20,7 +20,7 @@
 package org.chromattic.core.mapper.onetomany.reference;
 
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.bean.BeanValueInfo;
@@ -49,7 +49,7 @@ public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
   }
 
   @Override
-  public Object get(ObjectContext context) throws Throwable {
+  public Object get(EntityContext context) throws Throwable {
     Class<?> relatedClass = getRelatedClass();
     Object related = context.getReferenced(propertyName, linkType);
     if (related == null) {
@@ -64,7 +64,7 @@ public class JCRNamedReferentPropertyMapper extends JCRNodePropertyMapper {
   }
 
   @Override
-  public void set(ObjectContext ctx, Object value) throws Throwable {
+  public void set(EntityContext ctx, Object value) throws Throwable {
     ctx.setReferenced(propertyName, value, linkType);
   }
 }

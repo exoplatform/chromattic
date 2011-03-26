@@ -24,7 +24,7 @@ import org.chromattic.core.bean.MultiValuedPropertyInfo;
 import org.chromattic.core.bean.ArrayPropertyInfo;
 import org.chromattic.core.bean.ListPropertyInfo;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.ListType;
 
 /**
@@ -58,12 +58,12 @@ public class JCRPropertyListPropertyMapper extends PropertyMapper<MultiValuedPro
   }
 
   @Override
-  public Object get(ObjectContext context) throws Throwable {
+  public Object get(EntityContext context) throws Throwable {
     return context.getPropertyValues(jcrPropertyName, info.getElementValue(), listType);
   }
 
   @Override
-  public void set(ObjectContext context, Object value) throws Throwable {
+  public void set(EntityContext context, Object value) throws Throwable {
     context.setPropertyValues(jcrPropertyName, info.getElementValue(), listType, value);
   }
 }

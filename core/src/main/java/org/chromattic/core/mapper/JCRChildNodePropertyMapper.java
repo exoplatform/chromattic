@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper;
 
-import org.chromattic.core.ObjectContext;
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 
@@ -34,7 +34,7 @@ public abstract class JCRChildNodePropertyMapper extends JCRNodePropertyMapper {
   }
 
   @Override
-  public Object get(ObjectContext context) throws Throwable {
+  public Object get(EntityContext context) throws Throwable {
     Object parent = context.getParent();
     Class<?> relatedClass =  getRelatedClass();
     if (relatedClass.isInstance(parent)) {
