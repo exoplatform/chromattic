@@ -42,60 +42,60 @@ public class ValueMapper {
   private ValueMapper() {
   }
 
-  public final Object get(Value value, SimpleType wantedType) throws RepositoryException {
+  public final <T> T get(Value value, SimpleType<T> wantedType) throws RepositoryException {
     int propertyType = value.getType();
     if (wantedType != null) {
       if (wantedType == SimpleType.BINARY) {
         if (propertyType == PropertyType.BINARY) {
-          return value.getStream();
+          return (T)value.getStream();
         } else {
           throw new ClassCastException();
         }
       } else if (wantedType == SimpleType.STRING) {
         if (propertyType == PropertyType.STRING || propertyType == PropertyType.NAME || propertyType == PropertyType.PATH) {
-          return value.getString();
+          return (T)value.getString();
         } else {
           throw new ClassCastException();
         }
       } else if (wantedType == SimpleType.PATH) {
         if (propertyType == PropertyType.PATH) {
-          return value.getString();
+          return (T)value.getString();
         } else {
           throw new ClassCastException();
         }
       } else if (wantedType == SimpleType.INT) {
         if (propertyType == PropertyType.LONG) {
-          return (int)value.getLong();
+          return (T)Integer.valueOf((int)value.getLong());
         } else {
           throw new ClassCastException();
         }
       } else if (wantedType == SimpleType.LONG) {
         if (propertyType == PropertyType.LONG) {
-          return value.getLong();
+          return (T)Long.valueOf(value.getLong());
         } else {
           throw new ClassCastException();
         }
       } else if (wantedType == SimpleType.FLOAT) {
         if (propertyType == PropertyType.DOUBLE) {
-          return (float)value.getDouble();
+          return (T)Float.valueOf((float)value.getDouble());
         } else {
           throw new ClassCastException();
         }
       } else if (wantedType == SimpleType.DOUBLE) {
         if (propertyType == PropertyType.DOUBLE) {
-          return value.getDouble();
+          return (T)Double.valueOf(value.getDouble());
         } else {
           throw new ClassCastException();
         }
       } else if (wantedType == SimpleType.BOOLEAN) {
         if (propertyType == PropertyType.BOOLEAN) {
-          return value.getBoolean();
+          return (T)Boolean.valueOf(value.getBoolean());
         } else {
           throw new ClassCastException();
         }
       } else if (wantedType == SimpleType.DATE) {
         if (propertyType == PropertyType.DATE) {
-          return value.getDate().getTime();
+          return (T)value.getDate().getTime();
         } else {
           throw new ClassCastException();
         }
@@ -105,43 +105,43 @@ public class ValueMapper {
     } else {
       switch (propertyType) {
         case PropertyType.BOOLEAN:
-          return value.getBoolean();
+          return (T)Boolean.valueOf(value.getBoolean());
         case PropertyType.LONG:
-          return (int)value.getLong();
+          return (T)Integer.valueOf((int)value.getLong());
         case PropertyType.DOUBLE:
-          return value.getDouble();
+          return (T)Double.valueOf(value.getDouble());
         case PropertyType.NAME:
         case PropertyType.PATH:
         case PropertyType.STRING:
-          return value.getString();
+          return (T)value.getString();
         case PropertyType.BINARY:
-          return value.getStream();
+          return (T)value.getStream();
         case PropertyType.DATE:
-          return value.getDate().getTime();
+          return (T)value.getDate().getTime();
         default:
           throw new AssertionError("Property type " + propertyType + " not handled");
       }
     }
   }
 
-  public final Value get(ValueFactory valueFactory, Object o, SimpleType type) throws ValueFormatException {
+  public final <T> Value get(ValueFactory valueFactory, T o, SimpleType<T> type) throws ValueFormatException {
     if (type == null) {
       if (o instanceof String) {
-        type = SimpleType.STRING;
+        type = (SimpleType<T>)SimpleType.STRING;
       } else if (o instanceof Integer) {
-        type = SimpleType.INT;
+        type = (SimpleType<T>)SimpleType.INT;
       } else if (o instanceof Long) {
-        type = SimpleType.LONG;
+        type = (SimpleType<T>)SimpleType.LONG;
       } else if (o instanceof Date) {
-        type = SimpleType.DATE;
+        type = (SimpleType<T>)SimpleType.DATE;
       } else if (o instanceof Double) {
-        type = SimpleType.DOUBLE;
+        type = (SimpleType<T>)SimpleType.DOUBLE;
       }  else if (o instanceof Float) {
-        type = SimpleType.FLOAT;
+        type = (SimpleType<T>)SimpleType.FLOAT;
       }  else if (o instanceof InputStream) {
-        type = SimpleType.BINARY;
+        type = (SimpleType<T>)SimpleType.BINARY;
       } else if (o instanceof Boolean) {
-        type = SimpleType.BOOLEAN;
+        type = (SimpleType<T>)SimpleType.BOOLEAN;
       } else {
         throw new UnsupportedOperationException("Type " + o.getClass().getName() + " is not accepted");
       }

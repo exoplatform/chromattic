@@ -19,6 +19,7 @@
 
 package org.chromattic.core.bean;
 
+import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -52,7 +53,7 @@ public class SimpleType<T> {
   public static final SimpleType<Float> FLOAT = new SimpleType<Float>(Float.class);
 
   /** . */
-  public static final SimpleType<byte[]> BINARY = new SimpleType<byte[]>(byte[].class);
+  public static final SimpleType<InputStream> BINARY = new SimpleType<InputStream>(InputStream.class);
 
   /** . */
   private final Class<T> javaClass;

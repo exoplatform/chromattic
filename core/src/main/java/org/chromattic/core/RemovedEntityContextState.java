@@ -65,7 +65,7 @@ class RemovedEntityContextState extends EntityContextState {
     return Status.REMOVED;
   }
 
-  Object getPropertyValue(String propertyName, SimpleValueInfo type) {
+  <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type) {
     throw new IllegalStateException();
   }
 
@@ -73,7 +73,7 @@ class RemovedEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  void setPropertyValue(String propertyName, SimpleValueInfo type, Object o) {
+  <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V o) {
     throw new IllegalStateException();
   }
 

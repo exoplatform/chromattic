@@ -37,6 +37,7 @@ import javax.jcr.Property;
 import javax.jcr.ValueFactory;
 import javax.jcr.PropertyType;
 import javax.jcr.nodetype.PropertyDefinition;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Date;
@@ -110,13 +111,14 @@ class PersistentEntityContextState extends EntityContextState {
     return Status.PERSISTENT;
   }
 
-  Object getPropertyValue(String propertyName, SimpleValueInfo type) {
+  <V> V getPropertyValue(String propertyName, SimpleValueInfo<V> type) {
     try {
-      Object value = null;
+      V value = null;
 
       //
       if (propertyCache != null) {
-        value = propertyCache.get(propertyName);
+        // That must be ok
+        value = (V)propertyCache.get(propertyName);
       }
 
       //
@@ -141,14 +143,14 @@ class PersistentEntityContextState extends EntityContextState {
 
         //
         if (jcrValue != null) {
-          SimpleType st = type != null ? type.getSimpleType() : null;
+          SimpleType<V> st = type != null ? type.getSimpleType() : null;
           value = ValueMapper.instance.get(jcrValue, st);
 
           //
           if (propertyCache != null) {
             if (value instanceof InputStream) {
               try {
-                value = new CloneableInputStream((InputStream)value);
+                value = (V)new CloneableInputStream((InputStream)value);
               }
               catch (IOException e) {
                 throw new AssertionError(e);
@@ -162,7 +164,12 @@ class PersistentEntityContextState extends EntityContextState {
       if (value == null) {
         if (type != null) {
           // Let's try default value
-          value = type.getDefaultValue();
+          List<V> defaultValue = type.getDefaultValue();
+
+          //
+          if (defaultValue != null && defaultValue.size() > 0) {
+            value = defaultValue.get(0);
+          }
 
           //
           if (value == null && type.isPrimitive()) {
@@ -172,9 +179,9 @@ class PersistentEntityContextState extends EntityContextState {
       } else {
         if (propertyCache != null) {
           if (value instanceof InputStream) {
-            value = ((CloneableInputStream)value).clone();
+            value = (V)((CloneableInputStream)value).clone();
           } else if (value instanceof Date) {
-            value = ((Date)value).clone();
+            value = (V)((Date)value).clone();
           }
         }
       }
@@ -189,7 +196,7 @@ class PersistentEntityContextState extends EntityContextState {
 
   <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType) {
     try {
-      Value[] values = null;
+      Value[] values;
       Property property = session.getSessionWrapper().getProperty(node, propertyName);
       if (property != null) {
         PropertyDefinition def = property.getDefinition();
@@ -217,11 +224,11 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  void setPropertyValue(String propertyName, SimpleValueInfo type, Object propertyValue) {
+  <V> void setPropertyValue(String propertyName, SimpleValueInfo<V> type, V propertyValue) {
     try {
       if (propertyCache != null) {
         if (propertyValue instanceof InputStream) {
-          propertyValue = new CopyingInputStream((InputStream)propertyValue);
+          propertyValue = (V)new CopyingInputStream((InputStream)propertyValue);
         }
       }
 
@@ -229,7 +236,7 @@ class PersistentEntityContextState extends EntityContextState {
       Value jcrValue;
       if (propertyValue != null) {
         ValueFactory valueFactory = session.getJCRSession().getValueFactory();
-        SimpleType st = type != null ? type.getSimpleType() : null;
+        SimpleType<V> st = type != null ? type.getSimpleType() : null;
         jcrValue = ValueMapper.instance.get(valueFactory, propertyValue, st);
       } else {
         jcrValue = null;
@@ -269,9 +276,9 @@ class PersistentEntityContextState extends EntityContextState {
         if (propertyValue != null) {
           if (propertyValue instanceof InputStream) {
             byte[] bytes = ((CopyingInputStream)propertyValue).getBytes();
-            propertyValue = new CloneableInputStream(bytes);
+            propertyValue = (V)new CloneableInputStream(bytes);
           } else if (propertyValue instanceof Date) {
-            propertyValue = ((Date)propertyValue).clone();
+            propertyValue = (V)((Date)propertyValue).clone();
           }
           propertyCache.put(propertyName, propertyValue);
         } else {

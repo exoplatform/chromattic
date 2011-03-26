@@ -34,19 +34,56 @@ public class DefaultValueTestCase extends AbstractTestCase {
     addClass(A.class);
   }
 
-  public void testPrimitiveInt() throws Exception {
+  public void testPrimitiveInt1() throws Exception {
     DomainSession session = login();
     A a = session.insert(A.class, "a");
     Node aNode = session.getRoot().getNode("a");
 
     //
-    assertEquals(5, a.getPrimitiveInt());
+    try {
+      a.getPrimitiveInt1();
+      fail();
+    }
+    catch (IllegalStateException ignore) {
+    }
     assertFalse(aNode.hasProperty("primitive_int_property"));
 
     //
-    a.setPrimitiveInt(3);
-    assertEquals(3, a.getPrimitiveInt());
+    a.setPrimitiveInt1(3);
+    assertEquals(3, a.getPrimitiveInt1());
     assertEquals(3, aNode.getProperty("primitive_int_property").getLong());
-    assertEquals(3, a.getPrimitiveInt());
+    assertEquals(3, a.getPrimitiveInt1());
+  }
+
+  public void testPrimitiveInt2() throws Exception {
+    DomainSession session = login();
+    A a = session.insert(A.class, "a");
+    Node aNode = session.getRoot().getNode("a");
+
+    //
+    assertEquals(5, a.getPrimitiveInt2());
+    assertFalse(aNode.hasProperty("primitive_int_property"));
+
+    //
+    a.setPrimitiveInt2(3);
+    assertEquals(3, a.getPrimitiveInt2());
+    assertEquals(3, aNode.getProperty("primitive_int_property").getLong());
+    assertEquals(3, a.getPrimitiveInt2());
+  }
+
+  public void testPrimitiveInt3() throws Exception {
+    DomainSession session = login();
+    A a = session.insert(A.class, "a");
+    Node aNode = session.getRoot().getNode("a");
+
+    //
+    assertEquals(5, a.getPrimitiveInt3());
+    assertFalse(aNode.hasProperty("primitive_int_property"));
+
+    //
+    a.setPrimitiveInt2(3);
+    assertEquals(3, a.getPrimitiveInt3());
+    assertEquals(3, aNode.getProperty("primitive_int_property").getLong());
+    assertEquals(3, a.getPrimitiveInt3());
   }
 }

@@ -29,10 +29,22 @@ import org.chromattic.api.annotations.Property;
 @NodeMapping(name = "tp_a")
 public abstract class A {
 
+  @DefaultValue.Int({})
+  @Property(name = "primitive_int_property")
+  public abstract int getPrimitiveInt1();
+
+  public abstract void setPrimitiveInt1(int s);
+
   @DefaultValue.Int(5)
   @Property(name = "primitive_int_property")
-  public abstract int getPrimitiveInt();
+  public abstract int getPrimitiveInt2();
 
-  public abstract void setPrimitiveInt(int s);
+  public abstract void setPrimitiveInt2(int s);
+
+  @DefaultValue.Int({5,7})
+  @Property(name = "primitive_int_property")
+  public abstract int getPrimitiveInt3();
+
+  public abstract void setPrimitiveInt3(int s);
 
 }
