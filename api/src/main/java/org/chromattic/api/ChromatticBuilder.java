@@ -153,9 +153,23 @@ public abstract class ChromatticBuilder {
   /** . */
   protected final Map<String, OptionInstance<?>> options = new HashMap<String, OptionInstance<?>>();
 
+  public OptionInstance<?> getOption(String name) {
+    return options.get(name);
+  }
+
   public <T> void setOption(Option<T> option, T value) {
-    OptionInstance<T> instance = new OptionInstance<T>(option, value);
-    options.put(option.getName(), instance);
+    setOption(option, value, true);
+  }
+
+  public <T> void setOption(OptionInstance<T> optionInstance, boolean overwrite) {
+    setOption(optionInstance.getOption(), optionInstance.getValue(), overwrite);
+  }
+
+  public <T> void setOption(Option<T> option, T value, boolean overwrite) {
+    if (overwrite || options.get(option.getName()) == null) {
+      OptionInstance<T> instance = new OptionInstance<T>(option, value);
+      options.put(option.getName(), instance);
+    }
   }
 
   public void add(Class<?> clazz) {
