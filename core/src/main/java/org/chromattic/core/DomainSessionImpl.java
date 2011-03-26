@@ -69,10 +69,9 @@ public class DomainSessionImpl extends DomainSession {
     return sessionWrapper.getSession();
   }
 
-  protected <O> O _findByPath(Object o, Class<O> clazz, String relPath) throws RepositoryException {
+  protected <O> O _findByPath(ObjectContext ctx, Class<O> clazz, String relPath) throws RepositoryException {
     Node origin;
-    if (o != null) {
-      ObjectContext ctx = unwrap(o);
+    if (ctx != null) {
       origin = ctx.state.getNode();
     } else {
       origin = getRoot();
@@ -298,14 +297,6 @@ public class DomainSessionImpl extends DomainSession {
 
   protected void _save() throws RepositoryException {
     sessionWrapper.save();
-  }
-
-  protected void _remove(Object o) throws RepositoryException {
-    if (o == null) {
-      throw new NullPointerException();
-    }
-    ObjectContext context = unwrap(o);
-    _remove(context);
   }
 
   protected void _remove(ObjectContext context) throws RepositoryException {

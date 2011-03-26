@@ -21,7 +21,6 @@ package org.chromattic.core.mapper.embedded;
 import org.chromattic.core.bean.SingleValuedPropertyInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.core.ObjectContext;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -37,27 +36,5 @@ public class JCREmbeddedPropertyMapper extends PropertyMapper<SingleValuedProper
 
     //
     relatedClass = Thread.currentThread().getContextClassLoader().loadClass(info.getValue().getTypeInfo().getName());
-  }
-
-  @Override
-  public Object get(ObjectContext context) throws Throwable {
-    return context.getMixin(info.getValue().getTypeInfo());
-  }
-
-  @Override
-  public void set(ObjectContext context, Object value) throws Throwable {
-
-    if (value == null) {
-      throw new UnsupportedOperationException();
-    }
-
-    //
-    ObjectContext embeddedCtx = context.getSession().unwrap(value);
-
-    
-
-
-
-    super.set(context, value);    //To change body of overridden methods use File | Settings | File Templates.
   }
 }

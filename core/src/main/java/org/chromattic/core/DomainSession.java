@@ -68,8 +68,6 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract void _save() throws RepositoryException;
 
-  protected abstract void _remove(Object o) throws RepositoryException;
-
   protected abstract void _remove(ObjectContext context) throws RepositoryException;
 
   protected abstract Object _getReferenced(ObjectContext referentCtx, String name, LinkType linkType) throws RepositoryException;
@@ -86,7 +84,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract Object _getParent(ObjectContext ctx) throws RepositoryException;
 
-  protected abstract <O> O _findByPath(Object o, Class<O> clazz, String relPath) throws RepositoryException;
+  protected abstract <O> O _findByPath(ObjectContext o, Class<O> clazz, String relPath) throws RepositoryException;
 
   protected abstract void _orderBefore(ObjectContext parentCtx, ObjectContext srcCtx, ObjectContext dstCtx) throws RepositoryException;
 
@@ -239,8 +237,9 @@ public abstract class DomainSession implements ChromatticSession {
     if (relPath == null) {
       throw new NullPointerException();
     }
+    ObjectContext ctx = unwrap(o);
     try {
-      return _findByPath(o, clazz, relPath);
+      return _findByPath(ctx, clazz, relPath);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -280,8 +279,12 @@ public abstract class DomainSession implements ChromatticSession {
   }
 
   public final void remove(Object o) throws UndeclaredRepositoryException {
+    if (o == null) {
+      throw new NullPointerException();
+    }
     try {
-      _remove(o);
+      ObjectContext context = unwrap(o);
+      _remove(context);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
