@@ -18,11 +18,18 @@
  */
 package org.chromattic.api.query;
 
+import org.chromattic.api.ChromatticException;
+
 /**
  * A base interface for all queries.
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface Query {
+public interface Query<O> {
+
+  QueryResult<O> objects() throws ChromatticException;
+
+  // QueryResult<Map<String, ?>> getRows() throws ChromatticException;
+
 }

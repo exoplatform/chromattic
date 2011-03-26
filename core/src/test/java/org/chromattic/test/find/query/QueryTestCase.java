@@ -54,7 +54,9 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     Collection<TFI_A> r1 = new ArrayList<TFI_A>();
-    for (TFI_A b : session.createQueryBuilder().from(TFI_A.class)) {
+    Iterator<TFI_A> it1 = session.createQueryBuilder().from(TFI_A.class).get().objects();
+    while (it1.hasNext()) {
+      TFI_A b = it1.next();
       r1.add(b);
     }
     assertEquals(count, r1.size());
@@ -62,7 +64,9 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     Collection<TFI_A> r2 = new ArrayList<TFI_A>();
-    for (TFI_A b : session.createQueryBuilder().where("foo='" + value + "'").from(TFI_A.class)) {
+    Iterator<TFI_A> it2 = session.createQueryBuilder().where("foo='" + value + "'").from(TFI_A.class).get().objects();
+    while (it2.hasNext()) {
+      TFI_A b = it2.next();
       r2.add(b);
     }
     assertEquals(1, r2.size());

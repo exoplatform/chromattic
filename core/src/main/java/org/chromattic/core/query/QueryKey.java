@@ -16,23 +16,39 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.api.query;
+package org.chromattic.core.query;
 
 /**
- * An object query extends a query and returns objects. It extends the <tt>Iterable</tt>
- * interface so it can be used easily in foreach blocks.</p>
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
- * @param <O> the object type parameter
  */
-public interface ObjectQuery<O> extends Query, Iterable<O> {
+class QueryKey {
 
-  /**
-   * Returns the result of the object query 
-   *
-   * @return the object query result
-   */
-  ObjectQueryResult<O> iterator();
+  /** . */
+  private final Class<?> objectClass;
 
+  /** . */
+  private final String statement;
+
+  QueryKey(Class<?> objectClass, String statement) {
+    this.objectClass = objectClass;
+    this.statement = statement;
+  }
+
+  @Override
+  public int hashCode() {
+    return objectClass.hashCode() ^ statement.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (obj instanceof QueryKey) {
+      QueryKey that = (QueryKey)obj;
+      return objectClass.equals(that.objectClass) && statement.equals(that.statement);
+    }
+    return false;
+  }
 }

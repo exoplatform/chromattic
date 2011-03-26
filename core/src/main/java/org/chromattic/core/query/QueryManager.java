@@ -18,12 +18,15 @@
  */
 package org.chromattic.core.query;
 
+import org.chromattic.api.ChromatticException;
+import org.chromattic.api.query.Query;
+import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryLanguage;
-import org.chromattic.api.query.ObjectQuery;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.core.DomainSession;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import java.util.Map;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -43,18 +46,22 @@ public class QueryManager {
   }
 
   /** . */
-  private EnumMap<QueryLanguage, Map<ObjectQueryKey, ObjectQuery<?>>> globalQueryCache;
+  private EnumMap<QueryLanguage, Map<QueryKey, Query<?>>> globalQueryCache;
 
-  public <O> ObjectQuery<O> getObjectQuery(DomainSession session, Class<O> objectClass, String statement) {
+  public QueryBuilder<?> createQueryBuilder(DomainSession session) throws ChromatticException {
+    return new QueryBuilderImpl(session);
+  }
+
+  public <O> Query<O> getObjectQuery(DomainSession session, Class<O> objectClass, String statement) {
     try {
       // For now we support on SQL
       QueryLanguage language = QueryLanguage.SQL;
 
-      ObjectQueryKey key = new ObjectQueryKey(objectClass, statement);
+      QueryKey key = new QueryKey(objectClass, statement);
 
-      ObjectQuery<?> query = null;
+      Query<?> query = null;
       if (globalQueryCache != null) {
-        Map<ObjectQueryKey, ObjectQuery<?>> queryCache = globalQueryCache.get(language);
+        Map<QueryKey, Query<?>> queryCache = globalQueryCache.get(language);
         if (queryCache != null) {
           query = queryCache.get(key);
         }
@@ -62,14 +69,18 @@ public class QueryManager {
 
       //
       if (query == null) {
-        String jcrLanguage = languages.get(language);
-        query = new ObjectQueryImpl<O>(objectClass, session, statement);
+        Session jcrSession = session.getJCRSession();
+        javax.jcr.query.QueryManager queryMgr = jcrSession.getWorkspace().getQueryManager();
+        javax.jcr.query.Query jcrQuery = queryMgr.createQuery(statement, javax.jcr.query.Query.SQL);
 
         //
-        Map<ObjectQueryKey, ObjectQuery<?>> queryCache;
+        query = new QueryImpl<O>(session, objectClass, jcrQuery);
+
+        //
+        Map<QueryKey, Query<?>> queryCache;
         if (globalQueryCache == null) {
-          globalQueryCache = new EnumMap<QueryLanguage, Map<ObjectQueryKey, ObjectQuery<?>>>(QueryLanguage.class);
-          queryCache = new HashMap<ObjectQueryKey, ObjectQuery<?>>();
+          globalQueryCache = new EnumMap<QueryLanguage, Map<QueryKey, Query<?>>>(QueryLanguage.class);
+          queryCache = new HashMap<QueryKey, Query<?>>();
           globalQueryCache.put(language, queryCache);
         } else {
           queryCache = globalQueryCache.get(language);
@@ -81,7 +92,7 @@ public class QueryManager {
       }
 
       //
-      @SuppressWarnings("unchecked") ObjectQuery<O> ret = (ObjectQuery<O>)query;
+      @SuppressWarnings("unchecked") Query<O> ret = (Query<O>)query;
       return ret;
     }
     catch (RepositoryException e) {

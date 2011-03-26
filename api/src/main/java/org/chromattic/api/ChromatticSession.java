@@ -19,8 +19,8 @@
 
 package org.chromattic.api;
 
-import org.chromattic.api.query.ObjectQueryBuilder;
 import org.chromattic.api.event.EventListener;
+import org.chromattic.api.query.QueryBuilder;
 
 import javax.jcr.Session;
 import javax.jcr.Node;
@@ -140,7 +140,7 @@ public interface ChromatticSession {
 
   <O> O findById(Class<O> clazz, String id) throws ChromatticException;
 
-  ObjectQueryBuilder<?> createQueryBuilder() throws ChromatticException;
+  QueryBuilder<?> createQueryBuilder() throws ChromatticException;
 
   void remove(Object o) throws ChromatticException;
 

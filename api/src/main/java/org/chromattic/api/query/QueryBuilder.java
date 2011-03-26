@@ -19,13 +19,12 @@
 package org.chromattic.api.query;
 
 /**
- * The object query builder allows to create queries that will return entities under the form of objects.
+ * The query builder allows to create queries.
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
- * @param <O> the object type parameter
  */
-public interface ObjectQueryBuilder<O> extends Iterable<O> {
+public interface QueryBuilder<O> {
 
   /**
    * <p>Set the node type of the from clause of the query. It is possible to call that method only once and
@@ -38,7 +37,7 @@ public interface ObjectQueryBuilder<O> extends Iterable<O> {
    * @throws IllegalStateException if the builder already has a from clause
    * @throws IllegalArgumentException if the from class cannot be mapped to a node type
    */
-  <O> ObjectQueryBuilder<O> from(Class<O> fromClass) throws NullPointerException, IllegalStateException, IllegalArgumentException;
+  <O> QueryBuilder<O> from(Class<O> fromClass) throws NullPointerException, IllegalStateException, IllegalArgumentException;
 
   /**
    * <p>Set the where clause of the query.</p>
@@ -48,7 +47,7 @@ public interface ObjectQueryBuilder<O> extends Iterable<O> {
    * @return this builder
    * @throws NullPointerException if the argument is null
    */
-  <O> ObjectQueryBuilder<O> where(String where) throws NullPointerException;
+  <O> QueryBuilder<O> where(String where) throws NullPointerException;
 
   /**
    * <p>Set the order by clause of the query.</p>
@@ -58,7 +57,7 @@ public interface ObjectQueryBuilder<O> extends Iterable<O> {
    * @return this builder
    * @throws NullPointerException if the argument is null
    */
-  <O> ObjectQueryBuilder<O> orderBy(String orderBy) throws NullPointerException;
+  <O> QueryBuilder<O> orderBy(String orderBy) throws NullPointerException;
 
   /**
    * <p>Compute and returns the <tt>ObjectQuery</tt> for this builder.</p>
@@ -66,13 +65,6 @@ public interface ObjectQueryBuilder<O> extends Iterable<O> {
    * @return this object query
    * @throws IllegalStateException if the builder cannot build the query
    */
-  ObjectQuery<O> get() throws IllegalStateException;
+  Query<O> get() throws IllegalStateException;
 
-  /**
-   * <p>Compute and executes the query.</p>
-   *
-   * @return the query result
-   * @throws IllegalStateException if the builder cannot build the query to execute
-   */
-  ObjectQueryResult<O> iterator() throws IllegalStateException;
 }

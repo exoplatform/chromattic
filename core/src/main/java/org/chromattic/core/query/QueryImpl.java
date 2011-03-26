@@ -18,49 +18,45 @@
  */
 package org.chromattic.core.query;
 
-import org.chromattic.common.AbstractFilterIterator;
-import org.chromattic.common.JCR;
-import org.chromattic.api.query.ObjectQueryResult;
+import org.chromattic.api.ChromatticException;
+import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.api.query.Query;
 import org.chromattic.core.DomainSession;
 
-import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.QueryResult;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ObjectQueryResultImpl<O> extends AbstractFilterIterator<O, Node> implements ObjectQueryResult<O> {
+public class QueryImpl<O> implements Query<O> {
+
+  /** . */
+  private final javax.jcr.query.Query jcrQuery;
 
   /** . */
   private final Class<O> clazz;
 
   /** . */
-  private final NodeIterator iterator;
-
-  /** . */
   private final DomainSession session;
 
-  ObjectQueryResultImpl(DomainSession session, NodeIterator iterator, Class<O> clazz) throws NullPointerException {
-    super(JCR.adapt(iterator));
-
-    //
+  QueryImpl(DomainSession session, Class<O> clazz, javax.jcr.query.Query jcrQuery) throws RepositoryException {
     this.session = session;
-    this.iterator = iterator;
     this.clazz = clazz;
+    this.jcrQuery = jcrQuery;
   }
 
-  protected O adapt(Node internal) {
-    Object o = session.findByNode(Object.class, internal);
-    if (clazz.isInstance(o)) {
-      return clazz.cast(o);
+  public org.chromattic.api.query.QueryResult<O> objects() throws ChromatticException {
+    final NodeIterator iterator;
+    try {
+      QueryResult result = jcrQuery.execute();
+      iterator = result.getNodes();
+      return new QueryResultImpl<O>(session, iterator, clazz);
     }
-    else {
-      return null;
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
     }
-  }
-
-  public int size() {
-    return (int)iterator.getSize();
   }
 }

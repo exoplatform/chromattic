@@ -18,9 +18,8 @@
  */
 package org.chromattic.core.query;
 
-import org.chromattic.api.query.ObjectQueryBuilder;
-import org.chromattic.api.query.ObjectQuery;
-import org.chromattic.api.query.ObjectQueryResult;
+import org.chromattic.api.query.Query;
+import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.core.mapper.NodeTypeMapper;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.Domain;
@@ -30,7 +29,7 @@ import org.chromattic.core.DomainSession;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
+public class QueryBuilderImpl implements QueryBuilder {
 
   /** . */
   private Class<?> fromClass;
@@ -44,13 +43,13 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
   /** . */
   private DomainSession session;
 
-  public ObjectQueryBuilderImpl(DomainSession session) {
+  QueryBuilderImpl(DomainSession session) {
     this.fromClass = null;
     this.where = null;
     this.session = session;
   }
 
-  public ObjectQueryBuilder from(Class fromClass) {
+  public QueryBuilder from(Class fromClass) {
     if (fromClass == null) {
       throw new NullPointerException();
     }
@@ -74,7 +73,7 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
     return this;
   }
 
-  public ObjectQueryBuilder where(String whereStatement) {
+  public QueryBuilder where(String whereStatement) {
     if (whereStatement == null) {
       throw new NullPointerException();
     }
@@ -82,11 +81,11 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
     return this;
   }
 
-  public ObjectQueryBuilder orderBy(String orderBy) throws NullPointerException {
+  public QueryBuilder orderBy(String orderBy) throws NullPointerException {
     throw new UnsupportedOperationException("todo");
   }
 
-  public ObjectQuery get() {
+  public Query get() {
     if (fromClass == null) {
       throw new IllegalStateException();
     }
@@ -101,10 +100,5 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
 
     //
     return session.getDomain().getQueryManager().getObjectQuery(session, mapper.getObjectClass(), sb.toString());
-  }
-
-  public ObjectQueryResult iterator() {
-    ObjectQuery query = get();
-    return query.iterator();
   }
 }

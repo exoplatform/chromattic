@@ -24,10 +24,9 @@ import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.ChromatticException;
-import org.chromattic.api.query.ObjectQueryBuilder;
+import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.jcr.SessionWrapper;
-import org.chromattic.core.query.ObjectQueryBuilderImpl;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
@@ -311,8 +310,8 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public ObjectQueryBuilder<?> createQueryBuilder() throws ChromatticException {
-    return new ObjectQueryBuilderImpl(this);
+  public QueryBuilder<?> createQueryBuilder() throws ChromatticException {
+    return domain.queryManager.createQueryBuilder(this);
   }
 
   public final Node getNode(Object o) {
