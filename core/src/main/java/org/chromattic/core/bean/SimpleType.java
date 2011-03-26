@@ -20,6 +20,18 @@
 package org.chromattic.core.bean;
 
 /**
+ * A simple type as exposed to the programming model. A simple type is defined by:
+ *
+ * <ul>
+ *   <li>The simple type kind which is the underlying data semantic</li>
+ *   <li>The object type which is java type for object representing the type</li>
+ *   <li>The real type which is the java type as wanted by the model meta data</li>
+ *   <li>The primitiveness of the type</li>
+ * </ul>
+ *
+ * The real type is most of the time used when there is a need for creating arrays with a component
+ * type equals to the real type.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
@@ -29,15 +41,15 @@ public abstract class SimpleType<T> {
   private final SimpleTypeKind kind;
 
   /** . */
-  private final Class<T> javaType;
+  private final Class<T> objectType;
 
   /** . */
-  private final Class<?> listElementType;
+  private final Class<?> realType;
 
-  SimpleType(SimpleTypeKind kind, Class<T> javaType, Class<?> listElementType) {
+  SimpleType(SimpleTypeKind kind, Class<T> objectType, Class<?> realType) {
     this.kind = kind;
-    this.javaType = javaType;
-    this.listElementType = listElementType;
+    this.objectType = objectType;
+    this.realType = realType;
   }
 
   public abstract boolean isPrimitive();
@@ -46,11 +58,11 @@ public abstract class SimpleType<T> {
     return kind;
   }
 
-  public Class<T> getJavaType() {
-    return javaType;
+  public Class<T> getObjectType() {
+    return objectType;
   }
 
-  public Class<?> getListElementType() {
-    return listElementType;
+  public Class<?> getRealType() {
+    return realType;
   }
 }

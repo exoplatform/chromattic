@@ -41,14 +41,14 @@ public abstract class ListType {
     @Override
     public <E> List<E> create(SimpleType<E> elementType, int size) {
       return WrappedArrayList.create(
-        elementType.getJavaType(),
-        elementType.getListElementType(),
+        elementType.getObjectType(),
+        elementType.getRealType(),
         size);
     }
 
     @Override
     public <E> List<E> wrap(SimpleType<E> elementType, Object array) {
-      return WrappedArrayList.wrap(elementType.getJavaType(), array);
+      return WrappedArrayList.wrap(elementType.getObjectType(), array);
     }
 
     @Override

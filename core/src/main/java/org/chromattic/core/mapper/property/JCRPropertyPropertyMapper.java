@@ -57,7 +57,7 @@ public class JCRPropertyPropertyMapper extends PropertyMapper<SingleValuedProper
   }
 
   private <V> void set(EntityContext context, SimpleValueInfo<V> simpleValueInfo, Object o) throws Throwable {
-    Class<V> javaType = simpleValueInfo.getSimpleType().getJavaType();
+    Class<V> javaType = simpleValueInfo.getSimpleType().getObjectType();
     V v = javaType.cast(o);
     context.setPropertyValue(jcrPropertyName, simpleValueInfo, v);
   }
