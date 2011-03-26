@@ -21,7 +21,6 @@ package org.chromattic.core.mapper;
 import org.chromattic.api.NameConflictResolution;
 import org.chromattic.spi.instrument.Instrumentor;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,17 +32,13 @@ public class NodeTypeMapper extends TypeMapper {
   /** . */
   private final String nodeTypeName;
 
-  /** . */
-  private final List<String> mixinTypeNames;
-
   public NodeTypeMapper(
     Class<?> objectClass,
     Set<PropertyMapper> propertyMappers,
     Set<MethodMapper> methodMappers,
     NameConflictResolution onDuplicate,
     Instrumentor instrumentor,
-    String nodeTypeName,
-    List<String> mixinTypeNames) {
+    String nodeTypeName) {
     super(
       objectClass,
       propertyMappers,
@@ -53,7 +48,6 @@ public class NodeTypeMapper extends TypeMapper {
 
     //
     this.nodeTypeName = nodeTypeName;
-    this.mixinTypeNames = mixinTypeNames;
   }
 
   @Override
@@ -63,10 +57,6 @@ public class NodeTypeMapper extends TypeMapper {
 
   public String getNodeTypeName() {
     return nodeTypeName;
-  }
-
-  public List<String> getMixinTypeNames() {
-    return mixinTypeNames;
   }
 
   @Override

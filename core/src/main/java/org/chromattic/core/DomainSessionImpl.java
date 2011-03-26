@@ -33,10 +33,10 @@ import javax.jcr.Node;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.nodetype.NodeType;
+import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -190,12 +190,11 @@ public class DomainSessionImpl extends DomainSession {
 
     //
     String primaryNodeTypeName = mapper.getNodeTypeName();
-    List<String> mixinNodeTypeNames = mapper.getMixinTypeNames();
     log.trace("Setting context {} for insertion", dstCtx);
     log.trace("Adding node for context {} and node type {} as child of node {}", dstCtx, primaryNodeTypeName, dstParentNode.getPath());
 
     //
-    Node dstNode = sessionWrapper.addNode(dstParentNode, name, primaryNodeTypeName, mixinNodeTypeNames);
+    Node dstNode = sessionWrapper.addNode(dstParentNode, name, primaryNodeTypeName, Collections.<String>emptyList());
 
     //
     nodeAdded(dstNode, dstCtx);

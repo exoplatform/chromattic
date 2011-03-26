@@ -19,14 +19,12 @@
 
 package org.chromattic.test.inheritance;
 
-import org.chromattic.api.annotations.NodeMapping;
 import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tii_a")
 public abstract class A {
 
   @Property(name = "string1")

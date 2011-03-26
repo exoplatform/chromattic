@@ -67,7 +67,6 @@ import org.reflext.api.TypeInfo;
 import org.reflext.api.introspection.MethodIntrospector;
 import org.reflext.api.introspection.HierarchyScope;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
@@ -374,8 +373,9 @@ public class TypeMappingBuilder {
       onDuplicate = namingPolicy.onDuplicate();
     }
 
+    //
     NodeMapping nodeMapping = javaClass.getDeclaredAnnotation(NodeMapping.class);
-    Mixin mixin = new AnnotationIntrospector<Mixin>(Mixin.class).resolve(javaClass);
+    Mixin mixin = javaClass.getDeclaredAnnotation(Mixin.class);
     String[] mixinNames = mixin != null ? mixin.name() : new String[0];
 
     //
@@ -398,13 +398,7 @@ public class TypeMappingBuilder {
         onDuplicate,
         mixinNames[0]);
     } else {
-      Set<String> tmp = new HashSet<String>();
-      if (mixin != null) {
-        tmp.addAll(Arrays.asList(mixinNames));
-      }
-
-      //
-      String primaryNodeTypeName = nodeMapping.name();
+      String nodeTypeName = nodeMapping.name();
 
       //
       return new NodeTypeMapping(
@@ -412,8 +406,7 @@ public class TypeMappingBuilder {
         propertyMappings,
         methodMappings,
         onDuplicate,
-        primaryNodeTypeName,
-        tmp);
+        nodeTypeName);
     }
   }
 }

@@ -278,20 +278,13 @@ public class TypeMapperBuilder {
         NodeTypeMapping nodeTypeMapping = (NodeTypeMapping)typeMapping;
 
         //
-        List<String> mixinNames = new ArrayList<String>();
-        for (String mixinName : nodeTypeMapping.getMixinTypeNames()) {
-          mixinNames.add(mixinName);
-        }
-
-        //
         mapper = new NodeTypeMapper(
           (Class<?>)typeMapping.getObjectClass().getType(),
           propertyMappers,
           methodMappers,
           typeMapping.getOnDuplicate(),
           instrumentor,
-          nodeTypeMapping.getNodeTypeName(),
-          mixinNames);
+          nodeTypeMapping.getNodeTypeName());
       } else {
         MixinTypeMapping mixinTypeMapping = (MixinTypeMapping)typeMapping;
 
