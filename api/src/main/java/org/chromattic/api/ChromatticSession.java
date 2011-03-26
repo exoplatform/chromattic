@@ -21,6 +21,7 @@ package org.chromattic.api;
 
 import javax.jcr.Session;
 import javax.jcr.Node;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -136,6 +137,8 @@ public interface ChromatticSession {
   <O> O findByNode(Class<O> clazz, Node node) throws ChromatticException;
 
   <O> O findById(Class<O> clazz, String id) throws ChromatticException;
+
+  Query createQuery(QueryLanguage language, String statement) throws ChromatticException; 
 
   void remove(Object o) throws ChromatticException;
 
