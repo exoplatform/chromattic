@@ -52,70 +52,55 @@ public class ValueMapper {
         SimpleTypeKind.STREAM<?> streamKind = (SimpleTypeKind.STREAM<?>)typeKind;
         if (propertyType == PropertyType.BINARY) {
           return (E)streamKind.toExternal(value.getStream());
-        }
-        else {
+        } else {
           throw new ClassCastException();
         }
-      }
-      else if (typeKind instanceof SimpleTypeKind.STRING) {
+      } else if (typeKind instanceof SimpleTypeKind.STRING) {
         SimpleTypeKind.STRING stringKind = (SimpleTypeKind.STRING)typeKind;
         if (propertyType == PropertyType.STRING || propertyType == PropertyType.NAME || propertyType == PropertyType.PATH) {
           return (E)stringKind.toExternal(value.getString());
-        }
-        else {
+        } else {
           throw new ClassCastException();
         }
-      }
-      else if (typeKind instanceof SimpleTypeKind.PATH) {
+      } else if (typeKind instanceof SimpleTypeKind.PATH) {
         SimpleTypeKind.PATH pathKind = (SimpleTypeKind.PATH)typeKind;
         if (propertyType == PropertyType.PATH) {
           return (E)pathKind.toExternal(value.getString());
-        }
-        else {
+        } else {
           throw new ClassCastException();
         }
-      }
-      else if (typeKind instanceof SimpleTypeKind.LONG) {
+      } else if (typeKind instanceof SimpleTypeKind.LONG) {
         SimpleTypeKind.LONG longKind = (SimpleTypeKind.LONG)typeKind;
         if (propertyType == PropertyType.LONG) {
           return (E)longKind.toExternal(value.getLong());
-        }
-        else {
+        } else {
           throw new ClassCastException();
         }
-      }
-      else if (typeKind instanceof SimpleTypeKind.DOUBLE) {
+      } else if (typeKind instanceof SimpleTypeKind.DOUBLE) {
         SimpleTypeKind.DOUBLE doubleKind = (SimpleTypeKind.DOUBLE)typeKind;
         if (propertyType == PropertyType.DOUBLE) {
           return (E)doubleKind.toExternal(value.getDouble());
-        }
-        else {
+        } else {
           throw new ClassCastException();
         }
-      }
-      else if (typeKind instanceof SimpleTypeKind.BOOLEAN) {
+      } else if (typeKind instanceof SimpleTypeKind.BOOLEAN) {
         SimpleTypeKind.BOOLEAN booleanKind = (SimpleTypeKind.BOOLEAN)typeKind;
         if (propertyType == PropertyType.BOOLEAN) {
           return (E)booleanKind.toExternal(value.getBoolean());
-        }
-        else {
+        } else {
           throw new ClassCastException();
         }
-      }
-      else if (typeKind instanceof SimpleTypeKind.DATE) {
+      } else if (typeKind instanceof SimpleTypeKind.DATE) {
         SimpleTypeKind.DATE dateKind = (SimpleTypeKind.DATE)typeKind;
         if (propertyType == PropertyType.DATE) {
           return (E)dateKind.toExternal(value.getDate().getTime());
-        }
-        else {
+        } else {
           throw new ClassCastException();
         }
-      }
-      else {
+      } else {
         throw new AssertionError("Property type " + propertyType + " not handled");
       }
-    }
-    else {
+    } else {
       switch (propertyType) {
         case PropertyType.BOOLEAN:
           return (E)Boolean.valueOf(value.getBoolean());
@@ -142,72 +127,59 @@ public class ValueMapper {
     if (type == null) {
       if (o instanceof String) {
         typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.STRING;
-      }
-      else if (o instanceof Integer) {
+      } else if (o instanceof Integer) {
         typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.INT;
-      }
-      else if (o instanceof Long) {
+      } else if (o instanceof Long) {
         typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.LONG;
-      }
-      else if (o instanceof Date) {
+      } else if (o instanceof Date) {
         typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.DATE;
-      }
-      else if (o instanceof Double) {
+      } else if (o instanceof Double) {
         typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.DOUBLE;
-      }
-      else if (o instanceof Float) {
+      } else if (o instanceof Float) {
         typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.FLOAT;
-      }
-      else if (o instanceof InputStream) {
+      } else if (o instanceof InputStream) {
         typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.STREAM;
-      }
-      else if (o instanceof Boolean) {
+      } else if (o instanceof Boolean) {
         typeKind = (SimpleTypeKind<E, ?>)BaseSimpleTypes.BOOLEAN;
-      }
-      else {
+      } else {
         throw new UnsupportedOperationException("Type " + o.getClass().getName() + " is not accepted");
       }
-    }
-    else {
+    } else {
       typeKind = type.getKind();
     }
 
     //
-    if (SimpleTypeKind.STRING.class.isInstance(typeKind)) {
-      return valueFactory.createValue((String)o);
-    }
-    else if (SimpleTypeKind.PATH.class.isInstance(typeKind)) {
-      return valueFactory.createValue((String)o, PropertyType.PATH);
-    } else if (SimpleTypeKind.LONG.class.isInstance(typeKind)) {
-      if (typeKind == BaseSimpleTypes.LONG) {
-        return valueFactory.createValue((Long)o);
-      }
-      else if (typeKind == BaseSimpleTypes.INT) {
-        return valueFactory.createValue((Integer)o);
-      } else {
-        throw new UnsupportedOperationException("Simple type " + type + " not accepted");
-      }
-    } else if (SimpleTypeKind.DATE.class.isInstance(typeKind)) {
+    if (typeKind instanceof SimpleTypeKind.STRING) {
+      SimpleTypeKind.STRING<E> stringKind = (SimpleTypeKind.STRING<E>)typeKind;
+      String s = stringKind.toInternal(o);
+      return valueFactory.createValue(s);
+    } else if (typeKind instanceof SimpleTypeKind.PATH) {
+      SimpleTypeKind.PATH<E> pathKind = (SimpleTypeKind.PATH<E>)typeKind;
+      String s = pathKind.toInternal(o);
+      return valueFactory.createValue(s, PropertyType.PATH);
+    } else if (typeKind instanceof SimpleTypeKind.LONG) {
+      SimpleTypeKind.LONG<E> longKind = (SimpleTypeKind.LONG<E>)typeKind;
+      Long l = longKind.toInternal(o);
+      return valueFactory.createValue(l);
+    } else if (typeKind instanceof SimpleTypeKind.DATE) {
+      SimpleTypeKind.DATE<E> dateKind = (SimpleTypeKind.DATE<E>)typeKind;
+      Date time = dateKind.toInternal(o);
       Calendar calendar = Calendar.getInstance();
-      calendar.setTime((Date)o);
+      calendar.setTime(time);
       return valueFactory.createValue(calendar);
-    }
-    else if (SimpleTypeKind.STREAM.class.isInstance(typeKind)) {
-      return valueFactory.createValue((InputStream)o);
-    }
-    else if (SimpleTypeKind.DOUBLE.class.isInstance(typeKind)) {
-      if (typeKind == BaseSimpleTypes.DOUBLE) {
-        return valueFactory.createValue((Double)o);
-      }
-      else if (typeKind == BaseSimpleTypes.FLOAT) {
-        return valueFactory.createValue((Float)o);
-      } else {
-        throw new UnsupportedOperationException("Simple type " + type + " not accepted");
-      }
-    } else if (SimpleTypeKind.BOOLEAN.class.isInstance(typeKind)) {
-      return valueFactory.createValue((Boolean)o);
-    }
-    else {
+    } else if (typeKind instanceof SimpleTypeKind.STREAM) {
+      SimpleTypeKind.STREAM<E> streamKind = (SimpleTypeKind.STREAM<E>)typeKind;
+      InputStream in = streamKind.toInternal(o);
+      return valueFactory.createValue(in);
+    } else if (typeKind instanceof SimpleTypeKind.DOUBLE) {
+      SimpleTypeKind.DOUBLE<E> doubleKind = (SimpleTypeKind.DOUBLE<E>)typeKind;
+      Double d = doubleKind.toInternal(o);
+      return valueFactory.createValue(d);
+    } else if (typeKind instanceof SimpleTypeKind.BOOLEAN) {
+      SimpleTypeKind.BOOLEAN<E> booleanKind = (SimpleTypeKind.BOOLEAN<E>)typeKind;
+      Boolean b = booleanKind.toInternal(o);
+      return valueFactory.createValue(b);
+    } else {
       throw new UnsupportedOperationException("Simple type " + type + " not accepted");
     }
   }

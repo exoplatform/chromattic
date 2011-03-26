@@ -26,9 +26,8 @@ import java.util.Date;
  * @version $Revision$
  */
 public abstract class SimpleTypeKind<E, I> {
-  
-  private SimpleTypeKind() {
 
+  private SimpleTypeKind() {
   }
 
   public abstract E toExternal(I internal);
