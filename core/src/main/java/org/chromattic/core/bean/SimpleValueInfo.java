@@ -37,18 +37,6 @@ public class SimpleValueInfo extends ValueInfo {
   /** . */
   private final boolean primitive;
 
-/*
-  private SimpleValueInfo(ClassTypeInfo typeInfo, SimpleType simpleType, boolean primitive) {
-    super(typeInfo);
-
-    //
-
-    //
-    this.simpleType = simpleType;
-    this.primitive = primitive;
-  }
-*/
-
   private SimpleValueInfo(ClassTypeInfo typeInfo, SimpleType simpleType, boolean primitive) {
     super(typeInfo);
 

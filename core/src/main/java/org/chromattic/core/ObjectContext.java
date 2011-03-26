@@ -22,10 +22,13 @@ package org.chromattic.core;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
+import java.io.InputStream;
 
 import org.chromattic.api.Status;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.common.JCR;
+import org.chromattic.common.CopyingInputStream;
+import org.chromattic.common.CloneableInputStream;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.mapper.MethodMapper;
 import org.chromattic.core.mapper.PropertyMapper;
@@ -163,10 +166,18 @@ public class ObjectContext implements MethodHandler {
     JCR.validateName(propertyName);
 
     //
-    state.setPropertyValue(propertyName, type, o);
+    EventBroadcaster broadcaster = state.getSession().broadcaster;
 
     //
-    state.getSession().broadcaster.propertyChanged(object, propertyName, o);
+    if (o instanceof InputStream && broadcaster.hasStateChangeListeners()) {
+      CopyingInputStream in = new CopyingInputStream((InputStream)o);
+      state.setPropertyValue(propertyName, type, in);
+      byte[] bytes = in.getBytes();
+      broadcaster.propertyChanged(object, propertyName, new CloneableInputStream(bytes));
+    } else {
+      state.setPropertyValue(propertyName, type, o);
+      broadcaster.propertyChanged(object, propertyName, o);
+    }
   }
 
   public <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects) {

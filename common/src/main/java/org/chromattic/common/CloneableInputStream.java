@@ -16,37 +16,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.common;
 
-package org.chromattic.test.property;
-
-import org.chromattic.test.support.MultiValue;
-import org.chromattic.test.support.EventQueue;
-
-import javax.jcr.Node;
-import javax.jcr.ValueFactory;
+import java.io.ByteArrayInputStream;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractSingleValuedTest extends AbstractValuedTest {
+public final class CloneableInputStream extends ByteArrayInputStream implements Cloneable {
 
-  /** . */
-  protected final EventQueue events;
+  public CloneableInputStream(byte buf[]) {
+    super(buf);
+  }
 
-  protected AbstractSingleValuedTest(
-    ValueFactory factory,
-    Object o,
-    Node node,
-    String propertyName,
-    String getterName,
-    String setterName,
-    int propertyType,
-    MultiValue values,
-    EventQueue events) throws Exception {
-    super(factory, o, node, propertyName, getterName, setterName, propertyType, values);
-
-    //
-    this.events = events;
+  @Override
+  public Object clone() {
+    // We don't have to call super as this class is final
+    return new CloneableInputStream(buf);
   }
 }

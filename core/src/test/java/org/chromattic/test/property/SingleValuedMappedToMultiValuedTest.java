@@ -20,6 +20,7 @@
 package org.chromattic.test.property;
 
 import org.chromattic.test.support.MultiValue;
+import org.chromattic.test.support.EventQueue;
 
 import javax.jcr.ValueFactory;
 import javax.jcr.Node;
@@ -40,8 +41,9 @@ public class SingleValuedMappedToMultiValuedTest extends AbstractSingleValuedTes
     String getterName,
     String setterName,
     int propertyType,
-    MultiValue values) throws Exception {
-    super(factory, o, node, propertyName, getterName, setterName, propertyType, values);
+    MultiValue values,
+    EventQueue events) throws Exception {
+    super(factory, o, node, propertyName, getterName, setterName, propertyType, values, events);
   }
 
   protected void run() throws Exception {
@@ -56,6 +58,7 @@ public class SingleValuedMappedToMultiValuedTest extends AbstractSingleValuedTes
         fail();
       }
     }
+    events.assertEmpty();
 
     //
     node.setProperty(propertyName, new Value[]{create(values.getObject(0))});
@@ -63,11 +66,15 @@ public class SingleValuedMappedToMultiValuedTest extends AbstractSingleValuedTes
     setter.invoke(o, values.getObject(1));
     assertTrue(node.hasProperty(propertyName));
     safeArrayEquals(values.sub(1), node.getProperty(propertyName).getValues());
+    events.assertPropertyChangedEvent(o, propertyName, values.getObject(1));
+    events.assertEmpty();
 
     //
     if (!primitive) {
       setter.invoke(o, (Object)null);
       assertFalse(node.hasNode(propertyName));
+      events.assertPropertyChangedEvent(o, propertyName, null);
+      events.assertEmpty();
     }
   }
 }

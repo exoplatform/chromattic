@@ -19,7 +19,7 @@
 package org.chromattic.test.lifecycle;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.test.support.LifeCycleListenerImpl;
+import org.chromattic.test.support.EventQueue;
 import org.chromattic.test.support.LifeCycleEventType;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
@@ -38,7 +38,7 @@ public class DestroyTestCase extends AbstractTestCase {
     ChromatticSession session = login();
     TLF_A a = session.insert(TLF_A.class, "bar");
     TLF_A b = session.insert(a, TLF_A.class, "foo");
-    LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
+    EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     session.remove(a);
     assertEquals(Status.REMOVED, session.getStatus(a));
@@ -58,7 +58,7 @@ public class DestroyTestCase extends AbstractTestCase {
 
     session = login();
     a = session.findByPath(TLF_A.class, "bar");
-    LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
+    EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     session.remove(a);
     listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
@@ -78,7 +78,7 @@ public class DestroyTestCase extends AbstractTestCase {
     session = login();
     a = session.findByPath(TLF_A.class, "bar");
     c = session.findById(TLF_A.class, cId);
-    LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
+    EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     session.remove(a);
     assertEquals(Status.REMOVED, session.getStatus(a));

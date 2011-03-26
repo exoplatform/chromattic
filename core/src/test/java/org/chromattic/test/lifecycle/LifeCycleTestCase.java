@@ -20,7 +20,7 @@
 package org.chromattic.test.lifecycle;
 
 import org.chromattic.test.AbstractTestCase;
-import org.chromattic.test.support.LifeCycleListenerImpl;
+import org.chromattic.test.support.EventQueue;
 import org.chromattic.test.support.LifeCycleEventType;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
@@ -55,7 +55,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
 
     //
     session = login();
-    LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
+    EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
     TLF_A.constructed = 0;
@@ -69,7 +69,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
 
   public void testAdd() throws RepositoryException {
     ChromatticSession session = login();
-    LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
+    EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
     TLF_A.constructed = 0;
@@ -88,7 +88,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
 
   public void testPersist() throws Exception {
     ChromatticSession session = login();
-    LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
+    EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
     TLF_A a = session.create(TLF_A.class, "tlf_a_c");
@@ -130,7 +130,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
   private void testRemoveTransient(boolean withMethod) throws Exception {
     ChromatticSession session = login();
     TLF_A a = session.create(TLF_A.class, "tlf_a_c");
-    LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
+    EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
     try {
@@ -149,7 +149,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
     ChromatticSession session = login();
     TLF_A a = session.create(TLF_A.class, "tlf_a_c");
     String id = session.persist(a);
-    LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
+    EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
     if (withMethod) {
@@ -182,7 +182,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
     //
     session = login() ;
     a = session.findById(TLF_A.class, id);
-    LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
+    EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
     if (withMethod) {

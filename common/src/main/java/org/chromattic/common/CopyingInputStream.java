@@ -16,37 +16,44 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.common;
 
-package org.chromattic.test.property;
-
-import org.chromattic.test.support.MultiValue;
-import org.chromattic.test.support.EventQueue;
-
-import javax.jcr.Node;
-import javax.jcr.ValueFactory;
+import java.io.FilterInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractSingleValuedTest extends AbstractValuedTest {
+public class CopyingInputStream extends InputStream {
 
   /** . */
-  protected final EventQueue events;
+  private final ByteArrayOutputStream baos = new ByteArrayOutputStream(100);
 
-  protected AbstractSingleValuedTest(
-    ValueFactory factory,
-    Object o,
-    Node node,
-    String propertyName,
-    String getterName,
-    String setterName,
-    int propertyType,
-    MultiValue values,
-    EventQueue events) throws Exception {
-    super(factory, o, node, propertyName, getterName, setterName, propertyType, values);
+  /** . */
+  private final InputStream in;
 
-    //
-    this.events = events;
+  public CopyingInputStream(InputStream in) {
+    this.in = in;
+  }
+
+  @Override
+  public int read() throws IOException {
+    int value = in.read();
+    if (value != -1) {
+      baos.write(value);
+    }
+    return value;
+  }
+
+  @Override
+  public void close() throws IOException {
+    in.close();
+  }
+
+  public byte[] getBytes() {
+    return baos.toByteArray();
   }
 }

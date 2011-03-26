@@ -20,8 +20,11 @@
 package org.chromattic.test.support;
 
 import org.chromattic.api.event.LifeCycleListener;
+import org.chromattic.api.event.StateChangeListener;
 
 import java.util.LinkedList;
+import java.io.InputStream;
+import java.io.IOException;
 
 import junit.framework.Assert;
 
@@ -29,7 +32,7 @@ import junit.framework.Assert;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class LifeCycleListenerImpl implements LifeCycleListener {
+public class EventQueue implements LifeCycleListener, StateChangeListener {
 
   /** . */
   private final LinkedList<Event> events = new LinkedList<Event>();
@@ -54,7 +57,26 @@ public class LifeCycleListenerImpl implements LifeCycleListener {
     PropertyChangedEvent lifeCycleEvent = (PropertyChangedEvent)event;
     Assert.assertEquals(object, lifeCycleEvent.getObject());
     Assert.assertEquals(name, lifeCycleEvent.getName());
-    Assert.assertEquals(value, lifeCycleEvent.getValue());
+    if (value instanceof InputStream) {
+      Assert.assertTrue(lifeCycleEvent.getValue() instanceof InputStream);
+      InputStream s1 = (InputStream)value;
+      InputStream s2 = (InputStream)lifeCycleEvent.getValue();
+      while (true) {
+        try {
+          int i1 = s1.read();
+          int i2 = s2.read();
+          Assert.assertEquals(i1, i2);
+          if (i1 == -1) {
+            break;
+          }
+        }
+        catch (IOException e) {
+          Assert.fail();
+        }
+      }
+    } else {
+      Assert.assertEquals(value, lifeCycleEvent.getValue());
+    }
   }
 
   public void assertEmpty() {
