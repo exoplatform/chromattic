@@ -25,21 +25,21 @@ package org.chromattic.core.bean;
 public class PrimitiveSimpleType<T> extends SimpleType<T> {
 
   /** . */
-  public static final SimpleType<Integer> INT = new PrimitiveSimpleType<Integer>(SimpleTypeKind.INT, Integer.class, int.class);
+  public static final SimpleType<Integer> INT = new PrimitiveSimpleType<Integer>(BaseSimpleTypes.INT, Integer.class, int.class);
 
   /** . */
-  public static final SimpleType<Boolean> BOOLEAN = new PrimitiveSimpleType<Boolean>(SimpleTypeKind.BOOLEAN, Boolean.class, boolean.class);
+  public static final SimpleType<Boolean> BOOLEAN = new PrimitiveSimpleType<Boolean>(BaseSimpleTypes.BOOLEAN, Boolean.class, boolean.class);
 
   /** . */
-  public static final SimpleType<Long> LONG = new PrimitiveSimpleType<Long>(SimpleTypeKind.LONG, Long.class, long.class);
+  public static final SimpleType<Long> LONG = new PrimitiveSimpleType<Long>(BaseSimpleTypes.LONG, Long.class, long.class);
 
   /** . */
-  public static final SimpleType<Double> DOUBLE = new PrimitiveSimpleType<Double>(SimpleTypeKind.DOUBLE, Double.class, double.class);
+  public static final SimpleType<Double> DOUBLE = new PrimitiveSimpleType<Double>(BaseSimpleTypes.DOUBLE, Double.class, double.class);
 
   /** . */
-  public static final SimpleType<Float> FLOAT = new PrimitiveSimpleType<Float>(SimpleTypeKind.FLOAT, Float.class, float.class);
+  public static final SimpleType<Float> FLOAT = new PrimitiveSimpleType<Float>(BaseSimpleTypes.FLOAT, Float.class, float.class);
 
-  public PrimitiveSimpleType(SimpleTypeKind kind, Class<T> javaType, Class<?> listElementType) {
+  public PrimitiveSimpleType(BaseSimpleTypes kind, Class<T> javaType, Class<?> listElementType) {
     super(kind, javaType, listElementType);
   }
 

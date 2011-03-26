@@ -22,7 +22,7 @@ package org.chromattic.core.bean;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public enum SimpleTypeKind {
+public enum BaseSimpleTypes {
 
   STRING, PATH, INT, BOOLEAN, LONG, DATE, DOUBLE, FLOAT, BINARY
 

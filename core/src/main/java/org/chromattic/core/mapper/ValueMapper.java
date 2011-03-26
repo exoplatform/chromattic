@@ -19,10 +19,8 @@
 
 package org.chromattic.core.mapper;
 
-import org.chromattic.core.bean.ObjectSimpleType;
-import org.chromattic.core.bean.PrimitiveSimpleType;
+import org.chromattic.core.bean.BaseSimpleTypes;
 import org.chromattic.core.bean.SimpleType;
-import org.chromattic.core.bean.SimpleTypeKind;
 
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
@@ -129,24 +127,24 @@ public class ValueMapper {
   }
 
   public final <T> Value get(ValueFactory valueFactory, T o, SimpleType<T> type) throws ValueFormatException {
-    SimpleTypeKind typeKind;
+    BaseSimpleTypes typeKind;
     if (type == null) {
       if (o instanceof String) {
-        typeKind = SimpleTypeKind.STRING;
+        typeKind = BaseSimpleTypes.STRING;
       } else if (o instanceof Integer) {
-        typeKind = SimpleTypeKind.INT;
+        typeKind = BaseSimpleTypes.INT;
       } else if (o instanceof Long) {
-        typeKind = SimpleTypeKind.LONG;
+        typeKind = BaseSimpleTypes.LONG;
       } else if (o instanceof Date) {
-        typeKind = SimpleTypeKind.DATE;
+        typeKind = BaseSimpleTypes.DATE;
       } else if (o instanceof Double) {
-        typeKind = SimpleTypeKind.DOUBLE;
+        typeKind = BaseSimpleTypes.DOUBLE;
       }  else if (o instanceof Float) {
-        typeKind = SimpleTypeKind.FLOAT;
+        typeKind = BaseSimpleTypes.FLOAT;
       }  else if (o instanceof InputStream) {
-        typeKind = SimpleTypeKind.BINARY;
+        typeKind = BaseSimpleTypes.BINARY;
       } else if (o instanceof Boolean) {
-        typeKind = SimpleTypeKind.BOOLEAN;
+        typeKind = BaseSimpleTypes.BOOLEAN;
       } else {
         throw new UnsupportedOperationException("Type " + o.getClass().getName() + " is not accepted");
       }
