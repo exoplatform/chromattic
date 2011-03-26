@@ -78,6 +78,10 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
     return this;
   }
 
+  public ObjectQueryBuilder orderBy(String orderBy) throws NullPointerException {
+    throw new UnsupportedOperationException("todo");
+  }
+
   public ObjectQuery get() {
     if (fromClass == null) {
       throw new IllegalStateException();

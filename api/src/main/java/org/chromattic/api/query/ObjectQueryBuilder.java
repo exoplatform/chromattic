@@ -39,14 +39,24 @@ public interface ObjectQueryBuilder<O> extends Iterable<O> {
   <O> ObjectQueryBuilder<O> from(Class<O> fromClass) throws NullPointerException, IllegalStateException, IllegalArgumentException;
 
   /**
-   * <p>Set the where statement of the query.</p>
+   * <p>Set the where clause of the query.</p>
    *
-   * @param whereStatement the where statement
+   * @param where the where clause
    * @param <O> the object type parameter
    * @return this builder
    * @throws NullPointerException if the argument is null
    */
-  <O> ObjectQueryBuilder<O> where(String whereStatement) throws NullPointerException;
+  <O> ObjectQueryBuilder<O> where(String where) throws NullPointerException;
+
+  /**
+   * <p>Set the order by clause of the query.</p>
+   *
+   * @param orderBy the order by clause
+   * @param <O> the object type parameter
+   * @return this builder
+   * @throws NullPointerException if the argument is null
+   */
+  <O> ObjectQueryBuilder<O> orderBy(String orderBy) throws NullPointerException;
 
   /**
    * <p>Compute and returns the <tt>ObjectQuery</tt> for this builder.</p>
