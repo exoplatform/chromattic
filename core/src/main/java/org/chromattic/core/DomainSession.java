@@ -291,7 +291,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   public final Object getRelated(ObjectContext ctx, String name, LinkType linkType) throws UndeclaredRepositoryException {
     try {
-      return _getRelated(ctx, name, LinkType.REFERENCE);
+      return _getRelated(ctx, name, linkType);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -300,7 +300,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   public final boolean setRelated(ObjectContext ctx, String name, ObjectContext relatedCtx, LinkType linkType) throws UndeclaredRepositoryException  {
     try {
-      return _setRelated(ctx, name, relatedCtx, LinkType.REFERENCE);
+      return _setRelated(ctx, name, relatedCtx, linkType);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -345,7 +345,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   public final <T> Iterator<T> getRelateds(ObjectContext ctx, String name, Class<T> filterClass, LinkType linkType) throws UndeclaredRepositoryException {
     try {
-      return _getRelateds(ctx, name, filterClass, LinkType.REFERENCE);
+      return _getRelateds(ctx, name, filterClass, linkType);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

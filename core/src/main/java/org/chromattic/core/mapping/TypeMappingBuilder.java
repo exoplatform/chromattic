@@ -252,7 +252,7 @@ public class TypeMappingBuilder {
             if (mappedBy == null) {
               throw new IllegalStateException();
             }
-            mapping = new NamedOneToManyMapping(bvi.getTypeInfo(), mappedBy.value(), RelationshipType.REFERENCE);
+            mapping = new NamedOneToManyMapping(bvi.getTypeInfo(), mappedBy.value(), type);
           }
 
           //
@@ -284,7 +284,7 @@ public class TypeMappingBuilder {
             if (mappedBy == null) {
               throw new IllegalStateException();
             }
-            NamedManyToOneMapping referenceMapping = new NamedManyToOneMapping(bvi.getTypeInfo(), mappedBy.value(), RelationshipType.REFERENCE);
+            NamedManyToOneMapping referenceMapping = new NamedManyToOneMapping(bvi.getTypeInfo(), mappedBy.value(), type);
             PropertyMapping<NamedManyToOneMapping> manyToOneMapping = new PropertyMapping<NamedManyToOneMapping>(propertyInfo, referenceMapping);
             propertyMappings.add(manyToOneMapping);
           }
