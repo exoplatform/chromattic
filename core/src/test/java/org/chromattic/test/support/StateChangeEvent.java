@@ -16,23 +16,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
-package org.chromattic.api;
+package org.chromattic.test.support;
 
 /**
- * Enables to be aware of the life cycle of the object managed by chromattic.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface LifeCycleListener<O> {
-
-  void created(O o);
-
-  void loaded(O o);
-
-  void persisted(O o);
-
-  void removed(O o);
-
+public class StateChangeEvent extends Event {
 }

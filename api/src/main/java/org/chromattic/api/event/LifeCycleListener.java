@@ -17,11 +17,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.support;
+package org.chromattic.api.event;
 
 /**
+ * Enables to be aware of the life cycle of the object managed by chromattic.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class Event {
+public interface LifeCycleListener extends EventListener {
+
+  void created(Object o);
+
+  void loaded(Object o);
+
+  void persisted(Object o);
+
+  void removed(Object o);
+
 }

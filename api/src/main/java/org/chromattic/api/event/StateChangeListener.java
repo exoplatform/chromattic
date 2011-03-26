@@ -16,12 +16,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
-package org.chromattic.test.support;
+package org.chromattic.api.event;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class Event {
+public interface StateChangeListener extends EventListener {
+
+  void propertyChanged(Object o, String propertyName, Object propertyValue);
+
+  // void propertyChanged(Object o, String propertyName, List<Object> propertyValue);
+
+//  void onChildAdded(Object parent, Object child, String name);
+
+//  void onChildRemoved(Object parent, Object child, String name);
+
 }

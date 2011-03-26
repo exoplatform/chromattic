@@ -164,6 +164,9 @@ public class ObjectContext implements MethodHandler {
 
     //
     state.setPropertyValue(propertyName, type, o);
+
+    //
+    state.getSession().broadcaster.propertyChanged(object, propertyName, o);
   }
 
   public <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects) {

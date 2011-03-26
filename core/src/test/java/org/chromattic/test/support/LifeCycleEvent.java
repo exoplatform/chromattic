@@ -16,12 +16,36 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.chromattic.test.support;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class Event {
+public class LifeCycleEvent extends Event {
+
+  /** . */
+  private final LifeCycleEventType type;
+
+  /** . */
+  private final Object object;
+
+
+  public LifeCycleEvent(LifeCycleEventType type, Object object) {
+    this.type = type;
+    this.object = object;
+  }
+
+  public LifeCycleEventType getType() {
+    return type;
+  }
+
+  public Object getObject() {
+    return object;
+  }
+
+  @Override
+  public String toString() {
+    return "LifeCycleEvent[type=" + type + ",object=" + object + "]";
+  }
 }

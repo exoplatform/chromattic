@@ -19,10 +19,8 @@
 
 package org.chromattic.api;
 
-import org.chromattic.api.query.QueryLanguage;
-import org.chromattic.api.query.Query;
-import org.chromattic.api.query.ObjectQuery;
 import org.chromattic.api.query.ObjectQueryBuilder;
+import org.chromattic.api.event.EventListener;
 
 import javax.jcr.Session;
 import javax.jcr.Node;
@@ -154,17 +152,7 @@ public interface ChromatticSession {
 
   String getPath(Object o) throws ChromatticException;
 
-  /**
-   * Returns a virtual object from the specified object
-   *
-   * @param o the real object
-   * @param <O> the object type parameter
-   * @return the corresponding virtual object
-   * @throws ChromatticException any exception
-   */
-  // <O> O getVirtualObject(O o) throws ChromatticException;
-
-  <O> void addLifeCycleListener(LifeCycleListener<O> listener);
+  void addEventListener(EventListener listener);
 
   void save() throws ChromatticException;
 

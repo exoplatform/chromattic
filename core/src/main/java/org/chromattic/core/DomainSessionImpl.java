@@ -193,8 +193,10 @@ class DomainSessionImpl extends DomainSession {
     }
 
     //
-    fireEvent(LifeCycleType.CREATED, ctx);
-    return (O)ctx.getObject();
+    broadcaster.created(ctx.getObject());
+
+    //
+    return clazz.cast(ctx.getObject());
   }
 
   protected <O> O _findById(Class<O> clazz, String id) throws RepositoryException {
@@ -374,7 +376,7 @@ class DomainSessionImpl extends DomainSession {
         log.trace("Inserted context {} loaded from node id {}", ctx, id);
         contexts.put(id, ctx);
         ctx.state = new PersistentContextState(mapper, node, this);
-        fireEvent(LifeCycleType.LOADED, ctx);
+        broadcaster.loaded(ctx.getObject());
       }
       else {
         log.trace("Context {} is already present for id ", ctx, id);
@@ -399,7 +401,7 @@ class DomainSessionImpl extends DomainSession {
       log.trace("Inserted context {} for id {}", ctx, id);
       contexts.put(id, ctx);
       ctx.state = new PersistentContextState(mapper, node, this);
-      fireEvent(LifeCycleType.PERSISTED, ctx);
+      broadcaster.persisted(ctx.getObject());
     }
     else {
       log.trace("Could not find mapper for node type {}", nodeTypeName);
@@ -411,7 +413,7 @@ class DomainSessionImpl extends DomainSession {
     ObjectContext ctx = contexts.remove(nodeId);
     if (ctx != null) {
       ctx.state = new RemovedContextState(nodeId, ctx.state.getPrimaryNodeType());
-      fireEvent(LifeCycleType.REMOVED, ctx);
+      broadcaster.removed(ctx.getObject());
       log.trace("Removed context {} for id {}", ctx, nodeId);
     } else {
       log.trace("Context absent for removal for id {}", ctx, nodeId);

@@ -16,13 +16,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.chromattic.test.support;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public enum EventType {
-  CREATED,LOADED,PERSISTED,REMOVED
+public class PropertyChangedEvent extends StateChangeEvent {
+
+  /** . */
+  private final Object object;
+
+  /** . */
+  private final String name;
+
+  /** . */
+  private final Object value;
+
+  public PropertyChangedEvent(Object object, String name, Object value) {
+    this.object = object;
+    this.name = name;
+    this.value = value;
+  }
+
+  public Object getObject() {
+    return object;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Object getValue() {
+    return value;
+  }
 }

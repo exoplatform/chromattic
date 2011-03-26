@@ -19,7 +19,7 @@
 
 package org.chromattic.test.support;
 
-import org.chromattic.api.LifeCycleListener;
+import org.chromattic.api.event.LifeCycleListener;
 
 import java.util.LinkedList;
 
@@ -29,7 +29,7 @@ import junit.framework.Assert;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class LifeCycleListenerImpl implements LifeCycleListener<Object> {
+public class LifeCycleListenerImpl implements LifeCycleListener {
 
   /** . */
   private final LinkedList<Event> events = new LinkedList<Event>();
@@ -38,11 +38,23 @@ public class LifeCycleListenerImpl implements LifeCycleListener<Object> {
     events.clear();
   }
 
-  public void assertEvent(EventType type, Object object) {
+  public void assertLifeCycleEvent(LifeCycleEventType type, Object object) {
     assertNotEmpty();
     Event event = events.removeFirst();
-    Assert.assertEquals(type, event.getType());
-    Assert.assertEquals(object, event.getObject());
+    Assert.assertTrue(event instanceof LifeCycleEvent);
+    LifeCycleEvent lifeCycleEvent = (LifeCycleEvent)event;
+    Assert.assertEquals(type, lifeCycleEvent.getType());
+    Assert.assertEquals(object, lifeCycleEvent.getObject());
+  }
+
+  public void assertPropertyChangedEvent(Object object, String name, Object value) {
+    assertNotEmpty();
+    Event event = events.removeFirst();
+    Assert.assertTrue(event instanceof PropertyChangedEvent);
+    PropertyChangedEvent lifeCycleEvent = (PropertyChangedEvent)event;
+    Assert.assertEquals(object, lifeCycleEvent.getObject());
+    Assert.assertEquals(name, lifeCycleEvent.getName());
+    Assert.assertEquals(value, lifeCycleEvent.getValue());
   }
 
   public void assertEmpty() {
@@ -54,18 +66,22 @@ public class LifeCycleListenerImpl implements LifeCycleListener<Object> {
   }
 
   public void created(Object o) {
-    events.add(new Event(EventType.CREATED, o));
+    events.add(new LifeCycleEvent(LifeCycleEventType.CREATED, o));
   }
 
   public void loaded(Object o) {
-    events.add(new Event(EventType.LOADED, o));
+    events.add(new LifeCycleEvent(LifeCycleEventType.LOADED, o));
   }
 
   public void persisted(Object o) {
-    events.add(new Event(EventType.PERSISTED, o));
+    events.add(new LifeCycleEvent(LifeCycleEventType.PERSISTED, o));
   }
 
   public void removed(Object o) {
-    events.add(new Event(EventType.REMOVED, o));
+    events.add(new LifeCycleEvent(LifeCycleEventType.REMOVED, o));
+  }
+
+  public void propertyChanged(Object o, String propertyName, Object propertyValue) {
+    events.add(new PropertyChangedEvent(o, propertyName, propertyValue));
   }
 }

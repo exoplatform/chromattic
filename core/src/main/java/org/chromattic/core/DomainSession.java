@@ -22,7 +22,8 @@ package org.chromattic.core;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.api.LifeCycleListener;
+import org.chromattic.api.event.LifeCycleListener;
+import org.chromattic.api.event.EventListener;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.ObjectQueryBuilder;
 import org.chromattic.core.jcr.LinkType;
@@ -33,8 +34,6 @@ import org.chromattic.common.JCR;
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
 import java.lang.reflect.UndeclaredThrowableException;
 
 /**
@@ -44,7 +43,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 public abstract class DomainSession implements ChromatticSession {
 
   /** . */
-  private List<LifeCycleBroadcaster<?>> listeners;
+  protected final EventBroadcaster broadcaster;
 
   /** . */
   private final Domain domain;
@@ -54,7 +53,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected DomainSession(Domain domain) {
     this.domain = domain;
-    this.listeners = null;
+    this.broadcaster = new EventBroadcaster();
     this.queryManager = new QueryManager(this);
   }
 
@@ -469,19 +468,7 @@ public abstract class DomainSession implements ChromatticSession {
     return (ObjectContext)domain.getInstrumentor().getInvoker(o);
   }
 
-  public final <O> void addLifeCycleListener(LifeCycleListener<O> listener) {
-    if (listeners == null) {
-      listeners = new ArrayList<LifeCycleBroadcaster<?>>();
-    }
-    listeners.add(new LifeCycleBroadcaster<O>(listener));
-  }
-
-  protected final void fireEvent(LifeCycleType eventType, ObjectContext ctx) {
-    if (listeners != null) {
-      Object o = ctx.getObject();
-      for (LifeCycleBroadcaster listener : listeners) {
-        listener.fireEvent(eventType, o);
-      }
-    }
+  public void addEventListener(EventListener listener) {
+    broadcaster.addLifeCycleListener(listener);
   }
 }

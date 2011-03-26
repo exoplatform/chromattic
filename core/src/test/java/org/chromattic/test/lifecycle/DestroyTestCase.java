@@ -20,7 +20,7 @@ package org.chromattic.test.lifecycle;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.LifeCycleListenerImpl;
-import org.chromattic.test.support.EventType;
+import org.chromattic.test.support.LifeCycleEventType;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 
@@ -39,12 +39,12 @@ public class DestroyTestCase extends AbstractTestCase {
     TLF_A a = session.insert(TLF_A.class, "bar");
     TLF_A b = session.insert(a, TLF_A.class, "foo");
     LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
-    session.addLifeCycleListener(listener);
+    session.addEventListener(listener);
     session.remove(a);
     assertEquals(Status.REMOVED, session.getStatus(a));
     assertEquals(Status.REMOVED, session.getStatus(b));
-    listener.assertEvent(EventType.REMOVED, b);
-    listener.assertEvent(EventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, b);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
     listener.assertEmpty();
     session.close();
   }
@@ -59,9 +59,9 @@ public class DestroyTestCase extends AbstractTestCase {
     session = login();
     a = session.findByPath(TLF_A.class, "bar");
     LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
-    session.addLifeCycleListener(listener);
+    session.addEventListener(listener);
     session.remove(a);
-    listener.assertEvent(EventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
     listener.assertEmpty();
     session.save();
   }
@@ -79,12 +79,12 @@ public class DestroyTestCase extends AbstractTestCase {
     a = session.findByPath(TLF_A.class, "bar");
     c = session.findById(TLF_A.class, cId);
     LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
-    session.addLifeCycleListener(listener);
+    session.addEventListener(listener);
     session.remove(a);
     assertEquals(Status.REMOVED, session.getStatus(a));
     assertEquals(Status.REMOVED, session.getStatus(c));
-    listener.assertEvent(EventType.REMOVED, c);
-    listener.assertEvent(EventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, c);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
     listener.assertEmpty();
     session.save();
   }

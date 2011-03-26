@@ -21,7 +21,7 @@ package org.chromattic.test.lifecycle;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.LifeCycleListenerImpl;
-import org.chromattic.test.support.EventType;
+import org.chromattic.test.support.LifeCycleEventType;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
@@ -56,11 +56,11 @@ public class LifeCycleTestCase extends AbstractTestCase {
     //
     session = login();
     LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
-    session.addLifeCycleListener(listener);
+    session.addEventListener(listener);
     listener.assertEmpty();
     TLF_A.constructed = 0;
     TLF_A a = session.findById(TLF_A.class, id);
-    listener.assertEvent(EventType.LOADED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.LOADED, a);
     listener.assertEmpty();
     assertEquals(Status.PERSISTENT, session.getStatus(a));
     assertEquals(1, TLF_A.constructed);
@@ -70,12 +70,12 @@ public class LifeCycleTestCase extends AbstractTestCase {
   public void testAdd() throws RepositoryException {
     ChromatticSession session = login();
     LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
-    session.addLifeCycleListener(listener);
+    session.addEventListener(listener);
     listener.assertEmpty();
     TLF_A.constructed = 0;
     TLF_A a = session.insert(TLF_A.class, "tlf_a_b");
-    listener.assertEvent(EventType.CREATED, a);
-    listener.assertEvent(EventType.PERSISTED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.CREATED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.PERSISTED, a);
     listener.assertEmpty();
     assertEquals(1, TLF_A.constructed);
     String id = session.getId(a);
@@ -89,14 +89,14 @@ public class LifeCycleTestCase extends AbstractTestCase {
   public void testPersist() throws Exception {
     ChromatticSession session = login();
     LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
-    session.addLifeCycleListener(listener);
+    session.addEventListener(listener);
     listener.assertEmpty();
     TLF_A a = session.create(TLF_A.class, "tlf_a_c");
-    listener.assertEvent(EventType.CREATED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.CREATED, a);
     listener.assertEmpty();
     assertEquals(Status.TRANSIENT, session.getStatus(a));
     String id = session.persist(a);
-    listener.assertEvent(EventType.PERSISTED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.PERSISTED, a);
     listener.assertEmpty();
     assertEquals(Status.PERSISTENT, session.getStatus(a));
     TLF_A a2 = session.findById(TLF_A.class, id);
@@ -131,7 +131,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
     ChromatticSession session = login();
     TLF_A a = session.create(TLF_A.class, "tlf_a_c");
     LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
-    session.addLifeCycleListener(listener);
+    session.addEventListener(listener);
     listener.assertEmpty();
     try {
       if (withMethod) {
@@ -150,14 +150,14 @@ public class LifeCycleTestCase extends AbstractTestCase {
     TLF_A a = session.create(TLF_A.class, "tlf_a_c");
     String id = session.persist(a);
     LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
-    session.addLifeCycleListener(listener);
+    session.addEventListener(listener);
     listener.assertEmpty();
     if (withMethod) {
       a.destroy();
     } else {
       session.remove(a);
     }
-    listener.assertEvent(EventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
     listener.assertEmpty();
     assertEquals(Status.REMOVED, session.getStatus(a));
     assertNull(session.findById(TLF_A.class, id));
@@ -183,14 +183,14 @@ public class LifeCycleTestCase extends AbstractTestCase {
     session = login() ;
     a = session.findById(TLF_A.class, id);
     LifeCycleListenerImpl listener = new LifeCycleListenerImpl();
-    session.addLifeCycleListener(listener);
+    session.addEventListener(listener);
     listener.assertEmpty();
     if (withMethod) {
       a.destroy();
     } else {
       session.remove(a);
     }
-    listener.assertEvent(EventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
     listener.assertEmpty();
     assertEquals(Status.REMOVED, session.getStatus(a));
     assertNull(session.findById(TLF_A.class, id));
