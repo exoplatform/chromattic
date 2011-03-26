@@ -655,5 +655,20 @@ tp          <requiredPrimaryType>exo:navigationtarget</requiredPrimaryType>
     </propertyDefinitions>
   </nodeType>
 
+  <nodeType name="tt_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <childNodeDefinitions>
+      <childNodeDefinition name="*" defaultPrimaryType="tt_a" autoCreated="false" mandatory="false"
+        onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>tt_a</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+    </childNodeDefinitions>
+  </nodeType>
+
 </nodeTypes>
   
