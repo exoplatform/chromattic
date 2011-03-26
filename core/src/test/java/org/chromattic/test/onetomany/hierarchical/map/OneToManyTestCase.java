@@ -89,12 +89,7 @@ public class OneToManyTestCase extends AbstractTestCase {
   public void testGetWithNullName() throws Exception {
     ChromatticSession session = login();
     TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
-    try {
-      a.getChildren().get(null);
-      fail();
-    }
-    catch (NullPointerException e) {
-    }
+    assertNull(a.getChildren().get(null));
   }
 
   public void testPutWithInvalidName() throws Exception {
