@@ -22,7 +22,6 @@ package org.chromattic.test.methodinvocation;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 
-import javax.jcr.Node;
 import java.io.IOException;
 
 /**
@@ -32,14 +31,12 @@ import java.io.IOException;
 public class MethodInvocationTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(TMI_A.class);
+    addClass(C.class);
   }
 
   public void testInvocation() throws Exception {
     DomainSession session = login();
-    Node rootNode = session.getJCRSession().getRootNode();
-    Node aNode = rootNode.addNode("tmi_a_a", "tmi_a");
-    TMI_A a = session.findByNode(TMI_A.class, aNode);
+    C a = session.insert(C.class, "tmi_a_a");
 
     //
     a.noopCalled = 0;
@@ -75,5 +72,20 @@ public class MethodInvocationTestCase extends AbstractTestCase {
     catch (RuntimeException expected) {
     }
     assertEquals(1, a.throwRuntimeExceptionCalled);
+  }
+
+  public void testInterfaceMethod() {
+    DomainSession session = login();
+    A a = session.insert(C.class, "tmi_a_a");
+
+    //
+    ((C)a).m1Called = 0;
+    a.m1();
+    assertEquals(1, ((C)a).m1Called);
+
+    //
+    ((C)a).setFooCalled = 0;
+    a.setFoo("foo");
+    assertEquals(1, ((C)a).setFooCalled);
   }
 }

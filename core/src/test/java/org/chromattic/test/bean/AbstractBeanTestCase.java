@@ -39,7 +39,7 @@ import org.chromattic.core.bean.SingleValuedPropertyInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class AbstractBeanTestCase extends TestCase {
+public abstract class AbstractBeanTestCase extends TestCase {
 
   /** . */
   protected final TypeDomain<Type, Method> domain = new TypeDomain<Type, Method>(new JavaLangReflectTypeModel(), new JavaLangReflectMethodModel());

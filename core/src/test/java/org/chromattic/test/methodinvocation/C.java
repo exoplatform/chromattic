@@ -28,33 +28,33 @@ import java.io.IOException;
  * @version $Revision$
  */
 @NodeMapping(name = "tmi_a")
-public class TMI_A {
+public abstract class C extends B {
 
   /** . */
   int noopCalled = 0;
 
-  /** . */
-  int throwIOExceptionCalled = 0;
-
-  /** . */
-  int throwErrorCalled = 0;
-
-  /** . */
-  int throwRuntimeExceptionCalled = 0;
-
   public void noop() {
     noopCalled++;
   }
+
+  /** . */
+  int throwIOExceptionCalled = 0;
 
   public void throwIOException() throws IOException {
     throwIOExceptionCalled++;
     throw new IOException();
   }
 
+  /** . */
+  int throwErrorCalled = 0;
+
   public void throwError() {
     throwErrorCalled++;
     throw new Error();
   }
+
+  /** . */
+  int throwRuntimeExceptionCalled = 0;
 
   public void throwRuntimeException() {
     throwRuntimeExceptionCalled++;
