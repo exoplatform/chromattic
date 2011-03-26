@@ -87,6 +87,26 @@ public class SessionWrapperImpl implements SessionWrapper {
     return childNode;
   }
 
+  public void orderBefore(Node parentNode, Node srcNode, Node dstNode) throws RepositoryException {
+    Node srcParentNode = srcNode.getParent();
+    if (!srcParentNode.equals(parentNode)) {
+      throw new IllegalArgumentException("Node must have the same prent");
+    }
+
+    //
+    Node dstParentNode = dstNode.getParent();
+    if (dstParentNode != null) {
+      if (!dstParentNode.equals(parentNode)) {
+        throw new IllegalArgumentException("Node must have the same prent");
+      }
+
+      //
+      parentNode.orderBefore(srcNode.getName(), dstNode.getName());
+    } else {
+      parentNode.orderBefore(srcNode.getName(), null);
+    }
+  }
+
   public Node getNodeByUUID(String uuid) throws RepositoryException {
     return session.getNodeByUUID(uuid);
   }

@@ -192,6 +192,10 @@ public class ObjectContext implements MethodHandler {
     state.getSession().removeChild(this, name);
   }
 
+  public void orderBefore(ObjectContext srcCtx, ObjectContext dstCtx) {
+    state.getSession().orderBefore(this, srcCtx, dstCtx);
+  }
+
   public void addChild(ObjectContext childCtx) {
     String name = childCtx.state.getName();
     addChild(name, childCtx);
@@ -204,7 +208,7 @@ public class ObjectContext implements MethodHandler {
   }
 
   public void addChild(String name, ObjectContext childCtx) {
-    state.getSession().insertWithName(this, name, childCtx);
+    state.getSession().persistWithName(this, name, childCtx);
   }
 
   public void addChild(String name, Object child) {

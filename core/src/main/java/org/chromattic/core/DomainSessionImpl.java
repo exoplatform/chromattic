@@ -118,7 +118,7 @@ class DomainSessionImpl extends DomainSession {
    *
    * @param parentCtx the parent context
    * @param relPath the child path relative to the parent context
-   * @param childCtx the child context
+   * @param childCtx
    * @return the id of the inserted context
    * @throws NullPointerException
    * @throws IllegalArgumentException
@@ -136,7 +136,7 @@ class DomainSessionImpl extends DomainSession {
       throw new NullPointerException(msg);
     }
     if (childCtx.getStatus() != Status.TRANSIENT) {
-      String msg = "Attempt to insert transient context " + childCtx + " as child of " + parentCtx;
+      String msg = "Attempt to insert non transient context " + childCtx + " as child of " + parentCtx;
       log.error(msg);
       throw new IllegalStateException(msg);
     }
@@ -154,7 +154,7 @@ class DomainSessionImpl extends DomainSession {
     //
     Node parentNode = parentCtx.state.getNode();
 
-    //
+    // Check insertion capability
     if (parentNode.hasNode(relPath)) {
       String msg = "Attempt to insert context " + childCtx + " as an existing child with name " + relPath + " child of context " + parentCtx;
       log.error(msg);
@@ -165,13 +165,35 @@ class DomainSessionImpl extends DomainSession {
     NodeDef nodeDef = childCtx.mapper.getNodeDef();
     log.trace("Setting context {} for insertion", childCtx);
     log.trace("Adding node for context {} and node type {} as child of context {}", childCtx, nodeDef, parentCtx);
-    Node child = sessionWrapper.addNode(parentNode, relPath, nodeDef);
-    nodeAdded(child, childCtx);
-    String childId = child.getUUID();
 
     //
-    log.trace("Added context {} for id {}", childCtx, childId);
-    return childId;
+    Node childNode = sessionWrapper.addNode(parentNode, relPath, nodeDef);
+
+    //
+    nodeAdded(childNode, childCtx);
+    String relatedId = childNode.getUUID();
+
+    //
+    log.trace("Added context {} for id {}", childCtx, relatedId);
+    return relatedId;
+  }
+
+  protected void _orderBefore(ObjectContext parentCtx, ObjectContext srcCtx, ObjectContext dstCtx) throws RepositoryException {
+
+    if (parentCtx == null) {
+      throw new NullPointerException();
+    }
+    if (srcCtx == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    Node parentNode = parentCtx.state.getNode();
+    Node srcNode = srcCtx.state.getNode();
+    Node dstNode = dstCtx != null ? dstCtx.state.getNode() : null;
+
+    //
+    sessionWrapper.orderBefore(parentNode, srcNode, dstNode);
   }
 
   protected <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException {

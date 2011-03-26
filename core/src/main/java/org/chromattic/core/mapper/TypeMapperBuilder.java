@@ -58,6 +58,7 @@ import org.chromattic.core.bean.MapPropertyInfo;
 import org.chromattic.core.bean.CollectionPropertyInfo;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.BeanValueInfo;
+import org.chromattic.core.bean.ListPropertyInfo;
 import org.chromattic.api.RelationshipType;
 import org.reflext.api.ClassTypeInfo;
 
@@ -207,8 +208,14 @@ public class TypeMapperBuilder {
                   AnyChildMultiValueMapper valueMapper;
                   if (mpi instanceof MapPropertyInfo) {
                     valueMapper = new AnyChildMultiValueMapper.Map();
+                  } else if (mpi instanceof CollectionPropertyInfo) {
+                    if (mpi instanceof ListPropertyInfo) {
+                      valueMapper = new AnyChildMultiValueMapper.List();
+                    } else {
+                      valueMapper = new AnyChildMultiValueMapper.Collection();
+                    }
                   } else {
-                    valueMapper = new AnyChildMultiValueMapper.Collection();
+                    throw new IllegalStateException();
                   }
                   JCRAnyChildParentPropertyMapper bilto = new JCRAnyChildParentPropertyMapper(mpi, valueMapper);
                   relatedProperties.get(pmhm.getRelatedType()).add(bilto);

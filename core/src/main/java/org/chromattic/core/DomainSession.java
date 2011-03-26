@@ -22,7 +22,6 @@ package org.chromattic.core;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.api.event.LifeCycleListener;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.ObjectQueryBuilder;
@@ -59,7 +58,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract String _persist(ObjectContext ctx, String relPath) throws RepositoryException;
 
-  protected abstract String _persist(ObjectContext parentCtx, String relPath, ObjectContext childCtx) throws RepositoryException;
+  protected abstract String _persist(ObjectContext parentCtx, String name, ObjectContext childCtx) throws RepositoryException;
 
   protected abstract <O> O _create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, RepositoryException;
 
@@ -86,6 +85,8 @@ public abstract class DomainSession implements ChromatticSession {
   protected abstract Object _getParent(ObjectContext ctx) throws RepositoryException;
 
   protected abstract <O> O _findByPath(Object o, Class<O> clazz, String relPath) throws RepositoryException;
+
+  protected abstract void _orderBefore(ObjectContext parentCtx, ObjectContext srcCtx, ObjectContext dstCtx) throws RepositoryException;
 
   public final String getId(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
@@ -134,7 +135,7 @@ public abstract class DomainSession implements ChromatticSession {
     ObjectContext parentCtx = unwrap(parent);
     O child = create(clazz);
     ObjectContext childtx = unwrap(child);
-    insertWithRelativePath(parentCtx, relPath, childtx);
+    persistWithRelativePath(parentCtx, relPath, childtx);
     return child;
   }
 
@@ -365,7 +366,31 @@ public abstract class DomainSession implements ChromatticSession {
     ctx.state.setName(name);
   }
 
-  public final String insertWithName(ObjectContext parentCtx, String name, ObjectContext childCtx) throws UndeclaredRepositoryException {
+  public final String persist(ObjectContext relatativeCtx, String name, ObjectContext siblingCtx) throws UndeclaredRepositoryException {
+    try {
+      name = encodeName(name);
+
+      // Just to symbolise we convert the name to a path
+      String path = name;
+
+      //
+      return _persist(relatativeCtx, path, siblingCtx);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public final void orderBefore(ObjectContext parentCtx, ObjectContext srcCtx, ObjectContext dstCtx) {
+    try {
+      _orderBefore(parentCtx, srcCtx, dstCtx);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public final String persistWithName(ObjectContext parentCtx, String name, ObjectContext childCtx) throws UndeclaredRepositoryException {
     try {
       name = encodeName(name);
 
@@ -380,7 +405,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public final String insertWithRelativePath(ObjectContext parentCtx, String relPath, ObjectContext childCtx) throws UndeclaredRepositoryException {
+  public final String persistWithRelativePath(ObjectContext parentCtx, String relPath, ObjectContext childCtx) throws UndeclaredRepositoryException {
     try {
       return _persist(parentCtx, relPath, childCtx);
     }

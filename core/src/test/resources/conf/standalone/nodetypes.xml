@@ -69,7 +69,7 @@
       <childNodeDefinition name="target" defaultPrimaryType="" autoCreated="false" mandatory="false"
         onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
-tp          <requiredPrimaryType>exo:navigationtarget</requiredPrimaryType>
+          <requiredPrimaryType>exo:navigationtarget</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
       <childNodeDefinition name="*" defaultPrimaryType="exo:navigation" autoCreated="false" mandatory="false"
@@ -305,7 +305,7 @@ tp          <requiredPrimaryType>exo:navigationtarget</requiredPrimaryType>
     </supertypes>
   </nodeType>
 
-  <nodeType name="totm_a" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+  <nodeType name="totm_a" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
     <supertypes>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>

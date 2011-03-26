@@ -19,8 +19,6 @@
 
 package org.chromattic.core.jcr;
 
-import org.chromattic.core.jcr.NodeDef;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -37,7 +35,9 @@ public interface SessionWrapper {
 
   Node addNode(String relPath, NodeDef nodeDef) throws RepositoryException;
 
-  Node addNode(Node parentNode, String relPath, NodeDef nodeDef) throws RepositoryException;
+  Node addNode(Node parentNode, String name, NodeDef nodeDef) throws RepositoryException;
+
+  void orderBefore(Node parentNode, Node srcNode, Node dstNode) throws RepositoryException;
 
   Node getParent(Node childNode) throws RepositoryException;
 
