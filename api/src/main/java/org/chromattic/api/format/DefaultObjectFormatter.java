@@ -34,19 +34,19 @@ public class DefaultObjectFormatter implements ObjectFormatter {
     return INSTANCE;
   }
 
-  public String decodeNodeName(Class<?> klass, String internalName) throws FormatException {
+  public String decodeNodeName(Class<?> klass, String internalName) {
     return internalName;
   }
 
-  public String encodeNodeName(Class<?> klass, String externalName) throws FormatException {
+  public String encodeNodeName(Class<?> klass, String externalName) {
     return externalName;
   }
 
-  public String decodePropertyName(Class<?> klass, String internalName) throws FormatException {
+  public String decodePropertyName(Class<?> klass, String internalName) {
     return internalName;
   }
 
-  public String encodePropertyName(Class<?> klass, String externalName) throws FormatException {
+  public String encodePropertyName(Class<?> klass, String externalName) {
     return externalName;
   }
 }

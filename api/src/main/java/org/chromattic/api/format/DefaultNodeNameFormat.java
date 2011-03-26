@@ -34,14 +34,14 @@ public class DefaultNodeNameFormat implements CodecFormat<String, String> {
     return INSTANCE;
   }
 
-  public static void validateName(String name) throws FormatException {
+  public static void validateName(String name) {
     INSTANCE.encode(name);
   }
 
   protected DefaultNodeNameFormat() {
   }
 
-  public String encode(String external) throws FormatException {
+  public String encode(String external) {
     /*
     PathSegment ::= ExpandedName [Index] | QualifiedName [Index] | SelfOrParent
     Index ::= '[' Number ']'
@@ -121,8 +121,7 @@ public class DefaultNodeNameFormat implements CodecFormat<String, String> {
     return external;
   }
 
-  public String decode(String internal) throws FormatException {
+  public String decode(String internal) {
     return internal;
   }
-
 }

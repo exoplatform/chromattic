@@ -49,6 +49,9 @@ public class AnyChildMap extends AbstractMap<String, Object> {
 
   @Override
   public Object get(Object key) {
+    if (key == null) {
+      throw new NullPointerException();
+    }
     if (key instanceof String) {
       String name = (String)key;
       Object child = parentCtx.getChild(name);

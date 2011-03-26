@@ -116,10 +116,10 @@ class DomainSessionImpl extends DomainSession {
   }
 
   /**
-   * Insert a child context as a name of a parent context, the name must be
+   * Insert a context as a child of a parent context.
    *
    * @param parentCtx the parent context
-   * @param relPath the child name
+   * @param relPath the child path relative to the parent context
    * @param childCtx the child context
    * @return the id of the inserted context
    * @throws NullPointerException
@@ -285,7 +285,6 @@ class DomainSessionImpl extends DomainSession {
     if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException();
     }
-    DefaultNodeNameFormat.validateName(name);
     Node referent = referentCtx.state.getNode();
     Node referenced = sessionWrapper.getReferenced(referent, name, linkType);
     if (referenced != null) {
@@ -299,9 +298,6 @@ class DomainSessionImpl extends DomainSession {
     if (referentCtx.getStatus() != Status.PERSISTENT) {
       throw new IllegalStateException("Cannot create a relationship with a non persisted context " + this);
     }
-
-    //
-    DefaultNodeNameFormat.validateName(name);
 
     //
     Node referent = referentCtx.state.getNode();
@@ -325,14 +321,13 @@ class DomainSessionImpl extends DomainSession {
   }
 
   protected <T> Iterator<T> _getReferents(ObjectContext referencedCtx, String name, Class<T> filterClass, LinkType linkType) throws RepositoryException {
-    DefaultNodeNameFormat.validateName(name);
     Node referenced = referencedCtx.state.getNode();
     Iterator<Node> referents = sessionWrapper.getReferents(referenced, name, linkType);
     return new ReferentCollectionIterator<T>(this, referents, filterClass, name);
   }
 
   protected void _removeChild(ObjectContext ctx, String name) throws RepositoryException {
-    DefaultNodeNameFormat.validateName(name);
+    name = encodeName(name);
     Node node = ctx.state.getNode();
     if (node.hasNode(name)) {
       Node childNode = node.getNode(name);
@@ -341,7 +336,7 @@ class DomainSessionImpl extends DomainSession {
   }
 
   protected Object _getChild(ObjectContext ctx, String name) throws RepositoryException {
-    DefaultNodeNameFormat.validateName(name);
+    name = encodeName(name);
     Node node = ctx.state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
     Node child = sessionWrapper.getChild(node, name);

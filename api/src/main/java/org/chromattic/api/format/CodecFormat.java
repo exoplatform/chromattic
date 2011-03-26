@@ -25,8 +25,8 @@ package org.chromattic.api.format;
  */
 public interface CodecFormat<I, E> {
 
-  E decode(I internal) throws FormatException;
+  E decode(I internal);
 
-  I encode(E external) throws FormatException;
+  I encode(E external);
 
 }

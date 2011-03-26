@@ -16,13 +16,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.chromattic.api.format;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NameSyntaxException extends NameFormatException {
+public class NameSyntaxException extends IllegalArgumentException {
 
   public NameSyntaxException() {
   }

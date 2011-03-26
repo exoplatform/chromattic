@@ -55,10 +55,6 @@ class TransientContextState extends ContextState {
   }
 
   void setName(String name) {
-    // Validate because of deferred insertion
-    DefaultNodeNameFormat.validateName(name);
-
-    //
     this.name = name;
   }
 

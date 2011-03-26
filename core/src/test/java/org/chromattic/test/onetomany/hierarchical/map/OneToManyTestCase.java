@@ -75,6 +75,28 @@ public class OneToManyTestCase extends AbstractTestCase {
     assertEquals(1, a.getChildren().size());
   }
 
+  public void testGetWithInvalidName() throws Exception {
+    ChromatticSession session = login();
+    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
+    try {
+      a.getChildren().get("/foo");
+      fail();
+    }
+    catch (NameSyntaxException e) {
+    }
+  }
+
+  public void testGetWithNullName() throws Exception {
+    ChromatticSession session = login();
+    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
+    try {
+      a.getChildren().get(null);
+      fail();
+    }
+    catch (NullPointerException e) {
+    }
+  }
+
   public void testPutWithInvalidName() throws Exception {
     ChromatticSession session = login();
     TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
@@ -84,6 +106,18 @@ public class OneToManyTestCase extends AbstractTestCase {
       fail();
     }
     catch (NameSyntaxException e) {
+    }
+  }
+
+  public void testPutWithNullName() throws Exception {
+    ChromatticSession session = login();
+    TOTMHM_A a = session.insert(TOTMHM_A.class, "totmhm_a");
+    TOTMHM_B b = session.create(TOTMHM_B.class);
+    try {
+      a.getChildren().put(null, b);
+      fail();
+    }
+    catch (NullPointerException e) {
     }
   }
 

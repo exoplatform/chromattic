@@ -24,6 +24,7 @@ import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.LifeCycleListener;
 import org.chromattic.api.ChromatticException;
+import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.chromattic.core.jcr.LinkType;
 
 import javax.jcr.RepositoryException;
@@ -79,13 +80,13 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract <O> O _findByPath(Object o, Class<O> clazz, String relPath) throws RepositoryException;
 
-  public final String encodeName(ObjectContext ctx, String external) {
-    return domain.objectFormatter.encodeNodeName(null, external);
-//    DefaultNodeNameFormat.validateName(external);
-//    return external;
+  public final String encodeName(String external) {
+    String internal = domain.objectFormatter.encodeNodeName(null, external);
+    DefaultNodeNameFormat.validateName(internal);
+    return internal;
   }
 
-  public final String decodeName(ObjectContext ctx, String internal) {
+  public final String decodeName(String internal) {
     return domain.objectFormatter.decodeNodeName(null, internal);
   }
 
@@ -288,7 +289,7 @@ public abstract class DomainSession implements ChromatticSession {
 
     //
     String name = ctx.state.getName();
-    name = decodeName(ctx, name);
+    name = decodeName(name);
 
     //
     return name;
@@ -300,7 +301,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
 
     //
-    name = encodeName(ctx, name);
+    name = encodeName(name);
 
     //
     ctx.state.setName(name);
@@ -308,8 +309,13 @@ public abstract class DomainSession implements ChromatticSession {
 
   public final String insertWithName(ObjectContext parentCtx, String name, ObjectContext childCtx) throws UndeclaredRepositoryException {
     try {
-      name = encodeName(parentCtx, name);
-      return _persist(parentCtx, name, childCtx);
+      name = encodeName(name);
+
+      // Just to symbolise we convert the name to a path
+      String path = name;
+
+      //
+      return _persist(parentCtx, path, childCtx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
