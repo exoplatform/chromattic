@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.chromattic</groupId>
     <artifactId>chromattic.docs.reference</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0-beta1</version>
   </parent>
 
   <artifactId>chromattic.docs.reference.guide</artifactId>
@@ -48,35 +48,35 @@
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.api</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.1.0-beta1</version>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.api</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.1.0-beta1</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.1.0-beta1</version>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.1.0-beta1</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.1.0-beta1</version>
           <type>test-jar</type>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
+          <version>1.1.0-beta1</version>
           <classifier>test-sources</classifier>
         </dependency>
   </dependencies>
@@ -183,15 +183,15 @@
               <postProcess>
                 <copy todir="${wikbook.target}/output/html/images">
                   <fileset dir="${wikbook.source}/images">
-                    <include name="**"/>
+                    <include name="**" />
                   </fileset>
                 </copy>
                 <copy todir="${wikbook.target}/output/html">
                   <fileset dir="${wikbook.target}/src/resources">
-                    <include name="**/*.css"/>
-                    <include name="**/*.png"/>
-                    <include name="**/*.gif"/>
-                    <include name="**/*.jpg"/>
+                    <include name="**/*.css" />
+                    <include name="**/*.png" />
+                    <include name="**/*.gif" />
+                    <include name="**/*.jpg" />
                   </fileset>
                 </copy>
               </postProcess>
