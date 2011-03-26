@@ -24,7 +24,6 @@ import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.LifeCycleListener;
 import org.chromattic.api.ChromatticException;
-import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.chromattic.core.jcr.LinkType;
 
 import javax.jcr.RepositoryException;
@@ -81,12 +80,13 @@ public abstract class DomainSession implements ChromatticSession {
   protected abstract <O> O _findByPath(Object o, Class<O> clazz, String relPath) throws RepositoryException;
 
   public final String encodeName(ObjectContext ctx, String external) {
-    DefaultNodeNameFormat.validateName(external);
-    return external;
+    return domain.objectFormatter.encodeNodeName(null, external);
+//    DefaultNodeNameFormat.validateName(external);
+//    return external;
   }
 
   public final String decodeName(ObjectContext ctx, String internal) {
-    return internal;
+    return domain.objectFormatter.decodeNodeName(null, internal);
   }
 
   public final String getId(Object o) throws UndeclaredRepositoryException {

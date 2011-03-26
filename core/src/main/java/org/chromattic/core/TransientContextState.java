@@ -20,6 +20,7 @@
 package org.chromattic.core;
 
 import org.chromattic.api.Status;
+import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.mapper.TypeMapper;
 
@@ -54,6 +55,10 @@ class TransientContextState extends ContextState {
   }
 
   void setName(String name) {
+    // Validate because of deferred insertion
+    DefaultNodeNameFormat.validateName(name);
+
+    //
     this.name = name;
   }
 

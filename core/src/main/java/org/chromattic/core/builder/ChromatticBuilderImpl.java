@@ -27,6 +27,7 @@ import org.chromattic.core.mapping.TypeMappingBuilder;
 import org.chromattic.api.BuilderException;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
+import org.chromattic.api.format.DefaultObjectFormatter;
 import org.reflext.jlr.JavaLangReflectTypeModel;
 import org.reflext.jlr.JavaLangReflectMethodModel;
 import org.reflext.core.TypeDomain;
@@ -107,7 +108,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     }
 
     // Build domain
-    Domain domain = new Domain(mappings, instrumentor);
+    Domain domain = new Domain(mappings, instrumentor, new DefaultObjectFormatter());
 
     //
     return new ChromatticImpl(domain, sessionProvider);

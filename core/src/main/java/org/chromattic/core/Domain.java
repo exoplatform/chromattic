@@ -24,6 +24,7 @@ import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.mapper.TypeMapperBuilder;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.spi.instrument.Instrumentor;
+import org.chromattic.api.format.ObjectFormatter;
 
 import java.util.Set;
 import java.util.Map;
@@ -48,7 +49,13 @@ public class Domain {
   /** . */
   private final Instrumentor instrumentor;
 
-  public Domain(Set<TypeMapping> typeMappings, Instrumentor instrumentor) {
+  /** . */
+  final ObjectFormatter objectFormatter;
+
+  public Domain(
+    Set<TypeMapping> typeMappings,
+    Instrumentor instrumentor,
+    ObjectFormatter objectFormatter) {
 
     //
     TypeMapperBuilder builder = new TypeMapperBuilder(typeMappings, instrumentor);
@@ -68,6 +75,7 @@ public class Domain {
     this.typeMapperByClass = typeMapperByClass;
     this.typeMapperByNodeType = typeMapperByNodeType;
     this.instrumentor = instrumentor;
+    this.objectFormatter = objectFormatter;
   }
 
   public DomainSession getSession(SessionWrapper jcrSession) {
