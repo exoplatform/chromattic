@@ -145,18 +145,30 @@ public class ObjectContext implements MethodHandler {
   }
 
   public Object getPropertyValue(String propertyName, SimpleValueInfo type) {
+    JCR.validateName(propertyName);
+
+    //
     return state.getPropertyValue(propertyName, type);
   }
 
   public <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType) {
+    JCR.validateName(propertyName);
+
+    //
     return state.getPropertyValues(propertyName, simpleType, listType);
   }
 
   public void setPropertyValue(String propertyName, SimpleValueInfo type, Object o) {
+    JCR.validateName(propertyName);
+
+    //
     state.setPropertyValue(propertyName, type, o);
   }
 
   public <T> void setPropertyValues(String propertyName, SimpleValueInfo type, ListType<T> listType, T objects) {
+    JCR.validateName(propertyName);
+
+    //
     state.setPropertyValues(propertyName, type, listType, objects);
   }
 

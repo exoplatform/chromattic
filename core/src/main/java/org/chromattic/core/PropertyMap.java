@@ -23,6 +23,7 @@ import org.chromattic.common.JCR;
 import org.chromattic.common.TypeAdapter;
 import org.chromattic.common.AdaptingIterator;
 import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.core.bean.SimpleValueInfo;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
@@ -51,6 +52,15 @@ class PropertyMap extends AbstractMap<String, Object> {
 
   public Set<Entry<String, Object>> entrySet() {
     return set;
+  }
+
+  @Override
+  public Object get(Object key) {
+    if (key instanceof String) {
+      return ctx.getPropertyValue((String)key, null);
+    } else {
+      return null;
+    }
   }
 
   @Override

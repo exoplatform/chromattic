@@ -34,9 +34,32 @@ public class PropertiesTestCase extends AbstractTestCase {
     addClass(TP_B.class);
   }
 
+  /** . */
+  private ChromatticSession session;
+
+  /** . */
+  private TP_B b;
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+
+    //
+    session = login();
+    b = session.insert(TP_B.class, "ozoijeif");
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+
+    //
+    b = null;
+    session.close();
+    session = null;
+  }
+
   public void testGetString() throws Exception {
-    ChromatticSession session = login();
-    TP_B b = session.insert(TP_B.class, "ozoijeif");
     b.setString("bar");
     Map<String, Object> properties = b.getProperties();
     Object value = properties.get("string_property");
@@ -44,8 +67,6 @@ public class PropertiesTestCase extends AbstractTestCase {
   }
 
   public void testPutString() throws Exception {
-    ChromatticSession session = login();
-    TP_B b = session.insert(TP_B.class, "ozoijeif");
     Map<String, Object> properties = b.getProperties();
     Object value = properties.put("string_property", "bar");
     assertEquals(null, value);
@@ -53,8 +74,6 @@ public class PropertiesTestCase extends AbstractTestCase {
   }
 
   public void testRemoveString() throws Exception {
-    ChromatticSession session = login();
-    TP_B b = session.insert(TP_B.class, "ozoijeif");
     b.setString("bar");
     Map<String, Object> properties = b.getProperties();
     Object value = properties.remove("string_property");
@@ -63,14 +82,42 @@ public class PropertiesTestCase extends AbstractTestCase {
   }
 
   public void testPutWrongType() throws Exception {
-    ChromatticSession session = login();
-    TP_B b = session.insert(TP_B.class, "ozoijeif");
     Map<String, Object> properties = b.getProperties();
     try {
       properties.put("string_property", 5);
       fail();
     }
     catch (ClassCastException ignore) {
+    }
+  }
+
+  public void testGetInvalidKey() throws Exception {
+    Map<String, Object> properties = b.getProperties();
+    try {
+      properties.get("/invalid");
+      fail();
+    }
+    catch (IllegalArgumentException ignore) {
+    }
+  }
+
+  public void testRemoveInvalidKey() throws Exception {
+    Map<String, Object> properties = b.getProperties();
+    try {
+      properties.remove("/invalid");
+      fail();
+    }
+    catch (IllegalArgumentException ignore) {
+    }
+  }
+
+  public void testPutInvalidKey() throws Exception {
+    Map<String, Object> properties = b.getProperties();
+    try {
+      properties.put("/invalid", "foo");
+      fail();
+    }
+    catch (IllegalArgumentException ignore) {
     }
   }
 }
