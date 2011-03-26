@@ -32,30 +32,30 @@ public interface DefaultValue {
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
   public @interface Int {
-    int[] value();
+    int value();
   }
 
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
   public @interface Boolean {
-    boolean[] value();
+    boolean value();
   }
 
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
   public @interface Long {
-    long[] value();
+    long value();
   }
 
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
   public @interface Float {
-    float[] value();
+    float value();
   }
 
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
   public @interface Double {
-    double[] value();
+    double value();
   }
 }

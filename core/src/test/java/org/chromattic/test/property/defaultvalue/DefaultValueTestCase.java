@@ -22,7 +22,6 @@ import org.chromattic.core.DomainSession;
 import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
-import javax.jcr.Value;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -34,56 +33,19 @@ public class DefaultValueTestCase extends AbstractTestCase {
     addClass(A.class);
   }
 
-  public void testPrimitiveInt1() throws Exception {
-    DomainSession session = login();
-    A a = session.insert(A.class, "a");
-    Node aNode = session.getRoot().getNode("a");
-
-    //
-    try {
-      a.getPrimitiveInt1();
-      fail();
-    }
-    catch (IllegalStateException ignore) {
-    }
-    assertFalse(aNode.hasProperty("primitive_int_property"));
-
-    //
-    a.setPrimitiveInt1(3);
-    assertEquals(3, a.getPrimitiveInt1());
-    assertEquals(3, aNode.getProperty("primitive_int_property").getLong());
-    assertEquals(3, a.getPrimitiveInt1());
-  }
-
   public void testPrimitiveInt2() throws Exception {
     DomainSession session = login();
     A a = session.insert(A.class, "a");
     Node aNode = session.getRoot().getNode("a");
 
     //
-    assertEquals(5, a.getPrimitiveInt2());
+    assertEquals(5, a.getPrimitiveInt());
     assertFalse(aNode.hasProperty("primitive_int_property"));
 
     //
-    a.setPrimitiveInt2(3);
-    assertEquals(3, a.getPrimitiveInt2());
+    a.setPrimitiveInt(3);
+    assertEquals(3, a.getPrimitiveInt());
     assertEquals(3, aNode.getProperty("primitive_int_property").getLong());
-    assertEquals(3, a.getPrimitiveInt2());
-  }
-
-  public void testPrimitiveInt3() throws Exception {
-    DomainSession session = login();
-    A a = session.insert(A.class, "a");
-    Node aNode = session.getRoot().getNode("a");
-
-    //
-    assertEquals(5, a.getPrimitiveInt3());
-    assertFalse(aNode.hasProperty("primitive_int_property"));
-
-    //
-    a.setPrimitiveInt2(3);
-    assertEquals(3, a.getPrimitiveInt3());
-    assertEquals(3, aNode.getProperty("primitive_int_property").getLong());
-    assertEquals(3, a.getPrimitiveInt3());
+    assertEquals(3, a.getPrimitiveInt());
   }
 }

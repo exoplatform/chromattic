@@ -26,10 +26,7 @@ import org.reflext.api.SimpleTypeInfo;
 
 import java.lang.annotation.Annotation;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -128,11 +125,7 @@ public class SimpleValueInfo<V> extends ValueInfo {
             List<Boolean> defaultBoolean = null;
             if (defaultValue != null) {
               if (defaultValue instanceof DefaultValue.Boolean) {
-                boolean[] tmp = ((DefaultValue.Boolean)defaultValue).value();
-                defaultBoolean = new ArrayList<Boolean>(tmp.length);
-                for (boolean b : tmp) {
-                  defaultBoolean.add(b);
-                }
+                defaultBoolean = Arrays.asList(((DefaultValue.Boolean)defaultValue).value());
               } else {
                 throw new BuilderException();
               }
@@ -143,11 +136,7 @@ public class SimpleValueInfo<V> extends ValueInfo {
             List<Integer> defaultInteger = null;
             if (defaultValue != null) {
               if (defaultValue instanceof DefaultValue.Int) {
-                int[] tmp = ((DefaultValue.Int)defaultValue).value();
-                defaultInteger = new ArrayList<Integer>(tmp.length);
-                for (int i : tmp) {
-                  defaultInteger.add(i);
-                }
+                defaultInteger = Arrays.asList(((DefaultValue.Int)defaultValue).value());
               } else {
                 throw new BuilderException();
               }
@@ -158,11 +147,7 @@ public class SimpleValueInfo<V> extends ValueInfo {
             List<Long> defaultLong = null;
             if (defaultValue != null) {
               if (defaultValue instanceof DefaultValue.Long) {
-                long[] tmp = ((DefaultValue.Long)defaultValue).value();
-                defaultLong = new ArrayList<Long>(tmp.length);
-                for (long l : tmp) {
-                  defaultLong.add(l);
-                }
+                defaultLong = Arrays.asList(((DefaultValue.Long)defaultValue).value());
               } else {
                 throw new BuilderException();
               }
@@ -173,11 +158,7 @@ public class SimpleValueInfo<V> extends ValueInfo {
             List<Float> defaultFloat = null;
             if (defaultValue != null) {
               if (defaultValue instanceof DefaultValue.Float) {
-                float[] tmp = ((DefaultValue.Float)defaultValue).value();
-                defaultFloat = new ArrayList<Float>(tmp.length);
-                for (float f : tmp) {
-                  defaultFloat.add(f);
-                }
+                defaultFloat = Arrays.asList(((DefaultValue.Float)defaultValue).value());
               } else {
                 throw new BuilderException();
               }
@@ -188,11 +169,7 @@ public class SimpleValueInfo<V> extends ValueInfo {
             List<Double> defaultDouble = null;
             if (defaultValue != null) {
               if (defaultValue instanceof DefaultValue.Double) {
-                double[] tmp = ((DefaultValue.Double)defaultValue).value();
-                defaultDouble = new ArrayList<Double>(tmp.length);
-                for (double d : tmp) {
-                  defaultDouble.add(d);
-                }
+                defaultDouble = Arrays.asList(((DefaultValue.Double)defaultValue).value());
               } else {
                 throw new BuilderException();
               }
