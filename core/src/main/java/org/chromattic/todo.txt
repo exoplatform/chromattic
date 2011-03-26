@@ -11,7 +11,7 @@
 - create relationship with non persistent contexts
 - use has changes to perform caching!!!!!!!!
 - detect mapped conflicts with collection, like if we add to a collection a node named by the another mapped by property then refuse it
-- mix of 2 sessions
+- detect mix of 2 sessions
 - consider not resolvable generics, would help to make more flexible
 - test reference iterator remove
 - test reference iterator concurrent modification exceptions
@@ -23,8 +23,8 @@
 - type coercion unit testing
 - undefined properties unit test for lists
 - residual properties unit test for lists
-
-
+- check underlying property type in relationships
+- test for corrupted relationship
 
 *** Patrice
 - mapping of @Property for InputStream
