@@ -30,13 +30,9 @@ import org.chromattic.common.JCR;
 import org.chromattic.common.CopyingInputStream;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.core.mapper.TypeMapper;
-import org.chromattic.core.mapper.MethodMapper;
-import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.core.bean.PropertyInfo;
 import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.jcr.LinkType;
-import org.reflext.api.MethodInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -235,28 +231,6 @@ public class ObjectContext implements MethodHandler {
   }
 
   public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-    for (PropertyMapper propertyMapper : mapper.getPropertyMappers()) {
-      PropertyInfo info = propertyMapper.getInfo();
-      MethodInfo getter = info.getGetter();
-      if (getter != null && method.equals(getter.getMethod())) {
-        return propertyMapper.get(this);
-      } else {
-        MethodInfo setter = info.getSetter();
-        if (setter != null && method.equals(info.getSetter().getMethod())) {
-          propertyMapper.set(this, args[0]);
-          return null;
-        }
-      }
-    }
-
-    //
-    for (MethodMapper methodMapper : mapper.getMethodMappers()) {
-      if (method.equals(methodMapper.getMethod())) {
-        return methodMapper.invoke(this, args);
-      }
-    }
-
-    //
-    throw new AssertionError("Could not handle invocation of method " + method.getName());
+    return mapper.invoke(this, method, args);
   }
 }

@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper;
 
 import org.chromattic.core.ObjectContext;
+import org.chromattic.core.MethodInvoker;
 import org.reflext.api.ClassTypeInfo;
 
 import java.lang.reflect.Method;
@@ -28,7 +29,7 @@ import java.lang.reflect.Method;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MethodMapper {
+public class MethodMapper implements MethodInvoker {
 
   /** . */
   TypeMapper mapper;
@@ -46,6 +47,10 @@ public class MethodMapper {
 
   public Method getMethod() {
     return method;
+  }
+
+  public Object invoke(ObjectContext ctx, Method method, Object[] args) throws Throwable {
+    return invoke(ctx, args);
   }
 
   @Override

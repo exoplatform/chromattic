@@ -20,17 +20,23 @@
 package org.chromattic.core.mapper;
 
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+import java.lang.reflect.Method;
 
 import org.chromattic.core.ObjectContext;
+import org.chromattic.core.MethodInvoker;
+import org.chromattic.core.bean.PropertyInfo;
 import org.chromattic.core.jcr.NodeDef;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.ProxyFactory;
+import org.reflext.api.MethodInfo;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class TypeMapper {
+public class TypeMapper implements MethodInvoker {
 
   /** . */
   private final Class<?> objectClass;
@@ -47,6 +53,9 @@ public class TypeMapper {
   /** . */
   private final ProxyFactory factory;
 
+  /** . */
+  private final Map<Method, MethodInvoker> dispatchers;
+
   public TypeMapper(
     Class<?> objectClass,
     Set<PropertyMapper> propertyMappers,
@@ -54,12 +63,39 @@ public class TypeMapper {
     NodeDef nodeDef,
     Instrumentor instrumentor) {
 
+    // Build the dispatcher map
+    Map<Method, MethodInvoker> dispatchers = new HashMap<Method, MethodInvoker>();
+    for (PropertyMapper propertyMapper : propertyMappers) {
+      PropertyInfo info = propertyMapper.getInfo();
+      MethodInfo getter = info.getGetter();
+      if (getter != null) {
+        dispatchers.put((Method)getter.getMethod(), propertyMapper);
+      }
+      MethodInfo setter = info.getSetter();
+      if (setter != null) {
+        dispatchers.put((Method)setter.getMethod(), propertyMapper);
+      }
+    }
+    for (MethodMapper methodMapper : methodMappers) {
+      dispatchers.put(methodMapper.getMethod(), methodMapper);
+    }
+
     //
+    this.dispatchers = dispatchers;
     this.objectClass = objectClass;
     this.methodMappers = methodMappers;
     this.nodeDef = nodeDef;
     this.propertyMappers = propertyMappers;
     this.factory = instrumentor.getProxyClass(objectClass);
+  }
+
+  public Object invoke(ObjectContext ctx, Method method, Object[] args) throws Throwable {
+    MethodInvoker invoker = dispatchers.get(method);
+    if (invoker != null) {
+      return invoker.invoke(ctx, method, args);
+    } else {
+      throw new AssertionError();
+    }
   }
 
   public Object createObject(ObjectContext context) {
