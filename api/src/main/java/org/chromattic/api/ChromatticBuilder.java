@@ -30,20 +30,42 @@ import java.util.HashMap;
  */
 public abstract class ChromatticBuilder {
 
+  /**
+   * The instrumentor class name for Chromattic's objects. The specified class must implement the
+   * <tt>org.chromattic.spi.instrument.Intrumentor</tt> class.
+   */
   public static final Option<String>  INSTRUMENTOR_CLASSNAME =
     new Option<String>(
       "org.chromattic.api.Option.instrumentor.classname",
       "intrumentor");
 
-  public static final Option<String> SESSION_PROVIDER_CLASSNAME =
+  /**
+   * The JCR session life cycle class name. The specified class must implement the
+   * <tt>org.chromattic.spi.jcr.SessionLifeCycle</tt> class.
+   */
+  public static final Option<String> SESSION_LIFECYCLE_CLASSNAME =
     new Option<String>(
-      "org.chromattic.api.Option.repository_provider.classname",
-      "repository provider");
+      "org.chromattic.api.Option.session_lifecycle.classname",
+      "session life cycle");
 
-  public static final Option<String> OBJECT_NAME_FORMATTER_CLASSNAME =
+  /**
+   * The object name formatter class name. The specified class must implement the
+   * <tt>org.chromattic.api.format.ObjectFormatter</tt> class.
+   */
+  public static final Option<String> OBJECT_FORMATTER_CLASSNAME =
     new Option<String>(
-      "org.chromattic.api.Option.object_name_formatter.classname",
-      "object name formatter");
+      "org.chromattic.api.Option.object_formatter.classname",
+      "object formatter");
+
+  /**
+   * The boolean indicating if caching is performed. When cache is enabled each session
+   * maintains a cache that avoids to use the underlying JCR session. As a consequence
+   * any change made directly to the JCR session will not be visible in the object domain.
+   */
+  public static final Option<Boolean> STATE_CACHE_ENABLED =
+    new Option<Boolean>(
+      "org.chromattic.api.Option.state_cache.enabled",
+      "state cache enabled");
 
   public static ChromatticBuilder create() {
     String builderClassName = "org.chromattic.core.builder.ChromatticBuilderImpl";
@@ -75,7 +97,8 @@ public abstract class ChromatticBuilder {
   protected final Map<String, OptionInstance<?>> options = new HashMap<String, OptionInstance<?>>();
 
   public <T> void setOption(Option<T> option, T value) {
-    options.put(option.getName(), new OptionInstance<T>(option, value));
+    OptionInstance<T> instance = new OptionInstance<T>(option, value);
+    options.put(option.getName(), instance);
   }
 
   public void add(Class<?> clazz) {
@@ -126,6 +149,12 @@ public abstract class ChromatticBuilder {
     private final T value;
 
     private OptionInstance(Option<T> option, T value) {
+      if (option == null) {
+        throw new NullPointerException("No null option accepted");
+      }
+      if (value == null) {
+        throw new NullPointerException("No null option value accepted");
+      }
       this.option = option;
       this.value = value;
     }

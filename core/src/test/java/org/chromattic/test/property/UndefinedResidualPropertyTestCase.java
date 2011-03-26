@@ -58,8 +58,10 @@ public class UndefinedResidualPropertyTestCase extends AbstractTestCase {
     assertEquals("foo", o.getString());
     assertEquals(PropertyType.STRING, node.getProperty("string_property").getType());
     assertEquals("foo", node.getProperty("string_property").getString());
-    node.setProperty("string_property", (String)null);
-    assertEquals(null, o.getString());
+    if (getConfig().isStateCacheDisabled()) {
+      node.setProperty("string_property", (String)null);
+      assertEquals(null, o.getString());
+    }
   }
 
   public void testMap() throws Exception {
@@ -69,7 +71,9 @@ public class UndefinedResidualPropertyTestCase extends AbstractTestCase {
     assertEquals("foo", map.get("string_property"));
     assertEquals(PropertyType.STRING, node.getProperty("string_property").getType());
     assertEquals("foo", node.getProperty("string_property").getString());
-    node.setProperty("string_property", (String)null);
-    assertEquals(null, map.get("string_property"));
+    if (getConfig().isStateCacheDisabled()) {
+      node.setProperty("string_property", (String)null);
+      assertEquals(null, map.get("string_property"));
+    }
   }
 }

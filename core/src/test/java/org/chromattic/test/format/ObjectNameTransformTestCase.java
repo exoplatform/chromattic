@@ -33,7 +33,7 @@ import java.util.Collections;
 public class ObjectNameTransformTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    getBuilder().setOption(ChromatticBuilder.OBJECT_NAME_FORMATTER_CLASSNAME, DelegatingObjectFormatter.class.getName());
+    getBuilder().setOption(ChromatticBuilder.OBJECT_FORMATTER_CLASSNAME, DelegatingObjectFormatter.class.getName());
     addClass(A.class);
     addClass(B.class);
   }

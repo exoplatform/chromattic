@@ -27,6 +27,8 @@ import org.chromattic.core.bean.SimpleType;
 import org.chromattic.core.mapper.ValueMapper;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.common.JCR;
+import org.chromattic.common.CloneableInputStream;
+import org.chromattic.common.CopyingInputStream;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -37,7 +39,12 @@ import javax.jcr.PropertyType;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Date;
 import java.lang.reflect.Array;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -63,6 +70,9 @@ class PersistentContextState extends ContextState {
   /** . */
   private final DomainSession session;
 
+  /** . */
+  private final Map<String, Object> propertyCache;
+
   PersistentContextState(TypeMapper mapper, Node node, DomainSession session) throws RepositoryException {
     super(node.getPrimaryNodeType());
 
@@ -73,6 +83,7 @@ class PersistentContextState extends ContextState {
     this.node = node;
     this.name = node.getName();
     this.session = session;
+    this.propertyCache = session.domain.stateCacheEnabled ? new HashMap<String, Object>() : null;
   }
 
   String getId() {
@@ -105,34 +116,69 @@ class PersistentContextState extends ContextState {
 
   Object getPropertyValue(String propertyName, SimpleValueInfo type) {
     try {
-      Value value;
-      if (node.hasProperty(propertyName)) {
-        Property property = node.getProperty(propertyName);
-        PropertyDefinition def = property.getDefinition();
-        if (def.isMultiple()) {
-          Value[] values = property.getValues();
-          if (values.length == 0) {
-            value = null;
-          } else {
-            value = values[0];
-          }
-        } else {
-          value = property.getValue();
-        }
-      } else {
-        value = null;
+      Object value = null;
+
+      //
+      if (propertyCache != null) {
+        value = propertyCache.get(propertyName);
       }
 
       //
-      if (value != null) {
-        SimpleType st = type != null ? type.getSimpleType() : null;
-        return ValueMapper.instance.get(value, st);
-      } else {
+      if (value == null) {
+        Value jcrValue;
+        if (node.hasProperty(propertyName)) {
+          Property property = node.getProperty(propertyName);
+          PropertyDefinition def = property.getDefinition();
+          if (def.isMultiple()) {
+            Value[] values = property.getValues();
+            if (values.length == 0) {
+              jcrValue = null;
+            } else {
+              jcrValue = values[0];
+            }
+          } else {
+            jcrValue = property.getValue();
+          }
+        } else {
+          jcrValue = null;
+        }
+
+        //
+        if (jcrValue != null) {
+          SimpleType st = type != null ? type.getSimpleType() : null;
+          value = ValueMapper.instance.get(jcrValue, st);
+
+          //
+          if (propertyCache != null) {
+            if (value instanceof InputStream) {
+              try {
+                value = new CloneableInputStream((InputStream)value);
+              }
+              catch (IOException e) {
+                throw new AssertionError(e);
+              }
+            }
+          }
+        }
+      }
+
+      //
+      if (value == null) {
         if (type != null && type.isPrimitive()) {
           throw new IllegalStateException("Cannot convert null to primitive type " + type.getSimpleType());
         }
-        return null;
+      } else {
+        if (propertyCache != null) {
+          if (value instanceof InputStream) {
+            value = ((CloneableInputStream)value).clone();
+          } else if (value instanceof Date) {
+            value = ((Date)value).clone();
+          }
+        }
       }
+
+      //
+      return value;
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -177,15 +223,22 @@ class PersistentContextState extends ContextState {
     }
   }
 
-  void setPropertyValue(String propertyName, SimpleValueInfo type, Object o) {
+  void setPropertyValue(String propertyName, SimpleValueInfo type, Object propertyValue) {
     try {
-      Value value;
-      if (o != null) {
+      if (propertyCache != null) {
+        if (propertyValue instanceof InputStream) {
+          propertyValue = new CopyingInputStream((InputStream)propertyValue);
+        }
+      }
+
+      //
+      Value jcrValue;
+      if (propertyValue != null) {
         ValueFactory valueFactory = session.getJCRSession().getValueFactory();
         SimpleType st = type != null ? type.getSimpleType() : null;
-        value = ValueMapper.instance.get(valueFactory, o, st);
+        jcrValue = ValueMapper.instance.get(valueFactory, propertyValue, st);
       } else {
-        value = null;
+        jcrValue = null;
       }
 
       //
@@ -197,24 +250,39 @@ class PersistentContextState extends ContextState {
       }
 
       //
-      if (value != null) {
+      if (jcrValue != null) {
         int neededType = def.getRequiredType();
         if (neededType != PropertyType.UNDEFINED) {
-          if (neededType != value.getType()) {
-            throw new ClassCastException("Cannot cast type " + value.getType() + " to type " + neededType + " when setting property " + propertyName);
+          if (neededType != jcrValue.getType()) {
+            throw new ClassCastException("Cannot cast type " + jcrValue.getType() + " to type " + neededType + " when setting property " + propertyName);
           }
         }
       }
 
       //
       if (def.isMultiple()) {
-        if (value == null) {
+        if (jcrValue == null) {
           node.setProperty(propertyName, new Value[0]);
         } else {
-          node.setProperty(propertyName, new Value[]{value});
+          node.setProperty(propertyName, new Value[]{jcrValue});
         }
       } else {
-        node.setProperty(propertyName, value);
+        node.setProperty(propertyName, jcrValue);
+      }
+
+      //
+      if (propertyCache != null) {
+        if (propertyValue != null) {
+          if (propertyValue instanceof InputStream) {
+            byte[] bytes = ((CopyingInputStream)propertyValue).getBytes();
+            propertyValue = new CloneableInputStream(bytes);
+          } else if (propertyValue instanceof Date) {
+            propertyValue = ((Date)propertyValue).clone();
+          }
+          propertyCache.put(propertyName, propertyValue);
+        } else {
+          propertyCache.remove(propertyName);
+        }
       }
     }
     catch (RepositoryException e) {

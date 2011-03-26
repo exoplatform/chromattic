@@ -54,10 +54,13 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   /** . */
   private ObjectFormatter objectFormatter;
 
+  /** . */
+  private boolean stateCacheEnabled;
+
   public ChromatticBuilderImpl() {
     setOption(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl");
-    setOption(SESSION_PROVIDER_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle");
-    setOption(OBJECT_NAME_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName());
+    setOption(SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle");
+    setOption(OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName());
   }
 
   private <T> T create(OptionInstance<String> optionInstance, Class<T> expectedClass) {
@@ -88,10 +91,12 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   protected <T> void configure(OptionInstance<T> optionInstance) {
     if (optionInstance.getOption() == INSTRUMENTOR_CLASSNAME) {
       instrumentor = create((OptionInstance<String>)optionInstance, Instrumentor.class);
-    } else if (optionInstance.getOption() == SESSION_PROVIDER_CLASSNAME) {
+    } else if (optionInstance.getOption() == SESSION_LIFECYCLE_CLASSNAME) {
       sessionProvider = create((OptionInstance<String>)optionInstance, SessionLifeCycle.class);
-    } else if (optionInstance.getOption() == OBJECT_NAME_FORMATTER_CLASSNAME) {
+    } else if (optionInstance.getOption() == OBJECT_FORMATTER_CLASSNAME) {
       objectFormatter = create((OptionInstance<String>)optionInstance, ObjectFormatter.class);
+    } else if (optionInstance.getOption() == STATE_CACHE_ENABLED) {
+      stateCacheEnabled = ((OptionInstance<Boolean>)optionInstance).getValue();
     }
   }
 
@@ -115,7 +120,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     }
 
     // Build domain
-    Domain domain = new Domain(mappings, instrumentor, objectFormatter);
+    Domain domain = new Domain(mappings, instrumentor, objectFormatter, stateCacheEnabled);
 
     //
     return new ChromatticImpl(domain, sessionProvider);

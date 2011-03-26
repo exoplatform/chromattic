@@ -19,6 +19,8 @@
 package org.chromattic.common;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -28,6 +30,10 @@ public final class CloneableInputStream extends ByteArrayInputStream implements 
 
   public CloneableInputStream(byte buf[]) {
     super(buf);
+  }
+
+  public CloneableInputStream(InputStream in) throws IOException {
+    super(IO.getBytes(in));
   }
 
   @Override

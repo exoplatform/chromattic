@@ -29,6 +29,9 @@ import javax.jcr.RepositoryException;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 
+import java.util.List;
+import java.util.LinkedList;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -36,7 +39,25 @@ import junit.framework.TestResult;
 public abstract class AbstractTestCase extends TestCase {
 
   /** . */
+  public static final String CHROMATTIC_TEST_MODE = "chromattic.test.mode";
+
+  /** . */
+  public static final String MODE_CGLIB = "cglib";
+
+  /** . */
+  public static final String MODE_APT = "apt";
+
+  /** . */
+  public static final String MODE_CACHE = "cache";
+
+  /** . */
+  public static final String MODE_ALL = "all";
+
+  /** . */
   private static final String APT_INSTRUMENTOR = "org.chromattic.apt.InstrumentorImpl";
+
+  /** . */
+  private static final String CGLIB_INSTRUMENTOR = CGLibInstrumentor.class.getName();
 
   /** . */
   private ChromatticBuilder builder;
@@ -45,12 +66,17 @@ public abstract class AbstractTestCase extends TestCase {
   private Chromattic chromattic;
 
   /** . */
-  private String intrumentorClassName;
+  private Config config;
+
+  public Config getConfig() {
+    return config;
+  }
 
   @Override
   protected void setUp() throws Exception {
     builder = ChromatticBuilder.create();
-    builder.setOption(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, intrumentorClassName);
+    builder.setOption(ChromatticBuilder.STATE_CACHE_ENABLED, config.stateCacheEnabled);
+    builder.setOption(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
     createDomain();
     chromattic = builder.build();
   }
@@ -64,24 +90,44 @@ public abstract class AbstractTestCase extends TestCase {
   @Override
   public final void run(TestResult result) {
 
+    List<Config> configs = new LinkedList<Config>();
+
+
     //
-    boolean testWithAPT = false;
+    boolean aptEnabled = false;
     try {
-      Class<?> aptInstrumentorClass = Thread.currentThread().getContextClassLoader().loadClass(APT_INSTRUMENTOR);
-      testWithAPT = true;
+      Thread.currentThread().getContextClassLoader().loadClass(APT_INSTRUMENTOR);
+      aptEnabled = true;
     }
     catch (ClassNotFoundException ignore) {
     }
 
-    // Run test with apt
-    if (testWithAPT) {
-      intrumentorClassName = APT_INSTRUMENTOR;
-      super.run(result);
+    //
+    String testMode = System.getProperty(CHROMATTIC_TEST_MODE);
+    if (testMode == null) {
+      testMode = MODE_ALL;
     }
 
-    // Run test with cglib
-    intrumentorClassName = CGLibInstrumentor.class.getName();
-    super.run(result);
+    //
+    if (MODE_ALL.equals(testMode)) {
+      if (aptEnabled) {
+        configs.add(new Config(APT_INSTRUMENTOR, false));
+      }
+      configs.add(new Config(CGLIB_INSTRUMENTOR, false));
+      configs.add(new Config(CGLIB_INSTRUMENTOR, true));
+    } else if (MODE_APT.equals(testMode)) {
+      configs.add(new Config(APT_INSTRUMENTOR, false));
+    } else if (MODE_CGLIB.equals(testMode)) {
+      configs.add(new Config(CGLIB_INSTRUMENTOR, false));
+    } else if (MODE_CACHE.equals(testMode)) {
+      configs.add(new Config(CGLIB_INSTRUMENTOR, true));
+    }
+
+    //
+    for (Config config : configs) {
+      this.config = config;
+      super.run(result);
+    }
   }
 
   public final DomainSession login() {
@@ -97,4 +143,30 @@ public abstract class AbstractTestCase extends TestCase {
   }
 
   protected abstract void createDomain();
+
+  public static class Config {
+
+    /** . */
+    private final String instrumentorClassName;
+
+    /** . */
+    private final boolean stateCacheEnabled;
+
+    public Config(String instrumentorClassName, boolean stateCacheEnabled) {
+      this.instrumentorClassName = instrumentorClassName;
+      this.stateCacheEnabled = stateCacheEnabled;
+    }
+
+    public String getInstrumentorClassName() {
+      return instrumentorClassName;
+    }
+
+    public boolean isStateCacheEnabled() {
+      return stateCacheEnabled;
+    }
+
+    public boolean isStateCacheDisabled() {
+      return !stateCacheEnabled;
+    }
+  }
 }

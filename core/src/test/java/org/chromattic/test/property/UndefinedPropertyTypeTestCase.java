@@ -57,7 +57,9 @@ public class UndefinedPropertyTypeTestCase extends AbstractTestCase {
     assertEquals("foo", o.getString());
     assertEquals(PropertyType.STRING, node.getProperty("undefined_property").getType());
     assertEquals("foo", node.getProperty("undefined_property").getString());
-    node.setProperty("undefined_property", (String)null);
-    assertEquals(null, o.getString());
+    if (getConfig().isStateCacheDisabled()) {
+      node.setProperty("undefined_property", (String)null);
+      assertEquals(null, o.getString());
+    }
   }
 }

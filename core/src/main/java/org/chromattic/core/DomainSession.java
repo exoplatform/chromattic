@@ -46,7 +46,7 @@ public abstract class DomainSession implements ChromatticSession {
   protected final EventBroadcaster broadcaster;
 
   /** . */
-  private final Domain domain;
+  final Domain domain;
 
   /** . */
   private final QueryManager queryManager;
