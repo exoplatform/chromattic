@@ -184,7 +184,7 @@ public class DomainSessionImpl extends DomainSession {
         throw new DuplicateNameException(msg);
       } else {
         log.trace("About to remove same name {} child with id {}", previousNode.getPath(), previousNode.getName());
-        previousNode.remove();
+        remove(previousNode);
       }
     }
 
@@ -203,6 +203,63 @@ public class DomainSessionImpl extends DomainSession {
     //
     log.trace("Added context {} for id {} and path {}", dstCtx, relatedId, dstNode.getPath());
     return relatedId;
+  }
+
+  @Override
+  protected void _move(EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException {
+    if (srcCtx == null) {
+      String msg = "Cannot move null context";
+      log.error(msg);
+      throw new NullPointerException(msg);
+    }
+    if (dstCtx == null) {
+      String msg = "Cannot move to null context";
+      log.error(msg);
+      throw new NullPointerException(msg);
+    }
+    if (srcCtx.getStatus() != Status.PERSISTENT) {
+      String msg = "Attempt to move non persistent context " + srcCtx + " as child of " + dstCtx;
+      log.error(msg);
+      throw new IllegalStateException(msg);
+    }
+    if (dstCtx.getStatus() != Status.PERSISTENT) {
+      String msg = "Attempt to move child " + srcCtx + " to a non persistent context " + dstCtx;
+      log.error(msg);
+      throw new IllegalStateException(msg);
+    }
+
+    //
+    Node dstNode = dstCtx.state.getNode();
+    Node srcNode = srcCtx.state.getNode();
+    String name = srcNode.getName();
+
+    //
+    NameConflictResolution onDuplicate = NameConflictResolution.FAIL;
+    NodeType parentNodeType = dstNode.getPrimaryNodeType();
+    TypeMapper parentTypeMapper = domain.getTypeMapper(parentNodeType.getName());
+    if (parentTypeMapper != null) {
+      onDuplicate = parentTypeMapper.getOnDuplicate();
+    }
+
+    // Check insertion capability
+    Node previousNode = sessionWrapper.getNode(dstNode, name);
+    if (previousNode != null) {
+      log.trace("Found existing child with same name {}", name);
+      if (onDuplicate == NameConflictResolution.FAIL) {
+        String msg = "Attempt to move context " + dstCtx + " as an existing child with name " + name + " child of node " + dstNode.getPath();
+        log.error(msg);
+        throw new DuplicateNameException(msg);
+      } else {
+        log.trace("About to remove same name {} child with id {}", previousNode.getPath(), previousNode.getName());
+        //previousNode.remove();
+        throw new UnsupportedOperationException("Do that properly");
+      }
+    }
+
+    //
+    sessionWrapper.move(srcNode, dstNode);
+
+    // Generate some kind of event ????
   }
 
   protected void _orderBefore(EntityContext parentCtx, EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException {

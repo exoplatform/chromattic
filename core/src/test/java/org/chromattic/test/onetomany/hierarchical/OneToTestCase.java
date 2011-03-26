@@ -19,7 +19,6 @@
 
 package org.chromattic.test.onetomany.hierarchical;
 
-import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
 
@@ -40,7 +39,7 @@ public class OneToTestCase extends AbstractOneToTestCase<TOTM_A_2, TOTM_B_2> {
   }
 
   public void setOne(TOTM_B_2 many, TOTM_A_2 one) {
-    throw new UnsupportedOperationException();
+    many.setParent(one);
   }
 
   public TOTM_A_2 getOne(TOTM_B_2 many) {

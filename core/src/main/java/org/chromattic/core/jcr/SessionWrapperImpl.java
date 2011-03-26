@@ -141,6 +141,11 @@ public class SessionWrapperImpl implements SessionWrapper {
     return childNode;
   }
 
+  public void move(Node srcNode, Node dstNode) throws RepositoryException {
+    String dstPath = dstNode.getPath() + "/" + srcNode.getName();
+    session.move(srcNode.getPath(), dstPath);
+  }
+
   public void orderBefore(Node parentNode, Node srcNode, Node dstNode) throws RepositoryException {
     Node srcParentNode = srcNode.getParent();
     if (!srcParentNode.equals(parentNode)) {

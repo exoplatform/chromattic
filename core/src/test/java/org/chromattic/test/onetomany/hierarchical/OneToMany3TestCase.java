@@ -42,7 +42,7 @@ public class OneToMany3TestCase extends AbstractOneToTestCase<TOTM_A_3, TOTM_B_3
   }
 
   public void setOne(TOTM_B_3 many, TOTM_A_3 one) {
-    throw new UnsupportedOperationException();
+    many.setParent(one);
   }
 
   public TOTM_A_3 getOne(TOTM_B_3 many) {

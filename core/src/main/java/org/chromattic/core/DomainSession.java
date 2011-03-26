@@ -89,6 +89,8 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract Node _getRoot() throws RepositoryException;
 
+  protected abstract void _move(EntityContext srcCtx, EntityContext dstCtx) throws RepositoryException;
+
   public final Domain getDomain() {
     return domain;
   }
@@ -422,6 +424,15 @@ public abstract class DomainSession implements ChromatticSession {
   public final String persistWithRelativePath(EntityContext parentCtx, String relPath, EntityContext childCtx) throws UndeclaredRepositoryException {
     try {
       return _persist(parentCtx, relPath, childCtx);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public void move(EntityContext srcCtx, EntityContext dstCtx) throws UndeclaredRepositoryException {
+    try {
+      _move(srcCtx, dstCtx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

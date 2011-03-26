@@ -25,6 +25,8 @@ import org.chromattic.api.Status;
 
 import javax.jcr.Node;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 
 /**
@@ -203,5 +205,30 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     }
     catch (IllegalStateException ignore) {
     }
+  }
+
+  public void testMove() throws Exception {
+    DomainSession session = login();
+    O o1 = session.insert(oneSide, "o1");
+    String o1Id = session.getId(o1);
+    O o2 = session.insert(oneSide, "o2");
+    String o2Id = session.getId(o2);
+    M m = session.insert(o1, manySide, "m");
+    String mId = session.getId(m);
+    Collection<M> ms1 = getMany(o1);
+    Collection<M> ms2 = getMany(o2);
+    ms2.add(m);
+    assertEquals(Collections.<Object>emptySet(), new HashSet<Object>(ms1));
+    assertEquals(Collections.singleton(m), new HashSet<Object>(ms2));
+    session.save();
+
+    //
+    o1 = session.findById(oneSide, o1Id);
+    o2 = session.findById(oneSide, o2Id);
+    ms1 = getMany(o1);
+    ms2 = getMany(o2);
+    m = session.findById(manySide, mId);
+    assertEquals(Collections.<Object>emptySet(), new HashSet<Object>(ms1));
+    assertEquals(Collections.singleton(m), new HashSet<Object>(ms2));
   }
 }

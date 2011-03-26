@@ -31,4 +31,7 @@ public abstract class TOTM_B_3 {
 
   @ManyToOne
   public abstract TOTM_A_3 getParent();
+
+  public abstract void setParent(TOTM_A_3 parent);
+
 }

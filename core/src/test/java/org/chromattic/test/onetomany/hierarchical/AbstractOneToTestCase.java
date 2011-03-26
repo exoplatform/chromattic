@@ -110,4 +110,21 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
     catch (IllegalStateException expected) {
     }
   }
+
+  public void testMove() throws Exception {
+    DomainSession session = login();
+    O o1 = session.insert(oneSide, "o1");
+    O o2 = session.insert(oneSide, "o2");
+    String o2Id = session.getId(o2);
+    M m = session.insert(o1, manySide, "m");
+    String mId = session.getId(m);
+    setOne(m, o2);
+    assertSame(o2, getOne(m));
+    session.save();
+
+    //
+    o2 = session.findById(oneSide, o2Id);
+    m = session.findById(manySide, mId);
+    assertSame(o2, getOne(m));
+  }
 }

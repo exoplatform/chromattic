@@ -18,6 +18,7 @@
  */
 package org.chromattic.test.onetomany.hierarchical.map.duplicate;
 
+import org.chromattic.api.Status;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 
@@ -40,5 +41,6 @@ public class DuplicateTestCase extends AbstractTestCase {
     a.getChildren().put("b", b1);
     assertSame(b1, a.getChildren().put("b", b2));
     assertSame(b2, a.getChildren().get("b"));
+    assertEquals(Status.REMOVED, session.getStatus(b1));
   }
 }

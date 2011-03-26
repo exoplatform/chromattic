@@ -208,7 +208,11 @@ public class EntityContext implements MethodHandler {
   }
 
   public void addChild(String name, EntityContext childCtx) {
-    state.getSession().persistWithName(this, name, childCtx);
+    if (childCtx.getStatus() == Status.PERSISTENT) {
+      state.getSession().move(childCtx, this);
+    } else {
+      state.getSession().persistWithName(this, name, childCtx);
+    }
   }
 
   public void addChild(String name, Object child) {
