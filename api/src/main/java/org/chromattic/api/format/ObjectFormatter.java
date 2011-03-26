@@ -24,12 +24,12 @@ package org.chromattic.api.format;
  */
 public interface ObjectFormatter {
 
-  String decodeNodeName(Class<?> klass, String internalName);
+  String decodeNodeName(FormatterContext context, String internalName);
 
-  String encodeNodeName(Class<?> klass, String externalName);
+  String encodeNodeName(FormatterContext context, String externalName);
 
-  String decodePropertyName(Class<?> klass, String internalName);
+  String decodePropertyName(FormatterContext context, String internalName);
 
-  String encodePropertyName(Class<?> klass, String externalName);
+  String encodePropertyName(FormatterContext context, String externalName);
 
 }

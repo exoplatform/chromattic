@@ -16,37 +16,30 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.format;
 
-package org.chromattic.api.format;
+import org.chromattic.api.format.FormatterContext;
 
 /**
- * Defines the default codec format that only performs validation of JCR names.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DefaultObjectFormatter implements ObjectFormatter {
-
-  /** . */
-  private static final DefaultObjectFormatter INSTANCE = new DefaultObjectFormatter();
-
-  public static DefaultObjectFormatter getInstance() {
-    return INSTANCE;
-  }
+public class FooPrefixerFormatter extends AbstractObjectFormatter {
 
   public String decodeNodeName(FormatterContext context, String internalName) {
-    return internalName;
+    if (internalName.startsWith("foo_")) {
+      return internalName.substring(4);
+    } else {
+      throw new IllegalStateException();
+    }
   }
 
   public String encodeNodeName(FormatterContext context, String externalName) {
-    return externalName;
+    if (externalName.length() == 1) {
+      return "foo_" + externalName;
+    } else {
+      throw new IllegalArgumentException();
+    }
   }
 
-  public String decodePropertyName(FormatterContext context, String internalName) {
-    return internalName;
-  }
-
-  public String encodePropertyName(FormatterContext context, String externalName) {
-    return externalName;
-  }
 }

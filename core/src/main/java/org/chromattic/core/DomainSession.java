@@ -32,6 +32,7 @@ import javax.jcr.Node;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -80,16 +81,6 @@ public abstract class DomainSession implements ChromatticSession {
 
   protected abstract <O> O _findByPath(Object o, Class<O> clazz, String relPath) throws RepositoryException;
 
-  public final String encodeName(String external) {
-    String internal = domain.objectFormatter.encodeNodeName(null, external);
-    JCR.validateName(internal);
-    return internal;
-  }
-
-  public final String decodeName(String internal) {
-    return domain.objectFormatter.decodeNodeName(null, internal);
-  }
-
   public final String getId(Object o) throws UndeclaredRepositoryException {
     if (o == null) {
       throw new NullPointerException();
@@ -133,21 +124,21 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public final <O> O insert(Object parent, Class<O> clazz, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
     ObjectContext parentCtx = unwrap(parent);
     O child = create(clazz);
     ObjectContext childtx = unwrap(child);
-    insertWithRelativePath(parentCtx, name, childtx);
+    insertWithRelativePath(parentCtx, relPath, childtx);
     return child;
   }
 
-  public final <O> O insert(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
+  public final <O> O insert(Class<O> clazz, String relPath) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
     O child = create(clazz);
-    persist(child, name);
+    persist(child, relPath);
     return child;
   }
 
-  public String persist(Object parent, Object child, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public final String persist(Object parent, Object child, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
       ObjectContext parentCtx = unwrap(parent);
       ObjectContext childCtx = unwrap(child);
@@ -158,7 +149,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public final String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
     ObjectContext parentCtx = unwrap(parent);
     ObjectContext childCtx = unwrap(child);
     String name = childCtx.state.getName();
@@ -174,7 +165,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public final String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
       ObjectContext ctx = unwrap(o);
       String name = ctx.state.getName();
@@ -189,7 +180,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
+  public final String persist(Object o, String relPath) throws NullPointerException, IllegalArgumentException, ChromatticException {
     try {
       ObjectContext ctx = unwrap(o);
       return _persist(ctx, relPath);
@@ -223,7 +214,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public <O> O findByPath(Object o, Class<O> clazz, String relPath) throws ChromatticException {
+  public final <O> O findByPath(Object o, Class<O> clazz, String relPath) throws ChromatticException {
     if (o == null) {
       throw new NullPointerException();
     }
@@ -241,7 +232,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public <O> O findByPath(Class<O> clazz, String relPath) throws ChromatticException {
+  public final <O> O findByPath(Class<O> clazz, String relPath) throws ChromatticException {
     if (clazz == null) {
       throw new NullPointerException();
     }
@@ -282,6 +273,57 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
+  public final Node getNode(Object o) {
+    if (o == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    ObjectContext ctx = unwrap(o);
+    return ctx.state.getNode();
+  }
+
+  public final String encodeName(String external) {
+    if (external == null) {
+      throw new NullPointerException("No null name accepted");
+    }
+    String internal;
+    try {
+      internal = domain.objectFormatter.encodeNodeName(null, external);
+    }
+    catch (Exception e) {
+      if (e instanceof NullPointerException) {
+        throw (NullPointerException)e;
+      }
+      if (e instanceof IllegalArgumentException) {
+        throw (IllegalArgumentException)e;
+      }
+      throw new UndeclaredThrowableException(e);
+    }
+    if (internal == null) {
+      throw new IllegalArgumentException("Name " + external + " was converted to null");
+    }
+    JCR.validateName(internal);
+    return internal;
+  }
+
+  public final String decodeName(String internal) {
+    String external;
+    try {
+      external = domain.objectFormatter.decodeNodeName(null, internal);
+    }
+    catch (Exception e) {
+      if (e instanceof IllegalStateException) {
+        throw (IllegalStateException)e;
+      }
+      throw new UndeclaredThrowableException(e);
+    }
+    if (external == null) {
+      throw new IllegalStateException("Null name returned by decoder");
+    }
+    return external;
+  }
+
   public final String getName(ObjectContext ctx) throws UndeclaredRepositoryException {
     if (ctx == null) {
       throw new NullPointerException();
@@ -289,7 +331,9 @@ public abstract class DomainSession implements ChromatticSession {
 
     //
     String name = ctx.state.getName();
-    name = decodeName(name);
+    if (name != null) {
+      name = decodeName(name);
+    }
 
     //
     return name;
@@ -403,7 +447,7 @@ public abstract class DomainSession implements ChromatticSession {
     }
   }
 
-  public ObjectContext unwrap(Object o) {
+  public final ObjectContext unwrap(Object o) {
     if (o == null) {
       throw new NullPointerException("Cannot unwrap null object");
     }

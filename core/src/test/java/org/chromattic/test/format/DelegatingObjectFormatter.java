@@ -16,37 +16,41 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.format;
 
-package org.chromattic.api.format;
+import org.chromattic.api.format.ObjectFormatter;
+import org.chromattic.api.format.FormatterContext;
+import junit.framework.AssertionFailedError;
 
 /**
- * Defines the default codec format that only performs validation of JCR names.
- *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class DefaultObjectFormatter implements ObjectFormatter {
+public class DelegatingObjectFormatter implements ObjectFormatter {
 
   /** . */
-  private static final DefaultObjectFormatter INSTANCE = new DefaultObjectFormatter();
-
-  public static DefaultObjectFormatter getInstance() {
-    return INSTANCE;
-  }
+  public static ObjectFormatter delegate;
 
   public String decodeNodeName(FormatterContext context, String internalName) {
-    return internalName;
+    return getDelegate().decodeNodeName(context, internalName);
   }
 
   public String encodeNodeName(FormatterContext context, String externalName) {
-    return externalName;
+    return getDelegate().encodeNodeName(context, externalName);
   }
 
   public String decodePropertyName(FormatterContext context, String internalName) {
-    return internalName;
+    return getDelegate().decodePropertyName(context, internalName);
   }
 
   public String encodePropertyName(FormatterContext context, String externalName) {
-    return externalName;
+    return getDelegate().encodePropertyName(context, externalName);
+  }
+
+  private static ObjectFormatter getDelegate() {
+    if (delegate == null) {
+      throw new AssertionFailedError();
+    }
+    return delegate;
   }
 }

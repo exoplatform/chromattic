@@ -62,7 +62,7 @@ public abstract class AbstractTestCase extends TestCase {
   }
 
   @Override
-  public void run(TestResult result) {
+  public final void run(TestResult result) {
 
     //
     boolean testWithAPT = false;
@@ -84,8 +84,12 @@ public abstract class AbstractTestCase extends TestCase {
     super.run(result);
   }
 
-  public DomainSession login() throws RepositoryException {
+  public final DomainSession login() {
     return (DomainSession)chromattic.openSession();
+  }
+
+  protected final ChromatticBuilder getBuilder() {
+    return builder;
   }
 
   protected final void addClass(Class<?> clazz) {

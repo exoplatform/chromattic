@@ -28,6 +28,7 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.api.Chromattic;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.format.DefaultObjectFormatter;
+import org.chromattic.api.format.ObjectFormatter;
 import org.reflext.jlr.JavaLangReflectTypeModel;
 import org.reflext.jlr.JavaLangReflectMethodModel;
 import org.reflext.core.TypeDomain;
@@ -50,9 +51,13 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
   /** . */
   private SessionLifeCycle sessionProvider;
 
+  /** . */
+  private ObjectFormatter objectFormatter;
+
   public ChromatticBuilderImpl() {
     setOption(INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl");
     setOption(SESSION_PROVIDER_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle");
+    setOption(NAME_VALIDATOR_CLASSNAME, DefaultObjectFormatter.class.getName());
   }
 
   private <T> T create(OptionInstance<String> optionInstance, Class<T> expectedClass) {
@@ -85,6 +90,8 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       instrumentor = create((OptionInstance<String>)optionInstance, Instrumentor.class);
     } else if (optionInstance.getOption() == SESSION_PROVIDER_CLASSNAME) {
       sessionProvider = create((OptionInstance<String>)optionInstance, SessionLifeCycle.class);
+    } else if (optionInstance.getOption() == NAME_VALIDATOR_CLASSNAME) {
+      objectFormatter = create((OptionInstance<String>)optionInstance, ObjectFormatter.class);
     }
   }
 
@@ -108,7 +115,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     }
 
     // Build domain
-    Domain domain = new Domain(mappings, instrumentor, new DefaultObjectFormatter());
+    Domain domain = new Domain(mappings, instrumentor, objectFormatter);
 
     //
     return new ChromatticImpl(domain, sessionProvider);

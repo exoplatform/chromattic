@@ -33,8 +33,8 @@ public interface ChromatticSession {
    *
    * @param clazz the object class
    * @return the instance
-   * @throws NullPointerException if the specified name is null
-   * @throws IllegalArgumentException if the specified class does not have a declared name
+   * @throws NullPointerException if the specified clazz is null
+   * @throws IllegalArgumentException if the specified class does not have a declared mapping
    * @throws ChromatticException any chromattic exception
    */
   <O> O create(Class<O> clazz) throws NullPointerException, IllegalArgumentException, ChromatticException;
