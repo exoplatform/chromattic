@@ -17,34 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.interfaceinheritance;
+package org.chromattic.test.inheritance;
 
-import org.chromattic.api.annotations.Property;
+import org.chromattic.api.annotations.NodeMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public interface TII_B_1 {
-
-  @Property(name = "string1")
-  String getString1();
-
-  void setString1(String s);
-
-  @Property(name = "string2")
-  String getString2();
-
-  void setString2(String s);
-
-  @Property(name = "strings1")
-  String[] getStrings1();
-
-  void setStrings1(String[] s);
-
-  @Property(name = "strings2")
-  String[] getStrings2();
-
-  void setStrings2(String[] s);
-
+@NodeMapping(name = "tii_a")
+public abstract class DImpl extends D {
 }

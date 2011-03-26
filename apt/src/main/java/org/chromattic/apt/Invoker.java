@@ -59,7 +59,7 @@ public class Invoker {
 
   public static Invoker getDeclaredMethod(Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
     MethodFinder visitor = new MethodFinder(methodName, parameterTypes);
-    visitor.accept(clazz.getSuperclass());
+    visitor.accept(clazz);
 
     //
     if (visitor.method == null) {

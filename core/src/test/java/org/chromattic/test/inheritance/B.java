@@ -17,21 +17,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.interfaceinheritance;
+package org.chromattic.test.inheritance;
 
-import org.chromattic.api.annotations.NodeMapping;
+import org.chromattic.api.annotations.Property;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tii_a")
-public abstract class TII_A_1 implements TII_B_1 {
+public abstract class B {
 
+  @Property(name = "string1")
+  public abstract String getString1();
+
+  public abstract void setString1(String s);
+
+  @Property(name = "string2")
   public abstract String getString2();
 
   public abstract void setString2(String s);
 
+  @Property(name = "strings1")
+  public abstract String[] getStrings1();
+
+  public abstract void setStrings1(String[] s);
+
+  @Property(name = "strings2")
   public abstract String[] getStrings2();
 
   public abstract void setStrings2(String[] s);

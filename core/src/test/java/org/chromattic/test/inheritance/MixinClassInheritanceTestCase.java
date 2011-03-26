@@ -17,14 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.interfaceinheritance;
-
-import org.chromattic.api.annotations.Mixin;
+package org.chromattic.test.inheritance;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Mixin(name = "tii_mixin")
-public interface TII_B_2 {
+public class MixinClassInheritanceTestCase extends AbstractMixinInheritanceTestCase<DImpl> {
+
+  protected Class<DImpl> getType() {
+    return DImpl.class;
+  }
 }

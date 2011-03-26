@@ -17,14 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.interfaceinheritance;
-
-import org.chromattic.api.annotations.NodeMapping;
+package org.chromattic.test.inheritance;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "tii_a")
-public abstract class TII_A_2 implements TII_B_2 {
+public class MixinInterfaceInheritanceTestCase extends AbstractMixinInheritanceTestCase<CImpl> {
+
+  protected Class<CImpl> getType() {
+    return CImpl.class;
+  }
 }

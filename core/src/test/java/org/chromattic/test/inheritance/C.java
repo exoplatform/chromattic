@@ -17,36 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.interfaceinheritance;
+package org.chromattic.test.inheritance;
 
-import org.chromattic.test.AbstractTestCase;
-import org.chromattic.api.ChromatticSession;
-
-import javax.jcr.Node;
-import javax.jcr.nodetype.NodeType;
-import java.util.HashSet;
-import java.util.Set;
+import org.chromattic.api.annotations.Mixin;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MixinTestCase extends AbstractTestCase {
-
-  protected void createDomain() {
-    addClass(TII_A_2.class);
-  }
-
-  public void testFoo() throws Exception {
-    ChromatticSession session = login();
-    TII_A_2 a = session.insert(TII_A_2.class, "tii_a");
-    Node rootNode = session.getJCRSession().getRootNode();
-    Node aNode = rootNode.getNode("tii_a");
-    assertNotNull(aNode);
-    Set<String> mixinNames = new HashSet<String>();
-    for (NodeType mixinNodeType : aNode.getMixinNodeTypes()) {
-      mixinNames.add(mixinNodeType.getName());
-    }
-    assertTrue(mixinNames.contains("tii_mixin"));
-  }
+@Mixin(name = "tii_mixin")
+public interface C {
 }

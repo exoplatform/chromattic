@@ -171,7 +171,7 @@ public class ChromatticProcessor extends AbstractProcessor {
           append(" ").append(methodId).append(" = ").
           append(Invoker.class.getSimpleName()).
           append(".getDeclaredMethod(").
-          append(simpleClassName).
+          append(method.getOwner().getName()).
           append(".class,").
           append('"').
           append(methodName).
