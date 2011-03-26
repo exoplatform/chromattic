@@ -62,47 +62,47 @@ public class Logger {
   }
 
   public boolean isTraceEnabled() {
-    return logger.isInfoEnabled();
+    return logger.isTraceEnabled();
   }
 
   public void trace(String s) {
-    logger.info(s);
+    logger.trace(s);
   }
 
   public void trace(String s, Object o) {
-    logger.info(s, o);
+    logger.trace(s, o);
   }
 
   public void trace(String s, Object o, Object o1) {
-    logger.info(s, o, o1);
+    logger.trace(s, o, o1);
   }
 
   public void trace(String s, Object... objects) {
-    logger.info(s, objects);
+    logger.trace(s, objects);
   }
 
   public void trace(String s, Throwable throwable) {
-    logger.info(s, throwable);
+    logger.trace(s, throwable);
   }
 
   public void debug(String s) {
-    logger.info(s);
+    logger.debug(s);
   }
 
   public void debug(String s, Object o) {
-    logger.info(s, o);
+    logger.debug(s, o);
   }
 
   public void debug(String s, Object o, Object o1) {
-    logger.info(s, o, o1);
+    logger.debug(s, o, o1);
   }
 
   public void debug(String s, Object... objects) {
-    logger.info(s, objects);
+    logger.debug(s, objects);
   }
 
   public void debug(String s, Throwable throwable) {
-    logger.info(s, throwable);
+    logger.debug(s, throwable);
   }
 
   public boolean isInfoEnabled() {
@@ -134,7 +134,7 @@ public class Logger {
   }
 
   public boolean isDebugEnabled() {
-    return logger.isInfoEnabled();
+    return logger.isDebugEnabled();
   }
 
   public void warn(String s) {
