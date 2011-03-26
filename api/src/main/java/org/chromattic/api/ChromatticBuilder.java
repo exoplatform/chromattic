@@ -242,7 +242,7 @@ public abstract class ChromatticBuilder {
 
     public OptionInstance<T> getInstance(String value) {
       T t = type.parse(value);
-      return t != null ? null : new OptionInstance<T>(this, t);
+      return t != null ? new OptionInstance<T>(this, t) : null;
     }
   }
 
