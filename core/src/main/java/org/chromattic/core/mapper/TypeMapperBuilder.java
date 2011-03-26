@@ -42,6 +42,7 @@ import org.chromattic.core.mapper.onetomany.reference.JCRReferentCollectionPrope
 import org.chromattic.core.mapper.onetomany.reference.JCRNamedReferentPropertyMapper;
 import org.chromattic.core.mapper.onetomany.hierarchical.JCRAnyChildCollectionPropertyMapper;
 import org.chromattic.core.mapper.onetomany.hierarchical.JCRAnyChildParentPropertyMapper;
+import org.chromattic.core.mapper.onetomany.hierarchical.AnyChildMultiValueMapper;
 import org.chromattic.core.mapper.onetoone.hierarchical.JCRNamedChildPropertyMapper;
 import org.chromattic.core.mapper.onetoone.hierarchical.JCRNamedChildParentPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyPropertyMapper;
@@ -59,6 +60,7 @@ import org.chromattic.core.bean.SimpleValueInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.BuilderException;
+import org.chromattic.api.annotations.NameFormat;
 import org.chromattic.api.format.CodecFormat;
 import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.reflext.api.ClassTypeInfo;
@@ -204,7 +206,28 @@ public class TypeMapperBuilder {
                 }
               } else {
                 if (pmhm.getType() == RelationshipType.HIERARCHIC) {
-                  JCRAnyChildParentPropertyMapper bilto = new JCRAnyChildParentPropertyMapper((MultiValuedPropertyInfo<BeanValueInfo>)pm.getInfo());
+
+                  MultiValuedPropertyInfo<BeanValueInfo> mpi = (MultiValuedPropertyInfo<BeanValueInfo>)pm.getInfo();
+                  AnyChildMultiValueMapper valueMapper;
+                  if (mpi instanceof MapPropertyInfo) {
+                    NameFormat format = mpi.getAnnotation(NameFormat.class);
+                    CodecFormat<String, String> keyFormat = null;
+                    if (format != null) {
+                      try {
+                        keyFormat = format.value().newInstance();
+                      }
+                      catch (InstantiationException e) {
+                        throw new BuilderException(e);
+                      }
+                      catch (IllegalAccessException e) {
+                        throw new BuilderException(e);
+                      }
+                    }
+                    valueMapper = new AnyChildMultiValueMapper.Map(keyFormat);
+                  } else {
+                    valueMapper = new AnyChildMultiValueMapper.Collection();
+                  }
+                  JCRAnyChildParentPropertyMapper bilto = new JCRAnyChildParentPropertyMapper(mpi, valueMapper);
                   relatedProperties.get(pmhm.getRelatedType()).add(bilto);
                   propertyMappers.add(bilto);
                 }

@@ -22,7 +22,6 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.bean.MultiValuedPropertyInfo;
-import org.chromattic.core.bean.MapPropertyInfo;
 import org.chromattic.core.bean.BeanValueInfo;
 
 /**
@@ -32,21 +31,17 @@ import org.chromattic.core.bean.BeanValueInfo;
 public class JCRAnyChildParentPropertyMapper extends JCRNodeCollectionPropertyMapper {
 
   /** . */
-  private final boolean map;
+  private final AnyChildMultiValueMapper valueMapper;
 
-  public JCRAnyChildParentPropertyMapper(MultiValuedPropertyInfo<BeanValueInfo> info) throws ClassNotFoundException {
+  public JCRAnyChildParentPropertyMapper(MultiValuedPropertyInfo<BeanValueInfo> info, AnyChildMultiValueMapper valueMapper) throws ClassNotFoundException {
     super(info);
 
     //
-    map = info instanceof MapPropertyInfo;
+    this.valueMapper = valueMapper;
   }
 
   @Override
   public Object get(ObjectContext context) throws Throwable {
-    if (map) {
-      return new AnyChildMap(this, context);
-    } else {
-      return new AnyChildCollection(this, context);
-    }
+    return valueMapper.createValue(context, getRelatedClass());
   }
 }

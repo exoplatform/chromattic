@@ -19,8 +19,6 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
-import org.chromattic.core.ObjectContext;
-
 import java.util.Map;
 import java.util.AbstractSet;
 import java.util.Iterator;
@@ -32,24 +30,19 @@ import java.util.Iterator;
 public class AnyChildEntrySet extends AbstractSet<Map.Entry<String, Object>> {
 
   /** . */
-  private final ObjectContext parentCtx;
+  private final AnyChildMap map;
 
-  /** . */
-  private final JCRAnyChildParentPropertyMapper mapper;
-
-  public AnyChildEntrySet(JCRAnyChildParentPropertyMapper mapper, ObjectContext parentCtx) {
-    this.parentCtx = parentCtx;
-    this.mapper = mapper;
+  public AnyChildEntrySet(AnyChildMap map) {
+    this.map = map;
   }
 
   public Iterator<Map.Entry<String, Object>> iterator() {
-    Iterator<Object> iterator = (Iterator<Object>)parentCtx.getChildren(mapper.getRelatedClass());
-    return new AnyChildEntryIterator(iterator, parentCtx);
+    return new AnyChildEntryIterator(map);
   }
 
   public int size() {
     int size = 0;
-    Iterator<Object> iterator = (Iterator<Object>)parentCtx.getChildren(mapper.getRelatedClass());
+    Iterator<Object> iterator = (Iterator<Object>)map.parentCtx.getChildren(map.relatedClass);
     while (iterator.hasNext()) {
       iterator.next();
       size++;

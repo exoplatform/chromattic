@@ -16,22 +16,36 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.chromattic.test.format.name;
+package org.chromattic.core.mapper.onetomany.hierarchical;
 
+import org.chromattic.core.ObjectContext;
 import org.chromattic.api.format.CodecFormat;
-import org.chromattic.api.format.FormatException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class FooPrefixFormat implements CodecFormat<String, String> {
+public abstract class AnyChildMultiValueMapper {
 
-  public String decode(String internal) throws FormatException {
-    return internal.substring(3);
+  abstract Object createValue(ObjectContext parentCtx, Class<?> relatedClass);
+
+  public static class Map extends AnyChildMultiValueMapper {
+
+    /** . */
+    private final CodecFormat<String, String> keyFormat;
+
+    public Map(CodecFormat<String, String> keyFormat) {
+      this.keyFormat = keyFormat;
+    }
+
+    Object createValue(ObjectContext parentCtx, Class<?> relatedClass) {
+      return new AnyChildMap(keyFormat, parentCtx, relatedClass);
+    }
   }
 
-  public String encode(String external) throws FormatException {
-    return "foo" + external;
+  public static class Collection extends AnyChildMultiValueMapper {
+    Object createValue(ObjectContext parentCtx, Class<?> relatedClass) {
+      return new AnyChildCollection(parentCtx, relatedClass);
+    }
   }
 }

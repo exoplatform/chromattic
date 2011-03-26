@@ -20,6 +20,7 @@
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.ObjectContext;
+import org.chromattic.api.format.CodecFormat;
 
 import java.util.AbstractMap;
 import java.util.Set;
@@ -31,18 +32,34 @@ import java.util.Set;
 public class AnyChildMap extends AbstractMap<String, Object> {
 
   /** . */
-  private final AnyChildEntrySet entries;
+  final CodecFormat<String, String> keyFormat;
 
   /** . */
-  private final ObjectContext parentCtx;
+  final ObjectContext parentCtx;
 
-  public AnyChildMap(JCRAnyChildParentPropertyMapper mapper, ObjectContext parentCtx) {
-    this.entries = new AnyChildEntrySet(mapper, parentCtx);
+  /** . */
+  final Class<?> relatedClass;
+
+  /** . */
+  private final AnyChildEntrySet entries;
+
+  public AnyChildMap(
+    CodecFormat<String, String> keyFormat,
+    ObjectContext parentCtx,
+    Class<?> relatedClass) {
+    this.keyFormat = keyFormat;
+    this.relatedClass = relatedClass;
+    this.entries = new AnyChildEntrySet(this);
     this.parentCtx = parentCtx;
   }
 
   @Override
   public Object put(String key, Object value) {
+    if (keyFormat != null) {
+      key = keyFormat.encode(key);
+    }
+
+    //
     parentCtx.addChild(key, value);
 
     // We don't support replacement yet

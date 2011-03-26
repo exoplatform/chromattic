@@ -34,10 +34,10 @@ class AnyChildCollection extends AbstractCollection<Object> {
   private final ObjectContext parentCtx;
 
   /** . */
-  private final JCRAnyChildParentPropertyMapper mapper;
+  private final Class<?> relatedClass;
 
-  public AnyChildCollection(JCRAnyChildParentPropertyMapper mapper, ObjectContext parentCtx) {
-    this.mapper = mapper;
+  public AnyChildCollection(ObjectContext parentCtx, Class<?> relatedClass) {
+    this.relatedClass = relatedClass;
     this.parentCtx = parentCtx;
   }
 
@@ -48,7 +48,7 @@ class AnyChildCollection extends AbstractCollection<Object> {
   }
 
   public Iterator<Object> iterator() {
-    return (Iterator<Object>)parentCtx.getChildren(mapper.getRelatedClass());
+    return (Iterator<Object>)parentCtx.getChildren(relatedClass);
   }
 
   public int size() {

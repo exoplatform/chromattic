@@ -20,7 +20,6 @@
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.common.AbstractFilterIterator;
-import org.chromattic.core.ObjectContext;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -32,24 +31,37 @@ import java.util.Map;
 public class AnyChildEntryIterator extends AbstractFilterIterator<Map.Entry<String, Object>, Object> {
 
   /** . */
-  private final ObjectContext parentCtx;
+  private final AnyChildMap map;
 
-  public AnyChildEntryIterator(Iterator<Object> objectIterator, ObjectContext parentCtx) throws NullPointerException {
-    super(objectIterator);
+  public AnyChildEntryIterator(AnyChildMap map) throws NullPointerException {
+    super((Iterator<Object>)map.parentCtx.getChildren(map.relatedClass));
 
     //
-    this.parentCtx = parentCtx;
+    this.map = map;
   }
 
   protected Map.Entry<String, Object> adapt(final Object internal) {
-    final String name = parentCtx.getSession().getName(internal);
     return new Map.Entry<String, Object>() {
+
+      /** . */
+      private final String name;
+
+      {
+        String name = map.parentCtx.getSession().getName(internal);
+        if (map.keyFormat != null) {
+          name = map.keyFormat.decode(name);
+        }
+        this.name = name;
+      }
+
       public String getKey() {
         return name;
       }
+
       public Object getValue() {
         return internal;
       }
+
       public Object setValue(Object value) {
         throw new UnsupportedOperationException();
       }
