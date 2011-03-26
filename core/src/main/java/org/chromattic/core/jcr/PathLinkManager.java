@@ -18,7 +18,6 @@
  */
 package org.chromattic.core.jcr;
 
-import org.chromattic.common.JCR;
 import org.chromattic.common.AbstractFilterIterator;
 import org.chromattic.api.UndeclaredRepositoryException;
 
@@ -39,9 +38,9 @@ import java.util.Iterator;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PathRelationshipManager extends AbstractRelationshipManager {
+public class PathLinkManager extends AbstractLinkManager {
 
-  public PathRelationshipManager(Session session) {
+  public PathLinkManager(Session session) {
     super(session);
   }
 

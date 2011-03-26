@@ -16,6 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
 package org.chromattic.core.jcr;
 
 import org.chromattic.common.AbstractFilterIterator;
@@ -31,12 +32,20 @@ import javax.jcr.PropertyIterator;
 import java.util.Iterator;
 
 /**
+ * <p>The reference manager takes care of managing references between nodes. The main reason is that
+ * JCR reference management is a bit weird about the usage of <tt>Node#getReferences()</tt>. The goal
+ * of this class is to manage one to many relationships between nodes and their consistency.</p>
+ *
+ * <p>The life time of this object is valid from the beginning of the session until the session
+ * or a portion of the session is saved. When a session is saved, the clear operation will reset
+ * the state of the reference manager.</p>
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class ReferenceRelationshipManager extends AbstractRelationshipManager {
+public class ReferenceLinkManager extends AbstractLinkManager {
 
-  public ReferenceRelationshipManager(Session session) {
+  public ReferenceLinkManager(Session session) {
     super(session);
   }
 

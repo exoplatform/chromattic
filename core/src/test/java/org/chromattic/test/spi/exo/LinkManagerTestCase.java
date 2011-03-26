@@ -27,7 +27,7 @@ import javax.jcr.Node;
 
 import org.chromattic.exo.RepositoryBootstrap;
 import org.chromattic.common.Collections;
-import org.chromattic.core.jcr.AbstractRelationshipManager;
+import org.chromattic.core.jcr.AbstractLinkManager;
 
 import java.util.Iterator;
 import java.util.ConcurrentModificationException;
@@ -36,9 +36,9 @@ import java.util.ConcurrentModificationException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ReferenceManagerTestCase extends TestCase {
+public abstract class LinkManagerTestCase extends TestCase {
 
-  protected abstract AbstractRelationshipManager createLinkManager(Session session);
+  protected abstract AbstractLinkManager createLinkManager(Session session);
 
   /** . */
   private Repository repo;
@@ -56,7 +56,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
 
   public void testAdd() throws Exception {
     Session session = repo.login();
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a5");
     a.addMixin("mix:referenceable");
@@ -74,7 +74,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
 
   public void testRemoveTransient() throws Exception {
     Session session = repo.login();
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a6");
     a.addMixin("mix:referenceable");
@@ -96,7 +96,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
 
   public void testRemovePersistent() throws Exception {
     Session session = repo.login();
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a7");
     a.addMixin("mix:referenceable");
@@ -123,7 +123,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
 
   public void testReAddTransientlyRemovedPersistent() throws Exception {
     Session session = repo.login();
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a8");
     a.addMixin("mix:referenceable");
@@ -154,7 +154,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
 
   public void testUpdate() throws Exception {
     Session session = repo.login();
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     Node root = session.getRootNode();
     Node a = root.addNode("a9");
     a.addMixin("mix:referenceable");
@@ -187,7 +187,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b10");
     session.save();
 
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     Iterator i = mgr.getReferents(a, "ref");
     mgr.setReferenced(b, "ref", a);
     try {
@@ -204,7 +204,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     session.save();
 
@@ -225,7 +225,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     session.save();
 
@@ -249,7 +249,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b11");
     Node c = root.addNode("c11");
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     session.save();
 
@@ -270,7 +270,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
     Node a = root.addNode("a10");
     a.addMixin("mix:referenceable");
     Node b = root.addNode("b10");
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     session.save();
 
@@ -294,7 +294,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b10");
     session.save();
 
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     Iterator i = mgr.getReferents(a, "ref");
     mgr.setReferenced(b, "ref", null);
@@ -314,7 +314,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b10");
     session.save();
 
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     Iterator i = mgr.getReferents(a, "ref");
     Iterator j = mgr.getReferents(a, "ref");
@@ -337,7 +337,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
     Node c = root.addNode("c11");
     session.save();
 
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     Iterator i = mgr.getReferents(a, "ref");
     mgr.setReferenced(c, "ref", a);
@@ -357,7 +357,7 @@ public abstract class ReferenceManagerTestCase extends TestCase {
     Node b = root.addNode("b10");
     session.save();
 
-    AbstractRelationshipManager mgr = createLinkManager(session);
+    AbstractLinkManager mgr = createLinkManager(session);
     mgr.setReferenced(b, "ref", a);
     mgr.setReferenced(b, "ref", null);
     Iterator i = mgr.getReferents(a, "ref");

@@ -47,7 +47,7 @@ import java.util.ConcurrentModificationException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class AbstractRelationshipManager {
+public abstract class AbstractLinkManager {
 
   /** . */
   private Map<String, Entry> entries = new HashMap<String, Entry>();
@@ -55,7 +55,7 @@ public abstract class AbstractRelationshipManager {
   /** . */
   protected final Session session;
 
-  public AbstractRelationshipManager(Session session) {
+  public AbstractLinkManager(Session session) {
     this.session = session;
   }
 
