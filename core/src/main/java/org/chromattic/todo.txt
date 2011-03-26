@@ -16,8 +16,6 @@
 - test reference iterator remove
 - test reference iterator concurrent modification exceptions
 - pluggable simple types : enums, annotated classes
-- ordered children support with list
-- sorted map support for ordered children ?
 - name mapping, for instance foo -> exo:foo
 - improve @OneToMany Map<String, ?> remove() method to remove by getting a child and not the default iterator operation
 - type coercion unit testing
@@ -34,7 +32,6 @@
 - a cache invalidation framework based on transforming node to object id + class
 
 *** Patrice
-- mapping of @Property List<T>
 - @Property(name="foo", default="bar") : Needed to initialize a property with a default value (in case it was no done in nodetype def)
 - alternatively : @Initialize public <T> T someCustomMethod(T objectToInitialize) {// let me implement whatever logic I want to initialize my object with default values}
 - <T> T Session.loadOrCreate(Class<T> clazz, String absPath) // tries to load an object from location "absPath" and initializes a new one if it does not exist (the parent location must exist)
