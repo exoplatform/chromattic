@@ -33,7 +33,7 @@ public class NodeTypeMapping extends TypeMapping {
   private final String nodeTypeName;
 
   /** . */
-  private final Set<String> mixinNames;
+  private final Set<String> mixinTypeNames;
 
   public NodeTypeMapping(
     ClassTypeInfo objectClass,
@@ -41,7 +41,7 @@ public class NodeTypeMapping extends TypeMapping {
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
     String nodeTypeName,
-    Set<String> mixinNames) {
+    Set<String> mixinTypeNames) {
     super(
       objectClass,
       propertyMappings,
@@ -50,11 +50,11 @@ public class NodeTypeMapping extends TypeMapping {
 
     //
     this.nodeTypeName = nodeTypeName;
-    this.mixinNames = mixinNames;
+    this.mixinTypeNames = mixinTypeNames;
   }
 
-  public Set<String> getMixinNames() {
-    return mixinNames;
+  public Set<String> getMixinTypeNames() {
+    return mixinTypeNames;
   }
 
   public String getNodeTypeName() {

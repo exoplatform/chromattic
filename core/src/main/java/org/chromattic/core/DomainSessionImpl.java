@@ -189,8 +189,8 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    String primaryNodeTypeName = mapper.getPrimaryNodeTypeName();
-    List<String> mixinNodeTypeNames = mapper.getMixinNodeTypeNames();
+    String primaryNodeTypeName = mapper.getNodeTypeName();
+    List<String> mixinNodeTypeNames = mapper.getMixinTypeNames();
     log.trace("Setting context {} for insertion", dstCtx);
     log.trace("Adding node for context {} and node type {} as child of node {}", dstCtx, primaryNodeTypeName, dstParentNode.getPath());
 

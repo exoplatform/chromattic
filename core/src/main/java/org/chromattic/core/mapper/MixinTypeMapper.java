@@ -30,7 +30,7 @@ import java.util.Set;
 public class MixinTypeMapper extends TypeMapper {
 
   /** . */
-  private final String mixinName;
+  private final String mixinTypeName;
 
   public MixinTypeMapper(
     Class<?> objectClass,
@@ -38,7 +38,7 @@ public class MixinTypeMapper extends TypeMapper {
     Set<MethodMapper> methodMappers,
     NameConflictResolution onDuplicate,
     Instrumentor instrumentor,
-    String mixinName) {
+    String mixinTypeName) {
     super(
       objectClass,
       propertyMappers,
@@ -47,11 +47,11 @@ public class MixinTypeMapper extends TypeMapper {
       instrumentor);
 
     //
-    this.mixinName = mixinName;
+    this.mixinTypeName = mixinTypeName;
   }
 
   @Override
   public String getTypeName() {
-    return mixinName;
+    return mixinTypeName;
   }
 }

@@ -31,10 +31,10 @@ import java.util.Set;
 public class NodeTypeMapper extends TypeMapper {
 
   /** . */
-  private final String primaryNodeTypeName;
+  private final String nodeTypeName;
 
   /** . */
-  private final List<String> mixinNodeTypeNames;
+  private final List<String> mixinTypeNames;
 
   public NodeTypeMapper(
     Class<?> objectClass,
@@ -42,8 +42,8 @@ public class NodeTypeMapper extends TypeMapper {
     Set<MethodMapper> methodMappers,
     NameConflictResolution onDuplicate,
     Instrumentor instrumentor,
-    String primaryNodeTypeName,
-    List<String> mixinNodeTypeNames) {
+    String nodeTypeName,
+    List<String> mixinTypeNames) {
     super(
       objectClass,
       propertyMappers,
@@ -52,25 +52,25 @@ public class NodeTypeMapper extends TypeMapper {
       instrumentor);
 
     //
-    this.primaryNodeTypeName = primaryNodeTypeName;
-    this.mixinNodeTypeNames = mixinNodeTypeNames;
+    this.nodeTypeName = nodeTypeName;
+    this.mixinTypeNames = mixinTypeNames;
   }
 
   @Override
   public String getTypeName() {
-    return primaryNodeTypeName;
+    return nodeTypeName;
   }
 
-  public String getPrimaryNodeTypeName() {
-    return primaryNodeTypeName;
+  public String getNodeTypeName() {
+    return nodeTypeName;
   }
 
-  public List<String> getMixinNodeTypeNames() {
-    return mixinNodeTypeNames;
+  public List<String> getMixinTypeNames() {
+    return mixinTypeNames;
   }
 
   @Override
   public String toString() {
-    return "NodeTypeMapper[class=" + objectClass + ",primaryNodeTypeName=" + primaryNodeTypeName + "]";
+    return "NodeTypeMapper[class=" + objectClass + ",nodeTypeName=" + nodeTypeName + "]";
   }
 }

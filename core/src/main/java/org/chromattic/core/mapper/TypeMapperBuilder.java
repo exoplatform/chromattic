@@ -279,7 +279,7 @@ public class TypeMapperBuilder {
 
         //
         List<String> mixinNames = new ArrayList<String>();
-        for (String mixinName : nodeTypeMapping.getMixinNames()) {
+        for (String mixinName : nodeTypeMapping.getMixinTypeNames()) {
           mixinNames.add(mixinName);
         }
 
@@ -302,7 +302,7 @@ public class TypeMapperBuilder {
           methodMappers,
           typeMapping.getOnDuplicate(),
           instrumentor,
-          mixinTypeMapping.getMixinName());
+          mixinTypeMapping.getMixinTypeName());
       }
 
       // Finish wiring

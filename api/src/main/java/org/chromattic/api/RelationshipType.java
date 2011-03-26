@@ -30,18 +30,27 @@ package org.chromattic.api;
 public enum RelationshipType {
 
   /**
-   * A hierarchic relationship uses the natural parent child relationship to associate nodes.
+   * A hierarchic relationship uses the natural parent child relationship to associate nodes. It is valid either
+   * for one to one or one to many relationship.
    */
   HIERARCHIC,
 
   /**
-   * A reference relationship uses reference a typed property to associate nodes.
+   * A reference relationship uses reference a typed property to associate nodes. It is only valid for one to many
+   * relationships.
    */
   REFERENCE,
 
   /**
-   * A path relationship uses path a typed property to associate nodes.
+   * A path relationship uses path a typed property to associate nodes. It is only valid for one to many
+   * relationships.
    */
-  PATH
+  PATH,
+
+  /**
+   * A mixin relationship use the mixin of a node type that are added / removed during the node type life cycle.
+   * It is only valid for one to one relationships.
+   */
+  MIXIN
 
 }

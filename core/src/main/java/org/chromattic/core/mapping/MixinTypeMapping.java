@@ -30,14 +30,14 @@ import java.util.Set;
 public class MixinTypeMapping extends TypeMapping {
 
   /** . */
-  private final String mixinName;
+  private final String mixinTypeName;
 
   public MixinTypeMapping(
     ClassTypeInfo objectClass,
     Set<PropertyMapping> propertyMappings,
     Set<MethodMapping> methodMappings,
     NameConflictResolution onDuplicate,
-    String mixinName) {
+    String mixinTypeName) {
     super(
       objectClass,
       propertyMappings,
@@ -45,15 +45,15 @@ public class MixinTypeMapping extends TypeMapping {
       onDuplicate);
 
     //
-    this.mixinName = mixinName;
+    this.mixinTypeName = mixinTypeName;
   }
 
-  public String getMixinName() {
-    return mixinName;
+  public String getMixinTypeName() {
+    return mixinTypeName;
   }
 
   @Override
   public String toString() {
-    return "MixinTypeMapping[objectClass=" + objectClass.getName() + ",mixinName=" + mixinName + "]";
+    return "MixinTypeMapping[objectClass=" + objectClass.getName() + ",mixinName=" + mixinTypeName + "]";
   }
 }

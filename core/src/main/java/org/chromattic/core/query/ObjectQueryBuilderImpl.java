@@ -93,7 +93,7 @@ public class ObjectQueryBuilderImpl implements ObjectQueryBuilder {
 
     //
     StringBuffer sb = new StringBuffer("SELECT * FROM ");
-    sb.append(mapper.getPrimaryNodeTypeName());
+    sb.append(mapper.getNodeTypeName());
     if (where != null) {
       sb.append(" WHERE ");
       sb.append(where);
