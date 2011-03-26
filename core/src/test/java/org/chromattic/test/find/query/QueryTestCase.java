@@ -36,28 +36,33 @@ public class QueryTestCase extends AbstractTestCase {
     addClass(TFI_A.class);
   }
 
+  /** . */
+  private int count = 0;
+
   public void testQuery() throws Exception {
     DomainSession session = login();
     if (session.getRoot().hasNode("tfi_a")) {
       session.getRoot().getNode("tfi_a").remove(); // because of session save
     }
 
+    String value = "" + Math.round(Math.random() * 1000000);
+
     TFI_A a = session.insert(TFI_A.class, "tfi_a");
-    a.setFoo("bar");
+    a.setFoo(value);
     session.save();
+    count++;
 
     //
     Collection<TFI_A> r1 = new ArrayList<TFI_A>();
     for (TFI_A b : session.createQueryBuilder().from(TFI_A.class)) {
       r1.add(b);
     }
-    assertEquals(1, r1.size());
-    Iterator<TFI_A> i = r1.iterator();
-    assertSame(a, i.next());
+    assertEquals(count, r1.size());
+    assertTrue(r1.contains(a));
 
     //
     Collection<TFI_A> r2 = new ArrayList<TFI_A>();
-    for (TFI_A b : session.createQueryBuilder().where("foo='bar'").from(TFI_A.class)) {
+    for (TFI_A b : session.createQueryBuilder().where("foo='" + value + "'").from(TFI_A.class)) {
       r2.add(b);
     }
     assertEquals(1, r2.size());
