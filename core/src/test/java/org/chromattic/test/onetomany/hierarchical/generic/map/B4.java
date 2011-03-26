@@ -16,21 +16,18 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.onetomany.hierarchical.generic.map;
 
-package org.chromattic.test.onetomany.hierarchical.map;
-
+import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.NodeMapping;
-import org.chromattic.api.annotations.OneToMany;
-
-import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@NodeMapping(name = "totm_a")
-public abstract class A {
+@NodeMapping(name = "totm_b")
+public abstract class B4 {
 
-  @OneToMany
-  public abstract Map<String, B> getChildren();
+  @ManyToOne
+  public abstract A4 getParent();
 }

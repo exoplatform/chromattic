@@ -16,14 +16,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.chromattic.test.onetomany.hierarchical.generic.map;
 
-package org.chromattic.test.onetomany.hierarchical.map;
-
-import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
+import org.chromattic.api.Status;
+import org.chromattic.core.DomainSession;
+import org.chromattic.test.AbstractTestCase;
 
 import javax.jcr.Node;
 import java.util.Map;
@@ -32,11 +31,11 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OneToManyTestCase extends AbstractTestCase {
+public class MapTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(A.class);
-    addClass(B.class);
+    addClass(A3.class);
+    addClass(B3.class);
   }
 
   public void testLoad() throws Exception {
@@ -50,12 +49,12 @@ public class OneToManyTestCase extends AbstractTestCase {
 
     //
     session = login();
-    A a = session.findById(A.class, aId);
+    A3 a = session.findById(A3.class, aId);
     assertNotNull(a);
-    B b = session.findById(B.class, bId);
+    B3 b = session.findById(B3.class, bId);
     assertEquals(a, b.getParent());
     assertEquals(a, b.getParent());
-    Map<String, B> children = a.getChildren();
+    Map<String, B3> children = a.getChildren();
     assertNotNull(children);
     assertTrue(children.containsKey("b"));
     assertEquals(b, children.get("b"));
@@ -64,8 +63,8 @@ public class OneToManyTestCase extends AbstractTestCase {
   public void testPut() throws Exception {
     ChromatticSession session = login();
 
-    A a = session.insert(A.class, "totmhm_a");
-    B b = session.create(B.class);
+    A3 a = session.insert(A3.class, "totmhm_a");
+    B3 b = session.create(B3.class);
 
     assertNull(a.getChildren().put("totmhm_b", b));
 
@@ -77,7 +76,7 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testGetWithInvalidName() throws Exception {
     ChromatticSession session = login();
-    A a = session.insert(A.class, "totmhm_a");
+    A3 a = session.insert(A3.class, "totmhm_a");
     try {
       a.getChildren().get("/foo");
       fail();
@@ -88,14 +87,14 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testGetWithNullName() throws Exception {
     ChromatticSession session = login();
-    A a = session.insert(A.class, "totmhm_a");
+    A3 a = session.insert(A3.class, "totmhm_a");
     assertNull(a.getChildren().get(null));
   }
 
   public void testPutWithInvalidName() throws Exception {
     ChromatticSession session = login();
-    A a = session.insert(A.class, "totmhm_a");
-    B b = session.create(B.class);
+    A3 a = session.insert(A3.class, "totmhm_a");
+    B3 b = session.create(B3.class);
     try {
       a.getChildren().put("/foo", b);
       fail();
@@ -106,8 +105,8 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testPutWithNullName() throws Exception {
     ChromatticSession session = login();
-    A a = session.insert(A.class, "totmhm_a");
-    B b = session.create(B.class);
+    A3 a = session.insert(A3.class, "totmhm_a");
+    B3 b = session.create(B3.class);
     try {
       a.getChildren().put(null, b);
       fail();
@@ -118,9 +117,9 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testRemoveTransient() throws Exception {
     ChromatticSession session = login();
-    A a = session.insert(A.class, "totmhm_a");
-    B b = session.create(B.class);
-    Map<String, B> children = a.getChildren();
+    A3 a = session.insert(A3.class, "totmhm_a");
+    B3 b = session.create(B3.class);
+    Map<String, B3> children = a.getChildren();
     children.put("b", b);
     assertSame(b, children.remove("b"));
     assertEquals(Status.REMOVED, session.getStatus(b));
@@ -129,8 +128,8 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testRemovePersistent() throws Exception {
     ChromatticSession session = login();
-    A a = session.insert(A.class, "totmhm_a");
-    B b = session.create(B.class);
+    A3 a = session.insert(A3.class, "totmhm_a");
+    B3 b = session.create(B3.class);
     a.getChildren().put("b", b);
     session.save();
     assertSame(b, a.getChildren().remove("b"));
@@ -140,9 +139,9 @@ public class OneToManyTestCase extends AbstractTestCase {
 
   public void testDuplicatePutFails() throws Exception {
     ChromatticSession session = login();
-    A a = session.insert(A.class, "totmhm_a");
-    B b1 = session.create(B.class);
-    B b2 = session.create(B.class);
+    A3 a = session.insert(A3.class, "totmhm_a");
+    B3 b1 = session.create(B3.class);
+    B3 b2 = session.create(B3.class);
     a.getChildren().put("b", b1);
     try {
       a.getChildren().put("b", b2);
