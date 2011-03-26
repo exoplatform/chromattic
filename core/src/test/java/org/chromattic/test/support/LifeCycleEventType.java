@@ -24,5 +24,5 @@ package org.chromattic.test.support;
  * @version $Revision$
  */
 public enum LifeCycleEventType {
-  CREATED,LOADED,PERSISTED,REMOVED
+  CREATED,LOADED, ADDED, REMOVED
 }

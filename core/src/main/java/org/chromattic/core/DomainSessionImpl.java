@@ -417,8 +417,9 @@ public class DomainSessionImpl extends DomainSession {
         ctx = new EntityContext(mapper);
         log.trace("Inserted context {} loaded from node id {}", ctx, id);
         contexts.put(id, ctx);
-        ctx.state = new PersistentEntityContextState(node, this);
-        broadcaster.loaded(ctx.getObject());
+        PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
+        ctx.state = persistentState;
+        broadcaster.loaded(persistentState, ctx.getObject());
       }
       else {
         log.trace("Context {} is already present for id ", ctx, id);
@@ -442,8 +443,9 @@ public class DomainSessionImpl extends DomainSession {
       }
       log.trace("Inserted context {} for id {}", ctx, id);
       contexts.put(id, ctx);
-      ctx.state = new PersistentEntityContextState(node, this);
-      broadcaster.persisted(ctx.getObject());
+      PersistentEntityContextState persistentState = new PersistentEntityContextState(node, this);
+      ctx.state = persistentState;
+      broadcaster.added(persistentState, ctx.getObject());
     }
     else {
       log.trace("Could not find mapper for node type {}", nodeTypeName);
@@ -454,8 +456,9 @@ public class DomainSessionImpl extends DomainSession {
     log.trace("Removing context for id {}", nodeId);
     EntityContext ctx = contexts.remove(nodeId);
     if (ctx != null) {
+      PersistentEntityContextState persistentState = (PersistentEntityContextState)ctx.state; 
       ctx.state = new RemovedEntityContextState(nodeId);
-      broadcaster.removed(ctx.getObject());
+      broadcaster.removed(persistentState, ctx.getObject());
       log.trace("Removed context {} for id {}", ctx, nodeId);
     } else {
       log.trace("Context absent for removal for id {}", ctx, nodeId);

@@ -60,7 +60,7 @@ public class LifeCycleTestCase extends AbstractTestCase {
     listener.assertEmpty();
     TLF_A.constructed = 0;
     TLF_A a = session.findById(TLF_A.class, id);
-    listener.assertLifeCycleEvent(LifeCycleEventType.LOADED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.LOADED, session.getId(a), session.getPath(a), session.getName(a), a);
     listener.assertEmpty();
     assertEquals(Status.PERSISTENT, session.getStatus(a));
     assertEquals(1, TLF_A.constructed);
@@ -74,8 +74,8 @@ public class LifeCycleTestCase extends AbstractTestCase {
     listener.assertEmpty();
     TLF_A.constructed = 0;
     TLF_A a = session.insert(TLF_A.class, "tlf_a_b");
-    listener.assertLifeCycleEvent(LifeCycleEventType.CREATED, a);
-    listener.assertLifeCycleEvent(LifeCycleEventType.PERSISTED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.CREATED, null, null, null, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.ADDED, session.getId(a), session.getPath(a), session.getName(a), a);
     listener.assertEmpty();
     assertEquals(1, TLF_A.constructed);
     String id = session.getId(a);
@@ -92,11 +92,11 @@ public class LifeCycleTestCase extends AbstractTestCase {
     session.addEventListener(listener);
     listener.assertEmpty();
     TLF_A a = session.create(TLF_A.class, "tlf_a_c");
-    listener.assertLifeCycleEvent(LifeCycleEventType.CREATED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.CREATED, null, null, null, a);
     listener.assertEmpty();
     assertEquals(Status.TRANSIENT, session.getStatus(a));
     String id = session.persist(a);
-    listener.assertLifeCycleEvent(LifeCycleEventType.PERSISTED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.ADDED, session.getId(a), session.getPath(a), session.getName(a), a);
     listener.assertEmpty();
     assertEquals(Status.PERSISTENT, session.getStatus(a));
     TLF_A a2 = session.findById(TLF_A.class, id);
@@ -148,7 +148,9 @@ public class LifeCycleTestCase extends AbstractTestCase {
   private void testRemovePersistentUnsaved(boolean withMethod) throws Exception {
     ChromatticSession session = login();
     TLF_A a = session.create(TLF_A.class, "tlf_a_c");
-    String id = session.persist(a);
+    String aId = session.persist(a);
+    String aPath = session.getPath(a);
+    String aName = session.getName(a);
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
@@ -157,12 +159,12 @@ public class LifeCycleTestCase extends AbstractTestCase {
     } else {
       session.remove(a);
     }
-    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, aId, aPath, aName, a);
     listener.assertEmpty();
     assertEquals(Status.REMOVED, session.getStatus(a));
-    assertNull(session.findById(TLF_A.class, id));
+    assertNull(session.findById(TLF_A.class, aId));
     try {
-      session.getJCRSession().getNodeByUUID(id);
+      session.getJCRSession().getNodeByUUID(aId);
       fail();
     }
     catch (ItemNotFoundException e) { }
@@ -176,12 +178,14 @@ public class LifeCycleTestCase extends AbstractTestCase {
   private void testRemovePersistentSaved(boolean withMethod) throws Exception {
     ChromatticSession session = login();
     TLF_A a = session.create(TLF_A.class, "tlf_a_c");
-    String id = session.persist(a);
+    String aId = session.persist(a);
+    String aPath = session.getPath(a);
+    String aName = session.getName(a);
     session.save();
 
     //
     session = login() ;
-    a = session.findById(TLF_A.class, id);
+    a = session.findById(TLF_A.class, aId);
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     listener.assertEmpty();
@@ -190,12 +194,12 @@ public class LifeCycleTestCase extends AbstractTestCase {
     } else {
       session.remove(a);
     }
-    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, aId, aPath, aName, a);
     listener.assertEmpty();
     assertEquals(Status.REMOVED, session.getStatus(a));
-    assertNull(session.findById(TLF_A.class, id));
+    assertNull(session.findById(TLF_A.class, aId));
     try {
-      session.getJCRSession().getNodeByUUID(id);
+      session.getJCRSession().getNodeByUUID(aId);
       fail();
     }
     catch (ItemNotFoundException e) {

@@ -28,16 +28,47 @@ public class LifeCycleEvent extends Event {
   private final LifeCycleEventType type;
 
   /** . */
-  private final Object object;
+  private final String id;
 
+  /** . */
+  private final String path;
+
+  /** . */
+  private final String name;
+
+  /** . */
+  private final Object object;
 
   public LifeCycleEvent(LifeCycleEventType type, Object object) {
     this.type = type;
+    this.id = null;
+    this.name = null;
+    this.path = null;
+    this.object = object;
+  }
+
+  public LifeCycleEvent(LifeCycleEventType type, String id, String path, String name, Object object) {
+    this.type = type;
+    this.id = id;
+    this.path = path;
+    this.name = name;
     this.object = object;
   }
 
   public LifeCycleEventType getType() {
     return type;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getPath() {
+    return path;
+  }
+
+  public String getName() {
+    return name;
   }
 
   public Object getObject() {

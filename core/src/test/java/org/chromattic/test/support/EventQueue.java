@@ -41,12 +41,15 @@ public class EventQueue implements LifeCycleListener, StateChangeListener {
     events.clear();
   }
 
-  public void assertLifeCycleEvent(LifeCycleEventType type, Object object) {
+  public void assertLifeCycleEvent(LifeCycleEventType type, String id, String path, String name, Object object) {
     assertNotEmpty();
     Event event = events.removeFirst();
     Assert.assertTrue(event instanceof LifeCycleEvent);
     LifeCycleEvent lifeCycleEvent = (LifeCycleEvent)event;
     Assert.assertEquals(type, lifeCycleEvent.getType());
+    Assert.assertEquals(id, lifeCycleEvent.getId());
+    Assert.assertEquals(path, lifeCycleEvent.getPath());
+    Assert.assertEquals(name, lifeCycleEvent.getName());
     Assert.assertEquals(object, lifeCycleEvent.getObject());
   }
 
@@ -91,16 +94,16 @@ public class EventQueue implements LifeCycleListener, StateChangeListener {
     events.add(new LifeCycleEvent(LifeCycleEventType.CREATED, o));
   }
 
-  public void loaded(Object o) {
-    events.add(new LifeCycleEvent(LifeCycleEventType.LOADED, o));
+  public void loaded(String id, String path, String name, Object o) {
+    events.add(new LifeCycleEvent(LifeCycleEventType.LOADED, id, path, name, o));
   }
 
-  public void persisted(Object o) {
-    events.add(new LifeCycleEvent(LifeCycleEventType.PERSISTED, o));
+  public void added(String id, String path, String name, Object o) {
+    events.add(new LifeCycleEvent(LifeCycleEventType.ADDED, id, path, name, o));
   }
 
-  public void removed(Object o) {
-    events.add(new LifeCycleEvent(LifeCycleEventType.REMOVED, o));
+  public void removed(String id, String path, String name, Object o) {
+    events.add(new LifeCycleEvent(LifeCycleEventType.REMOVED, id, path, name, o));
   }
 
   public void propertyChanged(Object o, String propertyName, Object propertyValue) {

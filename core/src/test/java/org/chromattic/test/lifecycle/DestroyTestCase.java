@@ -37,14 +37,20 @@ public class DestroyTestCase extends AbstractTestCase {
   public void testTransitiveDestroy() throws Exception {
     ChromatticSession session = login();
     TLF_A a = session.insert(TLF_A.class, "bar");
+    String aId = session.getId(a);
+    String aPath = session.getPath(a);
+    String aName = session.getName(a);
     TLF_A b = session.insert(a, TLF_A.class, "foo");
+    String bId = session.getId(b);
+    String bPath = session.getPath(b);
+    String bName = session.getName(b);
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     session.remove(a);
     assertEquals(Status.REMOVED, session.getStatus(a));
     assertEquals(Status.REMOVED, session.getStatus(b));
-    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, b);
-    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, bId, bPath, bName, b);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, aId, aPath, aName, a);
     listener.assertEmpty();
     session.close();
   }
@@ -52,6 +58,9 @@ public class DestroyTestCase extends AbstractTestCase {
   public void testDestroyTransitiveAbsentChild() throws Exception {
     ChromatticSession session = login();
     TLF_A a = session.insert(TLF_A.class, "bar");
+    String aId = session.getId(a);
+    String aPath = session.getPath(a);
+    String aName = session.getName(a);
     TLF_A b = session.insert(a, TLF_A.class, "foo");
     session.save();
     session.close();
@@ -61,7 +70,7 @@ public class DestroyTestCase extends AbstractTestCase {
     EventQueue listener = new EventQueue();
     session.addEventListener(listener);
     session.remove(a);
-    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, aId, aPath, aName, a);
     listener.assertEmpty();
     session.save();
   }
@@ -69,9 +78,14 @@ public class DestroyTestCase extends AbstractTestCase {
   public void testDestroyTransitiveLoadedDescendantWithAbsentParent() throws Exception {
     ChromatticSession session = login();
     TLF_A a = session.insert(TLF_A.class, "bar");
+    String aId = session.getId(a);
+    String aPath = session.getPath(a);
+    String aName = session.getName(a);
     TLF_A b = session.insert(a, TLF_A.class, "foo");
     TLF_A c = session.insert(b, TLF_A.class, "foo");
     String cId = session.getId(c);
+    String cPath = session.getPath(c);
+    String cName = session.getName(c);
     session.save();
     session.close();
 
@@ -83,8 +97,8 @@ public class DestroyTestCase extends AbstractTestCase {
     session.remove(a);
     assertEquals(Status.REMOVED, session.getStatus(a));
     assertEquals(Status.REMOVED, session.getStatus(c));
-    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, c);
-    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, a);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, cId, cPath, cName, c);
+    listener.assertLifeCycleEvent(LifeCycleEventType.REMOVED, aId, aPath, aName, a);
     listener.assertEmpty();
     session.save();
   }
