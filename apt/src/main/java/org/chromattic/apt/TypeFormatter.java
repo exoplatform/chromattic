@@ -130,6 +130,8 @@ public class TypeFormatter {
   private void format(TypeVariableInfo tvi, boolean fromArray) {
     switch (style) {
       case LITERAL:
+        format(tvi.getBounds().get(0));
+        break;
       case TYPE_PARAMETER:
       case RETURN_TYPE:
       case CAST: {

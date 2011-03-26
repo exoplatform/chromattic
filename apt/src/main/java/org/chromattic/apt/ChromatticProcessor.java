@@ -27,6 +27,8 @@ import org.reflext.api.MethodInfo;
 import org.reflext.api.TypeInfo;
 import org.reflext.api.VoidTypeInfo;
 import org.reflext.api.ClassKind;
+import org.reflext.api.introspection.MethodIntrospector;
+import org.reflext.api.introspection.TypeScope;
 import org.reflext.core.TypeDomain;
 import org.reflext.apt.JavaxLangTypeModel;
 import org.reflext.apt.JavaxLangMethodModel;
@@ -124,8 +126,8 @@ public class ChromatticProcessor extends AbstractProcessor {
 
   private Iterable<MethodInfo> getMethodsToImplement(ClassTypeInfo cti) {
     List<MethodInfo> methods = new ArrayList<MethodInfo>();
-    ClassIntrospector introspector = new ClassIntrospector(cti);
-    for (MethodInfo method : introspector.getMethods()) {
+    MethodIntrospector introspector = new MethodIntrospector(TypeScope.CLASS_HIERARCHY);
+    for (MethodInfo method : introspector.getMethods(cti)) {
       if (method.isAbstract()) {
         methods.add(method);
       }

@@ -16,44 +16,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.chromattic.test.type;
 
-import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
-import org.reflext.core.TypeDomain;
-import org.reflext.jlr.JavaLangReflectTypeModel;
-import org.reflext.jlr.JavaLangReflectMethodModel;
-import org.reflext.api.TypeInfo;
-import org.reflext.api.ClassTypeInfo;
-import org.reflext.api.MethodInfo;
-import org.reflext.api.ClassIntrospector;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Iterator;
+import org.chromattic.api.annotations.NodeMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class TypeTestCase extends AbstractTestCase {
+@NodeMapping(name = "tt_b")
+public class C implements B<String> {
 
-  protected void createDomain() {
-    addClass(A.class);
-    addClass(C.class);
-  }
+  public String value;
 
-  public void testA() {
-    // For now we just have this to check that the APT integration generates the correct code
-  }
-
-  public void testC() {
-    DomainSession session = login();
-    C c = session.create(C.class);
-    assertNotNull(c);
-    assertNull(c.value);
-    c.m1("foo");
-    assertEquals("foo", c.value);
+  public void m1(String s) {
+    value = s;
   }
 }

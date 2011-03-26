@@ -94,7 +94,23 @@ public class TypeMapper implements MethodInvoker {
     if (invoker != null) {
       return invoker.invoke(ctx, method, args);
     } else {
-      throw new AssertionError();
+      StringBuilder msg = new StringBuilder("Cannot invoke method ").append(method.getName()).append("(");
+      Class[] parameterTypes = method.getParameterTypes();
+      for (int i = 0;i < parameterTypes.length;i++) {
+        if (i > 0) {
+          msg.append(',');
+        }
+        msg.append(parameterTypes[i].getName());
+      }
+      msg.append(") with arguments (");
+      for (int i = 0;i < args.length;i++) {
+        if (i > 0) {
+          msg.append(',');
+        }
+        msg.append(String.valueOf(args[i]));
+      }
+      msg.append(")");
+      throw new AssertionError(msg);
     }
   }
 
