@@ -16,43 +16,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.chromattic.test.type;
 
-import org.chromattic.test.AbstractTestCase;
-import org.chromattic.core.DomainSession;
+import org.chromattic.api.annotations.NodeMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class TypeTestCase extends AbstractTestCase {
+@NodeMapping(name = "tt_c")
+public class D2Impl extends D1Impl implements D2 {
 
-  protected void createDomain() {
-    addClass(A.class);
-    addClass(C.class);
-    addClass(D2Impl.class);
-  }
+  public int value;
 
-  public void testA() {
-    // For now we just have this to check that the APT integration generates the correct code
-  }
-
-  public void testC() {
-    DomainSession session = login();
-    C c = session.create(C.class);
-    assertNotNull(c);
-    assertNull(c.value);
-    c.m1("foo");
-    assertEquals("foo", c.value);
-  }
-
-  public void testD() {
-    DomainSession session = login();
-    D2Impl d = session.create(D2Impl.class);
-    assertNotNull(d);
-    assertEquals(0, d.value);
-    d.m1(3);
-    assertEquals(3, d.value);
+  public D1 m1(int i) {
+    value = i;
+    return null;
   }
 }
