@@ -32,8 +32,8 @@ import java.util.Collection;
 public class OneToMany1TestCase extends AbstractOneToManyTestCase<A3, B3> {
 
   @Override
-  public Collection<B3> getMany(A3 many) {
-    return many.getChildren();
+  public Collection<B3> getMany(A3 one) {
+    return one.getChildren();
   }
 
   @Override

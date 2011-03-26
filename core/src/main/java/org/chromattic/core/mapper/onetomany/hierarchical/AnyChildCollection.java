@@ -43,7 +43,17 @@ class AnyChildCollection<E> extends AbstractCollection<E> {
 
   @Override
   public boolean add(Object child) {
+    if (child == null) {
+      throw new NullPointerException();
+    }
+    if (!relatedClass.isInstance(child)) {
+      throw new ClassCastException("Cannot cast object with class " + child.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
+
+    //
     parentCtx.addChild(child);
+
+    //
     return true;
   }
 

@@ -50,6 +50,9 @@ class AnyChildList<E> extends AbstractList<E> {
     if (addedElement == null) {
       throw new NullPointerException("No null element can be inserted");
     }
+    if (!relatedClass.isInstance(addedElement)) {
+      throw new ClassCastException("Cannot cast object with class " + addedElement.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
 
     // Get the element that will be the next element of the inserted element
     E nextElement;
@@ -109,6 +112,9 @@ class AnyChildList<E> extends AbstractList<E> {
   public E set(int index, E addedElement) {
     if (addedElement == null) {
       throw new NullPointerException("No null element can be inserted");
+    }
+    if (!relatedClass.isInstance(addedElement)) {
+      throw new ClassCastException("Cannot cast object with class " + addedElement.getClass().getName() + " as child expected class " + relatedClass.getName());
     }
 
     // Get the removed element

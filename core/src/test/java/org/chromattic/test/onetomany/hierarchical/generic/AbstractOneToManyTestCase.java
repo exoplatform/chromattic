@@ -46,7 +46,7 @@ public abstract class AbstractOneToManyTestCase <O, M> extends AbstractTestCase 
 
   public abstract O getOne(M many);
 
-  public abstract Collection<M> getMany(O many);
+  public abstract Collection<M> getMany(O one);
 
   public void testAdd() throws Exception {
     DomainSession session = login();
@@ -85,5 +85,30 @@ public abstract class AbstractOneToManyTestCase <O, M> extends AbstractTestCase 
     Collection<M> children = getMany(a);
     assertNotNull(children);
     assertTrue(children.contains(b));
+  }
+
+  public void testTypeSafety() throws Exception {
+    DomainSession session = login();
+    O o1 = session.insert(oneSide, "o1");
+    O o2 = session.insert(oneSide, "o2");
+    Collection m = getMany(o1);
+    try {
+      m.add(o2);
+      fail();
+    }
+    catch (ClassCastException e) {
+    }
+  }
+
+  public void testAddNull() throws Exception {
+    DomainSession session = login();
+    O o1 = session.insert(oneSide, "o1");
+    Collection<M> m = getMany(o1);
+    try {
+      m.add(null);
+      fail();
+    }
+    catch (NullPointerException e) {
+    }
   }
 }
