@@ -20,10 +20,8 @@
 package org.chromattic.core;
 
 import org.chromattic.common.logging.Logger;
-import org.chromattic.common.JCR;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
-import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.NodeDef;

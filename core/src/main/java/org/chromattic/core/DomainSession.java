@@ -24,8 +24,8 @@ import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.LifeCycleListener;
 import org.chromattic.api.ChromatticException;
-import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.chromattic.core.jcr.LinkType;
+import org.chromattic.common.JCR;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
@@ -82,7 +82,7 @@ public abstract class DomainSession implements ChromatticSession {
 
   public final String encodeName(String external) {
     String internal = domain.objectFormatter.encodeNodeName(null, external);
-    DefaultNodeNameFormat.validateName(internal);
+    JCR.validateName(internal);
     return internal;
   }
 

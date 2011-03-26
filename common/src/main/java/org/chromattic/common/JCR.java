@@ -44,6 +44,42 @@ public class JCR {
     return (Iterator<Node>)iterator;
   }
 
+
+  public static PropertyDefinition getPropertyDefinition(NodeType nodeType, String propertyName) throws RepositoryException {
+    for (PropertyDefinition def : nodeType.getPropertyDefinitions()) {
+      if (def.getName().equals(propertyName)) {
+        return def;
+      }
+    }
+    return null;
+  }
+
+  public static PropertyDefinition getPropertyDefinition(Node node, String propertyName) throws RepositoryException {
+    if (node.hasProperty(propertyName)) {
+      return node.getProperty(propertyName).getDefinition();
+    } else {
+      NodeType primaryNodeType = node.getPrimaryNodeType();
+      PropertyDefinition def = getPropertyDefinition(primaryNodeType, propertyName);
+      if (def == null) {
+        for (NodeType mixinNodeType : node.getMixinNodeTypes()) {
+          def = getPropertyDefinition(mixinNodeType, propertyName);
+          if (def != null) {
+            break;
+          }
+        }
+      }
+      return def;
+    }
+  }
+
+  public static PropertyDefinition findPropertyDefinition(Node node, String propertyName) throws RepositoryException {
+    PropertyDefinition def = getPropertyDefinition(node, propertyName);
+    if (def == null) {
+      return getPropertyDefinition(node, "*");
+    }
+    return def;
+  }
+
   public static void validateName(String name) {
     /*
     PathSegment ::= ExpandedName [Index] | QualifiedName [Index] | SelfOrParent
@@ -95,11 +131,11 @@ public class JCR {
     int length = name.length();
     if (length - index == 1) {
       if (name.charAt(index) == '.') {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("'.' is not a valid name");
       }
     } else if (length - index == 2) {
       if (name.charAt(index) == '.' && name.charAt(index + 1) == '.') {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("'..' is not a valid name");
       }
     }
 
@@ -119,40 +155,5 @@ public class JCR {
       }
       throw new IllegalArgumentException("Illegal path value " + name + "  (char " + c + " at position " + index + " not accepted)");
     }
-  }
-
-  public static PropertyDefinition getPropertyDefinition(NodeType nodeType, String propertyName) throws RepositoryException {
-    for (PropertyDefinition def : nodeType.getPropertyDefinitions()) {
-      if (def.getName().equals(propertyName)) {
-        return def;
-      }
-    }
-    return null;
-  }
-
-  public static PropertyDefinition getPropertyDefinition(Node node, String propertyName) throws RepositoryException {
-    if (node.hasProperty(propertyName)) {
-      return node.getProperty(propertyName).getDefinition();
-    } else {
-      NodeType primaryNodeType = node.getPrimaryNodeType();
-      PropertyDefinition def = getPropertyDefinition(primaryNodeType, propertyName);
-      if (def == null) {
-        for (NodeType mixinNodeType : node.getMixinNodeTypes()) {
-          def = getPropertyDefinition(mixinNodeType, propertyName);
-          if (def != null) {
-            break;
-          }
-        }
-      }
-      return def;
-    }
-  }
-
-  public static PropertyDefinition findPropertyDefinition(Node node, String propertyName) throws RepositoryException {
-    PropertyDefinition def = getPropertyDefinition(node, propertyName);
-    if (def == null) {
-      return getPropertyDefinition(node, "*");
-    }
-    return def;
   }
 }

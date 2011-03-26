@@ -20,13 +20,10 @@
 package org.chromattic.core;
 
 import org.chromattic.api.Status;
-import org.chromattic.api.format.DefaultNodeNameFormat;
 import org.chromattic.core.bean.SimpleValueInfo;
-import org.chromattic.core.mapper.TypeMapper;
 
 import javax.jcr.Node;
 import javax.jcr.nodetype.NodeType;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
