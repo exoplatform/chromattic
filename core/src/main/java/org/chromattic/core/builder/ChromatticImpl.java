@@ -19,6 +19,7 @@
 
 package org.chromattic.core.builder;
 
+import org.chromattic.core.DomainSessionImpl;
 import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.SessionWrapperImpl;
 import org.chromattic.spi.jcr.SessionLifeCycle;
@@ -56,7 +57,7 @@ public class ChromatticImpl implements Chromattic {
     try {
       Session session = sessionLifeCycle.login();
       SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-      return domain.getSession(wrapper);
+      return new DomainSessionImpl(domain, wrapper);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -67,7 +68,7 @@ public class ChromatticImpl implements Chromattic {
     try {
       Session session = sessionLifeCycle.login(workspace);
       SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-      return domain.getSession(wrapper);
+      return new DomainSessionImpl(domain, wrapper);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -78,7 +79,7 @@ public class ChromatticImpl implements Chromattic {
     try {
       Session session = sessionLifeCycle.login(credentials, workspace);
       SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-      return domain.getSession(wrapper);
+      return new DomainSessionImpl(domain, wrapper);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -89,7 +90,7 @@ public class ChromatticImpl implements Chromattic {
     try {
       Session session = sessionLifeCycle.login(credentials);
       SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-      return domain.getSession(wrapper);
+      return new DomainSessionImpl(domain, wrapper);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

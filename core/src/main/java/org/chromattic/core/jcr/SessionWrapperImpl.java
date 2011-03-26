@@ -32,7 +32,6 @@ import javax.jcr.PropertyType;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,9 +45,6 @@ public class SessionWrapperImpl implements SessionWrapper {
 
   /** . */
   private final Logger log = Logger.getLogger(SessionWrapperImpl.class);
-
-  /** . */
-  private static final ConcurrentHashMap<Session, SessionWrapperImpl> sessionMapping = new ConcurrentHashMap<Session, SessionWrapperImpl>();
 
   /** . */
   public final Session session;
@@ -80,9 +76,6 @@ public class SessionWrapperImpl implements SessionWrapper {
       new ReferenceLinkManager(session),
       new PathLinkManager(session)
     };
-
-    //
-    sessionMapping.put(session, this);
   }
 
   public Property getProperty(Node node, String relPath) throws RepositoryException {

@@ -22,7 +22,6 @@ package org.chromattic.core;
 import org.chromattic.core.mapping.TypeMapping;
 import org.chromattic.core.mapper.TypeMapper;
 import org.chromattic.core.mapper.TypeMapperBuilder;
-import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.info.NodeInfoManager;
 import org.chromattic.core.query.QueryManager;
 import org.chromattic.spi.instrument.Instrumentor;
@@ -31,16 +30,12 @@ import org.chromattic.api.format.ObjectFormatter;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 public class Domain {
-
-  /** . */
-  private static final ConcurrentHashMap<SessionWrapper, DomainSessionImpl> sessionMapping = new ConcurrentHashMap<SessionWrapper, DomainSessionImpl>();
 
   /** . */
   private final Map<String, TypeMapper> typeMapperByNodeType;
@@ -114,25 +109,6 @@ public class Domain {
 
   public boolean isHasNodeOptimized() {
     return hasNodeOptimized;
-  }
-
-  public DomainSession getSession(SessionWrapper jcrSession) {
-    if (jcrSession == null) {
-      throw new NullPointerException();
-    }
-
-    // Integrate
-
-    //
-    DomainSessionImpl  session = sessionMapping.get(jcrSession);
-    if (session == null) {
-      session = new DomainSessionImpl(this, jcrSession);
-      DomainSessionImpl phantomSession = sessionMapping.put(jcrSession, session);
-      if (phantomSession != null) {
-        session = phantomSession;
-      }
-    }
-    return session;
   }
 
   public Instrumentor getInstrumentor() {
