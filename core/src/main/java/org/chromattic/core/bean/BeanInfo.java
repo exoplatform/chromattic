@@ -19,6 +19,8 @@
 
 package org.chromattic.core.bean;
 
+import org.chromattic.api.BuilderException;
+import org.chromattic.api.annotations.DefaultValue;
 import org.reflext.api.TypeInfo;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
@@ -162,23 +164,76 @@ public class BeanInfo {
     return resolvedType instanceof ClassTypeInfo ? (ClassTypeInfo)resolvedType : null;
   }
 
+  private static Map<Class<? extends Annotation>, List<? extends Annotation>> getAnnotations(MethodInfo getter, MethodInfo setter, Class<? extends Annotation>... annotationClasses) {
+    Map<Class<? extends Annotation>, List<? extends Annotation>> annotationMap = new HashMap<Class<? extends Annotation>, List<? extends Annotation>>();
+    for (Class<? extends Annotation> annotationClass : annotationClasses) {
+      List<? extends Annotation> annotations = getAnnotation(getter, setter, annotationClass);
+      if (annotations.size() > 0) {
+        annotationMap.put(annotationClass, annotations);
+      }
+    }
+    return annotationMap;
+  }
+
+  private static <A extends Annotation> List<A> getAnnotation(MethodInfo getter, MethodInfo setter, Class<A> annotationClass) {
+    AnnotationIntrospector<A> spector = new AnnotationIntrospector<A>(annotationClass);
+    List<A> list = new ArrayList<A>(2);
+    if (getter != null) {
+      A getterAnnotation = spector.resolve(getter);
+      if (getterAnnotation != null) {
+        list.add(getterAnnotation);
+      }
+    }
+    if (setter != null) {
+      A setterAnnotation = spector.resolve(setter);
+      if (setterAnnotation != null) {
+        list.add(setterAnnotation);
+      }
+    }
+    return list;
+  }
+
   private static ValueInfo createValue(
     ClassTypeInfo type,
     MethodInfo getter,
-    MethodInfo setter) {
+    MethodInfo setter) throws BuilderException {
+
+    // That should be somehow improved
+    Map<Class<? extends Annotation>, List<? extends Annotation>> annotationMap = getAnnotations(
+      getter,
+      setter,
+      DefaultValue.Int.class,
+      DefaultValue.Boolean.class,
+      DefaultValue.Long.class,
+      DefaultValue.Float.class,
+      DefaultValue.Double.class
+    );
+    if (annotationMap.size() > 2) {
+      throw new BuilderException("Too many default value annotations");
+    }
+    Annotation defaultValue = null;
+    if (annotationMap.size() == 1) {
+      List<? extends Annotation> annotations = annotationMap.values().iterator().next();
+      if (annotations.size() == 1) {
+        defaultValue = annotations.get(0);
+      } else {
+        throw new BuilderException("Too many default value annotations");
+      }
+    }
+
     if (type instanceof SimpleTypeInfo) {
-      return SimpleValueInfo.create(type);
+      return SimpleValueInfo.create(type, defaultValue);
     } else if (type.getName().equals(String.class.getName())) {
       AnnotationIntrospector<Path> intro = new AnnotationIntrospector<Path>(Path.class);
       if ((getter != null && intro.resolve(getter) != null ) || (setter != null && intro.resolve(setter) != null)) {
         return SimpleValueInfo.createPath(type);
       } else {
-        return SimpleValueInfo.create(type);
+        return SimpleValueInfo.create(type, defaultValue);
       }
     } else if (
       type.getName().equals(InputStream.class.getName()) ||
       type.getName().equals(Date.class.getName())) {
-      return SimpleValueInfo.create(type);
+      return SimpleValueInfo.create(type, defaultValue);
     } else {
       return new BeanValueInfo(type);
     }

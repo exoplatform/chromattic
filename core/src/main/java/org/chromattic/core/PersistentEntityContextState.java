@@ -37,12 +37,9 @@ import javax.jcr.Property;
 import javax.jcr.ValueFactory;
 import javax.jcr.PropertyType;
 import javax.jcr.nodetype.PropertyDefinition;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Date;
-import java.lang.reflect.Array;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -163,8 +160,14 @@ class PersistentEntityContextState extends EntityContextState {
 
       //
       if (value == null) {
-        if (type != null && type.isPrimitive()) {
-          throw new IllegalStateException("Cannot convert null to primitive type " + type.getSimpleType());
+        if (type != null) {
+          // Let's try default value
+          value = type.getDefaultValue();
+
+          //
+          if (value == null && type.isPrimitive()) {
+            throw new IllegalStateException("Cannot convert null to primitive type " + type.getSimpleType());
+          }
         }
       } else {
         if (propertyCache != null) {
@@ -186,7 +189,7 @@ class PersistentEntityContextState extends EntityContextState {
 
   <T> T getPropertyValues(String propertyName, SimpleValueInfo simpleType, ListType<T> listType) {
     try {
-      Value[] values;
+      Value[] values = null;
       Property property = session.getSessionWrapper().getProperty(node, propertyName);
       if (property != null) {
         PropertyDefinition def = property.getDefinition();
@@ -200,22 +203,14 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      if (listType == ListType.LIST) {
-        List<Object> list = new ArrayList<Object>(values.length);
-        for (Value value : values) {
-          Object o = ValueMapper.instance.get(value, simpleType.getSimpleType());
-          list.add(o);
-        }
-        return (T)list;
-      } else {
-        Object array = Array.newInstance((Class<?>)simpleType.getTypeInfo().getType(), values.length);
-        for (int i = 0;i < values.length;i++) {
-          Value value = values[i];
-          Object o = ValueMapper.instance.get(value, simpleType.getSimpleType());
-          Array.set(array, i, o);
-        }
-        return (T)array;
+      Class<Object> elementType = (Class<Object>)simpleType.getTypeInfo().getType();
+      T list = listType.create(elementType, values.length);
+      for (int i = 0;i < values.length;i++) {
+        Value value = values[i];
+        Object o = ValueMapper.instance.get(value, simpleType.getSimpleType());
+        listType.set(list, i, o);
       }
+      return list;
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -297,19 +292,11 @@ class PersistentEntityContextState extends EntityContextState {
       ValueFactory valueFactory = session.getJCRSession().getValueFactory();
       SimpleType st = type != null ? type.getSimpleType() : null;
       Value[] values;
-      if (listType == ListType.LIST) {
-        List<?> list = (List<?>)objects;
-        values = new Value[list.size()];
-        int i = 0;
-        for (Object object : list) {
-          values[i++] = ValueMapper.instance.get(valueFactory, object, st);
-        }
-      } else {
-        values = new Value[Array.getLength(objects)];
-        for (int i = 0;i < values.length;i++) {
-          Object o = Array.get(objects, i);
-          values[i] = ValueMapper.instance.get(valueFactory, o, st);
-        }
+      int size = listType.size(objects);
+      values = new Value[size];
+      for (int i = 0;i < size;i++) {
+        Object element = listType.get(objects, i);
+        values[i] = ValueMapper.instance.get(valueFactory, element, st);
       }
 
       //

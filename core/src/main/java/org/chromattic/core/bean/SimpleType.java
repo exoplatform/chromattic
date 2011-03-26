@@ -19,12 +19,45 @@
 
 package org.chromattic.core.bean;
 
+import java.util.Date;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public enum SimpleType {
+public class SimpleType<T> {
 
-  STRING, PATH, INT, BOOLEAN, LONG, DATE, DOUBLE, FLOAT, BINARY
+  /** . */
+  public static final SimpleType<String> STRING = new SimpleType<String>(String.class);
 
+  /** . */
+  public static final SimpleType<String> PATH = new SimpleType<String>(String.class);
+
+  /** . */
+  public static final SimpleType<Integer> INT = new SimpleType<Integer>(Integer.class);
+
+  /** . */
+  public static final SimpleType<Boolean> BOOLEAN = new SimpleType<Boolean>(Boolean.class);
+
+  /** . */
+  public static final SimpleType<Long> LONG = new SimpleType<Long>(Long.class);
+
+  /** . */
+  public static final SimpleType<Date> DATE = new SimpleType<Date>(Date.class);
+
+  /** . */
+  public static final SimpleType<Double> DOUBLE = new SimpleType<Double>(Double.class);
+
+  /** . */
+  public static final SimpleType<Float> FLOAT = new SimpleType<Float>(Float.class);
+
+  /** . */
+  public static final SimpleType<byte[]> BINARY = new SimpleType<byte[]>(byte[].class);
+
+  /** . */
+  private final Class<T> javaClass;
+
+  private SimpleType(Class<T> javaClass) {
+    this.javaClass = javaClass;
+  }
 }
