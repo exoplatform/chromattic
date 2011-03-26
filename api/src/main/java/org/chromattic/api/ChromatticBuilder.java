@@ -23,6 +23,9 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collections;
+import java.util.Arrays;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -99,6 +102,21 @@ public abstract class ChromatticBuilder {
       "org.chromattic.api.Option.root_node_path",
       "root node path");
 
+
+  /**
+   * Options configurable via system properties.
+   */
+  private final static Set<Option> systemOptions = Collections.unmodifiableSet(new HashSet<Option>(Arrays.asList(
+    CACHE_STATE_ENABLED,
+    JCR_OPTIMIZE_ENABLED,
+    JCR_OPTIMIZE_HAS_PROPERTY_ENABLED,
+    JCR_OPTIMIZE_HAS_NODE_ENABLED
+  )));
+
+  public static Set<Option> getSystemOptions() {
+    return systemOptions;
+  }
+
   public static ChromatticBuilder create() {
     String builderClassName = "org.chromattic.core.builder.ChromatticBuilderImpl";
     try {
@@ -148,25 +166,90 @@ public abstract class ChromatticBuilder {
    *
    * @param <T> the option type
    */
-  public static class Option<T> {
+  public final static class Option<T> {
+
+    public abstract static class Type<T> {
+
+      /** . */
+      public static final Type<String> STRING = new Type<String>(String.class) {
+        public String doParse(String value) {
+          return value;
+        }
+      };
+
+      /** . */
+      public static final Type<Boolean> BOOLEAN = new Type<Boolean>(Boolean.class) {
+        public Boolean doParse(String value) {
+          return Boolean.valueOf(value);
+        }
+      };
+
+      /** . */
+      private final Class<T> javaType;
+
+      private Type(Class<T> javaType) {
+        this.javaType = javaType;
+      }
+
+      public final Class<T> getJavaType() {
+        return javaType;
+      }
+
+      public final T parse(String value) {
+        if (value == null) {
+          return null;
+        } else {
+          return doParse(value);
+        }
+      }
+
+      protected abstract T doParse(String value);
+    }
 
     /** . */
     private final String name;
 
     /** . */
-    private final String shortName;
+    private final String displayName;
 
-    private Option(String name, String shortName) {
+    /** . */
+    private final Type<T> type;
+
+    private Option(String name, String displayName) {
+
+      //
+      ParameterizedType pt = (ParameterizedType)getClass().getGenericSuperclass();
+      Class clazz = (Class)pt.getActualTypeArguments()[0];
+      Type<T> type;
+      if (clazz == String.class) {
+        type = (Type<T>)Type.STRING;
+      } else if (clazz == Boolean.class) {
+        type = (Type<T>)Type.BOOLEAN;
+      } else {
+        throw new UnsupportedOperationException();
+      }
+
+      //
       this.name = name;
-      this.shortName = shortName;
+      this.displayName = displayName;
+      this.type = type;
+    }
+
+    public Type<T> getType() {
+      return type;
     }
 
     public String getName() {
       return name;
     }
 
-    public String getShortName() {
-      return shortName;
+    public String getDisplayName() {
+      return displayName;
+    }
+
+    public OptionInstance<T> getInstance(String value) {
+      T t = type.parse(value);
+      return t != null ? null : new OptionInstance<T>(this, t);
     }
   }
 

@@ -94,13 +94,13 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       }
     }
     catch (InstantiationException e) {
-      throw new BuilderException("Could not instanciate " + option.getShortName() + " " + s, e);
+      throw new BuilderException("Could not instanciate " + option.getDisplayName() + " " + s, e);
     }
     catch (IllegalAccessException e) {
-      throw new BuilderException("Could not instanciate " + option.getShortName(), e);
+      throw new BuilderException("Could not instanciate " + option.getDisplayName(), e);
     }
     catch (ClassNotFoundException e) {
-      throw new BuilderException("Could not load " + option.getShortName() + " class " + s, e);
+      throw new BuilderException("Could not load " + option.getDisplayName() + " class " + s, e);
     }
   }
 
@@ -129,6 +129,15 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
     // Configure from options
     for (OptionInstance<?> optionInstance : options.values()) {
       configure(optionInstance);
+    }
+
+    // Configure system options
+    for (Option<?> option : getSystemOptions()) {
+      String value = System.getProperty(option.getName());
+      OptionInstance<?> instance = option.getInstance(value);
+      if (instance != null) {
+        configure(instance);
+      }
     }
 
     //
