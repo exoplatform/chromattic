@@ -24,6 +24,7 @@ import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
 import org.chromattic.metamodel.typegen.TypeGen;
 import org.chromattic.metamodel.typegen.TypeGenTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
@@ -33,6 +34,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class, B.class, C.class})
 public class PropertiesTestCase extends TypeGenTestCase {
 
   public void testStringProperties() throws Exception {

@@ -27,6 +27,7 @@ import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 import org.reflext.api.ClassTypeInfo;
 
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A1.class, A2.class, B1.class, B2.class, C1.class, C2.class, D1.class, D2.class, E.class})
 public class MappingTestCase extends AbstractMappingTestCase {
 
 

@@ -20,12 +20,15 @@
 package org.chromattic.metamodel.typegen.inheritance;
 
 import org.chromattic.metamodel.typegen.*;
+import org.chromattic.testgenerator.GroovyTestGeneration;
+
 import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A1.class, A2.class, A3.class, A4.class, A5.class})
 public class InheritanceTestCase extends TypeGenTestCase {
 
   private NodeType a1NT;

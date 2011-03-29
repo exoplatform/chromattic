@@ -55,16 +55,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.testgenerator</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.groovy</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.api</artifactId>
     </dependency>
@@ -106,18 +96,6 @@
       <artifactId>chromattic.cglib</artifactId>
       <scope>test</scope>
     </dependency>
-
-     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
-      <version>1.6.5</version>
-    </dependency>
-
-     <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-     </dependency>
-
   </dependencies>
 
   <profiles>
@@ -158,7 +136,6 @@
         <executions>
           <execution>
             <id>attach-sources1</id>
-             <configuration></configuration>
             <goals>
               <goal>jar-no-fork</goal>
             </goals>
@@ -185,12 +162,37 @@
 
        <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.chromattic</groupId>
+            <artifactId>chromattic.testgenerator</artifactId>
+            <version>1.1.0-beta3-SNAPSHOT</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.chromattic</groupId>
+            <artifactId>chromattic.groovy</artifactId>
+            <version>1.1.0-beta3-SNAPSHOT</version>
+          </dependency>
+           
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.6.5</version>
+          </dependency>
+
+          <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+          </dependency>
+        </dependencies>
         <executions>
 
           <!-- Groovy universal tests -->
           <execution>
             <id>process-test-classes</id>
-            <phase>process-test-classes</phase>
+            <phase>test-compile</phase>
             <configuration>
               <tasks>
                 <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">

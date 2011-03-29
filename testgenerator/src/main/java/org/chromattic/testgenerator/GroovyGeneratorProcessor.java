@@ -113,7 +113,7 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
             case GETTER_SETTER:
                InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, getPackageName(typeElt), typeElt.getSimpleName() + ".java").openInputStream();
                CompilationUnit testUnit = JavaParser.parse(testIs);
-               jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, getPackageName(typeElt)/* + ".groovy"*/, "GroovyGetSet_" + typeElt.getSimpleName() + ".groovy");
+               jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, getPackageName(typeElt), "GroovyGetSet_" + typeElt.getSimpleName() + ".groovy");
                GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, "GroovyGetSet_" + typeElt.getSimpleName(), chromatticClassNames);
                testBuilder.build(new JavaToGroovySyntaxTransformer(), excludedMethods);
                SourceUtil.writeSource(testBuilder.toString(), jfo.openOutputStream());
@@ -123,7 +123,7 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
             case PROPERTIES:
                InputStream testIsProperties = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, getPackageName(typeElt), typeElt.getSimpleName() + ".java").openInputStream();
                CompilationUnit testUnitProperties = JavaParser.parse(testIsProperties);
-               jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, getPackageName(typeElt)/* + ".groovy"*/, "GroovyProperties_" + typeElt.getSimpleName() + ".groovy");
+               jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, getPackageName(typeElt), "GroovyProperties_" + typeElt.getSimpleName() + ".groovy");
                GroovyFromJavaSourceTestBuilder testBuilderProperties = new GroovyFromJavaSourceTestBuilder(testUnitProperties, "GroovyProperties_" + typeElt.getSimpleName(), chromatticClassNames);
                testBuilderProperties.build(new JavaToGroovyPropertiesSyntaxTransformer(), excludedMethods);
                SourceUtil.writeSource(testBuilderProperties.toString(), jfo.openOutputStream());
