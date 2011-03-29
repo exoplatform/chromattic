@@ -36,11 +36,12 @@ import java.util.List;
  */
 public class SourceUtil {
 
-  public static List<String> getChromatticPaths(Element classElement) {
+  public static List<String> getChromatticClassName(Element classElement) {
     List<String> paths = new ArrayList<String>();
     List<AnnotationValue> annotationValues = getUniversalTestConfig(classElement, "chromatticClasses");
     for(AnnotationValue currentClass : annotationValues) {
-      paths.add(classnameToPath(currentClass.toString()));
+      int lastDotIndex = currentClass.toString().lastIndexOf(".");
+      paths.add(currentClass.toString().substring(0, lastDotIndex));
     }
     return paths;
   }

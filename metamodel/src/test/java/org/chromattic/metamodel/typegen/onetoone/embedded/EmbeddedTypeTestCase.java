@@ -31,6 +31,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A1.class, A2.class, A3.class, A4.class, B1.class, B2.class})
 public class EmbeddedTypeTestCase extends AbstractSchemaTestCase {
 
   public void testOwnerMixinType() {

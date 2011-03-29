@@ -25,6 +25,7 @@ import org.chromattic.test.format.A;
 import org.chromattic.test.format.B;
 import org.chromattic.test.format.C;
 import org.chromattic.test.format.FooPrefixerFormatter;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Node;
 
@@ -32,6 +33,7 @@ import javax.jcr.Node;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class, B.class, C.class})
 public class FormatterScopeTestCase extends AbstractTestCase {
 
 

@@ -17,21 +17,13 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.core.onetomany.hierarchical.collection;
-
-import org.chromattic.test.onetomany.hierarchical.collection.A3;
-import org.chromattic.test.onetomany.hierarchical.collection.B3;
-import org.chromattic.test.onetomany.hierarchical.collection.OneToMany2TestCase;
-import org.chromattic.testgenerator.UniversalTest;
+package org.chromattic.testgenerator;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@UniversalTest(
-  sourceClass = OneToMany2TestCase.class,
-  baseDir = "core",
-  suffix = "CoreTest",
-  chromatticClasses = {A3.class, B3.class})
-public class GroovyOneToMany2TestCase {
+public enum GroovyOutputFormat
+{
+   GETTER_SETTER, PROPERTIES, CHROMATTIC;
 }

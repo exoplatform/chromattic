@@ -21,11 +21,13 @@ package org.chromattic.test.methodinvocation.visibility;
 
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class})
 public class VisibilityTestCase extends AbstractTestCase {
 
   protected void createDomain() {

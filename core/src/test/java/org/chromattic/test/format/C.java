@@ -21,6 +21,7 @@ package org.chromattic.test.format;
 import org.chromattic.api.annotations.FormattedBy;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.OneToMany;
+import org.chromattic.test.format.BarPrefixerFormatter;
 
 import java.util.Map;
 

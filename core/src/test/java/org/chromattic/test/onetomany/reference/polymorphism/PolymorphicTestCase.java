@@ -21,6 +21,7 @@ package org.chromattic.test.onetomany.reference.polymorphism;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.Collection;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class, B.class, C.class, D.class})
 public class PolymorphicTestCase extends AbstractTestCase {
 
   protected void createDomain() {

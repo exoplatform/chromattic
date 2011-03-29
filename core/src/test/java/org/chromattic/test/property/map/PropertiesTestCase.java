@@ -21,6 +21,7 @@ package org.chromattic.test.property.map;
 
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -34,6 +35,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class, B.class})
 public class PropertiesTestCase extends AbstractTestCase {
 
   protected void createDomain() {
@@ -197,7 +199,7 @@ public class PropertiesTestCase extends AbstractTestCase {
   }
 
   public void testFoo2() throws Exception {
-    bNode.setProperty("string_array_property", new String[]{"a","b"});
+    bNode.setProperty("string_array_property", new String[]{"a", "b"});
     Map<String, List<Object>> props = b.getAnyMultiProperties();
     List<Object> val = props.get("string_array_property");
     assertEquals(Arrays.<Object>asList("a", "b"), val);

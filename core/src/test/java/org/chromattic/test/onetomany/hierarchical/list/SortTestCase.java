@@ -20,6 +20,7 @@ package org.chromattic.test.onetomany.hierarchical.list;
 
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A1.class, B1.class})
 public class SortTestCase extends AbstractTestCase {
 
   protected void createDomain() {

@@ -38,6 +38,7 @@ public class GroovyFromJavaSourceChromatticBuilder {
 
   public void build() {
     UnitChromatticVisitor unitChromatticVisitor = new UnitChromatticVisitor();
+    compilationUnit.getPackage().getName().setName(compilationUnit.getPackage().getName().getName() + ".groovy");
     unitChromatticVisitor.visit(compilationUnit, null);
     JavaToGroovySyntaxTransformer syntaxTransformer = new JavaToGroovySyntaxTransformer(unitChromatticVisitor);
     sb.append(syntaxTransformer.transform(compilationUnit.toString()));

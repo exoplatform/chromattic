@@ -24,7 +24,6 @@ import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.expr.ArrayCreationExpr;
-import japa.parser.ast.expr.ArrayInitializerExpr;
 import japa.parser.ast.expr.MethodCallExpr;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
 
@@ -38,14 +37,15 @@ import java.util.List;
 public class UnitTestVisitor extends VoidVisitorAdapter<List<String>> implements TransformationSource {
   private List<AnnotationExpr> annotationExprs = new ArrayList<AnnotationExpr>();
   private List<MethodCallExpr> methodCallExprs = new ArrayList<MethodCallExpr>();
-  private String suffix;
+  private String name;
 
-  public UnitTestVisitor(String suffix) {
-    this.suffix = suffix;
+  public UnitTestVisitor(String name) {
+    this.name = name;
   }
 
   @Override
   public void visit(ClassOrInterfaceDeclaration n, List<String> excludedMethods) {
+    n.setAnnotations(null);
     List<MethodDeclaration> methodToRemove = new ArrayList<MethodDeclaration>();
     for (BodyDeclaration bodyDeclaration : n.getMembers()) {
       if(bodyDeclaration instanceof MethodDeclaration) {
@@ -59,7 +59,7 @@ public class UnitTestVisitor extends VoidVisitorAdapter<List<String>> implements
 
     //
     if (n.getAnnotations() != null)  annotationExprs.addAll(n.getAnnotations());
-    n.setName(n.getName() + suffix);
+    n.setName(name);
     super.visit(n, excludedMethods);
   }
 

@@ -30,9 +30,11 @@ import japa.parser.ast.expr.ArrayCreationExpr;
 import japa.parser.ast.expr.MethodCallExpr;
 import japa.parser.ast.type.Type;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**

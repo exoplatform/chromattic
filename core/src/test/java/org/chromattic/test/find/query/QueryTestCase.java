@@ -23,6 +23,7 @@ import org.chromattic.common.collection.Collections;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.A;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class})
 public class QueryTestCase extends AbstractTestCase {
 
   protected void createDomain() {

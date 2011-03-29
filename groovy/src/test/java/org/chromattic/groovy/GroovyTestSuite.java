@@ -17,25 +17,38 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.groovy.metamodel.typegen.inheritance;
+package org.chromattic.groovy;
 
-import org.chromattic.metamodel.typegen.inheritance.A2;
-import org.chromattic.metamodel.typegen.inheritance.InheritanceTestCase;
-import org.chromattic.metamodel.typegen.inheritance.A1;
-import org.chromattic.metamodel.typegen.inheritance.A3;
-import org.chromattic.metamodel.typegen.inheritance.A4;
-import org.chromattic.metamodel.typegen.inheritance.A5;
-import org.chromattic.testgenerator.UniversalTest;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
-import java.util.Map;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+import java.io.InputStream;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@UniversalTest(
-  sourceClass = InheritanceTestCase.class,
-  baseDir = "metamodel",
-  suffix = "MetamodelTest",
-  chromatticClasses = {A1.class, A2.class, A3.class, A4.class, A5.class})
-public class GroovyInheritanceTestCase {}
+public class GroovyTestSuite
+{
+   public static Test suite() throws Exception
+   {
+      TestSuite suite = new TestSuite();
+      InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("generatedTests.xml");
+      
+
+      XMLInputFactory factory = XMLInputFactory.newInstance();
+      XMLStreamReader reader = factory.createXMLStreamReader(is);
+
+      while(reader.hasNext())
+      {
+         reader.next();
+         if (reader.getEventType() == XMLStreamReader.CHARACTERS)
+         {
+            suite.addTest(new TestSuite(Class.forName(reader.getText())));
+         }
+      }
+      return suite;
+   }
+}

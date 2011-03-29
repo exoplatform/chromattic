@@ -22,6 +22,7 @@ package org.chromattic.test.find.path;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.A;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.RepositoryException;
 
@@ -29,6 +30,7 @@ import javax.jcr.RepositoryException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class})
 public class FindByPathTestCase extends AbstractTestCase {
 
   protected void createDomain() {
