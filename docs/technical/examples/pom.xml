@@ -123,6 +123,8 @@
             <phase>test-compile</phase>
             <configuration>
               <tasks>
+                <!-- no tests for now -->
+                <!--
                 <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
                   <classpath refid="maven.compile.classpath" />
                 </taskdef>
@@ -130,6 +132,7 @@
                 <groovyc destdir="${project.build.outputDirectory}" srcdir="${basedir}/src/test/java/" listfiles="false">
                   <classpath refid="maven.compile.classpath" />
                 </groovyc>
+                -->
               </tasks>
             </configuration>
             <goals>
