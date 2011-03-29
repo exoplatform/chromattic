@@ -20,6 +20,8 @@
 package org.chromattic.testgenerator.sourcetransformer;
 
 import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.ImportDeclaration;
+import japa.parser.ast.expr.NameExpr;
 
 import java.util.List;
 
@@ -30,15 +32,24 @@ import java.util.List;
 public class GroovyFromJavaSourceTestBuilder {
   private CompilationUnit compilationUnit;
   private StringBuilder sb = new StringBuilder();
-  private String suffix;
+  private String name;
+  private List<String> deps;
 
-  public GroovyFromJavaSourceTestBuilder(CompilationUnit compilationUnit, String suffix) {
+  public GroovyFromJavaSourceTestBuilder(CompilationUnit compilationUnit, String name, List<String> deps) {
     this.compilationUnit = compilationUnit;
-    this.suffix = suffix;
+    this.name = name;
+    this.deps = deps;
   }
 
   public void build(TransformationProcessor transformationProcessor, List<String> excludedMethods) {
-    UnitTestVisitor unitTestVisitor = new UnitTestVisitor("_" + suffix);
+    UnitTestVisitor unitTestVisitor = new UnitTestVisitor(name);
+    for (String dep : deps)
+    {
+      int i = dep.lastIndexOf(".");
+      String depPackage = dep.substring(0, i) + ".groovy";
+      String depImport = depPackage + dep.substring(i);
+      compilationUnit.getImports().add(new ImportDeclaration(new NameExpr(depImport), false, false));
+    }
     unitTestVisitor.visit(compilationUnit, excludedMethods);
     transformationProcessor.setTransformationSource(unitTestVisitor);
     sb.append(transformationProcessor.transform(compilationUnit.toString()));

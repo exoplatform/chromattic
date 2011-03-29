@@ -20,11 +20,13 @@
 package org.chromattic.test.onetomany.hierarchical.list;
 
 import org.chromattic.test.onetomany.hierarchical.AbstractOneToTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A2.class, B2.class})
 public class OneToTestCase extends AbstractOneToTestCase<A2, B2> {
 
   public void setOne(B2 many, A2 one) {

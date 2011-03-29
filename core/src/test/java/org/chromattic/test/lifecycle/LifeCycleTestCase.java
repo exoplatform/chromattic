@@ -25,6 +25,7 @@ import org.chromattic.test.support.EventQueue;
 import org.chromattic.test.support.LifeCycleEventType;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
@@ -34,6 +35,7 @@ import javax.jcr.ItemNotFoundException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class})
 public class LifeCycleTestCase extends AbstractTestCase {
 
   protected void createDomain() {

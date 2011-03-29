@@ -24,6 +24,7 @@ import org.chromattic.test.support.EventQueue;
 import org.chromattic.test.support.LifeCycleEventType;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.nodetype.ConstraintViolationException;
 
@@ -31,6 +32,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class, M1.class, M2.class})
 public class DestroyTestCase extends AbstractTestCase {
 
   protected void createDomain() {

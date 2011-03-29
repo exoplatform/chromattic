@@ -21,11 +21,13 @@ package org.chromattic.test.onetomany.hierarchical.map;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A4.class, B4.class})
 public class DuplicateTestCase extends AbstractTestCase {
 
   protected void createDomain() {

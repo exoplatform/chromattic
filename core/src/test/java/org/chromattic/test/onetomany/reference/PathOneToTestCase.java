@@ -19,6 +19,8 @@
 
 package org.chromattic.test.onetomany.reference;
 
+import org.chromattic.testgenerator.GroovyTestGeneration;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
@@ -30,6 +32,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A1.class, B1.class})
 public class PathOneToTestCase extends AbstractOneToTestCase<A1, B1> {
 
   protected Class<A1> getOneSideClass() {

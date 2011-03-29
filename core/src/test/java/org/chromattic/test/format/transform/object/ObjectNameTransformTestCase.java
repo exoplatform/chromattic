@@ -24,6 +24,7 @@ import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.test.format.A;
 import org.chromattic.test.format.B;
 import org.chromattic.test.format.FooPrefixerFormatter;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -33,6 +34,7 @@ import java.util.Collections;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class, B.class, D1.class, D2.class})
 public class ObjectNameTransformTestCase extends AbstractTestCase {
 
   protected void createDomain() {

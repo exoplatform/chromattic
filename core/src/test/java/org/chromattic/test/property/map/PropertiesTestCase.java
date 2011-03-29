@@ -21,6 +21,7 @@ package org.chromattic.test.property.map;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A1.class, B1.class}, exclude = {"testGetMultivaluedValue"})
 public class PropertiesTestCase extends AbstractTestCase {
 
   protected void createDomain() {

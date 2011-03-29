@@ -20,11 +20,13 @@ package org.chromattic.test.onetomany.reference;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A3.class, B3.class})
 public class PathTestCase extends AbstractTestCase {
 
   protected void createDomain() {

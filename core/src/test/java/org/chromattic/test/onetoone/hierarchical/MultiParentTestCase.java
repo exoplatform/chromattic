@@ -21,11 +21,13 @@ package org.chromattic.test.onetoone.hierarchical;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {C1.class, C2.class, C3.class, C4.class})
 public class MultiParentTestCase extends AbstractTestCase {
 
   @Override
