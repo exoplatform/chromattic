@@ -19,7 +19,9 @@
 
 package org.chromattic.metamodel.bean;
 
+import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
+import org.reflext.api.TypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.AnnotationTarget;
@@ -59,7 +61,21 @@ public abstract class PropertyInfo<V extends ValueInfo> {
       String name,
       MethodInfo getter,
       MethodInfo setter,
-      V value) {
+      V value)  throws NullPointerException, IllegalArgumentException {
+    if (owner == null) {
+      throw new NullPointerException("Owner cannot be null");
+    }
+    if (name == null) {
+      throw new NullPointerException("Name cannot be null");
+    }
+    if (value == null) {
+      throw new NullPointerException("Value cannot be null");
+    }
+    if (getter == null && setter == null) {
+      throw new IllegalArgumentException("Both setter and getter cannot be null");
+    }
+
+    //
     this.owner = owner;
     this.parent = parent;
     this.name = name;

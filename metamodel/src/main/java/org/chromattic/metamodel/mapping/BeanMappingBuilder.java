@@ -20,6 +20,7 @@
 package org.chromattic.metamodel.mapping;
 
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.AutoCreated;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
@@ -202,7 +203,9 @@ public class BeanMappingBuilder {
                     if (fromRelationship != toRelationship) {
                       if (resolves(fromRelationship, toRelationship)) {
                         if (relationshipMapping.relatedRelationshipMapping != null) {
-                          throw new UnsupportedOperationException();
+                          throw new InvalidMappingException(beanMapping.getBean().getClassType(), "The relationship " +
+                          relationshipMapping + " is associated with more than one relationship: " +
+                              relationshipMapping.relatedRelationshipMapping + " and " + toRelationship);
                         }
                         fromRelationship.relatedRelationshipMapping = toRelationship;
                         break;
@@ -430,7 +433,7 @@ public class BeanMappingBuilder {
 
         //
         if (annotations.size() > 1) {
-          throw new UnsupportedOperationException();
+          throw new InvalidMappingException(bean.getClassType(), "The property " + property + " declares too many annotations " + annotations);
         }
 
         // Build the correct mapping or fail
@@ -465,7 +468,9 @@ public class BeanMappingBuilder {
                     mapping = createEmbeddedOneToOne((SingleValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   default:
-                    throw new UnsupportedOperationException();
+                    throw new InvalidMappingException(bean.getClassType(), "Expecting that the @OneToOne property " +
+                        property + " to be annotated with " + RelationshipType.HIERARCHIC + " or "
+                        + RelationshipType.EMBEDDED + " instead of " + oneToOne.type());
                 }
               } else if (annotation instanceof ManyToOne) {
                 ManyToOne manyToOne = (ManyToOne)annotation;
@@ -478,10 +483,14 @@ public class BeanMappingBuilder {
                     mapping = createReferenceManyToOne(manyToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   default:
-                    throw new UnsupportedOperationException();
+                    throw new InvalidMappingException(bean.getClassType(), "Expecting that the @ManyToOne property " +
+                        property + " to be annotated with " + RelationshipType.HIERARCHIC + ", "
+                        + RelationshipType.PATH + " or " + RelationshipType.REFERENCE + " instead of " +
+                        manyToOne.type());
                 }
               } else {
-                throw new UnsupportedOperationException();
+                throw new InvalidMappingException(bean.getClassType(), "Annotation " + annotation + " is forbidden " +
+                " on property " + property);
               }
             } else {
               throw new AssertionError();
@@ -494,7 +503,8 @@ public class BeanMappingBuilder {
               } else if (annotation instanceof Properties) {
                 mapping = createProperties((MultiValuedPropertyInfo<? extends ValueInfo>)property);
               } else {
-                throw new InvalidMappingException(bean.getClassType(), "No annotation found on property " + property);
+                throw new InvalidMappingException(bean.getClassType(), "Annotation " + annotation + " is forbidden " +
+                " on property " + property);
               }
             } else if (value instanceof BeanValueInfo) {
               if (annotation instanceof OneToMany) {
@@ -508,12 +518,16 @@ public class BeanMappingBuilder {
                     mapping = createReferenceOneToMany(oneToMany, (MultiValuedPropertyInfo<BeanValueInfo>)property);
                     break;
                   default:
-                    throw new UnsupportedOperationException();
+                    throw new InvalidMappingException(bean.getClassType(), "Expecting that the @OneToMany property " +
+                        property + " to be annotated with " + RelationshipType.HIERARCHIC + ", "
+                        + RelationshipType.PATH + " or " + RelationshipType.REFERENCE + " instead of " +
+                        oneToMany.type());
                 }
               } else if (annotation instanceof Properties) {
                 mapping = createProperties((MultiValuedPropertyInfo<? extends ValueInfo>)property);
               }  else {
-                throw new InvalidMappingException(bean.getClassType(), "The property " + property + " should be annotated with " + OneToMany.class.getName());
+                throw new InvalidMappingException(bean.getClassType(), "Annotation " + annotation + " is forbidden " +
+                " on property " + property);
               }
             } else {
               throw new AssertionError();
@@ -560,10 +574,12 @@ public class BeanMappingBuilder {
               if (argTI instanceof ClassTypeInfo) {
                 ClassTypeInfo argCTI = (ClassTypeInfo)argTI;
                 if (!argCTI.getName().equals(String.class.getName())) {
-                  throw new IllegalStateException();
+                  throw new InvalidMappingException(bean.getClassType(), "The argument of the @Create method " +
+                  method + " must be a java.lang.String instead of " + method.getSignature());
                 }
               } else {
-                throw new IllegalStateException();
+                throw new InvalidMappingException(bean.getClassType(), "The argument of the @Create method " +
+                method + " must be a java.lang.String instead of " + method.getSignature());
               }
             }
             ClassTypeInfo returnTypeInfo = bean.resolveToClass(method.getReturnType());
@@ -575,11 +591,16 @@ public class BeanMappingBuilder {
               }
               methodMappings.add(new CreateMapping(method, createBeanMapping));
             } else {
-              throw new InvalidMappingException(bean.getClassType(), "Invalid " + method + " method return type " + returnTypeInfo);
+              throw new InvalidMappingException(bean.getClassType(), "Invalid @Create method " + method +
+                  " return type " + returnTypeInfo);
             }
           } else {
-            throw new IllegalStateException();
+            throw new InvalidMappingException(bean.getClassType(), "The signature of the @Create method " +
+            method + "should have zero or one argument instead of " + method.getSignature());
           }
+        } else {
+          throw new InvalidMappingException(bean.getClassType(), "The @Create method " +
+          method + " must not be static");
         }
       }
 
@@ -589,12 +610,17 @@ public class BeanMappingBuilder {
         if (!method.isStatic()) {
           List<TypeInfo> parameterTypes = method.getParameterTypes();
           if (parameterTypes.size() != 0) {
-            throw new IllegalStateException();
+            throw new InvalidMappingException(bean.getClassType(), "The @Destroy method " +
+            method + " must have no arguments");
           }
           if (!(method.getReturnType() instanceof VoidTypeInfo)) {
-            throw new IllegalStateException();
+            throw new InvalidMappingException(bean.getClassType(), "The @Destroy method " +
+            method + " must have a void return type");
           }
           methodMappings.add(new DestroyMapping(method));
+        } else {
+          throw new InvalidMappingException(bean.getClassType(), "The @Destroy method " +
+          method + " must not be static");
         }
       }
 
@@ -611,12 +637,20 @@ public class BeanMappingBuilder {
                 ClassTypeInfo cti = (ClassTypeInfo)bean.getClassType().resolve(method.getReturnType());
                 methodMappings.add(new FindByIdMapping(method, cti));
               } else {
-                throw new IllegalStateException();
+                throw new InvalidMappingException(bean.getClassType(), "The argument of the @FindById method " +
+                method + " must be a java.lang.String instead of " + method.getSignature());
               }
             } else {
-              throw new IllegalStateException();
+              throw new InvalidMappingException(bean.getClassType(), "The argument of the @FindById method " +
+              method + " must be a java.lang.String instead of " + method.getSignature());
             }
+          } else {
+            throw new InvalidMappingException(bean.getClassType(), "The signature of the @FindById method " +
+            method + "should a single java.lang.String argument instead of " + method.getSignature());
           }
+        } else {
+          throw new InvalidMappingException(bean.getClassType(), "The @FindById method " +
+          method + " must not be static");
         }
       }
 
@@ -627,21 +661,24 @@ public class BeanMappingBuilder {
     private AttributeMapping createAttribute(SingleValuedPropertyInfo<SimpleValueInfo> property, NodeAttributeType type) {
       TypeInfo effectiveType = property.getValue().getEffectiveType();
       if (!(effectiveType instanceof ClassTypeInfo)) {
-        throw new UnsupportedOperationException();
+        throw new InvalidMappingException(property.getOwner().getClassType(), "The property " + property +
+            " must be of type java.lang.String");
       }
       ClassTypeInfo effectiveClassType = (ClassTypeInfo)effectiveType;
       if (!effectiveClassType.getName().equals(String.class.getName())) {
-        throw new UnsupportedOperationException();
+        throw new InvalidMappingException(property.getOwner().getClassType(), "The property " + property +
+            " must be of type java.lang.String");
       }
       return new AttributeMapping(property, type);
     }
 
     private <V extends ValueInfo> PropertiesMapping<V> createProperties(MultiValuedPropertyInfo<V> property) {
       if (property.getKind() != MultiValueKind.MAP) {
-        throw new UnsupportedOperationException();
+        throw new InvalidMappingException(property.getOwner().getClassType(), "The @Properties " + property +
+            " must be of type java.util.Map instead of " + property.getValue().getEffectiveType());
       }
       TypeInfo type = property.getValue().getEffectiveType();
-      PropertyMetaType<?> mt =  null;
+      PropertyMetaType<?> mt;
       if (type.getName().equals(Object.class.getName())) {
         mt = null;
       } else {
@@ -662,9 +699,10 @@ public class BeanMappingBuilder {
       PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(propertyAnnotation.type());
 
       //
-      SimpleTypeMapping abc = typeResolver.resolveType(property.getValue().getDeclaredType(), propertyMetaType);
-      if (abc == null) {
-        throw new UnsupportedOperationException("No simple type mapping for " + property.getValue().getDeclaredType());
+      SimpleTypeMapping resolved = typeResolver.resolveType(property.getValue().getDeclaredType(), propertyMetaType);
+      if (resolved == null) {
+        throw new InvalidMappingException(property.getOwner().getClassType(),  "No simple type mapping "
+            + property.getValue().getDeclaredType() + " for property " + property);
       }
 
       //
@@ -680,7 +718,7 @@ public class BeanMappingBuilder {
       //
       PropertyDefinitionMapping propertyDefinition = new PropertyDefinitionMapping(
           propertyAnnotation.name(),
-          abc.getPropertyMetaType(),
+          resolved.getPropertyMetaType(),
           defaultValueList,
           false);
 
@@ -697,7 +735,8 @@ public class BeanMappingBuilder {
     private RelationshipMapping.OneToMany.Reference createReferenceOneToMany(OneToMany annotation, MultiValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
-        throw new UnsupportedOperationException();
+        throw new InvalidMappingException(property.getOwner().getClassType(), "The reference @OneToMany relationship " +
+            property + "must carry an @MappedBy annotation");
       }
       RelationshipMapping.OneToMany.Reference mapping;
       mapping = new RelationshipMapping.OneToMany.Reference(property, mappedBy.value(), annotation.type());
@@ -718,7 +757,8 @@ public class BeanMappingBuilder {
     private RelationshipMapping.ManyToOne.Reference createReferenceManyToOne(ManyToOne annotation, SingleValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
-        throw new UnsupportedOperationException();
+        throw new InvalidMappingException(property.getOwner().getClassType(), "The reference @ManyToOne relationship " +
+            property + "must carry an @MappedBy annotation");
       }
       RelationshipMapping.ManyToOne.Reference mapping;
       mapping = new RelationshipMapping.ManyToOne.Reference(property, mappedBy.value(), annotation.type());
@@ -750,7 +790,8 @@ public class BeanMappingBuilder {
         SingleValuedPropertyInfo<BeanValueInfo> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
-        throw new UnsupportedOperationException();
+        throw new InvalidMappingException(property.getOwner().getClassType(), "The @OneToOne relationship " +
+            property + "must carry an @MappedBy annotation");
       }
       boolean owner = property.getAnnotation(Owner.class) != null;
       boolean autocreated = property.getAnnotation(AutoCreated.class) != null;
