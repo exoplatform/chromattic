@@ -41,13 +41,13 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.core</artifactId>
+      <artifactId>chromattic.apt</artifactId>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.apt</artifactId>
-      <scope>compile</scope>
+      <artifactId>chromattic.core</artifactId>
     </dependency>
 
     <dependency>
@@ -71,11 +71,6 @@
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.test</artifactId>
       <scope>test</scope>
@@ -92,22 +87,17 @@
       <version>1.0.8</version>
     </dependency>
 
-     <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.8</version>
-     </dependency>
-
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
   </dependencies>
-
 
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
-
-          <!-- Groovy tests -->
           <execution>
             <id>generate-test-sources</id>
             <phase>generate-test-sources</phase>
@@ -125,27 +115,37 @@
               <goal>run</goal>
             </goals>
           </execution>
-        </executions>
-      </plugin>
 
-      <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-surefire-plugin</artifactId>
-         <configuration>
-            <includes>
-               <!--<include>**/*TestCase.java</include>-->
-               <include>**/*TestSuite.java</include>
-            </includes>
-         </configuration>
-      </plugin>
-      
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArguments>
-            <sourcepath>${project.basedir}/../</sourcepath>
-          </compilerArguments>
-        </configuration>
+           <execution>
+            <id>process-test-classes</id>
+            <phase>process-test-classes</phase>
+            <configuration>
+              <tasks>
+                <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
+                  <classpath refid="maven.compile.classpath" />
+                </taskdef>
+                <unzip dest="${basedir}/target/test-classes/" src="${maven.dependency.org.chromattic.chromattic.core.tests.test-jar.path}">
+                  <patternset>
+                    <include name="**/*.groovy"/>
+                  </patternset>
+                </unzip>
+                <unzip dest="${basedir}/target/test-classes/" src="${maven.dependency.org.chromattic.chromattic.metamodel.tests.test-jar.path}">
+                  <patternset>
+                    <include name="**/*.groovy"/>
+                  </patternset>
+                </unzip>
+                <groovyc destdir="${basedir}/target/test-classes/" srcdir="${basedir}/target/test-classes/" fork="no" listfiles="false">
+                  <classpath>
+                     <path refid="maven.compile.classpath"/>
+                  </classpath>
+                </groovyc>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
