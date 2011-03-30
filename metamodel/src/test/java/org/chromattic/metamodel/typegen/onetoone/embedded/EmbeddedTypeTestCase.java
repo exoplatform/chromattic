@@ -23,6 +23,7 @@ import org.chromattic.common.collection.Collections;
 import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.TypeGen;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.Map;
 
