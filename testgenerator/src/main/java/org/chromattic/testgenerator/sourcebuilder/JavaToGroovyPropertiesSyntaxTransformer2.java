@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcetransformer;
+package org.chromattic.testgenerator.sourcebuilder;
 
 import japa.parser.ast.expr.MethodCallExpr;
 
@@ -25,7 +25,7 @@ import japa.parser.ast.expr.MethodCallExpr;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class JavaToGroovyPropertiesSyntaxTransformer extends JavaToGroovySyntaxTransformer {
+public class JavaToGroovyPropertiesSyntaxTransformer2 extends JavaToGroovySyntaxTransformer2 {
 
   @Override
   protected String genericCall(String source) {
@@ -46,10 +46,10 @@ public class JavaToGroovyPropertiesSyntaxTransformer extends JavaToGroovySyntaxT
         tmpExpr += " = " + methodCallExpr.getArgs().get(0).toString();
         tmpSrc = tmpSrc.replace(methodCallExpr.toString(), tmpExpr);
       }
-      if (methodCallExpr.getTypeArgs() != null) {
+      /*if (methodCallExpr.getTypeArgs() != null) {
         tmpExpr = tmpExpr.replaceAll("<.*>", "");
         tmpSrc = tmpSrc.replace(methodCallExpr.toString(), tmpExpr);
-      }
+      }*/
     }
     return tmpSrc;
   }

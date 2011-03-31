@@ -17,22 +17,19 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcetransformer;
-
-import japa.parser.ast.expr.AnnotationExpr;
-import japa.parser.ast.expr.MethodCallExpr;
+package org.chromattic.testgenerator.sourcebuilder;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class JavaToGroovySyntaxTransformer implements TransformationProcessor {
+public class JavaToGroovySyntaxTransformer2 implements TransformationProcessor {
   protected TransformationSource transformationSource;
 
-  public JavaToGroovySyntaxTransformer() {
+  public JavaToGroovySyntaxTransformer2() {
   }
 
-  public JavaToGroovySyntaxTransformer(TransformationSource transformationSource) {
+  public JavaToGroovySyntaxTransformer2(TransformationSource transformationSource) {
     this.transformationSource = transformationSource;
   }
 
@@ -49,18 +46,20 @@ public class JavaToGroovySyntaxTransformer implements TransformationProcessor {
   }
 
   protected String annotationBracket(String source) {
-    String tmpSrc = source;
+    return source;
+    /*String tmpSrc = source;
     for (AnnotationExpr expr : transformationSource.getAnnotationExprs()) {
       String tmpExpr = expr.toString();
       tmpExpr = tmpExpr.replaceAll("\\{", "[");
       tmpExpr = tmpExpr.replaceAll("\\}", "]");
       tmpSrc = tmpSrc.replace(expr.toString(), tmpExpr);
     }
-    return tmpSrc;
+    return tmpSrc;*/
   }
 
   protected String genericCall(String source) {
-    String tmpSrc = source;
+     return source;
+    /*String tmpSrc = source;
     for (MethodCallExpr methodCallExpr : transformationSource.getMethodCallExprs()) {
       String tmpExpr = methodCallExpr.toString();
       if (methodCallExpr.getTypeArgs() != null) {
@@ -68,6 +67,6 @@ public class JavaToGroovySyntaxTransformer implements TransformationProcessor {
         tmpSrc = tmpSrc.replace(methodCallExpr.toString(), tmpExpr);
       }
     }
-    return tmpSrc;
+    return tmpSrc;*/
   }
 }

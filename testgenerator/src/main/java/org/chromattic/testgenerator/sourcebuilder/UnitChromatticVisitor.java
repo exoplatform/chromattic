@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcetransformer;
+package org.chromattic.testgenerator.sourcebuilder;
 
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
@@ -30,11 +30,9 @@ import japa.parser.ast.expr.ArrayCreationExpr;
 import japa.parser.ast.expr.MethodCallExpr;
 import japa.parser.ast.type.Type;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
-import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**

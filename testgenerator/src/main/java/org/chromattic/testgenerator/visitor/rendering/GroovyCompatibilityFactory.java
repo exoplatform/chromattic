@@ -17,13 +17,19 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcetransformer;
+package org.chromattic.testgenerator.visitor.rendering;
+
+import japa.parser.ast.visitor.DumpVisitor;
+import japa.parser.ast.visitor.DumpVisitorFactory;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public interface TransformationProcessor {
-  String transform(String source);
-  void setTransformationSource(TransformationSource transformationSource);
+public class GroovyCompatibilityFactory implements DumpVisitorFactory
+{
+   public DumpVisitor createVisitor()
+   {
+      return new GroovyCompatibilityVisitor();
+   }
 }

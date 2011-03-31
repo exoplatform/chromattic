@@ -17,31 +17,42 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcetransformer;
+package org.chromattic.testgenerator.sourcebuilder;
 
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.ImportDeclaration;
-import japa.parser.ast.PackageDeclaration;
 import japa.parser.ast.expr.NameExpr;
+import japa.parser.ast.visitor.DumpVisitorFactory;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyFromJavaSourceChromatticBuilder {
+public class GroovyFromJavaSourceTestBuilder {
   private CompilationUnit compilationUnit;
   private StringBuilder sb = new StringBuilder();
+  private String name;
+  private List<String> deps;
 
-  public GroovyFromJavaSourceChromatticBuilder(CompilationUnit compilationUnit) {
+  public GroovyFromJavaSourceTestBuilder(CompilationUnit compilationUnit, String name, List<String> deps) {
     this.compilationUnit = compilationUnit;
+    this.name = name;
+    this.deps = deps;
   }
 
-  public void build() {
-    UnitChromatticVisitor unitChromatticVisitor = new UnitChromatticVisitor();
-    compilationUnit.getPackage().getName().setName(compilationUnit.getPackage().getName().getName() + ".groovy");
-    unitChromatticVisitor.visit(compilationUnit, null);
-    JavaToGroovySyntaxTransformer syntaxTransformer = new JavaToGroovySyntaxTransformer(unitChromatticVisitor);
-    sb.append(syntaxTransformer.transform(compilationUnit.toString()));
+  public void build(DumpVisitorFactory factory, List<String> excludedMethods) {
+    UnitTestVisitor unitTestVisitor = new UnitTestVisitor(name);
+    for (String dep : deps)
+    {
+      int i = dep.lastIndexOf(".");
+      String depPackage = dep.substring(0, i) + ".groovy";
+      String depImport = depPackage + dep.substring(i);
+      compilationUnit.getImports().add(new ImportDeclaration(new NameExpr(depImport), false, false));
+    }
+    unitTestVisitor.visit(compilationUnit, excludedMethods);
+    sb.append(compilationUnit.toString(factory));
   }
 
   @Override

@@ -19,14 +19,14 @@
 
 package org.chromattic.testgenerator;
 
-import japa.parser.JavaParser;
+import japa.parser.Parser;
 import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
-import org.chromattic.testgenerator.sourcetransformer.GroovyFromJavaSourceChromatticBuilder;
-import org.chromattic.testgenerator.sourcetransformer.GroovyFromJavaSourceTestBuilder;
-import org.chromattic.testgenerator.sourcetransformer.JavaToGroovyPropertiesSyntaxTransformer;
-import org.chromattic.testgenerator.sourcetransformer.JavaToGroovySyntaxTransformer;
-import org.chromattic.testgenerator.sourcetransformer.TransformationProcessor;
+import japa.parser.ast.visitor.DumpVisitorFactory;
+import org.chromattic.testgenerator.sourcebuilder.GroovyFromJavaSourceChromatticBuilder;
+import org.chromattic.testgenerator.sourcebuilder.GroovyFromJavaSourceTestBuilder;
+import org.chromattic.testgenerator.visitor.rendering.GroovyCompatibilityFactory;
+import org.chromattic.testgenerator.visitor.rendering.GroovyPropertiesFactory;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -104,12 +104,12 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
          switch(format)
          {
             case GETTER_SETTER:
-               writeGroovyTest(format, typeElt, new JavaToGroovySyntaxTransformer());
+               writeGroovyTest(format, typeElt, new GroovyCompatibilityFactory());
 
                break;
 
             case PROPERTIES:
-               writeGroovyTest(format, typeElt, new JavaToGroovyPropertiesSyntaxTransformer());
+               writeGroovyTest(format, typeElt, new GroovyPropertiesFactory());
                break;
 
             case CHROMATTIC:
@@ -117,7 +117,7 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
                for (String chromatticQualifiedClassName : chromatticClassNames)
                {
                   InputStream chromatticIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, format.getPackageName(chromatticQualifiedClassName), format.javaFileName(chromatticQualifiedClassName)).openInputStream();
-                  CompilationUnit chromatticUnit = JavaParser.parse(chromatticIs);
+                  CompilationUnit chromatticUnit = Parser.parse(chromatticIs);
                   try
                   {
                      OutputStream chromatticOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, format.getPackageName(chromatticQualifiedClassName) + ".groovy", format.getClassName(chromatticQualifiedClassName) + ".groovy").openOutputStream();
@@ -136,7 +136,7 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
       }
    }
 
-   private void writeGroovyTest(GroovyOutputFormat format, TypeElement typeElt, TransformationProcessor transformer) throws IOException, ParseException
+   private void writeGroovyTest(GroovyOutputFormat format, TypeElement typeElt, DumpVisitorFactory factory) throws IOException, ParseException
    {
       List<String> excludedMethods;
       try {
@@ -148,10 +148,10 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
 
       //
       InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, format.getPackageName(typeElt), format.javaFileName(typeElt)).openInputStream();
-      CompilationUnit testUnit = JavaParser.parse(testIs);
+      CompilationUnit testUnit = Parser.parse(testIs);
       FileObject jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, format.getPackageName(typeElt), format.groovyFileName(typeElt));
       GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, format.testName(typeElt), chromatticClassNames);
-      testBuilder.build(transformer, excludedMethods);
+      testBuilder.build(factory, excludedMethods);
       SourceUtil.writeSource(testBuilder.toString(), jfo.openOutputStream());
       generatedTests.add(format.getPackageName(typeElt) + "." + format.groovyFileName(typeElt));
    }
