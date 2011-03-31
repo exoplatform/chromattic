@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.visitor.rendering;
+package org.chromattic.testgenerator.visitor.renderer;
 
 import japa.parser.ast.visitor.DumpVisitor;
 import japa.parser.ast.visitor.DumpVisitorFactory;
@@ -26,10 +26,10 @@ import japa.parser.ast.visitor.DumpVisitorFactory;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class GroovyCompatibilityFactory implements DumpVisitorFactory
+public class GroovyPropertiesFactory implements DumpVisitorFactory
 {
    public DumpVisitor createVisitor()
    {
-      return new GroovyCompatibilityVisitor();
+      return new GroovyPropertiesVisitor();
    }
 }

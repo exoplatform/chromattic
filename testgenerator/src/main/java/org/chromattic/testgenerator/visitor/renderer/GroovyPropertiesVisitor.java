@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.visitor.rendering;
+package org.chromattic.testgenerator.visitor.renderer;
 
 import japa.parser.ast.expr.MethodCallExpr;
 

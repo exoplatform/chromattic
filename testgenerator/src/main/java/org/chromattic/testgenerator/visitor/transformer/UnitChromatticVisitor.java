@@ -17,7 +17,7 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcebuilder;
+package org.chromattic.testgenerator.visitor.transformer;
 
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
@@ -39,7 +39,7 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class UnitChromatticVisitor extends VoidVisitorAdapter implements TransformationSource {
+public class UnitChromatticVisitor extends VoidVisitorAdapter {
   private List<AnnotationExpr> annotationExprs = new ArrayList<AnnotationExpr>();
   private List<MethodCallExpr> methodCallExprs = new ArrayList<MethodCallExpr>();
 
