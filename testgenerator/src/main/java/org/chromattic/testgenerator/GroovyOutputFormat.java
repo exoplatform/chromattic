@@ -19,11 +19,85 @@
 
 package org.chromattic.testgenerator;
 
+import javax.lang.model.element.TypeElement;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public enum GroovyOutputFormat
 {
-   GETTER_SETTER, PROPERTIES, CHROMATTIC;
+   GETTER_SETTER
+           {
+              @Override
+              public String testName(TypeElement typeElt)
+              {
+                 return "GroovyGetSet_" + typeElt.getSimpleName();
+              }
+           },
+
+   PROPERTIES
+           {
+              @Override
+              public String testName(TypeElement typeElt)
+              {
+                 return "GroovyProperties_" + typeElt.getSimpleName();
+              }
+           },
+
+   CHROMATTIC
+           {
+              @Override
+              public String testName(TypeElement typeElt)
+              {
+                 return typeElt.getSimpleName().toString();
+              }
+           },;
+
+
+   // Package name
+   public CharSequence getPackageName(TypeElement typeElt)
+   {
+      return getPackageName(typeElt.getQualifiedName());
+   }
+
+   public CharSequence getPackageName(CharSequence typeName)
+   {
+      int lastIndex = typeName.toString().lastIndexOf(".");
+      return typeName.subSequence(0, lastIndex);
+   }
+
+
+   // Java file name
+   public String javaFileName(TypeElement typeElt)
+   {
+      return javaFileName(typeElt.getQualifiedName().toString());
+   }
+
+   public String javaFileName(String classLiteral)
+   {
+      return getClassName(classLiteral) + ".java";
+   }
+
+
+   // Groovy file name
+   public String groovyFileName(TypeElement typeElt)
+   {
+      return groovyFileName(testName(typeElt));
+   }
+
+   public String groovyFileName(String classLiteral)
+   {
+      return getClassName(classLiteral) + ".groovy";
+   }
+
+
+   // Other stuff
+   public CharSequence getClassName(CharSequence typeName)
+   {
+      int lastIndex = typeName.toString().lastIndexOf(".") + 1;
+      return typeName.subSequence(lastIndex, typeName.length());
+   }
+
+   public abstract String testName(TypeElement typeElt);
 }

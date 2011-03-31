@@ -26,6 +26,7 @@ import org.chromattic.testgenerator.sourcetransformer.GroovyFromJavaSourceChroma
 import org.chromattic.testgenerator.sourcetransformer.GroovyFromJavaSourceTestBuilder;
 import org.chromattic.testgenerator.sourcetransformer.JavaToGroovyPropertiesSyntaxTransformer;
 import org.chromattic.testgenerator.sourcetransformer.JavaToGroovySyntaxTransformer;
+import org.chromattic.testgenerator.sourcetransformer.TransformationProcessor;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -100,44 +101,26 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
    {
 
       try {
-         FileObject jfo = null;
-         List<String> excludedMethods;
-         List<String> chromatticClassNames = SourceUtil.getChromatticClassName(typeElt);
-         try {
-           excludedMethods = SourceUtil.excludedMethods(typeElt);
-         } catch (TestGeneratorException tge) {
-           excludedMethods = new ArrayList<String>();
-         }
          switch(format)
          {
             case GETTER_SETTER:
-               InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, getPackageName(typeElt), typeElt.getSimpleName() + ".java").openInputStream();
-               CompilationUnit testUnit = JavaParser.parse(testIs);
-               jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, getPackageName(typeElt), "GroovyGetSet_" + typeElt.getSimpleName() + ".groovy");
-               GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, "GroovyGetSet_" + typeElt.getSimpleName(), chromatticClassNames);
-               testBuilder.build(new JavaToGroovySyntaxTransformer(), excludedMethods);
-               SourceUtil.writeSource(testBuilder.toString(), jfo.openOutputStream());
-               generatedTests.add(getPackageName(typeElt) + ".GroovyGetSet_" + typeElt.getSimpleName());
+               writeGroovyTest(format, typeElt, new JavaToGroovySyntaxTransformer());
+
                break;
 
             case PROPERTIES:
-               InputStream testIsProperties = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, getPackageName(typeElt), typeElt.getSimpleName() + ".java").openInputStream();
-               CompilationUnit testUnitProperties = JavaParser.parse(testIsProperties);
-               jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, getPackageName(typeElt), "GroovyProperties_" + typeElt.getSimpleName() + ".groovy");
-               GroovyFromJavaSourceTestBuilder testBuilderProperties = new GroovyFromJavaSourceTestBuilder(testUnitProperties, "GroovyProperties_" + typeElt.getSimpleName(), chromatticClassNames);
-               testBuilderProperties.build(new JavaToGroovyPropertiesSyntaxTransformer(), excludedMethods);
-               SourceUtil.writeSource(testBuilderProperties.toString(), jfo.openOutputStream());
-               generatedTests.add(getPackageName(typeElt) + ".GroovyProperties_" + typeElt.getSimpleName());
+               writeGroovyTest(format, typeElt, new JavaToGroovyPropertiesSyntaxTransformer());
                break;
 
             case CHROMATTIC:
+               List<String> chromatticClassNames = SourceUtil.getChromatticClassName(typeElt);
                for (String chromatticQualifiedClassName : chromatticClassNames)
                {
-                  InputStream chromatticIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, getPackageName(chromatticQualifiedClassName), getClassName(chromatticQualifiedClassName) + ".java").openInputStream();
+                  InputStream chromatticIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, format.getPackageName(chromatticQualifiedClassName), format.javaFileName(chromatticQualifiedClassName)).openInputStream();
                   CompilationUnit chromatticUnit = JavaParser.parse(chromatticIs);
                   try
                   {
-                     OutputStream chromatticOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, getPackageName(chromatticQualifiedClassName) + ".groovy", getClassName(chromatticQualifiedClassName) + ".groovy").openOutputStream();
+                     OutputStream chromatticOs = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, format.getPackageName(chromatticQualifiedClassName) + ".groovy", format.getClassName(chromatticQualifiedClassName) + ".groovy").openOutputStream();
                      GroovyFromJavaSourceChromatticBuilder chromatticBuilder = new GroovyFromJavaSourceChromatticBuilder(chromatticUnit);
                      chromatticBuilder.build();
                      SourceUtil.writeSource(chromatticBuilder.toString(), chromatticOs);
@@ -153,20 +136,23 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
       }
    }
 
-   private CharSequence getPackageName(TypeElement typeElt)
+   private void writeGroovyTest(GroovyOutputFormat format, TypeElement typeElt, TransformationProcessor transformer) throws IOException, ParseException
    {
-      return getPackageName(typeElt.getQualifiedName());
-   }
+      List<String> excludedMethods;
+      try {
+        excludedMethods = SourceUtil.excludedMethods(typeElt);
+      } catch (TestGeneratorException tge) {
+        excludedMethods = new ArrayList<String>();
+      }
+      List<String> chromatticClassNames = SourceUtil.getChromatticClassName(typeElt);
 
-   private CharSequence getPackageName(CharSequence typeName)
-   {
-      int lastIndex = typeName.toString().lastIndexOf(".");
-      return typeName.subSequence(0, lastIndex);
-   }
-
-   private CharSequence getClassName(CharSequence typeName)
-   {
-      int lastIndex = typeName.toString().lastIndexOf(".") + 1;
-      return typeName.subSequence(lastIndex, typeName.length());
+      //
+      InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, format.getPackageName(typeElt), format.javaFileName(typeElt)).openInputStream();
+      CompilationUnit testUnit = JavaParser.parse(testIs);
+      FileObject jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, format.getPackageName(typeElt), format.groovyFileName(typeElt));
+      GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, format.testName(typeElt), chromatticClassNames);
+      testBuilder.build(transformer, excludedMethods);
+      SourceUtil.writeSource(testBuilder.toString(), jfo.openOutputStream());
+      generatedTests.add(format.getPackageName(typeElt) + "." + format.groovyFileName(typeElt));
    }
 }

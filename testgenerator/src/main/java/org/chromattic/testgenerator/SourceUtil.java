@@ -22,9 +22,7 @@ package org.chromattic.testgenerator;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.ExecutableElement;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ public class SourceUtil {
 
   public static List<String> getChromatticClassName(Element classElement) {
     List<String> paths = new ArrayList<String>();
-    List<AnnotationValue> annotationValues = getUniversalTestConfig(classElement, "chromatticClasses");
+    List<AnnotationValue> annotationValues = getGroovyTestConfig(classElement, "chromatticClasses");
     for(AnnotationValue currentClass : annotationValues) {
       int lastDotIndex = currentClass.toString().lastIndexOf(".");
       paths.add(currentClass.toString().substring(0, lastDotIndex));
@@ -46,11 +44,7 @@ public class SourceUtil {
     return paths;
   }
 
-  public static String getTestPath(Element classElement) {
-    return classnameToPath(getUniversalTestConfig(classElement, "sourceClass").toString() + ".class");
-  }
-
-  public static <T> T getUniversalTestConfig(Element classElement, String key) {
+  public static <T> T getGroovyTestConfig(Element classElement, String key) {
     for (AnnotationMirror annotationMirror : classElement.getAnnotationMirrors()) {
       for (ExecutableElement executableElement : annotationMirror.getElementValues().keySet()) {
         if (key.equals(executableElement.getSimpleName().toString())) {
@@ -58,34 +52,16 @@ public class SourceUtil {
         }
       }
     }
-    throw new TestGeneratorException("Configuration key not found [@UniversalTest." + key + "()] for " + classElement.getSimpleName());
-  }
-
-  public static String classnameToPath(String classname) {
-    return classname
-      .replaceAll("\\.", "/")
-      .replaceAll("/class$", ".java");
-  }
-
-  public static String groovyPath(String javaPath) {
-    return javaPath.replaceAll("\\.java", ".groovy");
-  }
-
-  public static String sourceBaseDirectory(Element classElement) {
-    return getUniversalTestConfig(classElement, "baseDir");
+    throw new TestGeneratorException("Configuration key not found [@GroovyTestGeneration." + key + "()] for " + classElement.getSimpleName());
   }
 
   public static List<String> excludedMethods(Element classElement) {
     List<String> excludedMethods = new ArrayList<String>();
-    List<AnnotationValue> annotationValues = getUniversalTestConfig(classElement, "exclude");
+    List<AnnotationValue> annotationValues = getGroovyTestConfig(classElement, "exclude");
     for(AnnotationValue currentExcluded : annotationValues) {
       excludedMethods.add((String) currentExcluded.getValue());
     }
     return excludedMethods;
-  }
-
-  public static String suffixOf(Element classElement) {
-    return getUniversalTestConfig(classElement, "suffix");
   }
 
   public static void writeSource(String code, OutputStream os) {

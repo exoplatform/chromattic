@@ -19,75 +19,108 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-   <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-   <parent>
+  <parent>
+    <groupId>org.chromattic</groupId>
+    <artifactId>chromattic.docs.reference</artifactId>
+    <version>1.1.0-beta7-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>chromattic.docs.reference.examples</artifactId>
+
+  <name>Chromattic Framework Reference Examples</name>
+  <description>Chromattic Framework Reference Examples</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.docs.reference</artifactId>
-      <version>1.1.0-beta7-SNAPSHOT</version>
-   </parent>
+      <artifactId>chromattic.api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.apt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.groovy</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.exo</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.ext</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-   <artifactId>chromattic.docs.reference.examples</artifactId>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.groovy.maven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>generateTestStubs</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+       
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources1</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+            <phase>compile</phase>
+          </execution>
+          <execution>
+            <id>attach-sources2</id>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+            <phase>test-compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
-   <name>Chromattic Framework Reference Examples</name>
-   <description>Chromattic Framework Reference Examples</description>
-
-   <dependencies>
-      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.chromattic</groupId>
-         <artifactId>chromattic.api</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.chromattic</groupId>
-         <artifactId>chromattic.apt</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.chromattic</groupId>
-         <artifactId>chromattic.groovy</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.chromattic</groupId>
-         <artifactId>chromattic.test</artifactId>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.chromattic</groupId>
-         <artifactId>chromattic.core</artifactId>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.chromattic</groupId>
-         <artifactId>chromattic.exo</artifactId>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.chromattic</groupId>
-         <artifactId>chromattic.ext</artifactId>
-         <scope>test</scope>
-      </dependency>
-   </dependencies>
-
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.codehaus.groovy.maven</groupId>
-            <artifactId>gmaven-plugin</artifactId>
-            <version>1.0</version>
-            <executions>
-               <execution>
-                  <goals>
-                     <goal>generateStubs</goal>
-                     <goal>compile</goal>
-                     <goal>generateTestStubs</goal>
-                     <goal>testCompile</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-      </plugins>
-   </build>
 </project>
