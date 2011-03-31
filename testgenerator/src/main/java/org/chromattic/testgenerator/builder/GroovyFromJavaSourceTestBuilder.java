@@ -17,12 +17,13 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcebuilder;
+package org.chromattic.testgenerator.builder;
 
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.ImportDeclaration;
 import japa.parser.ast.expr.NameExpr;
 import japa.parser.ast.visitor.DumpVisitorFactory;
+import org.chromattic.testgenerator.visitor.transformer.UnitTestVisitor;
 
 import java.util.List;
 

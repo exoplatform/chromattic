@@ -23,10 +23,10 @@ import japa.parser.Parser;
 import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.visitor.DumpVisitorFactory;
-import org.chromattic.testgenerator.sourcebuilder.GroovyFromJavaSourceChromatticBuilder;
-import org.chromattic.testgenerator.sourcebuilder.GroovyFromJavaSourceTestBuilder;
-import org.chromattic.testgenerator.visitor.rendering.GroovyCompatibilityFactory;
-import org.chromattic.testgenerator.visitor.rendering.GroovyPropertiesFactory;
+import org.chromattic.testgenerator.builder.GroovyFromJavaSourceChromatticBuilder;
+import org.chromattic.testgenerator.builder.GroovyFromJavaSourceTestBuilder;
+import org.chromattic.testgenerator.visitor.renderer.GroovyCompatibilityFactory;
+import org.chromattic.testgenerator.visitor.renderer.GroovyPropertiesFactory;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;

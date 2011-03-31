@@ -17,18 +17,19 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcebuilder;
+package org.chromattic.testgenerator.visitor.renderer;
 
-import japa.parser.ast.expr.AnnotationExpr;
-import japa.parser.ast.expr.MethodCallExpr;
-
-import java.util.List;
+import japa.parser.ast.visitor.DumpVisitor;
+import japa.parser.ast.visitor.DumpVisitorFactory;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public interface TransformationSource {
-  List<AnnotationExpr> getAnnotationExprs();
-  List<MethodCallExpr> getMethodCallExprs();
+public class GroovyCompatibilityFactory implements DumpVisitorFactory
+{
+   public DumpVisitor createVisitor()
+   {
+      return new GroovyCompatibilityVisitor();
+   }
 }

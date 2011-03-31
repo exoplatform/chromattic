@@ -17,10 +17,11 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcebuilder;
+package org.chromattic.testgenerator.builder;
 
 import japa.parser.ast.CompilationUnit;
-import org.chromattic.testgenerator.visitor.rendering.GroovyCompatibilityFactory;
+import org.chromattic.testgenerator.visitor.renderer.GroovyCompatibilityFactory;
+import org.chromattic.testgenerator.visitor.transformer.UnitChromatticVisitor;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
