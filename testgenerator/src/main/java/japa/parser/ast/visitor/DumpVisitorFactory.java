@@ -17,20 +17,13 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.chromattic.testgenerator.sourcetransformer;
-
-import japa.parser.ast.body.ClassOrInterfaceDeclaration;
-import japa.parser.ast.expr.AnnotationExpr;
-import japa.parser.ast.expr.ArrayCreationExpr;
-import japa.parser.ast.expr.MethodCallExpr;
-
-import java.util.List;
+package japa.parser.ast.visitor;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public interface TransformationSource {
-  List<AnnotationExpr> getAnnotationExprs();
-  List<MethodCallExpr> getMethodCallExprs();
+public interface DumpVisitorFactory <T extends DumpVisitor>
+{
+   T createVisitor();
 }
