@@ -19,12 +19,9 @@
 
 package org.chromattic.groovy.metamodel;
 
-import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyInterceptable;
-import groovy.lang.GroovyShell;
 import junit.framework.TestCase;
 import org.chromattic.spi.instrument.MethodHandler;
-import org.chromattic.testgenerator.UniversalTest;
 
 import java.lang.reflect.Modifier;
 
