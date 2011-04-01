@@ -34,14 +34,22 @@ import java.util.List;
 class RemovedEntityContextState extends EntityContextState {
 
   /** . */
+  private final DomainSession session;
+
+  /** . */
   private final String path;
 
-  RemovedEntityContextState(String path) {
+  /** . */
+  private final String name;
+
+  RemovedEntityContextState(DomainSession session, String path, String name) {
+    this.session = session;
     this.path = path;
+    this.name = name;
   }
 
   String getLocalName() {
-    throw new IllegalStateException();
+    return name;
   }
 
   String getPath() {
@@ -57,7 +65,7 @@ class RemovedEntityContextState extends EntityContextState {
   }
 
   DomainSession getSession() {
-    throw new IllegalStateException();
+    return session;
   }
 
   Status getStatus() {

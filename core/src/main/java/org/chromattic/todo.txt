@@ -1,3 +1,6 @@
+now : test List.set with state that throws NPE
+
+
 Should not be NPE I think
 Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 8.093 sec <<< FAILURE!
 testFoo(org.chromattic.docs.demo.shoppingcart.ShoppingCartTestCase)  Time elapsed: 7.359 sec  <<< ERROR!
@@ -76,7 +79,7 @@ java.lang.NullPointerException: Attempt to insert context EntityContext[state=Ob
 - test for corrupted relationship
 - clarify semantic of class importance in one to many map mapping : I.E do we expect class cast or non existence ???
 - Map iterators on relationship for maximum efficiency and allow skip
-- tester que les node type rŽsiduels ont la bonne property type
+- tester que les node type rï¿½siduels ont la bonne property type
 
 - a cache invalidation framework based on transforming node to object id + class
 

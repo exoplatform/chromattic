@@ -18,6 +18,7 @@
  */
 package org.chromattic.test.onetomany.hierarchical.list;
 
+import org.chromattic.api.ChromatticSession;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
@@ -210,6 +211,46 @@ public class ListTestCase extends AbstractTestCase {
     assertEquals("3", i.nextNode().getName());
     assertEquals("2", i.nextNode().getName());
     assertFalse(i.hasNext());
+  }
+
+  public void testSetToTransient() throws Exception {
+    ChromatticSession session = login();
+    A3 a = session.create(A3.class, "a");
+    List<B3> bs = a.getChildren();
+    B3 b = session.create(B3.class, "1");
+    try {
+      bs.set(0, b);
+      fail();
+    } catch (IllegalStateException ignore) {
+    }
+  }
+
+  public void testSetToRemoved() throws Exception {
+    ChromatticSession session = login();
+    A3 a = session.insert(A3.class, "a");
+    List<B3> bs = a.getChildren();
+    session.remove(a);
+    B3 b = session.create(B3.class, "1");
+    try {
+      bs.set(0, b);
+      fail();
+    } catch (IllegalStateException ignore) {
+    }
+  }
+
+  public void testSetRemoved() throws Exception {
+    ChromatticSession session = login();
+    A3 a = session.insert(A3.class, "a");
+    List<B3> bs = a.getChildren();
+    B3 b1 = session.insert(B3.class, "1");
+    bs.add(b1);
+    B3 b2 = session.insert(B3.class, "2");
+    session.remove(b2);
+    try {
+      bs.set(0, b2);
+      fail();
+    } catch (IllegalArgumentException ignore) {
+    }
   }
 
   public void _testMoveFirst() throws Exception {

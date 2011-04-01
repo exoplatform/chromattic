@@ -25,10 +25,8 @@ import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.QueryBuilder;
-import org.chromattic.core.Domain;
-import org.chromattic.core.DomainSession;
-import org.chromattic.core.EmbeddedContext;
-import org.chromattic.core.EntityContext;
+import org.chromattic.core.*;
+import static org.chromattic.core.ThrowableFactory.*;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -144,30 +142,24 @@ public final class ChromatticSessionImpl implements ChromatticSession {
   }
 
   public String persist(Object parent, Object o, String prefix, String localName) throws NullPointerException, IllegalArgumentException, ChromatticException {
+    return persist(NPE, parent, o, prefix, localName);
+  }
+
+  private <T1 extends Throwable> String persist(ThrowableFactory<T1> nullLocalNameTF, Object parent, Object o, String prefix, String localName) throws T1, NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext childCtx = domainSession.unwrapEntity(o);
     if (parent != null) {
       EntityContext parentCtx = domainSession.unwrapEntity(parent);
-      domainSession.persist(parentCtx, childCtx, prefix, localName);
+      domainSession.persist(IAE, IAE, nullLocalNameTF, parentCtx, childCtx, prefix, localName);
     } else {
-      domainSession.persist(childCtx, prefix, localName);
+      domainSession.persist(IAE, childCtx, prefix, localName);
     }
     return childCtx.getId();
   }
 
   public String persist(Object parent, Object child) throws NullPointerException, IllegalArgumentException, ChromatticException {
     EntityContext childCtx = domainSession.unwrapEntity(child);
-    String name = childCtx.getLocalName();
-    if (name == null) {
-      String msg = "Attempt to persist non named object " + childCtx;
-      throw new IllegalArgumentException(msg);
-    }
-    if (parent != null) {
-      EntityContext parentCtx = domainSession.unwrapEntity(parent);
-      domainSession.persist(parentCtx, childCtx, null, name);
-    } else {
-      domainSession.persist(childCtx, null, name);
-    }
-    return childCtx.getId();
+    String localName = childCtx.getLocalName();
+    return persist(IAE, parent, child, null, localName);
   }
 
   public String persist(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException {

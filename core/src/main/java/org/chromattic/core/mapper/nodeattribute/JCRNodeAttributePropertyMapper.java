@@ -45,6 +45,9 @@ public class JCRNodeAttributePropertyMapper extends PropertyMapper<SingleValuedP
 
   @Override
   public Object get(EntityContext context) throws Throwable {
+    if (context.getStatus() == Status.REMOVED) {
+      throw new IllegalStateException("Node is removed");
+    }
     return context.getAttribute(type);
   }
 

@@ -196,20 +196,25 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     getSession().orderBefore(this, srcCtx, dstCtx);
   }
 
-  public final void addChild(String prefix, EntityContext childCtx) {
-    if (childCtx.getStatus() == Status.TRANSIENT || childCtx.getStatus() == Status.PERSISTENT) {
-      String localName = childCtx.getLocalName();
-      addChild(prefix, localName, childCtx);
-    } else {
-      throw new IllegalArgumentException("The child does not have the good state to be added " + childCtx);
-    }
+  public final <T1 extends Throwable, T2 extends Throwable> void addChild(
+      ThrowableFactory<T1> thisStateTF,
+      ThrowableFactory<T2> childStateTF,
+      String prefix,
+      EntityContext childCtx) throws T1, T2 {
+    String localName = childCtx.getLocalName();
+    addChild(thisStateTF, childStateTF, prefix, localName, childCtx);
   }
 
-  public final void addChild(String prefix, String localName, EntityContext childCtx) {
+  public final <T1 extends Throwable, T2 extends Throwable> void addChild(
+      ThrowableFactory<T1> thisStateTF,
+      ThrowableFactory<T2> childStateTF,
+      String prefix,
+      String localName,
+      EntityContext childCtx) throws T1, T2 {
     if (childCtx.getStatus() == Status.PERSISTENT) {
-      getSession().move(childCtx, this, prefix, localName);
+      getSession().move(childStateTF, thisStateTF, childCtx, this, prefix, localName);
     } else {
-      getSession().persist(this, childCtx, prefix, localName);
+      getSession().persist(thisStateTF, childStateTF, ThrowableFactory.NPE, this, childCtx, prefix, localName);
     }
   }
 
