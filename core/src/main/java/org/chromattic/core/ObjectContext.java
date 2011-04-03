@@ -47,6 +47,12 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
 
   public abstract EntityContext getEntity();
 
+  /**
+   * Returns the type info associated with the context. Null is returned when the context is in transient
+   * state, otherwise the type info of the corresponding node is returned.
+   *
+   * @return the type info
+   */
   public abstract NodeTypeInfo getTypeInfo();
 
   public abstract Status getStatus();

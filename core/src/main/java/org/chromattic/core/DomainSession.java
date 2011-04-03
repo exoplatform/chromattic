@@ -241,10 +241,9 @@ public abstract class DomainSession {
     }
   }
 
-  public <O> O create(Class<O> clazz, String localName) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
+  public ObjectContext create(Class<?> clazz, String localName) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
     try {
-      ObjectContext octx = _create(clazz, localName);
-      return clazz.cast(octx.getObject());
+      return _create(clazz, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

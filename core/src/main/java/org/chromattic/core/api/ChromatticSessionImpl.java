@@ -48,6 +48,10 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     return domainSession.getDomain();
   }
 
+  public final DomainSession getDomainSession() {
+    return domainSession;
+  }
+
   public Session getJCRSession() {
     return domainSession.getJCRSession();
   }
@@ -101,7 +105,8 @@ public final class ChromatticSessionImpl implements ChromatticSession {
   }
 
   public <O> O create(Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException {
-    return domainSession.create(clazz, name);
+    ObjectContext ctx = domainSession.create(clazz, name);
+    return clazz.cast(ctx.getObject());
   }
 
   public <O> O insert(Object parent, Class<O> clazz, String name) throws NullPointerException, IllegalArgumentException, ChromatticException {

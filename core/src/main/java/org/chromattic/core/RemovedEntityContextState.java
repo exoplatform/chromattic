@@ -42,10 +42,14 @@ class RemovedEntityContextState extends EntityContextState {
   /** . */
   private final String name;
 
-  RemovedEntityContextState(DomainSession session, String path, String name) {
+  /** . */
+  private final PrimaryTypeInfo typeInfo;
+
+  RemovedEntityContextState(DomainSession session, String path, String name, PrimaryTypeInfo typeInfo) {
     this.session = session;
     this.path = path;
     this.name = name;
+    this.typeInfo = typeInfo;
   }
 
   String getLocalName() {
@@ -73,7 +77,7 @@ class RemovedEntityContextState extends EntityContextState {
   }
 
   PrimaryTypeInfo getTypeInfo() {
-    throw new IllegalStateException();
+    return typeInfo;
   }
 
   <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {

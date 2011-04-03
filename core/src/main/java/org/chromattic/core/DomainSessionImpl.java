@@ -669,7 +669,7 @@ public class DomainSessionImpl extends DomainSession {
 
       String path = removed.path;
       log.trace("Removing context for path {}", path);
-      removed.ctx.state = new RemovedEntityContextState(this, path, removed.localName);
+      removed.ctx.state = new RemovedEntityContextState(this, path, removed.localName, removed.ctx.getTypeInfo());
       ctxs.remove(removed.ctx);
       broadcaster.removed(removed.id, removed.path, removed.localName, removed.ctx.getObject());
       log.trace("Removed context {} for path {}", removed.ctx, path);
