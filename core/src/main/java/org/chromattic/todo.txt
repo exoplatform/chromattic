@@ -22,7 +22,7 @@ java.lang.NullPointerException: Attempt to insert context EntityContext[state=Ob
         at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
         at org.chromattic.docs.demo.shoppingcart.ShoppingCartTestCase.testFoo(ShoppingCartTestCase.groovy:72)
 
-
+- @NamingPrefix with @Properties
 
 
 - collection mapping using JCR foo:* pattern
