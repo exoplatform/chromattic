@@ -19,8 +19,8 @@
 
 package org.chromattic.testgenerator;
 
-import japa.parser.Parser;
 import japa.parser.ParseException;
+import japa.parser.Parser;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.visitor.DumpVisitorFactory;
 import org.chromattic.testgenerator.builder.GroovyFromJavaSourceChromatticBuilder;
@@ -30,32 +30,34 @@ import org.chromattic.testgenerator.visitor.renderer.GroovyPropertiesFactory;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
-@SupportedAnnotationTypes({"*"})
-public class GroovyGeneratorProcessor extends AbstractProcessor
+@SupportedAnnotationTypes({"org.chromattic.testgenerator.GroovyTestGeneration"})
+public class GroovyGeneratorProcessorOld extends AbstractProcessor
 {
    private Filer filer;
+   private Set<String> generatedTests = new HashSet<String>();
 
    @Override
    public boolean process(final Set<? extends TypeElement> typeElements, final RoundEnvironment roundEnvironment)
    {
-      if (roundEnvironment.processingOver())
-      {
-         
-      }
-      /*filer = processingEnv.getFiler();
+      filer = processingEnv.getFiler();
       for (Element element : roundEnvironment.getElementsAnnotatedWith(GroovyTestGeneration.class))
       {
          TypeElement typeElt = (TypeElement)element;
@@ -70,7 +72,23 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
             e.printStackTrace();
          }
 
-      }*/
+      }
+
+      if (roundEnvironment.processingOver())
+      {
+         try
+         {
+            FileObject xmlFile = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", "generatedTests.xml");
+            //TestSerializer xmlSerializer = new TestSerializer(generatedTests);
+            Writer xmlWriter = xmlFile.openWriter();
+            //xmlSerializer.writeTo(xmlWriter);
+            xmlWriter.close();
+         }
+         catch (IOException e)
+         {
+            e.printStackTrace();
+         }
+      }
       return false;
    }
 
@@ -130,5 +148,6 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
       GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, format.testName(typeElt), chromatticClassNames);
       testBuilder.build(factory, excludedMethods);
       SourceUtil.writeSource(testBuilder.toString(), jfo.openOutputStream());
+      generatedTests.add(format.getPackageName(typeElt) + "." + format.groovyFileName(typeElt));
    }
 }

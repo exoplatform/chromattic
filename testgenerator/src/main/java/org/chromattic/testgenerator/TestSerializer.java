@@ -34,9 +34,9 @@ public class TestSerializer
    private static final String ROOT_TAG = "testgen";
    private static final String TEST_TAG = "test";
    
-   private Set<String> names;
+   private Set<TestRef> names;
 
-   public TestSerializer(final Set<String> names)
+   public TestSerializer(final Set<TestRef> names)
    {
       this.names = names;
    }
@@ -44,10 +44,16 @@ public class TestSerializer
    public void writeTo(Writer writer) throws IOException
    {
       startTag(writer, ROOT_TAG);
-      for (String name : names)
+      for (TestRef ref : names)
       {
          startTag(writer, TEST_TAG);
-         plaintext(writer, name);
+         writeName(writer, ref.getName());
+         startTag(writer, "chromatticObjects");
+         for (String chromatticObjectName : ref.getChromatticObject())
+         {
+            writeChromatticObject(writer, chromatticObjectName);
+         }
+         endTag(writer, "chromatticObjects");
          endTag(writer, TEST_TAG);
       }
       endTag(writer, ROOT_TAG);
@@ -61,6 +67,20 @@ public class TestSerializer
    private void endTag(Writer writer, String tagName) throws IOException
    {
       writer.append(String.format("</%s>", tagName));
+   }
+
+   private void writeName(Writer writer, String name) throws IOException
+   {
+      startTag(writer, "name");
+      plaintext(writer, name);
+      endTag(writer, "name");
+   }
+
+   private void writeChromatticObject(Writer writer, String objectName) throws IOException
+   {
+      startTag(writer, "chromatticObject");
+      plaintext(writer, objectName);
+      endTag(writer, "chromatticObject");
    }
 
    private void plaintext(Writer writer, CharSequence text) throws IOException

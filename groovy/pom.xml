@@ -30,6 +30,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.testgenerator</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
     </dependency>
@@ -125,7 +131,7 @@
                 <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
                   <classpath refid="maven.compile.classpath" />
                 </taskdef>
-                <unzip dest="${basedir}/target/test-classes/" src="${maven.dependency.org.chromattic.chromattic.core.tests.test-jar.path}">
+                <!--<unzip dest="${basedir}/target/test-classes/" src="${maven.dependency.org.chromattic.chromattic.core.tests.test-jar.path}">
                   <patternset>
                     <include name="**/*.groovy"/>
                   </patternset>
@@ -134,7 +140,7 @@
                   <patternset>
                     <include name="**/*.groovy"/>
                   </patternset>
-                </unzip>
+                </unzip>-->
                 <groovyc destdir="${basedir}/target/test-classes/" srcdir="${basedir}/target/test-classes/" fork="no" listfiles="false">
                   <classpath>
                      <path refid="maven.compile.classpath"/>
