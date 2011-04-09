@@ -34,6 +34,12 @@ public enum GroovyOutputFormat
               {
                  return "GroovyGetSet_" + typeElt.getSimpleName();
               }
+
+              @Override
+              public String testName(TestRef ref)
+              {
+                 return "GroovyGetSet_" + getClassName(ref.getName());
+              }
            },
 
    PROPERTIES
@@ -42,6 +48,12 @@ public enum GroovyOutputFormat
               public String testName(TypeElement typeElt)
               {
                  return "GroovyProperties_" + typeElt.getSimpleName();
+              }
+
+              @Override
+              public String testName(TestRef ref)
+              {
+                 return "GroovyProperties_" + getClassName(ref.getName());
               }
            },
 
@@ -52,10 +64,21 @@ public enum GroovyOutputFormat
               {
                  return typeElt.getSimpleName().toString();
               }
+
+              @Override
+              public String testName(TestRef ref)
+              {
+                 return getClassName(ref.getName()).toString();
+              }
            },;
 
 
    // Package name
+   public CharSequence getPackageName(TestRef ref)
+   {
+      return getPackageName(ref.getName());
+   }
+
    public CharSequence getPackageName(TypeElement typeElt)
    {
       return getPackageName(typeElt.getQualifiedName());
@@ -69,6 +92,11 @@ public enum GroovyOutputFormat
 
 
    // Java file name
+   public String javaFileName(TestRef ref)
+   {
+      return javaFileName(ref.getName());
+   }
+
    public String javaFileName(TypeElement typeElt)
    {
       return javaFileName(typeElt.getQualifiedName().toString());
@@ -81,6 +109,11 @@ public enum GroovyOutputFormat
 
 
    // Groovy file name
+   public String groovyFileName(TestRef ref)
+   {
+      return groovyFileName(testName(ref));
+   }
+
    public String groovyFileName(TypeElement typeElt)
    {
       return groovyFileName(testName(typeElt));
@@ -100,4 +133,5 @@ public enum GroovyOutputFormat
    }
 
    public abstract String testName(TypeElement typeElt);
+   public abstract String testName(TestRef ref);
 }

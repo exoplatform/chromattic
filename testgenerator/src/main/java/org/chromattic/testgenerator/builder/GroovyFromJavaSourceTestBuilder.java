@@ -26,6 +26,7 @@ import japa.parser.ast.visitor.DumpVisitorFactory;
 import org.chromattic.testgenerator.visitor.transformer.UnitTestVisitor;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -35,9 +36,9 @@ public class GroovyFromJavaSourceTestBuilder {
   private CompilationUnit compilationUnit;
   private StringBuilder sb = new StringBuilder();
   private String name;
-  private List<String> deps;
+  private Set<String> deps;
 
-  public GroovyFromJavaSourceTestBuilder(CompilationUnit compilationUnit, String name, List<String> deps) {
+  public GroovyFromJavaSourceTestBuilder(CompilationUnit compilationUnit, String name, Set<String> deps) {
     this.compilationUnit = compilationUnit;
     this.name = name;
     this.deps = deps;

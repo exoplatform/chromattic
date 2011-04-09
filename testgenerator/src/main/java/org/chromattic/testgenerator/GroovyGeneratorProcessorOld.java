@@ -145,7 +145,7 @@ public class GroovyGeneratorProcessorOld extends AbstractProcessor
       InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, format.getPackageName(typeElt), format.javaFileName(typeElt)).openInputStream();
       CompilationUnit testUnit = Parser.parse(testIs);
       FileObject jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, format.getPackageName(typeElt), format.groovyFileName(typeElt));
-      GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, format.testName(typeElt), chromatticClassNames);
+      GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, format.testName(typeElt), (Set<String>) chromatticClassNames);
       testBuilder.build(factory, excludedMethods);
       SourceUtil.writeSource(testBuilder.toString(), jfo.openOutputStream());
       generatedTests.add(format.getPackageName(typeElt) + "." + format.groovyFileName(typeElt));

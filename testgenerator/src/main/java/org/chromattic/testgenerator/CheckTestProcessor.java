@@ -69,10 +69,10 @@ public class CheckTestProcessor extends AbstractProcessor
       {
          try
          {
-            FileObject xmlFile = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "testsRef.xml");
+            FileObject xmlFile = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "load", "testsRef.xml");
             Writer xmlWriter = xmlFile.openWriter();
-            TestSerializer xmlSerializer = new TestSerializer(generatedTests);
-            xmlSerializer.writeTo(xmlWriter);
+            TestSerializer xmlSerializer = new TestSerializer();
+            xmlSerializer.writeTo(xmlWriter, generatedTests);
             xmlWriter.close();
          }
          catch (IOException e)
