@@ -19,8 +19,8 @@
 
 package org.chromattic.testgenerator;
 
-import japa.parser.Parser;
 import japa.parser.ParseException;
+import japa.parser.Parser;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.visitor.DumpVisitorFactory;
 import org.chromattic.testgenerator.builder.GroovyFromJavaSourceChromatticBuilder;
@@ -28,12 +28,7 @@ import org.chromattic.testgenerator.builder.GroovyFromJavaSourceTestBuilder;
 import org.chromattic.testgenerator.visitor.renderer.GroovyCompatibilityFactory;
 import org.chromattic.testgenerator.visitor.renderer.GroovyPropertiesFactory;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.FilerException;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -42,81 +37,85 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.*;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
-@SupportedAnnotationTypes({"org.chromattic.testgenerator.GroovyTestGeneration"})
+@SupportedAnnotationTypes({"*"})
 public class GroovyGeneratorProcessor extends AbstractProcessor
 {
-   private Filer filer;
-   private Set<String> generatedTests = new HashSet<String>();
+   enum Module
+   {
+      CORE("core"),
+      MOTEAMODEL("metamodel");
+     
+      private String name;
 
-   @Override
+      private Module (final String name)
+      {
+         this.name = name;
+      }
+
+      String get()
+      {
+         return name;
+      }
+   }
+
+   private Filer filer;
+
+  @Override
    public boolean process(final Set<? extends TypeElement> typeElements, final RoundEnvironment roundEnvironment)
    {
       filer = processingEnv.getFiler();
-      for (Element element : roundEnvironment.getElementsAnnotatedWith(GroovyTestGeneration.class))
-      {
-         TypeElement typeElt = (TypeElement)element;
-         try
-         {
-            writeGroovySource(GroovyOutputFormat.GETTER_SETTER, typeElt);
-            writeGroovySource(GroovyOutputFormat.PROPERTIES, typeElt);
-            writeGroovySource(GroovyOutputFormat.CHROMATTIC, typeElt);
-         }
-         catch (ParseException e)
-         {
-            e.printStackTrace();
-         }
 
-      }
-
+      TestSerializer serializer = new TestSerializer();
       if (roundEnvironment.processingOver())
       {
          try
          {
-            FileObject xmlFile = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", "generatedTests.xml");
-            TestSerializer xmlSerializer = new TestSerializer(generatedTests);
-            Writer xmlWriter = xmlFile.openWriter();
-            xmlSerializer.writeTo(xmlWriter);
-            xmlWriter.close();
+            Class c = Class.forName("load.Ref");
+            for (Module module : Module.values())
+            {
+               InputStream is = c.getResource("testsRef-" + module.get() + ".xml").openStream();
+               for (TestRef ref : serializer.getClassNames(is))
+               {
+                  writeGroovySource(GroovyOutputFormat.GETTER_SETTER, ref, module.get());
+                  writeGroovySource(GroovyOutputFormat.PROPERTIES, ref, module.get());
+                  writeGroovySource(GroovyOutputFormat.CHROMATTIC, ref, module.get());
+               }
+            }
          }
-         catch (IOException e)
-         {
-            e.printStackTrace();
-         }
+         catch (Exception e) { e.printStackTrace(); }
       }
       return false;
    }
 
-   private void writeGroovySource(GroovyOutputFormat format, TypeElement typeElt) throws ParseException
+   private void writeGroovySource(GroovyOutputFormat format, TestRef ref, String module) throws ParseException
    {
 
       try {
          switch(format)
          {
             case GETTER_SETTER:
-               writeGroovyTest(format, typeElt, new GroovyCompatibilityFactory());
-
+               writeGroovyTest(format, ref, new GroovyCompatibilityFactory(), module);
                break;
 
             case PROPERTIES:
-               writeGroovyTest(format, typeElt, new GroovyPropertiesFactory());
+               writeGroovyTest(format, ref, new GroovyPropertiesFactory(), module);
                break;
 
             case CHROMATTIC:
-               List<String> chromatticClassNames = SourceUtil.getChromatticClassName(typeElt);
+               Set<String> chromatticClassNames = ref.getChromatticObject();
                for (String chromatticQualifiedClassName : chromatticClassNames)
                {
-                  InputStream chromatticIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, format.getPackageName(chromatticQualifiedClassName), format.javaFileName(chromatticQualifiedClassName)).openInputStream();
+                  String name = format.getPackageName(chromatticQualifiedClassName).toString().replace(".", "/") + "/" + format.javaFileName(chromatticQualifiedClassName);
+                  InputStream chromatticIs = filer.getResource(StandardLocation.SOURCE_PATH, "", module + "/src/test/java/" + name).openInputStream();
                   CompilationUnit chromatticUnit = Parser.parse(chromatticIs);
                   try
                   {
@@ -126,7 +125,7 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
                      SourceUtil.writeSource(chromatticBuilder.toString(), chromatticOs);
                   }
                   catch (FilerException ignore)
-                  { /* Source is already generated */ }
+                  { /* already written */ }
                }
                break;
          }
@@ -136,23 +135,15 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
       }
    }
 
-   private void writeGroovyTest(GroovyOutputFormat format, TypeElement typeElt, DumpVisitorFactory factory) throws IOException, ParseException
+   private void writeGroovyTest(GroovyOutputFormat format, TestRef ref, DumpVisitorFactory factory, String module) throws IOException, ParseException
    {
-      List<String> excludedMethods;
-      try {
-        excludedMethods = SourceUtil.excludedMethods(typeElt);
-      } catch (TestGeneratorException tge) {
-        excludedMethods = new ArrayList<String>();
-      }
-      List<String> chromatticClassNames = SourceUtil.getChromatticClassName(typeElt);
+      String name = format.getPackageName(ref).toString().replace(".", "/") + "/" + format.javaFileName(ref);
 
-      //
-      InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, format.getPackageName(typeElt), format.javaFileName(typeElt)).openInputStream();
+      InputStream testIs = filer.getResource(StandardLocation.SOURCE_PATH, "", module + "/src/test/java/" + name).openInputStream();
       CompilationUnit testUnit = Parser.parse(testIs);
-      FileObject jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, format.getPackageName(typeElt), format.groovyFileName(typeElt));
-      GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, format.testName(typeElt), chromatticClassNames);
-      testBuilder.build(factory, excludedMethods);
+      FileObject jfo = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, format.getPackageName(ref), format.groovyFileName(ref));
+      GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, format.testName(ref), ref.getChromatticObject());
+      testBuilder.build(factory, new ArrayList<String>());
       SourceUtil.writeSource(testBuilder.toString(), jfo.openOutputStream());
-      generatedTests.add(format.getPackageName(typeElt) + "." + format.groovyFileName(typeElt));
    }
 }

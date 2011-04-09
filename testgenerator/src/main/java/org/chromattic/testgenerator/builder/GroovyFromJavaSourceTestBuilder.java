@@ -23,9 +23,12 @@ import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.ImportDeclaration;
 import japa.parser.ast.expr.NameExpr;
 import japa.parser.ast.visitor.DumpVisitorFactory;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 import org.chromattic.testgenerator.visitor.transformer.UnitTestVisitor;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -35,9 +38,9 @@ public class GroovyFromJavaSourceTestBuilder {
   private CompilationUnit compilationUnit;
   private StringBuilder sb = new StringBuilder();
   private String name;
-  private List<String> deps;
+  private Set<String> deps;
 
-  public GroovyFromJavaSourceTestBuilder(CompilationUnit compilationUnit, String name, List<String> deps) {
+  public GroovyFromJavaSourceTestBuilder(CompilationUnit compilationUnit, String name, Set<String> deps) {
     this.compilationUnit = compilationUnit;
     this.name = name;
     this.deps = deps;
@@ -45,6 +48,16 @@ public class GroovyFromJavaSourceTestBuilder {
 
   public void build(DumpVisitorFactory factory, List<String> excludedMethods) {
     UnitTestVisitor unitTestVisitor = new UnitTestVisitor(name);
+
+    //
+    Iterator<ImportDeclaration> itImports = compilationUnit.getImports().iterator();
+    while (itImports.hasNext()) {
+      if (GroovyTestGeneration.class.getName().equals(itImports.next().getName().toString())) {
+        itImports.remove();
+      }
+    }
+
+    //
     for (String dep : deps)
     {
       int i = dep.lastIndexOf(".");
@@ -52,6 +65,8 @@ public class GroovyFromJavaSourceTestBuilder {
       String depImport = depPackage + dep.substring(i);
       compilationUnit.getImports().add(new ImportDeclaration(new NameExpr(depImport), false, false));
     }
+
+    //
     unitTestVisitor.visit(compilationUnit, excludedMethods);
     sb.append(compilationUnit.toString(factory));
   }

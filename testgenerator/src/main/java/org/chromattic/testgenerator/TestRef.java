@@ -16,21 +16,43 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-
 package org.chromattic.testgenerator;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@Retention(RetentionPolicy.SOURCE)
-@Target(ElementType.TYPE)
-public @interface GroovyTestGeneration
+public class TestRef
 {
-   Class<?>[] chromatticClasses() default {};
+   private String name;
+   private Set<String> chromatticObject;
+
+   public TestRef(String name)
+   {
+      this.name = name;
+      this.chromatticObject = new HashSet<String>();
+   }
+
+   public String getName()
+   {
+      return name;
+   }
+
+   public void setName(String name)
+   {
+      this.name = name;
+   }
+
+   public Set<String> getChromatticObject()
+   {
+      return chromatticObject;
+   }
+
+   public void setChromatticObject(Set<String> chromatticObject)
+   {
+      this.chromatticObject = chromatticObject;
+   }
 }
