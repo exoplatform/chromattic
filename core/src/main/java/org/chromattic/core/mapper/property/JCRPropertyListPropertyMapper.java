@@ -25,6 +25,7 @@ import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.spi.type.SimpleTypeProvider;
@@ -35,8 +36,8 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyListPropertyMapper<O extends ObjectContext<O>, E, I>
-  extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo, O> {
+public class JCRPropertyListPropertyMapper<O extends ObjectContext<O>, E, I, K extends ValueKind.Multi>
+  extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo, K>, SimpleValueInfo, O, K> {
 
   /** . */
   private final String jcrPropertyName;
@@ -53,27 +54,25 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext<O>, E, I>
   public JCRPropertyListPropertyMapper(
     Class<O> contextType,
     SimpleTypeProvider<I, E> vt,
-    ValueMapping.Multi info) {
+    ValueMapping.Multi<K> info) {
     super(contextType, info);
 
     //
     ListType listType;
-    switch (info.getProperty().getKind()) {
-      case ARRAY:
-        listType = ListType.ARRAY;
-        break;
-      case LIST:
-        listType = ListType.LIST;
-        break;
-      default:
-        throw new AssertionError();
+    ValueKind.Multi valueKind = info.getProperty().getValueKind();
+    if (valueKind == ValueKind.ARRAY) {
+      listType = ListType.ARRAY;
+    } else if (valueKind == ValueKind.LIST) {
+      listType = ListType.LIST;
+    } else {
+      throw new AssertionError();
     }
 
     //
     this.listType = listType;
     this.jcrPropertyName = info.getPropertyDefinition().getName();
     this.elementType = info.getValue();
-    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getEffectiveType().unwrap(), (PropertyMetaType<I>) info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
+    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getEffectiveType().unwrap(), (PropertyMetaType<I>)info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
   }
 
   @Override

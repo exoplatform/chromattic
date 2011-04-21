@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.typegen.property;
 
-import org.chromattic.metamodel.bean.MultiValueKind;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.PropertiesMapping;
 import org.chromattic.metamodel.mapping.ValueMapping;
@@ -65,7 +65,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     Map<Class<?>, BeanMapping> mappings = assertValid(B1.class);
     BeanMapping mapping = mappings.get(B1.class);
     ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
-    assertEquals(MultiValueKind.LIST, stringMapping.getProperty().getKind());
+    assertEquals(ValueKind.LIST, stringMapping.getProperty().getValueKind());
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("strings", propertyDefinition.getName());
     assertEquals(null, propertyDefinition.getDefaultValue());
@@ -77,7 +77,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     Map<Class<?>, BeanMapping> mappings = assertValid(B2.class);
     BeanMapping mapping = mappings.get(B2.class);
     ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
-    assertEquals(MultiValueKind.LIST, stringMapping.getProperty().getKind());
+    assertEquals(ValueKind.LIST, stringMapping.getProperty().getValueKind());
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("strings", propertyDefinition.getName());
     assertEquals(Arrays.asList("foo","bar"), propertyDefinition.getDefaultValue());
@@ -89,7 +89,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     Map<Class<?>, BeanMapping> mappings = assertValid(C1.class);
     BeanMapping mapping = mappings.get(C1.class);
     ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
-    assertEquals(MultiValueKind.ARRAY, stringMapping.getProperty().getKind());
+    assertEquals(ValueKind.ARRAY, stringMapping.getProperty().getValueKind());
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("strings", propertyDefinition.getName());
     assertEquals(null, propertyDefinition.getDefaultValue());
@@ -101,7 +101,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     Map<Class<?>, BeanMapping> mappings = assertValid(C2.class);
     BeanMapping mapping = mappings.get(C2.class);
     ValueMapping.Multi stringMapping = mapping.getPropertyMapping("strings", ValueMapping.Multi.class);
-    assertEquals(MultiValueKind.ARRAY, stringMapping.getProperty().getKind());
+    assertEquals(ValueKind.ARRAY, stringMapping.getProperty().getValueKind());
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("strings", propertyDefinition.getName());
     assertEquals(Arrays.asList("foo","bar"), propertyDefinition.getDefaultValue());
@@ -113,7 +113,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     Map<Class<?>, BeanMapping> mappings = assertValid(D1.class);
     BeanMapping mapping = mappings.get(D1.class);
     PropertiesMapping<?> stringMapping = mapping.getPropertyMapping("properties", PropertiesMapping.class);
-    assertEquals(MultiValueKind.MAP, stringMapping.getProperty().getKind());
+    assertEquals(ValueKind.MAP, stringMapping.getProperty().getValueKind());
     assertEquals(Object.class.getName(), ((ClassTypeInfo)stringMapping.getProperty().getValue().getEffectiveType()).getName());
   }
 
@@ -121,7 +121,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     Map<Class<?>, BeanMapping> mappings = assertValid(D2.class);
     BeanMapping mapping = mappings.get(D2.class);
     PropertiesMapping<?> stringMapping = mapping.getPropertyMapping("properties", PropertiesMapping.class);
-    assertEquals(MultiValueKind.MAP, stringMapping.getProperty().getKind());
+    assertEquals(ValueKind.MAP, stringMapping.getProperty().getValueKind());
     assertEquals(String.class.getName(), ((ClassTypeInfo)stringMapping.getProperty().getValue().getEffectiveType()).getName());
   }
 

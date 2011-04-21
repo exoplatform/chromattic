@@ -22,14 +22,15 @@ package org.chromattic.core.mapper;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRNodeCollectionPropertyMapper<P extends MultiValuedPropertyInfo<BeanValueInfo>, O extends ObjectContext<O>>
-  extends RelatedPropertyMapper<P, BeanValueInfo, O> {
+public abstract class JCRNodeCollectionPropertyMapper<P extends MultiValuedPropertyInfo<BeanValueInfo, K>, O extends ObjectContext<O>, K extends ValueKind.Multi>
+  extends RelatedPropertyMapper<P, BeanValueInfo, O, K> {
 
   /** . */
   private final Class relatedClass;

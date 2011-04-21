@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -25,19 +25,8 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class MultiValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo<V> {
-
-  /** . */
-  private final MultiValueKind kind;
-
-  public MultiValuedPropertyInfo(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, MultiValueKind kind, V value) {
-    super(bean, parent, name, getter, setter, value);
-
-    //
-    this.kind = kind;
-  }
-
-  public MultiValueKind getKind() {
-    return kind;
+public class MultiValuedPropertyInfo<V extends ValueInfo, K extends ValueKind.Multi> extends PropertyInfo<V, K> {
+  public MultiValuedPropertyInfo(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, K valueKind, V value) {
+    super(bean, parent, name, getter, setter, valueKind, value);
   }
 }

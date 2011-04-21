@@ -44,15 +44,15 @@ public class BeanInfo {
   final boolean declared;
 
   /** . */
-  final Map<String, PropertyInfo<?>> properties;
+  final Map<String, PropertyInfo<?, ?>> properties;
 
   /** . */
-  final Map<String, PropertyInfo<?>> unmodifiableProperties;
+  final Map<String, PropertyInfo<?, ?>> unmodifiableProperties;
 
   public BeanInfo(ClassTypeInfo classType, boolean declared) {
     this.classType = classType;
     this.declared = declared;
-    this.properties = new HashMap<String, PropertyInfo<?>>();
+    this.properties = new HashMap<String, PropertyInfo<?, ?>>();
     this.unmodifiableProperties = Collections.unmodifiableMap(properties);
   }
 
@@ -68,11 +68,11 @@ public class BeanInfo {
     return declared;
   }
 
-  public PropertyInfo<?> getProperty(String name) {
+  public PropertyInfo<?, ?> getProperty(String name) {
     return properties.get(name);
   }
 
-  public Map<String, PropertyInfo<?>> getProperties() {
+  public Map<String, PropertyInfo<?, ?>> getProperties() {
     return properties;
   }
 

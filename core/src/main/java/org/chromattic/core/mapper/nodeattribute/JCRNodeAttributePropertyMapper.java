@@ -24,6 +24,7 @@ import org.chromattic.core.EntityContext;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.AttributeMapping;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 
@@ -31,7 +32,7 @@ import org.chromattic.metamodel.mapping.NodeAttributeType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRNodeAttributePropertyMapper extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo, EntityContext> {
+public class JCRNodeAttributePropertyMapper extends PropertyMapper<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo, EntityContext, ValueKind.Single> {
 
   /** . */
   private final NodeAttributeType type;

@@ -23,13 +23,15 @@ import org.chromattic.core.EntityContext;
 import org.chromattic.core.mapper.RelatedPropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
 import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCREmbeddedParentPropertyMapper extends RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, BeanValueInfo, EntityContext> {
+public class JCREmbeddedParentPropertyMapper extends
+    RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, BeanValueInfo, EntityContext, ValueKind.Single> {
 
   /** . */
   private final Class relatedClass;

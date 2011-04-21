@@ -292,7 +292,7 @@ public class BeanInfoBuilder {
       }
 
       // Now we have all the info to build each property correctly
-      Map<String, PropertyInfo<?>> properties = new HashMap<String, PropertyInfo<?>>();
+      Map<String, PropertyInfo<?, ?>> properties = new HashMap<String, PropertyInfo<?, ?>>();
       for (Map.Entry<String, ToBuild> toBuildEntry : toBuilds.entrySet()) {
 
         // Get parent property if any
@@ -321,20 +321,20 @@ public class BeanInfoBuilder {
           if (rawType instanceof ClassTypeInfo) {
             ClassTypeInfo rawClassType = (ClassTypeInfo)rawType;
             String rawClassName = rawClassType.getName();
-            final MultiValueKind collectionKind;
+            final ValueKind.Multi collectionKind;
             final TypeInfo elementType;
             if (rawClassName.equals("java.util.Collection")) {
-              collectionKind = MultiValueKind.COLLECTION;
+              collectionKind = ValueKind.COLLECTION;
               elementType = parameterizedType.getTypeArguments().get(0);
             } else if (rawClassName.equals("java.util.List")) {
-              collectionKind = MultiValueKind.LIST;
+              collectionKind = ValueKind.LIST;
               elementType = parameterizedType.getTypeArguments().get(0);
             } else if (rawClassName.equals("java.util.Map")) {
               TypeInfo keyType = parameterizedType.getTypeArguments().get(0);
               TypeInfo resolvedKeyType = bean.classType.resolve(keyType);
               if (resolvedKeyType instanceof ClassTypeInfo && ((ClassTypeInfo)resolvedKeyType).getName().equals("java.lang.String")) {
                 elementType = parameterizedType.getTypeArguments().get(1);
-                collectionKind = MultiValueKind.MAP;
+                collectionKind = ValueKind.MAP;
               } else {
                 elementType = null;
                 collectionKind = null;
@@ -348,7 +348,7 @@ public class BeanInfoBuilder {
               if (elementClassType != null) {
                 BeanInfo relatedBean = resolve(elementClassType);
                 if (relatedBean != null) {
-                  property = new MultiValuedPropertyInfo<BeanValueInfo>(
+                  property = new MultiValuedPropertyInfo<BeanValueInfo, ValueKind.Multi>(
                       bean,
                       parentProperty,
                       toBuildEntry.getKey(),
@@ -357,7 +357,7 @@ public class BeanInfoBuilder {
                       collectionKind,
                       new BeanValueInfo(type, bean.resolveToClass(elementType), relatedBean));
                 } else {
-                  property = new MultiValuedPropertyInfo<SimpleValueInfo>(
+                  property = new MultiValuedPropertyInfo<SimpleValueInfo, ValueKind.Multi>(
                       bean,
                       parentProperty,
                       toBuildEntry.getKey(),
@@ -379,26 +379,26 @@ public class BeanInfoBuilder {
               case FLOAT:
               case LONG:
               case INT:
-                property = new MultiValuedPropertyInfo<SimpleValueInfo>(
+                property = new MultiValuedPropertyInfo<SimpleValueInfo, ValueKind.Multi>(
                     bean,
                     parentProperty,
                     toBuildEntry.getKey(),
                     toBuildEntry.getValue().getter,
                     toBuildEntry.getValue().setter,
-                    MultiValueKind.ARRAY,
+                    ValueKind.ARRAY,
                     createSimpleValueInfo(bean, componentType));
                 break;
               default:
                 break;
             }
           } else {
-            property = new MultiValuedPropertyInfo<SimpleValueInfo>(
+            property = new MultiValuedPropertyInfo<SimpleValueInfo, ValueKind.Multi>(
                 bean,
                 parentProperty,
                 toBuildEntry.getKey(),
                 toBuildEntry.getValue().getter,
                 toBuildEntry.getValue().setter,
-                MultiValueKind.ARRAY,
+                ValueKind.ARRAY,
                 createSimpleValueInfo(bean, componentType));
           }
         } else if (resolvedType instanceof ClassTypeInfo) {

@@ -39,6 +39,7 @@ import org.chromattic.core.mapper.property.JCRPropertyListPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyMapPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyPropertyMapper;
 import org.chromattic.core.vt2.ValueTypeFactory;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.CreateMapping;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
@@ -101,7 +102,7 @@ public class MapperBuilder {
     private Class<? extends ObjectContext> contextType;
 
     Set<MethodMapper<?>> methodMappers;
-    Set<PropertyMapper<?, ?, ?>> propertyMappers;
+    Set<PropertyMapper<?, ?, ?, ?>> propertyMappers;
 
     public void start() {
       this.beanMappers = new HashMap<BeanMapping, ObjectMapper<?>>();
@@ -112,7 +113,7 @@ public class MapperBuilder {
     public void startBean(BeanMapping mapping) {
       this.beanMapping = mapping;
       this.contextType = mapping.getNodeTypeKind() == NodeTypeKind.PRIMARY ? EntityContext.class : EmbeddedContext.class;
-      this.propertyMappers = new HashSet<PropertyMapper<?,?,?>>();
+      this.propertyMappers = new HashSet<PropertyMapper<?, ?, ?, ?>>();
       this.methodMappers = new HashSet<MethodMapper<?>>();
     }
 
@@ -148,18 +149,15 @@ public class MapperBuilder {
     @Override
     public void oneToManyHierarchic(RelationshipMapping.OneToMany.Hierarchic mapping) {
       AnyChildMultiValueMapper valueMapper;
-      switch (mapping.getProperty().getKind()) {
-        case MAP:
-          valueMapper = new AnyChildMultiValueMapper.Map();
-          break;
-        case LIST:
-          valueMapper = new AnyChildMultiValueMapper.List();
-          break;
-        case COLLECTION:
-          valueMapper = new AnyChildMultiValueMapper.Collection();
-          break;
-        default:
-          throw new AssertionError();
+      ValueKind valueKind = mapping.getProperty().getValueKind();
+      if (valueKind instanceof ValueKind.Map) {
+        valueMapper = new AnyChildMultiValueMapper.Map();
+      } else if (valueKind instanceof ValueKind.List) {
+        valueMapper = new AnyChildMultiValueMapper.List();
+      } else if (valueKind instanceof ValueKind.Collection) {
+        valueMapper = new AnyChildMultiValueMapper.Collection();
+      } else {
+        throw new AssertionError();
       }
       try {
         JCRAnyChildParentPropertyMapper mapper = new JCRAnyChildParentPropertyMapper(contextType, mapping, valueMapper);

@@ -19,17 +19,14 @@
 
 package org.chromattic.metamodel.mapping;
 
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
-import org.chromattic.metamodel.bean.SimpleValueInfo;
-import org.chromattic.metamodel.bean.PropertyInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.*;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> extends PropertyMapping<P, SimpleValueInfo> {
+public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo, K>, K extends ValueKind> extends PropertyMapping<P, SimpleValueInfo> {
 
   /** . */
   final PropertyDefinitionMapping<?> propertyDefinition;
@@ -45,7 +42,7 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> exte
     if (parent == null) {
       return true;
     } else {
-      ValueMapping<?> a = (ValueMapping<?>)parent;
+      ValueMapping<?, ?> a = (ValueMapping<?, ?>)parent;
       return propertyDefinition.getMetaType() != a.propertyDefinition.getMetaType();
     }
   }
@@ -54,7 +51,7 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> exte
     return propertyDefinition;
   }
 
-  public static class Single extends ValueMapping<SingleValuedPropertyInfo<SimpleValueInfo>> {
+  public static class Single extends ValueMapping<SingleValuedPropertyInfo<SimpleValueInfo>, ValueKind.Single> {
     public Single(SingleValuedPropertyInfo<SimpleValueInfo> property, PropertyDefinitionMapping propertyDefinition) {
       super(property, propertyDefinition);
     }
@@ -65,8 +62,8 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> exte
     }
   }
 
-  public static class Multi extends ValueMapping<MultiValuedPropertyInfo<SimpleValueInfo>> {
-    public Multi(MultiValuedPropertyInfo<SimpleValueInfo> property, PropertyDefinitionMapping propertyDefinition) {
+  public static class Multi<K extends ValueKind.Multi> extends ValueMapping<MultiValuedPropertyInfo<SimpleValueInfo, K>, K> {
+    public Multi(MultiValuedPropertyInfo<SimpleValueInfo, K> property, PropertyDefinitionMapping propertyDefinition) {
       super(property, propertyDefinition);
     }
 

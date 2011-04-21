@@ -20,11 +20,7 @@
 package org.chromattic.metamodel.mapping;
 
 import org.chromattic.api.RelationshipType;
-import org.chromattic.metamodel.bean.BeanInfo;
-import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
-import org.chromattic.metamodel.bean.PropertyInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.*;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -34,7 +30,8 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>, R extends RelationshipMapping> extends PropertyMapping<P, BeanValueInfo> {
+public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo, K>, R extends RelationshipMapping, K extends ValueKind>
+    extends PropertyMapping<P, BeanValueInfo> {
 
 
   /** . */
@@ -71,7 +68,7 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     if (parent == null) {
       return true;
     } else {
-      RelationshipMapping<?, ?> parentRelationship = (RelationshipMapping<?,?>)parent;
+      RelationshipMapping<?, ?, ?> parentRelationship = (RelationshipMapping<?, ?, ?>)parent;
       return property.getValue().getBean() != parentRelationship.property.getValue().getBean();
     }
   }
@@ -91,7 +88,7 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     //
     for (PropertyMapping relatedBeanPropertyMapping : relatedBeanMapping.getProperties().values()) {
       if (relatedBeanPropertyMapping instanceof RelationshipMapping) {
-        RelationshipMapping<?, ?> relatedBeanRelationshipMapping = (RelationshipMapping<?, ?>)relatedBeanPropertyMapping;
+        RelationshipMapping<?, ?, ?> relatedBeanRelationshipMapping = (RelationshipMapping<?, ?, ?>)relatedBeanPropertyMapping;
         if (relatedRelationhipType.isInstance(relatedBeanRelationshipMapping)) {
           R toRelationship = relatedRelationhipType.cast(relatedBeanRelationshipMapping);
           if (this != toRelationship) {
@@ -112,7 +109,7 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
 
   abstract boolean matches(R relationship);
 
-  public abstract static class OneToOne<R extends OneToOne> extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>, R> {
+  public abstract static class OneToOne<R extends OneToOne> extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>, R, ValueKind.Single> {
 
     /** Owner / not owner. */
     final boolean owner;
@@ -214,7 +211,7 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     }
   }
 
-  public abstract static class ManyToOne<R extends OneToMany> extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>, R> {
+  public abstract static class ManyToOne<R extends OneToMany> extends RelationshipMapping<SingleValuedPropertyInfo<BeanValueInfo>, R, ValueKind.Single> {
 
     protected ManyToOne(Class<R> relatedRelationhipType, SingleValuedPropertyInfo<BeanValueInfo> property) {
       super(relatedRelationhipType, property);
@@ -291,13 +288,13 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
     }
   }
 
-  public abstract static class OneToMany<R extends ManyToOne> extends RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo>, R> {
+  public abstract static class OneToMany<R extends ManyToOne, K extends ValueKind.Multi> extends RelationshipMapping<MultiValuedPropertyInfo<BeanValueInfo, K>, R, K> {
 
-    protected OneToMany(Class<R> relatedRelationhipType, MultiValuedPropertyInfo<BeanValueInfo> property) {
+    protected OneToMany(Class<R> relatedRelationhipType, MultiValuedPropertyInfo<BeanValueInfo, K> property) {
       super(relatedRelationhipType, property);
     }
 
-    public static class Hierarchic extends OneToMany<ManyToOne.Hierarchic> {
+    public static class Hierarchic<K extends ValueKind.Multi> extends OneToMany<ManyToOne.Hierarchic, K> {
 
       /** . */
       final String declaredPrefix;
@@ -305,7 +302,7 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       /** . */
       final String prefix;
 
-      public Hierarchic(MultiValuedPropertyInfo<BeanValueInfo> property, String declaredPrefix, String prefix) {
+      public Hierarchic(MultiValuedPropertyInfo<BeanValueInfo, K> property, String declaredPrefix, String prefix) {
         super(ManyToOne.Hierarchic.class, property);
 
         //
@@ -332,7 +329,7 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       }
     }
 
-    public static class Reference extends OneToMany<ManyToOne.Reference> {
+    public static class Reference<K extends ValueKind.Multi> extends OneToMany<ManyToOne.Reference, K> {
 
       /** Mapped by value. */
       final String mappedBy;
@@ -340,7 +337,7 @@ public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo>,
       /** The relationship type. */
       final RelationshipType type;
 
-      public Reference(MultiValuedPropertyInfo<BeanValueInfo> property, String mappedBy, RelationshipType type) {
+      public Reference(MultiValuedPropertyInfo<BeanValueInfo, K> property, String mappedBy, RelationshipType type) {
         super(ManyToOne.Reference.class, property);
 
         //

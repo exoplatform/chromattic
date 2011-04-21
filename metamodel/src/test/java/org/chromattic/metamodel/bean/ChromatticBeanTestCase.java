@@ -317,7 +317,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     //
     MultiValuedPropertyInfo bp = (MultiValuedPropertyInfo)bi.getProperty("a");
     assertNotNull(bp);
-    assertEquals(MultiValueKind.COLLECTION, bp.getKind());
+    assertEquals(ValueKind.COLLECTION, bp.getValueKind());
     // assertSame(o, ap.getType()); <X>
 //    assertSame(o, ap.getValue().getClassType());
     assertTrue(bp.getValue() instanceof BeanValueInfo);
@@ -348,7 +348,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     //
     MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ci.getProperty("a");
     assertNotNull(cp);
-    assertEquals(MultiValueKind.COLLECTION, cp.getKind());
+    assertEquals(ValueKind.COLLECTION, cp.getValueKind());
     // assertSame(o, ap.getType()); <X>
 //    assertSame(o, ap.getValue().getClassType());
     assertTrue(cp.getValue() instanceof BeanValueInfo);
@@ -371,7 +371,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
 
     //
     MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
-    assertEquals(MultiValueKind.LIST, cp.getKind());
+    assertEquals(ValueKind.LIST, cp.getValueKind());
     SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
     assertEquals(domain.resolve(String.class), value.getDeclaredType());
   }
@@ -388,7 +388,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
 
     //
     MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
-    assertEquals(MultiValueKind.ARRAY, cp.getKind());
+    assertEquals(ValueKind.ARRAY, cp.getValueKind());
     SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
     assertEquals(domain.resolve(String.class), value.getDeclaredType());
   }
@@ -405,7 +405,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
 
     //
     MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
-    assertEquals(MultiValueKind.MAP, cp.getKind());
+    assertEquals(ValueKind.MAP, cp.getValueKind());
     SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
 //    assertEquals(domain.resolve(Object.class), value.getEffectiveType());
   }
