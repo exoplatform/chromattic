@@ -23,6 +23,8 @@ import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -40,7 +42,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals(true, r1.isOwner());
     assertNull(r1.getPrefix());
     assertEquals("child", r1.getLocalName());
-    assertNull(r1.getRelatedRelationshipMapping());
+    assertEquals(Collections.<RelationshipMapping.OneToOne.Hierarchic>emptyList(), r1.getRelatedRelationshipMapping());
     assertEquals(0, _2.getProperties().size());
   }
 
@@ -54,7 +56,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertNull(r2.getPrefix());
     assertEquals("child", r2.getLocalName());
     assertEquals(false, r2.isOwner());
-    assertNull(r2.getRelatedRelationshipMapping());
+    assertEquals(Collections.<RelationshipMapping.OneToOne.Hierarchic>emptyList(), r2.getRelatedRelationshipMapping());
   }
 
   public void testC() {
@@ -71,8 +73,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("child", r2.getLocalName());
     assertEquals(true, r1.isOwner());
     assertEquals(false, r2.isOwner());
-    assertSame(r1, r2.getRelatedRelationshipMapping());
-    assertSame(r2, r1.getRelatedRelationshipMapping());
+    assertEquals(Arrays.asList(r1), r2.getRelatedRelationshipMapping());
+    assertEquals(Arrays.asList(r2), r1.getRelatedRelationshipMapping());
   }
 
   public void testD() {
@@ -88,7 +90,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertEquals("child", r2.getLocalName());
     assertEquals(true, r1.isOwner());
     assertEquals(false, r2.isOwner());
-    assertSame(r1, r2.getRelatedRelationshipMapping());
-    assertSame(r2, r1.getRelatedRelationshipMapping());
+    assertEquals(Arrays.asList(r1), r2.getRelatedRelationshipMapping());
+    assertEquals(Arrays.asList(r2), r1.getRelatedRelationshipMapping());
   }
 }

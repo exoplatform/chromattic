@@ -153,11 +153,21 @@ public class BeanMappingBuilder {
     Map<BeanInfo, BeanMapping> beanMappings = ctx.build();
 
     // Resolve relationships
+/*
     new OneToOneHierarchicRelationshipResolver(beanMappings).resolve();
     new OneToManyHierarchicRelationshipResolver(beanMappings).resolve();
     new ManyToOneHierarchicRelationshipResolver(beanMappings).resolve();
     new OneToManyReferenceRelationshipResolver(beanMappings).resolve();
     new ManyToOneReferenceRelationshipResolver(beanMappings).resolve();
+*/
+    for (BeanMapping beanMapping : beanMappings.values()) {
+      for (PropertyMapping propertyMapping : beanMapping.getProperties().values()) {
+        if (propertyMapping instanceof RelationshipMapping<?, ?>) {
+          RelationshipMapping<?, ?> relationshipMapping = (RelationshipMapping<?, ?>)propertyMapping;
+          relationshipMapping.resolve();
+        }
+      }
+    }
 
     //
     Map<ClassTypeInfo, BeanMapping> classTypeMappings = new HashMap<ClassTypeInfo, BeanMapping>();
@@ -167,123 +177,6 @@ public class BeanMappingBuilder {
 
     //
     return classTypeMappings;
-  }
-
-  private static abstract class RelationshipResolver<F extends RelationshipMapping<?, T>, T extends RelationshipMapping<?, F>> {
-
-    /** . */
-    final Class<F> fromClass;
-
-    /** . */
-    final Class<T> toClass;
-
-    /** . */
-    Map<BeanInfo, BeanMapping> beanMappings;
-
-    protected RelationshipResolver(Class<F> fromClass, Class<T> toClass, Map<BeanInfo, BeanMapping> beanMappings) {
-      this.fromClass = fromClass;
-      this.toClass = toClass;
-      this.beanMappings = beanMappings;
-    }
-
-    void resolve() {
-      for (BeanMapping beanMapping : beanMappings.values()) {
-        for (PropertyMapping propertyMapping : beanMapping.getProperties().values()) {
-          if (propertyMapping instanceof RelationshipMapping<?, ?>) {
-            RelationshipMapping<?, ?> relationshipMapping = (RelationshipMapping<?, ?>)propertyMapping;
-            BeanInfo relatedBean = relationshipMapping.getRelatedBean();
-            BeanMapping relatedBeanMapping = beanMappings.get(relatedBean);
-            if (fromClass.isInstance(relationshipMapping)) {
-              F fromRelationship = fromClass.cast(relationshipMapping);
-              for (PropertyMapping relatedBeanPropertyMapping : relatedBeanMapping.getProperties().values()) {
-                if (relatedBeanPropertyMapping instanceof RelationshipMapping) {
-                  RelationshipMapping<?, ?> relatedBeanRelationshipMapping = (RelationshipMapping<?, ?>)relatedBeanPropertyMapping;
-                  if (toClass.isInstance(relatedBeanRelationshipMapping)) {
-                    T toRelationship = toClass.cast(relatedBeanRelationshipMapping);
-                    if (fromRelationship != toRelationship) {
-                      if (resolves(fromRelationship, toRelationship)) {
-                        if (relationshipMapping.relatedRelationshipMapping != null) {
-                          throw new InvalidMappingException(beanMapping.getBean().getClassType(), "The relationship " +
-                          relationshipMapping + " is associated with more than one relationship: " +
-                              relationshipMapping.relatedRelationshipMapping + " and " + toRelationship);
-                        }
-                        fromRelationship.relatedRelationshipMapping = toRelationship;
-                        break;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    protected abstract boolean resolves(F from, T to);
-
-  }
-
-  private static class OneToOneHierarchicRelationshipResolver extends RelationshipResolver<RelationshipMapping.OneToOne.Hierarchic, RelationshipMapping.OneToOne.Hierarchic> {
-
-    private OneToOneHierarchicRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(RelationshipMapping.OneToOne.Hierarchic.class, RelationshipMapping.OneToOne.Hierarchic.class, beanMappings);
-    }
-
-    @Override
-    protected boolean resolves(RelationshipMapping.OneToOne.Hierarchic from, RelationshipMapping.OneToOne.Hierarchic to) {
-      String fromPrefix = from.getPrefix() == null ? "" : from.getPrefix();
-      String toPrefix = to.getPrefix() == null ? "" : to.getPrefix();
-      return fromPrefix.equals(toPrefix) && from.getLocalName().equals(to.getLocalName()) && from.owner != to.owner;
-    }
-  }
-
-  private static class OneToManyHierarchicRelationshipResolver extends RelationshipResolver<RelationshipMapping.OneToMany.Hierarchic, RelationshipMapping.ManyToOne.Hierarchic> {
-
-    private OneToManyHierarchicRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(RelationshipMapping.OneToMany.Hierarchic.class, RelationshipMapping.ManyToOne.Hierarchic.class, beanMappings);
-    }
-
-    @Override
-    protected boolean resolves(RelationshipMapping.OneToMany.Hierarchic from, RelationshipMapping.ManyToOne.Hierarchic to) {
-      return true;
-    }
-  }
-
-  private static class ManyToOneHierarchicRelationshipResolver extends RelationshipResolver<RelationshipMapping.ManyToOne.Hierarchic, RelationshipMapping.OneToMany.Hierarchic> {
-
-    private ManyToOneHierarchicRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(RelationshipMapping.ManyToOne.Hierarchic.class, RelationshipMapping.OneToMany.Hierarchic.class, beanMappings);
-    }
-
-    @Override
-    protected boolean resolves(RelationshipMapping.ManyToOne.Hierarchic from, RelationshipMapping.OneToMany.Hierarchic to) {
-      return true;
-    }
-  }
-
-  private static class OneToManyReferenceRelationshipResolver extends RelationshipResolver<RelationshipMapping.OneToMany.Reference, RelationshipMapping.ManyToOne.Reference> {
-
-    private OneToManyReferenceRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(RelationshipMapping.OneToMany.Reference.class, RelationshipMapping.ManyToOne.Reference.class, beanMappings);
-    }
-
-    @Override
-    protected boolean resolves(RelationshipMapping.OneToMany.Reference from, RelationshipMapping.ManyToOne.Reference to) {
-      return from.getMappedBy().equals(to.getMappedBy());
-    }
-  }
-
-  private static class ManyToOneReferenceRelationshipResolver extends RelationshipResolver<RelationshipMapping.ManyToOne.Reference, RelationshipMapping.OneToMany.Reference> {
-
-    private ManyToOneReferenceRelationshipResolver(Map<BeanInfo, BeanMapping> beanMappings) {
-      super(RelationshipMapping.ManyToOne.Reference.class, RelationshipMapping.OneToMany.Reference.class, beanMappings);
-    }
-
-    @Override
-    protected boolean resolves(RelationshipMapping.ManyToOne.Reference from, RelationshipMapping.OneToMany.Reference to) {
-      return from.getMappedBy().equals(to.getMappedBy());
-    }
   }
 
   private class Context {
