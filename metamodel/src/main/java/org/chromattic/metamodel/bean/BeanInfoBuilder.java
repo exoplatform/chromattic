@@ -382,14 +382,25 @@ public class BeanInfoBuilder {
                         collectionKind,
                         new BeanValueInfo(type, bean.resolveToClass(elementType), relatedBean));
                   } else {
-                    property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
-                        bean,
-                        parentProperty,
-                        toBuildEntry.getKey(),
-                        toBuildEntry.getValue().getter,
-                        toBuildEntry.getValue().setter,
-                        collectionKind,
-                        createSimpleValueInfo(bean, elementType));
+                    if (collectionKind == ValueKind.LIST) {
+                      property = new PropertyInfo<SimpleValueInfo, ValueKind.Single>(
+                          bean,
+                          parentProperty,
+                          toBuildEntry.getKey(),
+                          toBuildEntry.getValue().getter,
+                          toBuildEntry.getValue().setter,
+                          ValueKind.SINGLE,
+                          createSimpleValueInfo(bean, elementType, collectionKind));
+                    } else if (collectionKind == ValueKind.MAP) {
+                      property = new PropertyInfo<SimpleValueInfo, ValueKind.Map>(
+                          bean,
+                          parentProperty,
+                          toBuildEntry.getKey(),
+                          toBuildEntry.getValue().getter,
+                          toBuildEntry.getValue().setter,
+                          ValueKind.MAP,
+                          createSimpleValueInfo(bean, elementType, ValueKind.SINGLE));
+                    }
                   }
                 }
               }
@@ -405,27 +416,27 @@ public class BeanInfoBuilder {
               case FLOAT:
               case LONG:
               case INT:
-                property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
+                property = new PropertyInfo<SimpleValueInfo, ValueKind.Single>(
                     bean,
                     parentProperty,
                     toBuildEntry.getKey(),
                     toBuildEntry.getValue().getter,
                     toBuildEntry.getValue().setter,
-                    ValueKind.ARRAY,
-                    createSimpleValueInfo(bean, componentType));
+                    ValueKind.SINGLE,
+                    createSimpleValueInfo(bean, componentType, ValueKind.ARRAY));
                 break;
               default:
                 break;
             }
           } else {
-            property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
+            property = new PropertyInfo<SimpleValueInfo, ValueKind.Single>(
                 bean,
                 parentProperty,
                 toBuildEntry.getKey(),
                 toBuildEntry.getValue().getter,
                 toBuildEntry.getValue().setter,
-                ValueKind.ARRAY,
-                createSimpleValueInfo(bean, componentType));
+                ValueKind.SINGLE,
+                createSimpleValueInfo(bean, componentType, ValueKind.ARRAY));
           }
         } else if (resolvedType instanceof ClassTypeInfo) {
           BeanInfo related = resolve((ClassTypeInfo)resolvedType);
@@ -451,7 +462,7 @@ public class BeanInfoBuilder {
               toBuildEntry.getValue().getter,
               toBuildEntry.getValue().setter,
               ValueKind.SINGLE,
-              createSimpleValueInfo(bean, type));
+              createSimpleValueInfo(bean, type, ValueKind.SINGLE));
         }
 
         //
@@ -462,10 +473,10 @@ public class BeanInfoBuilder {
       bean.properties.putAll(properties);
     }
 
-    private SimpleValueInfo createSimpleValueInfo(BeanInfo bean, TypeInfo type) {
+    private <K extends ValueKind> SimpleValueInfo createSimpleValueInfo(BeanInfo bean, TypeInfo type, K valueKind) {
       TypeInfo resolvedType = bean.getClassType().resolve(type);
       SimpleTypeMapping mapping = simpleTypeResolver.resolveType(resolvedType);
-      return new SimpleValueInfo(type, resolvedType, mapping);
+      return new SimpleValueInfo<K>(type, resolvedType, mapping, valueKind);
     }
   }
 }

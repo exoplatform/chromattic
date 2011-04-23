@@ -33,7 +33,7 @@ import org.chromattic.spi.type.SimpleTypeProvider;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyPropertyMapper<O extends ObjectContext<O>, E, I> extends PropertyMapper<PropertyInfo<SimpleValueInfo, ValueKind.Single>, SimpleValueInfo,O, ValueKind.Single> {
+public class JCRPropertyPropertyMapper<O extends ObjectContext<O>, E, I> extends PropertyMapper<PropertyInfo<SimpleValueInfo<ValueKind.Single>, ValueKind.Single>, SimpleValueInfo<ValueKind.Single>, O, ValueKind.Single> {
 
   /** . */
   private final String jcrPropertyName;
@@ -44,7 +44,7 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext<O>, E, I> extends
   public JCRPropertyPropertyMapper(
     Class<O> contextType,
     SimpleTypeProvider<I, E> vt,
-    ValueMapping.Single info) {
+    ValueMapping<ValueKind.Single> info) {
     super(contextType, info);
 
     //
@@ -72,7 +72,13 @@ public class JCRPropertyPropertyMapper<O extends ObjectContext<O>, E, I> extends
 
   private <V> void set(O context, ValueDefinition<?, V> vt, Object o) throws Throwable {
     Class<V> javaType = vt.getObjectType();
-    V v = javaType.cast(o);
-    context.setPropertyValue(jcrPropertyName, vt, v);
+    if (o == null) {
+      context.setPropertyValue(jcrPropertyName, vt, null);
+    } else if (javaType.isInstance(o)) {
+      V v = javaType.cast(o);
+      context.setPropertyValue(jcrPropertyName, vt, v);
+    } else {
+      throw new ClassCastException("Cannot cast " + o.getClass().getName() + " to " + javaType.getName());
+    }
   }
 }

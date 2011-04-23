@@ -118,17 +118,20 @@ public class MapperBuilder {
     }
 
     @Override
-    public void singleValueMapping(ValueMapping.Single mapping) {
-      SimpleTypeProvider vt = valueTypeFactory.create(mapping.getValue().getDeclaredType(), mapping.getPropertyDefinition().getMetaType());
-      JCRPropertyPropertyMapper mapper = new JCRPropertyPropertyMapper(contextType, vt, mapping);
-      propertyMappers.add(mapper);
+    public void singleValueMapping(ValueMapping<ValueKind.Single> mapping) {
+      if (mapping.getValue().getValueKind() == ValueKind.SINGLE) {
+        SimpleTypeProvider vt = valueTypeFactory.create(mapping.getValue().getDeclaredType(), mapping.getPropertyDefinition().getMetaType());
+        JCRPropertyPropertyMapper mapper = new JCRPropertyPropertyMapper(contextType, vt, mapping);
+        propertyMappers.add(mapper);
+      } else {
+        SimpleTypeProvider vt = valueTypeFactory.create(mapping.getValue().getDeclaredType(), mapping.getPropertyDefinition().getMetaType());
+        JCRPropertyListPropertyMapper mapper = new JCRPropertyListPropertyMapper(contextType, vt, mapping);
+        propertyMappers.add(mapper);
+      }
     }
 
     @Override
-    public void multiValueMapping(ValueMapping.Multi mapping) {
-      SimpleTypeProvider vt = valueTypeFactory.create(mapping.getValue().getDeclaredType(), mapping.getPropertyDefinition().getMetaType());
-      JCRPropertyListPropertyMapper mapper = new JCRPropertyListPropertyMapper(contextType, vt, mapping);
-      propertyMappers.add(mapper);
+    public void multiValueMapping(ValueMapping<ValueKind.Multi> mapping) {
     }
 
     @Override

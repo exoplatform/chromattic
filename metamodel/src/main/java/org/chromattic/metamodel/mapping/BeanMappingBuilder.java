@@ -326,12 +326,19 @@ public class BeanMappingBuilder {
           Annotation annotation = annotations.iterator().next();
           ValueInfo value = property.getValue();
           if (property.getValueKind() == ValueKind.SINGLE) {
-            if (value instanceof SimpleValueInfo) {
+            if (value instanceof SimpleValueInfo<?>) {
+              SimpleValueInfo<?> simpleValue = (SimpleValueInfo<?>)value;
               if (annotation instanceof Property) {
                 Property propertyAnnotation = (Property)annotation;
-                mapping = createProperty(propertyAnnotation, (PropertyInfo<SimpleValueInfo, ValueKind.Single>)property);
+                if (simpleValue.getValueKind() instanceof ValueKind.Single) {
+                  PropertyInfo<SimpleValueInfo<ValueKind.Single>, ValueKind.Single> a = (PropertyInfo<SimpleValueInfo<ValueKind.Single>, ValueKind.Single>)property;
+                  mapping = createValueMapping(propertyAnnotation, a);
+                } else {
+                  PropertyInfo<SimpleValueInfo<ValueKind.Multi>, ValueKind.Single> a = (PropertyInfo<SimpleValueInfo<ValueKind.Multi>, ValueKind.Single>)property;
+                  mapping = createValueMapping(propertyAnnotation, a);
+                }
               } else if (annotation instanceof Id) {
-                mapping = createAttribute((PropertyInfo<SimpleValueInfo, ValueKind.Single>) property, NodeAttributeType.ID);
+                mapping = createAttribute((PropertyInfo<SimpleValueInfo, ValueKind.Single>)property, NodeAttributeType.ID);
               } else if (annotation instanceof Path) {
                 mapping = createAttribute((PropertyInfo<SimpleValueInfo, ValueKind.Single>)property, NodeAttributeType.PATH);
               } else if (annotation instanceof Name) {
@@ -381,9 +388,16 @@ public class BeanMappingBuilder {
             }
           } else if (property.getValueKind() instanceof ValueKind.Multi) {
             if (value instanceof SimpleValueInfo) {
+              SimpleValueInfo<?> simpleValue = (SimpleValueInfo<?>)value;
               if (annotation instanceof Property) {
                 Property propertyAnnotation = (Property)annotation;
-                mapping = createProperty(propertyAnnotation, (PropertyInfo<SimpleValueInfo, ?>)property);
+                if (simpleValue.getValueKind() instanceof ValueKind.Single) {
+                  PropertyInfo<SimpleValueInfo<ValueKind.Single>, ValueKind.Single> a = (PropertyInfo<SimpleValueInfo<ValueKind.Single>, ValueKind.Single>)property;
+                  mapping = createValueMapping(propertyAnnotation, a);
+                } else {
+                  PropertyInfo<SimpleValueInfo<ValueKind.Multi>, ValueKind.Single> a = (PropertyInfo<SimpleValueInfo<ValueKind.Multi>, ValueKind.Single>)property;
+                  mapping = createValueMapping(propertyAnnotation, a);
+                }
               } else if (annotation instanceof Properties) {
                 mapping = createProperties((PropertyInfo<?, ValueKind.Map>)property);
               } else {
@@ -575,9 +589,12 @@ public class BeanMappingBuilder {
       return new PropertiesMapping<V>(property, mt);
     }
 
-    private <P extends PropertyInfo<SimpleValueInfo, ?>> PropertyMapping<P, SimpleValueInfo, ?> createProperty(
+    private
+        <K extends ValueKind>
+        ValueMapping<K>
+        createValueMapping(
         Property propertyAnnotation,
-        P property) {
+        PropertyInfo<SimpleValueInfo<K>, ValueKind.Single> property) {
 
       //
       PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(propertyAnnotation.type());
@@ -600,20 +617,14 @@ public class BeanMappingBuilder {
       }
 
       //
-      PropertyDefinitionMapping propertyDefinition = new PropertyDefinitionMapping(
+      PropertyDefinitionMapping<?> propertyDefinition = new PropertyDefinitionMapping(
           propertyAnnotation.name(),
           resolved.getPropertyMetaType(),
           defaultValueList,
           false);
 
       //
-      if (property.getValueKind() == ValueKind.SINGLE) {
-        return (PropertyMapping<P, SimpleValueInfo, ?>)new ValueMapping.Single((PropertyInfo<SimpleValueInfo, ValueKind.Single>)property, propertyDefinition);
-      } else if (property.getValueKind() instanceof ValueKind.Multi) {
-        return (PropertyMapping<P, SimpleValueInfo, ?>)new ValueMapping.Multi((PropertyInfo<SimpleValueInfo, ?>)property, propertyDefinition);
-      } else {
-        throw new AssertionError();
-      }
+      return new ValueMapping<K>(property, propertyDefinition);
     }
 
     private RelationshipMapping.OneToMany.Reference createReferenceOneToMany(OneToMany annotation, PropertyInfo<BeanValueInfo, ?> property) {

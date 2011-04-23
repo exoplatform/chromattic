@@ -37,7 +37,7 @@ import java.util.List;
  * @version $Revision$
  */
 public class JCRPropertyListPropertyMapper<O extends ObjectContext<O>, E, I, K extends ValueKind.Multi>
-  extends PropertyMapper<PropertyInfo<SimpleValueInfo, K>, SimpleValueInfo, O, K> {
+  extends PropertyMapper<PropertyInfo<SimpleValueInfo<K>, ValueKind.Single>, SimpleValueInfo<K>, O, ValueKind.Single> {
 
   /** . */
   private final String jcrPropertyName;
@@ -54,12 +54,12 @@ public class JCRPropertyListPropertyMapper<O extends ObjectContext<O>, E, I, K e
   public JCRPropertyListPropertyMapper(
     Class<O> contextType,
     SimpleTypeProvider<I, E> vt,
-    ValueMapping.Multi<K> info) {
+    ValueMapping<K> info) {
     super(contextType, info);
 
     //
     ListType listType;
-    ValueKind.Multi valueKind = info.getProperty().getValueKind();
+    ValueKind.Multi valueKind = info.getValue().getValueKind();
     if (valueKind == ValueKind.ARRAY) {
       listType = ListType.ARRAY;
     } else if (valueKind == ValueKind.LIST) {

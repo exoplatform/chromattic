@@ -25,6 +25,7 @@ import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.annotations.NotReferenceable;
 import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.bean.BeanInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.MappingVisitor;
@@ -114,10 +115,16 @@ public class SchemaBuilder {
     }
 
     @Override
-    public void singleValueMapping(ValueMapping.Single mapping) {
+    public void singleValueMapping(ValueMapping<ValueKind.Single> mapping) {
       if (current != null) {
-        if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
-          current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), false));
+        if (mapping.getValue().getValueKind() == ValueKind.SINGLE) {
+          if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+            current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), false));
+          }
+        } else {
+          if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+            current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), true));
+          }
         }
       }
     }
@@ -137,15 +144,6 @@ public class SchemaBuilder {
       if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
         int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
         current.properties.put(mapping.getMappedBy(), new PropertyDefinition(mapping.getMappedBy(), false, propertyType));
-      }
-    }
-
-    @Override
-    public void multiValueMapping(ValueMapping.Multi mapping) {
-      if (current != null) {
-        if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
-          current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), true));
-        }
       }
     }
 

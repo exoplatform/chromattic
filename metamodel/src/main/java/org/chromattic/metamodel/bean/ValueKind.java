@@ -28,6 +28,11 @@ public abstract class ValueKind {
   private ValueKind() {
   }
 
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "[]";
+  }
+
   public static class Single extends ValueKind {
     private Single() {
     }

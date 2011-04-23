@@ -26,12 +26,13 @@ import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo, K>, K extends ValueKind> extends PropertyMapping<P, SimpleValueInfo, K> {
+public class ValueMapping<K extends ValueKind>
+    extends PropertyMapping<PropertyInfo<SimpleValueInfo<K>, ValueKind.Single>, SimpleValueInfo<K>, ValueKind.Single> {
 
   /** . */
   final PropertyDefinitionMapping<?> propertyDefinition;
 
-  public ValueMapping(P property, PropertyDefinitionMapping propertyDefinition) {
+  public ValueMapping(PropertyInfo<SimpleValueInfo<K>, ValueKind.Single> property, PropertyDefinitionMapping propertyDefinition) {
     super(property);
 
     //
@@ -42,7 +43,7 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo, K>, K
     if (parent == null) {
       return true;
     } else {
-      ValueMapping<?, ?> a = (ValueMapping<?, ?>)parent;
+      ValueMapping<?> a = (ValueMapping<?>)parent;
       return propertyDefinition.getMetaType() != a.propertyDefinition.getMetaType();
     }
   }
@@ -51,26 +52,12 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo, K>, K
     return propertyDefinition;
   }
 
-  public static class Single extends ValueMapping<PropertyInfo<SimpleValueInfo, ValueKind.Single>, ValueKind.Single> {
-    public Single(PropertyInfo<SimpleValueInfo, ValueKind.Single> property, PropertyDefinitionMapping propertyDefinition) {
-      super(property, propertyDefinition);
-    }
-
-    @Override
-    public void accept(MappingVisitor visitor) {
-      visitor.singleValueMapping(this);
+  @Override
+  public void accept(MappingVisitor visitor) {
+    if (property.getValueKind() == ValueKind.SINGLE) {
+      visitor.singleValueMapping((ValueMapping<ValueKind.Single>)this);
+    } else {
+      visitor.multiValueMapping((ValueMapping<ValueKind.Multi>)this);
     }
   }
-
-  public static class Multi<K extends ValueKind.Multi> extends ValueMapping<PropertyInfo<SimpleValueInfo, K>, K> {
-    public Multi(PropertyInfo<SimpleValueInfo, K> property, PropertyDefinitionMapping propertyDefinition) {
-      super(property, propertyDefinition);
-    }
-
-    @Override
-    public void accept(MappingVisitor visitor) {
-      visitor.multiValueMapping(this);
-    }
-  }
-
 }

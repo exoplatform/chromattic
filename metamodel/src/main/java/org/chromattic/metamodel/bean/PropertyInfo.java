@@ -19,9 +19,7 @@
 
 package org.chromattic.metamodel.bean;
 
-import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
-import org.reflext.api.TypeInfo;
 import org.reflext.api.annotation.AnnotationType;
 import org.reflext.api.introspection.AnnotationIntrospector;
 import org.reflext.api.introspection.AnnotationTarget;

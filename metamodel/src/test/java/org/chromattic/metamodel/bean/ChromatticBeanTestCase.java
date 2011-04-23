@@ -371,8 +371,9 @@ public class ChromatticBeanTestCase extends BeanTestCase {
 
     //
     PropertyInfo<?, ?> cp = ai.getProperty("a");
-    assertEquals(ValueKind.LIST, cp.getValueKind());
-    SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
+    assertEquals(ValueKind.SINGLE, cp.getValueKind());
+    SimpleValueInfo<?> value = (SimpleValueInfo)cp.getValue();
+    assertEquals(ValueKind.LIST, value.getValueKind());
     assertEquals(domain.resolve(String.class), value.getDeclaredType());
   }
 
@@ -388,8 +389,9 @@ public class ChromatticBeanTestCase extends BeanTestCase {
 
     //
     PropertyInfo<?, ?> cp = ai.getProperty("a");
-    assertEquals(ValueKind.ARRAY, cp.getValueKind());
-    SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
+    assertEquals(ValueKind.SINGLE, cp.getValueKind());
+    SimpleValueInfo<?> value = (SimpleValueInfo)cp.getValue();
+    assertEquals(ValueKind.ARRAY, value.getValueKind());
     assertEquals(domain.resolve(String.class), value.getDeclaredType());
   }
 
@@ -407,6 +409,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     PropertyInfo<?, ?> cp = ai.getProperty("a");
     assertEquals(ValueKind.MAP, cp.getValueKind());
     SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
+    assertEquals(ValueKind.SINGLE, value.getValueKind());
 //    assertEquals(domain.resolve(Object.class), value.getEffectiveType());
   }
 }
