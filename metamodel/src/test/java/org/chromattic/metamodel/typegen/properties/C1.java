@@ -28,10 +28,13 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@PrimaryType(name = "b")
-public abstract class B {
+@PrimaryType(name = "c")
+public abstract class C1 {
 
   @Properties()
-  public abstract Map<String, Object> getProperties();
+  public abstract Map<String, String> getStringProperties();
+
+  @Properties()
+  public abstract Map<String, Integer> getIntegerProperties();
 
 }

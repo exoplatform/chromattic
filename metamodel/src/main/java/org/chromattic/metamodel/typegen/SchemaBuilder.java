@@ -153,12 +153,14 @@ public class SchemaBuilder {
         if (mapping.getProperty().getAnnotation(Skip.class) == null) {
           PropertyMetaType metatype = mapping.getMetaType();
           int code = metatype != null ? metatype.getCode() : PropertyType.UNDEFINED;
+          boolean multiple = mapping.getValueKind() != ValueKind.SINGLE;
           PropertyDefinition pd = current.properties.get("*");
           if (pd == null) {
-            current.properties.put("*", new PropertyDefinition("*", false, code));
+            current.properties.put("*", new PropertyDefinition("*", multiple, code));
           } else {
             if (pd.getType() != code) {
-              current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));            }
+              current.properties.put("*", new PropertyDefinition("*", multiple, PropertyType.UNDEFINED));
+            }
           }
         }
       }

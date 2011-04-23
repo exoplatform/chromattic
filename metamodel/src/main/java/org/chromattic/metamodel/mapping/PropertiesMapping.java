@@ -33,15 +33,23 @@ public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<Prop
   /** . */
   private final PropertyMetaType<?> metaType;
 
-  public PropertiesMapping(PropertyInfo<V, ValueKind.Map> property, PropertyMetaType<?> metaType) {
+  /** . */
+  private final ValueKind valueKind;
+
+  public PropertiesMapping(PropertyInfo<V, ValueKind.Map> property, PropertyMetaType<?> metaType, ValueKind valueKind) {
     super(property);
 
     //
     this.metaType = metaType;
+    this.valueKind = valueKind;
   }
 
   public PropertyMetaType<?> getMetaType() {
     return metaType;
+  }
+
+  public ValueKind getValueKind() {
+    return valueKind;
   }
 
   @Override

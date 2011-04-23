@@ -351,21 +351,15 @@ public class BeanInfoBuilder {
                   ClassTypeInfo parameterizedElementRawClassType = (ClassTypeInfo)parameterizedElementRawType;
                   String parameterizedElementRawClassName = parameterizedElementRawClassType.getName();
                   if (parameterizedElementRawClassName.equals("java.util.List")) {
-/*
                     TypeInfo listElementType = parameterizedElementType.getTypeArguments().get(0);
-                    ClassTypeInfo elementClassType = bean.resolveToClass(elementType);
-                    if (elementClassType != null) {
-                      property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
-                          bean,
-                          parentProperty,
-                          toBuildEntry.getKey(),
-                          toBuildEntry.getValue().getter,
-                          toBuildEntry.getValue().setter,
-                          collectionKind,
-                          createSimpleValueInfo(bean, elementType));
-                    }
-*/
-                    throw new UnsupportedOperationException();
+                    property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
+                        bean,
+                        parentProperty,
+                        toBuildEntry.getKey(),
+                        toBuildEntry.getValue().getter,
+                        toBuildEntry.getValue().setter,
+                        collectionKind,
+                        createSimpleValueInfo(bean, listElementType, ValueKind.LIST));
                   }
                 }
               } else {

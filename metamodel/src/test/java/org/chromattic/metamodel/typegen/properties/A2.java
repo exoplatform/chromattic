@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ package org.chromattic.metamodel.typegen.properties;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,9 +30,9 @@ import java.util.Map;
  * @version $Revision$
  */
 @PrimaryType(name = "a")
-public abstract class A {
+public abstract class A2 {
 
   @Properties()
-  public abstract Map<String, String> getProperties();
+  public abstract Map<String, List<String>> getProperties();
 
 }

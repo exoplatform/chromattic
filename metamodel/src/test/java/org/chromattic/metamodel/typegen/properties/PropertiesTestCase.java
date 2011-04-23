@@ -19,12 +19,10 @@
 
 package org.chromattic.metamodel.typegen.properties;
 
-import junit.framework.TestCase;import org.chromattic.common.collection.Collections;
+import org.chromattic.common.collection.Collections;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
-import org.chromattic.metamodel.typegen.TypeGen;
 import org.chromattic.metamodel.typegen.TypeGenTestCase;
-import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
 import java.util.Map;
@@ -36,26 +34,39 @@ import java.util.Map;
 public class PropertiesTestCase extends TypeGenTestCase {
 
   public void testStringProperties() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(A.class);
-    NodeType aNT = a.get(A.class);
+    Map<Class<?>, NodeType> a = assertValid(A1.class);
+    NodeType aNT = a.get(A1.class);
     assertEquals(Collections.<String>set("*"), aNT.getPropertyDefinitions().keySet());
     PropertyDefinition pd = aNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());
-     assertEquals(PropertyType.STRING, pd.getType());
+    assertEquals(PropertyType.STRING, pd.getType());
+    assertEquals(false, pd.isMultiple());
     assertEquals(null, pd.getDefaultValues());
   }
 
+  public void testStringListProperties() throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(A2.class);
+    NodeType bNT = a.get(A2.class);
+    assertEquals(Collections.<String>set("*"), bNT.getPropertyDefinitions().keySet());
+    PropertyDefinition pd = bNT.getPropertyDefinition("*");
+    assertEquals("*", pd.getName());
+    assertEquals(PropertyType.STRING, pd.getType());
+    assertEquals(true, pd.isMultiple());
+    assertEquals(null, pd.getDefaultValues());
+  }
+
+
   public void testObjectProperties() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(B.class);
-    NodeType bNT = a.get(B.class);
+    Map<Class<?>, NodeType> a = assertValid(B1.class);
+    NodeType bNT = a.get(B1.class);
     assertEquals(Collections.<String>set("*"), bNT.getPropertyDefinitions().keySet());
     PropertyDefinition pd = bNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());
     assertEquals(PropertyType.UNDEFINED, pd.getType());
+    assertEquals(false, pd.isMultiple());
     assertEquals(null, pd.getDefaultValues());
   }
 
-/*
   public void testObjectListProperties() throws Exception {
     Map<Class<?>, NodeType> a = assertValid(B2.class);
     NodeType bNT = a.get(B2.class);
@@ -63,17 +74,29 @@ public class PropertiesTestCase extends TypeGenTestCase {
     PropertyDefinition pd = bNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());
     assertEquals(PropertyType.UNDEFINED, pd.getType());
+    assertEquals(true, pd.isMultiple());
     assertEquals(null, pd.getDefaultValues());
   }
-*/
 
   public void testAnyProperties() throws Exception {
-    Map<Class<?>, NodeType> a = assertValid(C.class);
-    NodeType cNT = a.get(C.class);
+    Map<Class<?>, NodeType> a = assertValid(C1.class);
+    NodeType cNT = a.get(C1.class);
     assertEquals(Collections.<String>set("*"), cNT.getPropertyDefinitions().keySet());
     PropertyDefinition pd = cNT.getPropertyDefinition("*");
     assertEquals("*", pd.getName());
     assertEquals(PropertyType.UNDEFINED, pd.getType());
+    assertEquals(false, pd.isMultiple());
+    assertEquals(null, pd.getDefaultValues());
+  }
+
+  public void testAnyListProperties() throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(C2.class);
+    NodeType cNT = a.get(C2.class);
+    assertEquals(Collections.<String>set("*"), cNT.getPropertyDefinitions().keySet());
+    PropertyDefinition pd = cNT.getPropertyDefinition("*");
+    assertEquals("*", pd.getName());
+    assertEquals(PropertyType.UNDEFINED, pd.getType());
+    assertEquals(true, pd.isMultiple());
     assertEquals(null, pd.getDefaultValues());
   }
 }

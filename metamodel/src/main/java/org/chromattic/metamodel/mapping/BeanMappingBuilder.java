@@ -576,17 +576,22 @@ public class BeanMappingBuilder {
             " must be of type java.util.Map instead of " + property.getValue().getEffectiveType());
       }
       TypeInfo type = property.getValue().getEffectiveType();
-      PropertyMetaType<?> mt;
-      if (type.getName().equals(Object.class.getName())) {
-        mt = null;
-      } else {
-        SimpleTypeMapping stm = typeResolver.resolveType(type);
-        if (stm == null) {
-          throw new InvalidMappingException(property.getOwner().getClassType(), "Cannot map type " + type + " as properties");
+      PropertyMetaType<?> mt = null;
+      ValueKind valueKind;
+      ValueInfo vi = property.getValue();
+      if (vi instanceof SimpleValueInfo<?>) {
+        SimpleValueInfo<?> svi = (SimpleValueInfo<?>)vi;
+        if (svi.getTypeMapping() != null) {
+          mt = svi.getTypeMapping().getPropertyMetaType();
         }
-        mt = stm.getPropertyMetaType();
+        valueKind = svi.getValueKind();
+      } else {
+        if (type.getName().equals(Object.class.getName())) {
+          mt = null;
+        }
+        valueKind = ValueKind.SINGLE;
       }
-      return new PropertiesMapping<V>(property, mt);
+      return new PropertiesMapping<V>(property, mt, valueKind);
     }
 
     private
