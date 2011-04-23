@@ -21,12 +21,13 @@ package org.chromattic.metamodel.mapping;
 
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class AttributeMapping extends PropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo> {
+public class AttributeMapping extends PropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo, ValueKind.Single> {
 
   /** . */
   private final NodeAttributeType type;

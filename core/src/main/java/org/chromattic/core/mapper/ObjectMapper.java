@@ -93,7 +93,7 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     // Build the dispatcher map
     Map<Method, MethodInvoker<C>> dispatchers = new HashMap<Method, MethodInvoker<C>>();
     for (PropertyMapper<?, ?, C, ?> propertyMapper : propertyMappers) {
-      PropertyMapping<?, ?> info = propertyMapper.getInfo();
+      PropertyMapping<?, ?, ?> info = propertyMapper.getInfo();
       MethodInfo getter = info.getProperty().getGetter();
       if (getter != null) {
         dispatchers.put((Method)getter.unwrap(), propertyMapper.getGetter());

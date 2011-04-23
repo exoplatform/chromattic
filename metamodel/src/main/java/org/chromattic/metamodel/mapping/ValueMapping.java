@@ -26,7 +26,7 @@ import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo, K>, K extends ValueKind> extends PropertyMapping<P, SimpleValueInfo> {
+public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo, K>, K extends ValueKind> extends PropertyMapping<P, SimpleValueInfo, K> {
 
   /** . */
   final PropertyDefinitionMapping<?> propertyDefinition;

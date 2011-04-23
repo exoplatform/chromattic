@@ -37,9 +37,9 @@ public abstract class PropertyMapper<P extends PropertyInfo<V, K>, V extends Val
   protected final Class<O> contextType;
 
   /** . */
-  protected final PropertyMapping<P, V> info;
+  protected final PropertyMapping<P, V, K> info;
 
-  public PropertyMapper(Class<O> contextType, PropertyMapping<P, V> info) {
+  public PropertyMapper(Class<O> contextType, PropertyMapping<P, V, K> info) {
     this.contextType = contextType;
     this.info = info;
   }
@@ -48,7 +48,7 @@ public abstract class PropertyMapper<P extends PropertyInfo<V, K>, V extends Val
     return contextType;
   }
 
-  public PropertyMapping<P, V> getInfo() {
+  public PropertyMapping<P, V, K> getInfo() {
     return info;
   }
 

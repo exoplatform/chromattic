@@ -33,7 +33,7 @@ import org.chromattic.metamodel.mapping.PropertyMapping;
 public abstract class RelatedPropertyMapper<P extends PropertyInfo<V, K>, V extends ValueInfo, C extends ObjectContext<C>, K extends ValueKind> extends
     PropertyMapper<P, V, C, K> {
 
-  protected RelatedPropertyMapper(Class<C> contextType, PropertyMapping<P, V> info) {
+  protected RelatedPropertyMapper(Class<C> contextType, PropertyMapping<P, V, K> info) {
     super(contextType, info);
   }
 

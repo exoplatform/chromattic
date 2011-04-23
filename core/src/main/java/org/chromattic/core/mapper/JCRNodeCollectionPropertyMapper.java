@@ -35,7 +35,7 @@ public abstract class JCRNodeCollectionPropertyMapper<P extends MultiValuedPrope
   /** . */
   private final Class relatedClass;
 
-  public JCRNodeCollectionPropertyMapper(Class<O> contextType, PropertyMapping<P, BeanValueInfo> info) throws ClassNotFoundException {
+  public JCRNodeCollectionPropertyMapper(Class<O> contextType, PropertyMapping<P, BeanValueInfo, K> info) throws ClassNotFoundException {
     super(contextType, info);
 
     // We use the classloader from the bean

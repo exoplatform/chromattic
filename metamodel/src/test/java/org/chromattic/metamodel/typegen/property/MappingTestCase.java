@@ -128,7 +128,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
   public void testE() throws Exception {
     Map<Class<?>, BeanMapping> mappings = assertValid(E.class);
     BeanMapping mapping = mappings.get(E.class);
-    PropertyMapping<?, ?> stringMapping = mapping.getPropertyMapping("bytes", PropertyMapping.class);
+    PropertyMapping<?, ?, ?> stringMapping = mapping.getPropertyMapping("bytes", PropertyMapping.class);
 //    assertEquals(String.class.getName(), stringMapping.getProperty().getValue().getClassType().getName());
   }
 }

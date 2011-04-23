@@ -35,7 +35,7 @@ public abstract class JCRNodePropertyMapper<P extends SingleValuedPropertyInfo<V
   /** . */
   private final Class relatedClass;
 
-  protected JCRNodePropertyMapper(Class<O> contextType, PropertyMapping<P, V> info) throws ClassNotFoundException {
+  protected JCRNodePropertyMapper(Class<O> contextType, PropertyMapping<P, V, ValueKind.Single> info) throws ClassNotFoundException {
     super(contextType, info);
 
     // We use the classloader from the bean

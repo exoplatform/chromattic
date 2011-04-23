@@ -301,7 +301,7 @@ public class BeanMappingBuilder {
       }
 
       //
-      Map<String, PropertyMapping<?, ?>> properties = new HashMap<String, PropertyMapping<?, ?>>();
+      Map<String, PropertyMapping<?, ?, ?>> properties = new HashMap<String, PropertyMapping<?, ?, ?>>();
       for (PropertyInfo<?, ?> property : bean.getProperties().values()) {
 
         // Determine kind
@@ -323,7 +323,7 @@ public class BeanMappingBuilder {
         }
 
         // Build the correct mapping or fail
-        PropertyMapping<?, ?> mapping = null;
+        PropertyMapping<?, ?, ?> mapping = null;
         if (annotations.size() == 1) {
           Annotation annotation = annotations.iterator().next();
           ValueInfo value = property.getValue();
@@ -441,7 +441,7 @@ public class BeanMappingBuilder {
 
       // Wire
       beanMapping.properties.putAll(properties);
-      for (PropertyMapping<?, ?> propertyMapping : beanMapping.properties.values()) {
+      for (PropertyMapping<?, ?, ?> propertyMapping : beanMapping.properties.values()) {
         propertyMapping.owner = beanMapping;
       }
 
@@ -577,7 +577,7 @@ public class BeanMappingBuilder {
       return new PropertiesMapping<V>(property, mt);
     }
 
-    private <P extends PropertyInfo<SimpleValueInfo, ?>> PropertyMapping<P, SimpleValueInfo> createProperty(
+    private <P extends PropertyInfo<SimpleValueInfo, ?>> PropertyMapping<P, SimpleValueInfo, ?> createProperty(
         Property propertyAnnotation,
         P property) {
 
@@ -610,9 +610,9 @@ public class BeanMappingBuilder {
 
       //
       if (property instanceof SingleValuedPropertyInfo<?>) {
-        return (PropertyMapping<P, SimpleValueInfo>)new ValueMapping.Single((SingleValuedPropertyInfo<SimpleValueInfo>)property, propertyDefinition);
+        return (PropertyMapping<P, SimpleValueInfo, ?>)new ValueMapping.Single((SingleValuedPropertyInfo<SimpleValueInfo>)property, propertyDefinition);
       } else if (property instanceof MultiValuedPropertyInfo<?, ?>) {
-        return (PropertyMapping<P, SimpleValueInfo>)new ValueMapping.Multi((MultiValuedPropertyInfo<SimpleValueInfo, ?>)property, propertyDefinition);
+        return (PropertyMapping<P, SimpleValueInfo, ?>)new ValueMapping.Multi((MultiValuedPropertyInfo<SimpleValueInfo, ?>)property, propertyDefinition);
       } else {
         throw new AssertionError();
       }

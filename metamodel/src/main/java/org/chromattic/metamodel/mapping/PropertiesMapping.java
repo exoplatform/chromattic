@@ -28,7 +28,7 @@ import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<MultiValuedPropertyInfo<V, ValueKind.Map>,V> {
+public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<MultiValuedPropertyInfo<V, ValueKind.Map>,V, ValueKind.Map> {
 
   /** . */
   private final PropertyMetaType<?> metaType;

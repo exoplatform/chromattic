@@ -43,10 +43,10 @@ public class BeanMapping {
   BeanMapping parent;
 
   /** . */
-  final Map<String, PropertyMapping<?, ?>> properties;
+  final Map<String, PropertyMapping<?, ?, ?>> properties;
 
   /** . */
-  final Map<String, PropertyMapping<?, ?>> unmodifiableProperties;
+  final Map<String, PropertyMapping<?, ?, ?>> unmodifiableProperties;
 
   /** . */
   final List<MethodMapping> methods;
@@ -89,7 +89,7 @@ public class BeanMapping {
     this.nodeTypeName = nodeTypeName;
     this.orderable = orderable;
     this.abstract_ = abstract_;
-    this.properties = new HashMap<String, PropertyMapping<?,?>>();
+    this.properties = new HashMap<String, PropertyMapping<?, ?, ?>>();
     this.unmodifiableProperties = Collections.unmodifiableMap(properties);
     this.methods = new ArrayList<MethodMapping>();
     this.unmodifiableMethods = Collections.unmodifiableList(methods);
@@ -126,7 +126,7 @@ public class BeanMapping {
     return bean;
   }
 
-  public Map<String, PropertyMapping<?, ?>> getProperties() {
+  public Map<String, PropertyMapping<?, ?, ?>> getProperties() {
     return properties;
   }
 
@@ -138,8 +138,8 @@ public class BeanMapping {
     return prefix;
   }
 
-  public <M extends PropertyMapping<?, ?>> M getPropertyMapping(String name, Class<M> type) {
-    PropertyMapping<?, ?> mapping = properties.get(name);
+  public <M extends PropertyMapping<?, ?, ?>> M getPropertyMapping(String name, Class<M> type) {
+    PropertyMapping<?, ?, ?> mapping = properties.get(name);
     if (type.isInstance(mapping)) {
       return type.cast(mapping);
     } else {
@@ -149,7 +149,7 @@ public class BeanMapping {
 
   public void accept(MappingVisitor visitor) {
     visitor.startBean(this);
-    for (PropertyMapping<?, ?> property : properties.values()) {
+    for (PropertyMapping<?, ?, ?> property : properties.values()) {
       property.accept(visitor);
     }
     for (MethodMapping method : methods) {

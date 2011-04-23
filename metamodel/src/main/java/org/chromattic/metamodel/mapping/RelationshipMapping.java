@@ -31,7 +31,7 @@ import java.util.List;
  * @version $Revision$
  */
 public abstract class RelationshipMapping<P extends PropertyInfo<BeanValueInfo, K>, R extends RelationshipMapping, K extends ValueKind>
-    extends PropertyMapping<P, BeanValueInfo> {
+    extends PropertyMapping<P, BeanValueInfo, K> {
 
 
   /** . */
