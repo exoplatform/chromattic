@@ -35,7 +35,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyInfo<V extends ValueInfo, K extends ValueKind> {
+public class PropertyInfo<V extends ValueInfo, K extends ValueKind> {
 
   /** The owner bean. */
   private final BeanInfo owner;

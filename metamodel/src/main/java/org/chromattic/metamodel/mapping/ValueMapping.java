@@ -51,8 +51,8 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo, K>, K
     return propertyDefinition;
   }
 
-  public static class Single extends ValueMapping<SingleValuedPropertyInfo<SimpleValueInfo>, ValueKind.Single> {
-    public Single(SingleValuedPropertyInfo<SimpleValueInfo> property, PropertyDefinitionMapping propertyDefinition) {
+  public static class Single extends ValueMapping<PropertyInfo<SimpleValueInfo, ValueKind.Single>, ValueKind.Single> {
+    public Single(PropertyInfo<SimpleValueInfo, ValueKind.Single> property, PropertyDefinitionMapping propertyDefinition) {
       super(property, propertyDefinition);
     }
 
@@ -62,8 +62,8 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo, K>, K
     }
   }
 
-  public static class Multi<K extends ValueKind.Multi> extends ValueMapping<MultiValuedPropertyInfo<SimpleValueInfo, K>, K> {
-    public Multi(MultiValuedPropertyInfo<SimpleValueInfo, K> property, PropertyDefinitionMapping propertyDefinition) {
+  public static class Multi<K extends ValueKind.Multi> extends ValueMapping<PropertyInfo<SimpleValueInfo, K>, K> {
+    public Multi(PropertyInfo<SimpleValueInfo, K> property, PropertyDefinitionMapping propertyDefinition) {
       super(property, propertyDefinition);
     }
 

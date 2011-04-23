@@ -19,20 +19,20 @@
 
 package org.chromattic.metamodel.mapping;
 
+import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 import org.chromattic.metamodel.bean.ValueKind;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class AttributeMapping extends PropertyMapping<SingleValuedPropertyInfo<SimpleValueInfo>, SimpleValueInfo, ValueKind.Single> {
+public class AttributeMapping extends PropertyMapping<PropertyInfo<SimpleValueInfo, ValueKind.Single>, SimpleValueInfo, ValueKind.Single> {
 
   /** . */
   private final NodeAttributeType type;
 
-  public AttributeMapping(SingleValuedPropertyInfo<SimpleValueInfo> property, NodeAttributeType type) {
+  public AttributeMapping(PropertyInfo<SimpleValueInfo, ValueKind.Single> property, NodeAttributeType type) {
     super(property);
     this.type = type;
   }

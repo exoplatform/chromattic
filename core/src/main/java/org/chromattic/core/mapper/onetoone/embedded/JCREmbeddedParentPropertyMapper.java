@@ -22,7 +22,7 @@ import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.mapper.RelatedPropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
@@ -31,7 +31,7 @@ import org.chromattic.metamodel.mapping.RelationshipMapping;
  * @version $Revision$
  */
 public class JCREmbeddedParentPropertyMapper extends
-    RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, BeanValueInfo, EntityContext, ValueKind.Single> {
+    RelatedPropertyMapper<PropertyInfo<BeanValueInfo, ValueKind.Single>, BeanValueInfo, EntityContext, ValueKind.Single> {
 
   /** . */
   private final Class relatedClass;

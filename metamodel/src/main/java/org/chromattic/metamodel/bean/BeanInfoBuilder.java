@@ -305,7 +305,7 @@ public class BeanInfoBuilder {
         TypeInfo resolvedType = bean.classType.resolve(type);
 
         //
-        PropertyInfo property = null;
+        PropertyInfo<?, ?> property = null;
 
         // We could not resolve it, get the upper bound
         if (resolvedType instanceof TypeVariableInfo) {
@@ -348,7 +348,7 @@ public class BeanInfoBuilder {
               if (elementClassType != null) {
                 BeanInfo relatedBean = resolve(elementClassType);
                 if (relatedBean != null) {
-                  property = new MultiValuedPropertyInfo<BeanValueInfo, ValueKind.Multi>(
+                  property = new PropertyInfo<BeanValueInfo, ValueKind.Multi>(
                       bean,
                       parentProperty,
                       toBuildEntry.getKey(),
@@ -357,7 +357,7 @@ public class BeanInfoBuilder {
                       collectionKind,
                       new BeanValueInfo(type, bean.resolveToClass(elementType), relatedBean));
                 } else {
-                  property = new MultiValuedPropertyInfo<SimpleValueInfo, ValueKind.Multi>(
+                  property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
                       bean,
                       parentProperty,
                       toBuildEntry.getKey(),
@@ -379,7 +379,7 @@ public class BeanInfoBuilder {
               case FLOAT:
               case LONG:
               case INT:
-                property = new MultiValuedPropertyInfo<SimpleValueInfo, ValueKind.Multi>(
+                property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
                     bean,
                     parentProperty,
                     toBuildEntry.getKey(),
@@ -392,7 +392,7 @@ public class BeanInfoBuilder {
                 break;
             }
           } else {
-            property = new MultiValuedPropertyInfo<SimpleValueInfo, ValueKind.Multi>(
+            property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
                 bean,
                 parentProperty,
                 toBuildEntry.getKey(),
@@ -404,12 +404,13 @@ public class BeanInfoBuilder {
         } else if (resolvedType instanceof ClassTypeInfo) {
           BeanInfo related = resolve((ClassTypeInfo)resolvedType);
           if (related != null) {
-            property = new SingleValuedPropertyInfo<BeanValueInfo>(
+            property = new PropertyInfo<BeanValueInfo, ValueKind.Single>(
                 bean,
                 parentProperty,
                 toBuildEntry.getKey(),
                 toBuildEntry.getValue().getter,
                 toBuildEntry.getValue().setter,
+                ValueKind.SINGLE,
                 new BeanValueInfo(type, bean.resolveToClass(type), related));
           }
         }
@@ -417,12 +418,13 @@ public class BeanInfoBuilder {
         // Otherwise consider everything as a single valued simple value
         if (property == null) {
 
-          property = new SingleValuedPropertyInfo<SimpleValueInfo>(
+          property = new PropertyInfo<SimpleValueInfo, ValueKind.Single>(
               bean,
               parentProperty,
               toBuildEntry.getKey(),
               toBuildEntry.getValue().getter,
               toBuildEntry.getValue().setter,
+              ValueKind.SINGLE,
               createSimpleValueInfo(bean, type));
         }
 

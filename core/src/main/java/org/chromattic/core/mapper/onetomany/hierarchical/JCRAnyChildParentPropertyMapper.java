@@ -22,7 +22,7 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
@@ -31,7 +31,7 @@ import org.chromattic.metamodel.mapping.RelationshipMapping;
  * @version $Revision$
  */
 public class JCRAnyChildParentPropertyMapper<O extends ObjectContext<O>, K extends ValueKind.Multi> extends
-    JCRNodeCollectionPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo, K>, O, K> {
+    JCRNodeCollectionPropertyMapper<PropertyInfo<BeanValueInfo, K>, O, K> {
 
   /** . */
   private final AnyChildMultiValueMapper<K> valueMapper;

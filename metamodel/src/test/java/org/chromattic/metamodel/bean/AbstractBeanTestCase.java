@@ -51,7 +51,7 @@ public abstract class AbstractBeanTestCase extends TestCase {
     assertNotNull(property);
     assertEquals(expectedName, property.getName());
     ValueInfo value = property.getValue();
-    if (property instanceof SingleValuedPropertyInfo) {
+    if (property.getValueKind() == ValueKind.SINGLE) {
       assertEquals(expectedType.getName(), value.getEffectiveType().getName());
       switch (accessMode) {
         case READ_ONLY:

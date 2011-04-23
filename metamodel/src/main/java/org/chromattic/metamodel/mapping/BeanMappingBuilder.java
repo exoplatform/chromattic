@@ -48,10 +48,8 @@ import org.chromattic.metamodel.bean.BeanInfo;
 import org.chromattic.metamodel.bean.BeanValueInfo;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
 import org.chromattic.metamodel.bean.BeanInfoBuilder;
 import org.chromattic.metamodel.bean.ValueKind;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean.ValueInfo;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
@@ -327,19 +325,19 @@ public class BeanMappingBuilder {
         if (annotations.size() == 1) {
           Annotation annotation = annotations.iterator().next();
           ValueInfo value = property.getValue();
-          if (property instanceof SingleValuedPropertyInfo<?>) {
+          if (property.getValueKind() == ValueKind.SINGLE) {
             if (value instanceof SimpleValueInfo) {
               if (annotation instanceof Property) {
                 Property propertyAnnotation = (Property)annotation;
-                mapping = createProperty(propertyAnnotation, (SingleValuedPropertyInfo<SimpleValueInfo>)property);
+                mapping = createProperty(propertyAnnotation, (PropertyInfo<SimpleValueInfo, ValueKind.Single>)property);
               } else if (annotation instanceof Id) {
-                mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>) property, NodeAttributeType.ID);
+                mapping = createAttribute((PropertyInfo<SimpleValueInfo, ValueKind.Single>) property, NodeAttributeType.ID);
               } else if (annotation instanceof Path) {
-                mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>)property, NodeAttributeType.PATH);
+                mapping = createAttribute((PropertyInfo<SimpleValueInfo, ValueKind.Single>)property, NodeAttributeType.PATH);
               } else if (annotation instanceof Name) {
-                mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>)property, NodeAttributeType.NAME);
+                mapping = createAttribute((PropertyInfo<SimpleValueInfo, ValueKind.Single>)property, NodeAttributeType.NAME);
               } else if (annotation instanceof WorkspaceName) {
-                mapping = createAttribute((SingleValuedPropertyInfo<SimpleValueInfo>)property, NodeAttributeType.WORKSPACE_NAME);
+                mapping = createAttribute((PropertyInfo<SimpleValueInfo, ValueKind.Single>)property, NodeAttributeType.WORKSPACE_NAME);
               } else {
                 throw new InvalidMappingException(bean.getClassType(), "The property " + property + " is not annotated");
               }
@@ -348,10 +346,10 @@ public class BeanMappingBuilder {
                 OneToOne oneToOne =  (OneToOne)annotation;
                 switch (oneToOne.type()) {
                   case HIERARCHIC:
-                    mapping = createHierarchicOneToOne(beanMapping, oneToOne, (SingleValuedPropertyInfo<BeanValueInfo>) property);
+                    mapping = createHierarchicOneToOne(beanMapping, oneToOne, (PropertyInfo<BeanValueInfo, ValueKind.Single>) property);
                     break;
                   case EMBEDDED:
-                    mapping = createEmbeddedOneToOne((SingleValuedPropertyInfo<BeanValueInfo>) property);
+                    mapping = createEmbeddedOneToOne((PropertyInfo<BeanValueInfo, ValueKind.Single>) property);
                     break;
                   default:
                     throw new InvalidMappingException(bean.getClassType(), "Expecting that the @OneToOne property " +
@@ -362,11 +360,11 @@ public class BeanMappingBuilder {
                 ManyToOne manyToOne = (ManyToOne)annotation;
                 switch (manyToOne.type()) {
                   case HIERARCHIC:
-                    mapping = createHierarchicManyToOne(beanMapping, manyToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createHierarchicManyToOne(beanMapping, manyToOne, (PropertyInfo<BeanValueInfo, ValueKind.Single>)property);
                     break;
                   case PATH:
                   case REFERENCE:
-                    mapping = createReferenceManyToOne(manyToOne, (SingleValuedPropertyInfo<BeanValueInfo>)property);
+                    mapping = createReferenceManyToOne(manyToOne, (PropertyInfo<BeanValueInfo, ValueKind.Single>)property);
                     break;
                   default:
                     throw new InvalidMappingException(bean.getClassType(), "Expecting that the @ManyToOne property " +
@@ -381,13 +379,13 @@ public class BeanMappingBuilder {
             } else {
               throw new AssertionError();
             }
-          } else if (property instanceof MultiValuedPropertyInfo<?, ?>) {
+          } else if (property.getValueKind() instanceof ValueKind.Multi) {
             if (value instanceof SimpleValueInfo) {
               if (annotation instanceof Property) {
                 Property propertyAnnotation = (Property)annotation;
-                mapping = createProperty(propertyAnnotation, (MultiValuedPropertyInfo<SimpleValueInfo, ?>)property);
+                mapping = createProperty(propertyAnnotation, (PropertyInfo<SimpleValueInfo, ?>)property);
               } else if (annotation instanceof Properties) {
-                mapping = createProperties((MultiValuedPropertyInfo<?, ValueKind.Map>)property);
+                mapping = createProperties((PropertyInfo<?, ValueKind.Map>)property);
               } else {
                 throw new InvalidMappingException(bean.getClassType(), "Annotation " + annotation + " is forbidden " +
                 " on property " + property);
@@ -397,11 +395,11 @@ public class BeanMappingBuilder {
                 OneToMany oneToMany = (OneToMany)annotation;
                 switch (oneToMany.type()) {
                   case HIERARCHIC:
-                    mapping = createHierarchicOneToMany(beanMapping, oneToMany, (MultiValuedPropertyInfo<BeanValueInfo, ?>)property);
+                    mapping = createHierarchicOneToMany(beanMapping, oneToMany, (PropertyInfo<BeanValueInfo, ?>)property);
                     break;
                   case PATH:
                   case REFERENCE:
-                    mapping = createReferenceOneToMany(oneToMany, (MultiValuedPropertyInfo<BeanValueInfo, ?>)property);
+                    mapping = createReferenceOneToMany(oneToMany, (PropertyInfo<BeanValueInfo, ?>)property);
                     break;
                   default:
                     throw new InvalidMappingException(bean.getClassType(), "Expecting that the @OneToMany property " +
@@ -410,7 +408,7 @@ public class BeanMappingBuilder {
                         oneToMany.type());
                 }
               } else if (annotation instanceof Properties) {
-                mapping = createProperties((MultiValuedPropertyInfo<?, ValueKind.Map>)property);
+                mapping = createProperties((PropertyInfo<?, ValueKind.Map>)property);
               }  else {
                 throw new InvalidMappingException(bean.getClassType(), "Annotation " + annotation + " is forbidden " +
                 " on property " + property);
@@ -544,7 +542,7 @@ public class BeanMappingBuilder {
       beanMapping.methods.addAll(methodMappings);
     }
 
-    private AttributeMapping createAttribute(SingleValuedPropertyInfo<SimpleValueInfo> property, NodeAttributeType type) {
+    private AttributeMapping createAttribute(PropertyInfo<SimpleValueInfo, ValueKind.Single> property, NodeAttributeType type) {
       TypeInfo effectiveType = property.getValue().getEffectiveType();
       if (!(effectiveType instanceof ClassTypeInfo)) {
         throw new InvalidMappingException(property.getOwner().getClassType(), "The property " + property +
@@ -558,7 +556,7 @@ public class BeanMappingBuilder {
       return new AttributeMapping(property, type);
     }
 
-    private <V extends ValueInfo> PropertiesMapping<V> createProperties(MultiValuedPropertyInfo<V, ValueKind.Map> property) {
+    private <V extends ValueInfo> PropertiesMapping<V> createProperties(PropertyInfo<V, ValueKind.Map> property) {
       if (property.getValueKind() != ValueKind.MAP) {
         throw new InvalidMappingException(property.getOwner().getClassType(), "The @Properties " + property +
             " must be of type java.util.Map instead of " + property.getValue().getEffectiveType());
@@ -609,16 +607,16 @@ public class BeanMappingBuilder {
           false);
 
       //
-      if (property instanceof SingleValuedPropertyInfo<?>) {
-        return (PropertyMapping<P, SimpleValueInfo, ?>)new ValueMapping.Single((SingleValuedPropertyInfo<SimpleValueInfo>)property, propertyDefinition);
-      } else if (property instanceof MultiValuedPropertyInfo<?, ?>) {
-        return (PropertyMapping<P, SimpleValueInfo, ?>)new ValueMapping.Multi((MultiValuedPropertyInfo<SimpleValueInfo, ?>)property, propertyDefinition);
+      if (property.getValueKind() == ValueKind.SINGLE) {
+        return (PropertyMapping<P, SimpleValueInfo, ?>)new ValueMapping.Single((PropertyInfo<SimpleValueInfo, ValueKind.Single>)property, propertyDefinition);
+      } else if (property.getValueKind() instanceof ValueKind.Multi) {
+        return (PropertyMapping<P, SimpleValueInfo, ?>)new ValueMapping.Multi((PropertyInfo<SimpleValueInfo, ?>)property, propertyDefinition);
       } else {
         throw new AssertionError();
       }
     }
 
-    private RelationshipMapping.OneToMany.Reference createReferenceOneToMany(OneToMany annotation, MultiValuedPropertyInfo<BeanValueInfo, ?> property) {
+    private RelationshipMapping.OneToMany.Reference createReferenceOneToMany(OneToMany annotation, PropertyInfo<BeanValueInfo, ?> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new InvalidMappingException(property.getOwner().getClassType(), "The reference @OneToMany relationship " +
@@ -630,7 +628,7 @@ public class BeanMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping.OneToMany.Hierarchic createHierarchicOneToMany(BeanMapping beanMapping, OneToMany annotation, MultiValuedPropertyInfo<BeanValueInfo, ?> property) {
+    private RelationshipMapping.OneToMany.Hierarchic createHierarchicOneToMany(BeanMapping beanMapping, OneToMany annotation, PropertyInfo<BeanValueInfo, ?> property) {
       RelationshipMapping.OneToMany.Hierarchic mapping;
       NamingPrefix namingPrefix = property.getAnnotation(NamingPrefix.class);
       String declaredPrefix = namingPrefix != null ? namingPrefix.value() : null;
@@ -640,7 +638,7 @@ public class BeanMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping.ManyToOne.Reference createReferenceManyToOne(ManyToOne annotation, SingleValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.ManyToOne.Reference createReferenceManyToOne(ManyToOne annotation, PropertyInfo<BeanValueInfo, ValueKind.Single> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new InvalidMappingException(property.getOwner().getClassType(), "The reference @ManyToOne relationship " +
@@ -652,7 +650,7 @@ public class BeanMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping.ManyToOne.Hierarchic createHierarchicManyToOne(BeanMapping beanMapping, ManyToOne annotation, SingleValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.ManyToOne.Hierarchic createHierarchicManyToOne(BeanMapping beanMapping, ManyToOne annotation, PropertyInfo<BeanValueInfo, ValueKind.Single> property) {
       RelationshipMapping.ManyToOne.Hierarchic mapping;
       NamingPrefix namingPrefix = property.getAnnotation(NamingPrefix.class);
       String declaredPrefix = namingPrefix != null ? namingPrefix.value() : null;
@@ -662,7 +660,7 @@ public class BeanMappingBuilder {
       return mapping;
     }
 
-    private RelationshipMapping.OneToOne.Embedded createEmbeddedOneToOne(SingleValuedPropertyInfo<BeanValueInfo> property) {
+    private RelationshipMapping.OneToOne.Embedded createEmbeddedOneToOne(PropertyInfo<BeanValueInfo, ValueKind.Single> property) {
       RelationshipMapping.OneToOne.Embedded mapping;
       boolean owner = property.getAnnotation(Owner.class) != null;
       mapping = new RelationshipMapping.OneToOne.Embedded(property, owner);
@@ -673,7 +671,7 @@ public class BeanMappingBuilder {
     private RelationshipMapping.OneToOne.Hierarchic createHierarchicOneToOne(
         BeanMapping beanMapping,
         OneToOne annotation,
-        SingleValuedPropertyInfo<BeanValueInfo> property) {
+        PropertyInfo<BeanValueInfo, ValueKind.Single> property) {
       MappedBy mappedBy = property.getAnnotation(MappedBy.class);
       if (mappedBy == null) {
         throw new InvalidMappingException(property.getOwner().getClassType(), "The @OneToOne relationship " +

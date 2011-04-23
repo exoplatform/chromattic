@@ -23,8 +23,8 @@ import org.chromattic.core.ListType;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.vt2.ValueDefinition;
+import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.ValueMapping;
@@ -37,7 +37,7 @@ import java.util.List;
  * @version $Revision$
  */
 public class JCRPropertyListPropertyMapper<O extends ObjectContext<O>, E, I, K extends ValueKind.Multi>
-  extends PropertyMapper<MultiValuedPropertyInfo<SimpleValueInfo, K>, SimpleValueInfo, O, K> {
+  extends PropertyMapper<PropertyInfo<SimpleValueInfo, K>, SimpleValueInfo, O, K> {
 
   /** . */
   private final String jcrPropertyName;

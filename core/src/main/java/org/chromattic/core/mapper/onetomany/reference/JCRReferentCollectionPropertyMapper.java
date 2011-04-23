@@ -24,7 +24,7 @@ import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
@@ -35,7 +35,7 @@ import java.util.EnumMap;
  * @version $Revision$
  */
 public class JCRReferentCollectionPropertyMapper extends
-    JCRNodeCollectionPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo, ValueKind.Collection>, EntityContext, ValueKind.Collection> {
+    JCRNodeCollectionPropertyMapper<PropertyInfo<BeanValueInfo, ValueKind.Collection>, EntityContext, ValueKind.Collection> {
 
   /** . */
   final static EnumMap<RelationshipType, LinkType> relationshipToLinkMapping;

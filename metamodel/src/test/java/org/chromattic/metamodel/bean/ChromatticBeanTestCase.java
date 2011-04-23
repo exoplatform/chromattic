@@ -315,7 +315,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     BeanInfo bi = beans.get(B.class);
 
     //
-    MultiValuedPropertyInfo bp = (MultiValuedPropertyInfo)bi.getProperty("a");
+    PropertyInfo<?, ?> bp = bi.getProperty("a");
     assertNotNull(bp);
     assertEquals(ValueKind.COLLECTION, bp.getValueKind());
     // assertSame(o, ap.getType()); <X>
@@ -346,7 +346,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     BeanInfo ci = beans.get(C.class);
 
     //
-    MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ci.getProperty("a");
+    PropertyInfo<?, ?> cp = ci.getProperty("a");
     assertNotNull(cp);
     assertEquals(ValueKind.COLLECTION, cp.getValueKind());
     // assertSame(o, ap.getType()); <X>
@@ -370,7 +370,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     BeanInfo ai = beans.get(A.class);
 
     //
-    MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
+    PropertyInfo<?, ?> cp = ai.getProperty("a");
     assertEquals(ValueKind.LIST, cp.getValueKind());
     SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
     assertEquals(domain.resolve(String.class), value.getDeclaredType());
@@ -387,7 +387,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     BeanInfo ai = beans.get(A.class);
 
     //
-    MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
+    PropertyInfo<?, ?> cp = ai.getProperty("a");
     assertEquals(ValueKind.ARRAY, cp.getValueKind());
     SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
     assertEquals(domain.resolve(String.class), value.getDeclaredType());
@@ -404,7 +404,7 @@ public class ChromatticBeanTestCase extends BeanTestCase {
     BeanInfo ai = beans.get(A.class);
 
     //
-    MultiValuedPropertyInfo cp = (MultiValuedPropertyInfo)ai.getProperty("a");
+    PropertyInfo<?, ?> cp = ai.getProperty("a");
     assertEquals(ValueKind.MAP, cp.getValueKind());
     SimpleValueInfo value = (SimpleValueInfo)cp.getValue();
 //    assertEquals(domain.resolve(Object.class), value.getEffectiveType());

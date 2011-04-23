@@ -21,7 +21,7 @@ package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.ValueInfo;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.PropertiesMapping;
@@ -31,7 +31,7 @@ import org.chromattic.metamodel.mapping.PropertiesMapping;
  * @version $Revision$
  */
 public class JCRPropertyMapPropertyMapper<V extends ValueInfo, O extends ObjectContext<O>>
-  extends PropertyMapper<MultiValuedPropertyInfo<V, ValueKind.Map>, V, O, ValueKind.Map> {
+  extends PropertyMapper<PropertyInfo<V, ValueKind.Map>, V, O, ValueKind.Map> {
 
   public JCRPropertyMapPropertyMapper(Class<O> contextType, PropertiesMapping<V> info) {
     super(contextType, info);
