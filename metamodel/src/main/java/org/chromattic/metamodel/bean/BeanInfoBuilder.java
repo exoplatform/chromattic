@@ -332,7 +332,7 @@ public class BeanInfoBuilder {
             } else if (rawClassName.equals("java.util.Map")) {
               TypeInfo keyType = parameterizedType.getTypeArguments().get(0);
               TypeInfo resolvedKeyType = bean.classType.resolve(keyType);
-              if (resolvedKeyType instanceof ClassTypeInfo && ((ClassTypeInfo)resolvedKeyType).getName().equals("java.lang.String")) {
+              if (resolvedKeyType instanceof ClassTypeInfo && resolvedKeyType.getName().equals("java.lang.String")) {
                 elementType = parameterizedType.getTypeArguments().get(1);
                 collectionKind = ValueKind.MAP;
               } else {
@@ -344,27 +344,53 @@ public class BeanInfoBuilder {
               collectionKind = null;
             }
             if (collectionKind != null) {
-              ClassTypeInfo elementClassType = bean.resolveToClass(elementType);
-              if (elementClassType != null) {
-                BeanInfo relatedBean = resolve(elementClassType);
-                if (relatedBean != null) {
-                  property = new PropertyInfo<BeanValueInfo, ValueKind.Multi>(
-                      bean,
-                      parentProperty,
-                      toBuildEntry.getKey(),
-                      toBuildEntry.getValue().getter,
-                      toBuildEntry.getValue().setter,
-                      collectionKind,
-                      new BeanValueInfo(type, bean.resolveToClass(elementType), relatedBean));
-                } else {
-                  property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
-                      bean,
-                      parentProperty,
-                      toBuildEntry.getKey(),
-                      toBuildEntry.getValue().getter,
-                      toBuildEntry.getValue().setter,
-                      collectionKind,
-                      createSimpleValueInfo(bean, elementType));
+              if (elementType instanceof ParameterizedTypeInfo) {
+                ParameterizedTypeInfo parameterizedElementType = (ParameterizedTypeInfo)elementType;
+                TypeInfo parameterizedElementRawType = parameterizedElementType.getRawType();
+                if (parameterizedElementRawType instanceof ClassTypeInfo) {
+                  ClassTypeInfo parameterizedElementRawClassType = (ClassTypeInfo)parameterizedElementRawType;
+                  String parameterizedElementRawClassName = parameterizedElementRawClassType.getName();
+                  if (parameterizedElementRawClassName.equals("java.util.List")) {
+/*
+                    TypeInfo listElementType = parameterizedElementType.getTypeArguments().get(0);
+                    ClassTypeInfo elementClassType = bean.resolveToClass(elementType);
+                    if (elementClassType != null) {
+                      property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
+                          bean,
+                          parentProperty,
+                          toBuildEntry.getKey(),
+                          toBuildEntry.getValue().getter,
+                          toBuildEntry.getValue().setter,
+                          collectionKind,
+                          createSimpleValueInfo(bean, elementType));
+                    }
+*/
+                    throw new UnsupportedOperationException();
+                  }
+                }
+              } else {
+                ClassTypeInfo elementClassType = bean.resolveToClass(elementType);
+                if (elementClassType != null) {
+                  BeanInfo relatedBean = resolve(elementClassType);
+                  if (relatedBean != null) {
+                    property = new PropertyInfo<BeanValueInfo, ValueKind.Multi>(
+                        bean,
+                        parentProperty,
+                        toBuildEntry.getKey(),
+                        toBuildEntry.getValue().getter,
+                        toBuildEntry.getValue().setter,
+                        collectionKind,
+                        new BeanValueInfo(type, bean.resolveToClass(elementType), relatedBean));
+                  } else {
+                    property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
+                        bean,
+                        parentProperty,
+                        toBuildEntry.getKey(),
+                        toBuildEntry.getValue().getter,
+                        toBuildEntry.getValue().setter,
+                        collectionKind,
+                        createSimpleValueInfo(bean, elementType));
+                  }
                 }
               }
             }

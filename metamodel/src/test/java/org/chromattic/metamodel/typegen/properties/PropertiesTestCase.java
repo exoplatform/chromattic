@@ -55,6 +55,18 @@ public class PropertiesTestCase extends TypeGenTestCase {
     assertEquals(null, pd.getDefaultValues());
   }
 
+/*
+  public void testObjectListProperties() throws Exception {
+    Map<Class<?>, NodeType> a = assertValid(B2.class);
+    NodeType bNT = a.get(B2.class);
+    assertEquals(Collections.<String>set("*"), bNT.getPropertyDefinitions().keySet());
+    PropertyDefinition pd = bNT.getPropertyDefinition("*");
+    assertEquals("*", pd.getName());
+    assertEquals(PropertyType.UNDEFINED, pd.getType());
+    assertEquals(null, pd.getDefaultValues());
+  }
+*/
+
   public void testAnyProperties() throws Exception {
     Map<Class<?>, NodeType> a = assertValid(C.class);
     NodeType cNT = a.get(C.class);
