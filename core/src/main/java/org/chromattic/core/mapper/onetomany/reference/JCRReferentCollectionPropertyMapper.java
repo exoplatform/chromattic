@@ -64,6 +64,11 @@ public class JCRReferentCollectionPropertyMapper extends
 
   @Override
   public Object get(final EntityContext context) throws Throwable {
-    return new ReferentCollection(context, this);
+    Object collection = context.getAttribute(this);
+    if (collection == null) {
+      collection = new ReferentCollection(context, this);
+      context.setAttribute(this, collection);
+    }
+    return collection;
   }
 }

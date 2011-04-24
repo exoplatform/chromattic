@@ -149,4 +149,13 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractLinkTestCase<O
     session.remove(a);
     session.save();
   }
+
+  public void testCaching() throws Exception {
+    ChromatticSession session = login();
+    O a = session.create(oneClass, "a");
+    String aId = session.persist(a);
+    Collection<M> collection1 = getMany(a);
+    Collection<M> collection2 = getMany(a);
+    assertSame(collection1, collection2);
+  }
 }

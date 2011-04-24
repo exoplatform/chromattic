@@ -334,7 +334,7 @@ public class DomainSessionImpl extends DomainSession {
         throw new IllegalArgumentException();
       }
     } else {
-      EmbeddedContext previousMixinCtx = entityCtx.embeddeds.get(mixinCtx.mapper);
+      EmbeddedContext previousMixinCtx = (EmbeddedContext)entityCtx.getAttribute(mixinCtx.mapper);
       if (previousMixinCtx != null) {
         if (previousMixinCtx != mixinCtx) {
           throw new IllegalStateException();
@@ -358,7 +358,7 @@ public class DomainSessionImpl extends DomainSession {
         MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
 
         // Perform wiring
-        entityCtx.embeddeds.put(mixinCtx.mapper, mixinCtx);
+        entityCtx.setAttribute(mixinCtx.mapper, mixinCtx);
         mixinCtx.relatedEntity = entityCtx;
         mixinCtx.typeInfo = mixinTypeInfo;
       }
@@ -380,7 +380,7 @@ public class DomainSessionImpl extends DomainSession {
     //
     EmbeddedContext embeddedCtx = null;
     if (mapper != null) {
-      embeddedCtx = entityCtx.embeddeds.get(mapper);
+      embeddedCtx = (EmbeddedContext)entityCtx.getAttribute(mapper);
 
       //
       if (embeddedCtx == null) {
@@ -393,7 +393,7 @@ public class DomainSessionImpl extends DomainSession {
 
             //
             embeddedCtx = new EmbeddedContext(mapper, this);
-            entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
+            entityCtx.setAttribute(embeddedCtx.mapper, embeddedCtx);
             embeddedCtx.relatedEntity = entityCtx;
             embeddedCtx.typeInfo = mixinTypeInfo;
           }
@@ -402,7 +402,7 @@ public class DomainSessionImpl extends DomainSession {
           PrimaryTypeInfo superTI = (PrimaryTypeInfo)typeInfo.getSuperType(mapper.getNodeTypeName());
           if (superTI != null) {
             embeddedCtx = new EmbeddedContext(mapper, this);
-            entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
+            entityCtx.setAttribute(embeddedCtx.mapper, embeddedCtx);
             embeddedCtx.relatedEntity = entityCtx;
             embeddedCtx.typeInfo = superTI;
           }

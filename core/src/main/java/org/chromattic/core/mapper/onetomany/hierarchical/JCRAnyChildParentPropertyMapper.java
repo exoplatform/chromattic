@@ -19,6 +19,7 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
@@ -53,6 +54,12 @@ public class JCRAnyChildParentPropertyMapper<O extends ObjectContext<O>, K exten
   // Maybe use generic type here of the multivalue kind
   @Override
   public Object get(O context) throws Throwable {
-    return valueMapper.createValue(context.getEntity(), prefix, getRelatedClass());
+    EntityContext entity = context.getEntity();
+    Object collection = entity.getAttribute(this);
+    if (collection == null) {
+      collection = valueMapper.createValue(context.getEntity(), prefix, getRelatedClass());
+      entity.setAttribute(this, collection);
+    }
+    return collection;
   }
 }

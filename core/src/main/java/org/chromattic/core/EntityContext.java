@@ -26,7 +26,6 @@ import java.util.Map;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.common.logging.Logger;
-import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.jcr.type.PrimaryTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
@@ -54,11 +53,11 @@ public final class EntityContext extends ObjectContext<EntityContext> {
   /** The property map. */
   final PropertyMap properties;
 
-  /** The list of mixins. */
-  final Map<ObjectMapper<EmbeddedContext>, EmbeddedContext> embeddeds;
-
   /** The related state. */
   EntityContextState state;
+
+  /** The attributes. */
+  private Map<Object, Object> attributes;
 
   EntityContext(ObjectMapper<EntityContext> mapper, EntityContextState state) throws RepositoryException {
 
@@ -72,7 +71,34 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     this.object = object;
     this.state = state;
     this.properties = new PropertyMap(this);
-    this.embeddeds = new HashMap<ObjectMapper<EmbeddedContext>, EmbeddedContext>();
+    this.attributes = null;
+  }
+
+  public Object getAttribute(Object key) {
+    if (key == null) {
+      throw new AssertionError("Should not provide a null key");
+    }
+    if (attributes == null) {
+      return null;
+    } else {
+      return attributes.get(key);
+    }
+  }
+
+  public void setAttribute(Object key, Object value) {
+    if (key == null) {
+      throw new AssertionError("Should not provide a null key");
+    }
+    if (value == null) {
+      if (attributes != null) {
+        attributes.remove(key);
+      }
+    } else {
+      if (attributes == null) {
+        attributes = new HashMap<Object, Object>();
+      }
+      attributes.put(key, value);
+    }
   }
 
   public Node getNode() {

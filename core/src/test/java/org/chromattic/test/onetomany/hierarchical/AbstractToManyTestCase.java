@@ -205,6 +205,15 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     }
   }
 
+  public void testCollectionCaching() throws Exception {
+
+    ChromatticSessionImpl session = login();
+    O o = session.insert(oneSide, "o");
+    Collection<M> collection1 = getMany(o);
+    Collection<M> collection2 = getMany(o);
+    assertSame(collection1, collection2);
+  }
+
   public void testTransientCollectionClear() throws Exception {
     testCollectionClear(false);
   }
