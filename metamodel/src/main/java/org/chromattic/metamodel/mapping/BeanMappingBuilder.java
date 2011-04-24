@@ -576,6 +576,8 @@ public class BeanMappingBuilder {
             " must be of type java.util.Map instead of " + property.getValue().getEffectiveType());
       }
       TypeInfo type = property.getValue().getEffectiveType();
+
+      //
       PropertyMetaType<?> mt = null;
       ValueKind valueKind;
       ValueInfo vi = property.getValue();
@@ -591,7 +593,16 @@ public class BeanMappingBuilder {
         }
         valueKind = ValueKind.SINGLE;
       }
-      return new PropertiesMapping<V>(property, mt, valueKind);
+
+      //
+      String prefix = null;
+      NamingPrefix namingPrefix = property.getAnnotation(NamingPrefix.class);
+      if (namingPrefix != null) {
+        prefix = namingPrefix.value();
+      }
+
+      //
+      return new PropertiesMapping<V>(property, prefix, mt, valueKind);
     }
 
     private

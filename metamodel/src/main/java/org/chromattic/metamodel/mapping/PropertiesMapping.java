@@ -36,12 +36,20 @@ public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<Prop
   /** . */
   private final ValueKind valueKind;
 
-  public PropertiesMapping(PropertyInfo<V, ValueKind.Map> property, PropertyMetaType<?> metaType, ValueKind valueKind) {
+  /** . */
+  private final String prefix;
+
+  public PropertiesMapping(PropertyInfo<V, ValueKind.Map> property, String prefix, PropertyMetaType<?> metaType, ValueKind valueKind) {
     super(property);
 
     //
+    this.prefix = prefix;
     this.metaType = metaType;
     this.valueKind = valueKind;
+  }
+
+  public String getPrefix() {
+    return prefix;
   }
 
   public PropertyMetaType<?> getMetaType() {

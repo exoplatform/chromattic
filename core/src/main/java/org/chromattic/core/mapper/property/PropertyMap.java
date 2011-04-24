@@ -17,12 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.core;
+package org.chromattic.core.mapper.property;
 
 import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.common.JCR;
 import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.core.vt2.ValueDefinition;
+import org.chromattic.core.EntityContext;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
@@ -40,24 +40,34 @@ import java.util.Set;
 class PropertyMap extends AbstractMap<String, Object> {
 
   /** . */
-  private final EntityContext ctx;
+  private final JCRPropertySingleValuedDetypedPropertyMapper mapper;
 
   /** . */
-  private final SetImpl set = new SetImpl();
+  private final EntityContext ctx;
 
-  public PropertyMap(EntityContext ctx) {
+
+  /** . */
+  private SetImpl set;
+
+  PropertyMap(JCRPropertySingleValuedDetypedPropertyMapper mapper, EntityContext ctx) {
     this.ctx = ctx;
+    this.mapper = mapper;
+    this.set = null;
   }
 
   public Set<Entry<String, Object>> entrySet() {
+    if (set == null) {
+      set = new SetImpl();
+    }
     return set;
   }
 
   @Override
   public Object get(Object key) {
-    if (key instanceof String) {
+    String s = validateKey(key);
+    if (s != null) {
       try {
-        return ctx.getPropertyValue((String)key, null);
+        return ctx.getPropertyValue(s, null);
       }
       catch (RepositoryException e) {
         throw new UndeclaredRepositoryException(e);
@@ -69,8 +79,9 @@ class PropertyMap extends AbstractMap<String, Object> {
 
   @Override
   public Object remove(Object key) {
-    if (key instanceof String) {
-      return put((String)key, null);
+    String s = validateKey(key);
+    if (s != null) {
+      return put(s, null);
     } else {
       return null;
     }
@@ -78,6 +89,31 @@ class PropertyMap extends AbstractMap<String, Object> {
 
   @Override
   public Object put(String key, Object value) {
+    String s = validateKey(key);
+    if (s != null) {
+      return update(key, value);
+    } else {
+      throw new IllegalArgumentException("Invalid key " + key + " should being with the prefix " + mapper.namePrefix);
+    }
+  }
+
+  private String validateKey(Object key) {
+    if (key == null) {
+      throw new NullPointerException("Key cannot be null");
+    }
+    if (key instanceof String) {
+      String s = (String)key;
+      if (mapper.namePrefix != null) {
+        return mapper.namePrefix + s;
+      } else {
+        return s;
+      }
+    } else {
+      throw new ClassCastException("Key must be instance of String instead of " + key.getClass().getName());
+    }
+  }
+
+  private Object update(String key, Object value) {
     try {
       Object previous = ctx.getPropertyValue(key, null);
       ctx.setPropertyValue(key, null, value);
@@ -93,10 +129,16 @@ class PropertyMap extends AbstractMap<String, Object> {
     public Iterator<Map.Entry<String, Object>> iterator() {
 
       try {
-        Iterator<Property> i = JCR.adapt(ctx.state.getNode().getProperties());
+        Iterator<Property> i;
+        if (mapper.namePattern == null) {
+          i = JCR.adapt(ctx.getNode().getProperties());
+        } else {
+          i = JCR.adapt(ctx.getNode().getProperties(mapper.namePattern));
+        }
 
         //
         return new AbstractFilterIterator<Entry<String, Object>, Property>(i) {
+
           @Override
           protected Entry<String, Object> adapt(Property internal) {
 
@@ -112,30 +154,33 @@ class PropertyMap extends AbstractMap<String, Object> {
               final String key = internal.getName();
 
               //
-              switch (internal.getType()) {
-                case PropertyType.STRING:
-                case PropertyType.NAME:
-                case PropertyType.LONG:
-                case PropertyType.BOOLEAN:
-                  return new Entry<String, Object>() {
-                    public String getKey() {
-                      return key;
-                    }
-                    public Object getValue() {
-                      try {
-                        return ctx.getPropertyValue(key, null);
+              final String name = mapper.namePrefix != null ? key.substring(mapper.namePrefix.length()) : key;
+
+              //
+              if ("*".equals(internal.getDefinition().getName())) {
+                switch (internal.getType()) {
+                  case PropertyType.STRING:
+                  case PropertyType.NAME:
+                  case PropertyType.LONG:
+                  case PropertyType.BOOLEAN:
+                  {
+                    return new Entry<String, Object>() {
+                      public String getKey() {
+                        return name;
                       }
-                      catch (RepositoryException e) {
-                        throw new UndeclaredRepositoryException(e);
+                      public Object getValue() {
+                        return get(key);
                       }
-                    }
-                    public Object setValue(Object value) {
-                      throw new UnsupportedOperationException();
-                    }
-                  };
-                default:
-                  return null;
+                      public Object setValue(Object value) {
+                        throw new UnsupportedOperationException();
+                      }
+                    };
+                  }
+                }
               }
+
+              //
+              return null;
             }
             catch (RepositoryException e) {
               throw new UndeclaredRepositoryException(e);

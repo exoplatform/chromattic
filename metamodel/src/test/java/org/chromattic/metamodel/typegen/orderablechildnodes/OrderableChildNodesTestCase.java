@@ -19,11 +19,8 @@
 
 package org.chromattic.metamodel.typegen.orderablechildnodes;
 
-import junit.framework.TestCase;
 import org.chromattic.metamodel.typegen.NodeType;
-import org.chromattic.metamodel.typegen.TypeGen;
-import org.chromattic.metamodel.typegen.TypeGenTestCase;
-import org.reflext.api.ClassTypeInfo;
+import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
 
 import java.util.Map;
 
@@ -31,7 +28,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class OrderableChildNodesTestCase extends TypeGenTestCase {
+public class OrderableChildNodesTestCase extends AbstractSchemaTestCase {
 
   public void testOrderable() throws Exception {
     Map<Class<?>, NodeType> a = assertValid(A.class);

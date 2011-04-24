@@ -22,7 +22,7 @@ package org.chromattic.groovy.metamodel.typegen.properties;
 import org.chromattic.metamodel.typegen.properties.A1;
 import org.chromattic.metamodel.typegen.properties.B1;
 import org.chromattic.metamodel.typegen.properties.C1;
-import org.chromattic.metamodel.typegen.properties.PropertiesTestCase;
+import org.chromattic.metamodel.typegen.properties.SchemaTestCase;
 import org.chromattic.testgenerator.UniversalTest;
 
 /**
@@ -30,7 +30,7 @@ import org.chromattic.testgenerator.UniversalTest;
  * @version $Revision$
  */
 @UniversalTest(
-  sourceClass = PropertiesTestCase.class,
+  sourceClass = SchemaTestCase.class,
   baseDir = "metamodel",
   suffix = "MetamodelTest",
   chromatticClasses = {A1.class, B1.class, C1.class})

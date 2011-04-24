@@ -19,10 +19,10 @@
 
 package org.chromattic.groovy.core.property.map;
 
+import org.chromattic.test.property.map.A;
 import org.chromattic.test.property.map.PropertiesTestCase;
+import org.chromattic.test.property.map.B;
 import org.chromattic.testgenerator.UniversalTest;
-import org.chromattic.test.property.map.A1;
-import org.chromattic.test.property.map.B1;
 
 
 /**
@@ -33,6 +33,6 @@ import org.chromattic.test.property.map.B1;
   sourceClass = PropertiesTestCase.class,
   baseDir = "core",
   suffix = "CoreTest",
-  chromatticClasses = {A1.class, B1.class},
+  chromatticClasses = {A.class, B.class},
   exclude = {"testGetMultivaluedValue"})
 public class GroovyPropertiesTestCase {}

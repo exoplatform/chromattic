@@ -50,9 +50,6 @@ public final class EntityContext extends ObjectContext<EntityContext> {
   /** The object instance. */
   final Object object;
 
-  /** The property map. */
-  final PropertyMap properties;
-
   /** The related state. */
   EntityContextState state;
 
@@ -70,7 +67,6 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     this.mapper = mapper;
     this.object = object;
     this.state = state;
-    this.properties = new PropertyMap(this);
     this.attributes = null;
   }
 
@@ -237,10 +233,6 @@ public final class EntityContext extends ObjectContext<EntityContext> {
   public boolean addReference(String name, EntityContext referentCtx, LinkType linkType) {
     DomainSession session = state.getSession();
     return session.setReferenced(referentCtx, name, this, linkType);
-  }
-
-  public Map<String, Object> getPropertyMap() {
-    return properties;
   }
 
 //  public void removeChild(String name) {

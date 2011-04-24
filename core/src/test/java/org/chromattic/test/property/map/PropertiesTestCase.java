@@ -19,9 +19,11 @@
 
 package org.chromattic.test.property.map;
 
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 
+import javax.jcr.Node;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,18 +34,24 @@ import java.util.Map;
 public class PropertiesTestCase extends AbstractTestCase {
 
   protected void createDomain() {
-    addClass(A1.class);
-    addClass(B1.class);
+    addClass(A.class);
+    addClass(B.class);
   }
 
   /** . */
-  private ChromatticSession session;
+  private ChromatticSessionImpl session;
 
   /** . */
-  private A1 b;
+  private A b;
 
   /** . */
-  private B1 c;
+  private Node bNode;
+
+  /** . */
+  private B c;
+
+  /** . */
+  private Node cNode;
 
   @Override
   protected void setUp() throws Exception {
@@ -51,8 +59,10 @@ public class PropertiesTestCase extends AbstractTestCase {
 
     //
     session = login();
-    b = session.insert(A1.class, "a");
-    c = session.insert(B1.class, "b");
+    b = session.insert(A.class, "a");
+    bNode = session.getNode(b);
+    c = session.insert(B.class, "b");
+    cNode = session.getNode(c);
   }
 
   @Override
@@ -66,29 +76,52 @@ public class PropertiesTestCase extends AbstractTestCase {
   }
 
   public void testGetString() throws Exception {
-    b.setString("bar");
-    Map<String, Object> properties = b.getProperties();
+    bNode.setProperty("string_property", "bar");
+    Map<String, Object> properties = b.getAnyProperties();
     Object value = properties.get("string_property");
     assertEquals("bar", value);
   }
 
   public void testPutString() throws Exception {
-    Map<String, Object> properties = b.getProperties();
+    Map<String, Object> properties = b.getAnyProperties();
     Object value = properties.put("string_property", "bar");
     assertEquals(null, value);
-    assertEquals("bar", b.getString());
+    assertEquals("bar", bNode.getProperty("string_property").getString());
   }
 
   public void testRemoveString() throws Exception {
-    b.setString("bar");
-    Map<String, Object> properties = b.getProperties();
+    bNode.setProperty("string_property", "bar");
+    Map<String, Object> properties = b.getAnyProperties();
     Object value = properties.remove("string_property");
     assertEquals("bar", value);
-    assertEquals(null, b.getString());
+    assertFalse(bNode.hasProperty("string_property"));
   }
 
+  public void testGetLong() throws Exception {
+    bNode.setProperty("long_property", 3L);
+    Map<String, Object> properties = b.getAnyProperties();
+    Object value = properties.get("long_property");
+    assertEquals(3L, value);
+  }
+
+  public void testPutLong() throws Exception {
+    Map<String, Object> properties = b.getAnyProperties();
+    Object value = properties.put("long_property", 3L);
+    assertEquals(null, value);
+    assertEquals(3L, (int)bNode.getProperty("long_property").getLong());
+  }
+
+  public void testRemoveLong() throws Exception {
+    bNode.setProperty("long_property", 3L);
+    Map<String, Object> properties = b.getAnyProperties();
+    Object value = properties.remove("long_property");
+    assertEquals(3L, value);
+    assertFalse(bNode.hasProperty("long_property"));
+  }
+
+/*
   public void testPutWrongType() throws Exception {
-    Map<String, Object> properties = b.getProperties();
+    Map<String, Object> properties = b.getAnyProperties();
     try {
       properties.put("string_property", 5);
       fail();
@@ -96,9 +129,10 @@ public class PropertiesTestCase extends AbstractTestCase {
     catch (ClassCastException ignore) {
     }
   }
+*/
 
   public void testGetInvalidKey() throws Exception {
-    Map<String, Object> properties = b.getProperties();
+    Map<String, Object> properties = b.getAnyProperties();
     try {
       properties.get("/invalid");
       fail();
@@ -108,7 +142,7 @@ public class PropertiesTestCase extends AbstractTestCase {
   }
 
   public void testRemoveInvalidKey() throws Exception {
-    Map<String, Object> properties = b.getProperties();
+    Map<String, Object> properties = b.getAnyProperties();
     try {
       properties.remove("/invalid");
       fail();
@@ -118,7 +152,7 @@ public class PropertiesTestCase extends AbstractTestCase {
   }
 
   public void testPutInvalidKey() throws Exception {
-    Map<String, Object> properties = b.getProperties();
+    Map<String, Object> properties = b.getAnyProperties();
     try {
       properties.put("/invalid", "foo");
       fail();
@@ -128,13 +162,12 @@ public class PropertiesTestCase extends AbstractTestCase {
   }
 
   public void testGetMultivaluedValue() throws Exception {
-    c.setString(new String[]{"a","b"});
+    cNode.setProperty("string_array_property", new String[]{"a","b"});
     Map<String, Object> copy = new HashMap<String, Object>();
-    for (Map.Entry<String, Object> entry : c.getProperties().entrySet()) {
+    for (Map.Entry<String, Object> entry : c.getAnyProperties().entrySet()) {
       copy.put(entry.getKey(), entry.getValue());
     }
     assertTrue(copy.containsKey("string_array_property"));
     assertEquals("a", copy.get("string_array_property"));
-
   }
 }

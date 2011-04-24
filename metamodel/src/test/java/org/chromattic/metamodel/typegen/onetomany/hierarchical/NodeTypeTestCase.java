@@ -20,9 +20,9 @@
 package org.chromattic.metamodel.typegen.onetomany.hierarchical;
 
 import org.chromattic.common.collection.Collections;
+import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
 import org.chromattic.metamodel.typegen.NodeDefinition;
 import org.chromattic.metamodel.typegen.NodeType;
-import org.chromattic.metamodel.typegen.TypeGenTestCase;
 
 import java.util.Map;
 
@@ -30,7 +30,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class NodeTypeTestCase extends TypeGenTestCase {
+public class NodeTypeTestCase extends AbstractSchemaTestCase {
 
   public void testPrefix() throws Exception {
     Map<Class<?>, NodeType> map = assertValid(E1.class, E2.class);

@@ -30,16 +30,14 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Skip
 @PrimaryType(name = "property_map:a")
-public abstract class A1 {
+public abstract class A {
 
   @Properties
-  public abstract Map<String, Object> getProperties();
+  public abstract Map<String, Object> getAnyProperties();
 
-  @Property(name = "string_property")
-  public abstract String getString();
-
-  public abstract void setString(String s);
+  @Skip
+  @Properties
+  public abstract Map<String, String> getStringProperties();
 
 }

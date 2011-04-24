@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -19,9 +19,9 @@
 
 package org.chromattic.test.property.map;
 
+import org.chromattic.api.annotations.NamingPrefix;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
-import org.chromattic.api.annotations.Property;
 import org.chromattic.metamodel.annotations.Skip;
 
 import java.util.Map;
@@ -30,16 +30,11 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Skip
-@PrimaryType(name = "property_map:b")
-public abstract class B1 {
+@PrimaryType(name = "property_map:c")
+public abstract class C {
 
   @Properties
+  @NamingPrefix("property_map")
   public abstract Map<String, Object> getProperties();
-
-  @Property(name = "string_array_property")
-  public abstract String[] getString();
-
-  public abstract void setString(String[] s);
 
 }
