@@ -38,6 +38,55 @@ import java.util.List;
  */
 public class ValueDefinition<I, E> {
 
+  /** . */
+  private static final ValueDefinition<String, String> STRING = new ValueDefinition<String, String>(
+    String.class,
+    PropertyMetaType.STRING,
+    new SimpleTypeProviders.STRING(),
+    null);
+
+  /** . */
+  private static final ValueDefinition<String, String> PATH = new ValueDefinition<String, String>(
+    String.class,
+    PropertyMetaType.PATH,
+    new SimpleTypeProviders.PATH(),
+    null);
+
+  /** . */
+  private static final ValueDefinition<String, String> NAME = new ValueDefinition<String, String>(
+      String.class,
+      PropertyMetaType.NAME,
+      new SimpleTypeProviders.NAME(),
+      null);
+
+  /** . */
+  private static final ValueDefinition<Boolean, Boolean> BOOLEAN = new ValueDefinition<Boolean, Boolean>(
+      Boolean.class,
+      PropertyMetaType.BOOLEAN,
+      new SimpleTypeProviders.BOOLEAN(),
+      null);
+
+  /** . */
+  private static final ValueDefinition<Double, Double> DOUBLE = new ValueDefinition<Double, Double>(
+      Double.class,
+      PropertyMetaType.DOUBLE,
+      new SimpleTypeProviders.DOUBLE(),
+      null);
+
+  /** . */
+  private static final ValueDefinition<Long, Long> LONG = new ValueDefinition<Long, Long>(
+      Long.class,
+      PropertyMetaType.LONG,
+      new SimpleTypeProviders.LONG(),
+      null);
+
+  /** . */
+  private static final ValueDefinition<InputStream, InputStream> BINARY = new ValueDefinition<InputStream, InputStream>(
+      InputStream.class,
+      PropertyMetaType.BINARY,
+      new SimpleTypeProviders.BINARY(),
+      null);
+
   public static ValueDefinition<?, ?> get(Object o) {
     int code;
     if (o instanceof String) {
@@ -65,54 +114,19 @@ public class ValueDefinition<I, E> {
   public static ValueDefinition<?, ?> get(int code) {
     switch (code) {
       case PropertyType.STRING:
-        return new ValueDefinition<String, String>(
-          String.class,
-          PropertyMetaType.STRING,
-          new SimpleTypeProviders.STRING(),
-          null
-        );
+        return STRING;
       case PropertyType.PATH:
-        return new ValueDefinition<String, String>(
-          String.class,
-          PropertyMetaType.PATH,
-          new SimpleTypeProviders.PATH(),
-          null
-        );
+        return PATH;
       case PropertyType.NAME:
-        return new ValueDefinition<String, String>(
-          String.class,
-          PropertyMetaType.NAME,
-          new SimpleTypeProviders.NAME(),
-          null
-        );
+        return NAME;
       case PropertyType.LONG:
-        return new ValueDefinition<Long, Long>(
-          Long.class,
-          PropertyMetaType.LONG,
-          new SimpleTypeProviders.LONG(),
-          null
-        );
+        return LONG;
       case PropertyType.BOOLEAN:
-        return new ValueDefinition<Boolean, Boolean>(
-          Boolean.class,
-          PropertyMetaType.BOOLEAN,
-          new SimpleTypeProviders.BOOLEAN(),
-          null
-        );
+        return BOOLEAN;
       case PropertyType.DOUBLE:
-        return new ValueDefinition<Double, Double>(
-          Double.class,
-          PropertyMetaType.DOUBLE,
-          new SimpleTypeProviders.DOUBLE(),
-          null
-        );
+        return DOUBLE;
       case PropertyType.BINARY:
-        return new ValueDefinition<InputStream, InputStream>(
-          InputStream.class,
-          PropertyMetaType.BINARY,
-          new SimpleTypeProviders.BINARY(),
-          null
-        );
+        return BINARY;
       case PropertyType.UNDEFINED:
         return null;
       default:
@@ -121,7 +135,7 @@ public class ValueDefinition<I, E> {
   }
 
   /** . */
-  private final Class realType;
+  private final Class<?> realType;
 
   /** . */
   private final SimpleTypeProvider<I, E> valueType;
@@ -133,7 +147,7 @@ public class ValueDefinition<I, E> {
   private final PropertyMetaType<I> propertyMetaType;
 
   public ValueDefinition(
-    Class realType,
+    Class<?> realType,
     PropertyMetaType<I> propertyMetaType,
     SimpleTypeProvider<I, E> valueType,
     List<String> defaultValue) {
@@ -152,7 +166,7 @@ public class ValueDefinition<I, E> {
       ArrayList<E> a = new ArrayList<E>();
 
       for (String d : defaultValue) {
-        a.add((E)valueType.fromString(d));
+        a.add(valueType.fromString(d));
       }
 
       return a;

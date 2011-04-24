@@ -28,13 +28,13 @@ import java.io.InputStream;
 import java.util.Calendar;
 
 /**
- * A property meta type is a representation of the various JCR types defined by {@link javax.jcr.PropertyType}.
+ * A property meta type is a representation of the JCR property types defined by {@link javax.jcr.PropertyType}.
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
- * @param <T> the java type modeling the simple type
+ * @param <V> the java type modeling the type
  */
-public abstract class PropertyMetaType<T> {
+public abstract class PropertyMetaType<V> {
 
   /** . */
   public static final PropertyMetaType<String> STRING = new PropertyMetaType<String>(String.class, PropertyType.STRING) {
@@ -132,6 +132,7 @@ public abstract class PropertyMetaType<T> {
     }
   };
 
+  /** . */
   private static final PropertyMetaType<?>[] ALL = {
     STRING,
     PATH,
@@ -152,28 +153,56 @@ public abstract class PropertyMetaType<T> {
     return null;
   }
 
-  /** . */
-  private final Class<T> javaType;
+  /** The java type associated with the type. */
+  private final Class<V> javaValueType;
 
-  /** . */
+  /**
+   * The JCR type code among the values:
+   * <ul>
+   *   <li>{@link PropertyType#STRING}</li>
+   *   <li>{@link PropertyType#BINARY}</li>
+   *   <li>{@link PropertyType#LONG}</li>
+   *   <li>{@link PropertyType#DOUBLE}</li>
+   *   <li>{@link PropertyType#DATE}</li>
+   *   <li>{@link PropertyType#BOOLEAN}</li>
+   *   <li>{@link PropertyType#NAME}</li>
+   *   <li>{@link PropertyType#PATH}</li>
+   *   <li>{@link PropertyType#REFERENCE}</li>
+   * </ul>
+   */
   private final int code;
 
-  private PropertyMetaType(Class<T> javaType, int code) {
-    this.javaType = javaType;
+  private PropertyMetaType(Class<V> javaValueType, int code) {
+    this.javaValueType = javaValueType;
     this.code = code;
   }
 
-  public abstract Value getValue(ValueFactory factory, T t) throws ValueFormatException;
-
-  public abstract T getValue(Value value) throws RepositoryException;
+  /**
+   * Converts the Java value to the {@link Value}.
+   *
+   * @param factory the JCR value factory required to create the value
+   * @param v the Java value
+   * @return the JCR value
+   * @throws ValueFormatException thrown by the factory
+   */
+  public abstract Value getValue(ValueFactory factory, V v) throws ValueFormatException;
 
   /**
-   * Returns the Java type modelling the property type.
+   * Converts the {@link Value} to the java value.
    *
-   * @return the Java type modelling the property type
+   * @param value the JCR value
+   * @return the Java value
+   * @throws RepositoryException thrown by the conversion
    */
-  public Class<T> getJavaType() {
-    return javaType;
+  public abstract V getValue(Value value) throws RepositoryException;
+
+  /**
+   * Returns the Java value type modelling the property type.
+   *
+   * @return the Java value type modelling the property type
+   */
+  public Class<V> getJavaValueType() {
+    return javaValueType;
   }
 
   /**
