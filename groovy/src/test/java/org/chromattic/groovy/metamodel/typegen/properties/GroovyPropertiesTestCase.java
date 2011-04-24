@@ -19,9 +19,9 @@
 
 package org.chromattic.groovy.metamodel.typegen.properties;
 
-import org.chromattic.metamodel.typegen.properties.A;
-import org.chromattic.metamodel.typegen.properties.B;
-import org.chromattic.metamodel.typegen.properties.C;
+import org.chromattic.metamodel.typegen.properties.A1;
+import org.chromattic.metamodel.typegen.properties.B1;
+import org.chromattic.metamodel.typegen.properties.C1;
 import org.chromattic.metamodel.typegen.properties.PropertiesTestCase;
 import org.chromattic.testgenerator.UniversalTest;
 
@@ -33,5 +33,5 @@ import org.chromattic.testgenerator.UniversalTest;
   sourceClass = PropertiesTestCase.class,
   baseDir = "metamodel",
   suffix = "MetamodelTest",
-  chromatticClasses = {A.class, B.class, C.class})
+  chromatticClasses = {A1.class, B1.class, C1.class})
 public class GroovyPropertiesTestCase {}

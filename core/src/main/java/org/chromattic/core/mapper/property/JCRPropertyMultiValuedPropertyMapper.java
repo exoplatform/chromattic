@@ -19,66 +19,71 @@
 
 package org.chromattic.core.mapper.property;
 
+import org.chromattic.core.ListType;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.ValueKind;
-import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
+import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.spi.type.SimpleTypeProvider;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyPropertyMapper<O extends ObjectContext<O>, E, I> extends PropertyMapper<PropertyInfo<SimpleValueInfo<ValueKind.Single>, ValueKind.Single>, SimpleValueInfo<ValueKind.Single>, O, ValueKind.Single> {
+public class JCRPropertyMultiValuedPropertyMapper<O extends ObjectContext<O>, E, I, K extends ValueKind.Multi>
+  extends PropertyMapper<PropertyInfo<SimpleValueInfo<K>, ValueKind.Single>, SimpleValueInfo<K>, O, ValueKind.Single> {
 
   /** . */
   private final String jcrPropertyName;
 
   /** . */
+  private final ListType listType;
+
+  /** . */
+  private final SimpleValueInfo elementType;
+
+  /** . */
   private final ValueDefinition<I, E> vt;
 
-  public JCRPropertyPropertyMapper(
-    Class<O> contextType,
-    SimpleTypeProvider<I, E> vt,
-    ValueMapping<ValueKind.Single> info) {
+  public JCRPropertyMultiValuedPropertyMapper(
+      Class<O> contextType,
+      SimpleTypeProvider<I, E> vt,
+      ValueMapping<K> info) {
     super(contextType, info);
 
     //
+    ListType listType;
+    ValueKind.Multi valueKind = info.getValue().getValueKind();
+    if (valueKind == ValueKind.ARRAY) {
+      listType = ListType.ARRAY;
+    } else if (valueKind == ValueKind.LIST) {
+      listType = ListType.LIST;
+    } else {
+      throw new AssertionError();
+    }
+
+    //
+    this.listType = listType;
     this.jcrPropertyName = info.getPropertyDefinition().getName();
-    this.vt = new ValueDefinition<I, E>(
-        (Class)info.getValue().getEffectiveType().unwrap(),
-        (PropertyMetaType<I>)info.getPropertyDefinition().getMetaType(),
-        vt,
-        info.getPropertyDefinition().getDefaultValue());
+    this.elementType = info.getValue();
+    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getEffectiveType().unwrap(), (PropertyMetaType<I>)info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
   }
 
   @Override
   public Object get(O context) throws Throwable {
-    return get(context, vt);
-  }
-
-  private <V> V get(O context, ValueDefinition<?, V> d) throws Throwable {
-    return context.getPropertyValue(jcrPropertyName, d);
+    List<E> list = context.getPropertyValues(jcrPropertyName, vt, listType);
+    return list == null ? null : listType.unwrap(vt, list);
   }
 
   @Override
-  public void set(O context, Object o) throws Throwable {
-    set(context, vt, o);
-  }
-
-  private <V> void set(O context, ValueDefinition<?, V> vt, Object o) throws Throwable {
-    Class<V> javaType = vt.getObjectType();
-    if (o == null) {
-      context.setPropertyValue(jcrPropertyName, vt, null);
-    } else if (javaType.isInstance(o)) {
-      V v = javaType.cast(o);
-      context.setPropertyValue(jcrPropertyName, vt, v);
-    } else {
-      throw new ClassCastException("Cannot cast " + o.getClass().getName() + " to " + javaType.getName());
-    }
+  public void set(O context, Object value) throws Throwable {
+    List<E> list = value == null ? null : listType.wrap(vt, value);
+    context.setPropertyValues(jcrPropertyName, vt, listType, list);
   }
 }

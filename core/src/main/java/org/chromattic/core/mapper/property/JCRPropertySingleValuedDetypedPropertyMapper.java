@@ -30,10 +30,10 @@ import org.chromattic.metamodel.mapping.PropertiesMapping;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMapPropertyMapper<V extends ValueInfo, O extends ObjectContext<O>>
+public class JCRPropertySingleValuedDetypedPropertyMapper<V extends ValueInfo, O extends ObjectContext<O>>
   extends PropertyMapper<PropertyInfo<V, ValueKind.Map>, V, O, ValueKind.Map> {
 
-  public JCRPropertyMapPropertyMapper(Class<O> contextType, PropertiesMapping<V> info) {
+  public JCRPropertySingleValuedDetypedPropertyMapper(Class<O> contextType, PropertiesMapping<V> info) {
     super(contextType, info);
   }
 

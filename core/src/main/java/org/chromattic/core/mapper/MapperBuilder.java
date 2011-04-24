@@ -35,9 +35,9 @@ import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedParentPropertyMap
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedPropertyMapper;
 import org.chromattic.core.mapper.onetoone.hierarchical.JCRNamedChildParentPropertyMapper;
 import org.chromattic.core.mapper.onetoone.hierarchical.JCRNamedChildPropertyMapper;
-import org.chromattic.core.mapper.property.JCRPropertyListPropertyMapper;
-import org.chromattic.core.mapper.property.JCRPropertyMapPropertyMapper;
-import org.chromattic.core.mapper.property.JCRPropertyPropertyMapper;
+import org.chromattic.core.mapper.property.JCRPropertyMultiValuedPropertyMapper;
+import org.chromattic.core.mapper.property.JCRPropertySingleValuedDetypedPropertyMapper;
+import org.chromattic.core.mapper.property.JCRPropertySingleValuedPropertyMapper;
 import org.chromattic.core.vt2.ValueTypeFactory;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.BeanMapping;
@@ -121,11 +121,11 @@ public class MapperBuilder {
     public void singleValueMapping(ValueMapping<ValueKind.Single> mapping) {
       if (mapping.getValue().getValueKind() == ValueKind.SINGLE) {
         SimpleTypeProvider vt = valueTypeFactory.create(mapping.getValue().getDeclaredType(), mapping.getPropertyDefinition().getMetaType());
-        JCRPropertyPropertyMapper mapper = new JCRPropertyPropertyMapper(contextType, vt, mapping);
+        JCRPropertySingleValuedPropertyMapper mapper = new JCRPropertySingleValuedPropertyMapper(contextType, vt, mapping);
         propertyMappers.add(mapper);
       } else {
         SimpleTypeProvider vt = valueTypeFactory.create(mapping.getValue().getDeclaredType(), mapping.getPropertyDefinition().getMetaType());
-        JCRPropertyListPropertyMapper mapper = new JCRPropertyListPropertyMapper(contextType, vt, mapping);
+        JCRPropertyMultiValuedPropertyMapper mapper = new JCRPropertyMultiValuedPropertyMapper(contextType, vt, mapping);
         propertyMappers.add(mapper);
       }
     }
@@ -217,7 +217,7 @@ public class MapperBuilder {
 
     @Override
     public void propertiesMapping(PropertiesMapping<?> mapping) {
-      JCRPropertyMapPropertyMapper mapper = new JCRPropertyMapPropertyMapper(contextType, mapping);
+      JCRPropertySingleValuedDetypedPropertyMapper mapper = new JCRPropertySingleValuedDetypedPropertyMapper(contextType, mapping);
       propertyMappers.add(mapper);
     }
 
