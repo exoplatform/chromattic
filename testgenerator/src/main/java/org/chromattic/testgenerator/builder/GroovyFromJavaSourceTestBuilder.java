@@ -23,8 +23,10 @@ import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.ImportDeclaration;
 import japa.parser.ast.expr.NameExpr;
 import japa.parser.ast.visitor.DumpVisitorFactory;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 import org.chromattic.testgenerator.visitor.transformer.UnitTestVisitor;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -46,6 +48,16 @@ public class GroovyFromJavaSourceTestBuilder {
 
   public void build(DumpVisitorFactory factory, List<String> excludedMethods) {
     UnitTestVisitor unitTestVisitor = new UnitTestVisitor(name);
+
+    //
+    Iterator<ImportDeclaration> itImports = compilationUnit.getImports().iterator();
+    while (itImports.hasNext()) {
+      if (GroovyTestGeneration.class.getName().equals(itImports.next().getName().toString())) {
+        itImports.remove();
+      }
+    }
+
+    //
     for (String dep : deps)
     {
       int i = dep.lastIndexOf(".");
@@ -53,6 +65,8 @@ public class GroovyFromJavaSourceTestBuilder {
       String depImport = depPackage + dep.substring(i);
       compilationUnit.getImports().add(new ImportDeclaration(new NameExpr(depImport), false, false));
     }
+
+    //
     unitTestVisitor.visit(compilationUnit, excludedMethods);
     sb.append(compilationUnit.toString(factory));
   }

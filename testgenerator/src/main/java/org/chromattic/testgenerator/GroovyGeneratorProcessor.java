@@ -19,8 +19,8 @@
 
 package org.chromattic.testgenerator;
 
-import japa.parser.Parser;
 import japa.parser.ParseException;
+import japa.parser.Parser;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.visitor.DumpVisitorFactory;
 import org.chromattic.testgenerator.builder.GroovyFromJavaSourceChromatticBuilder;
@@ -55,23 +55,20 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
       if (roundEnvironment.processingOver())
       {
          try {
-         Class c = Class.forName("load.Metamodel");
-         InputStream is = c.getResource("testsRef.xml").openStream();
-         for (TestRef ref : serializer.getClassNames(is))
-         {
-            writeGroovySource(GroovyOutputFormat.GETTER_SETTER, ref);
-            writeGroovySource(GroovyOutputFormat.PROPERTIES, ref);
-            writeGroovySource(GroovyOutputFormat.CHROMATTIC, ref);
+           Class c = Class.forName("load.Ref");
+           InputStream is = c.getResource("testsRef.xml").openStream();
+           for (TestRef ref : serializer.getClassNames(is))
+           {
+              writeGroovySource(GroovyOutputFormat.GETTER_SETTER, ref);
+              writeGroovySource(GroovyOutputFormat.PROPERTIES, ref);
+              writeGroovySource(GroovyOutputFormat.CHROMATTIC, ref);
+           }
          }
-         }
-         catch (Exception e) {
-            e.printStackTrace();
-         }
+         catch (Exception e) { e.printStackTrace(); }
       }
       return false;
    }
 
-   // TODO : load java files from filer
    private void writeGroovySource(GroovyOutputFormat format, TestRef ref) throws ParseException
    {
 
@@ -80,7 +77,6 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
          {
             case GETTER_SETTER:
                writeGroovyTest(format, ref, new GroovyCompatibilityFactory());
-
                break;
 
             case PROPERTIES:
@@ -91,7 +87,8 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
                Set<String> chromatticClassNames = ref.getChromatticObject();
                for (String chromatticQualifiedClassName : chromatticClassNames)
                {
-                  InputStream chromatticIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, format.getPackageName(chromatticQualifiedClassName), format.javaFileName(chromatticQualifiedClassName)).openInputStream();
+                  String name = format.getPackageName(chromatticQualifiedClassName).toString().replace(".", "/") + "/" + format.javaFileName(chromatticQualifiedClassName);
+                  InputStream chromatticIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", "metamodel/src/test/java/" + name).openInputStream();
                   CompilationUnit chromatticUnit = Parser.parse(chromatticIs);
                   try
                   {
@@ -101,7 +98,7 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
                      SourceUtil.writeSource(chromatticBuilder.toString(), chromatticOs);
                   }
                   catch (FilerException ignore)
-                  { /* Source is already generated */ }
+                  { /* already written */ }
                }
                break;
          }
@@ -114,20 +111,14 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
    private void writeGroovyTest(GroovyOutputFormat format, TestRef ref, DumpVisitorFactory factory) throws IOException, ParseException
    {
 
-     // TODO : active excludedMethods
-      /*List<String> excludedMethods;
-      try {
-        excludedMethods = SourceUtil.excludedMethods(typeElt);
-      } catch (TestGeneratorException tge) {
-        excludedMethods = new ArrayList<String>();
-      }*/
-      Set<String> chromatticClassNames = ref.getChromatticObject();
-
-      //
-      InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, format.getPackageName(ref), format.javaFileName(ref)).openInputStream();
+     
+      // TODO : active excludedMethods
+      String name = format.getPackageName(ref).toString().replace(".", "/") + "/" + format.javaFileName(ref);
+      
+      InputStream testIs = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH, "", "metamodel/src/test/java/" + name).openInputStream();
       CompilationUnit testUnit = Parser.parse(testIs);
-      FileObject jfo = filer.createResource(StandardLocation.SOURCE_OUTPUT, format.getPackageName(ref), format.groovyFileName(ref));
-      GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, format.testName(ref), chromatticClassNames);
+      FileObject jfo = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, format.getPackageName(ref), format.groovyFileName(ref));
+      GroovyFromJavaSourceTestBuilder testBuilder = new GroovyFromJavaSourceTestBuilder(testUnit, format.testName(ref), ref.getChromatticObject());
       testBuilder.build(factory, new ArrayList<String>());
       SourceUtil.writeSource(testBuilder.toString(), jfo.openOutputStream());
    }

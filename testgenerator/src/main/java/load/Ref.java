@@ -17,9 +17,11 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
+package load;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class CoreLoad {
+public class Ref {
 }
