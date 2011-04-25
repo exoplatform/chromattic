@@ -21,6 +21,8 @@ package org.chromattic.metamodel.typegen;
 
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,26 +36,41 @@ public class PropertyDefinition {
     this.multiple = multiple;
     this.type = type;
     this.defaultValues = null;
+    this.valueConstraints = null;
   }
 
-  PropertyDefinition(PropertyDefinitionMapping mapping, boolean multiple) {
+  PropertyDefinition(PropertyDefinitionMapping<?> mapping, boolean multiple) {
+
+    //
+    List<String> defaultValues = mapping.getDefaultValue();
+    if (defaultValues == null) {
+      defaultValues = null;
+    } else {
+      defaultValues = new ArrayList<String>(defaultValues);
+    }
+
+    //
     this.multiple = multiple;
     this.name = mapping.getName();
     this.type = mapping.getMetaType().getCode();
-    this.defaultValues = mapping.getDefaultValue();
+    this.defaultValues = defaultValues;
+    this.valueConstraints = null;
   }
 
-  final String name;
+  /** . */
+  private final String name;
 
-  final boolean multiple;
+  /** . */
+  private final boolean multiple;
 
-  final int type;
+  /** . */
+  private final int type;
 
-  final List<String> defaultValues;
+  /** . */
+  private List<String> defaultValues;
 
-  public List<String> getDefaultValues() {
-    return defaultValues;
-  }
+  /** . */
+  private List<String> valueConstraints;
 
   public String getName() {
     return name;
@@ -65,5 +82,20 @@ public class PropertyDefinition {
 
   public int getType() {
     return type;
+  }
+
+  public List<String> getDefaultValues() {
+    return defaultValues;
+  }
+
+  public List<String> getValueConstraints() {
+    return valueConstraints;
+  }
+
+  void addValueConstraint(String valueConstraint) {
+    if (valueConstraints == null) {
+      valueConstraints = new ArrayList<String>();
+    }
+    valueConstraints.add(valueConstraint);
   }
 }

@@ -25,6 +25,7 @@ import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
 
 import javax.jcr.PropertyType;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -43,5 +44,6 @@ public class NodeTypeTestCase extends AbstractSchemaTestCase {
     assertEquals("ref", stringPD.getName());
     assertEquals(PropertyType.REFERENCE, stringPD.getType());
     assertEquals(null, stringPD.getDefaultValues());
+    assertEquals(Arrays.asList(_1.getName()), stringPD.getValueConstraints());
   }
 }

@@ -132,18 +132,35 @@ public class SchemaBuilder {
     @Override
     public void oneToManyReference(RelationshipMapping.OneToMany.Reference mapping) {
       if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
-        BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
-        NodeType related = resolve(relatedBeanMapping);
-        int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
-        related.properties.put(mapping.getMappedBy(), new PropertyDefinition(mapping.getMappedBy(), false, propertyType));
+        gerenateOneToManyReference(mapping.getOwner(), mapping.getRelatedBeanMapping(), mapping.getType(), mapping.getMappedBy());
       }
+    }
+
+    private void gerenateOneToManyReference(
+        BeanMapping oneMapping,
+        BeanMapping manyMapping,
+        RelationshipType mappingType,
+        String mappedBy) {
+      NodeType related = resolve(manyMapping);
+      PropertyDefinition def;
+      if (mappingType == RelationshipType.REFERENCE) {
+        def = new PropertyDefinition(mappedBy, false, PropertyType.REFERENCE);
+        NodeType nodeType = resolve(oneMapping);
+        if (nodeType != null) {
+          def.addValueConstraint(nodeType.getName());
+        }
+      } else if (mappingType == RelationshipType.PATH) {
+        def = new PropertyDefinition(mappedBy, false, PropertyType.PATH);
+      } else {
+        throw new AssertionError();
+      }
+      related.properties.put(mappedBy, def);
     }
 
     @Override
     public void manyToOneReference(RelationshipMapping.ManyToOne.Reference mapping) {
       if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
-        int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
-        current.properties.put(mapping.getMappedBy(), new PropertyDefinition(mapping.getMappedBy(), false, propertyType));
+        gerenateOneToManyReference(mapping.getRelatedBeanMapping(), mapping.getOwner(), mapping.getType(), mapping.getMappedBy());
       }
     }
 

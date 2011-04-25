@@ -213,7 +213,8 @@ public abstract class NodeTypeSerializer {
         propertyDefinition.getName(),
         propertyDefinition.getType(),
         propertyDefinition.isMultiple(),
-        propertyDefinition.getDefaultValues()
+        propertyDefinition.getDefaultValues(),
+        propertyDefinition.getValueConstraints()
       );
     }
 
@@ -257,7 +258,8 @@ public abstract class NodeTypeSerializer {
     String name,
     int requiredType,
     boolean multiple,
-    Collection<String> defaultValues) throws Exception {
+    Collection<String> defaultValues,
+    Collection<String> valueConstraints) throws Exception {
   }
 
   public void endProperties() throws Exception {
