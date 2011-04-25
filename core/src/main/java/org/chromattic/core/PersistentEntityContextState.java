@@ -32,10 +32,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
+import java.util.*;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -216,11 +213,6 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      if (vt == null) {
-        throw new UnsupportedOperationException("Not supported at the moment");
-      }
-
-      //
       Value[] values;
       Property property = session.getSessionWrapper().getProperty(node, propertyName);
       if (property != null) {
@@ -233,34 +225,52 @@ class PersistentEntityContextState extends EntityContextState {
         values = null;
       }
 
+      // Try to determine a vt from the real value
+      if (vt == null) {
+        vt = (ValueDefinition<?, V>)ValueDefinition.get(def.getType());
+        if (vt == null) {
+          if (values != null && values.length > 0) {
+            vt = (ValueDefinition<?, V>)ValueDefinition.get(values[0].getType());
+          }
+        }
+      }
+
       //
       List<V> list;
-      if (values != null) {
-        list = listType.create(vt, values.length);
-        for (int i = 0;i < values.length;i++) {
-          Value value = values[i];
-          V v = vt.get(value);
-          list.set(i, v);
-        }
-      } else {
-        List<V> defaultValue = vt.getDefaultValue();
-        if (defaultValue != null) {
-          if (def.isMultiple()) {
-            list = listType.create(vt, defaultValue.size());
-            for (int i = 0;i < defaultValue.size();i++) {
-              V v = defaultValue.get(i);
-              list.set(i, v);
-            }
-          } else {
-            if (defaultValue.size() > 0) {
-              list = listType.create(vt, 1);
-              list.set(0, defaultValue.get(0));
-            } else {
-              list = listType.create(vt, 0);
-            }
+      if (vt != null) {
+        if (values != null) {
+          list = listType.create(vt, values.length);
+          for (int i = 0;i < values.length;i++) {
+            Value value = values[i];
+            V v = vt.get(value);
+            list.set(i, v);
           }
         } else {
-          list = null;
+          List<V> defaultValue = vt.getDefaultValue();
+          if (defaultValue != null) {
+            if (def.isMultiple()) {
+              list = listType.create(vt, defaultValue.size());
+              for (int i = 0;i < defaultValue.size();i++) {
+                V v = defaultValue.get(i);
+                list.set(i, v);
+              }
+            } else {
+              if (defaultValue.size() > 0) {
+                list = listType.create(vt, 1);
+                list.set(0, defaultValue.get(0));
+              } else {
+                list = listType.create(vt, 0);
+              }
+            }
+          } else {
+            list = null;
+          }
+        }
+      } else {
+        if (listType == ListType.LIST) {
+          list = new ArrayList<V>();
+        } else {
+          throw new AssertionError("this case is not possible");
         }
       }
 
@@ -366,20 +376,37 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      if (vt == null) {
-        throw new UnsupportedOperationException("Not supported at the moment");
-      }
-
-      //
       Value[] jcrValues;
       if (propertyValues != null) {
-        ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
-        int size = propertyValues.size();
-        jcrValues = new Value[size];
-        for (int i = 0;i < size;i++) {
-          V element = propertyValues.get(i);
-          Value jcrValue = vt.get(valueFactory, def.getType(), element);
-          jcrValues[i] = jcrValue;
+        if (propertyValues.isEmpty()) {
+          jcrValues = new Value[0];
+        } else {
+
+          // Determine vt if null
+          if (vt == null) {
+
+            // We try first the definition type
+            vt = (ValueDefinition<?, V>)ValueDefinition.get(def.getType());
+
+            //
+            if (vt == null) {
+              Object propertyValue = propertyValues.get(0);
+              vt = (ValueDefinition<?, V>)ValueDefinition.get(propertyValue);
+              if (vt == null) {
+                throw new TypeConversionException("Cannot convert object " + propertyValue + " no converter found");
+              }
+            }
+          }
+
+          //
+          ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
+          int size = propertyValues.size();
+          jcrValues = new Value[size];
+          for (int i = 0;i < size;i++) {
+            V element = propertyValues.get(i);
+            Value jcrValue = vt.get(valueFactory, def.getType(), element);
+            jcrValues[i] = jcrValue;
+          }
         }
       } else {
         jcrValues = null;

@@ -23,15 +23,13 @@ import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.common.JCR;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.ListType;
+import org.chromattic.metamodel.bean.ValueKind;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import java.util.Map;
-import java.util.AbstractSet;
-import java.util.Iterator;
-import java.util.AbstractMap;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -40,16 +38,15 @@ import java.util.Set;
 class PropertyMap extends AbstractMap<String, Object> {
 
   /** . */
-  private final JCRPropertySingleValuedDetypedPropertyMapper mapper;
+  private final JCRPropertyDetypedPropertyMapper mapper;
 
   /** . */
   private final EntityContext ctx;
 
-
   /** . */
   private SetImpl set;
 
-  PropertyMap(JCRPropertySingleValuedDetypedPropertyMapper mapper, EntityContext ctx) {
+  PropertyMap(JCRPropertyDetypedPropertyMapper mapper, EntityContext ctx) {
     this.ctx = ctx;
     this.mapper = mapper;
     this.set = null;
@@ -67,7 +64,11 @@ class PropertyMap extends AbstractMap<String, Object> {
     String s = validateKey(key);
     if (s != null) {
       try {
-        return ctx.getPropertyValue(s, null);
+        if (mapper.valueKind == ValueKind.SINGLE) {
+          return ctx.getPropertyValue(s, null);
+        } else {
+          return ctx.getPropertyValues(s, null, ListType.LIST);
+        }
       }
       catch (RepositoryException e) {
         throw new UndeclaredRepositoryException(e);
@@ -115,8 +116,15 @@ class PropertyMap extends AbstractMap<String, Object> {
 
   private Object update(String key, Object value) {
     try {
-      Object previous = ctx.getPropertyValue(key, null);
-      ctx.setPropertyValue(key, null, value);
+      Object previous;
+      if (mapper.valueKind == ValueKind.SINGLE) {
+        previous = ctx.getPropertyValue(key, null);
+        ctx.setPropertyValue(key, null, value);
+      } else {
+        List<?> list = (List<?>)value;
+        previous = ctx.getPropertyValues(key, null, ListType.LIST);
+        ctx.setPropertyValues(key, null, ListType.LIST, list);
+      }
       return previous;
     }
     catch (RepositoryException e) {

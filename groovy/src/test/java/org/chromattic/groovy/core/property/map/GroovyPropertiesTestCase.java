@@ -34,5 +34,5 @@ import org.chromattic.testgenerator.UniversalTest;
   baseDir = "core",
   suffix = "CoreTest",
   chromatticClasses = {A.class, B.class},
-  exclude = {"testGetMultivaluedValue"})
+  exclude = {"testGetMultivaluedValue","testFoo2"})
 public class GroovyPropertiesTestCase {}

@@ -24,6 +24,7 @@ import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.metamodel.annotations.Skip;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,4 +41,7 @@ public abstract class A {
   @Properties
   public abstract Map<String, String> getStringProperties();
 
+  @Skip
+  @Properties
+  public abstract Map<String, List<Object>> getAnyMultiProperties();
 }

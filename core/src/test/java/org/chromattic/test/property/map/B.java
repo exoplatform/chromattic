@@ -38,5 +38,5 @@ public abstract class B {
   public abstract Map<String, Object> getAnyProperties();
 
   @Properties
-  public abstract Map<String, List<Object>> getAnyProperties2();
+  public abstract Map<String, List<Object>> getAnyMultiProperties();
 }

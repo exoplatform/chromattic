@@ -35,8 +35,8 @@ import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedParentPropertyMap
 import org.chromattic.core.mapper.onetoone.embedded.JCREmbeddedPropertyMapper;
 import org.chromattic.core.mapper.onetoone.hierarchical.JCRNamedChildParentPropertyMapper;
 import org.chromattic.core.mapper.onetoone.hierarchical.JCRNamedChildPropertyMapper;
+import org.chromattic.core.mapper.property.JCRPropertyDetypedPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertyMultiValuedPropertyMapper;
-import org.chromattic.core.mapper.property.JCRPropertySingleValuedDetypedPropertyMapper;
 import org.chromattic.core.mapper.property.JCRPropertySingleValuedPropertyMapper;
 import org.chromattic.core.vt2.ValueTypeFactory;
 import org.chromattic.metamodel.bean.ValueKind;
@@ -217,7 +217,7 @@ public class MapperBuilder {
 
     @Override
     public void propertiesMapping(PropertiesMapping<?> mapping) {
-      JCRPropertySingleValuedDetypedPropertyMapper mapper = new JCRPropertySingleValuedDetypedPropertyMapper(contextType, mapping);
+      JCRPropertyDetypedPropertyMapper mapper = new JCRPropertyDetypedPropertyMapper(contextType, mapping);
       propertyMappers.add(mapper);
     }
 

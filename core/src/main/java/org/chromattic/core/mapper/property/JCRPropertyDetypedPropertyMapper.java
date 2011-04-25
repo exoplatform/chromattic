@@ -31,7 +31,7 @@ import org.chromattic.metamodel.mapping.PropertiesMapping;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertySingleValuedDetypedPropertyMapper<V extends ValueInfo, O extends ObjectContext<O>>
+public class JCRPropertyDetypedPropertyMapper<V extends ValueInfo, O extends ObjectContext<O>>
   extends PropertyMapper<PropertyInfo<V, ValueKind.Map>, V, O, ValueKind.Map> {
 
   /** . */
@@ -40,7 +40,10 @@ public class JCRPropertySingleValuedDetypedPropertyMapper<V extends ValueInfo, O
   /** . */
   final String namePrefix;
 
-  public JCRPropertySingleValuedDetypedPropertyMapper(Class<O> contextType, PropertiesMapping<V> info) {
+  /** . */
+  final ValueKind valueKind;
+
+  public JCRPropertyDetypedPropertyMapper(Class<O> contextType, PropertiesMapping<V> info) {
     super(contextType, info);
 
     //
@@ -58,6 +61,7 @@ public class JCRPropertySingleValuedDetypedPropertyMapper<V extends ValueInfo, O
     //
     this.namePattern = namePattern;
     this.namePrefix = namePrefix;
+    this.valueKind = info.getValueKind();
   }
 
   @Override
