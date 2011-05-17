@@ -25,6 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Defines a naming prefix.
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
@@ -32,6 +34,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE,ElementType.METHOD})
 public @interface NamingPrefix {
 
+  /**
+   * The prefix value.
+   *
+   * @return the value
+   */
   String value();
 
 }

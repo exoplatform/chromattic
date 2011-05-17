@@ -27,7 +27,8 @@ import java.lang.annotation.Target;
 /**
  * <p>A package annotation that triggers node type generation for any Chromattic classes found in the annotated
  * package. The node types are generated in a resource named by default <code>nodetypes.xml</code> in the annotated
- * package. This resource should be available later at runtimpe via the {@link ClassLoader#getResource(String)} mechanism.</p>
+ * package. This resource should be available later at runtimpe via the {@link ClassLoader#getResource(String)}
+ * mechanism.</p>
  *
  * <p>Class inclusion can be controlled and extended to sub packages with the {@link #deep()} parameter.</p>
  *

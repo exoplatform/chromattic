@@ -25,6 +25,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * <p>Configure an item definition to be mandatory, this annotation is used when a node type schema
+ * is generated from a set of annotated classes.</p>
+ *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  * @since 1.1

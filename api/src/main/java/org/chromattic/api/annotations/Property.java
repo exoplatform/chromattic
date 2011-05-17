@@ -35,7 +35,7 @@ import java.lang.annotation.ElementType;
 public @interface Property {
 
   /**
-   * The jcr property name.
+   * The jcr property namen either qualified or unqualified.
    *
    * @return the jcr property name
    */
@@ -43,7 +43,7 @@ public @interface Property {
 
   /**
    * Specify the property type of the mapped property, the value must be a legal value referenced by
-   * {@code javax.jcr.PropertyType}. The default value returned is -1 which means that the value is guessed
+   * {@code javax.jcr.PropertyType}. The default value returned is -1 which means that the value is determined
    * by Chromattic according to the type of the annotated property.
    *
    * @return the property type value.
