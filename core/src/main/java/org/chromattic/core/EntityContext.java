@@ -81,19 +81,21 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     }
   }
 
-  public void setAttribute(Object key, Object value) {
+  public Object setAttribute(Object key, Object value) {
     if (key == null) {
       throw new AssertionError("Should not provide a null key");
     }
     if (value == null) {
       if (attributes != null) {
-        attributes.remove(key);
+        return attributes.remove(key);
+      } else {
+        return null;
       }
     } else {
       if (attributes == null) {
         attributes = new HashMap<Object, Object>();
       }
-      attributes.put(key, value);
+      return attributes.put(key, value);
     }
   }
 
@@ -177,8 +179,12 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     state.getSession().addMixin(this, mixinCtx);
   }
 
-  public EmbeddedContext getEmbedded(Class<?> embeddedClass) {
-    return state.getSession().getEmbedded(this, embeddedClass);
+  public void removeMixin(Class<?> mixinType) {
+    state.getSession().removeMixin(this, mixinType);
+  }
+
+  public EmbeddedContext getEmbedded(Class<?> embeddedType) {
+    return state.getSession().getEmbedded(this, embeddedType);
   }
 
   public String getAttribute(NodeAttributeType type) {

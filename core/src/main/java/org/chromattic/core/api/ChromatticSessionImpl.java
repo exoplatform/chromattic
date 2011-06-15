@@ -250,7 +250,7 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     if (o == null) {
       throw new NullPointerException();
     }
-    EntityContext ctx = domainSession.unwrapEntity(o);
+    ObjectContext ctx = domainSession.unwrapObject(o);
     return ctx.getStatus();
   }
 
@@ -282,12 +282,13 @@ public final class ChromatticSessionImpl implements ChromatticSession {
     if (embeddedType == null) {
       throw new NullPointerException();
     }
-    if (embedded == null) {
-      throw new NullPointerException();
-    }
     EntityContext ctx = domainSession.unwrapEntity(o);
-    EmbeddedContext embeddedCtx = domainSession.unwrapMixin(embedded);
-    ctx.addMixin(embeddedCtx);
+    if (embedded != null) {
+      EmbeddedContext embeddedCtx = domainSession.unwrapMixin(embedded);
+      ctx.addMixin(embeddedCtx);
+    } else {
+      ctx.removeMixin(embeddedType);
+    }
   }
 
   public void close() {

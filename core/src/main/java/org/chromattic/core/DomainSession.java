@@ -120,9 +120,11 @@ public abstract class DomainSession {
 
   protected abstract Node _getRoot() throws RepositoryException;
 
-  protected abstract void _addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws RepositoryException;
+  protected abstract void _addMixin(EntityContext entityCtx, EmbeddedContext mixinCtx) throws RepositoryException;
 
-  protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> embeddedClass) throws RepositoryException;
+  protected abstract void _removeMixin(EntityContext entityCtx, Class<?> mixinType) throws RepositoryException;
+
+  protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> embeddedType) throws RepositoryException;
 
   protected abstract EntityContext _getEntity(Node node) throws RepositoryException;
 
@@ -268,6 +270,15 @@ public abstract class DomainSession {
     }
   }
 
+  public void removeMixin(EntityContext ctx, Class<?> mixinType) throws ChromatticException {
+    try {
+      _removeMixin(ctx, mixinType);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
   public final void setLocalName(EntityContext ctx, String localName) throws UndeclaredRepositoryException {
     try {
       _setLocalName(ctx, localName);
@@ -380,6 +391,18 @@ public abstract class DomainSession {
   }
 
   /**
+   * Unwraps the object to an object context
+   *
+   * @param o the object to unwrap
+   * @return the related object context
+   * @throws NullPointerException if the object is null
+   * @throws IllegalArgumentException if the object is not a proxy
+   */
+  public final ObjectContext unwrapObject(Object o) throws NullPointerException, IllegalArgumentException {
+    return unwrap(o, ObjectContext.class);
+  }
+
+  /**
    * Unwraps the object to an entity context
    *
    * @param o the object to unwrap
@@ -417,7 +440,7 @@ public abstract class DomainSession {
     if (expectedClass.isInstance(handler)) {
       return expectedClass.cast(handler);
     } else {
-      throw new AssertionError("The proxy " + o + " handler is not of the expected type");
+      throw new AssertionError("The proxy " + o + " handler is not of the expected type " + expectedClass.getName());
     }
   }
 

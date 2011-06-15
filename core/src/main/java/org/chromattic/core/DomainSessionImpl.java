@@ -366,16 +366,42 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected EmbeddedContext _getEmbedded(EntityContext entityCtx, Class<?> embeddedClass) throws RepositoryException {
+  protected void _removeMixin(EntityContext entityCtx, Class<?> mixinType) throws RepositoryException {
     if (entityCtx == null) {
       throw new NullPointerException();
     }
-    if (embeddedClass == null) {
+    if (mixinType == null) {
       throw new NullPointerException();
     }
 
     // That's a necessary evil
-    ObjectMapper<EmbeddedContext> mapper = (ObjectMapper<EmbeddedContext>)domain.getTypeMapper(embeddedClass);
+    ObjectMapper<EmbeddedContext> mapper = (ObjectMapper<EmbeddedContext>)domain.getTypeMapper(mixinType);
+
+    //
+    if (mapper != null) {
+      String mixinTypeName = mapper.getNodeTypeName();
+      Node node = entityCtx.state.getNode();
+      sessionWrapper.removeMixin(node, mixinTypeName);
+
+      // Remove from session as well
+      EmbeddedContext mixinCtx = (EmbeddedContext)entityCtx.setAttribute(mapper, null);
+      if (mixinCtx != null) {
+        mixinCtx.relatedEntity = null;
+      }
+    }
+  }
+
+  @Override
+  protected EmbeddedContext _getEmbedded(EntityContext entityCtx, Class<?> embeddedType) throws RepositoryException {
+    if (entityCtx == null) {
+      throw new NullPointerException();
+    }
+    if (embeddedType == null) {
+      throw new NullPointerException();
+    }
+
+    // That's a necessary evil
+    ObjectMapper<EmbeddedContext> mapper = (ObjectMapper<EmbeddedContext>)domain.getTypeMapper(embeddedType);
 
     //
     EmbeddedContext embeddedCtx = null;

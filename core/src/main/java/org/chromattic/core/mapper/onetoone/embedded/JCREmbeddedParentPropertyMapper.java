@@ -61,18 +61,13 @@ public class JCREmbeddedParentPropertyMapper extends
   @Override
   public void set(EntityContext context, Object value) throws Throwable {
     if (value == null) {
-      throw new UnsupportedOperationException("todo mixin removal");
+      context.removeMixin(relatedClass);
+    } else {
+      if (!relatedClass.isInstance(value)) {
+        throw new ClassCastException();
+      }
+      EmbeddedContext mixinCtx = context.getSession().unwrapMixin(value);
+      context.addMixin(mixinCtx);
     }
-
-    //
-    if (!relatedClass.isInstance(value)) {
-      throw new ClassCastException();
-    }
-
-    //
-    EmbeddedContext mixinCtx = context.getSession().unwrapMixin(value);
-
-    //
-    context.addMixin(mixinCtx);
   }
 }

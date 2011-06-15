@@ -65,6 +65,8 @@ public interface SessionWrapper {
 
   void addMixin(Node node, String mixinTypeName) throws RepositoryException;
 
+  boolean removeMixin(Node node, String mixinTypeName) throws RepositoryException;
+
   boolean haxMixin(Node node, String mixinTypeName) throws RepositoryException;
 
   void save() throws RepositoryException;
