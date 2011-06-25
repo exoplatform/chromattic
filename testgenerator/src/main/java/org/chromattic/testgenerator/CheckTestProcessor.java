@@ -18,19 +18,16 @@
 */
 package org.chromattic.testgenerator;
 
-import japa.parser.Parser;
-import japa.parser.ast.CompilationUnit;
-import org.chromattic.testgenerator.builder.GroovyFromJavaSourceChromatticBuilder;
-
-import javax.annotation.processing.*;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.List;
@@ -41,14 +38,25 @@ import java.util.Set;
  * @version $Revision$
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
-@SupportedAnnotationTypes({"org.chromattic.testgenerator.GroovyTestGeneration"})
+@SupportedAnnotationTypes(
+      {
+            "org.chromattic.testgenerator.GroovyTestGeneration",
+            "org.chromattic.testgenerator.TestId"
+      }
+)
 public class CheckTestProcessor extends AbstractProcessor
 {
    private final Set<TestRef> generatedTests = new HashSet<TestRef>();
-
+   private TestId testId;
    @Override
    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnvironment)
    {
+      Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(TestId.class);
+
+      if (elements.size() != 0) {
+         testId = elements.iterator().next().getAnnotation(TestId.class);
+      }
+
       for (Element element : roundEnvironment.getElementsAnnotatedWith(GroovyTestGeneration.class))
       {
          TypeElement typeElt = (TypeElement) element;
@@ -69,7 +77,8 @@ public class CheckTestProcessor extends AbstractProcessor
       {
          try
          {
-            FileObject xmlFile = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "load", "testsRef.xml");
+            String name = "testsRef-" + testId.value() + ".xml";
+            FileObject xmlFile = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "load", name);
             Writer xmlWriter = xmlFile.openWriter();
             TestSerializer xmlSerializer = new TestSerializer();
             xmlSerializer.writeTo(xmlWriter, generatedTests);

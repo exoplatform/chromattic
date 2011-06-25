@@ -19,6 +19,7 @@
 
 package org.chromattic.testgenerator.visitor.renderer;
 
+import japa.parser.ast.expr.ArrayCreationExpr;
 import japa.parser.ast.expr.ArrayInitializerExpr;
 import japa.parser.ast.expr.Expression;
 import japa.parser.ast.expr.MethodCallExpr;
@@ -42,7 +43,13 @@ public class GroovyCompatibilityVisitor extends DumpVisitor
         printArguments(n.getArgs(), arg);
     }
 
-    public void visit(ArrayInitializerExpr n, Object arg) {
+   @Override
+   public void visit(ArrayCreationExpr n, Object arg)
+   {
+     n.getInitializer().accept(this, arg);
+   }
+
+  public void visit(ArrayInitializerExpr n, Object arg) {
         printer.print("[");
         if (n.getValues() != null) {
             printer.print(" ");
