@@ -23,6 +23,7 @@ import org.chromattic.common.logging.Logger;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.query.Query;
@@ -211,6 +212,16 @@ public class SessionWrapperImpl implements SessionWrapper {
 
   public void addMixin(Node node, String mixinTypeName) throws RepositoryException {
     node.addMixin(mixinTypeName);
+  }
+
+  public boolean removeMixin(Node node, String mixinTypeName) throws RepositoryException {
+    try {
+      node.removeMixin(mixinTypeName);
+      return true;
+    } catch (NoSuchNodeTypeException ignore) {
+      // Mixin was not here
+      return false;
+    }
   }
 
   public boolean haxMixin(Node node, String mixinTypeName) throws RepositoryException {

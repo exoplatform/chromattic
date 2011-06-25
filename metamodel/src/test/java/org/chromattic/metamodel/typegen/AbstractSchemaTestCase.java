@@ -30,7 +30,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class TypeGenTestCase extends TestCase {
+public abstract class AbstractSchemaTestCase extends TestCase {
   
   protected final Map<Class<?>, NodeType> assertValid(Class<?>... classTypes) {
     TypeGen gen = new TypeGen();

@@ -125,7 +125,7 @@ public abstract class AbstractOneToTestCase<O, M> extends AbstractTestCase {
       setOne(m, o2);
       fail();
     }
-    catch (IllegalStateException expected) {
+    catch (IllegalArgumentException expected) {
     }
   }
 

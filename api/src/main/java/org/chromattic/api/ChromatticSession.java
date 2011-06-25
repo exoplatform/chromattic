@@ -326,10 +326,24 @@ public interface ChromatticSession {
   void remove(Object o) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
-   * Returns the status of a specified entity.
+   * Returns the status of a specified object.
    *
-   * @param o the entity to get the status
-   * @return the entity status
+   * If the object is an entity it may return:
+   * <ul>
+   *   <li>{@link Status#TRANSIENT} when the entity is created but not yet in correspondance with a node</li>
+   *   <li>{@link Status#PERSISTENT} when the entity is in correspondance with a non removed node</li>
+   *   <li>{@link Status#REMOVED} when the entity is in correspondance with a removed node</li>
+   * </ul>
+   *
+   * If the object is embedded it may return:
+   * <ul>
+   *   <li>{@link Status#TRANSIENT} when the embedded is created but not yet in correspondance with a node</li>
+   *   <li>{@link Status#PERSISTENT} or {@link Status#REMOVED} when the embedded is attached to a node according
+   *   to this node's status</li>
+   * </ul>
+   *
+   * @param o the object to get the status
+   * @return the object status
    * @throws ChromatticException any chromattic exception
    * @throws NullPointerException if the specified object is null
    * @throws IllegalArgumentException if the specified object is not a chromattic object
@@ -400,13 +414,16 @@ public interface ChromatticSession {
   <E> E getEmbedded(Object o, Class<E> embeddedType) throws NullPointerException, IllegalArgumentException, ChromatticException;
 
   /**
-   * Attach the specified embedded object on the specified object when the embedded argument.
+   * <p>Attach or detach the specified embedded object on the specified object. When the embedded argument is not null
+   * and in {@link Status#TRANSIENT} state the embedded is attached to the object if the underlying type system
+   * allows it. When the embedded argument is null, the embedded is removed from the object when the underlying
+   * type system allows it.</p>
    *
    * @param o the object
    * @param embeddedType the embedded type class
    * @param embedded the embedded
    * @param <E> the embedded type
-   * @throws NullPointerException if any argument is null
+   * @throws NullPointerException if the object or type is null
    * @throws IllegalArgumentException if the object or the embedded are not chromattic objects
    * @throws ChromatticException any chromattic exception
    */

@@ -21,6 +21,7 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.DomainSession;
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.ThrowableFactory;
 
 import java.util.Iterator;
 import java.util.AbstractList;
@@ -86,21 +87,7 @@ class AnyChildList<E> extends AbstractList<E> {
     EntityContext addedCtx = session.unwrapEntity(addedElement);
 
     //
-    switch (addedCtx.getStatus()) {
-      case TRANSIENT:
-        parentCtx.addChild(prefix, addedCtx);
-        break;
-      case PERSISTENT:
-        EntityContext addedParentCtx = addedCtx.getParent();
-
-        // It's a move
-        if (addedParentCtx != parentCtx) {
-          parentCtx.addChild(prefix, addedCtx);
-        }
-        break;
-      default:
-        throw new IllegalArgumentException("Cannot insert element with status " + addedCtx.getStatus());
-    }
+    parentCtx.addChild(ThrowableFactory.ISE, ThrowableFactory.IAE, prefix, addedCtx);
 
     //
     if (nextElement == null) {
@@ -133,21 +120,7 @@ class AnyChildList<E> extends AbstractList<E> {
     EntityContext addedCtx = session.unwrapEntity(addedElement);
 
     //
-    switch (addedCtx.getStatus()) {
-      case TRANSIENT:
-        parentCtx.addChild(prefix, addedCtx);
-        break;
-      case PERSISTENT:
-        EntityContext addedParentCtx = addedCtx.getParent();
-
-        // It's a move
-        if (addedParentCtx != parentCtx) {
-          parentCtx.addChild(prefix, addedCtx);
-        }
-        break;
-      default:
-        throw new IllegalArgumentException("Cannot insert element with status " + addedCtx.getStatus());
-    }
+    parentCtx.addChild(ThrowableFactory.ASSERT, ThrowableFactory.IAE, prefix, addedCtx);
 
     // Order before the removed element
     parentCtx.orderBefore(addedCtx, removedCtx);

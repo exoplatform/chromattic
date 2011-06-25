@@ -47,11 +47,11 @@ public abstract class AbstractBeanTestCase extends TestCase {
     return new BeanInfoBuilder(new SimpleTypeResolver()).build(typeInfo).get(typeInfo);
   }
 
-  protected final void assertProperty(PropertyInfo<?> property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
+  protected final void assertProperty(PropertyInfo<?, ?> property, String expectedName, Class<?> expectedType, AccessMode accessMode) {
     assertNotNull(property);
     assertEquals(expectedName, property.getName());
     ValueInfo value = property.getValue();
-    if (property instanceof SingleValuedPropertyInfo) {
+    if (property.getValueKind() == ValueKind.SINGLE) {
       assertEquals(expectedType.getName(), value.getEffectiveType().getName());
       switch (accessMode) {
         case READ_ONLY:
@@ -73,7 +73,7 @@ public abstract class AbstractBeanTestCase extends TestCase {
   }
 
   protected final <A extends Annotation> void assertAnnotation(
-    PropertyInfo<?> property,
+    PropertyInfo<?, ?> property,
     Class<A> annotationClass,
     Map<String, Object> expectedAnnotation) {
     A ann1 = property.getAnnotation(annotationClass);

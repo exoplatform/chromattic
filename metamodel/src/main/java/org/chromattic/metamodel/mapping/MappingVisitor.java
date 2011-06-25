@@ -19,6 +19,8 @@
 
 package org.chromattic.metamodel.mapping;
 
+import org.chromattic.metamodel.bean.ValueKind;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -27,9 +29,9 @@ public class MappingVisitor {
   
   public void startBean(BeanMapping mapping) { }
 
-  public void singleValueMapping(ValueMapping.Single mapping) { }
+  public void singleValueMapping(ValueMapping<ValueKind.Single> mapping) { }
 
-  public void multiValueMapping(ValueMapping.Multi mapping) { }
+  public void multiValueMapping(ValueMapping<ValueKind.Multi> mapping) { }
 
   public void propertiesMapping(PropertiesMapping<?> mapping) { }
 

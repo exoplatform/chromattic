@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.chromattic</groupId>
     <artifactId>chromattic.parent</artifactId>
-    <version>1.1.0-beta3-SNAPSHOT</version>
+    <version>1.1.0-beta7-SNAPSHOT</version>
   </parent>
 
   <artifactId>chromattic.core</artifactId>
@@ -55,11 +55,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.testgenerator</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.reflext</groupId>
       <artifactId>reflext.api</artifactId>
     </dependency>
@@ -87,6 +82,12 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.testgenerator</artifactId>
       <scope>test</scope>
     </dependency>
 

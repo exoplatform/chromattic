@@ -59,22 +59,30 @@ public abstract class DomainSession {
 
   protected abstract void _setLocalName(EntityContext ctx, String localName) throws RepositoryException;
 
-  protected abstract void _persist(EntityContext ctx, String prefix, String localName) throws RepositoryException;
+  protected abstract <T1 extends Throwable> void _persist(
+      ThrowableFactory<T1> nullLocaleNameTF,
+      EntityContext ctx,
+      String prefix,
+      String localName) throws T1, RepositoryException;
 
-  /**
-   * Insert a context as a child of a parent context.
-   *
-   *
-   * @param srcCtx the source context
-   * @param prefix
-   * @param localName
-   * @param dstCtx the destination context  @throws NullPointerException if the destination context or the name is null
-   * @throws IllegalArgumentException if the destination context is not transient
-   * @throws IllegalStateException if the source context is not persistent
-   * @throws RepositoryException any repository exception
-   */
-  protected abstract void _persist(ObjectContext srcCtx, String prefix, String localName, EntityContext dstCtx) throws
-    NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException;
+  protected abstract <T1 extends Throwable, T2 extends Throwable, T3 extends Throwable> void _persist(
+      ThrowableFactory<T1> srcStateTF,
+      ThrowableFactory<T2> dstStateTF,
+      ThrowableFactory<T3> nullLocaleNameTF,
+      ObjectContext srcCtx,
+      String prefix,
+      String localName,
+      EntityContext dstCtx) throws
+      T1, T2, T3, NullPointerException, RepositoryException;
+
+  protected abstract <T1 extends Throwable, T2 extends Throwable> void _move(
+      ThrowableFactory<T1> srcStateTF,
+      ThrowableFactory<T2> dstStateTF,
+      EntityContext srcCtx,
+      ObjectContext dstCtx,
+      String dstPrefix,
+      String dstLocalName) throws
+    T1, T2, NullPointerException, RepositoryException;
 
   protected abstract EntityContext _copy(EntityContext srcCtx, String prefix, String localName) throws RepositoryException;
 
@@ -112,25 +120,11 @@ public abstract class DomainSession {
 
   protected abstract Node _getRoot() throws RepositoryException;
 
-  /**
-   * Move the source context to the destination context.
-   *
-   *
-   *
-   * @param srcCtx the source context
-   * @param dstCtx the destination context
-   * @param dstPrefix
-   *@param dstLocalName  @throws NullPointerException if the destination context or the name is null
-   * @throws IllegalArgumentException if the destination context is not persistent
-   * @throws IllegalStateException if the source context is not persistent
-   * @throws RepositoryException any repository excxeption
-   */
-  protected abstract void _move(EntityContext srcCtx, ObjectContext dstCtx, String dstPrefix, String dstLocalName) throws
-    NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException, RepositoryException;
+  protected abstract void _addMixin(EntityContext entityCtx, EmbeddedContext mixinCtx) throws RepositoryException;
 
-  protected abstract void _addMixin(EntityContext ctx, EmbeddedContext mixinCtx) throws RepositoryException;
+  protected abstract void _removeMixin(EntityContext entityCtx, Class<?> mixinType) throws RepositoryException;
 
-  protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> embeddedClass) throws RepositoryException;
+  protected abstract EmbeddedContext _getEmbedded(EntityContext ctx, Class<?> embeddedType) throws RepositoryException;
 
   protected abstract EntityContext _getEntity(Node node) throws RepositoryException;
 
@@ -222,9 +216,9 @@ public abstract class DomainSession {
     }
   }
 
-  public void persist(EntityContext ctx, String prefix, String localName) throws UndeclaredRepositoryException {
+  public <T1 extends Throwable> void persist(ThrowableFactory<T1> nullLocaleNameTF, EntityContext ctx, String prefix, String localName) throws T1, UndeclaredRepositoryException {
     try {
-      _persist(ctx, prefix, localName);
+      _persist(nullLocaleNameTF, ctx, prefix, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -249,10 +243,9 @@ public abstract class DomainSession {
     }
   }
 
-  public <O> O create(Class<O> clazz, String localName) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
+  public ObjectContext create(Class<?> clazz, String localName) throws NullPointerException, IllegalArgumentException, UndeclaredRepositoryException {
     try {
-      ObjectContext octx = _create(clazz, localName);
-      return clazz.cast(octx.getObject());
+      return _create(clazz, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -277,6 +270,15 @@ public abstract class DomainSession {
     }
   }
 
+  public void removeMixin(EntityContext ctx, Class<?> mixinType) throws ChromatticException {
+    try {
+      _removeMixin(ctx, mixinType);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
   public final void setLocalName(EntityContext ctx, String localName) throws UndeclaredRepositoryException {
     try {
       _setLocalName(ctx, localName);
@@ -295,9 +297,12 @@ public abstract class DomainSession {
     }
   }
 
-  public void move(EntityContext srcCtx, ObjectContext dstCtx, String dstPrefix, String dstLocalName) throws UndeclaredRepositoryException {
+  public <T1 extends Throwable, T2 extends Throwable> void move(
+      ThrowableFactory<T1> srcStateTF,
+      ThrowableFactory<T2> dstStateTF,
+      EntityContext srcCtx, ObjectContext dstCtx, String dstPrefix, String dstLocalName) throws T1, T2, UndeclaredRepositoryException {
     try {
-      _move(srcCtx, dstCtx, dstPrefix, dstLocalName);
+      _move(srcStateTF, dstStateTF, srcCtx, dstCtx, dstPrefix, dstLocalName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -386,6 +391,18 @@ public abstract class DomainSession {
   }
 
   /**
+   * Unwraps the object to an object context
+   *
+   * @param o the object to unwrap
+   * @return the related object context
+   * @throws NullPointerException if the object is null
+   * @throws IllegalArgumentException if the object is not a proxy
+   */
+  public final ObjectContext unwrapObject(Object o) throws NullPointerException, IllegalArgumentException {
+    return unwrap(o, ObjectContext.class);
+  }
+
+  /**
    * Unwraps the object to an entity context
    *
    * @param o the object to unwrap
@@ -423,13 +440,20 @@ public abstract class DomainSession {
     if (expectedClass.isInstance(handler)) {
       return expectedClass.cast(handler);
     } else {
-      throw new AssertionError("The proxy " + o + " handler is not of the expected type");
+      throw new AssertionError("The proxy " + o + " handler is not of the expected type " + expectedClass.getName());
     }
   }
 
-  public final void persist(ObjectContext parentCtx, EntityContext childCtx, String prefix, String localName) throws UndeclaredRepositoryException {
+  public final <T1 extends Throwable, T2 extends Throwable, T3 extends Throwable> void persist(
+      ThrowableFactory<T1> srcStateTF,
+      ThrowableFactory<T2> dstStateTF,
+      ThrowableFactory<T3> nullLocaleNameTF,
+      ObjectContext srcCtx,
+      EntityContext dstCtx,
+      String prefix,
+      String localName) throws T1, T2, T3, UndeclaredRepositoryException {
     try {
-      _persist(parentCtx, prefix, localName, childCtx);
+      _persist(srcStateTF, dstStateTF, nullLocaleNameTF, srcCtx, prefix, localName, dstCtx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

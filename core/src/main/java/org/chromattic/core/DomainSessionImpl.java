@@ -71,7 +71,7 @@ public class DomainSessionImpl extends DomainSession {
         String name = ctx.getNode().getName();
         int index = name.indexOf(':');
         String prefix = index == -1 ? null : name.substring(0, index);
-        _move(ctx, parentNode, prefix, localName);
+        _move(ThrowableFactory.ISE, ctx, parentNode, prefix, localName);
         break;
       default:
         throw new IllegalStateException("Removed node cannot have its name updated");
@@ -121,12 +121,13 @@ public class DomainSessionImpl extends DomainSession {
     return null;
   }
 
-  protected void _persist(EntityContext ctx, String prefix, String localName) throws RepositoryException {
+  protected <T1 extends Throwable> void _persist(ThrowableFactory<T1> nullLocaleNameTF, EntityContext ctx, String prefix, String localName) throws T1, RepositoryException {
     if (ctx == null) {
       throw new NullPointerException("No null object context accepted");
     }
     if (localName == null) {
-      throw new NullPointerException("No relative path specified");
+      String msg = "No relative path specified";
+      throw nullLocaleNameTF.newThrowable(msg);
     }
 
     //
@@ -144,8 +145,15 @@ public class DomainSessionImpl extends DomainSession {
     _persist(_getRoot(), prefix, localName, ctx);
   }
 
-  protected void _persist(ObjectContext srcCtx, String prefix, String localName, EntityContext dstCtx) throws
-    NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException {
+  protected <T1 extends Throwable, T2 extends Throwable, T3 extends Throwable> void _persist(
+      ThrowableFactory<T1> srcStateTF,
+      ThrowableFactory<T2> dstStateTF,
+      ThrowableFactory<T3> nullLocaleNameTF,
+      ObjectContext srcCtx,
+      String prefix,
+      String localName,
+      EntityContext dstCtx) throws
+      T1, T2, T3, NullPointerException, RepositoryException {
     if (srcCtx == null) {
       String msg = "Cannot insert context " + dstCtx + " as a child of a null context";
       log.error(msg);
@@ -154,17 +162,17 @@ public class DomainSessionImpl extends DomainSession {
     if (dstCtx.getStatus() != Status.TRANSIENT) {
       String msg = "Attempt to insert non transient context " + dstCtx + " as child of " + srcCtx;
       log.error(msg);
-      throw new IllegalArgumentException(msg);
+      throw dstStateTF.newThrowable();
     }
     if (localName == null) {
-      String msg = "Attempt to insert context " + dstCtx + " with no relative path to " + srcCtx;
+      String msg = "Attempt to insert context " + dstCtx + " with no name to " + srcCtx;
       log.error(msg);
-      throw new NullPointerException(msg);
+      throw nullLocaleNameTF.newThrowable(msg);
     }
     if (srcCtx.getStatus() != Status.PERSISTENT) {
       String msg = "Attempt to insert context " + dstCtx + " as child of non persistent context " + srcCtx;
       log.error(msg);
-      throw new IllegalArgumentException(msg);
+      throw srcStateTF.newThrowable(msg);
     }
 
     //
@@ -326,7 +334,7 @@ public class DomainSessionImpl extends DomainSession {
         throw new IllegalArgumentException();
       }
     } else {
-      EmbeddedContext previousMixinCtx = entityCtx.embeddeds.get(mixinCtx.mapper);
+      EmbeddedContext previousMixinCtx = (EmbeddedContext)entityCtx.getAttribute(mixinCtx.mapper);
       if (previousMixinCtx != null) {
         if (previousMixinCtx != mixinCtx) {
           throw new IllegalStateException();
@@ -350,7 +358,7 @@ public class DomainSessionImpl extends DomainSession {
         MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
 
         // Perform wiring
-        entityCtx.embeddeds.put(mixinCtx.mapper, mixinCtx);
+        entityCtx.setAttribute(mixinCtx.mapper, mixinCtx);
         mixinCtx.relatedEntity = entityCtx;
         mixinCtx.typeInfo = mixinTypeInfo;
       }
@@ -358,21 +366,47 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected EmbeddedContext _getEmbedded(EntityContext entityCtx, Class<?> embeddedClass) throws RepositoryException {
+  protected void _removeMixin(EntityContext entityCtx, Class<?> mixinType) throws RepositoryException {
     if (entityCtx == null) {
       throw new NullPointerException();
     }
-    if (embeddedClass == null) {
+    if (mixinType == null) {
       throw new NullPointerException();
     }
 
     // That's a necessary evil
-    ObjectMapper<EmbeddedContext> mapper = (ObjectMapper<EmbeddedContext>)domain.getTypeMapper(embeddedClass);
+    ObjectMapper<EmbeddedContext> mapper = (ObjectMapper<EmbeddedContext>)domain.getTypeMapper(mixinType);
+
+    //
+    if (mapper != null) {
+      String mixinTypeName = mapper.getNodeTypeName();
+      Node node = entityCtx.state.getNode();
+      sessionWrapper.removeMixin(node, mixinTypeName);
+
+      // Remove from session as well
+      EmbeddedContext mixinCtx = (EmbeddedContext)entityCtx.setAttribute(mapper, null);
+      if (mixinCtx != null) {
+        mixinCtx.relatedEntity = null;
+      }
+    }
+  }
+
+  @Override
+  protected EmbeddedContext _getEmbedded(EntityContext entityCtx, Class<?> embeddedType) throws RepositoryException {
+    if (entityCtx == null) {
+      throw new NullPointerException();
+    }
+    if (embeddedType == null) {
+      throw new NullPointerException();
+    }
+
+    // That's a necessary evil
+    ObjectMapper<EmbeddedContext> mapper = (ObjectMapper<EmbeddedContext>)domain.getTypeMapper(embeddedType);
 
     //
     EmbeddedContext embeddedCtx = null;
     if (mapper != null) {
-      embeddedCtx = entityCtx.embeddeds.get(mapper);
+      embeddedCtx = (EmbeddedContext)entityCtx.getAttribute(mapper);
 
       //
       if (embeddedCtx == null) {
@@ -385,7 +419,7 @@ public class DomainSessionImpl extends DomainSession {
 
             //
             embeddedCtx = new EmbeddedContext(mapper, this);
-            entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
+            entityCtx.setAttribute(embeddedCtx.mapper, embeddedCtx);
             embeddedCtx.relatedEntity = entityCtx;
             embeddedCtx.typeInfo = mixinTypeInfo;
           }
@@ -394,7 +428,7 @@ public class DomainSessionImpl extends DomainSession {
           PrimaryTypeInfo superTI = (PrimaryTypeInfo)typeInfo.getSuperType(mapper.getNodeTypeName());
           if (superTI != null) {
             embeddedCtx = new EmbeddedContext(mapper, this);
-            entityCtx.embeddeds.put(embeddedCtx.mapper, embeddedCtx);
+            entityCtx.setAttribute(embeddedCtx.mapper, embeddedCtx);
             embeddedCtx.relatedEntity = entityCtx;
             embeddedCtx.typeInfo = superTI;
           }
@@ -407,8 +441,14 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   @Override
-  protected void _move(EntityContext srcCtx, ObjectContext dstCtx, String dstPrefix, String dstLocalName) throws
-    NullPointerException, IllegalArgumentException, IllegalStateException, RepositoryException {
+  protected <T1 extends Throwable, T2 extends Throwable> void _move(
+      ThrowableFactory<T1> srcStateTF,
+      ThrowableFactory<T2> dstStateTF,
+      EntityContext srcCtx,
+      ObjectContext dstCtx,
+      String dstPrefix,
+      String dstLocalName) throws
+    T1, T2, NullPointerException, RepositoryException {
     if (dstCtx == null) {
       String msg = "Cannot move to null context";
       log.error(msg);
@@ -417,17 +457,22 @@ public class DomainSessionImpl extends DomainSession {
     if (dstCtx.getStatus() != Status.PERSISTENT) {
       String msg = "Attempt to move child " + srcCtx + " to a non persistent context " + dstCtx;
       log.error(msg);
-      throw new IllegalArgumentException(msg);
+      throw dstStateTF.newThrowable(msg);
     }
 
     //
     Node dstNode = dstCtx.getEntity().state.getNode();
 
     //
-    _move(srcCtx, dstNode, dstPrefix, dstLocalName);
+    _move(srcStateTF, srcCtx, dstNode, dstPrefix, dstLocalName);
   }
 
-  private void _move(EntityContext srcCtx, Node dstNode, String dstPrefix, String dstLocalName) throws RepositoryException {
+  private <T1 extends Throwable> void _move(
+      ThrowableFactory<T1> srcStateTF,
+      EntityContext srcCtx,
+      Node dstNode,
+      String dstPrefix,
+      String dstLocalName) throws T1, NullPointerException, RepositoryException {
     if (srcCtx == null) {
       String msg = "Cannot move null context";
       log.error(msg);
@@ -436,7 +481,7 @@ public class DomainSessionImpl extends DomainSession {
     if (srcCtx.getStatus() != Status.PERSISTENT) {
       String msg = "Attempt to move non persistent context " + srcCtx + " as child of " + dstNode.getPath();
       log.error(msg);
-      throw new IllegalStateException(msg);
+      throw srcStateTF.newThrowable(msg);
     }
 
     //
@@ -456,24 +501,26 @@ public class DomainSessionImpl extends DomainSession {
       onDuplicate = parentTypeMapper.getOnDuplicate();
     }
 
-
     // Check insertion capability
     Node previousNode = sessionWrapper.getNode(dstNode, dstName);
     if (previousNode != null) {
       log.trace("Found existing child with same name {}", dstName);
-      if (onDuplicate == NameConflictResolution.FAIL) {
-        String msg = "Attempt to move context " + dstNode.getPath() + " as an existing child with name " + dstName + " child of node " + dstNode.getPath();
-        log.error(msg);
-        throw new DuplicateNameException(msg);
+      if (srcNode.getParent() == dstNode) {
+        // We do nothing as it's a noop
       } else {
-        log.trace("About to remove same name {} child with id {}", previousNode.getPath(), previousNode.getName());
-        //previousNode.remove();
-        throw new UnsupportedOperationException("Do that properly");
+        if (onDuplicate == NameConflictResolution.FAIL) {
+          String msg = "Attempt to move context " + dstNode.getPath() + " as an existing child with name " + dstName + " child of node " + dstNode.getPath();
+          log.error(msg);
+          throw new DuplicateNameException(msg);
+        } else {
+          log.trace("About to remove same name {} child with id {}", previousNode.getPath(), previousNode.getName());
+          //previousNode.remove();
+          throw new UnsupportedOperationException("Do that properly");
+        }
       }
+    } else {
+      sessionWrapper.move(srcNode, dstNode, dstName);
     }
-
-    //
-    sessionWrapper.move(srcNode, dstNode, dstName);
 
     // Generate some kind of event ????
   }
@@ -648,7 +695,7 @@ public class DomainSessionImpl extends DomainSession {
 
       String path = removed.path;
       log.trace("Removing context for path {}", path);
-      removed.ctx.state = new RemovedEntityContextState(path);
+      removed.ctx.state = new RemovedEntityContextState(this, path, removed.localName, removed.ctx.getTypeInfo());
       ctxs.remove(removed.ctx);
       broadcaster.removed(removed.id, removed.path, removed.localName, removed.ctx.getObject());
       log.trace("Removed context {} for path {}", removed.ctx, path);

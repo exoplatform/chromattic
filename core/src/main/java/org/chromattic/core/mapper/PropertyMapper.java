@@ -23,6 +23,7 @@ import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.ValueInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.reflext.api.MethodInfo;
 
@@ -30,15 +31,15 @@ import org.reflext.api.MethodInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyMapper<P extends PropertyInfo<V>, V extends ValueInfo, O extends ObjectContext<O>> {
+public abstract class PropertyMapper<P extends PropertyInfo<V, K>, V extends ValueInfo, O extends ObjectContext<O>, K extends ValueKind> {
 
   /** . */
   protected final Class<O> contextType;
 
   /** . */
-  protected final PropertyMapping<P, V> info;
+  protected final PropertyMapping<P, V, K> info;
 
-  public PropertyMapper(Class<O> contextType, PropertyMapping<P, V> info) {
+  public PropertyMapper(Class<O> contextType, PropertyMapping<P, V, K> info) {
     this.contextType = contextType;
     this.info = info;
   }
@@ -47,7 +48,7 @@ public abstract class PropertyMapper<P extends PropertyInfo<V>, V extends ValueI
     return contextType;
   }
 
-  public PropertyMapping<P, V> getInfo() {
+  public PropertyMapping<P, V, K> getInfo() {
     return info;
   }
 

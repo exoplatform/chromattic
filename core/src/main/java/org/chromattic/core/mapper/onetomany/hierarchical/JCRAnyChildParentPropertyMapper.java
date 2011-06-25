@@ -19,28 +19,31 @@
 
 package org.chromattic.core.mapper.onetomany.hierarchical;
 
+import org.chromattic.core.EntityContext;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRAnyChildParentPropertyMapper<O extends ObjectContext<O>> extends JCRNodeCollectionPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo>, O> {
+public class JCRAnyChildParentPropertyMapper<O extends ObjectContext<O>, K extends ValueKind.Multi> extends
+    JCRNodeCollectionPropertyMapper<PropertyInfo<BeanValueInfo, K>, O, K> {
 
   /** . */
-  private final AnyChildMultiValueMapper valueMapper;
+  private final AnyChildMultiValueMapper<K> valueMapper;
 
   /** . */
   private final String prefix;
 
   public JCRAnyChildParentPropertyMapper(
     Class<O> contextType,
-    RelationshipMapping.OneToMany.Hierarchic info,
-    AnyChildMultiValueMapper valueMapper) throws ClassNotFoundException {
+    RelationshipMapping.OneToMany.Hierarchic<K> info,
+    AnyChildMultiValueMapper<K> valueMapper) throws ClassNotFoundException {
     super(contextType, info);
 
     //
@@ -48,8 +51,15 @@ public class JCRAnyChildParentPropertyMapper<O extends ObjectContext<O>> extends
     this.prefix = info.getPrefix();
   }
 
+  // Maybe use generic type here of the multivalue kind
   @Override
   public Object get(O context) throws Throwable {
-    return valueMapper.createValue(context.getEntity(), prefix, getRelatedClass());
+    EntityContext entity = context.getEntity();
+    Object collection = entity.getAttribute(this);
+    if (collection == null) {
+      collection = valueMapper.createValue(context.getEntity(), prefix, getRelatedClass());
+      entity.setAttribute(this, collection);
+    }
+    return collection;
   }
 }

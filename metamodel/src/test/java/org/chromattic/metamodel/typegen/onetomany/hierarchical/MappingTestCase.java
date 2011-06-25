@@ -24,6 +24,8 @@ import org.chromattic.metamodel.mapping.RelationshipMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 import org.chromattic.testgenerator.GroovyTestGeneration;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -39,7 +41,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     BeanMapping _2 = mappings.get(A2.class);
     RelationshipMapping.OneToMany.Hierarchic r1 = _1.getPropertyMapping("children", RelationshipMapping.OneToMany.Hierarchic.class);
     assertSame(_2.getBean(), r1.getRelatedBean());
-    assertNull(r1.getRelatedRelationshipMapping());
+    assertEquals(Collections.<RelationshipMapping.ManyToOne.Hierarchic>emptyList(), r1.getRelatedRelationshipMapping());
     assertEquals(0, _2.getProperties().size());
   }
 
@@ -49,8 +51,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
     BeanMapping _2 = mappings.get(B2.class);
     assertEquals(0, _1.getProperties().size());
     RelationshipMapping.ManyToOne.Hierarchic r2 = _2.getPropertyMapping("parent", RelationshipMapping.ManyToOne.Hierarchic.class);
-    assertSame(_1.getBean(), r2.getRelatedBean());
-    assertNull(r2.getRelatedRelationshipMapping());
+    assertEquals(_1.getBean(), r2.getRelatedBean());
+    assertEquals(Collections.<RelationshipMapping.OneToMany.Hierarchic>emptyList(), r2.getRelatedRelationshipMapping());
   }
 
   public void testC() {
@@ -61,8 +63,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.ManyToOne.Hierarchic r2 = _2.getPropertyMapping("parent", RelationshipMapping.ManyToOne.Hierarchic.class);
     assertSame(_2.getBean(), r1.getRelatedBean());
     assertSame(_1.getBean(), r2.getRelatedBean());
-    assertSame(r1, r2.getRelatedRelationshipMapping());
-    assertSame(r2, r1.getRelatedRelationshipMapping());
+    assertEquals(Arrays.asList(r1), r2.getRelatedRelationshipMapping());
+    assertEquals(Arrays.asList(r2), r1.getRelatedRelationshipMapping());
   }
 
   public void testD() {
@@ -72,8 +74,8 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.ManyToOne.Hierarchic r2 = _.getPropertyMapping("parent", RelationshipMapping.ManyToOne.Hierarchic.class);
     assertSame(_.getBean(), r1.getRelatedBean());
     assertSame(_.getBean(), r2.getRelatedBean());
-    assertSame(r1, r2.getRelatedRelationshipMapping());
-    assertSame(r2, r1.getRelatedRelationshipMapping());
+    assertEquals(Arrays.asList(r1), r2.getRelatedRelationshipMapping());
+    assertEquals(Arrays.asList(r2), r1.getRelatedRelationshipMapping());
   }
 
   public void testPrefix() {
@@ -83,7 +85,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.OneToMany.Hierarchic r1 = _1.getPropertyMapping("children", RelationshipMapping.OneToMany.Hierarchic.class);
     assertEquals("foo", r1.getPrefix());
     assertSame(_2.getBean(), r1.getRelatedBean());
-    assertNull(r1.getRelatedRelationshipMapping());
+    assertEquals(Collections.<RelationshipMapping.ManyToOne.Hierarchic>emptyList(), r1.getRelatedRelationshipMapping());
     assertEquals(0, _2.getProperties().size());
   }
 
@@ -94,7 +96,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     RelationshipMapping.OneToMany.Hierarchic r1 = _1.getPropertyMapping("children", RelationshipMapping.OneToMany.Hierarchic.class);
     assertEquals("foo", r1.getPrefix());
     assertSame(_2.getBean(), r1.getRelatedBean());
-    assertNull(r1.getRelatedRelationshipMapping());
+    assertEquals(Collections.<RelationshipMapping.ManyToOne.Hierarchic>emptyList(), r1.getRelatedRelationshipMapping());
     assertEquals(0, _2.getProperties().size());
   }
   public void testPrefixInheritedTransitively() {
@@ -106,7 +108,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     assertNotNull(r1);
     assertEquals("foo", r1.getPrefix());
     assertSame(_3.getBean(), r1.getRelatedBean());
-    assertNull(r1.getRelatedRelationshipMapping());
+    assertEquals(Collections.<RelationshipMapping.ManyToOne.Hierarchic>emptyList(), r1.getRelatedRelationshipMapping());
     assertEquals(0, _3.getProperties().size());
   }
 }

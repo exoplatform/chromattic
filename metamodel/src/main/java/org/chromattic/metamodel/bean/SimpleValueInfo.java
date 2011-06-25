@@ -26,24 +26,31 @@ import org.reflext.api.TypeInfo;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SimpleValueInfo extends ValueInfo {
+public class SimpleValueInfo<K extends ValueKind> extends ValueInfo {
 
   /** . */
   private final SimpleTypeMapping typeMapping;
 
+  /** . */
+  private final K valueKind;
+
   public SimpleValueInfo(
       TypeInfo declaredType,
       TypeInfo effectiveType,
-      SimpleTypeMapping typeMapping) {
+      SimpleTypeMapping typeMapping,
+      K valueKind) {
     super(declaredType, effectiveType);
 
     //
     this.typeMapping = typeMapping;
+    this.valueKind = valueKind;
   }
 
   public SimpleTypeMapping getTypeMapping() {
     return typeMapping;
   }
 
-
+  public K getValueKind() {
+    return valueKind;
+  }
 }

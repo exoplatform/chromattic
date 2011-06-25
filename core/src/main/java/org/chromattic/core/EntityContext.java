@@ -26,8 +26,8 @@ import java.util.Map;
 import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.common.logging.Logger;
-import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.jcr.LinkType;
+import org.chromattic.core.jcr.type.PrimaryTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
 import org.chromattic.spi.instrument.ProxyType;
@@ -50,14 +50,11 @@ public final class EntityContext extends ObjectContext<EntityContext> {
   /** The object instance. */
   final Object object;
 
-  /** The property map. */
-  final PropertyMap properties;
-
-  /** The list of mixins. */
-  final Map<ObjectMapper<EmbeddedContext>, EmbeddedContext> embeddeds;
-
   /** The related state. */
   EntityContextState state;
+
+  /** The attributes. */
+  private Map<Object, Object> attributes;
 
   EntityContext(ObjectMapper<EntityContext> mapper, EntityContextState state) throws RepositoryException {
 
@@ -70,8 +67,36 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     this.mapper = mapper;
     this.object = object;
     this.state = state;
-    this.properties = new PropertyMap(this);
-    this.embeddeds = new HashMap<ObjectMapper<EmbeddedContext>, EmbeddedContext>();
+    this.attributes = null;
+  }
+
+  public Object getAttribute(Object key) {
+    if (key == null) {
+      throw new AssertionError("Should not provide a null key");
+    }
+    if (attributes == null) {
+      return null;
+    } else {
+      return attributes.get(key);
+    }
+  }
+
+  public Object setAttribute(Object key, Object value) {
+    if (key == null) {
+      throw new AssertionError("Should not provide a null key");
+    }
+    if (value == null) {
+      if (attributes != null) {
+        return attributes.remove(key);
+      } else {
+        return null;
+      }
+    } else {
+      if (attributes == null) {
+        attributes = new HashMap<Object, Object>();
+      }
+      return attributes.put(key, value);
+    }
   }
 
   public Node getNode() {
@@ -100,7 +125,7 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     return this;
   }
 
-  public NodeTypeInfo getTypeInfo() {
+  public PrimaryTypeInfo getTypeInfo() {
     EntityContextState state = getEntity().state;
     return state.getTypeInfo();
   }
@@ -154,8 +179,12 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     state.getSession().addMixin(this, mixinCtx);
   }
 
-  public EmbeddedContext getEmbedded(Class<?> embeddedClass) {
-    return state.getSession().getEmbedded(this, embeddedClass);
+  public void removeMixin(Class<?> mixinType) {
+    state.getSession().removeMixin(this, mixinType);
+  }
+
+  public EmbeddedContext getEmbedded(Class<?> embeddedType) {
+    return state.getSession().getEmbedded(this, embeddedType);
   }
 
   public String getAttribute(NodeAttributeType type) {
@@ -210,10 +239,6 @@ public final class EntityContext extends ObjectContext<EntityContext> {
   public boolean addReference(String name, EntityContext referentCtx, LinkType linkType) {
     DomainSession session = state.getSession();
     return session.setReferenced(referentCtx, name, this, linkType);
-  }
-
-  public Map<String, Object> getPropertyMap() {
-    return properties;
   }
 
 //  public void removeChild(String name) {

@@ -83,7 +83,8 @@ public class MethodMapper<C extends ObjectContext<C>> implements MethodInvoker<C
       EntityContext entityCtx = ctx.getEntity();
       DomainSession session = entityCtx.getSession();
       Class<?> clazz = mapper.getObjectClass();
-      return session.create(clazz, name);
+      ObjectContext created = session.create(clazz, name);
+      return created.getObject();
     }
 
     @Override

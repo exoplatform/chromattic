@@ -21,16 +21,18 @@ package org.chromattic.core.mapper.onetomany.hierarchical;
 
 import org.chromattic.core.DomainSession;
 import org.chromattic.core.EntityContext;
+import org.chromattic.core.ThrowableFactory;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.BeanValueInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRAnyChildCollectionPropertyMapper extends JCRChildNodePropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>> {
+public class JCRAnyChildCollectionPropertyMapper extends JCRChildNodePropertyMapper<PropertyInfo<BeanValueInfo, ValueKind.Single>> {
 
   /** . */
   private final String prefix;
@@ -59,7 +61,7 @@ public class JCRAnyChildCollectionPropertyMapper extends JCRChildNodePropertyMap
     } else {
       DomainSession session = context.getSession();
       EntityContext parentContext = session.unwrapEntity(parent);
-      parentContext.addChild(prefix, context);
+      parentContext.addChild(ThrowableFactory.IAE, ThrowableFactory.ISE, prefix, context);
     }
   }
 }

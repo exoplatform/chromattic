@@ -26,8 +26,6 @@ import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.chromattic.metamodel.mapping.PropertyMapping;
-import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.ProxyType;
 import org.reflext.api.MethodInfo;
 
 import java.lang.reflect.Method;
@@ -54,7 +52,7 @@ public class ObjectMapper<C extends ObjectContext<C>> {
   final Set<MethodMapper<C>> methodMappers;
 
   /** . */
-  final Set<PropertyMapper<?, ?, C>> propertyMappers;
+  final Set<PropertyMapper<?, ?, C, ?>> propertyMappers;
 
   /** . */
   private final Map<Method, MethodInvoker<C>> dispatchers;
@@ -72,13 +70,13 @@ public class ObjectMapper<C extends ObjectContext<C>> {
   private final boolean abstract_;
 
   /** . */
-  private final Map<String, PropertyMapper<?, ?, C>> propertyMapperMap;
+  private final Map<String, PropertyMapper<?, ?, C, ?>> propertyMapperMap;
 
   public ObjectMapper(
     BeanMapping mapping,
     boolean abstract_,
     Class<?> objectClass,
-    Set<PropertyMapper<?, ?, C>> propertyMappers,
+    Set<PropertyMapper<?, ?, C, ?>> propertyMappers,
     Set<MethodMapper<C>> methodMappers,
     NameConflictResolution onDuplicate,
     ObjectFormatter formatter,
@@ -87,15 +85,15 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     NodeTypeKind kind) {
 
     // Build the mapper map
-    Map<String, PropertyMapper<?, ?, C>> propertyMapperMap = new HashMap<String, PropertyMapper<?, ?, C>>();
-    for (PropertyMapper<?, ?, C> propertyMapper : propertyMappers) {
+    Map<String, PropertyMapper<?, ?, C, ?>> propertyMapperMap = new HashMap<String, PropertyMapper<?, ?, C, ?>>();
+    for (PropertyMapper<?, ?, C, ?> propertyMapper : propertyMappers) {
       propertyMapperMap.put(propertyMapper.getInfo().getName(), propertyMapper);
     }
 
     // Build the dispatcher map
     Map<Method, MethodInvoker<C>> dispatchers = new HashMap<Method, MethodInvoker<C>>();
-    for (PropertyMapper<?, ?, C> propertyMapper : propertyMappers) {
-      PropertyMapping<?, ?> info = propertyMapper.getInfo();
+    for (PropertyMapper<?, ?, C, ?> propertyMapper : propertyMappers) {
+      PropertyMapping<?, ?, ?> info = propertyMapper.getInfo();
       MethodInfo getter = info.getProperty().getGetter();
       if (getter != null) {
         dispatchers.put((Method)getter.unwrap(), propertyMapper.getGetter());
@@ -151,11 +149,11 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     return methodMappers;
   }
 
-  public Set<PropertyMapper<?, ?, C>> getPropertyMappers() {
+  public Set<PropertyMapper<?, ?, C, ?>> getPropertyMappers() {
     return propertyMappers;
   }
 
-  public PropertyMapper<?, ?, C> getPropertyMapper(String name) {
+  public PropertyMapper<?, ?, C, ?> getPropertyMapper(String name) {
     return propertyMapperMap.get(name);
   }
 

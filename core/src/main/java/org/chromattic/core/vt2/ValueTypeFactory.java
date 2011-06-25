@@ -48,7 +48,7 @@ public class ValueTypeFactory {
     SimpleTypeProvider vt = vti.create();
 
     //
-    if (!vt.getInternalType().equals(jcrType.getJavaType())) {
+    if (!vt.getInternalType().equals(jcrType.getJavaValueType())) {
       throw new AssertionError("todo with type " + type + " / property type" + vt);
     }
 

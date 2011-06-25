@@ -126,7 +126,8 @@ public class XMLNodeTypeSerializer extends NodeTypeSerializer {
     String name,
     int requiredType,
     boolean multiple,
-    Collection<String> defaultValues) throws SAXException {
+    Collection<String> defaultValues,
+    Collection<String> valueConstraints) throws SAXException {
     ElementEmitter propertyDefinitionXML = propertyDefinitionsXML.element("propertyDefinition").
       withAttribute("name", name).
       withAttribute("requiredType", PropertyType.nameFromValue(requiredType)).
@@ -136,11 +137,16 @@ public class XMLNodeTypeSerializer extends NodeTypeSerializer {
       withAttribute("protected", Boolean.FALSE.toString()).
       withAttribute("multiple", Boolean.toString(multiple));
 
-    // Empty for now
+    // Value constraints
     ElementEmitter valueConstraintsXML = propertyDefinitionXML.element("valueConstraints");
+    if (valueConstraints != null) {
+      for (String valueConstraint : valueConstraints) {
+        valueConstraintsXML.element("valueConstraint").content(valueConstraint);
+      }
+    }
     valueConstraintsXML.close();
 
-    //
+    // Default values
     if (defaultValues != null) {
       ElementEmitter defaultValuesXML = propertyDefinitionXML.element("defaultValues");
       for (String s : defaultValues) {

@@ -169,5 +169,27 @@ The same multi valued JCR property can be exposed both as a single and multi val
 gives access to the complete list of values and the single valued property is useful when the first value needs to be
 accessed.
 
-= Overview of other mapping styles =
+== Residual property mapping ==
 
+JCR provides the notion of residual properies which are denoted by a ##*## name. It provides a convenient and generic
+ storage for properties and can store pretty much any property name that is not already declared by the node
+ itself directly or by inheritance. Such property set is mapped in Chromattic thanks to the
+ ##org.chromattic.api.annotations.Properties## annotation:
+
+{{java}}
+{@include org.chromattic.api.annotations.Properties}
+{{/java}}
+
+=== Single valued residual property mapping ===
+
+Such mapping is achieved by using the ##java.util.Map<String, V>## type where ##V## can be
+
+* a simple type mapped by Chromattic, such as ##String##, ##Integer##, etc... Such simple type is mapped to a JCR specific type, for
+ instance ##String## is mapped to the ##STRING## JCR property type.
+* the ##java.lang.Object## type mapped to the ##UNDEFINED## JCR property type allowing a very generic storage, however that
+ kind of mapping is not type safe.
+
+=== Multi valued residual property mapping ===
+
+Likewise Chromattic is able to manage multi valued simple properties, the support of multi valued residual properties is
+available thanks to the usage of the ##java.util.Map<String, List<V>>## type.

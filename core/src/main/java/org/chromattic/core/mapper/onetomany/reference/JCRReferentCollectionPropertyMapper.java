@@ -24,7 +24,8 @@ import org.chromattic.core.EntityContext;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.JCRNodeCollectionPropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
 import java.util.EnumMap;
@@ -33,7 +34,8 @@ import java.util.EnumMap;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionPropertyMapper<MultiValuedPropertyInfo<BeanValueInfo>, EntityContext> {
+public class JCRReferentCollectionPropertyMapper extends
+    JCRNodeCollectionPropertyMapper<PropertyInfo<BeanValueInfo, ValueKind.Collection>, EntityContext, ValueKind.Collection> {
 
   /** . */
   final static EnumMap<RelationshipType, LinkType> relationshipToLinkMapping;
@@ -52,7 +54,7 @@ public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionProper
   final LinkType linkType;
 
   public JCRReferentCollectionPropertyMapper(
-    RelationshipMapping.OneToMany.Reference info) throws ClassNotFoundException {
+    RelationshipMapping.OneToMany.Reference<ValueKind.Collection> info) throws ClassNotFoundException {
     super(EntityContext.class, info);
 
     //
@@ -62,6 +64,11 @@ public class JCRReferentCollectionPropertyMapper extends JCRNodeCollectionProper
 
   @Override
   public Object get(final EntityContext context) throws Throwable {
-    return new ReferentCollection(context, this);
+    Object collection = context.getAttribute(this);
+    if (collection == null) {
+      collection = new ReferentCollection(context, this);
+      context.setAttribute(this, collection);
+    }
+    return collection;
   }
 }

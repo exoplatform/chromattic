@@ -292,7 +292,7 @@ public class BeanInfoBuilder {
       }
 
       // Now we have all the info to build each property correctly
-      Map<String, PropertyInfo<?>> properties = new HashMap<String, PropertyInfo<?>>();
+      Map<String, PropertyInfo<?, ?>> properties = new HashMap<String, PropertyInfo<?, ?>>();
       for (Map.Entry<String, ToBuild> toBuildEntry : toBuilds.entrySet()) {
 
         // Get parent property if any
@@ -305,7 +305,7 @@ public class BeanInfoBuilder {
         TypeInfo resolvedType = bean.classType.resolve(type);
 
         //
-        PropertyInfo property = null;
+        PropertyInfo<?, ?> property = null;
 
         // We could not resolve it, get the upper bound
         if (resolvedType instanceof TypeVariableInfo) {
@@ -321,20 +321,20 @@ public class BeanInfoBuilder {
           if (rawType instanceof ClassTypeInfo) {
             ClassTypeInfo rawClassType = (ClassTypeInfo)rawType;
             String rawClassName = rawClassType.getName();
-            final MultiValueKind collectionKind;
+            final ValueKind.Multi collectionKind;
             final TypeInfo elementType;
             if (rawClassName.equals("java.util.Collection")) {
-              collectionKind = MultiValueKind.COLLECTION;
+              collectionKind = ValueKind.COLLECTION;
               elementType = parameterizedType.getTypeArguments().get(0);
             } else if (rawClassName.equals("java.util.List")) {
-              collectionKind = MultiValueKind.LIST;
+              collectionKind = ValueKind.LIST;
               elementType = parameterizedType.getTypeArguments().get(0);
             } else if (rawClassName.equals("java.util.Map")) {
               TypeInfo keyType = parameterizedType.getTypeArguments().get(0);
               TypeInfo resolvedKeyType = bean.classType.resolve(keyType);
-              if (resolvedKeyType instanceof ClassTypeInfo && ((ClassTypeInfo)resolvedKeyType).getName().equals("java.lang.String")) {
+              if (resolvedKeyType instanceof ClassTypeInfo && resolvedKeyType.getName().equals("java.lang.String")) {
                 elementType = parameterizedType.getTypeArguments().get(1);
-                collectionKind = MultiValueKind.MAP;
+                collectionKind = ValueKind.MAP;
               } else {
                 elementType = null;
                 collectionKind = null;
@@ -344,27 +344,58 @@ public class BeanInfoBuilder {
               collectionKind = null;
             }
             if (collectionKind != null) {
-              ClassTypeInfo elementClassType = bean.resolveToClass(elementType);
-              if (elementClassType != null) {
-                BeanInfo relatedBean = resolve(elementClassType);
-                if (relatedBean != null) {
-                  property = new MultiValuedPropertyInfo<BeanValueInfo>(
-                      bean,
-                      parentProperty,
-                      toBuildEntry.getKey(),
-                      toBuildEntry.getValue().getter,
-                      toBuildEntry.getValue().setter,
-                      collectionKind,
-                      new BeanValueInfo(type, bean.resolveToClass(elementType), relatedBean));
-                } else {
-                  property = new MultiValuedPropertyInfo<SimpleValueInfo>(
-                      bean,
-                      parentProperty,
-                      toBuildEntry.getKey(),
-                      toBuildEntry.getValue().getter,
-                      toBuildEntry.getValue().setter,
-                      collectionKind,
-                      createSimpleValueInfo(bean, elementType));
+              if (elementType instanceof ParameterizedTypeInfo) {
+                ParameterizedTypeInfo parameterizedElementType = (ParameterizedTypeInfo)elementType;
+                TypeInfo parameterizedElementRawType = parameterizedElementType.getRawType();
+                if (parameterizedElementRawType instanceof ClassTypeInfo) {
+                  ClassTypeInfo parameterizedElementRawClassType = (ClassTypeInfo)parameterizedElementRawType;
+                  String parameterizedElementRawClassName = parameterizedElementRawClassType.getName();
+                  if (parameterizedElementRawClassName.equals("java.util.List")) {
+                    TypeInfo listElementType = parameterizedElementType.getTypeArguments().get(0);
+                    property = new PropertyInfo<SimpleValueInfo, ValueKind.Multi>(
+                        bean,
+                        parentProperty,
+                        toBuildEntry.getKey(),
+                        toBuildEntry.getValue().getter,
+                        toBuildEntry.getValue().setter,
+                        collectionKind,
+                        createSimpleValueInfo(bean, listElementType, ValueKind.LIST));
+                  }
+                }
+              } else {
+                ClassTypeInfo elementClassType = bean.resolveToClass(elementType);
+                if (elementClassType != null) {
+                  BeanInfo relatedBean = resolve(elementClassType);
+                  if (relatedBean != null) {
+                    property = new PropertyInfo<BeanValueInfo, ValueKind.Multi>(
+                        bean,
+                        parentProperty,
+                        toBuildEntry.getKey(),
+                        toBuildEntry.getValue().getter,
+                        toBuildEntry.getValue().setter,
+                        collectionKind,
+                        new BeanValueInfo(type, bean.resolveToClass(elementType), relatedBean));
+                  } else {
+                    if (collectionKind == ValueKind.LIST) {
+                      property = new PropertyInfo<SimpleValueInfo, ValueKind.Single>(
+                          bean,
+                          parentProperty,
+                          toBuildEntry.getKey(),
+                          toBuildEntry.getValue().getter,
+                          toBuildEntry.getValue().setter,
+                          ValueKind.SINGLE,
+                          createSimpleValueInfo(bean, elementType, collectionKind));
+                    } else if (collectionKind == ValueKind.MAP) {
+                      property = new PropertyInfo<SimpleValueInfo, ValueKind.Map>(
+                          bean,
+                          parentProperty,
+                          toBuildEntry.getKey(),
+                          toBuildEntry.getValue().getter,
+                          toBuildEntry.getValue().setter,
+                          ValueKind.MAP,
+                          createSimpleValueInfo(bean, elementType, ValueKind.SINGLE));
+                    }
+                  }
                 }
               }
             }
@@ -379,37 +410,38 @@ public class BeanInfoBuilder {
               case FLOAT:
               case LONG:
               case INT:
-                property = new MultiValuedPropertyInfo<SimpleValueInfo>(
+                property = new PropertyInfo<SimpleValueInfo, ValueKind.Single>(
                     bean,
                     parentProperty,
                     toBuildEntry.getKey(),
                     toBuildEntry.getValue().getter,
                     toBuildEntry.getValue().setter,
-                    MultiValueKind.ARRAY,
-                    createSimpleValueInfo(bean, componentType));
+                    ValueKind.SINGLE,
+                    createSimpleValueInfo(bean, componentType, ValueKind.ARRAY));
                 break;
               default:
                 break;
             }
           } else {
-            property = new MultiValuedPropertyInfo<SimpleValueInfo>(
+            property = new PropertyInfo<SimpleValueInfo, ValueKind.Single>(
                 bean,
                 parentProperty,
                 toBuildEntry.getKey(),
                 toBuildEntry.getValue().getter,
                 toBuildEntry.getValue().setter,
-                MultiValueKind.ARRAY,
-                createSimpleValueInfo(bean, componentType));
+                ValueKind.SINGLE,
+                createSimpleValueInfo(bean, componentType, ValueKind.ARRAY));
           }
         } else if (resolvedType instanceof ClassTypeInfo) {
           BeanInfo related = resolve((ClassTypeInfo)resolvedType);
           if (related != null) {
-            property = new SingleValuedPropertyInfo<BeanValueInfo>(
+            property = new PropertyInfo<BeanValueInfo, ValueKind.Single>(
                 bean,
                 parentProperty,
                 toBuildEntry.getKey(),
                 toBuildEntry.getValue().getter,
                 toBuildEntry.getValue().setter,
+                ValueKind.SINGLE,
                 new BeanValueInfo(type, bean.resolveToClass(type), related));
           }
         }
@@ -417,13 +449,14 @@ public class BeanInfoBuilder {
         // Otherwise consider everything as a single valued simple value
         if (property == null) {
 
-          property = new SingleValuedPropertyInfo<SimpleValueInfo>(
+          property = new PropertyInfo<SimpleValueInfo, ValueKind.Single>(
               bean,
               parentProperty,
               toBuildEntry.getKey(),
               toBuildEntry.getValue().getter,
               toBuildEntry.getValue().setter,
-              createSimpleValueInfo(bean, type));
+              ValueKind.SINGLE,
+              createSimpleValueInfo(bean, type, ValueKind.SINGLE));
         }
 
         //
@@ -434,10 +467,10 @@ public class BeanInfoBuilder {
       bean.properties.putAll(properties);
     }
 
-    private SimpleValueInfo createSimpleValueInfo(BeanInfo bean, TypeInfo type) {
+    private <K extends ValueKind> SimpleValueInfo createSimpleValueInfo(BeanInfo bean, TypeInfo type, K valueKind) {
       TypeInfo resolvedType = bean.getClassType().resolve(type);
       SimpleTypeMapping mapping = simpleTypeResolver.resolveType(resolvedType);
-      return new SimpleValueInfo(type, resolvedType, mapping);
+      return new SimpleValueInfo<K>(type, resolvedType, mapping, valueKind);
     }
   }
 }

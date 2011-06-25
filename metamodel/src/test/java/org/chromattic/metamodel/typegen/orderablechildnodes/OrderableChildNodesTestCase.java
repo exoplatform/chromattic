@@ -19,12 +19,9 @@
 
 package org.chromattic.metamodel.typegen.orderablechildnodes;
 
-import junit.framework.TestCase;
 import org.chromattic.metamodel.typegen.NodeType;
-import org.chromattic.metamodel.typegen.TypeGen;
-import org.chromattic.metamodel.typegen.TypeGenTestCase;
+import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
 import org.chromattic.testgenerator.GroovyTestGeneration;
-import org.reflext.api.ClassTypeInfo;
 
 import java.util.Map;
 
@@ -33,7 +30,7 @@ import java.util.Map;
  * @version $Revision$
  */
 @GroovyTestGeneration(chromatticClasses = {A.class})
-public class OrderableChildNodesTestCase extends TypeGenTestCase {
+public class OrderableChildNodesTestCase extends AbstractSchemaTestCase {
 
   public void testOrderable() throws Exception {
     Map<Class<?>, NodeType> a = assertValid(A.class);

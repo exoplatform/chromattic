@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,17 +17,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metamodel.bean;
+package org.chromattic.metamodel.typegen.properties;
 
-import org.reflext.api.MethodInfo;
+import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.Properties;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class SingleValuedPropertyInfo<V extends ValueInfo> extends PropertyInfo<V> {
+@PrimaryType(name = "a")
+public abstract class A2 {
 
-  public SingleValuedPropertyInfo(BeanInfo bean, PropertyInfo parent, String name, MethodInfo getter, MethodInfo setter, V value) {
-    super(bean, parent, name, getter, setter, value);
-  }
+  @Properties()
+  public abstract Map<String, List<String>> getProperties();
+
 }

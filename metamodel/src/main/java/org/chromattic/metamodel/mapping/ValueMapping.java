@@ -19,22 +19,20 @@
 
 package org.chromattic.metamodel.mapping;
 
-import org.chromattic.metamodel.bean.MultiValuedPropertyInfo;
-import org.chromattic.metamodel.bean.SimpleValueInfo;
-import org.chromattic.metamodel.bean.PropertyInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.*;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> extends PropertyMapping<P, SimpleValueInfo> {
+public class ValueMapping<K extends ValueKind>
+    extends PropertyMapping<PropertyInfo<SimpleValueInfo<K>, ValueKind.Single>, SimpleValueInfo<K>, ValueKind.Single> {
 
   /** . */
   final PropertyDefinitionMapping<?> propertyDefinition;
 
-  public ValueMapping(P property, PropertyDefinitionMapping propertyDefinition) {
+  public ValueMapping(PropertyInfo<SimpleValueInfo<K>, ValueKind.Single> property, PropertyDefinitionMapping propertyDefinition) {
     super(property);
 
     //
@@ -54,26 +52,12 @@ public abstract class ValueMapping<P extends PropertyInfo<SimpleValueInfo>> exte
     return propertyDefinition;
   }
 
-  public static class Single extends ValueMapping<SingleValuedPropertyInfo<SimpleValueInfo>> {
-    public Single(SingleValuedPropertyInfo<SimpleValueInfo> property, PropertyDefinitionMapping propertyDefinition) {
-      super(property, propertyDefinition);
-    }
-
-    @Override
-    public void accept(MappingVisitor visitor) {
-      visitor.singleValueMapping(this);
+  @Override
+  public void accept(MappingVisitor visitor) {
+    if (property.getValueKind() == ValueKind.SINGLE) {
+      visitor.singleValueMapping((ValueMapping<ValueKind.Single>)this);
+    } else {
+      visitor.multiValueMapping((ValueMapping<ValueKind.Multi>)this);
     }
   }
-
-  public static class Multi extends ValueMapping<MultiValuedPropertyInfo<SimpleValueInfo>> {
-    public Multi(MultiValuedPropertyInfo<SimpleValueInfo> property, PropertyDefinitionMapping propertyDefinition) {
-      super(property, propertyDefinition);
-    }
-
-    @Override
-    public void accept(MappingVisitor visitor) {
-      visitor.multiValueMapping(this);
-    }
-  }
-
 }

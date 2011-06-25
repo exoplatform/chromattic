@@ -33,7 +33,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class PropertyInfo<V extends ValueInfo> {
+public class PropertyInfo<V extends ValueInfo, K extends ValueKind> {
 
   /** The owner bean. */
   private final BeanInfo owner;
@@ -51,6 +51,9 @@ public abstract class PropertyInfo<V extends ValueInfo> {
   private final MethodInfo setter;
 
   /** . */
+  private final K valueKind;
+
+  /** . */
   private final V value;
 
   PropertyInfo(
@@ -59,13 +62,36 @@ public abstract class PropertyInfo<V extends ValueInfo> {
       String name,
       MethodInfo getter,
       MethodInfo setter,
-      V value) {
+      K valueKind,
+      V value)  throws NullPointerException, IllegalArgumentException {
+    if (owner == null) {
+      throw new NullPointerException("Owner cannot be null");
+    }
+    if (name == null) {
+      throw new NullPointerException("Name cannot be null");
+    }
+    if (value == null) {
+      throw new NullPointerException("Value cannot be null");
+    }
+    if (valueKind == null) {
+      throw new NullPointerException("Value kind cannot be null");
+    }
+    if (getter == null && setter == null) {
+      throw new IllegalArgumentException("Both setter and getter cannot be null");
+    }
+
+    //
     this.owner = owner;
     this.parent = parent;
     this.name = name;
     this.getter = getter;
     this.setter = setter;
     this.value = value;
+    this.valueKind = valueKind;
+  }
+
+  public K getValueKind() {
+    return valueKind;
   }
 
   public V getValue() {

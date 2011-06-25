@@ -57,7 +57,7 @@ public class ClassPathResolutionTestCase extends TestCase {
     Map<ClassTypeInfo, BeanInfo> beans = info.build(cti);
     assertEquals(2, beans.size());
     BeanInfo bBI = beans.get(cti);
-    SingleValuedPropertyInfo<?> relatedPI = (SingleValuedPropertyInfo<?>)bBI.getProperty("related");
+    PropertyInfo<?, ?> relatedPI = bBI.getProperty("related");
     BeanValueInfo relatedVI = (BeanValueInfo)relatedPI.getValue();
     BeanInfo aBI = relatedVI.getBean();
     assertEquals(A.class.getName(), aBI.getClassType().getName());
@@ -73,7 +73,7 @@ public class ClassPathResolutionTestCase extends TestCase {
     Map<ClassTypeInfo, BeanInfo> a = info.build(cti);
     assertEquals(1, a.size());
     BeanInfo bBI = a.get(cti);
-    SingleValuedPropertyInfo<?> relatedPI = (SingleValuedPropertyInfo<?>)bBI.getProperty("related");
+    PropertyInfo<?, ?> relatedPI = bBI.getProperty("related");
     SimpleValueInfo relatedVI = (SimpleValueInfo)relatedPI.getValue();
     assertEquals(A.class.getName(), relatedVI.getDeclaredType().getName());
   }

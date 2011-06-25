@@ -21,16 +21,17 @@ package org.chromattic.core.mapper;
 
 import org.chromattic.core.EntityContext;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class JCRChildNodePropertyMapper<P extends SingleValuedPropertyInfo<BeanValueInfo>> extends JCRNodePropertyMapper<P, BeanValueInfo, EntityContext> {
+public abstract class JCRChildNodePropertyMapper<P extends PropertyInfo<BeanValueInfo, ValueKind.Single>> extends JCRNodePropertyMapper<P, BeanValueInfo, EntityContext> {
 
-  public JCRChildNodePropertyMapper(PropertyMapping<P, BeanValueInfo> info) throws ClassNotFoundException {
+  public JCRChildNodePropertyMapper(PropertyMapping<P, BeanValueInfo, ValueKind.Single> info) throws ClassNotFoundException {
     super(EntityContext.class, info);
   }
 }

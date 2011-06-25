@@ -23,15 +23,17 @@ package org.chromattic.core.mapper;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.ValueInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public abstract class RelatedPropertyMapper<P extends PropertyInfo<V>, V extends ValueInfo, C extends ObjectContext<C>> extends PropertyMapper<P, V, C> {
+public abstract class RelatedPropertyMapper<P extends PropertyInfo<V, K>, V extends ValueInfo, C extends ObjectContext<C>, K extends ValueKind> extends
+    PropertyMapper<P, V, C, K> {
 
-  protected RelatedPropertyMapper(Class<C> contextType, PropertyMapping<P, V> info) {
+  protected RelatedPropertyMapper(Class<C> contextType, PropertyMapping<P, V, K> info) {
     super(contextType, info);
   }
 

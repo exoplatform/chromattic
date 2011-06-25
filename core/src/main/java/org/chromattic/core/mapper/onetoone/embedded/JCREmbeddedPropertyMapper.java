@@ -22,14 +22,15 @@ import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCREmbeddedPropertyMapper extends JCRNodePropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, BeanValueInfo, EmbeddedContext> {
+public class JCREmbeddedPropertyMapper extends JCRNodePropertyMapper<PropertyInfo<BeanValueInfo, ValueKind.Single>, BeanValueInfo, EmbeddedContext> {
 
 
   public JCREmbeddedPropertyMapper(RelationshipMapping.OneToOne.Embedded info) throws ClassNotFoundException {

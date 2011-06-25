@@ -25,14 +25,15 @@ import org.chromattic.core.ObjectContext;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.JCRNodePropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRNamedReferentPropertyMapper<O extends ObjectContext<O>> extends JCRNodePropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, BeanValueInfo, O> {
+public class JCRNamedReferentPropertyMapper<O extends ObjectContext<O>> extends JCRNodePropertyMapper<PropertyInfo<BeanValueInfo, ValueKind.Single>, BeanValueInfo, O> {
 
   /** . */
   private final String propertyName;

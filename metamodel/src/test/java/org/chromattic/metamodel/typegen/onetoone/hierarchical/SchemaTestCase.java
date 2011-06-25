@@ -20,9 +20,9 @@
 package org.chromattic.metamodel.typegen.onetoone.hierarchical;
 
 import org.chromattic.common.collection.Collections;
+import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.TypeGen;
-import org.chromattic.metamodel.typegen.TypeGenTestCase;
 import org.chromattic.testgenerator.GroovyTestGeneration;
 import org.reflext.api.ClassTypeInfo;
 
@@ -33,7 +33,7 @@ import java.util.Map;
  * @version $Revision$
  */
 @GroovyTestGeneration(chromatticClasses = {A1.class, A2.class, B1.class, B2.class, E1.class, E2.class, D.class})
-public class SchemaTestCase extends TypeGenTestCase {
+public class SchemaTestCase extends AbstractSchemaTestCase {
 
   public void testMappedBy() throws Exception {
     Map<Class<?>, NodeType> a = assertValid(A1.class, A2.class);

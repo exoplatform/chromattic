@@ -20,9 +20,9 @@
 package org.chromattic.metamodel.typegen.property;
 
 import org.chromattic.common.collection.Collections;
+import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
-import org.chromattic.metamodel.typegen.TypeGenTestCase;
 import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.PropertyType;
@@ -33,7 +33,7 @@ import java.util.Map;
  * @version $Revision$
  */
 @GroovyTestGeneration(chromatticClasses = {A1.class, A2.class})
-public class PropertyTestCase extends TypeGenTestCase {
+public class PropertyTestCase extends AbstractSchemaTestCase {
 
   public void testProperty() throws Exception {
     Map<Class<?>, NodeType> a = assertValid(A1.class);

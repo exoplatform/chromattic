@@ -21,14 +21,16 @@ package org.chromattic.api.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Maps a prefix
+ * Maps a prefix to a namespace
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Target({})
 public @interface NamespaceMapping {
 
   /**

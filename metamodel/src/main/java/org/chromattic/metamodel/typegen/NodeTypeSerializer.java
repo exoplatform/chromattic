@@ -48,6 +48,9 @@ public abstract class NodeTypeSerializer {
   /** . */
   private final Map<String, String> mappings;
 
+  /** . */
+  private boolean generatedUndeclaredNodeType;
+
   public NodeTypeSerializer(List<NodeType> nodeTypes, Map<String, String> mappings) {
     if (nodeTypes == null) {
       throw new NullPointerException();
@@ -60,6 +63,7 @@ public abstract class NodeTypeSerializer {
     //
     this.nodeTypes = new LinkedHashMap<String, NodeType>();
     this.mappings = mappings;
+    this.generatedUndeclaredNodeType = false;
 
     //
     for (NodeType nodeType : nodeTypes) {
@@ -77,6 +81,24 @@ public abstract class NodeTypeSerializer {
 
   protected NodeTypeSerializer() {
     this(Collections.<NodeType>emptyList(), Collections.<String, String>emptyMap());
+  }
+
+  /**
+   * Returns true if the serializer should generate the declarations for the undeclared node types.
+   *
+   * @return the generatedUndeclaredNodeType value
+   */
+  public boolean getGeneratedUndeclaredNodeType() {
+    return generatedUndeclaredNodeType;
+  }
+
+  /**
+   * Updates the generatedUndeclaredNodeType value.
+   *
+   * @param generatedUndeclaredNodeType the new generatedUndeclaredNodeType value
+   */
+  public void setGeneratedUndeclaredNodeType(boolean generatedUndeclaredNodeType) {
+    this.generatedUndeclaredNodeType = generatedUndeclaredNodeType;
   }
 
   public void addNodeType(NodeType nodeType) {
@@ -146,9 +168,9 @@ public abstract class NodeTypeSerializer {
     }
 
     // Now process output
-//    if (nodeType.isDeclared()) {
+    if (nodeType.isDeclared() || generatedUndeclaredNodeType) {
       write(nodeType);
-//    }
+    }
 
     // Update context : queued -> done
     queued.remove(nodeType.getName());
@@ -191,7 +213,8 @@ public abstract class NodeTypeSerializer {
         propertyDefinition.getName(),
         propertyDefinition.getType(),
         propertyDefinition.isMultiple(),
-        propertyDefinition.getDefaultValues()
+        propertyDefinition.getDefaultValues(),
+        propertyDefinition.getValueConstraints()
       );
     }
 
@@ -235,7 +258,8 @@ public abstract class NodeTypeSerializer {
     String name,
     int requiredType,
     boolean multiple,
-    Collection<String> defaultValues) throws Exception {
+    Collection<String> defaultValues,
+    Collection<String> valueConstraints) throws Exception {
   }
 
   public void endProperties() throws Exception {

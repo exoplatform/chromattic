@@ -22,16 +22,18 @@ package org.chromattic.core.mapper.onetoone.hierarchical;
 import org.chromattic.core.DomainSession;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.NameKind;
+import org.chromattic.core.ThrowableFactory;
 import org.chromattic.core.mapper.JCRChildNodePropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>> {
+public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper<PropertyInfo<BeanValueInfo, ValueKind.Single>> {
 
   /** . */
   private final String relatedName;
@@ -85,7 +87,7 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper<Sing
       String externalRelatedName = parentCtx.decodeName(relatedName, NameKind.OBJECT);
 
       //
-      parentCtx.addChild(relatedPrefix, externalRelatedName, context);
+      parentCtx.addChild(ThrowableFactory.TODO, ThrowableFactory.ISE, relatedPrefix, externalRelatedName, context);
     }
   }
 }

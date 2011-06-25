@@ -20,12 +20,13 @@
 package org.chromattic.metamodel.typegen.onetomany.reference;
 
 import org.chromattic.common.collection.Collections;
+import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
-import org.chromattic.metamodel.typegen.TypeGenTestCase;
 import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.PropertyType;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -33,7 +34,7 @@ import java.util.Map;
  * @version $Revision$
  */
 @GroovyTestGeneration(chromatticClasses = {C1.class, C2.class})
-public class NodeTypeTestCase extends TypeGenTestCase {
+public class NodeTypeTestCase extends AbstractSchemaTestCase {
 
   public void testProperty() throws Exception {
     Map<Class<?>, NodeType> map = assertValid(C1.class, C2.class);
@@ -45,5 +46,6 @@ public class NodeTypeTestCase extends TypeGenTestCase {
     assertEquals("ref", stringPD.getName());
     assertEquals(PropertyType.REFERENCE, stringPD.getType());
     assertEquals(null, stringPD.getDefaultValues());
+    assertEquals(Arrays.asList(_1.getName()), stringPD.getValueConstraints());
   }
 }

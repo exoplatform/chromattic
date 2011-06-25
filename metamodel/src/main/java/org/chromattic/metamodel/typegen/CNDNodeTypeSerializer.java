@@ -23,6 +23,7 @@ import javax.jcr.PropertyType;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +99,12 @@ public class CNDNodeTypeSerializer extends NodeTypeSerializer {
   }
 
   @Override
-  public void property(String name, int requiredType, boolean multiple, Collection<String> defaultValues) throws Exception {
+  public void property(
+      String name,
+      int requiredType,
+      boolean multiple,
+      Collection<String> defaultValues,
+      Collection<String> valueConstraints) throws Exception {
     writer.print("- ");
     writer.print(name);
     writer.print(" (");
@@ -123,6 +129,20 @@ public class CNDNodeTypeSerializer extends NodeTypeSerializer {
     //
     if (multiple) {
       writer.println("multiple");
+    }
+
+    //
+    if (valueConstraints != null) {
+      boolean prolog = true;
+      for (String valueConstraint : valueConstraints) {
+        if (prolog) {
+          writer.print("< ");
+          prolog = false;
+        } else {
+          writer.print(", ");
+        }
+        writer.print(valueConstraint);
+      }
     }
   }
 

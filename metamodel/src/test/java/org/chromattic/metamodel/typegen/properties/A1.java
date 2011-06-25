@@ -17,12 +17,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.test.property.map;
+package org.chromattic.metamodel.typegen.properties;
 
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
-import org.chromattic.api.annotations.Property;
-import org.chromattic.metamodel.annotations.Skip;
 
 import java.util.Map;
 
@@ -30,16 +28,10 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@Skip
-@PrimaryType(name = "property_map:b")
-public abstract class B1 {
+@PrimaryType(name = "a")
+public abstract class A1 {
 
-  @Properties
-  public abstract Map<String, Object> getProperties();
-
-  @Property(name = "string_array_property")
-  public abstract String[] getString();
-
-  public abstract void setString(String[] s);
+  @Properties()
+  public abstract Map<String, String> getProperties();
 
 }

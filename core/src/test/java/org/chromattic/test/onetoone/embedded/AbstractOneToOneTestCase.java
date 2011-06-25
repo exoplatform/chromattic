@@ -20,6 +20,7 @@
 package org.chromattic.test.onetoone.embedded;
 
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.Status;
 import org.chromattic.common.JCR;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
@@ -46,9 +47,11 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
     C c = session.create(C.class);
+    assertSame(Status.TRANSIENT, session.getStatus(c));
     assertNull(b.getMixin());
     assertNull(c.getEntity());
     setEmbedded(session, b, C.class, c);
+    assertSame(Status.PERSISTENT, session.getStatus(c));
     assertSame(c, b.getMixin());
     assertSame(b, c.getEntity());
     Node node = session.getNode(b);
@@ -65,9 +68,11 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     ChromatticSessionImpl session = login();
     B b = session.insert(B.class, "b");
     C c = session.create(C.class);
+    assertSame(Status.TRANSIENT, session.getStatus(c));
     assertNull(getEmbedded(session, b, C.class));
     assertNull(c.getEntity());
     c.setEntity(b);
+    assertSame(Status.PERSISTENT, session.getStatus(c));
     assertSame(c, b.getMixin());
     assertSame(b, c.getEntity());
     Node node = session.getNode(b);
@@ -78,6 +83,37 @@ public abstract class AbstractOneToOneTestCase extends AbstractTestCase {
     b = session.findByPath(B.class, "b");
     c = getEmbedded(session, b, C.class);
     assertNotNull(c);
+  }
+
+  public void testRemoveMixin() throws Exception {
+    ChromatticSessionImpl session = login();
+    B b = session.insert(B.class, "b");
+    C c = session.create(C.class);
+    setEmbedded(session, b, C.class, c);
+    session.save();
+    setEmbedded(session, b, C.class, null);
+    assertSame(Status.TRANSIENT, session.getStatus(c));
+    Node node = session.getNode(b);
+    assertFalse(JCR.hasMixin(node, getNodeTypeName(C.class)));
+  }
+
+  public void testRemoveAbsentMixin() throws Exception {
+    ChromatticSessionImpl session = login();
+    B b = session.insert(B.class, "b");
+    session.save();
+    setEmbedded(session, b, C.class, null);
+    Node node = session.getNode(b);
+    assertFalse(JCR.hasMixin(node, getNodeTypeName(C.class)));
+  }
+
+  public void testMixinRemoveEntity() throws Exception {
+    ChromatticSessionImpl session = login();
+    B b = session.insert(B.class, "b");
+    C c = session.create(C.class);
+    setEmbedded(session, b, C.class, c);
+    session.save();
+    session.remove(b);
+    assertSame(Status.REMOVED, session.getStatus(c));
   }
 
   public void testGetSuper() throws Exception {

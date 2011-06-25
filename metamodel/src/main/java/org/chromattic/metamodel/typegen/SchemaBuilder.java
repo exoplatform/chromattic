@@ -25,6 +25,7 @@ import org.chromattic.common.collection.SetMap;
 import org.chromattic.metamodel.annotations.NotReferenceable;
 import org.chromattic.metamodel.annotations.Skip;
 import org.chromattic.metamodel.bean.BeanInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.MappingVisitor;
@@ -114,10 +115,16 @@ public class SchemaBuilder {
     }
 
     @Override
-    public void singleValueMapping(ValueMapping.Single mapping) {
+    public void singleValueMapping(ValueMapping<ValueKind.Single> mapping) {
       if (current != null) {
-        if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
-          current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), false));
+        if (mapping.getValue().getValueKind() == ValueKind.SINGLE) {
+          if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+            current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), false));
+          }
+        } else {
+          if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
+            current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), true));
+          }
         }
       }
     }
@@ -125,27 +132,35 @@ public class SchemaBuilder {
     @Override
     public void oneToManyReference(RelationshipMapping.OneToMany.Reference mapping) {
       if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
-        BeanMapping relatedBeanMapping = mapping.getRelatedBeanMapping();
-        NodeType related = resolve(relatedBeanMapping);
-        int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
-        related.properties.put(mapping.getMappedBy(), new PropertyDefinition(mapping.getMappedBy(), false, propertyType));
+        gerenateOneToManyReference(mapping.getOwner(), mapping.getRelatedBeanMapping(), mapping.getType(), mapping.getMappedBy());
       }
+    }
+
+    private void gerenateOneToManyReference(
+        BeanMapping oneMapping,
+        BeanMapping manyMapping,
+        RelationshipType mappingType,
+        String mappedBy) {
+      NodeType related = resolve(manyMapping);
+      PropertyDefinition def;
+      if (mappingType == RelationshipType.REFERENCE) {
+        def = new PropertyDefinition(mappedBy, false, PropertyType.REFERENCE);
+        NodeType nodeType = resolve(oneMapping);
+        if (nodeType != null) {
+          def.addValueConstraint(nodeType.getName());
+        }
+      } else if (mappingType == RelationshipType.PATH) {
+        def = new PropertyDefinition(mappedBy, false, PropertyType.PATH);
+      } else {
+        throw new AssertionError();
+      }
+      related.properties.put(mappedBy, def);
     }
 
     @Override
     public void manyToOneReference(RelationshipMapping.ManyToOne.Reference mapping) {
       if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
-        int propertyType = mapping.getType() == RelationshipType.REFERENCE ? PropertyType.REFERENCE : PropertyType.PATH;
-        current.properties.put(mapping.getMappedBy(), new PropertyDefinition(mapping.getMappedBy(), false, propertyType));
-      }
-    }
-
-    @Override
-    public void multiValueMapping(ValueMapping.Multi mapping) {
-      if (current != null) {
-        if (mapping.isTypeCovariant() && mapping.getProperty().getAnnotation(Skip.class) == null) {
-          current.properties.put(mapping.getPropertyDefinition().getName(), new PropertyDefinition(mapping.getPropertyDefinition(), true));
-        }
+        gerenateOneToManyReference(mapping.getRelatedBeanMapping(), mapping.getOwner(), mapping.getType(), mapping.getMappedBy());
       }
     }
 
@@ -155,12 +170,14 @@ public class SchemaBuilder {
         if (mapping.getProperty().getAnnotation(Skip.class) == null) {
           PropertyMetaType metatype = mapping.getMetaType();
           int code = metatype != null ? metatype.getCode() : PropertyType.UNDEFINED;
+          boolean multiple = mapping.getValueKind() != ValueKind.SINGLE;
           PropertyDefinition pd = current.properties.get("*");
           if (pd == null) {
-            current.properties.put("*", new PropertyDefinition("*", false, code));
+            current.properties.put("*", new PropertyDefinition("*", multiple, code));
           } else {
             if (pd.getType() != code) {
-              current.properties.put("*", new PropertyDefinition("*", false, PropertyType.UNDEFINED));            }
+              current.properties.put("*", new PropertyDefinition("*", multiple, PropertyType.UNDEFINED));
+            }
           }
         }
       }

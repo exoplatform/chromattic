@@ -72,7 +72,7 @@ class TransientEntityContextState extends EntityContextState {
   }
 
   PrimaryTypeInfo getTypeInfo() {
-    throw new IllegalStateException();
+    return null;
   }
 
   <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {

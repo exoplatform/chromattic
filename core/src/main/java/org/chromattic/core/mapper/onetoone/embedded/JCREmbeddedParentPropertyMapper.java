@@ -22,14 +22,16 @@ import org.chromattic.core.EmbeddedContext;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.mapper.RelatedPropertyMapper;
 import org.chromattic.metamodel.bean.BeanValueInfo;
-import org.chromattic.metamodel.bean.SingleValuedPropertyInfo;
+import org.chromattic.metamodel.bean.PropertyInfo;
+import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCREmbeddedParentPropertyMapper extends RelatedPropertyMapper<SingleValuedPropertyInfo<BeanValueInfo>, BeanValueInfo, EntityContext> {
+public class JCREmbeddedParentPropertyMapper extends
+    RelatedPropertyMapper<PropertyInfo<BeanValueInfo, ValueKind.Single>, BeanValueInfo, EntityContext, ValueKind.Single> {
 
   /** . */
   private final Class relatedClass;
@@ -59,18 +61,13 @@ public class JCREmbeddedParentPropertyMapper extends RelatedPropertyMapper<Singl
   @Override
   public void set(EntityContext context, Object value) throws Throwable {
     if (value == null) {
-      throw new UnsupportedOperationException("todo mixin removal");
+      context.removeMixin(relatedClass);
+    } else {
+      if (!relatedClass.isInstance(value)) {
+        throw new ClassCastException();
+      }
+      EmbeddedContext mixinCtx = context.getSession().unwrapMixin(value);
+      context.addMixin(mixinCtx);
     }
-
-    //
-    if (!relatedClass.isInstance(value)) {
-      throw new ClassCastException();
-    }
-
-    //
-    EmbeddedContext mixinCtx = context.getSession().unwrapMixin(value);
-
-    //
-    context.addMixin(mixinCtx);
   }
 }

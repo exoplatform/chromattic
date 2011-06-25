@@ -19,11 +19,14 @@
 
 package org.chromattic.test.onetoone.hierarchical;
 
+import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.Status;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Node;
+import java.lang.IllegalStateException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -72,5 +75,28 @@ public class OneToOneTestCase extends AbstractTestCase {
     assertNotNull(a);
     assertSame(a, session.findById(A3.class, aId));
     assertSame(b, a.getB());
+  }
+
+  public void testSetRemoved() throws Exception {
+    ChromatticSession session = login();
+    A3 a = session.insert(A3.class, "a");
+    B3 b = session.insert(B3.class, "b");
+    session.remove(b);
+    assertEquals(Status.PERSISTENT, session.getStatus(a));
+    assertEquals(Status.REMOVED, session.getStatus(b));
+    try {
+      a.setB(b);
+      fail("Was expecting ISE");
+    } catch (IllegalStateException expected) {
+    }
+    assertEquals(Status.PERSISTENT, session.getStatus(a));
+    assertEquals(Status.REMOVED, session.getStatus(b));
+    try {
+      b.setA(a);
+      fail("Was expecting ISE");
+    } catch (IllegalStateException expected) {
+    }
+    assertEquals(Status.PERSISTENT, session.getStatus(a));
+    assertEquals(Status.REMOVED, session.getStatus(b));
   }
 }

@@ -242,7 +242,7 @@ public class PersistTestCase extends AbstractTestCase {
   public void testTransientParent() throws Exception {
     ChromatticSession session = login();
     A a = session.create(A.class);
-    A b = session.create(A.class);
+    A b = session.create(A.class, "a");
     assertThrowsIAE(session, a, b);
     assertThrowsIAE(session, a, b, "a");
   }

@@ -29,7 +29,7 @@ import java.util.Map;
  * @version $Revision$
  */
 @GroovyTestGeneration(chromatticClasses = {A1.class, A2.class, A3.class, A4.class, A5.class})
-public class InheritanceTestCase extends TypeGenTestCase {
+public class InheritanceTestCase extends AbstractSchemaTestCase {
 
   private NodeType a1NT;
   private NodeType a3NT;
