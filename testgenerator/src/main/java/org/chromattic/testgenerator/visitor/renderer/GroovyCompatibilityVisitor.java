@@ -47,6 +47,9 @@ public class GroovyCompatibilityVisitor extends DumpVisitor
    public void visit(ArrayCreationExpr n, Object arg)
    {
      n.getInitializer().accept(this, arg);
+     printer.print(" as ");
+     n.getType().accept(this, arg);
+     printer.print("[]");
    }
 
   public void visit(ArrayInitializerExpr n, Object arg) {

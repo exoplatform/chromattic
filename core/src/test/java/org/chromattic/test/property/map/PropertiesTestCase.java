@@ -30,7 +30,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-@GroovyTestGeneration(chromatticClasses = {A1.class, B1.class}, exclude = {"testGetMultivaluedValue"})
+@GroovyTestGeneration(chromatticClasses = {A1.class, B1.class})
 public class PropertiesTestCase extends AbstractTestCase {
 
   protected void createDomain() {

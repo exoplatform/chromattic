@@ -137,8 +137,6 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
 
    private void writeGroovyTest(GroovyOutputFormat format, TestRef ref, DumpVisitorFactory factory, String module) throws IOException, ParseException
    {
-
-      // TODO : active excludedMethods
       String name = format.getPackageName(ref).toString().replace(".", "/") + "/" + format.javaFileName(ref);
 
       InputStream testIs = filer.getResource(StandardLocation.SOURCE_PATH, "", module + "/src/test/java/" + name).openInputStream();

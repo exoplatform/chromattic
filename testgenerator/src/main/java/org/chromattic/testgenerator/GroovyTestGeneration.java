@@ -33,5 +33,4 @@ import java.lang.annotation.Target;
 public @interface GroovyTestGeneration
 {
    Class<?>[] chromatticClasses() default {};
-   String[] exclude() default {};
 }
