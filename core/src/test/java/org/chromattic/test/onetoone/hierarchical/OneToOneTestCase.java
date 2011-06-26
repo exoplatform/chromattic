@@ -23,6 +23,7 @@ import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Node;
 import java.lang.IllegalStateException;
@@ -31,6 +32,7 @@ import java.lang.IllegalStateException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A3.class, B3.class})
 public class OneToOneTestCase extends AbstractTestCase {
 
   protected void createDomain() {

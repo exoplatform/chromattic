@@ -24,6 +24,7 @@ import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Node;
 import javax.jcr.ItemNotFoundException;
@@ -32,6 +33,7 @@ import javax.jcr.ItemNotFoundException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A1.class, B1.class})
 public class OneToTestCase extends AbstractTestCase {
 
   protected void createDomain() {

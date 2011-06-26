@@ -20,6 +20,7 @@
 package org.chromattic.test.onetomany.hierarchical.map;
 
 import org.chromattic.test.onetomany.hierarchical.AbstractToManyTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.Collection;
 
@@ -27,6 +28,7 @@ import java.util.Collection;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {B5.class, A5.class})
 public class PrefixedOneToMany2TestCase extends AbstractToManyTestCase<A5, B5> {
 
   public Collection<B5> getMany(A5 many) {

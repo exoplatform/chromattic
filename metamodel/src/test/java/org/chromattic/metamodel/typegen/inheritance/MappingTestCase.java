@@ -22,6 +22,7 @@ package org.chromattic.metamodel.typegen.inheritance;
 import org.chromattic.metamodel.mapping.RelationshipMapping;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.Map;
 
@@ -29,6 +30,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {B1.class, B2.class})
 public class MappingTestCase extends AbstractMappingTestCase {
 
   public void testB() throws Exception {

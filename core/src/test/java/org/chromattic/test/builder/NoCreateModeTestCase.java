@@ -24,6 +24,7 @@ import org.chromattic.api.ChromatticException;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.NoSuchNodeException;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Item;
 import javax.jcr.Session;
@@ -32,6 +33,7 @@ import javax.jcr.Session;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class})
 public class NoCreateModeTestCase extends AbstractTestCase {
 
   @Override

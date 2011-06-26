@@ -21,6 +21,7 @@ package org.chromattic.metamodel.typegen.orderablechildnodes;
 
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class})
 public class OrderableChildNodesTestCase extends AbstractSchemaTestCase {
 
   public void testOrderable() throws Exception {

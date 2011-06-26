@@ -30,6 +30,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.testgenerator</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
     </dependency>
@@ -41,19 +47,13 @@
 
     <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.chromattic</groupId>
       <artifactId>chromattic.apt</artifactId>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.testgenerator</artifactId>
-      <scope>test</scope>
+      <artifactId>chromattic.core</artifactId>
     </dependency>
 
     <dependency>
@@ -77,11 +77,6 @@
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.test</artifactId>
       <scope>test</scope>
@@ -98,16 +93,17 @@
       <version>1.0.8</version>
     </dependency>
 
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
   </dependencies>
 
-  
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
-
-          <!-- Groovy tests -->
           <execution>
             <id>generate-test-sources</id>
             <phase>generate-test-sources</phase>
@@ -126,8 +122,7 @@
             </goals>
           </execution>
 
-          <!-- Groovy universal tests -->
-          <execution>
+           <execution>
             <id>process-test-classes</id>
             <phase>process-test-classes</phase>
             <configuration>
@@ -135,8 +130,10 @@
                 <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
                   <classpath refid="maven.compile.classpath" />
                 </taskdef>
-                <groovyc destdir="${basedir}/target/test-classes/" srcdir="${basedir}/target/test-classes/" listfiles="false">
-                  <classpath refid="maven.compile.classpath" />
+                <groovyc destdir="${basedir}/target/test-classes/" srcdir="${basedir}/target/test-classes/" fork="no" listfiles="false">
+                  <classpath>
+                     <path refid="maven.compile.classpath"/>
+                  </classpath>
                 </groovyc>
               </tasks>
             </configuration>
@@ -145,15 +142,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArguments>
-            <sourcepath>${project.basedir}/../</sourcepath>
-          </compilerArguments>
-        </configuration>
       </plugin>
 
       <plugin>
@@ -165,7 +153,14 @@
 	        </descriptorRefs>
 			  </configuration>
       </plugin>
+      <plugin>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <configuration>
+        <compilerArguments>
+          <sourcepath>${project.basedir}/../</sourcepath>
+        </compilerArguments>
+      </configuration>
+    </plugin>
     </plugins>
   </build>
-  
 </project>

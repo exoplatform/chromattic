@@ -20,6 +20,7 @@
 package org.chromattic.test.onetomany.hierarchical.list;
 
 import org.chromattic.test.onetomany.hierarchical.AbstractMultiChildrenTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.List;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {M1.class, M2.class, M3.class, M4.class})
 public class MultiChildrenTestCase extends AbstractMultiChildrenTestCase<M1, M2, M3, M4> {
 
   @Override

@@ -23,6 +23,7 @@ import org.chromattic.common.collection.Collections;
 import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.PropertyDefinition;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.PropertyType;
 import java.util.Arrays;
@@ -32,6 +33,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {C1.class, C2.class})
 public class NodeTypeTestCase extends AbstractSchemaTestCase {
 
   public void testProperty() throws Exception {

@@ -22,6 +22,7 @@ package org.chromattic.test.format.transform.property;
 import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.format.FooPrefixerFormatter;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.RepositoryException;
 
@@ -29,6 +30,7 @@ import javax.jcr.RepositoryException;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class})
 public class PropertyNameTransformTestCase extends AbstractTestCase {
 
   @Override

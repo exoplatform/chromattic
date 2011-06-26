@@ -22,6 +22,7 @@ package org.chromattic.test.nodeattribute;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Node;
 
@@ -29,6 +30,7 @@ import javax.jcr.Node;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {TNA_A.class})
 public class NodeAttributeTestCase extends AbstractTestCase {
 
   protected void createDomain() {

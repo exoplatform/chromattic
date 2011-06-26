@@ -66,6 +66,22 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.groovy.maven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>generateTestStubs</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+       
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -93,51 +109,6 @@
               <goal>test-jar-no-fork</goal>
             </goals>
             <phase>test-compile</phase>
-          </execution>
-        </executions>
-      </plugin>
-
-       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <phase>compile</phase>
-            <configuration>
-              <tasks>
-                <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
-                  <classpath refid="maven.compile.classpath" />
-                </taskdef>
-                <mkdir dir="${project.build.outputDirectory}" />
-                <groovyc destdir="${project.build.outputDirectory}" srcdir="${basedir}/src/main/java/" listfiles="false">
-                  <classpath refid="maven.compile.classpath" />
-                </groovyc>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>test-compile</id>
-            <phase>test-compile</phase>
-            <configuration>
-              <tasks>
-                <!-- no tests for now -->
-                <!--
-                <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
-                  <classpath refid="maven.compile.classpath" />
-                </taskdef>
-                <mkdir dir="${project.build.outputDirectory}" />
-                <groovyc destdir="${project.build.outputDirectory}" srcdir="${basedir}/src/test/java/" listfiles="false">
-                  <classpath refid="maven.compile.classpath" />
-                </groovyc>
-                -->
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>

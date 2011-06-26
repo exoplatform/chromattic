@@ -20,6 +20,7 @@ package org.chromattic.test.property.defaultvalue;
 
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Node;
 
@@ -27,6 +28,7 @@ import javax.jcr.Node;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A.class})
 public class DefaultValueTestCase extends AbstractTestCase {
 
   protected void createDomain() {

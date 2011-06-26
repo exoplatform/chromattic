@@ -23,6 +23,7 @@ import org.chromattic.common.collection.Collections;
 import org.chromattic.metamodel.typegen.AbstractSchemaTestCase;
 import org.chromattic.metamodel.typegen.NodeType;
 import org.chromattic.metamodel.typegen.TypeGen;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {A1.class, A2.class, A3.class, A4.class, B1.class, B2.class})
 public class EmbeddedTypeTestCase extends AbstractSchemaTestCase {
 
   public void testOwnerMixinType() {

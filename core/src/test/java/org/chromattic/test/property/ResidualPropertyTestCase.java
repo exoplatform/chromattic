@@ -20,6 +20,7 @@ package org.chromattic.test.property;
 
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
@@ -29,6 +30,7 @@ import java.util.Map;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
+@GroovyTestGeneration(chromatticClasses = {TP_TypedResidual.class, TP_UndefinedResidual.class})
 public class ResidualPropertyTestCase extends AbstractTestCase {
 
   protected void createDomain() {
