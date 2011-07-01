@@ -19,7 +19,9 @@
 
 package org.chromattic.metatype.jcr;
 
-public class JCREntityType extends JCRObjectType {
+import org.chromattic.metatype.EntityType;
+
+public class JCREntityType extends JCRObjectType implements EntityType {
 
   public JCREntityType(String name) {
     super(name);

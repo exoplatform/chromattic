@@ -19,8 +19,5 @@
 
 package org.chromattic.metatype;
 
-public interface EmbeddedRelationship extends Relationship {
-
-  EntityType getOrigin();
-
+public interface ExtendsRelationship extends Relationship {
 }

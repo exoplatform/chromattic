@@ -23,39 +23,120 @@ import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.Schema;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.NodeTypeManager;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 public class JCRSchema implements Schema {
 
-  public static JCRSchema build(NodeTypeManager mgr) throws RepositoryException {
-    NodeTypeIterator it = mgr.getAllNodeTypes();
-    ArrayList<JCRObjectType> types = new ArrayList<JCRObjectType>();
-    while (it.hasNext()) {
-      NodeType nodeType = it.nextNodeType();
-      String name = nodeType.getName();
-      JCRObjectType type;
-      if (nodeType.isMixin()) {
-        type = new JCRMixinType(name);
-      } else {
-        type = new JCREntityType(name);
-      }
-      types.add(type);
+  private static class Resolver {
+
+    /** . */
+    private final NodeTypeManager mgr;
+
+    /** . */
+    private final LinkedHashMap<String, JCRObjectType> types;
+
+    private Resolver(NodeTypeManager mgr) {
+      this.mgr = mgr;
+      this.types = new LinkedHashMap<String, JCRObjectType>();
     }
-    return new JCRSchema(types);
+
+    private void resolve() throws RepositoryException {
+      for (NodeTypeIterator it = mgr.getAllNodeTypes();it.hasNext();) {
+        NodeType nodeType = it.nextNodeType();
+        resolve(nodeType.getName());
+      }
+    }
+
+    private void resolve(Set<String> names) throws RepositoryException {
+      for (String name : names) {
+        resolve(name);
+      }
+    }
+
+    private ObjectType resolve(String name) throws RepositoryException {
+      JCRObjectType resolved = types.get(name);
+      if (resolved == null) {
+        NodeType nodeType = mgr.getNodeType(name);
+
+        //
+        if (nodeType.isMixin()) {
+          resolved = new JCRMixinType(name);
+        } else {
+          resolved = new JCREntityType(name);
+        }
+        types.put(name, resolved);
+
+        //
+        List<JCRExtendsRelationship> extendsRelationships = Collections.emptyList();
+        for (NodeType superNodeType : nodeType.getDeclaredSupertypes()) {
+          ObjectType superType = resolve(superNodeType.getName());
+          if (extendsRelationships.isEmpty()) {
+            extendsRelationships = new ArrayList<JCRExtendsRelationship>();
+          }
+          extendsRelationships.add(new JCRExtendsRelationship(resolved, superType));
+        }
+        resolved.extendsRelationships = extendsRelationships;
+
+        //
+        List<JCRHierarchicalRelationship> childrenRelationships = Collections.emptyList();
+        NodeDefinition[] defs = nodeType.getDeclaredChildNodeDefinitions();
+        for (NodeDefinition def : defs) {
+          ObjectType childType = resolve(def.getRequiredPrimaryTypes()[0].getName());
+          JCRHierarchicalRelationship relationship = new JCRHierarchicalRelationship(
+              resolved,
+              childType,
+              def.getName()
+          );
+          if (childrenRelationships.isEmpty()) {
+            childrenRelationships = new ArrayList<JCRHierarchicalRelationship>();
+          }
+          childrenRelationships.add(relationship);
+        }
+        resolved.childrenRelationships = childrenRelationships;
+      }
+
+      //
+      return resolved;
+    }
+  }
+
+  public static JCRSchema build(NodeTypeManager mgr) throws RepositoryException {
+    Resolver resolver = new Resolver(mgr);
+    resolver.resolve();
+    return new JCRSchema(new ArrayList<JCRObjectType>(resolver.types.values()));
+  }
+
+  public static JCRSchema build(NodeTypeManager mgr, Set<String> names) throws RepositoryException {
+    Resolver resolver = new Resolver(mgr);
+    resolver.resolve(names);
+    return new JCRSchema(new ArrayList<JCRObjectType>(resolver.types.values()));
   }
 
   /** . */
-  private final ArrayList<JCRObjectType> types;
+  private final LinkedHashMap<String, JCRObjectType> types;
 
   private JCRSchema(ArrayList<JCRObjectType> types) {
-    this.types = types;
+    LinkedHashMap<String, JCRObjectType> tmp = new LinkedHashMap<String, JCRObjectType>();
+    for (JCRObjectType type : types) {
+      tmp.put(type.getName(), type);
+    }
+
+    //
+    this.types = tmp;
   }
 
   public Collection<? extends ObjectType> getTypes() {
-    return types;
+    return types.values();
+  }
+
+  public ObjectType getType(String name) throws NullPointerException {
+    if (name == null) {
+      throw new NullPointerException("No null name accepted");
+    }
+    return types.get(name);
   }
 }

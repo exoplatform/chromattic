@@ -19,19 +19,28 @@
 
 package org.chromattic.metatype.jcr;
 
+import org.chromattic.metatype.ExtendsRelationship;
 import org.chromattic.metatype.HierarchicalRelationship;
 import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.PropertyType;
 
 import java.util.Collection;
+import java.util.List;
 
 public class JCRObjectType implements ObjectType {
 
   /** . */
   private final String name;
 
+  /** . */
+  List<JCRExtendsRelationship> extendsRelationships;
+
+  /** . */
+  List<JCRHierarchicalRelationship> childrenRelationships;
+
   public JCRObjectType(String name) {
     this.name = name;
+    this.extendsRelationships = null;
   }
 
   public String getName() {
@@ -46,7 +55,16 @@ public class JCRObjectType implements ObjectType {
     throw new UnsupportedOperationException();
   }
 
-  public Collection<HierarchicalRelationship> getChildren() {
-    throw new UnsupportedOperationException();
+  public Collection<? extends HierarchicalRelationship> getChildren() {
+    return childrenRelationships;
+  }
+
+  public Collection<? extends ExtendsRelationship> getExtends() {
+    return extendsRelationships;
+  }
+
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "[" + name + "]";
   }
 }

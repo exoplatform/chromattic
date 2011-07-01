@@ -30,4 +30,6 @@ public interface Schema {
    */
   Collection<? extends ObjectType> getTypes();
 
+  ObjectType getType(String name) throws NullPointerException;
+
 }

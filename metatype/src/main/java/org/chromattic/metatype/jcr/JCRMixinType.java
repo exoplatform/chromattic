@@ -19,7 +19,9 @@
 
 package org.chromattic.metatype.jcr;
 
-public class JCRMixinType extends JCRObjectType {
+import org.chromattic.metatype.MixinType;
+
+public class JCRMixinType extends JCRObjectType implements MixinType {
 
   public JCRMixinType(String name) {
     super(name);

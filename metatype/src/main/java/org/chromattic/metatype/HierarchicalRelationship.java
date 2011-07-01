@@ -20,4 +20,7 @@
 package org.chromattic.metatype;
 
 public interface HierarchicalRelationship extends Relationship {
+
+  String getName();
+
 }

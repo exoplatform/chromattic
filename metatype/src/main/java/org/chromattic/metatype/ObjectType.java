@@ -29,6 +29,8 @@ public interface ObjectType {
 
   PropertyType getProperty(String name);
 
-  Collection<HierarchicalRelationship> getChildren();
+  Collection<? extends HierarchicalRelationship> getChildren();
+
+  Collection<? extends ExtendsRelationship> getExtends();
 
 }

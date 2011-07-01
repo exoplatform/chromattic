@@ -17,7 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metatype;
+package org.chromattic.metatype.jcr;
 
-public interface EntityType extends ObjectType {
+import org.chromattic.metatype.HierarchicalRelationship;
+import org.chromattic.metatype.ObjectType;
+
+public class JCRHierarchicalRelationship extends JCRRelationship implements HierarchicalRelationship {
+
+  /** . */
+  private final String name;
+
+  public JCRHierarchicalRelationship(ObjectType origin, ObjectType destination, String name) {
+    super(origin, destination);
+
+    //
+    this.name = name;
+  }
+
+  public String getName() {
+    return name;
+  }
 }

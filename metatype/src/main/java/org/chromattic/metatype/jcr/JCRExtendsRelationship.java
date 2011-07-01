@@ -17,7 +17,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metatype;
+package org.chromattic.metatype.jcr;
 
-public interface EntityType extends ObjectType {
+import org.chromattic.metatype.ExtendsRelationship;
+import org.chromattic.metatype.ObjectType;
+
+public class JCRExtendsRelationship extends JCRRelationship implements ExtendsRelationship {
+
+  public JCRExtendsRelationship(ObjectType origin, ObjectType destination) {
+    super(origin, destination);
+  }
 }
