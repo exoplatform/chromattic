@@ -501,6 +501,7 @@
            <module>api</module>
            <module>spi</module>
            <module>common</module>
+           <module>metatype</module>
            <module>metamodel</module>
            <module>cglib</module>
            <module>exo</module>
@@ -523,6 +524,7 @@
            <module>api</module>
            <module>spi</module>
            <module>common</module>
+           <module>metatype</module>
            <module>metamodel</module>
            <module>apt</module>
            <module>cglib</module>
