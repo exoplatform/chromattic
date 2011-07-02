@@ -19,55 +19,23 @@
 
 package org.chromattic.metatype.jcr;
 
-import org.chromattic.metatype.ExtendsRelationship;
-import org.chromattic.metatype.HierarchicalRelationship;
-import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.PropertyType;
+import org.chromattic.metatype.ValueType;
 
-import java.util.Collection;
-import java.util.List;
-
-public class JCRObjectType implements ObjectType {
+public class JCRPropertyType implements PropertyType {
 
   /** . */
   private final String name;
 
-  /** . */
-  List<JCRExtendsRelationship> extendsRelationships;
-
-  /** . */
-  List<JCRHierarchicalRelationship> childrenRelationships;
-
-  /** . */
-  List<JCRPropertyType> properties;
-
-  public JCRObjectType(String name) {
+  public JCRPropertyType(String name) {
     this.name = name;
-    this.extendsRelationships = null;
   }
 
   public String getName() {
     return name;
   }
 
-  public Collection<PropertyType> getProperties() {
+  public ValueType getValueType() {
     throw new UnsupportedOperationException();
-  }
-
-  public PropertyType getProperty(String name) {
-    throw new UnsupportedOperationException();
-  }
-
-  public Collection<? extends HierarchicalRelationship> getChildren() {
-    return childrenRelationships;
-  }
-
-  public Collection<? extends ExtendsRelationship> getExtends() {
-    return extendsRelationships;
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName() + "[" + name + "]";
   }
 }

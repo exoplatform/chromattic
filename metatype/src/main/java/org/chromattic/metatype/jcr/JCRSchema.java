@@ -22,11 +22,9 @@ package org.chromattic.metatype.jcr;
 import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.Schema;
 
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NodeDefinition;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.nodetype.*;
 import java.util.*;
 
 public class JCRSchema implements Schema {
@@ -97,6 +95,36 @@ public class JCRSchema implements Schema {
           childrenRelationships.add(relationship);
         }
         resolved.childrenRelationships = childrenRelationships;
+
+        //
+        List<JCRPropertyType> properties = Collections.emptyList();
+        for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions()) {
+          String propertyName = propertyDefinition.getName();
+          JCRPropertyType property = new JCRPropertyType(propertyName);
+          switch (propertyDefinition.getRequiredType()) {
+            case PropertyType.BINARY:
+            case PropertyType.BOOLEAN:
+            case PropertyType.DATE:
+            case PropertyType.STRING:
+            case PropertyType.LONG:
+            case PropertyType.DOUBLE:
+            case PropertyType.UNDEFINED:
+            case PropertyType.NAME:
+              if (properties.isEmpty()) {
+                properties = new ArrayList<JCRPropertyType>();
+              }
+              properties.add(property);
+              break;
+            case PropertyType.REFERENCE:
+            case PropertyType.PATH:
+              // To do relationships by reference or path
+              break;
+            default:
+              // It may be an internal property (exo permission type), we skip it
+              break;
+          }
+        }
+        resolved.properties = properties;
       }
 
       //
