@@ -19,7 +19,7 @@
 
 package org.chromattic.metatype;
 
-public interface PropertyType {
+public interface PropertyDescriptor {
 
   String getName();
 

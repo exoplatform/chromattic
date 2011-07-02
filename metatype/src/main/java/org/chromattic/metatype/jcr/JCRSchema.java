@@ -69,38 +69,38 @@ public class JCRSchema implements Schema {
         types.put(name, resolved);
 
         //
-        List<JCRExtendsRelationship> extendsRelationships = Collections.emptyList();
+        List<JCRInheritanceRelationshipDescriptor> extendsRelationships = Collections.emptyList();
         for (NodeType superNodeType : nodeType.getDeclaredSupertypes()) {
           ObjectType superType = resolve(superNodeType.getName());
           if (extendsRelationships.isEmpty()) {
-            extendsRelationships = new ArrayList<JCRExtendsRelationship>();
+            extendsRelationships = new ArrayList<JCRInheritanceRelationshipDescriptor>();
           }
-          extendsRelationships.add(new JCRExtendsRelationship(resolved, superType));
+          extendsRelationships.add(new JCRInheritanceRelationshipDescriptor(resolved, superType));
         }
         resolved.extendsRelationships = extendsRelationships;
 
         //
-        List<JCRHierarchicalRelationship> childrenRelationships = Collections.emptyList();
+        List<JCRHierarchicalRelationshipDescriptor> childrenRelationships = Collections.emptyList();
         NodeDefinition[] defs = nodeType.getDeclaredChildNodeDefinitions();
         for (NodeDefinition def : defs) {
           ObjectType childType = resolve(def.getRequiredPrimaryTypes()[0].getName());
-          JCRHierarchicalRelationship relationship = new JCRHierarchicalRelationship(
+          JCRHierarchicalRelationshipDescriptor relationship = new JCRHierarchicalRelationshipDescriptor(
               resolved,
               childType,
               def.getName()
           );
           if (childrenRelationships.isEmpty()) {
-            childrenRelationships = new ArrayList<JCRHierarchicalRelationship>();
+            childrenRelationships = new ArrayList<JCRHierarchicalRelationshipDescriptor>();
           }
           childrenRelationships.add(relationship);
         }
         resolved.childrenRelationships = childrenRelationships;
 
         //
-        List<JCRPropertyType> properties = Collections.emptyList();
+        List<JCRPropertyDescriptor> properties = Collections.emptyList();
         for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions()) {
           String propertyName = propertyDefinition.getName();
-          JCRPropertyType property = new JCRPropertyType(propertyName);
+          JCRPropertyDescriptor property = new JCRPropertyDescriptor(propertyName);
           switch (propertyDefinition.getRequiredType()) {
             case PropertyType.BINARY:
             case PropertyType.BOOLEAN:
@@ -111,7 +111,7 @@ public class JCRSchema implements Schema {
             case PropertyType.UNDEFINED:
             case PropertyType.NAME:
               if (properties.isEmpty()) {
-                properties = new ArrayList<JCRPropertyType>();
+                properties = new ArrayList<JCRPropertyDescriptor>();
               }
               properties.add(property);
               break;

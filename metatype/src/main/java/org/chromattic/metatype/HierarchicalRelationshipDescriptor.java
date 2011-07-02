@@ -17,25 +17,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metatype.jcr;
+package org.chromattic.metatype;
 
-import org.chromattic.metatype.PropertyType;
-import org.chromattic.metatype.ValueType;
+public interface HierarchicalRelationshipDescriptor extends RelationshipDescriptor {
 
-public class JCRPropertyType implements PropertyType {
+  String getName();
 
-  /** . */
-  private final String name;
-
-  public JCRPropertyType(String name) {
-    this.name = name;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public ValueType getValueType() {
-    throw new UnsupportedOperationException();
-  }
 }

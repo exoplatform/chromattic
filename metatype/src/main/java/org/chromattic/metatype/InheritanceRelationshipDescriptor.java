@@ -17,14 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metatype.jcr;
+package org.chromattic.metatype;
 
-import org.chromattic.metatype.ExtendsRelationship;
-import org.chromattic.metatype.ObjectType;
-
-public class JCRExtendsRelationship extends JCRRelationship implements ExtendsRelationship {
-
-  public JCRExtendsRelationship(ObjectType origin, ObjectType destination) {
-    super(origin, destination);
-  }
+public interface InheritanceRelationshipDescriptor extends RelationshipDescriptor {
 }

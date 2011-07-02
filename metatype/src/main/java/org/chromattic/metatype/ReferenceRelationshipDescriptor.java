@@ -19,5 +19,10 @@
 
 package org.chromattic.metatype;
 
-public interface ExtendsRelationship extends Relationship {
+public interface ReferenceRelationshipDescriptor extends RelationshipDescriptor {
+
+  String getName();
+
+  ReferenceKind getKind();
+
 }

@@ -19,10 +19,10 @@
 
 package org.chromattic.metatype.jcr;
 
-import org.chromattic.metatype.ExtendsRelationship;
-import org.chromattic.metatype.HierarchicalRelationship;
+import org.chromattic.metatype.InheritanceRelationshipDescriptor;
+import org.chromattic.metatype.HierarchicalRelationshipDescriptor;
 import org.chromattic.metatype.ObjectType;
-import org.chromattic.metatype.PropertyType;
+import org.chromattic.metatype.PropertyDescriptor;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,36 +33,48 @@ public class JCRObjectType implements ObjectType {
   private final String name;
 
   /** . */
-  List<JCRExtendsRelationship> extendsRelationships;
+  List<JCRInheritanceRelationshipDescriptor> extendsRelationships;
 
   /** . */
-  List<JCRHierarchicalRelationship> childrenRelationships;
+  List<JCRHierarchicalRelationshipDescriptor> childrenRelationships;
 
   /** . */
-  List<JCRPropertyType> properties;
+  List<JCRPropertyDescriptor> properties;
 
   public JCRObjectType(String name) {
     this.name = name;
     this.extendsRelationships = null;
+    this.childrenRelationships = null;
+    this.properties = null;
   }
 
   public String getName() {
     return name;
   }
 
-  public Collection<PropertyType> getProperties() {
-    throw new UnsupportedOperationException();
+  public Collection<? extends PropertyDescriptor> getProperties() {
+    return properties;
   }
 
-  public PropertyType getProperty(String name) {
-    throw new UnsupportedOperationException();
+  public PropertyDescriptor getProperty(String name) throws NullPointerException {
+    if (name == null) {
+      throw new NullPointerException();
+    }
+    if (!properties.isEmpty()) {
+      for (JCRPropertyDescriptor property : properties) {
+        if (property.getName().equals(name)) {
+          return property;
+        }
+      }
+    }
+    return null;
   }
 
-  public Collection<? extends HierarchicalRelationship> getChildren() {
+  public Collection<? extends HierarchicalRelationshipDescriptor> getChildrenRelationships() {
     return childrenRelationships;
   }
 
-  public Collection<? extends ExtendsRelationship> getExtends() {
+  public Collection<? extends InheritanceRelationshipDescriptor> getSuperRelationships() {
     return extendsRelationships;
   }
 

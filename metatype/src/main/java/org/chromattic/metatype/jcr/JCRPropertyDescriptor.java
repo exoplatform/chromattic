@@ -17,12 +17,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.chromattic.metatype;
+package org.chromattic.metatype.jcr;
 
-public interface Relationship {
+import org.chromattic.metatype.PropertyDescriptor;
+import org.chromattic.metatype.ValueType;
 
-  ObjectType getOrigin();
+public class JCRPropertyDescriptor implements PropertyDescriptor {
 
-  ObjectType getDestination();
+  /** . */
+  private final String name;
 
+  public JCRPropertyDescriptor(String name) {
+    this.name = name;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public ValueType getValueType() {
+    throw new UnsupportedOperationException();
+  }
 }

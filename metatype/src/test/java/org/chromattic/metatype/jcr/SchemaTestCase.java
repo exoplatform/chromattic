@@ -46,12 +46,12 @@ public class SchemaTestCase extends TestCase {
     //
     EntityType unstructured = (EntityType)schema.getType("nt:unstructured");
     assertNotNull(unstructured);
-    assertEquals(1, unstructured.getExtends().size());
-    ExtendsRelationship toBase = unstructured.getExtends().iterator().next();
+    assertEquals(1, unstructured.getSuperRelationships().size());
+    InheritanceRelationshipDescriptor toBase = unstructured.getSuperRelationships().iterator().next();
     assertSame(base, toBase.getDestination());
     assertSame(unstructured, toBase.getOrigin());
-    assertEquals(1, unstructured.getChildren().size());
-    HierarchicalRelationship toAny = unstructured.getChildren().iterator().next();
+    assertEquals(1, unstructured.getChildrenRelationships().size());
+    HierarchicalRelationshipDescriptor toAny = unstructured.getChildrenRelationships().iterator().next();
     assertSame(unstructured, toAny.getOrigin());
     assertSame(base, toAny.getDestination());
     assertEquals("*", toAny.getName());

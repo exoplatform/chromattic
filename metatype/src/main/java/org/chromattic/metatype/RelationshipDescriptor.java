@@ -19,8 +19,10 @@
 
 package org.chromattic.metatype;
 
-public interface HierarchicalRelationship extends Relationship {
+public interface RelationshipDescriptor {
 
-  String getName();
+  ObjectType getOrigin();
+
+  ObjectType getDestination();
 
 }

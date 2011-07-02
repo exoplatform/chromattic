@@ -25,12 +25,12 @@ public interface ObjectType {
 
   String getName();
 
-  Collection<PropertyType> getProperties();
+  Collection<? extends PropertyDescriptor> getProperties();
 
-  PropertyType getProperty(String name);
+  PropertyDescriptor getProperty(String name) throws NullPointerException;
 
-  Collection<? extends HierarchicalRelationship> getChildren();
+  Collection<? extends HierarchicalRelationshipDescriptor> getChildrenRelationships();
 
-  Collection<? extends ExtendsRelationship> getExtends();
+  Collection<? extends InheritanceRelationshipDescriptor> getSuperRelationships();
 
 }

@@ -20,9 +20,9 @@
 package org.chromattic.metatype.jcr;
 
 import org.chromattic.metatype.ObjectType;
-import org.chromattic.metatype.Relationship;
+import org.chromattic.metatype.RelationshipDescriptor;
 
-public class JCRRelationship implements Relationship {
+public class JCRRelationshipDescriptor implements RelationshipDescriptor {
 
   /** . */
   private final ObjectType origin;
@@ -30,7 +30,7 @@ public class JCRRelationship implements Relationship {
   /** . */
   private final ObjectType destination;
 
-  public JCRRelationship(ObjectType origin, ObjectType destination) {
+  public JCRRelationshipDescriptor(ObjectType origin, ObjectType destination) {
     this.origin = origin;
     this.destination = destination;
   }

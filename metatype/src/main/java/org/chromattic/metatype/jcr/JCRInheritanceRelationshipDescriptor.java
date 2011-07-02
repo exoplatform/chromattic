@@ -19,22 +19,12 @@
 
 package org.chromattic.metatype.jcr;
 
-import org.chromattic.metatype.HierarchicalRelationship;
+import org.chromattic.metatype.InheritanceRelationshipDescriptor;
 import org.chromattic.metatype.ObjectType;
 
-public class JCRHierarchicalRelationship extends JCRRelationship implements HierarchicalRelationship {
+public class JCRInheritanceRelationshipDescriptor extends JCRRelationshipDescriptor implements InheritanceRelationshipDescriptor {
 
-  /** . */
-  private final String name;
-
-  public JCRHierarchicalRelationship(ObjectType origin, ObjectType destination, String name) {
+  public JCRInheritanceRelationshipDescriptor(ObjectType origin, ObjectType destination) {
     super(origin, destination);
-
-    //
-    this.name = name;
-  }
-
-  public String getName() {
-    return name;
   }
 }
