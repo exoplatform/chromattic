@@ -21,6 +21,8 @@ package org.chromattic.metatype;
 
 public enum ValueType {
 
+  ANY,
+
   STRING,
 
   LONG,

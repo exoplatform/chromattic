@@ -20,6 +20,7 @@
 package org.chromattic.metatype.jcr;
 
 import junit.framework.TestCase;
+import org.chromattic.common.collection.Collections;
 import org.chromattic.exo.RepositoryBootstrap;
 import org.chromattic.metatype.*;
 
@@ -27,19 +28,40 @@ import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeTypeManager;
+import java.util.Set;
 
 public class SchemaTestCase extends TestCase {
 
-  public void testFoo() throws Exception {
+  /** . */
+  private Session session;
 
+  /** . */
+  private NodeTypeManager ntMgr;
+
+  @Override
+  protected void setUp() throws Exception {
     RepositoryBootstrap bootstrap = new RepositoryBootstrap();
     bootstrap.bootstrap();
     Repository repo = bootstrap.getRepository();
     Session session = repo.login(new SimpleCredentials("exo", "exo".toCharArray()));
-    NodeTypeManager mgr = session.getWorkspace().getNodeTypeManager();
+    NodeTypeManager ntMgr = session.getWorkspace().getNodeTypeManager();
 
     //
-    Schema schema = JCRSchema.build(mgr);
+    this.session = session;
+    this.ntMgr = ntMgr;
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    session.logout();
+
+    //
+    ntMgr = null;
+    session = null;
+  }
+
+  public void testFoo() throws Exception {
+    Schema schema = JCRSchema.build(ntMgr);
     EntityType base = (EntityType)schema.getType("nt:base");
     assertNotNull(base);
 
@@ -55,5 +77,30 @@ public class SchemaTestCase extends TestCase {
     assertSame(unstructured, toAny.getOrigin());
     assertSame(base, toAny.getDestination());
     assertEquals("*", toAny.getName());
+  }
+
+  public void testProperty() throws Exception
+  {
+    Schema schema = JCRSchema.build(ntMgr);
+    EntityType base = (EntityType)schema.getType("nt:base");
+
+    //
+    assertEquals(Collections.set("jcr:primaryType", "jcr:mixinTypes"), base.getPropertyNames());
+
+    //
+    PropertyDescriptor pt = base.getProperty("jcr:primaryType");
+    assertNotNull(pt);
+    assertEquals("jcr:primaryType", pt.getName());
+    assertEquals(ValueType.STRING, pt.getValueType());
+    assertEquals(true, pt.isSingleValued());
+    assertEquals(false, pt.isMultiValued());
+
+    //
+    PropertyDescriptor mt = base.getProperty("jcr:mixinTypes");
+    assertNotNull(mt);
+    assertEquals("jcr:mixinTypes", mt.getName());
+    assertEquals(ValueType.STRING, mt.getValueType());
+    assertEquals(false, mt.isSingleValued());
+    assertEquals(true, mt.isMultiValued());
   }
 }

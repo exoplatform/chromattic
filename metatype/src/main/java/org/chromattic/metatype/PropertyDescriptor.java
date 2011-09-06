@@ -25,4 +25,8 @@ public interface PropertyDescriptor {
 
   ValueType getValueType();
 
+  boolean isMultiValued();
+
+  boolean isSingleValued();
+
 }

@@ -20,10 +20,13 @@
 package org.chromattic.metatype;
 
 import java.util.Collection;
+import java.util.Set;
 
 public interface ObjectType {
 
   String getName();
+
+  Set<String> getPropertyNames();
 
   Collection<? extends PropertyDescriptor> getProperties();
 

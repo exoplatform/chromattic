@@ -19,8 +19,10 @@
 
 package org.chromattic.metatype.jcr;
 
+import org.chromattic.common.Safe;
 import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.Schema;
+import org.chromattic.metatype.ValueType;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -53,6 +55,20 @@ public class JCRSchema implements Schema {
       for (String name : names) {
         resolve(name);
       }
+    }
+
+    private static final Map<Integer, ValueType> foo = new HashMap<Integer, ValueType>();
+
+    static
+    {
+      foo.put(PropertyType.STRING, ValueType.STRING);
+      foo.put(PropertyType.NAME, ValueType.STRING);
+      foo.put(PropertyType.LONG, ValueType.LONG);
+      foo.put(PropertyType.BOOLEAN, ValueType.BOOLEAN);
+      foo.put(PropertyType.DATE, ValueType.DATE);
+      foo.put(PropertyType.DOUBLE, ValueType.DOUBLE);
+      foo.put(PropertyType.BINARY, ValueType.BINARY);
+      foo.put(PropertyType.UNDEFINED, ValueType.ANY);
     }
 
     private ObjectType resolve(String name) throws RepositoryException {
@@ -97,11 +113,11 @@ public class JCRSchema implements Schema {
         resolved.childrenRelationships = childrenRelationships;
 
         //
-        List<JCRPropertyDescriptor> properties = Collections.emptyList();
+        Map<String, JCRPropertyDescriptor> properties = null;
         for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions()) {
           String propertyName = propertyDefinition.getName();
-          JCRPropertyDescriptor property = new JCRPropertyDescriptor(propertyName);
-          switch (propertyDefinition.getRequiredType()) {
+          int propertyType = propertyDefinition.getRequiredType();
+          switch (propertyType) {
             case PropertyType.BINARY:
             case PropertyType.BOOLEAN:
             case PropertyType.DATE:
@@ -110,10 +126,17 @@ public class JCRSchema implements Schema {
             case PropertyType.DOUBLE:
             case PropertyType.UNDEFINED:
             case PropertyType.NAME:
-              if (properties.isEmpty()) {
-                properties = new ArrayList<JCRPropertyDescriptor>();
+              if (properties == null) {
+                properties = new LinkedHashMap<String, JCRPropertyDescriptor>();
               }
-              properties.add(property);
+              ValueType valueType = foo.get(propertyType);
+              if (valueType == null)
+              {
+                throw new UnsupportedOperationException("Unsupported property type " + propertyType);
+              }
+              boolean singleValued = !propertyDefinition.isMultiple();
+              JCRPropertyDescriptor property = new JCRPropertyDescriptor(propertyName, valueType, singleValued);
+              properties.put(propertyName, property);
               break;
             case PropertyType.REFERENCE:
             case PropertyType.PATH:
@@ -124,7 +147,7 @@ public class JCRSchema implements Schema {
               break;
           }
         }
-        resolved.properties = properties;
+        resolved.properties = Safe.unmodifiable(properties);
       }
 
       //

@@ -18,6 +18,10 @@
  */
 package org.chromattic.common;
 
+import org.chromattic.common.collection.Collections;
+
+import java.util.Map;
+
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
@@ -55,4 +59,16 @@ public class Safe {
     return o == null ? 0 : o.hashCode();
   }
 
+  /**
+   * Wrap the specified map with {@link java.util.Collections#unmodifiableMap(java.util.Map)} when it is not null,
+   * otherwise returns {@link java.util.Collections#emptyMap()}.
+   *
+   * @param map the map
+   * @param <K> the key generic type
+   * @param <V> the value generic type
+   * @return an unmodifiable map
+   */
+  public static <K, V> Map<K, V> unmodifiable(Map<K, V> map) {
+    return map == null ? java.util.Collections.<K, V>emptyMap() : java.util.Collections.unmodifiableMap(map);
+  }
 }

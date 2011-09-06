@@ -26,6 +26,8 @@ import org.chromattic.metatype.PropertyDescriptor;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class JCRObjectType implements ObjectType {
 
@@ -39,7 +41,7 @@ public class JCRObjectType implements ObjectType {
   List<JCRHierarchicalRelationshipDescriptor> childrenRelationships;
 
   /** . */
-  List<JCRPropertyDescriptor> properties;
+  Map<String, JCRPropertyDescriptor> properties;
 
   public JCRObjectType(String name) {
     this.name = name;
@@ -52,22 +54,19 @@ public class JCRObjectType implements ObjectType {
     return name;
   }
 
+  public Set<String> getPropertyNames() {
+    return properties.keySet();
+  }
+
   public Collection<? extends PropertyDescriptor> getProperties() {
-    return properties;
+    return properties.values();
   }
 
   public PropertyDescriptor getProperty(String name) throws NullPointerException {
     if (name == null) {
       throw new NullPointerException();
     }
-    if (!properties.isEmpty()) {
-      for (JCRPropertyDescriptor property : properties) {
-        if (property.getName().equals(name)) {
-          return property;
-        }
-      }
-    }
-    return null;
+    return properties.get(name);
   }
 
   public Collection<? extends HierarchicalRelationshipDescriptor> getChildrenRelationships() {

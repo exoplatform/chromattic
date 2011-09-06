@@ -27,8 +27,16 @@ public class JCRPropertyDescriptor implements PropertyDescriptor {
   /** . */
   private final String name;
 
-  public JCRPropertyDescriptor(String name) {
+  /** . */
+  private final ValueType valueType;
+
+  /** . */
+  private final boolean singleValued;
+
+  public JCRPropertyDescriptor(String name, ValueType valueType, boolean singleValued) {
     this.name = name;
+    this.valueType = valueType;
+    this.singleValued = singleValued;
   }
 
   public String getName() {
@@ -36,6 +44,14 @@ public class JCRPropertyDescriptor implements PropertyDescriptor {
   }
 
   public ValueType getValueType() {
-    throw new UnsupportedOperationException();
+    return valueType;
+  }
+
+  public boolean isMultiValued() {
+    return !singleValued;
+  }
+
+  public boolean isSingleValued() {
+    return singleValued;
   }
 }
