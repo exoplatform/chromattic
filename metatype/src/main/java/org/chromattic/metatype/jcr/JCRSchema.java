@@ -85,18 +85,18 @@ public class JCRSchema implements Schema {
         types.put(name, resolved);
 
         //
-        List<JCRInheritanceRelationshipDescriptor> extendsRelationships = Collections.emptyList();
+        Map<String, JCRInheritanceRelationshipDescriptor> extendsRelationships = null;
         for (NodeType superNodeType : nodeType.getDeclaredSupertypes()) {
           ObjectType superType = resolve(superNodeType.getName());
-          if (extendsRelationships.isEmpty()) {
-            extendsRelationships = new ArrayList<JCRInheritanceRelationshipDescriptor>();
+          if (extendsRelationships == null) {
+            extendsRelationships = new LinkedHashMap<String, JCRInheritanceRelationshipDescriptor>();
           }
-          extendsRelationships.add(new JCRInheritanceRelationshipDescriptor(resolved, superType));
+          extendsRelationships.put(superNodeType.getName(), new JCRInheritanceRelationshipDescriptor(resolved, superType));
         }
-        resolved.extendsRelationships = extendsRelationships;
+        resolved.superRelationships = Safe.unmodifiable(extendsRelationships);
 
         //
-        List<JCRHierarchicalRelationshipDescriptor> childrenRelationships = Collections.emptyList();
+        Map<String, JCRHierarchicalRelationshipDescriptor> childrenRelationships = null;
         NodeDefinition[] defs = nodeType.getDeclaredChildNodeDefinitions();
         for (NodeDefinition def : defs) {
           ObjectType childType = resolve(def.getRequiredPrimaryTypes()[0].getName());
@@ -105,12 +105,12 @@ public class JCRSchema implements Schema {
               childType,
               def.getName()
           );
-          if (childrenRelationships.isEmpty()) {
-            childrenRelationships = new ArrayList<JCRHierarchicalRelationshipDescriptor>();
+          if (childrenRelationships == null) {
+            childrenRelationships = new LinkedHashMap<String, JCRHierarchicalRelationshipDescriptor>();
           }
-          childrenRelationships.add(relationship);
+          childrenRelationships.put(def.getName(), relationship);
         }
-        resolved.childrenRelationships = childrenRelationships;
+        resolved.childrenRelationships = Safe.unmodifiable(childrenRelationships);
 
         //
         Map<String, JCRPropertyDescriptor> properties = null;

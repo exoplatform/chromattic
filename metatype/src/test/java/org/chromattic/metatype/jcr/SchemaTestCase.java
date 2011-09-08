@@ -28,7 +28,6 @@ import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeTypeManager;
-import java.util.Set;
 
 public class SchemaTestCase extends TestCase {
 
@@ -69,11 +68,13 @@ public class SchemaTestCase extends TestCase {
     EntityType unstructured = (EntityType)schema.getType("nt:unstructured");
     assertNotNull(unstructured);
     assertEquals(1, unstructured.getSuperRelationships().size());
-    InheritanceRelationshipDescriptor toBase = unstructured.getSuperRelationships().iterator().next();
+    InheritanceRelationshipDescriptor toBase = unstructured.getSuperRelationships().values().iterator().next();
     assertSame(base, toBase.getDestination());
+    assertSame(toBase, unstructured.getSuperRelationship("nt:base"));
     assertSame(unstructured, toBase.getOrigin());
     assertEquals(1, unstructured.getChildrenRelationships().size());
-    HierarchicalRelationshipDescriptor toAny = unstructured.getChildrenRelationships().iterator().next();
+    HierarchicalRelationshipDescriptor toAny = unstructured.getChildrenRelationships().values().iterator().next();
+    assertSame(toAny, unstructured.getChildRelationship("*"));
     assertSame(unstructured, toAny.getOrigin());
     assertSame(base, toAny.getDestination());
     assertEquals("*", toAny.getName());
@@ -85,7 +86,7 @@ public class SchemaTestCase extends TestCase {
     EntityType base = (EntityType)schema.getType("nt:base");
 
     //
-    assertEquals(Collections.set("jcr:primaryType", "jcr:mixinTypes"), base.getPropertyNames());
+    assertEquals(Collections.set("jcr:primaryType", "jcr:mixinTypes"), base.getProperties().keySet());
 
     //
     PropertyDescriptor pt = base.getProperty("jcr:primaryType");

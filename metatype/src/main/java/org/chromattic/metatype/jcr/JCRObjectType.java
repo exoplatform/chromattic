@@ -24,10 +24,7 @@ import org.chromattic.metatype.HierarchicalRelationshipDescriptor;
 import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.PropertyDescriptor;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class JCRObjectType implements ObjectType {
 
@@ -35,17 +32,17 @@ public class JCRObjectType implements ObjectType {
   private final String name;
 
   /** . */
-  List<JCRInheritanceRelationshipDescriptor> extendsRelationships;
+  Map<String, JCRInheritanceRelationshipDescriptor> superRelationships;
 
   /** . */
-  List<JCRHierarchicalRelationshipDescriptor> childrenRelationships;
+  Map<String, JCRHierarchicalRelationshipDescriptor> childrenRelationships;
 
   /** . */
   Map<String, JCRPropertyDescriptor> properties;
 
   public JCRObjectType(String name) {
     this.name = name;
-    this.extendsRelationships = null;
+    this.superRelationships = null;
     this.childrenRelationships = null;
     this.properties = null;
   }
@@ -54,12 +51,8 @@ public class JCRObjectType implements ObjectType {
     return name;
   }
 
-  public Set<String> getPropertyNames() {
-    return properties.keySet();
-  }
-
-  public Collection<? extends PropertyDescriptor> getProperties() {
-    return properties.values();
+  public Map<String, ? extends PropertyDescriptor> getProperties() {
+    return properties;
   }
 
   public PropertyDescriptor getProperty(String name) throws NullPointerException {
@@ -69,12 +62,26 @@ public class JCRObjectType implements ObjectType {
     return properties.get(name);
   }
 
-  public Collection<? extends HierarchicalRelationshipDescriptor> getChildrenRelationships() {
+  public Map<String, ? extends HierarchicalRelationshipDescriptor> getChildrenRelationships() {
     return childrenRelationships;
   }
 
-  public Collection<? extends InheritanceRelationshipDescriptor> getSuperRelationships() {
-    return extendsRelationships;
+  public HierarchicalRelationshipDescriptor getChildRelationship(String name) {
+    if (name == null) {
+      throw new NullPointerException("Null name argument not accepted");
+    }
+    return childrenRelationships.get(name);
+  }
+
+  public Map<String, ? extends InheritanceRelationshipDescriptor> getSuperRelationships() {
+    return superRelationships;
+  }
+
+  public InheritanceRelationshipDescriptor getSuperRelationship(String name) {
+    if (name == null) {
+      throw new NullPointerException("Null name argument not accepted");
+    }
+    return superRelationships.get(name);
   }
 
   @Override

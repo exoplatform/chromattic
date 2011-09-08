@@ -19,21 +19,22 @@
 
 package org.chromattic.metatype;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.Map;
 
 public interface ObjectType {
 
   String getName();
 
-  Set<String> getPropertyNames();
-
-  Collection<? extends PropertyDescriptor> getProperties();
+  Map<String, ? extends PropertyDescriptor> getProperties();
 
   PropertyDescriptor getProperty(String name) throws NullPointerException;
 
-  Collection<? extends HierarchicalRelationshipDescriptor> getChildrenRelationships();
+  Map<String, ? extends HierarchicalRelationshipDescriptor> getChildrenRelationships();
 
-  Collection<? extends InheritanceRelationshipDescriptor> getSuperRelationships();
+  HierarchicalRelationshipDescriptor getChildRelationship(String name) throws NullPointerException;
+
+  Map<String, ? extends InheritanceRelationshipDescriptor> getSuperRelationships();
+
+  InheritanceRelationshipDescriptor getSuperRelationship(String name) throws NullPointerException;
 
 }
