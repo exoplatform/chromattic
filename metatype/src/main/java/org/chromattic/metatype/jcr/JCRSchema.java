@@ -85,15 +85,45 @@ public class JCRSchema implements Schema {
         types.put(name, resolved);
 
         //
-        Map<String, JCRInheritanceRelationshipDescriptor> extendsRelationships = null;
+        Map<String, JCRInheritanceRelationshipDescriptor> superRelationships = null;
         for (NodeType superNodeType : nodeType.getDeclaredSupertypes()) {
           ObjectType superType = resolve(superNodeType.getName());
-          if (extendsRelationships == null) {
-            extendsRelationships = new LinkedHashMap<String, JCRInheritanceRelationshipDescriptor>();
+          if (superRelationships == null) {
+            superRelationships = new LinkedHashMap<String, JCRInheritanceRelationshipDescriptor>();
           }
-          extendsRelationships.put(superNodeType.getName(), new JCRInheritanceRelationshipDescriptor(resolved, superType));
+          superRelationships.put(superNodeType.getName(), new JCRInheritanceRelationshipDescriptor(resolved, superType));
         }
-        resolved.superRelationships = Safe.unmodifiable(extendsRelationships);
+
+        //
+        Map<String, JCRInheritanceRelationshipDescriptor> superEntityRelationships = null;
+        Map<String, JCRInheritanceRelationshipDescriptor> superMixinRelationships = null;
+        if (superRelationships != null)
+        {
+          for (Map.Entry<String, JCRInheritanceRelationshipDescriptor> entry : superRelationships.entrySet())
+          {
+            if (entry.getValue().getDestination() instanceof JCREntityType)
+            {
+              if (superEntityRelationships == null)
+              {
+                superEntityRelationships = new HashMap<String, JCRInheritanceRelationshipDescriptor>();
+              }
+              superEntityRelationships.put(entry.getKey(), entry.getValue());
+            }
+            else
+            {
+              if (superMixinRelationships == null)
+              {
+                superMixinRelationships = new HashMap<String, JCRInheritanceRelationshipDescriptor>();
+              }
+              superMixinRelationships.put(entry.getKey(), entry.getValue());
+            }
+          }
+        }
+
+        //
+        resolved.superRelationships = Safe.unmodifiable(superRelationships);
+        resolved.superEntityRelationships = Safe.unmodifiable(superEntityRelationships);
+        resolved.superMixinRelationships = Safe.unmodifiable(superMixinRelationships);
 
         //
         Map<String, JCRHierarchicalRelationshipDescriptor> childrenRelationships = null;

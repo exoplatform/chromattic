@@ -35,6 +35,10 @@ public interface ObjectType {
 
   Map<String, ? extends InheritanceRelationshipDescriptor> getSuperRelationships();
 
+  Map<String, ? extends InheritanceRelationshipDescriptor> getSuperEntityRelationships();
+
+  Map<String, ? extends InheritanceRelationshipDescriptor> getSuperMixinRelationships();
+
   InheritanceRelationshipDescriptor getSuperRelationship(String name) throws NullPointerException;
 
 }

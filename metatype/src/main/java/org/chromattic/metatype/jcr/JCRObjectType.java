@@ -24,6 +24,7 @@ import org.chromattic.metatype.HierarchicalRelationshipDescriptor;
 import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.PropertyDescriptor;
 
+import java.util.List;
 import java.util.Map;
 
 public class JCRObjectType implements ObjectType {
@@ -33,6 +34,12 @@ public class JCRObjectType implements ObjectType {
 
   /** . */
   Map<String, JCRInheritanceRelationshipDescriptor> superRelationships;
+
+  /** . */
+  Map<String, JCRInheritanceRelationshipDescriptor> superEntityRelationships;
+
+  /** . */
+  Map<String, JCRInheritanceRelationshipDescriptor> superMixinRelationships;
 
   /** . */
   Map<String, JCRHierarchicalRelationshipDescriptor> childrenRelationships;
@@ -75,6 +82,14 @@ public class JCRObjectType implements ObjectType {
 
   public Map<String, ? extends InheritanceRelationshipDescriptor> getSuperRelationships() {
     return superRelationships;
+  }
+
+  public Map<String, ? extends InheritanceRelationshipDescriptor> getSuperEntityRelationships() {
+    return superEntityRelationships;
+  }
+
+  public Map<String, ? extends InheritanceRelationshipDescriptor> getSuperMixinRelationships() {
+    return superMixinRelationships;
   }
 
   public InheritanceRelationshipDescriptor getSuperRelationship(String name) {

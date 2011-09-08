@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.exo.RepositoryBootstrap;
 import org.chromattic.metatype.*;
+import org.jboss.util.platform.Java;
 
 import javax.jcr.Repository;
 import javax.jcr.Session;
@@ -67,11 +68,13 @@ public class SchemaTestCase extends TestCase {
     //
     EntityType unstructured = (EntityType)schema.getType("nt:unstructured");
     assertNotNull(unstructured);
-    assertEquals(1, unstructured.getSuperRelationships().size());
-    InheritanceRelationshipDescriptor toBase = unstructured.getSuperRelationships().values().iterator().next();
+    InheritanceRelationshipDescriptor toBase = unstructured.getSuperRelationship("nt:base");
     assertSame(base, toBase.getDestination());
     assertSame(toBase, unstructured.getSuperRelationship("nt:base"));
     assertSame(unstructured, toBase.getOrigin());
+    assertEquals(unstructured.getSuperRelationships(), java.util.Collections.singletonMap("nt:base", toBase));
+    assertEquals(unstructured.getSuperEntityRelationships(), java.util.Collections.singletonMap("nt:base", toBase));
+    assertEquals(unstructured.getSuperMixinRelationships(), java.util.Collections.<String, InheritanceRelationshipDescriptor>emptyMap());
     assertEquals(1, unstructured.getChildrenRelationships().size());
     HierarchicalRelationshipDescriptor toAny = unstructured.getChildrenRelationships().values().iterator().next();
     assertSame(toAny, unstructured.getChildRelationship("*"));
