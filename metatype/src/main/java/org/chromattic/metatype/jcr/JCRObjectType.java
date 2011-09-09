@@ -48,7 +48,7 @@ public class JCRObjectType implements ObjectType {
   Map<String, JCRHierarchicalRelationshipDescriptor> childrenRelationships;
 
   /** . */
-  Map<String, JCRPropertyDescriptor> properties;
+  Map<String, JCRPropertyDescriptor<?>> properties;
 
   public JCRObjectType(String name) {
     this.name = name;
@@ -61,22 +61,22 @@ public class JCRObjectType implements ObjectType {
     return name;
   }
 
-  public Map<String, ? extends PropertyDescriptor> getProperties() {
+  public Map<String, ? extends PropertyDescriptor<?>> getProperties() {
     return properties;
   }
 
-  public PropertyDescriptor getProperty(String name) throws NullPointerException {
+  public PropertyDescriptor<?> getProperty(String name) throws NullPointerException {
     if (name == null) {
       throw new NullPointerException();
     }
     return properties.get(name);
   }
 
-  public PropertyDescriptor resolveProperty(String name) throws NullPointerException {
+  public PropertyDescriptor<?> resolveProperty(String name) throws NullPointerException {
     if (name == null) {
       throw new NullPointerException();
     }
-    PropertyDescriptor pd = properties.get(name);
+    PropertyDescriptor<?> pd = properties.get(name);
     if (pd == null) {
       pd = properties.get("*");
     }

@@ -160,7 +160,7 @@ public class JCRSchema implements Schema {
         resolved.childrenRelationships = Safe.unmodifiable(childrenRelationships);
 
         //
-        Map<String, JCRPropertyDescriptor> properties = null;
+        Map<String, JCRPropertyDescriptor<?>> properties = null;
         for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions()) {
           String propertyName = propertyDefinition.getName();
           int propertyType = propertyDefinition.getRequiredType();
@@ -176,15 +176,15 @@ public class JCRSchema implements Schema {
               propertyType == PropertyType.NAME ||
               propertyType == PropertyType.PATH) {
             if (properties == null) {
-              properties = new LinkedHashMap<String, JCRPropertyDescriptor>();
+              properties = new LinkedHashMap<String, JCRPropertyDescriptor<?>>();
             }
-            ValueType valueType = foo.get(propertyType);
+            ValueType<?> valueType = foo.get(propertyType);
             if (valueType == null)
             {
               throw new UnsupportedOperationException("Unsupported property type " + propertyType);
             }
             boolean singleValued = !propertyDefinition.isMultiple();
-            JCRPropertyDescriptor property = new JCRPropertyDescriptor(propertyName, valueType, singleValued);
+            JCRPropertyDescriptor<?> property = JCRPropertyDescriptor.create(propertyName, valueType, singleValued);
             properties.put(propertyName, property);
           }
 

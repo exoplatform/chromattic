@@ -111,7 +111,7 @@ class PersistentEntityContextState extends EntityContextState {
   <V> V getPropertyValue(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
     try {
       //
-      PropertyDescriptor desc = nodeTypeInfo.resolveProperty(propertyName);
+      PropertyDescriptor<?> desc = nodeTypeInfo.resolveProperty(propertyName);
       if (desc == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be loaded from node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
@@ -207,7 +207,7 @@ class PersistentEntityContextState extends EntityContextState {
   @Override
   <L, V> L getPropertyValues(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType) {
     try {
-      PropertyDescriptor desc = nodeTypeInfo.resolveProperty(propertyName);
+      PropertyDescriptor<?> desc = nodeTypeInfo.resolveProperty(propertyName);
       if (desc == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be from from node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
@@ -282,7 +282,7 @@ class PersistentEntityContextState extends EntityContextState {
   <V> void setPropertyValue(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V propertyValue) {
     try {
       //
-      PropertyDescriptor desc = nodeTypeInfo.resolveProperty(propertyName);
+      PropertyDescriptor<?> desc = nodeTypeInfo.resolveProperty(propertyName);
 
       //
       if (desc == null) {
@@ -367,7 +367,7 @@ class PersistentEntityContextState extends EntityContextState {
   @Override
   <L, V> void setPropertyValues(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType, L propertyValues) {
     try {
-      PropertyDescriptor desc = nodeTypeInfo.resolveProperty(propertyName);
+      PropertyDescriptor<?> desc = nodeTypeInfo.resolveProperty(propertyName);
       if (desc == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());

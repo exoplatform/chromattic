@@ -25,11 +25,11 @@ public interface ObjectType {
 
   String getName();
 
-  Map<String, ? extends PropertyDescriptor> getProperties();
+  Map<String, ? extends PropertyDescriptor<?>> getProperties();
 
-  PropertyDescriptor getProperty(String name) throws NullPointerException;
+  PropertyDescriptor<?> getProperty(String name) throws NullPointerException;
 
-  PropertyDescriptor resolveProperty(String name) throws NullPointerException;
+  PropertyDescriptor<?> resolveProperty(String name) throws NullPointerException;
 
   Map<String, ? extends HierarchicalRelationshipDescriptor> getChildrenRelationships();
 

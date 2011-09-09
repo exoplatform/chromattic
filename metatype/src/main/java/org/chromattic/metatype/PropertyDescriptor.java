@@ -19,11 +19,11 @@
 
 package org.chromattic.metatype;
 
-public interface PropertyDescriptor {
+public interface PropertyDescriptor<V> {
 
   String getName();
 
-  ValueType getValueType();
+  ValueType<V> getValueType();
 
   boolean isMultiValued();
 
