@@ -20,8 +20,6 @@
 package org.chromattic.core.api;
 
 import org.chromattic.core.DomainSessionImpl;
-import org.chromattic.core.jcr.SessionWrapper;
-import org.chromattic.core.jcr.SessionWrapperImpl;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.core.Domain;
 import org.chromattic.api.ChromatticSession;
@@ -39,23 +37,19 @@ import javax.jcr.RepositoryException;
 public class ChromatticImpl implements Chromattic {
 
   /** . */
-  private SessionLifeCycle sessionLifeCycle;
-
-  /** . */
   private Domain domain;
 
-  ChromatticImpl(Domain domain, SessionLifeCycle sessionLifeCycle) {
+  ChromatticImpl(Domain domain) {
     this.domain = domain;
-    this.sessionLifeCycle = sessionLifeCycle;
   }
 
   public SessionLifeCycle getSessionLifeCycle() {
-    return sessionLifeCycle;
+    return domain.getSessionLifeCycle();
   }
 
   public ChromatticSession openSession() {
     try {
-      Session session = sessionLifeCycle.login();
+      Session session = domain.getSessionLifeCycle().login();
       return build(session);
     }
     catch (RepositoryException e) {
@@ -64,13 +58,12 @@ public class ChromatticImpl implements Chromattic {
   }
 
   private ChromatticSession build(Session session) {
-    SessionWrapper wrapper = new SessionWrapperImpl(sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
-    return new ChromatticSessionImpl(new DomainSessionImpl(domain, wrapper));
+    return new ChromatticSessionImpl(new DomainSessionImpl(domain, session));
   }
 
   public ChromatticSession openSession(String workspace) {
     try {
-      Session session = sessionLifeCycle.login(workspace);
+      Session session = getSessionLifeCycle().login(workspace);
       return build(session);
     }
     catch (RepositoryException e) {
@@ -80,7 +73,7 @@ public class ChromatticImpl implements Chromattic {
 
   public ChromatticSession openSession(Credentials credentials, String workspace) {
     try {
-      Session session = sessionLifeCycle.login(credentials, workspace);
+      Session session = getSessionLifeCycle().login(credentials, workspace);
       return build(session);
     }
     catch (RepositoryException e) {
@@ -90,7 +83,7 @@ public class ChromatticImpl implements Chromattic {
 
   public ChromatticSession openSession(Credentials credentials) {
     try {
-      Session session = sessionLifeCycle.login(credentials);
+      Session session = getSessionLifeCycle().login(credentials);
       return build(session);
     }
     catch (RepositoryException e) {

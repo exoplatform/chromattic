@@ -24,6 +24,8 @@ import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.SessionWrapperImpl;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.common.collection.Collections;
+import org.chromattic.metatype.Schema;
+import org.chromattic.metatype.jcr.JCRSchema;
 
 import java.util.*;
 
@@ -47,7 +49,11 @@ public class SessionManagerTestCase extends AbstractJCRTestCase {
     super.setUp();
 
     //
-    this.mgr = new SessionWrapperImpl(sessionLF, login(), false, false);
+    Session session = login();
+    Schema schema = JCRSchema.build(session.getWorkspace().getNodeTypeManager());
+
+    //
+    this.mgr = new SessionWrapperImpl(schema, sessionLF, session, false, false);
   }
 
   public void testRemoveTransientReferent() throws Exception {

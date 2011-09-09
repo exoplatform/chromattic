@@ -145,6 +145,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
     // Build domain
     Domain domain = new Domain(
+      sessionLifeCycle,
       mappers,
       instrumentor,
       objectFormatter,
@@ -157,6 +158,6 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       rootNodeType);
 
     //
-    return new ChromatticImpl(domain, sessionLifeCycle);
+    return new ChromatticImpl(domain);
   }
 }

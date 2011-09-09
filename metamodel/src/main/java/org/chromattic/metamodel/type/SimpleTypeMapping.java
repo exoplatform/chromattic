@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.type;
 
-import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
+import org.chromattic.metatype.ValueType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
 /**
@@ -36,7 +36,7 @@ public interface SimpleTypeMapping {
    *
    * @return the property meta type
    */
-  PropertyMetaType<?> getPropertyMetaType();
+  ValueType<?> getPropertyMetaType();
 
   /**
    * Create a simple type provider for this mapping. Note that this operation is only guaranted during the runtime

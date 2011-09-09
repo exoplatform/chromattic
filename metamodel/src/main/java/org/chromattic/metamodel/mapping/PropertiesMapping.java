@@ -22,7 +22,7 @@ package org.chromattic.metamodel.mapping;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.ValueInfo;
 import org.chromattic.metamodel.bean.ValueKind;
-import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
+import org.chromattic.metatype.ValueType;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -31,7 +31,7 @@ import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<PropertyInfo<V, ValueKind.Map>,V, ValueKind.Map> {
 
   /** . */
-  private final PropertyMetaType<?> metaType;
+  private final ValueType<?> metaType;
 
   /** . */
   private final ValueKind valueKind;
@@ -39,7 +39,7 @@ public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<Prop
   /** . */
   private final String prefix;
 
-  public PropertiesMapping(PropertyInfo<V, ValueKind.Map> property, String prefix, PropertyMetaType<?> metaType, ValueKind valueKind) {
+  public PropertiesMapping(PropertyInfo<V, ValueKind.Map> property, String prefix, ValueType<?> metaType, ValueKind valueKind) {
     super(property);
 
     //
@@ -52,7 +52,7 @@ public class PropertiesMapping<V extends ValueInfo> extends PropertyMapping<Prop
     return prefix;
   }
 
-  public PropertyMetaType<?> getMetaType() {
+  public ValueType<?> getMetaType() {
     return metaType;
   }
 

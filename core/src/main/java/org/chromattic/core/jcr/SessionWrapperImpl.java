@@ -20,6 +20,8 @@
 package org.chromattic.core.jcr;
 
 import org.chromattic.common.logging.Logger;
+import org.chromattic.metatype.ObjectType;
+import org.chromattic.metatype.Schema;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
 import javax.jcr.*;
@@ -44,13 +46,13 @@ public class SessionWrapperImpl implements SessionWrapper {
   private static final Logger log = Logger.getLogger(SessionWrapperImpl.class);
 
   /** . */
+  private final SessionLifeCycle sessionLifeCycle;
+
+  /** . */
   private Session session;
 
   /** . */
   private AbstractLinkManager[] linkMgrs;
-
-  /** . */
-  private SessionLifeCycle sessionLifeCycle;
 
   /** . */
   private final boolean hasPropertyOptimized;
@@ -58,21 +60,30 @@ public class SessionWrapperImpl implements SessionWrapper {
   /** . */
   private final boolean hasNodeOptimized;
 
+  /** . */
+  private final Schema schema;
+
   public SessionWrapperImpl(
+    Schema schema,
     SessionLifeCycle sessionLifeCycle,
     Session session,
     boolean hasPropertyOptimized,
     boolean hasNodeOptimized) {
 
     //
+    this.schema = schema;
+    this.sessionLifeCycle = sessionLifeCycle;
     this.hasPropertyOptimized = hasPropertyOptimized;
     this.hasNodeOptimized = hasNodeOptimized;
-    this.sessionLifeCycle = sessionLifeCycle;
     this.session = session;
     this.linkMgrs = new AbstractLinkManager[] {
       new ReferenceLinkManager(session),
       new PathLinkManager(session)
     };
+  }
+
+  public Schema getSchema() {
+    return schema;
   }
 
   public Iterator<Property> getProperties(Node node) throws RepositoryException {
@@ -233,6 +244,20 @@ public class SessionWrapperImpl implements SessionWrapper {
     return false;
   }
 
+  public boolean isReferenceable(Node node) throws RepositoryException {
+    //
+    for (NodeType nt : node.getMixinNodeTypes()) {
+      if (nt.getName().equals("mix:referenceable")) {
+        return true;
+      }
+    }
+
+    //
+    ObjectType type = schema.getType(node.getPrimaryNodeType().getName());
+    ObjectType referenceableType = schema.getType("mix:referenceable");
+    return type.inherits(referenceableType);
+  }
+
   /**
    * Need to find a way to optimized this method as it forces us to visit the entire children hierarchy.
    *
@@ -263,7 +288,7 @@ public class SessionWrapperImpl implements SessionWrapper {
   }
 
   public void save() throws RepositoryException {
-    sessionLifeCycle.save(session);
+   sessionLifeCycle.save(session);
     for (AbstractLinkManager mgr : linkMgrs) {
       mgr.clear();
     }
@@ -313,7 +338,7 @@ public class SessionWrapperImpl implements SessionWrapper {
       for (AbstractLinkManager mgr : linkMgrs) {
         mgr.clear();
       }
-      sessionLifeCycle.close(session);
+     sessionLifeCycle.close(session);
       session = null;
     }
   }

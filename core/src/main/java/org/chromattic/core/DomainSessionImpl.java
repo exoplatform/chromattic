@@ -23,12 +23,13 @@ import org.chromattic.api.NoSuchNodeException;
 import org.chromattic.api.Status;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
-import org.chromattic.core.jcr.type.MixinTypeInfo;
-import org.chromattic.core.jcr.type.PrimaryTypeInfo;
-import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
+import org.chromattic.metatype.EntityType;
+import org.chromattic.metatype.InheritanceRelationshipDescriptor;
+import org.chromattic.metatype.MixinType;
+
 import static org.chromattic.common.JCR.qualify;
 
 import javax.jcr.*;
@@ -48,8 +49,8 @@ public class DomainSessionImpl extends DomainSession {
   /** . */
   private Map<String, EntityContext> contexts;
 
-  public DomainSessionImpl(Domain domain, SessionWrapper sessionWrapper) {
-    super(domain, sessionWrapper);
+  public DomainSessionImpl(Domain domain, Session session) {
+    super(domain, session);
 
     //
     this.domain = domain;
@@ -223,7 +224,7 @@ public class DomainSessionImpl extends DomainSession {
     Node dstNode = sessionWrapper.addNode(srcNode, name, primaryNodeTypeName, Collections.<String>emptyList());
 
     // If the node is not referenceable, make it so
-    if (!domain.nodeInfoManager.isReferenceable(dstNode)) {
+    if (!sessionWrapper.isReferenceable(dstNode)) {
       dstNode.addMixin("mix:referenceable");
     }
 
@@ -355,7 +356,7 @@ public class DomainSessionImpl extends DomainSession {
 
         //
         NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
-        MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
+        MixinType mixinTypeInfo = (MixinType)sessionWrapper.getSchema().getType(mixinTypeName);
 
         // Perform wiring
         entityCtx.setAttribute(mixinCtx.mapper, mixinCtx);
@@ -415,7 +416,7 @@ public class DomainSessionImpl extends DomainSession {
           String mixinTypeName = mapper.getNodeTypeName();
           if (sessionWrapper.haxMixin(node, mixinTypeName)) {
             NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
-            MixinTypeInfo mixinTypeInfo = domain.nodeInfoManager.getMixinTypeInfo(mixinType);
+            MixinType mixinTypeInfo = (MixinType)sessionWrapper.getSchema().getType(mixinType.getName());
 
             //
             embeddedCtx = new EmbeddedContext(mapper, this);
@@ -424,13 +425,13 @@ public class DomainSessionImpl extends DomainSession {
             embeddedCtx.typeInfo = mixinTypeInfo;
           }
         } else {
-          PrimaryTypeInfo typeInfo = entityCtx.state.getTypeInfo();
-          PrimaryTypeInfo superTI = (PrimaryTypeInfo)typeInfo.getSuperType(mapper.getNodeTypeName());
+          EntityType typeInfo = entityCtx.state.getTypeInfo();
+          InheritanceRelationshipDescriptor superTI = typeInfo.getSuperEntityRelationships().get(mapper.getNodeTypeName());
           if (superTI != null) {
             embeddedCtx = new EmbeddedContext(mapper, this);
             entityCtx.setAttribute(embeddedCtx.mapper, embeddedCtx);
             embeddedCtx.relatedEntity = entityCtx;
-            embeddedCtx.typeInfo = superTI;
+            embeddedCtx.typeInfo = superTI.getDestination();
           }
         }
       }
@@ -627,7 +628,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    if (!domain.nodeInfoManager.isReferenceable(node)) {
+    if (!sessionWrapper.isReferenceable(node)) {
       log.trace("Cannot map non referenceable node {} to a chromattic object", node.getPath());
       return null;
     }

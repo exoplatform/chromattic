@@ -20,8 +20,8 @@
 package org.chromattic.core;
 
 import org.chromattic.api.Status;
-import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
+import org.chromattic.metatype.ObjectType;
 import org.chromattic.spi.instrument.ProxyType;
 
 /**
@@ -40,7 +40,7 @@ public final class EmbeddedContext extends ObjectContext<EmbeddedContext> {
   EntityContext relatedEntity;
 
   /** The related type info. */
-  NodeTypeInfo typeInfo;
+  ObjectType typeInfo;
 
   /** . */
   final DomainSession session;
@@ -82,7 +82,7 @@ public final class EmbeddedContext extends ObjectContext<EmbeddedContext> {
   }
 
   @Override
-  public NodeTypeInfo getTypeInfo() {
+  public ObjectType getTypeInfo() {
     if (typeInfo == null) {
       throw new IllegalStateException();
     }

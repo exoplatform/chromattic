@@ -29,6 +29,8 @@ public interface ObjectType {
 
   PropertyDescriptor getProperty(String name) throws NullPointerException;
 
+  PropertyDescriptor resolveProperty(String name) throws NullPointerException;
+
   Map<String, ? extends HierarchicalRelationshipDescriptor> getChildrenRelationships();
 
   HierarchicalRelationshipDescriptor getChildRelationship(String name) throws NullPointerException;

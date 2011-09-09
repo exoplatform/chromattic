@@ -23,9 +23,9 @@ import org.chromattic.api.ChromatticIOException;
 import org.chromattic.api.Status;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.jcr.Path;
-import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.vt2.ValueDefinition;
+import org.chromattic.metatype.ObjectType;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import javax.jcr.RepositoryException;
@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -53,7 +52,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
    *
    * @return the type info
    */
-  public abstract NodeTypeInfo getTypeInfo();
+  public abstract ObjectType getTypeInfo();
 
   public abstract Status getStatus();
 
@@ -122,7 +121,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     Path.validateName(propertyName);
 
     //
-    NodeTypeInfo typeInfo = getTypeInfo();
+    ObjectType typeInfo = getTypeInfo();
     return state.getPropertyValue(typeInfo, propertyName, type);
   }
 
@@ -135,7 +134,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     Path.validateName(propertyName);
 
     //
-    NodeTypeInfo typeInfo = getTypeInfo();
+    ObjectType typeInfo = getTypeInfo();
     return state.getPropertyValues(typeInfo, propertyName, simpleType, arrayType);
   }
 
@@ -154,7 +153,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     EventBroadcaster broadcaster = state.getSession().broadcaster;
 
     //
-    NodeTypeInfo typeInfo = getTypeInfo();
+    ObjectType typeInfo = getTypeInfo();
 
     //
     if (o instanceof InputStream && broadcaster.hasStateChangeListeners()) {
@@ -183,7 +182,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     Path.validateName(propertyName);
 
     //
-    NodeTypeInfo typeInfo = getTypeInfo();
+    ObjectType typeInfo = getTypeInfo();
 
     //
     state.setPropertyValues(typeInfo, propertyName, type, arrayType, propertyValues);

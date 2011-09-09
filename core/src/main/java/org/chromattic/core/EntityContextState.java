@@ -20,12 +20,11 @@
 package org.chromattic.core;
 
 import org.chromattic.api.Status;
-import org.chromattic.core.jcr.type.NodeTypeInfo;
-import org.chromattic.core.jcr.type.PrimaryTypeInfo;
 import org.chromattic.core.vt2.ValueDefinition;
+import org.chromattic.metatype.EntityType;
+import org.chromattic.metatype.ObjectType;
 
 import javax.jcr.Node;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -45,14 +44,14 @@ abstract class EntityContextState {
 
   abstract Status getStatus();
 
-  abstract PrimaryTypeInfo getTypeInfo();
+  abstract EntityType getTypeInfo();
 
-  abstract <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt);
+  abstract <V> V getPropertyValue(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt);
 
-  abstract <L, V> L getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType);
+  abstract <L, V> L getPropertyValues(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType);
 
-  abstract <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V o);
+  abstract <V> void setPropertyValue(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V o);
 
-  abstract <L, V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType, L propertyValues);
+  abstract <L, V> void setPropertyValues(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType, L propertyValues);
 
 }

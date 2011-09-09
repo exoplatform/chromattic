@@ -85,6 +85,7 @@ public class JCRSchema implements Schema {
       foo.put(PropertyType.DOUBLE, ValueType.DOUBLE);
       foo.put(PropertyType.BINARY, ValueType.BINARY);
       foo.put(PropertyType.UNDEFINED, ValueType.ANY);
+      foo.put(PropertyType.PATH, ValueType.PATH);
     }
 
     private JCRObjectType resolve(String name) throws RepositoryException {
@@ -163,34 +164,33 @@ public class JCRSchema implements Schema {
         for (PropertyDefinition propertyDefinition : nodeType.getPropertyDefinitions()) {
           String propertyName = propertyDefinition.getName();
           int propertyType = propertyDefinition.getRequiredType();
-          switch (propertyType) {
-            case PropertyType.BINARY:
-            case PropertyType.BOOLEAN:
-            case PropertyType.DATE:
-            case PropertyType.STRING:
-            case PropertyType.LONG:
-            case PropertyType.DOUBLE:
-            case PropertyType.UNDEFINED:
-            case PropertyType.NAME:
-              if (properties == null) {
-                properties = new LinkedHashMap<String, JCRPropertyDescriptor>();
-              }
-              ValueType valueType = foo.get(propertyType);
-              if (valueType == null)
-              {
-                throw new UnsupportedOperationException("Unsupported property type " + propertyType);
-              }
-              boolean singleValued = !propertyDefinition.isMultiple();
-              JCRPropertyDescriptor property = new JCRPropertyDescriptor(propertyName, valueType, singleValued);
-              properties.put(propertyName, property);
-              break;
-            case PropertyType.REFERENCE:
-            case PropertyType.PATH:
+
+          //
+          if (propertyType == PropertyType.BINARY ||
+              propertyType == PropertyType.BOOLEAN ||
+              propertyType == PropertyType.DATE ||
+              propertyType == PropertyType.STRING ||
+              propertyType == PropertyType.LONG ||
+              propertyType == PropertyType.DOUBLE ||
+              propertyType == PropertyType.UNDEFINED ||
+              propertyType == PropertyType.NAME ||
+              propertyType == PropertyType.PATH) {
+            if (properties == null) {
+              properties = new LinkedHashMap<String, JCRPropertyDescriptor>();
+            }
+            ValueType valueType = foo.get(propertyType);
+            if (valueType == null)
+            {
+              throw new UnsupportedOperationException("Unsupported property type " + propertyType);
+            }
+            boolean singleValued = !propertyDefinition.isMultiple();
+            JCRPropertyDescriptor property = new JCRPropertyDescriptor(propertyName, valueType, singleValued);
+            properties.put(propertyName, property);
+          }
+
+          //
+          if (propertyType == PropertyType.PATH || propertyType == PropertyType.REFERENCE) {
               // To do relationships by reference or path
-              break;
-            default:
-              // It may be an internal property (exo permission type), we skip it
-              break;
           }
         }
         resolved.properties = Safe.unmodifiable(properties);

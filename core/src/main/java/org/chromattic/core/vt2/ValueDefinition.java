@@ -19,7 +19,7 @@
 
 package org.chromattic.core.vt2;
 
-import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
+import org.chromattic.metatype.ValueType;
 import org.chromattic.metamodel.type.SimpleTypeProviders;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
@@ -41,49 +41,49 @@ public class ValueDefinition<I, E> {
   /** . */
   private static final ValueDefinition<String, String> STRING = new ValueDefinition<String, String>(
     String.class,
-    PropertyMetaType.STRING,
+    ValueType.STRING,
     new SimpleTypeProviders.STRING(),
     null);
 
   /** . */
   private static final ValueDefinition<String, String> PATH = new ValueDefinition<String, String>(
     String.class,
-    PropertyMetaType.PATH,
+    ValueType.PATH,
     new SimpleTypeProviders.PATH(),
     null);
 
   /** . */
   private static final ValueDefinition<String, String> NAME = new ValueDefinition<String, String>(
       String.class,
-      PropertyMetaType.NAME,
+      ValueType.NAME,
       new SimpleTypeProviders.NAME(),
       null);
 
   /** . */
   private static final ValueDefinition<Boolean, Boolean> BOOLEAN = new ValueDefinition<Boolean, Boolean>(
       Boolean.class,
-      PropertyMetaType.BOOLEAN,
+      ValueType.BOOLEAN,
       new SimpleTypeProviders.BOOLEAN(),
       null);
 
   /** . */
   private static final ValueDefinition<Double, Double> DOUBLE = new ValueDefinition<Double, Double>(
       Double.class,
-      PropertyMetaType.DOUBLE,
+      ValueType.DOUBLE,
       new SimpleTypeProviders.DOUBLE(),
       null);
 
   /** . */
   private static final ValueDefinition<Long, Long> LONG = new ValueDefinition<Long, Long>(
       Long.class,
-      PropertyMetaType.LONG,
+      ValueType.LONG,
       new SimpleTypeProviders.LONG(),
       null);
 
   /** . */
   private static final ValueDefinition<InputStream, InputStream> BINARY = new ValueDefinition<InputStream, InputStream>(
       InputStream.class,
-      PropertyMetaType.BINARY,
+      ValueType.BINARY,
       new SimpleTypeProviders.BINARY(),
       null);
 
@@ -144,11 +144,11 @@ public class ValueDefinition<I, E> {
   private final List<String> defaultValue;
 
   /** . */
-  private final PropertyMetaType<I> propertyMetaType;
+  private final ValueType<I> propertyMetaType;
 
   public ValueDefinition(
     Class<?> realType,
-    PropertyMetaType<I> propertyMetaType,
+    ValueType<I> propertyMetaType,
     SimpleTypeProvider<I, E> valueType,
     List<String> defaultValue) {
     this.realType = realType;

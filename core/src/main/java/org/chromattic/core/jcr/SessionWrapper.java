@@ -19,6 +19,8 @@
 
 package org.chromattic.core.jcr;
 
+import org.chromattic.metatype.Schema;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -34,6 +36,8 @@ import java.util.List;
  * @version $Revision$
  */
 public interface SessionWrapper {
+
+  Schema getSchema() throws RepositoryException;
 
   Property getProperty(Node node, String relPath) throws RepositoryException;
 
@@ -68,6 +72,8 @@ public interface SessionWrapper {
   boolean removeMixin(Node node, String mixinTypeName) throws RepositoryException;
 
   boolean haxMixin(Node node, String mixinTypeName) throws RepositoryException;
+
+  boolean isReferenceable(Node node) throws RepositoryException;
 
   void save() throws RepositoryException;
 

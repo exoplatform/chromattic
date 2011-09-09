@@ -52,9 +52,9 @@ import org.chromattic.metamodel.bean.BeanInfoBuilder;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.bean.ValueInfo;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
-import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.type.SimpleTypeMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
+import org.chromattic.metatype.ValueType;
 import org.reflext.api.ClassTypeInfo;
 import org.reflext.api.MethodInfo;
 import org.reflext.api.TypeInfo;
@@ -578,7 +578,7 @@ public class BeanMappingBuilder {
       TypeInfo type = property.getValue().getEffectiveType();
 
       //
-      PropertyMetaType<?> mt = null;
+      ValueType<?> mt = null;
       ValueKind valueKind;
       ValueInfo vi = property.getValue();
       if (vi instanceof SimpleValueInfo<?>) {
@@ -613,7 +613,7 @@ public class BeanMappingBuilder {
         PropertyInfo<SimpleValueInfo<K>, ValueKind.Single> property) {
 
       //
-      PropertyMetaType<?> propertyMetaType = PropertyMetaType.get(propertyAnnotation.type());
+      ValueType<?> propertyMetaType = ValueType.get(propertyAnnotation.type());
 
       //
       SimpleTypeMapping resolved = typeResolver.resolveType(property.getValue().getDeclaredType(), propertyMetaType);

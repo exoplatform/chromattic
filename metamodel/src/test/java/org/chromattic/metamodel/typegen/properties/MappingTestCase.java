@@ -19,10 +19,10 @@
 
 package org.chromattic.metamodel.typegen.properties;
 
+import org.chromattic.metatype.ValueType;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.PropertiesMapping;
-import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
 
 import java.util.Map;
@@ -37,7 +37,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     BeanMapping mapping = mappings.get(A1.class);
     PropertiesMapping propertiesMapping = mapping.getPropertyMapping("properties", PropertiesMapping.class);
     assertEquals(ValueKind.SINGLE, propertiesMapping.getValueKind());
-    assertEquals(PropertyMetaType.STRING, propertiesMapping.getMetaType());
+    assertEquals(ValueType.STRING, propertiesMapping.getMetaType());
     assertEquals(null, propertiesMapping.getPrefix());
   }
 

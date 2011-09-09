@@ -64,6 +64,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.metatype</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
     </dependency>

@@ -20,11 +20,11 @@
 package org.chromattic.core;
 
 import org.chromattic.api.*;
-import org.chromattic.core.jcr.type.NodeTypeInfo;
-import org.chromattic.core.jcr.type.PrimaryTypeInfo;
-import org.chromattic.core.jcr.type.PropertyDefinitionInfo;
 import org.chromattic.common.CloneableInputStream;
 import org.chromattic.core.vt2.ValueDefinition;
+import org.chromattic.metatype.EntityType;
+import org.chromattic.metatype.ObjectType;
+import org.chromattic.metatype.PropertyDescriptor;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -52,13 +52,13 @@ class PersistentEntityContextState extends EntityContextState {
   private final Node node;
 
   /** . */
-  private final PrimaryTypeInfo typeInfo;
+  private final EntityType typeInfo;
 
   PersistentEntityContextState(Node node, DomainSession session) throws RepositoryException {
     this.session = session;
     this.propertyCache = session.domain.propertyCacheEnabled ? new HashMap<String, Object>() : null;
     this.node = node;
-    this.typeInfo = session.domain.nodeInfoManager.getPrimaryTypeInfo(node.getPrimaryNodeType());
+    this.typeInfo = (EntityType)session.getSessionWrapper().getSchema().getType(node.getPrimaryNodeType().getName());
   }
 
   String getId() {
@@ -104,15 +104,15 @@ class PersistentEntityContextState extends EntityContextState {
   }
 
   @Override
-  PrimaryTypeInfo getTypeInfo() {
+  EntityType getTypeInfo() {
     return typeInfo;
   }
 
-  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
+  <V> V getPropertyValue(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
     try {
       //
-      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
-      if (def == null) {
+      PropertyDescriptor desc = nodeTypeInfo.resolveProperty(propertyName);
+      if (desc == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be loaded from node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
       }
@@ -131,7 +131,7 @@ class PersistentEntityContextState extends EntityContextState {
         Value jcrValue;
         Property property = session.getSessionWrapper().getProperty(node, propertyName);
         if (property != null) {
-          if (def.isMultiple()) {
+          if (desc.isMultiValued()) {
             Value[] values = property.getValues();
             if (values.length == 0) {
               jcrValue = null;
@@ -205,10 +205,10 @@ class PersistentEntityContextState extends EntityContextState {
   }
 
   @Override
-  <L, V> L getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType) {
+  <L, V> L getPropertyValues(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType) {
     try {
-      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
-      if (def == null) {
+      PropertyDescriptor desc = nodeTypeInfo.resolveProperty(propertyName);
+      if (desc == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be from from node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
       }
@@ -217,7 +217,7 @@ class PersistentEntityContextState extends EntityContextState {
       Value[] values;
       Property property = session.getSessionWrapper().getProperty(node, propertyName);
       if (property != null) {
-        if (def.isMultiple()) {
+        if (desc.isMultiValued()) {
           values = property.getValues();
         } else {
           values = new Value[]{property.getValue()};
@@ -228,7 +228,7 @@ class PersistentEntityContextState extends EntityContextState {
 
       // Try to determine a vt from the real value
       if (vt == null) {
-        vt = (ValueDefinition<?, V>)ValueDefinition.get(def.getType());
+        vt = (ValueDefinition<?, V>)ValueDefinition.get(desc.getValueType().getCode());
         if (vt == null) {
           if (values != null && values.length > 0) {
             vt = (ValueDefinition<?, V>)ValueDefinition.get(values[0].getType());
@@ -249,7 +249,7 @@ class PersistentEntityContextState extends EntityContextState {
         } else {
           List<V> defaultValue = vt.getDefaultValue();
           if (defaultValue != null) {
-            if (def.isMultiple()) {
+            if (desc.isMultiValued()) {
               list = arrayType.create(defaultValue.size());
               for (int i = 0;i < defaultValue.size();i++) {
                 V v = defaultValue.get(i);
@@ -279,13 +279,13 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V propertyValue) {
+  <V> void setPropertyValue(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V propertyValue) {
     try {
       //
-      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
+      PropertyDescriptor desc = nodeTypeInfo.resolveProperty(propertyName);
 
       //
-      if (def == null) {
+      if (desc == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
       }
@@ -310,7 +310,7 @@ class PersistentEntityContextState extends EntityContextState {
         if (vt == null) {
 
           // We try first the definition type
-          vt = (ValueDefinition<?, V>)ValueDefinition.get(def.getType());
+          vt = (ValueDefinition<?, V>)ValueDefinition.get(desc.getValueType().getCode());
 
           // We had a undefined type so we are going to use a type based on the provided value
           if (vt == null) {
@@ -324,7 +324,7 @@ class PersistentEntityContextState extends EntityContextState {
         }
 
         //
-        int expectedType = def.getType();
+        int expectedType = desc.getValueType().getCode();
 
         //
         ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
@@ -334,7 +334,7 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      if (def.isMultiple()) {
+      if (desc.isMultiValued()) {
         if (jcrValue == null) {
           node.setProperty(propertyName, new Value[0]);
         } else {
@@ -365,10 +365,10 @@ class PersistentEntityContextState extends EntityContextState {
   }
 
   @Override
-  <L, V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType, L propertyValues) {
+  <L, V> void setPropertyValues(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType, L propertyValues) {
     try {
-      PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
-      if (def == null) {
+      PropertyDescriptor desc = nodeTypeInfo.resolveProperty(propertyName);
+      if (desc == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be set on node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
       }
@@ -384,7 +384,7 @@ class PersistentEntityContextState extends EntityContextState {
           if (vt == null) {
 
             // We try first the definition type
-            vt = (ValueDefinition<?, V>)ValueDefinition.get(def.getType());
+            vt = (ValueDefinition<?, V>)ValueDefinition.get(desc.getValueType().getCode());
 
             //
             if (vt == null) {
@@ -402,7 +402,7 @@ class PersistentEntityContextState extends EntityContextState {
           jcrValues = new Value[size];
           for (int i = 0;i < size;i++) {
             V element = arrayType.get(propertyValues, i);
-            Value jcrValue = vt.get(valueFactory, def.getType(), element);
+            Value jcrValue = vt.get(valueFactory, desc.getValueType().getCode(), element);
             jcrValues[i] = jcrValue;
           }
         }
@@ -412,7 +412,7 @@ class PersistentEntityContextState extends EntityContextState {
 
       //
       if (jcrValues != null) {
-        if (def.isMultiple()) {
+        if (desc.isMultiValued()) {
           node.setProperty(propertyName, jcrValues);
         } else {
           if (jcrValues.length > 1) {
@@ -424,7 +424,7 @@ class PersistentEntityContextState extends EntityContextState {
           }
         }
       } else {
-        if (def.isMultiple()) {
+        if (desc.isMultiValued()) {
           node.setProperty(propertyName, (Value[])null);
         } else {
           node.setProperty(propertyName, (Value)null);

@@ -27,9 +27,9 @@ import org.chromattic.api.Status;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.core.jcr.LinkType;
-import org.chromattic.core.jcr.type.PrimaryTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeAttributeType;
+import org.chromattic.metatype.EntityType;
 import org.chromattic.spi.instrument.ProxyType;
 
 import javax.jcr.Node;
@@ -125,7 +125,7 @@ public final class EntityContext extends ObjectContext<EntityContext> {
     return this;
   }
 
-  public PrimaryTypeInfo getTypeInfo() {
+  public EntityType getTypeInfo() {
     EntityContextState state = getEntity().state;
     return state.getTypeInfo();
   }

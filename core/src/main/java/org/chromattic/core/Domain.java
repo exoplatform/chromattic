@@ -24,9 +24,9 @@ import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
 import org.chromattic.core.mapper.ObjectMapper;
-import org.chromattic.core.jcr.type.TypeManager;
 import org.chromattic.core.query.QueryManager;
 import org.chromattic.metamodel.mapping.BeanMapping;
+import org.chromattic.metatype.Schema;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.api.format.ObjectFormatter;
 
@@ -39,10 +39,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.chromattic.common.collection.Collections;
 import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.spi.instrument.ProxyType;
+import org.chromattic.spi.jcr.SessionLifeCycle;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -130,12 +133,16 @@ public class Domain {
   final int rootCreateMode;
 
   /** . */
-  final TypeManager nodeInfoManager;
+  final AtomicReference<FutureTask<Schema>> schema;
 
   /** . */
   final QueryManager queryManager;
 
+  /** . */
+  final SessionLifeCycle sessionLifeCycle;
+
   public Domain(
+    SessionLifeCycle sessionLifeCycle,
     Collection<ObjectMapper<?>> mappers,
     Instrumentor defaultInstrumentor,
     ObjectFormatter objectFormatter,
@@ -200,6 +207,7 @@ public class Domain {
     }
 
     //
+    this.sessionLifeCycle = sessionLifeCycle;
     this.typeMapperByClass = typeMapperByClass;
     this.typeMapperByNodeType = typeMapperByNodeType;
     this.defaultInstrumentor = defaultInstrumentor;
@@ -210,7 +218,7 @@ public class Domain {
     this.hasNodeOptimized = hasNodeOptimized;
     this.rootNodePath = rootNodePath;
     this.rootNodePathSegments = rootNodePathSegments;
-    this.nodeInfoManager = new TypeManager();
+    this.schema = new AtomicReference<FutureTask<Schema>>();
     this.queryManager = new QueryManager(rootNodePath);
     this.rootCreateMode = rootCreateMode;
     this.rootNodeType = rootNodeType;
@@ -246,6 +254,10 @@ public class Domain {
 
   public QueryManager getQueryManager() {
     return queryManager;
+  }
+
+  public SessionLifeCycle getSessionLifeCycle() {
+    return sessionLifeCycle;
   }
 
   String decodeName(Node ownerNode, String internal, NameKind nameKind) throws

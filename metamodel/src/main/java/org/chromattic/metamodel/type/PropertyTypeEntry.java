@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.type;
 
-import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
+import org.chromattic.metatype.ValueType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,15 +37,15 @@ class PropertyTypeEntry {
   private final SimpleTypeMappingImpl<?> defaultValueTypeInfo;
 
   /** . */
-  private final Map<PropertyMetaType<?>, SimpleTypeMappingImpl<?>> metaTypeMapping;
+  private final Map<ValueType<?>, SimpleTypeMappingImpl<?>> metaTypeMapping;
 
   PropertyTypeEntry(PropertyTypeEntry that) {
     this.defaultValueTypeInfo = that.defaultValueTypeInfo;
-    this.metaTypeMapping = new HashMap<PropertyMetaType<?>, SimpleTypeMappingImpl<?>>(that.metaTypeMapping);
+    this.metaTypeMapping = new HashMap<ValueType<?>, SimpleTypeMappingImpl<?>>(that.metaTypeMapping);
   }
 
   PropertyTypeEntry(SimpleTypeMappingImpl<?> defaultValueTypeInfo) {
-    Map<PropertyMetaType<?>, SimpleTypeMappingImpl<?>> metaTypeMapping = new HashMap<PropertyMetaType<?>, SimpleTypeMappingImpl<?>>();
+    Map<ValueType<?>, SimpleTypeMappingImpl<?>> metaTypeMapping = new HashMap<ValueType<?>, SimpleTypeMappingImpl<?>>();
     metaTypeMapping.put(defaultValueTypeInfo.getPropertyMetaType(), defaultValueTypeInfo);
 
     //
@@ -65,11 +65,11 @@ class PropertyTypeEntry {
     return valueType;
   }
 
-  public synchronized <I> SimpleTypeMappingImpl<I> get(PropertyMetaType<I> propertyMT) {
+  public synchronized <I> SimpleTypeMappingImpl<I> get(ValueType<I> propertyMT) {
     return (SimpleTypeMappingImpl<I>)metaTypeMapping.get(propertyMT);
   }
 
-  public synchronized SimpleTypeMappingImpl<?> resolve(PropertyMetaType<?> propertyMT) {
+  public synchronized SimpleTypeMappingImpl<?> resolve(ValueType<?> propertyMT) {
     SimpleTypeMappingImpl<?> valueTypeInfo = metaTypeMapping.get(propertyMT);
     if (valueTypeInfo == null) {
       valueTypeInfo = defaultValueTypeInfo;

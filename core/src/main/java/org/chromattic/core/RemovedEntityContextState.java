@@ -21,11 +21,10 @@ package org.chromattic.core;
 
 import org.chromattic.api.Status;
 import org.chromattic.core.vt2.ValueDefinition;
-import org.chromattic.core.jcr.type.NodeTypeInfo;
-import org.chromattic.core.jcr.type.PrimaryTypeInfo;
+import org.chromattic.metatype.EntityType;
+import org.chromattic.metatype.ObjectType;
 
 import javax.jcr.Node;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -43,9 +42,9 @@ class RemovedEntityContextState extends EntityContextState {
   private final String name;
 
   /** . */
-  private final PrimaryTypeInfo typeInfo;
+  private final EntityType typeInfo;
 
-  RemovedEntityContextState(DomainSession session, String path, String name, PrimaryTypeInfo typeInfo) {
+  RemovedEntityContextState(DomainSession session, String path, String name, EntityType typeInfo) {
     this.session = session;
     this.path = path;
     this.name = name;
@@ -76,23 +75,23 @@ class RemovedEntityContextState extends EntityContextState {
     return Status.REMOVED;
   }
 
-  PrimaryTypeInfo getTypeInfo() {
+  EntityType getTypeInfo() {
     return typeInfo;
   }
 
-  <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
+  <V> V getPropertyValue(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
     throw new IllegalStateException();
   }
 
-  <L, V> L getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType) {
+  <L, V> L getPropertyValues(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType) {
     throw new IllegalStateException();
   }
 
-  <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V o) {
+  <V> void setPropertyValue(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V o) {
     throw new IllegalStateException();
   }
 
-  <L, V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType, L propertyValues) {
+  <L, V> void setPropertyValues(ObjectType nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType, L propertyValues) {
     throw new IllegalStateException();
   }
 

@@ -72,6 +72,17 @@ public class JCRObjectType implements ObjectType {
     return properties.get(name);
   }
 
+  public PropertyDescriptor resolveProperty(String name) throws NullPointerException {
+    if (name == null) {
+      throw new NullPointerException();
+    }
+    PropertyDescriptor pd = properties.get(name);
+    if (pd == null) {
+      pd = properties.get("*");
+    }
+    return pd;
+  }
+
   public Map<String, ? extends HierarchicalRelationshipDescriptor> getChildrenRelationships() {
     return childrenRelationships;
   }

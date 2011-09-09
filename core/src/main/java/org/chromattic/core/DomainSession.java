@@ -26,12 +26,19 @@ import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.jcr.SessionWrapper;
+import org.chromattic.core.jcr.SessionWrapperImpl;
+import org.chromattic.metatype.Schema;
+import org.chromattic.metatype.jcr.JCRSchema;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Iterator;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -51,10 +58,35 @@ public abstract class DomainSession {
   /** . */
   protected final SessionWrapper sessionWrapper;
 
-  public DomainSession(Domain domain, SessionWrapper sessionWrapper) {
+  public DomainSession(Domain domain, final Session session) {
+
+    //
+    FutureTask<Schema> futureSchema = domain.schema.get();
+    if (futureSchema == null) {
+      futureSchema = new FutureTask<Schema>(new Callable<Schema>() {
+        public Schema call() throws Exception {
+          return JCRSchema.build(session.getWorkspace().getNodeTypeManager());
+        }
+      });
+      if (domain.schema.compareAndSet(null, futureSchema)) {
+        futureSchema.run();
+      } else {
+        futureSchema = domain.schema.get();
+      }
+    }
+    Schema schema;
+    try {
+      schema = futureSchema.get();
+    } catch (InterruptedException e) {
+      throw new UndeclaredThrowableException(e);
+    } catch (ExecutionException e) {
+      throw new UndeclaredThrowableException(e);
+    }
+
+    //
     this.domain = domain;
     this.broadcaster = new EventBroadcaster();
-    this.sessionWrapper = sessionWrapper;
+    this.sessionWrapper = new SessionWrapperImpl(schema, domain.sessionLifeCycle, session, domain.isHasPropertyOptimized(), domain.isHasNodeOptimized());
   }
 
   protected abstract void _setLocalName(EntityContext ctx, String localName) throws RepositoryException;
@@ -469,7 +501,7 @@ public abstract class DomainSession {
     }
   }
 
-  public SessionWrapper getSessionWrapper() {
+  public final SessionWrapper getSessionWrapper() {
     return sessionWrapper;
   }
 }
