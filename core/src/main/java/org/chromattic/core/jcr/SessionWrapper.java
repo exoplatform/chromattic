@@ -25,7 +25,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.Property;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.util.Iterator;
@@ -46,8 +45,6 @@ public interface SessionWrapper {
   Node getNode(Node node, String relPath) throws RepositoryException;
 
   Node getNode(String path) throws RepositoryException;
-
-  NodeType getNodeType(String nodeTypeName) throws RepositoryException;
 
   Node addNode(Node parentNode, String relPath, String primartyNodeTypeName, List<String> mixinNodeTypeNames) throws RepositoryException;
 

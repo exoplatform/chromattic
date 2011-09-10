@@ -138,11 +138,6 @@ public class SessionWrapperImpl implements SessionWrapper {
     }
   }
 
-  public NodeType getNodeType(String nodeTypeName) throws RepositoryException {
-    NodeTypeManager mgr = session.getWorkspace().getNodeTypeManager();
-    return mgr.getNodeType(nodeTypeName);
-  }
-
   public Node addNode(Node parentNode, String relPath, String primartyNodeTypeName, List<String> mixinNodeTypeNames) throws RepositoryException {
 
     Node childNode = parentNode.addNode(relPath, primartyNodeTypeName);

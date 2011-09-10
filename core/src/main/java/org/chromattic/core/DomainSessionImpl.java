@@ -355,7 +355,6 @@ public class DomainSessionImpl extends DomainSession {
         sessionWrapper.addMixin(node, mixinTypeName);
 
         //
-        NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
         MixinType mixinTypeInfo = (MixinType)sessionWrapper.getSchema().getType(mixinTypeName);
 
         // Perform wiring
@@ -415,8 +414,7 @@ public class DomainSessionImpl extends DomainSession {
         if (mapper.getKind() == NodeTypeKind.MIXIN) {
           String mixinTypeName = mapper.getNodeTypeName();
           if (sessionWrapper.haxMixin(node, mixinTypeName)) {
-            NodeType mixinType = sessionWrapper.getNodeType(mixinTypeName);
-            MixinType mixinTypeInfo = (MixinType)sessionWrapper.getSchema().getType(mixinType.getName());
+            MixinType mixinTypeInfo = (MixinType)sessionWrapper.getSchema().getType(mixinTypeName);
 
             //
             embeddedCtx = new EmbeddedContext(mapper, this);
