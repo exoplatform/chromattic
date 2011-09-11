@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -27,13 +27,6 @@ import javax.jcr.RepositoryException;
 import java.io.InputStream;
 import java.util.Calendar;
 
-/**
- * A data type.
- *
- * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
- * @version $Revision$
- * @param <T> the java type expressing the underlying type
- */
 public abstract class DataType<T> {
 
   /** . */
@@ -135,12 +128,14 @@ public abstract class DataType<T> {
   /** . */
   public static final DataType<Object> ANY = new DataType<Object>(Object.class, PropertyType.UNDEFINED) {
     @Override
-    public Value getValue(ValueFactory factory, Object date) throws ValueFormatException {
-      throw new UnsupportedOperationException();
+    public Value getValue(ValueFactory factory, Object v) throws ValueFormatException {
+      DataType<Object> valueDataType = get(v);
+      return valueDataType.getValue(factory, v);
     }
     @Override
     public Object getValue(Value value) throws RepositoryException {
-      throw new UnsupportedOperationException();
+      DataType valueDataType = get(value.getType());
+      return valueDataType.getValue(value);
     }
   };
 
@@ -160,6 +155,15 @@ public abstract class DataType<T> {
     for (DataType<?> pt : ALL) {
       if (pt.code == code) {
         return pt;
+      }
+    }
+    return null;
+  }
+
+  public static <T> DataType<T> get(T object) {
+    for (DataType<?> pt : ALL) {
+      if (pt.javaType.isInstance(object)) {
+        return (DataType<T>)pt;
       }
     }
     return null;

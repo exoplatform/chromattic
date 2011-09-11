@@ -157,6 +157,14 @@ public class ValueDefinition<I, E> {
     this.propertyMetaType = propertyMetaType;
   }
 
+  public SimpleTypeProvider<I, E> getValueType() {
+    return valueType;
+  }
+
+  public DataType<I> getPropertyMetaType() {
+    return propertyMetaType;
+  }
+
   public boolean isPrimitive() {
     return realType.isPrimitive();
   }

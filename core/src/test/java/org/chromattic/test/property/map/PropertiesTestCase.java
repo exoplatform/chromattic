@@ -183,7 +183,7 @@ public class PropertiesTestCase extends AbstractTestCase {
     assertEquals(Arrays.<Object>asList("a"), val);
     aNode.setProperty("string_array_property", (String)null);
     val = props.get("string_array_property");
-    assertEquals(java.util.Collections.<Object>emptyList(), val);
+    assertEquals(null, val);
 
     //
     props.put("string_array_property", Arrays.<Object>asList("b"));

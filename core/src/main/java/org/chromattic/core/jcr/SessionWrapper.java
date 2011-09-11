@@ -19,7 +19,10 @@
 
 package org.chromattic.core.jcr;
 
+import org.chromattic.core.ArrayType;
+import org.chromattic.metatype.PropertyDescriptor;
 import org.chromattic.metatype.Schema;
+import org.chromattic.spi.type.SimpleTypeProvider;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
@@ -38,7 +41,33 @@ public interface SessionWrapper {
 
   Schema getSchema() throws RepositoryException;
 
-  Property getProperty(Node node, String relPath) throws RepositoryException;
+  <E, I> E getPropertyValue(
+      Node node,
+      PropertyDescriptor<I> descriptor,
+      SimpleTypeProvider<I, E> converter,
+      String propertyName) throws RepositoryException;
+
+  <A, E, I> A getPropertyValues(
+      Node node,
+      ArrayType<A, E> arrayType,
+      PropertyDescriptor<I> descriptor,
+      SimpleTypeProvider<I, E> converter,
+      String propertyName) throws RepositoryException;
+
+  <E, I> void setPropertyValue(
+      Node node,
+      PropertyDescriptor<I> descriptor,
+      SimpleTypeProvider<I, E> converter,
+      String propertyName,
+      E value) throws RepositoryException;
+
+  <A, E, I> void setPropertyValues(
+      Node node,
+      ArrayType<A, E> arrayType,
+      PropertyDescriptor<I> descriptor,
+      SimpleTypeProvider<I, E> converter,
+      String propertyName,
+      A values) throws RepositoryException;
 
   Iterator<Property> getProperties(Node node) throws RepositoryException;
 

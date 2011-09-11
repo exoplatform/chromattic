@@ -25,13 +25,11 @@ import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.metatype.EntityType;
 import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.PropertyDescriptor;
+import org.chromattic.spi.type.SimpleTypeProvider;
 
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
 import java.util.*;
 import java.io.InputStream;
 import java.io.IOException;
@@ -128,35 +126,18 @@ class PersistentEntityContextState extends EntityContextState {
 
       //
       if (value == null) {
-        Value jcrValue;
-        Property property = session.getSessionWrapper().getProperty(node, propertyName);
-        if (property != null) {
-          if (desc.isMultiValued()) {
-            Value[] values = property.getValues();
-            if (values.length == 0) {
-              jcrValue = null;
-            } else {
-              jcrValue = values[0];
-            }
-          } else {
-            jcrValue = property.getValue();
-          }
+        SimpleTypeProvider stp;
+        if (vt != null) {
+          stp = vt.getValueType();
         } else {
-          jcrValue = null;
+          stp = null;
         }
 
         //
-        if (jcrValue != null) {
+        value = (V)session.sessionWrapper.getPropertyValue(node, desc, stp, propertyName);
 
-          // We use the type from the real value itself when no one was provided
-          if (vt == null) {
-            vt = (ValueDefinition<?, V>)ValueDefinition.get(jcrValue.getType());
-          }
-
-          //
-          value = vt.get(jcrValue);
-
-          //
+        //
+        if (value != null) {
           if (propertyCache != null) {
             if (value instanceof InputStream) {
               try {
@@ -213,66 +194,41 @@ class PersistentEntityContextState extends EntityContextState {
           "  with type " + node.getPrimaryNodeType().getName());
       }
 
-      //
-      Value[] values;
-      Property property = session.getSessionWrapper().getProperty(node, propertyName);
-      if (property != null) {
-        if (desc.isMultiValued()) {
-          values = property.getValues();
-        } else {
-          values = new Value[]{property.getValue()};
-        }
-      } else {
-        values = null;
-      }
-
-      // Try to determine a vt from the real value
-      if (vt == null) {
-        vt = (ValueDefinition<?, V>)ValueDefinition.get(desc.getValueType().getCode());
-        if (vt == null) {
-          if (values != null && values.length > 0) {
-            vt = (ValueDefinition<?, V>)ValueDefinition.get(values[0].getType());
-          }
-        }
-      }
-
-      //
-      L list;
+      SimpleTypeProvider stp;
       if (vt != null) {
-        if (values != null) {
-          list = arrayType.create(values.length);
-          for (int i = 0;i < values.length;i++) {
-            Value value = values[i];
-            V v = vt.get(value);
-            arrayType.set(list, i, v);
-          }
-        } else {
+        stp = vt.getValueType();
+      } else {
+        stp = null;
+      }
+
+      //
+      L value = (L)session.sessionWrapper.getPropertyValues(node, arrayType, desc, stp, propertyName);
+
+      //
+      if (value == null) {
+        if (vt != null) {
           List<V> defaultValue = vt.getDefaultValue();
           if (defaultValue != null) {
             if (desc.isMultiValued()) {
-              list = arrayType.create(defaultValue.size());
+              value = arrayType.create(defaultValue.size());
               for (int i = 0;i < defaultValue.size();i++) {
                 V v = defaultValue.get(i);
-                arrayType.set(list, i, v);
+                arrayType.set(value, i, v);
               }
             } else {
               if (defaultValue.size() > 0) {
-                list = arrayType.create(1);
-                arrayType.set(list, 0, defaultValue.get(0));
+                value = arrayType.create(1);
+                arrayType.set(value, 0, defaultValue.get(0));
               } else {
-                list = arrayType.create(0);
+                value = arrayType.create(0);
               }
             }
-          } else {
-            list = null;
           }
         }
-      } else {
-        list = arrayType.create(0);
       }
 
       //
-      return list;
+      return value;
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -303,7 +259,6 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      Value jcrValue;
       if (propertyValue != null) {
 
         //
@@ -324,24 +279,9 @@ class PersistentEntityContextState extends EntityContextState {
         }
 
         //
-        int expectedType = desc.getValueType().getCode();
-
-        //
-        ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
-        jcrValue = vt.get(valueFactory, expectedType, propertyValue);
+        session.sessionWrapper.setPropertyValue(node, (PropertyDescriptor)desc, vt.getValueType(), propertyName, propertyValue);
       } else {
-        jcrValue = null;
-      }
-
-      //
-      if (desc.isMultiValued()) {
-        if (jcrValue == null) {
-          node.setProperty(propertyName, new Value[0]);
-        } else {
-          node.setProperty(propertyName, new Value[]{jcrValue});
-        }
-      } else {
-        node.setProperty(propertyName, jcrValue);
+        session.sessionWrapper.setPropertyValue(node, desc, null, propertyName, null);
       }
 
       //
@@ -374,62 +314,15 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      Value[] jcrValues;
-      if (propertyValues != null) {
-        if (arrayType.size(propertyValues) == 0) {
-          jcrValues = new Value[0];
-        } else {
-
-          // Determine vt if null
-          if (vt == null) {
-
-            // We try first the definition type
-            vt = (ValueDefinition<?, V>)ValueDefinition.get(desc.getValueType().getCode());
-
-            //
-            if (vt == null) {
-              Object propertyValue = arrayType.get(propertyValues, 0);
-              vt = (ValueDefinition<?, V>)ValueDefinition.get(propertyValue);
-              if (vt == null) {
-                throw new TypeConversionException("Cannot convert object " + propertyValue + " no converter found");
-              }
-            }
-          }
-
-          //
-          ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
-          int size = arrayType.size(propertyValues);
-          jcrValues = new Value[size];
-          for (int i = 0;i < size;i++) {
-            V element = arrayType.get(propertyValues, i);
-            Value jcrValue = vt.get(valueFactory, desc.getValueType().getCode(), element);
-            jcrValues[i] = jcrValue;
-          }
-        }
+      SimpleTypeProvider stp;
+      if (vt != null) {
+        stp = vt.getValueType();
       } else {
-        jcrValues = null;
+        stp = null;
       }
 
       //
-      if (jcrValues != null) {
-        if (desc.isMultiValued()) {
-          node.setProperty(propertyName, jcrValues);
-        } else {
-          if (jcrValues.length > 1) {
-            throw new IllegalArgumentException("Cannot update with an array of length greater than 1");
-          } else if (jcrValues.length == 1) {
-            node.setProperty(propertyName, jcrValues[0]);
-          } else {
-            node.setProperty(propertyName, (Value)null);
-          }
-        }
-      } else {
-        if (desc.isMultiValued()) {
-          node.setProperty(propertyName, (Value[])null);
-        } else {
-          node.setProperty(propertyName, (Value)null);
-        }
-      }
+      session.sessionWrapper.setPropertyValues(node, arrayType, desc, stp,propertyName, propertyValues);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

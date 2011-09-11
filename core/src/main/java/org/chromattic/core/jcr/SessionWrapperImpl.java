@@ -20,14 +20,17 @@
 package org.chromattic.core.jcr;
 
 import org.chromattic.common.logging.Logger;
+import org.chromattic.core.ArrayType;
+import org.chromattic.metatype.DataType;
 import org.chromattic.metatype.ObjectType;
+import org.chromattic.metatype.PropertyDescriptor;
 import org.chromattic.metatype.Schema;
 import org.chromattic.spi.jcr.SessionLifeCycle;
+import org.chromattic.spi.type.SimpleTypeProvider;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -105,6 +108,156 @@ public class SessionWrapperImpl implements SessionWrapper {
         return node.getProperty(relPath);
       } else {
         return null;
+      }
+    }
+  }
+
+  public <E, I> E getPropertyValue(
+      Node node,
+      PropertyDescriptor<I> descriptor,
+      SimpleTypeProvider<I, E> converter,
+      String propertyName) throws RepositoryException {
+    Value jcrValue;
+    Property property = getProperty(node, propertyName);
+    if (property != null) {
+      if (descriptor.isMultiValued()) {
+        Value[] values = property.getValues();
+        if (values.length == 0) {
+          jcrValue = null;
+        } else {
+          jcrValue = values[0];
+        }
+      } else {
+        jcrValue = property.getValue();
+      }
+    } else {
+      jcrValue = null;
+    }
+    if (jcrValue != null) {
+      I internal = descriptor.getValueType().getValue(jcrValue);
+      if (converter != null) {
+        return converter.getExternal(internal);
+      } else {
+        return (E)internal;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  public <A, E, I> A getPropertyValues(Node node, ArrayType<A, E> arrayType, PropertyDescriptor<I> desc, SimpleTypeProvider<I, E> converter, String propertyName) throws RepositoryException {
+    Value[] values;
+    Property property = getProperty(node, propertyName);
+    if (property != null) {
+      if (desc.isMultiValued()) {
+        values = property.getValues();
+      } else {
+        values = new Value[]{property.getValue()};
+      }
+    } else {
+      values = null;
+    }
+
+    //
+    A list;
+    if (values != null) {
+      list = arrayType.create(values.length);
+      for (int i = 0;i < values.length;i++) {
+        Value value = values[i];
+        I v = desc.getValueType().getValue(value);
+        if (converter == null) {
+          arrayType.set(list, i, (E)v);
+        } else {
+          E e = converter.getExternal(v);
+          arrayType.set(list, i, e);
+        }
+      }
+    } else {
+      list = null;
+    }
+
+    //
+    return list;
+  }
+
+  public <E, I> void setPropertyValue(
+      Node node,
+      PropertyDescriptor<I> desc,
+      SimpleTypeProvider<I, E> converter,
+      String propertyName,
+      E value) throws RepositoryException {
+    if (value == null) {
+      if (desc.isMultiValued()) {
+        node.setProperty(propertyName, new Value[0]);
+      } else {
+        node.setProperty(propertyName, (Value)null);
+      }
+    } else {
+      I internal;
+      if (converter != null) {
+        if (desc.getValueType() != DataType.ANY && desc.getValueType().getJavaType() != converter.getInternalType()) {
+          throw new ClassCastException("Cannot cast type " + converter.getExternalType() + " to type " + desc.getValueType().getJavaType());
+        }
+        internal = converter.getInternal(value);
+      } else {
+        internal = (I)value;
+      }
+      ValueFactory valueFactory = session.getValueFactory();
+      Value jcrValue = desc.getValueType().getValue(valueFactory, internal);
+      if (desc.isMultiValued()) {
+        node.setProperty(propertyName, new Value[]{jcrValue});
+      } else {
+        node.setProperty(propertyName, jcrValue);
+      }
+    }
+  }
+
+  public <A, E, I> void setPropertyValues(Node node, ArrayType<A, E> arrayType, PropertyDescriptor<I> descriptor, SimpleTypeProvider<I, E> converter, String propertyName, A values) throws RepositoryException {
+    Value[] jcrValues;
+    if (values != null) {
+      if (arrayType.size(values) == 0) {
+        jcrValues = new Value[0];
+      } else {
+        ValueFactory valueFactory = session.getValueFactory();
+        int size = arrayType.size(values);
+        jcrValues = new Value[size];
+        for (int i = 0;i < size;i++) {
+          E element = arrayType.get(values, i);
+          I internal;
+          if (converter != null) {
+            if (descriptor.getValueType() != DataType.ANY && descriptor.getValueType().getJavaType() != converter.getInternalType()) {
+              throw new ClassCastException("Cannot cast type " + converter.getExternalType() + " to type " + descriptor.getValueType().getJavaType());
+            }
+            internal = converter.getInternal(element);
+          } else {
+            internal = (I)element;
+          }
+          Value jcrValue = descriptor.getValueType().getValue(valueFactory, internal);
+          jcrValues[i] = jcrValue;
+        }
+      }
+    } else {
+      jcrValues = null;
+    }
+
+    //
+    if (jcrValues != null) {
+      if (descriptor.isMultiValued()) {
+        node.setProperty(propertyName, jcrValues);
+      } else {
+        if (jcrValues.length > 1) {
+          throw new IllegalArgumentException("Cannot update with an array of length greater than 1");
+        } else if (jcrValues.length == 1) {
+          node.setProperty(propertyName, jcrValues[0]);
+        } else {
+          node.setProperty(propertyName, (Value)null);
+        }
+      }
+    } else {
+      if (descriptor.isMultiValued()) {
+        node.setProperty(propertyName, (Value[])null);
+      } else {
+        node.setProperty(propertyName, (Value)null);
       }
     }
   }
