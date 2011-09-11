@@ -24,7 +24,7 @@ import org.chromattic.metatype.ObjectType;
 
 public class JCRInheritanceRelationshipDescriptor extends JCRRelationshipDescriptor implements InheritanceRelationshipDescriptor {
 
-  public JCRInheritanceRelationshipDescriptor(ObjectType origin, ObjectType destination) {
+  public JCRInheritanceRelationshipDescriptor(JCRObjectType origin, JCRObjectType destination) {
     super(origin, destination);
   }
 }

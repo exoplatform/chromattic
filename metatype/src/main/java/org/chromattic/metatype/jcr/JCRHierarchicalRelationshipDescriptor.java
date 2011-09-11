@@ -27,7 +27,7 @@ public class JCRHierarchicalRelationshipDescriptor extends JCRRelationshipDescri
   /** . */
   private final String name;
 
-  public JCRHierarchicalRelationshipDescriptor(ObjectType origin, ObjectType destination, String name) {
+  public JCRHierarchicalRelationshipDescriptor(JCRObjectType origin, JCRObjectType destination, String name) {
     super(origin, destination);
 
     //

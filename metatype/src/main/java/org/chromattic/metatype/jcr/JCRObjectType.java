@@ -24,8 +24,8 @@ import org.chromattic.metatype.HierarchicalRelationshipDescriptor;
 import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.PropertyDescriptor;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class JCRObjectType implements ObjectType {
 
@@ -34,6 +34,9 @@ public class JCRObjectType implements ObjectType {
 
   /** . */
   Map<String, JCRInheritanceRelationshipDescriptor> superRelationships;
+
+  /** . */
+  Set<JCRObjectType> ancestors;
 
   /** . */
   Map<String, JCRInheritanceRelationshipDescriptor> superEntityRelationships;
@@ -97,6 +100,13 @@ public class JCRObjectType implements ObjectType {
       throw new NullPointerException("Null name argument not accepted");
     }
     return superRelationships.get(name);
+  }
+
+  public boolean inherits(ObjectType type) {
+    if (type == null) {
+      throw new NullPointerException("No null type argument accepted");
+    }
+    return ancestors.contains(type);
   }
 
   @Override

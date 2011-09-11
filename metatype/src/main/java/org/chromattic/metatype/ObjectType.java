@@ -41,4 +41,6 @@ public interface ObjectType {
 
   InheritanceRelationshipDescriptor getSuperRelationship(String name) throws NullPointerException;
 
+  boolean inherits(ObjectType d);
+
 }

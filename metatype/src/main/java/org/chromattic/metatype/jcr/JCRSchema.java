@@ -45,9 +45,25 @@ public class JCRSchema implements Schema {
     }
 
     private void resolve() throws RepositoryException {
+
+      // Resolve each type
       for (NodeTypeIterator it = mgr.getAllNodeTypes();it.hasNext();) {
         NodeType nodeType = it.nextNodeType();
         resolve(nodeType.getName());
+      }
+
+      // Resolve ancestors
+      for (JCRObjectType type : types.values()) {
+        HashSet<JCRObjectType> ancestorTypes = new HashSet<JCRObjectType>();
+        ancestors(type, ancestorTypes);
+        type.ancestors = ancestorTypes;
+      }
+    }
+
+    private void ancestors(JCRObjectType type, Set<JCRObjectType> set) {
+      for (JCRInheritanceRelationshipDescriptor superRelationship : type.superRelationships.values()) {
+        set.add(superRelationship.destination);
+        ancestors(superRelationship.destination, set);
       }
     }
 
@@ -71,7 +87,7 @@ public class JCRSchema implements Schema {
       foo.put(PropertyType.UNDEFINED, ValueType.ANY);
     }
 
-    private ObjectType resolve(String name) throws RepositoryException {
+    private JCRObjectType resolve(String name) throws RepositoryException {
       JCRObjectType resolved = types.get(name);
       if (resolved == null) {
         NodeType nodeType = mgr.getNodeType(name);
@@ -87,7 +103,7 @@ public class JCRSchema implements Schema {
         //
         Map<String, JCRInheritanceRelationshipDescriptor> superRelationships = null;
         for (NodeType superNodeType : nodeType.getDeclaredSupertypes()) {
-          ObjectType superType = resolve(superNodeType.getName());
+          JCRObjectType superType = resolve(superNodeType.getName());
           if (superRelationships == null) {
             superRelationships = new LinkedHashMap<String, JCRInheritanceRelationshipDescriptor>();
           }
@@ -129,7 +145,7 @@ public class JCRSchema implements Schema {
         Map<String, JCRHierarchicalRelationshipDescriptor> childrenRelationships = null;
         NodeDefinition[] defs = nodeType.getDeclaredChildNodeDefinitions();
         for (NodeDefinition def : defs) {
-          ObjectType childType = resolve(def.getRequiredPrimaryTypes()[0].getName());
+          JCRObjectType childType = resolve(def.getRequiredPrimaryTypes()[0].getName());
           JCRHierarchicalRelationshipDescriptor relationship = new JCRHierarchicalRelationshipDescriptor(
               resolved,
               childType,

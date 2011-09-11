@@ -81,6 +81,12 @@ public class SchemaTestCase extends TestCase {
     assertSame(unstructured, toAny.getOrigin());
     assertSame(base, toAny.getDestination());
     assertEquals("*", toAny.getName());
+
+    //
+    EntityType hierarchyNode = (EntityType)schema.getType("nt:hierarchyNode");
+    EntityType file = (EntityType)schema.getType("nt:file");
+    assertTrue(file.inherits(hierarchyNode));
+    assertTrue(file.inherits(base));
   }
 
   public void testProperty() throws Exception

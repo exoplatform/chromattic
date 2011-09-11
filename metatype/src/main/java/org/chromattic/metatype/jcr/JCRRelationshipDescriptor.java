@@ -25,12 +25,12 @@ import org.chromattic.metatype.RelationshipDescriptor;
 public class JCRRelationshipDescriptor implements RelationshipDescriptor {
 
   /** . */
-  private final ObjectType origin;
+  final JCRObjectType origin;
 
   /** . */
-  private final ObjectType destination;
+  final JCRObjectType destination;
 
-  public JCRRelationshipDescriptor(ObjectType origin, ObjectType destination) {
+  public JCRRelationshipDescriptor(JCRObjectType origin, JCRObjectType destination) {
     this.origin = origin;
     this.destination = destination;
   }
