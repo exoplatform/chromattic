@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.type;
 
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 import org.chromattic.spi.type.SimpleType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.*;
@@ -146,7 +146,7 @@ public class SimpleTypeResolver {
 
   public synchronized SimpleTypeMapping resolveType(
     TypeInfo typeInfo,
-    ValueType<?> propertyMT) {
+    DataType<?> propertyMT) {
     SimpleTypeMapping jcrType = null;
     if (typeInfo instanceof ClassTypeInfo) {
       ClassTypeInfo cti = (ClassTypeInfo)typeInfo;

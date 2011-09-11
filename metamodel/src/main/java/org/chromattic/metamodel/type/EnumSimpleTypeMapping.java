@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.type;
 
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 import org.reflext.api.ClassTypeInfo;
 
@@ -36,8 +36,8 @@ public class EnumSimpleTypeMapping implements SimpleTypeMapping {
     this.enumInfo = enumInfo;
   }
 
-  public ValueType<String> getPropertyMetaType() {
-    return ValueType.STRING;
+  public DataType<String> getPropertyMetaType() {
+    return DataType.STRING;
   }
 
   public SimpleTypeProvider<?, ?> create() {

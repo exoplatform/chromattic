@@ -26,7 +26,7 @@ import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.ValueKind;
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
@@ -77,7 +77,7 @@ public class JCRPropertyMultiValuedPropertyMapper<O extends ObjectContext<O>, E,
     this.arrayType = arrayType;
     this.jcrPropertyName = info.getPropertyDefinition().getName();
     this.elementType = info.getValue();
-    this.vt = new ValueDefinition<I, E>(effective, (ValueType<I>)info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
+    this.vt = new ValueDefinition<I, E>(effective, (DataType<I>)info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
   }
 
   @Override

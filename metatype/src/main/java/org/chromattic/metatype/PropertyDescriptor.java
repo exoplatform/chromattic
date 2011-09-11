@@ -23,7 +23,7 @@ public interface PropertyDescriptor<V> {
 
   String getName();
 
-  ValueType<V> getValueType();
+  DataType<V> getValueType();
 
   boolean isMultiValued();
 

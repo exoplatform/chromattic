@@ -19,7 +19,7 @@
 
 package org.chromattic.core.vt2;
 
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 import org.chromattic.metamodel.type.SimpleTypeProviders;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
@@ -41,49 +41,49 @@ public class ValueDefinition<I, E> {
   /** . */
   private static final ValueDefinition<String, String> STRING = new ValueDefinition<String, String>(
     String.class,
-    ValueType.STRING,
+    DataType.STRING,
     new SimpleTypeProviders.STRING(),
     null);
 
   /** . */
   private static final ValueDefinition<String, String> PATH = new ValueDefinition<String, String>(
     String.class,
-    ValueType.PATH,
+    DataType.PATH,
     new SimpleTypeProviders.PATH(),
     null);
 
   /** . */
   private static final ValueDefinition<String, String> NAME = new ValueDefinition<String, String>(
       String.class,
-      ValueType.NAME,
+      DataType.NAME,
       new SimpleTypeProviders.NAME(),
       null);
 
   /** . */
   private static final ValueDefinition<Boolean, Boolean> BOOLEAN = new ValueDefinition<Boolean, Boolean>(
       Boolean.class,
-      ValueType.BOOLEAN,
+      DataType.BOOLEAN,
       new SimpleTypeProviders.BOOLEAN(),
       null);
 
   /** . */
   private static final ValueDefinition<Double, Double> DOUBLE = new ValueDefinition<Double, Double>(
       Double.class,
-      ValueType.DOUBLE,
+      DataType.DOUBLE,
       new SimpleTypeProviders.DOUBLE(),
       null);
 
   /** . */
   private static final ValueDefinition<Long, Long> LONG = new ValueDefinition<Long, Long>(
       Long.class,
-      ValueType.LONG,
+      DataType.LONG,
       new SimpleTypeProviders.LONG(),
       null);
 
   /** . */
   private static final ValueDefinition<InputStream, InputStream> BINARY = new ValueDefinition<InputStream, InputStream>(
       InputStream.class,
-      ValueType.BINARY,
+      DataType.BINARY,
       new SimpleTypeProviders.BINARY(),
       null);
 
@@ -144,11 +144,11 @@ public class ValueDefinition<I, E> {
   private final List<String> defaultValue;
 
   /** . */
-  private final ValueType<I> propertyMetaType;
+  private final DataType<I> propertyMetaType;
 
   public ValueDefinition(
     Class<?> realType,
-    ValueType<I> propertyMetaType,
+    DataType<I> propertyMetaType,
     SimpleTypeProvider<I, E> valueType,
     List<String> defaultValue) {
     this.realType = realType;

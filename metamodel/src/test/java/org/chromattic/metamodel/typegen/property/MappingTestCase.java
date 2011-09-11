@@ -26,7 +26,7 @@ import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyDefinitionMapping;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.chromattic.metamodel.typegen.AbstractMappingTestCase;
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 import org.chromattic.testgenerator.GroovyTestGeneration;
 
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
     assertEquals(null, propertyDefinition.getDefaultValue());
-    assertEquals(ValueType.STRING, propertyDefinition.getMetaType());
+    assertEquals(DataType.STRING, propertyDefinition.getMetaType());
     assertEquals("string", stringMapping.getName());
   }
 
@@ -60,7 +60,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("string", propertyDefinition.getName());
     assertEquals(Arrays.asList("foo"), propertyDefinition.getDefaultValue());
-    assertEquals(ValueType.STRING, propertyDefinition.getMetaType());
+    assertEquals(DataType.STRING, propertyDefinition.getMetaType());
     assertEquals("string", stringMapping.getName());
   }
 
@@ -73,7 +73,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("strings", propertyDefinition.getName());
     assertEquals(null, propertyDefinition.getDefaultValue());
-    assertEquals(ValueType.STRING, propertyDefinition.getMetaType());
+    assertEquals(DataType.STRING, propertyDefinition.getMetaType());
     assertEquals("strings", stringMapping.getName());
   }
 
@@ -86,7 +86,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("strings", propertyDefinition.getName());
     assertEquals(Arrays.asList("foo","bar"), propertyDefinition.getDefaultValue());
-    assertEquals(ValueType.STRING, propertyDefinition.getMetaType());
+    assertEquals(DataType.STRING, propertyDefinition.getMetaType());
     assertEquals("strings", stringMapping.getName());
   }
 
@@ -99,7 +99,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("strings", propertyDefinition.getName());
     assertEquals(null, propertyDefinition.getDefaultValue());
-    assertEquals(ValueType.STRING, propertyDefinition.getMetaType());
+    assertEquals(DataType.STRING, propertyDefinition.getMetaType());
     assertEquals("strings", stringMapping.getName());
   }
 
@@ -112,7 +112,7 @@ public class MappingTestCase extends AbstractMappingTestCase {
     PropertyDefinitionMapping propertyDefinition = stringMapping.getPropertyDefinition();
     assertEquals("strings", propertyDefinition.getName());
     assertEquals(Arrays.asList("foo","bar"), propertyDefinition.getDefaultValue());
-    assertEquals(ValueType.STRING, propertyDefinition.getMetaType());
+    assertEquals(DataType.STRING, propertyDefinition.getMetaType());
     assertEquals("strings", stringMapping.getName());
   }
 

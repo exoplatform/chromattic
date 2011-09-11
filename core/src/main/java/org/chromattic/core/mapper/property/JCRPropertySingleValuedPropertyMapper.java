@@ -26,7 +26,7 @@ import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.ValueMapping;
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
 /**
@@ -51,7 +51,7 @@ public class JCRPropertySingleValuedPropertyMapper<O extends ObjectContext<O>, E
     this.jcrPropertyName = info.getPropertyDefinition().getName();
     this.vt = new ValueDefinition<I, E>(
         (Class)info.getValue().getEffectiveType().unwrap(),
-        (ValueType<I>)info.getPropertyDefinition().getMetaType(),
+        (DataType<I>)info.getPropertyDefinition().getMetaType(),
         vt,
         info.getPropertyDefinition().getDefaultValue());
   }

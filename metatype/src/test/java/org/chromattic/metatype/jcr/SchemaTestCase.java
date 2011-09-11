@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.exo.RepositoryBootstrap;
 import org.chromattic.metatype.*;
-import org.jboss.util.platform.Java;
 
 import javax.jcr.Repository;
 import javax.jcr.Session;
@@ -101,7 +100,7 @@ public class SchemaTestCase extends TestCase {
     PropertyDescriptor pt = base.getProperty("jcr:primaryType");
     assertNotNull(pt);
     assertEquals("jcr:primaryType", pt.getName());
-    assertEquals(ValueType.STRING, pt.getValueType());
+    assertEquals(DataType.STRING, pt.getValueType());
     assertEquals(true, pt.isSingleValued());
     assertEquals(false, pt.isMultiValued());
 
@@ -109,7 +108,7 @@ public class SchemaTestCase extends TestCase {
     PropertyDescriptor mt = base.getProperty("jcr:mixinTypes");
     assertNotNull(mt);
     assertEquals("jcr:mixinTypes", mt.getName());
-    assertEquals(ValueType.STRING, mt.getValueType());
+    assertEquals(DataType.STRING, mt.getValueType());
     assertEquals(false, mt.isSingleValued());
     assertEquals(true, mt.isMultiValued());
   }

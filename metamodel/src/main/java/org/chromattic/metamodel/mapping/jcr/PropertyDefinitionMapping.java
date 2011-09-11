@@ -19,7 +19,7 @@
 
 package org.chromattic.metamodel.mapping.jcr;
 
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 
 import java.util.List;
 
@@ -36,9 +36,9 @@ public class PropertyDefinitionMapping<I> extends ItemDefinitionMapping {
   private final List<String> defaultValue;
 
   /** . */
-  private final ValueType<I> metaType;
+  private final DataType<I> metaType;
 
-  public PropertyDefinitionMapping(String name, ValueType<I> metaType, List<String> defaultValue, boolean mandatory) {
+  public PropertyDefinitionMapping(String name, DataType<I> metaType, List<String> defaultValue, boolean mandatory) {
     super(mandatory);
 
     //
@@ -51,7 +51,7 @@ public class PropertyDefinitionMapping<I> extends ItemDefinitionMapping {
     return name;
   }
 
-  public ValueType<I> getMetaType() {
+  public DataType<I> getMetaType() {
     return metaType;
   }
 

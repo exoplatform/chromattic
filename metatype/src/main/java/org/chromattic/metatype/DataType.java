@@ -28,16 +28,16 @@ import java.io.InputStream;
 import java.util.Calendar;
 
 /**
- * A property meta type is a representation of the JCR property types defined by {@link javax.jcr.PropertyType}.
+ * A data type.
  *
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
- * @param <V> the java type modeling the type
+ * @param <T> the java type expressing the underlying type
  */
-public abstract class ValueType<V> {
+public abstract class DataType<T> {
 
   /** . */
-  public static final ValueType<String> STRING = new ValueType<String>(String.class, PropertyType.STRING) {
+  public static final DataType<String> STRING = new DataType<String>(String.class, PropertyType.STRING) {
     @Override
     public Value getValue(ValueFactory factory, String s) throws ValueFormatException {
       return factory.createValue(s, PropertyType.STRING);
@@ -49,7 +49,7 @@ public abstract class ValueType<V> {
   };
 
   /** . */
-  public static final ValueType<String> PATH = new ValueType<String>(String.class, PropertyType.PATH) {
+  public static final DataType<String> PATH = new DataType<String>(String.class, PropertyType.PATH) {
     @Override
     public Value getValue(ValueFactory factory, String s) throws ValueFormatException {
       return factory.createValue(s, PropertyType.PATH);
@@ -61,7 +61,7 @@ public abstract class ValueType<V> {
   };
 
   /** . */
-  public static final ValueType<String> NAME = new ValueType<String>(String.class, PropertyType.NAME) {
+  public static final DataType<String> NAME = new DataType<String>(String.class, PropertyType.NAME) {
     @Override
     public Value getValue(ValueFactory factory, String s) throws ValueFormatException {
       return factory.createValue(s, PropertyType.NAME);
@@ -73,7 +73,7 @@ public abstract class ValueType<V> {
   };
 
   /** . */
-  public static final ValueType<Long> LONG = new ValueType<Long>(Long.class, PropertyType.LONG) {
+  public static final DataType<Long> LONG = new DataType<Long>(Long.class, PropertyType.LONG) {
     @Override
     public Value getValue(ValueFactory factory, Long aLong) throws ValueFormatException {
       return factory.createValue(aLong);
@@ -85,7 +85,7 @@ public abstract class ValueType<V> {
   };
 
   /** . */
-  public static final ValueType<Double> DOUBLE = new ValueType<Double>(Double.class, PropertyType.DOUBLE) {
+  public static final DataType<Double> DOUBLE = new DataType<Double>(Double.class, PropertyType.DOUBLE) {
     @Override
     public Value getValue(ValueFactory factory, Double aDouble) throws ValueFormatException {
       return factory.createValue(aDouble);
@@ -97,7 +97,7 @@ public abstract class ValueType<V> {
   };
 
   /** . */
-  public static final ValueType<Boolean> BOOLEAN = new ValueType<Boolean>(Boolean.class, PropertyType.BOOLEAN) {
+  public static final DataType<Boolean> BOOLEAN = new DataType<Boolean>(Boolean.class, PropertyType.BOOLEAN) {
     @Override
     public Value getValue(ValueFactory factory, Boolean aBoolean) throws ValueFormatException {
       return factory.createValue(aBoolean);
@@ -109,7 +109,7 @@ public abstract class ValueType<V> {
   };
 
   /** . */
-  public static final ValueType<InputStream> BINARY = new ValueType<InputStream>(InputStream.class, PropertyType.BINARY) {
+  public static final DataType<InputStream> BINARY = new DataType<InputStream>(InputStream.class, PropertyType.BINARY) {
     @Override
     public Value getValue(ValueFactory factory, InputStream inputStream) throws ValueFormatException {
       return factory.createValue(inputStream);
@@ -121,7 +121,7 @@ public abstract class ValueType<V> {
   };
 
   /** . */
-  public static final ValueType<Calendar> DATE = new ValueType<Calendar>(Calendar.class, PropertyType.DATE) {
+  public static final DataType<Calendar> DATE = new DataType<Calendar>(Calendar.class, PropertyType.DATE) {
     @Override
     public Value getValue(ValueFactory factory, Calendar date) throws ValueFormatException {
       return factory.createValue(date);
@@ -133,7 +133,7 @@ public abstract class ValueType<V> {
   };
 
   /** . */
-  public static final ValueType<Object> ANY = new ValueType<Object>(Object.class, PropertyType.UNDEFINED) {
+  public static final DataType<Object> ANY = new DataType<Object>(Object.class, PropertyType.UNDEFINED) {
     @Override
     public Value getValue(ValueFactory factory, Object date) throws ValueFormatException {
       throw new UnsupportedOperationException();
@@ -145,7 +145,7 @@ public abstract class ValueType<V> {
   };
 
   /** . */
-  private static final ValueType<?>[] ALL = {
+  private static final DataType<?>[] ALL = {
     STRING,
     PATH,
     NAME,
@@ -156,8 +156,8 @@ public abstract class ValueType<V> {
     DATE
   };
 
-  public static ValueType<?> get(int code) {
-    for (ValueType<?> pt : ALL) {
+  public static DataType<?> get(int code) {
+    for (DataType<?> pt : ALL) {
       if (pt.code == code) {
         return pt;
       }
@@ -166,7 +166,7 @@ public abstract class ValueType<V> {
   }
 
   /** The java type associated with the type. */
-  private final Class<V> javaValueType;
+  private final Class<T> javaType;
 
   /**
    * The JCR type code among the values:
@@ -184,8 +184,8 @@ public abstract class ValueType<V> {
    */
   private final int code;
 
-  private ValueType(Class<V> javaValueType, int code) {
-    this.javaValueType = javaValueType;
+  private DataType(Class<T> javaType, int code) {
+    this.javaType = javaType;
     this.code = code;
   }
 
@@ -197,7 +197,7 @@ public abstract class ValueType<V> {
    * @return the JCR value
    * @throws ValueFormatException thrown by the factory
    */
-  public abstract Value getValue(ValueFactory factory, V v) throws ValueFormatException;
+  public abstract Value getValue(ValueFactory factory, T v) throws ValueFormatException;
 
   /**
    * Converts the {@link Value} to the java value.
@@ -206,15 +206,15 @@ public abstract class ValueType<V> {
    * @return the Java value
    * @throws RepositoryException thrown by the conversion
    */
-  public abstract V getValue(Value value) throws RepositoryException;
+  public abstract T getValue(Value value) throws RepositoryException;
 
   /**
    * Returns the Java value type modelling the property type.
    *
    * @return the Java value type modelling the property type
    */
-  public Class<V> getJavaValueType() {
-    return javaValueType;
+  public Class<T> getJavaType() {
+    return javaType;
   }
 
   /**

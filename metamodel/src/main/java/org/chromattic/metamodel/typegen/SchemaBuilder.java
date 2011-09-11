@@ -34,7 +34,7 @@ import org.chromattic.metamodel.mapping.RelationshipMapping;
 import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.metamodel.mapping.PropertiesMapping;
 import org.chromattic.metamodel.type.SimpleTypeResolver;
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 import org.reflext.api.ClassTypeInfo;
 
 import javax.jcr.PropertyType;
@@ -168,7 +168,7 @@ public class SchemaBuilder {
     public void propertiesMapping(PropertiesMapping<?> mapping) {
       if (current != null) {
         if (mapping.getProperty().getAnnotation(Skip.class) == null) {
-          ValueType metatype = mapping.getMetaType();
+          DataType metatype = mapping.getMetaType();
           int code = metatype != null ? metatype.getCode() : PropertyType.UNDEFINED;
           boolean multiple = mapping.getValueKind() != ValueKind.SINGLE;
           PropertyDefinition pd = current.properties.get("*");

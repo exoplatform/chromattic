@@ -20,11 +20,11 @@
 package org.chromattic.metatype.jcr;
 
 import org.chromattic.metatype.PropertyDescriptor;
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 
 public class JCRPropertyDescriptor<V> implements PropertyDescriptor<V> {
 
-  public static <V> JCRPropertyDescriptor<V> create(String name, ValueType<V> valueType, boolean singleValued) {
+  public static <V> JCRPropertyDescriptor<V> create(String name, DataType<V> valueType, boolean singleValued) {
     return new JCRPropertyDescriptor<V>(name, valueType, singleValued);
   }
 
@@ -32,12 +32,12 @@ public class JCRPropertyDescriptor<V> implements PropertyDescriptor<V> {
   private final String name;
 
   /** . */
-  private final ValueType<V> valueType;
+  private final DataType<V> valueType;
 
   /** . */
   private final boolean singleValued;
 
-  public JCRPropertyDescriptor(String name, ValueType<V> valueType, boolean singleValued) {
+  public JCRPropertyDescriptor(String name, DataType<V> valueType, boolean singleValued) {
     this.name = name;
     this.valueType = valueType;
     this.singleValued = singleValued;
@@ -47,7 +47,7 @@ public class JCRPropertyDescriptor<V> implements PropertyDescriptor<V> {
     return name;
   }
 
-  public ValueType<V> getValueType() {
+  public DataType<V> getValueType() {
     return valueType;
   }
 

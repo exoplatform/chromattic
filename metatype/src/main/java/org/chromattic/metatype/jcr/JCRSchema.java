@@ -22,7 +22,7 @@ package org.chromattic.metatype.jcr;
 import org.chromattic.common.Safe;
 import org.chromattic.metatype.ObjectType;
 import org.chromattic.metatype.Schema;
-import org.chromattic.metatype.ValueType;
+import org.chromattic.metatype.DataType;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -73,19 +73,19 @@ public class JCRSchema implements Schema {
       }
     }
 
-    private static final Map<Integer, ValueType> foo = new HashMap<Integer, ValueType>();
+    private static final Map<Integer, DataType> foo = new HashMap<Integer, DataType>();
 
     static
     {
-      foo.put(PropertyType.STRING, ValueType.STRING);
-      foo.put(PropertyType.NAME, ValueType.STRING);
-      foo.put(PropertyType.LONG, ValueType.LONG);
-      foo.put(PropertyType.BOOLEAN, ValueType.BOOLEAN);
-      foo.put(PropertyType.DATE, ValueType.DATE);
-      foo.put(PropertyType.DOUBLE, ValueType.DOUBLE);
-      foo.put(PropertyType.BINARY, ValueType.BINARY);
-      foo.put(PropertyType.UNDEFINED, ValueType.ANY);
-      foo.put(PropertyType.PATH, ValueType.PATH);
+      foo.put(PropertyType.STRING, DataType.STRING);
+      foo.put(PropertyType.NAME, DataType.STRING);
+      foo.put(PropertyType.LONG, DataType.LONG);
+      foo.put(PropertyType.BOOLEAN, DataType.BOOLEAN);
+      foo.put(PropertyType.DATE, DataType.DATE);
+      foo.put(PropertyType.DOUBLE, DataType.DOUBLE);
+      foo.put(PropertyType.BINARY, DataType.BINARY);
+      foo.put(PropertyType.UNDEFINED, DataType.ANY);
+      foo.put(PropertyType.PATH, DataType.PATH);
     }
 
     private JCRObjectType resolve(String name) throws RepositoryException {
@@ -178,7 +178,7 @@ public class JCRSchema implements Schema {
             if (properties == null) {
               properties = new LinkedHashMap<String, JCRPropertyDescriptor<?>>();
             }
-            ValueType<?> valueType = foo.get(propertyType);
+            DataType<?> valueType = foo.get(propertyType);
             if (valueType == null)
             {
               throw new UnsupportedOperationException("Unsupported property type " + propertyType);
