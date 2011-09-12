@@ -3,7 +3,7 @@
   <parent>
     <artifactId>chromattic.parent</artifactId>
     <groupId>org.chromattic</groupId>
-    <version>1.1.0-beta7-SNAPSHOT</version>
+    <version>1.1.0-beta7</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -132,7 +132,7 @@
                 </taskdef>
                 <groovyc destdir="${basedir}/target/test-classes/" srcdir="${basedir}/target/test-classes/" fork="no" listfiles="false">
                   <classpath>
-                     <path refid="maven.compile.classpath"/>
+                     <path refid="maven.compile.classpath" />
                   </classpath>
                 </groovyc>
               </tasks>
