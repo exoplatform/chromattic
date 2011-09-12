@@ -22,8 +22,8 @@ package org.chromattic.core.mapper.property;
 import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.common.JCR;
 import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.core.ArrayType;
 import org.chromattic.core.EntityContext;
-import org.chromattic.core.ListType;
 import org.chromattic.metamodel.bean.ValueKind;
 
 import javax.jcr.Property;
@@ -36,6 +36,9 @@ import java.util.*;
  * @version $Revision$
  */
 class PropertyMap extends AbstractMap<String, Object> {
+
+  /** . */
+  private static final ArrayType<List<Object>, Object> LIST_TYPE = ArrayType.list(Object.class);
 
   /** . */
   private final JCRPropertyDetypedPropertyMapper mapper;
@@ -67,7 +70,7 @@ class PropertyMap extends AbstractMap<String, Object> {
         if (mapper.valueKind == ValueKind.SINGLE) {
           return ctx.getPropertyValue(s, null);
         } else {
-          return ctx.getPropertyValues(s, null, ListType.LIST);
+          return ctx.getPropertyValues(s, null, LIST_TYPE);
         }
       }
       catch (RepositoryException e) {
@@ -121,9 +124,9 @@ class PropertyMap extends AbstractMap<String, Object> {
         previous = ctx.getPropertyValue(key, null);
         ctx.setPropertyValue(key, null, value);
       } else {
-        List<?> list = (List<?>)value;
-        previous = ctx.getPropertyValues(key, null, ListType.LIST);
-        ctx.setPropertyValues(key, null, ListType.LIST, list);
+        List<Object> list = (List<Object>)value;
+        previous = ctx.getPropertyValues(key, null, LIST_TYPE);
+        ctx.setPropertyValues(key, null, LIST_TYPE, list);
       }
       return previous;
     }

@@ -126,7 +126,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     return state.getPropertyValue(typeInfo, propertyName, type);
   }
 
-  public final <V> List<V> getPropertyValues(String propertyName, ValueDefinition<?, V> simpleType, ListType listType) throws RepositoryException {
+  public final <L, V> L getPropertyValues(String propertyName, ValueDefinition<?, V> simpleType, ArrayType<L, V> arrayType) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -136,7 +136,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
 
     //
     NodeTypeInfo typeInfo = getTypeInfo();
-    return state.getPropertyValues(typeInfo, propertyName, simpleType, listType);
+    return state.getPropertyValues(typeInfo, propertyName, simpleType, arrayType);
   }
 
   public final <V> void setPropertyValue(String propertyName, ValueDefinition<?, V> type, V o) throws RepositoryException {
@@ -174,7 +174,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     }
   }
 
-  public final <V> void setPropertyValues(String propertyName, ValueDefinition<?, V> type, ListType listType, List<V> objects) throws RepositoryException {
+  public final <L, V> void setPropertyValues(String propertyName, ValueDefinition<?, V> type, ArrayType<L, V> arrayType, L propertyValues) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -186,7 +186,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     NodeTypeInfo typeInfo = getTypeInfo();
 
     //
-    state.setPropertyValues(typeInfo, propertyName, type, listType, objects);
+    state.setPropertyValues(typeInfo, propertyName, type, arrayType, propertyValues);
   }
 
   public final void removeChild(String prefix, String localName) {

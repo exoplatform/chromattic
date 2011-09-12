@@ -204,7 +204,8 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ListType listType) {
+  @Override
+  <L, V> L getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType) {
     try {
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
       if (def == null) {
@@ -236,30 +237,30 @@ class PersistentEntityContextState extends EntityContextState {
       }
 
       //
-      List<V> list;
+      L list;
       if (vt != null) {
         if (values != null) {
-          list = listType.create(vt, values.length);
+          list = arrayType.create(values.length);
           for (int i = 0;i < values.length;i++) {
             Value value = values[i];
             V v = vt.get(value);
-            list.set(i, v);
+            arrayType.set(list, i, v);
           }
         } else {
           List<V> defaultValue = vt.getDefaultValue();
           if (defaultValue != null) {
             if (def.isMultiple()) {
-              list = listType.create(vt, defaultValue.size());
+              list = arrayType.create(defaultValue.size());
               for (int i = 0;i < defaultValue.size();i++) {
                 V v = defaultValue.get(i);
-                list.set(i, v);
+                arrayType.set(list, i, v);
               }
             } else {
               if (defaultValue.size() > 0) {
-                list = listType.create(vt, 1);
-                list.set(0, defaultValue.get(0));
+                list = arrayType.create(1);
+                arrayType.set(list, 0, defaultValue.get(0));
               } else {
-                list = listType.create(vt, 0);
+                list = arrayType.create(0);
               }
             }
           } else {
@@ -267,11 +268,7 @@ class PersistentEntityContextState extends EntityContextState {
           }
         }
       } else {
-        if (listType == ListType.LIST) {
-          list = new ArrayList<V>();
-        } else {
-          throw new AssertionError("this case is not possible");
-        }
+        list = arrayType.create(0);
       }
 
       //
@@ -367,7 +364,8 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
-  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ListType listType, List<V> propertyValues) {
+  @Override
+  <L, V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType, L propertyValues) {
     try {
       PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
       if (def == null) {
@@ -378,7 +376,7 @@ class PersistentEntityContextState extends EntityContextState {
       //
       Value[] jcrValues;
       if (propertyValues != null) {
-        if (propertyValues.isEmpty()) {
+        if (arrayType.size(propertyValues) == 0) {
           jcrValues = new Value[0];
         } else {
 
@@ -390,7 +388,7 @@ class PersistentEntityContextState extends EntityContextState {
 
             //
             if (vt == null) {
-              Object propertyValue = propertyValues.get(0);
+              Object propertyValue = arrayType.get(propertyValues, 0);
               vt = (ValueDefinition<?, V>)ValueDefinition.get(propertyValue);
               if (vt == null) {
                 throw new TypeConversionException("Cannot convert object " + propertyValue + " no converter found");
@@ -400,10 +398,10 @@ class PersistentEntityContextState extends EntityContextState {
 
           //
           ValueFactory valueFactory = session.sessionWrapper.getSession().getValueFactory();
-          int size = propertyValues.size();
+          int size = arrayType.size(propertyValues);
           jcrValues = new Value[size];
           for (int i = 0;i < size;i++) {
-            V element = propertyValues.get(i);
+            V element = arrayType.get(propertyValues, i);
             Value jcrValue = vt.get(valueFactory, def.getType(), element);
             jcrValues[i] = jcrValue;
           }
@@ -441,4 +439,5 @@ class PersistentEntityContextState extends EntityContextState {
   public String toString() {
     return "ObjectStatus[path=" + getPath() + ",status=" + Status.PERSISTENT + "]";
   }
+
 }

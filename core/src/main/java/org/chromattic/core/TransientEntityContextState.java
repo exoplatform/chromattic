@@ -79,7 +79,8 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <V> List<V> getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ListType listType) {
+  @Override
+  <L, V> L getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType) {
     throw new IllegalStateException();
   }
 
@@ -87,7 +88,7 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
-  <V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ListType listType, List<V> objects) {
+  <L, V> void setPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType, L propertyValues) {
     throw new IllegalStateException();
   }
 

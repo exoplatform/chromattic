@@ -19,7 +19,7 @@
 
 package org.chromattic.core.mapper.property;
 
-import org.chromattic.core.ListType;
+import org.chromattic.core.ArrayType;
 import org.chromattic.core.ObjectContext;
 import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.vt2.ValueDefinition;
@@ -29,8 +29,6 @@ import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.spi.type.SimpleTypeProvider;
-
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -43,7 +41,7 @@ public class JCRPropertyMultiValuedPropertyMapper<O extends ObjectContext<O>, E,
   private final String jcrPropertyName;
 
   /** . */
-  private final ListType listType;
+  private final ArrayType<?, E> arrayType;
 
   /** . */
   private final SimpleValueInfo elementType;
@@ -58,32 +56,37 @@ public class JCRPropertyMultiValuedPropertyMapper<O extends ObjectContext<O>, E,
     super(contextType, info);
 
     //
-    ListType listType;
+    Class effective = (Class) info.getValue().getEffectiveType().unwrap();
+
+    //
+    ArrayType<?, E> arrayType;
     ValueKind.Multi valueKind = info.getValue().getValueKind();
     if (valueKind == ValueKind.ARRAY) {
-      listType = ListType.ARRAY;
+      if (effective.isPrimitive()) {
+        arrayType = ArrayType.primitiveArray(effective);
+      } else {
+        arrayType = ArrayType.array(effective);
+      }
     } else if (valueKind == ValueKind.LIST) {
-      listType = ListType.LIST;
+      arrayType = ArrayType.list(effective);
     } else {
       throw new AssertionError();
     }
 
     //
-    this.listType = listType;
+    this.arrayType = arrayType;
     this.jcrPropertyName = info.getPropertyDefinition().getName();
     this.elementType = info.getValue();
-    this.vt = new ValueDefinition<I, E>((Class)info.getValue().getEffectiveType().unwrap(), (PropertyMetaType<I>)info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
+    this.vt = new ValueDefinition<I, E>(effective, (PropertyMetaType<I>)info.getPropertyDefinition().getMetaType(), vt, info.getPropertyDefinition().getDefaultValue());
   }
 
   @Override
   public Object get(O context) throws Throwable {
-    List<E> list = context.getPropertyValues(jcrPropertyName, vt, listType);
-    return list == null ? null : listType.unwrap(vt, list);
+    return context.getPropertyValues(jcrPropertyName, vt, arrayType);
   }
 
   @Override
   public void set(O context, Object value) throws Throwable {
-    List<E> list = value == null ? null : listType.wrap(vt, value);
-    context.setPropertyValues(jcrPropertyName, vt, listType, list);
+    context.setPropertyValues(jcrPropertyName, vt, (ArrayType)arrayType, value);
   }
 }
