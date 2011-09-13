@@ -60,6 +60,7 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.testgenerator</artifactId>
+      <scope>test-compile</scope>
     </dependency>
 
     <dependency>
