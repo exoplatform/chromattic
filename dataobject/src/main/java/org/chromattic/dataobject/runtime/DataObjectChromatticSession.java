@@ -82,7 +82,7 @@ public class DataObjectChromatticSession implements ChromatticSession {
 
   static void cleanup() {
     DataObjectChromatticSession proxy = current.get();
-    if (current != null) {
+    if (proxy != null) {
       proxy.effective.close();
     }
   }
