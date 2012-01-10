@@ -18,6 +18,7 @@
  */
 package org.chromattic.test.find.query;
 
+import org.chromattic.api.query.OrderBy;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.core.api.ChromatticSessionImpl;
@@ -187,5 +188,55 @@ public class QueryTestCase extends AbstractTestCase {
     //
     assertEquals(1, it1.size());
     assertEquals(3, it1.hits());
+  }
+
+  public void testOrderByASC() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    A a = session.insert(A.class, "a");
+    a.setFoo("a");
+    A b = session.insert(A.class, "b");
+    b.setFoo("b");
+    A c = session.insert(A.class, "c");
+    c.setFoo("c");
+    session.save();
+
+    //
+    QueryResult<A> it = session.createQueryBuilder(A.class).orderBy("foo", OrderBy.ASC).get().objects();
+    assertTrue(it.hasNext());
+    assertEquals("a", it.next().getFoo());
+    assertTrue(it.hasNext());
+    assertEquals("b", it.next().getFoo());
+    assertTrue(it.hasNext());
+    assertEquals("c", it.next().getFoo());
+    assertFalse(it.hasNext());
+
+  }
+
+  public void testOrderByDESC() throws Exception {
+
+    ChromatticSessionImpl session = login();
+
+    //
+    A a = session.insert(A.class, "a");
+    a.setFoo("a");
+    A b = session.insert(A.class, "b");
+    b.setFoo("b");
+    A c = session.insert(A.class, "c");
+    c.setFoo("c");
+    session.save();
+
+    //
+    QueryResult<A> it = session.createQueryBuilder(A.class).orderBy("foo", OrderBy.DESC).get().objects();
+    assertTrue(it.hasNext());
+    assertEquals("c", it.next().getFoo());
+    assertTrue(it.hasNext());
+    assertEquals("b", it.next().getFoo());
+    assertTrue(it.hasNext());
+    assertEquals("a", it.next().getFoo());
+    assertFalse(it.hasNext());
+
   }
 }
