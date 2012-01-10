@@ -18,6 +18,7 @@
  */
 package org.chromattic.core.query;
 
+import org.chromattic.api.query.OrderBy;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.core.DomainSession;
@@ -42,6 +43,12 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
 
   /** . */
   private String where;
+
+  /** . */
+  private String orderByProperty;
+
+  /** . */
+  private OrderBy orderBy;
 
   /** . */
   private ObjectMapper mapper;
@@ -74,6 +81,8 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
     this.fromClass = fromClass;
     this.mapper = mapper;
     this.where = null;
+    this.orderByProperty = null;
+    this.orderBy = null;
     this.session = session;
     this.rootNodePath = rootNodePath;
   }
@@ -86,8 +95,16 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
     return this;
   }
 
-  public QueryBuilder<O> orderBy(String orderBy) throws NullPointerException {
-    throw new UnsupportedOperationException("todo");
+  public QueryBuilder<O> orderBy(String orderByProperty, OrderBy orderBy) throws NullPointerException {
+    if (orderByProperty == null) {
+      throw new NullPointerException();
+    }
+    if (orderBy == null) {
+      throw new NullPointerException();
+    }
+    this.orderByProperty = orderByProperty;
+    this.orderBy = orderBy;
+    return this;
   }
 
   /** This is not the way I like to do things, but well for now it'll be fine. */
@@ -117,6 +134,10 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
       }
     } else {
       sb.append(" WHERE jcr:path LIKE '").append(rootNodePath).append("/%'");
+    }
+
+    if (orderBy != null) {
+      sb.append(" ORDER BY ").append(orderByProperty).append(" ").append(orderBy);
     }
 
     //
