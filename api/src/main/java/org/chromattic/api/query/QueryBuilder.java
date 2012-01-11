@@ -36,13 +36,23 @@ public interface QueryBuilder<O> {
   QueryBuilder<O> where(String where) throws NullPointerException;
 
   /**
-   * <p>Set the order by clause of the query.</p>
+   * <p>Set the order by clause of the query with {@link Ordering#ASC}.</p>
    *
-   * @param orderBy the order by clause
+   * @param orderByProperty the used for ordering
    * @return this builder
    * @throws NullPointerException if the argument is null
    */
-  QueryBuilder<O> orderBy(String orderBy) throws NullPointerException;
+  QueryBuilder<O> orderBy(String orderByProperty) throws NullPointerException;
+
+  /**
+   * <p>Set the order by clause of the query.</p>
+   *
+   * @param orderByProperty the used for ordering
+   * @param orderBy define the order (ASC or DESC)
+   * @return this builder
+   * @throws NullPointerException if the argument is null
+   */
+  QueryBuilder<O> orderBy(String orderByProperty, Ordering orderBy) throws NullPointerException;
 
   /**
    * <p>Compute and returns the <tt>ObjectQuery</tt> for this builder.</p>
