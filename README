@@ -5,8 +5,7 @@ The Chromattic projects is an object mapper framework that use Java Content Repo
 Status
 
  * Chromattic 1.0.0 was tagged for the GateIn 3.0 release and is now stable and has a mature and rich API. We can expect minor bug fix releases for GateIn 3.1 release. Although Chromattic does not have yet a real documentation, it's public API has a fairly well documented javadoc and the [http://github.com/vietj/Logomattic Logomattic Portlet] provides a good introduction to Chromattic concepts.
-
- * Chromatic 1.1.0 is currently being developed for the next version of GateIn. It will contain new features such as Groovy support.
+ * Chromattic 1.1.0 is currently being developed for the next version of GateIn. It will contain new features such as Groovy support.
 
 Mailing lists
 
@@ -16,6 +15,7 @@ Stuff
 
  * Continous Integration : http://ci.exoplatform.org/hudson/job/chromattic-trunk-ci/
  * Issues : http://jira.exoplatform.org/browse/CMTC
+ * Documentation : http://vietj.github.com/chromattic/
 
 Contributions
 
