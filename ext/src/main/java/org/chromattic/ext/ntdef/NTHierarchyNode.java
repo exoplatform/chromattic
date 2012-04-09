@@ -18,10 +18,12 @@
  */
 package org.chromattic.ext.ntdef;
 
+import org.chromattic.api.annotations.FormattedBy;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.ext.format.BaseEncodingObjectFormatter;
 
 import java.util.Date;
 
@@ -30,6 +32,7 @@ import java.util.Date;
  * @version $Revision$
  */
 @PrimaryType(name = "nt:hierarchyNode")
+@FormattedBy(BaseEncodingObjectFormatter.class)
 public abstract class NTHierarchyNode {
 
   @Name

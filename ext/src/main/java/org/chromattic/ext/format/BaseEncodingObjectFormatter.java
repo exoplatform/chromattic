@@ -33,122 +33,68 @@ import org.chromattic.api.format.ObjectFormatter;
  * @version $Revision$
  */
 public class BaseEncodingObjectFormatter implements ObjectFormatter {
-
-  private static boolean isSpecialChar(char c) {
-    return getCode(c) != null;
-  }
-
-  private static String getCode(char c) {
-    if (c == 0x9
-      || c == 0xA
-      || c == 0xD
-      || (c >= 0x20 && c <= 0xD7FF)
-      || (c >= 0xE000 && c <= 0xFFFD)
-      || (c >= 0x10000 && c <= 0x10FFFF)) {
-      switch (c) {
-        case '{':
-          return "00";
-        case '}':
-          return "01";
-        case '.':
-          return "02";
-        case '/':
-          return "03";
-        case ':':
-          return "04";
-        case '[':
-          return "05";
-        case ']':
-          return "06";
-        case '|':
-          return "07";
-        case '*':
-          return "08";
-        case '%':
-          return "09";
-        default:
-          return null;
-      }
-    }
-    else {
-      throw new UnsupportedOperationException();
-    }
-  }
-
-  private static final char[] table = new char[]{
-    '{', '}', '.', '/', ':', '[', ']', '|', '*', '%'
-  };
-
-  private String decode(String s, int from) {
-    StringBuffer buffer = new StringBuffer(s.length());
-    buffer.append(s, 0, from);
-    int to = s.length();
-    while (from < to) {
-      char c = s.charAt(from++);
-      if (c == '%') {
-        if (from + 1 >= to) {
-          throw new IllegalStateException("Cannot decode wrong name " + s);
-        }
-        char c1 = s.charAt(from++);
-        if (c1 != '0') {
-          throw new IllegalStateException("Cannot decode wrong name " + s);
-        }
-        char c2 = s.charAt(from++);
-        if (c2 < '0' || c2 > '9') {
-          throw new IllegalStateException("Cannot decode wrong name " + s);
-        }
-        buffer.append(table[c2 - '0']);
-      }
-      else {
-        buffer.append(c);
-      }
-    }
-    return buffer.toString();
-  }
-
   public String decodeNodeName(FormatterContext context, String internalName) {
-    int length = internalName.length();
-    for (int i = 0; i < length; i++) {
-      char c = internalName.charAt(i);
-      if (c == '%') {
-        return decode(internalName, i);
-      }
-    }
+    internalName = _unescapeIllegalJcrChars(internalName);
     return internalName;
   }
 
-  private String encode(String s, int from) {
-    StringBuffer buffer = new StringBuffer((s.length() * 5) >> 2);
-    buffer.append(s, 0, from);
-    int to = s.length();
-    while (from < to) {
-      char c = s.charAt(from++);
-      String code = getCode(c);
-      if (code != null) {
+ /**
+  * Escapes all illegal JCR 1.0 name characters of a string.
+  * <p>
+  * QName EBNF:<br>
+  * <xmp>
+  * simplename ::= onecharsimplename | twocharsimplename | threeormorecharname
+  * onecharsimplename ::= (* Any Unicode character except: '.', '/', ':', '[', ']', '*', ''', '"', '|' or any whitespace character *)
+  * twocharsimplename ::= '.' onecharsimplename | onecharsimplename '.' | onecharsimplename onecharsimplename
+  * threeormorecharname ::= nonspace string nonspace
+  * string ::= char | string char
+  * char ::= nonspace | ' '
+  * nonspace ::= (* Any Unicode character except: '/', ':', '[', ']', '*', ''', '"', '|' or any whitespace character *)
+  * </xmp>
+  */
+  public String encodeNodeName(FormatterContext context, String externalName) {
+    externalName = _escapeIllegalJCRChars(externalName);
+    return externalName;
+  }
+
+
+  private String _escapeIllegalJCRChars(String name) {
+    String illegal = "%/:[]*'\"|\t\r\n";
+    StringBuffer buffer = new StringBuffer(name.length() * 2);
+    for (int i = 0; i < name.length(); i++) {
+      char ch = name.charAt(i);
+      if (illegal.indexOf(ch) != -1 
+        || (ch == '.' && name.length() < 3)
+        || (ch == ' ' && (i == 0 || i == name.length() - 1))) {
         buffer.append('%');
-        buffer.append(code);
+        buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
+        buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
       }
       else {
-        buffer.append(c);
+        buffer.append(ch);
       }
     }
     return buffer.toString();
   }
 
-  public String encodeNodeName(FormatterContext context, String externalName) {
-    int length = externalName.length();
-
-    //
-    for (int i = 0; i < length; i++) {
-      char c = externalName.charAt(i);
-      if (isSpecialChar(c)) {
-        externalName = encode(externalName, i);
-        break;
+  private String _unescapeIllegalJcrChars(String name) {
+    StringBuilder buffer = new StringBuilder(name.length());
+    int i = name.indexOf('%');
+    while (i > -1 && i + 2 < name.length()) {
+      buffer.append(name.toCharArray(), 0, i);
+      int a = Character.digit(name.charAt(i + 1), 16);
+      int b = Character.digit(name.charAt(i + 2), 16);
+      if (a > -1 && b > -1) {
+        buffer.append((char)(a * 16 + b));
+        name = name.substring(i + 3);
       }
+      else {
+        buffer.append('%');
+        name = name.substring(i + 1);
+      }
+      i = name.indexOf('%');
     }
-
-    //
-    return externalName;
+    buffer.append(name);
+    return buffer.toString();
   }
-
 }

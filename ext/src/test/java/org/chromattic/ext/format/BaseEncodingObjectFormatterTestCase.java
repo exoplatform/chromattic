@@ -35,40 +35,30 @@ public class BaseEncodingObjectFormatterTestCase extends TestCase {
   /** . */
   private final ObjectFormatter formatter = new BaseEncodingObjectFormatter();
 
-  private void assertString(String expected, String s) {
+  private void assertEscapeString(String expected, String s) {
     assertEquals(expected, formatter.encodeNodeName(null, s));
     assertEquals(s, formatter.decodeNodeName(null, expected));
   }
 
-  private void assertCannotDecode(String s) {
-    try {
-      formatter.decodeNodeName(null, s);
-      fail();
-    }
-    catch (IllegalStateException ignore) {
-    }
-  }
-
   public void testStrings() {
-    assertString("", "");
-    assertString("a", "a");
-    assertString("%00", "{");
-    assertString("%01", "}");
-    assertString("%02", ".");
-    assertString("%03", "/");
-    assertString("%04", ":");
-    assertString("%05", "[");
-    assertString("%06", "]");
-    assertString("%07", "|");
-    assertString("%08", "*");
-    assertString("%09", "%");
-    assertString("a%03b", "a/b");
-  }
-
-  public void testDecodeFailure() {
-    assertCannotDecode("%0");
-    assertCannotDecode("%0" + (char)('0' - 1));
-    assertCannotDecode("%0" + (char)('9' + 1));
-    assertCannotDecode("%1");
+    assertEscapeString("", "");
+    assertEscapeString("a", "a");
+    assertEscapeString("%3A", ":");
+    assertEscapeString("%7C", "|");
+    assertEscapeString("%5B", "[");
+    assertEscapeString("%5D", "]");
+    assertEscapeString("%2F", "/");
+    assertEscapeString("%2A", "*");
+    assertEscapeString("%25", "%");
+    assertEscapeString("%27", "'");
+    assertEscapeString("%22", "\"");
+    assertEscapeString("%09", "\t");
+    assertEscapeString("%0A", "\n");
+    assertEscapeString("%0D", "\r");
+    assertEscapeString("%20test", " test");
+    assertEscapeString("test%20", "test ");
+    assertEscapeString("%20test value%20", " test value ");
+    assertEscapeString("%2Ed", ".d");
+    assertEscapeString("a%2Fb", "a/b");
   }
 }

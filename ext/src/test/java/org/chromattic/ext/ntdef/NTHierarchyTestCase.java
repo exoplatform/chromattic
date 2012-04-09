@@ -65,6 +65,16 @@ public class NTHierarchyTestCase extends TestCase {
     session.save();
   }
 
+  public void testSpecialNTFolder() {
+    String specialName = "folder{s %test[1]";
+    ChromatticSession session = chromattic.openSession();
+    NTFolder folder = session.insert(NTFolder.class, "parentfolder");
+    NTFolder specialFolder = folder.createFolder(specialName);
+    assertNotNull(specialFolder);
+    assertEquals(specialName, specialFolder.getName());
+    session.save();
+  }
+
   public void testNTFile() throws Exception {
     ChromatticSession session = chromattic.openSession();  
     NTFile file = session.insert(NTFile.class, "file");
