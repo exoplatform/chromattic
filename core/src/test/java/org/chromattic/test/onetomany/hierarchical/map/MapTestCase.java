@@ -165,4 +165,20 @@ public class MapTestCase extends AbstractTestCase {
     assertEquals("c", b.getName());
     assertSame(a, b.getParent());
   }
+
+  public void testContains() throws Exception {
+    ChromatticSessionImpl session = login();
+    Node rootNode = session.getRoot();
+    Node aNode = rootNode.addNode("totm_a_b", getNodeTypeName(A3.class));
+    String aId = aNode.getUUID();
+    aNode.addNode("b", getNodeTypeName(B3.class));
+    rootNode.save();
+
+    //
+    session = login();
+    A3 a = session.findById(A3.class, aId);
+    assertNotNull(a);
+    assertEquals(true, a.getChildren().containsKey("b"));
+    assertEquals(false, a.getChildren().containsKey("foo"));
+  }
 }

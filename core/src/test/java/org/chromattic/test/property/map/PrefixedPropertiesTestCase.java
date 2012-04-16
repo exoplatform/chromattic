@@ -162,4 +162,12 @@ public class PrefixedPropertiesTestCase extends AbstractTestCase {
     catch (NullPointerException ignore) {
     }
   }
+
+  public void testContains() throws Exception {
+    Map<String, Object> props = c.getProperties();
+    assertEquals(false, props.containsKey("foo"));
+    cNode.setProperty("property_map:foo", "foo_value");
+    assertEquals(true, props.containsKey("foo"));
+  }
+
 }

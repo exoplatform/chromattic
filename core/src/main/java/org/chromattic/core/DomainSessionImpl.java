@@ -781,6 +781,13 @@ public class DomainSessionImpl extends DomainSession {
     }
   }
 
+  protected boolean _hasChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException {
+    localName = domain.encodeName(ctx, localName, NameKind.OBJECT);
+    String name = qualify(prefix, localName);
+    Node node = ctx.getEntity().state.getNode();
+    return sessionWrapper.hasChild(node, name);
+  }
+
   protected <T> Iterator<T> _getChildren(ObjectContext ctx, Class<T> filterClass) throws RepositoryException {
     Node node = ctx.getEntity().state.getNode();
     Iterator<Node> iterator = sessionWrapper.getChildren(node);

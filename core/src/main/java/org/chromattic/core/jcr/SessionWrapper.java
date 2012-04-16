@@ -35,6 +35,8 @@ import java.util.List;
  */
 public interface SessionWrapper {
 
+  boolean hasProperty(Node node, String relPath) throws RepositoryException;
+
   Property getProperty(Node node, String relPath) throws RepositoryException;
 
   Iterator<Property> getProperties(Node node) throws RepositoryException;
@@ -56,6 +58,8 @@ public interface SessionWrapper {
   Iterator<Node> getChildren(Node parentNode) throws RepositoryException;
 
   Node getChild(Node parentNode, String name) throws RepositoryException;
+
+  boolean hasChild(Node parentNode, String name) throws RepositoryException;
 
   Node getNodeByUUID(String uuid) throws RepositoryException;
 

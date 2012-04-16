@@ -108,6 +108,27 @@ class PersistentEntityContextState extends EntityContextState {
     return typeInfo;
   }
 
+  <V> boolean hasProperty(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
+
+    //
+    V value = null;
+    if (propertyCache != null) {
+      value = (V)propertyCache.get(propertyName);
+    }
+
+    //
+    if (value != null) {
+      return true;
+    }
+    else {
+      try {
+        return session.getSessionWrapper().hasProperty(node, propertyName);
+      } catch (RepositoryException e) {
+        return false;
+      }
+    }
+  }
+
   <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
     try {
       //

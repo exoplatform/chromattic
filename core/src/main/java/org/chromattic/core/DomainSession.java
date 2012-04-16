@@ -108,6 +108,8 @@ public abstract class DomainSession {
 
   protected abstract EntityContext _getChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException;
 
+  protected abstract boolean _hasChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException;
+
   protected abstract <T> Iterator<T> _getChildren(ObjectContext ctx, Class<T> filterClass) throws RepositoryException;
 
   protected abstract EntityContext _getParent(EntityContext ctx) throws RepositoryException;
@@ -357,6 +359,15 @@ public abstract class DomainSession {
   public final EntityContext getChild(ObjectContext ctx, String prefix, String localName) throws UndeclaredRepositoryException {
     try {
       return _getChild(ctx, prefix, localName);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public final boolean hasChild(ObjectContext ctx, String prefix, String localName) throws UndeclaredRepositoryException {
+    try {
+      return _hasChild(ctx, prefix, localName);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

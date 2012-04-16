@@ -69,6 +69,15 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
   }
 
   @Override
+  public boolean containsKey(Object key) {
+    if (key instanceof String) {
+      String name = (String)key;
+      return parentCtx.hasChild(prefix, name);
+    }
+    return false;
+  }
+
+  @Override
   public E remove(Object key) {
     if (key instanceof String) {
       return put((String)key, null);
