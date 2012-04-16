@@ -81,6 +81,10 @@ public class SessionWrapperImpl implements SessionWrapper {
     return properties;
   }
 
+  public boolean hasProperty(Node node, String relPath) throws RepositoryException {
+    return node.hasProperty(relPath);
+  }
+
   public Property getProperty(Node node, String relPath) throws RepositoryException {
     if (hasPropertyOptimized) {
       try {
@@ -188,6 +192,10 @@ public class SessionWrapperImpl implements SessionWrapper {
     } else {
       return null;
     }
+  }
+
+  public boolean hasChild(Node parentNode, String name) throws RepositoryException {
+    return parentNode.hasNode(name);
   }
 
   /**

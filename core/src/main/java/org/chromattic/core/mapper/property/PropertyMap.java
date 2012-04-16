@@ -82,6 +82,21 @@ class PropertyMap extends AbstractMap<String, Object> {
   }
 
   @Override
+  public boolean containsKey(Object key) {
+    String s = validateKey(key);
+    if (s != null) {
+      try {
+        return ctx.hasProperty(s, null);
+      }
+      catch (RepositoryException e) {
+        throw new UndeclaredRepositoryException(e);
+      }
+    } else {
+      return false;
+    }
+  }
+
+  @Override
   public Object remove(Object key) {
     String s = validateKey(key);
     if (s != null) {

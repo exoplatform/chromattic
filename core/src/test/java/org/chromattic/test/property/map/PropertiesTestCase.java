@@ -216,4 +216,12 @@ public class PropertiesTestCase extends AbstractTestCase {
     assertEquals("b", values[1].getString());
     assertEquals("c", values[2].getString());
   }
+  
+  public void testContains() throws Exception {
+    aNode.setProperty("property", "bar");
+    Map<String, Object> properties = a.getAnyProperties();
+    assertEquals(true, properties.containsKey("property"));
+    assertEquals(false, properties.containsKey("foo"));
+  }
+
 }

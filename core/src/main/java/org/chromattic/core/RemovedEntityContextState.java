@@ -80,6 +80,10 @@ class RemovedEntityContextState extends EntityContextState {
     return typeInfo;
   }
 
+  <V> boolean hasProperty(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
+    throw new IllegalStateException();
+  }
+
   <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
     throw new IllegalStateException();
   }

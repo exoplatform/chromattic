@@ -47,6 +47,8 @@ abstract class EntityContextState {
 
   abstract PrimaryTypeInfo getTypeInfo();
 
+  abstract <V> boolean hasProperty(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt);
+
   abstract <V> V getPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt);
 
   abstract <L, V> L getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType);

@@ -113,6 +113,19 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     return new AssertionError(msg);
   }
 
+  public final <V> boolean hasProperty(String propertyName, ValueDefinition<?, V> type) throws RepositoryException {
+    EntityContext ctx = getEntity();
+    EntityContextState state = ctx.state;
+
+    //
+    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
+    Path.validateName(propertyName);
+
+    //
+    NodeTypeInfo typeInfo = getTypeInfo();
+    return state.hasProperty(typeInfo, propertyName, type);
+  }
+
   public final <V> V getPropertyValue(String propertyName, ValueDefinition<?, V> type) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
@@ -226,6 +239,10 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
 
   public final EntityContext getChild(String prefix, String localName) {
     return getSession().getChild(this, prefix, localName);
+  }
+
+  public final boolean hasChild(String prefix, String localName) {
+    return getSession().hasChild(this, prefix, localName);
   }
 
   public final <T> Iterator<T> getChildren(Class<T> filterClass) {
