@@ -31,10 +31,21 @@ import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 import static org.chromattic.common.JCR.qualify;
 
-import javax.jcr.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
-import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -793,6 +804,10 @@ public class DomainSessionImpl extends DomainSession {
     Iterator<Node> iterator = sessionWrapper.getChildren(node);
     return new ChildCollectionIterator<T>(this, iterator, filterClass);
   }
+  protected boolean _hasChildren(ObjectContext ctx) throws RepositoryException {
+    Node node = ctx.getEntity().state.getNode();
+    return sessionWrapper.hasChildren(node);
+  }
 
   protected EntityContext _getParent(EntityContext ctx) throws RepositoryException {
     if (ctx.getStatus() != Status.PERSISTENT) {
@@ -813,9 +828,8 @@ public class DomainSessionImpl extends DomainSession {
       // We use that kind of loop to avoid object creation
       for (int i = 0;i < pathSegments.size();i++) {
         String pathSegment = pathSegments.get(i);
-        if (current.hasNode(pathSegment)) {
-          current = current.getNode(pathSegment);
-        } else {
+        Node next = sessionWrapper.getNode(current, pathSegment);
+        if (next == null) {
           if (domain.rootCreateMode == Domain.NO_CREATE_MODE) {
             throw new NoSuchNodeException("No existing root node " + domain.rootNodePath);
           } else {
@@ -826,6 +840,8 @@ public class DomainSessionImpl extends DomainSession {
             }
             created = true;
           }
+        } else {
+          current = next;
         }
       }
     }

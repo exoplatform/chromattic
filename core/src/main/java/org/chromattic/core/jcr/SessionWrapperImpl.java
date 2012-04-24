@@ -70,8 +70,8 @@ public class SessionWrapperImpl implements SessionWrapper {
     this.sessionLifeCycle = sessionLifeCycle;
     this.session = session;
     this.linkMgrs = new AbstractLinkManager[] {
-      new ReferenceLinkManager(session),
-      new PathLinkManager(session)
+      new ReferenceLinkManager(this),
+      new PathLinkManager(this)
     };
   }
 
@@ -91,6 +91,9 @@ public class SessionWrapperImpl implements SessionWrapper {
         return node.getProperty(relPath);
       }
       catch (PathNotFoundException e) {
+        if (log.isTraceEnabled()) {
+          log.trace("The property '" + relPath + "' could not be found under " + node.getPath(), e);
+        }
         return null;
       }
     } else {
@@ -186,12 +189,12 @@ public class SessionWrapperImpl implements SessionWrapper {
     return (Iterator<Node>)parentNode.getNodes();
   }
 
+  public boolean hasChildren(Node parentNode) throws RepositoryException {
+    return parentNode.hasNodes();
+  }
+
   public Node getChild(Node parentNode, String name) throws RepositoryException {
-    if (parentNode.hasNode(name)) {
-      return parentNode.getNode(name);
-    } else {
-      return null;
-    }
+    return getNode(parentNode, name);
   }
 
   public boolean hasChild(Node parentNode, String name) throws RepositoryException {

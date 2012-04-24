@@ -248,4 +248,8 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
   public final <T> Iterator<T> getChildren(Class<T> filterClass) {
     return getSession().getChildren(this, filterClass);
   }
+  
+  public final boolean hasChildren() {
+     return getSession().hasChildren(this);
+   }
 }
