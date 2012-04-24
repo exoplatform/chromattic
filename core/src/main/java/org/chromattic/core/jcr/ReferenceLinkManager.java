@@ -49,6 +49,10 @@ public class ReferenceLinkManager extends AbstractLinkManager {
     super(session);
   }
 
+  public ReferenceLinkManager(Session session, boolean hasPropertyOptimized) {
+    super(session, hasPropertyOptimized);
+  }
+
   protected Node _getReferenced(Property property) throws RepositoryException {
     if (property.getType() == PropertyType.REFERENCE) {
       try {

@@ -793,6 +793,10 @@ public class DomainSessionImpl extends DomainSession {
     Iterator<Node> iterator = sessionWrapper.getChildren(node);
     return new ChildCollectionIterator<T>(this, iterator, filterClass);
   }
+  protected boolean _hasChildren(ObjectContext ctx) throws RepositoryException {
+    Node node = ctx.getEntity().state.getNode();
+    return sessionWrapper.hasChildren(node);
+  }
 
   protected EntityContext _getParent(EntityContext ctx) throws RepositoryException {
     if (ctx.getStatus() != Status.PERSISTENT) {
@@ -813,9 +817,22 @@ public class DomainSessionImpl extends DomainSession {
       // We use that kind of loop to avoid object creation
       for (int i = 0;i < pathSegments.size();i++) {
         String pathSegment = pathSegments.get(i);
-        if (current.hasNode(pathSegment)) {
-          current = current.getNode(pathSegment);
+        boolean nodeFound = false;
+        if (domain.isHasNodeOptimized()) {
+          try {
+            current = current.getNode(pathSegment);
+            nodeFound = true;
+          } catch (PathNotFoundException e) {
+            if (log.isTraceEnabled())
+              log.trace("The node '" + pathSegment + "' could not be found under " + current.getPath(), e);
+          }
         } else {
+          if (current.hasNode(pathSegment)) {
+            current = current.getNode(pathSegment);
+            nodeFound = true;
+          }
+        }
+        if (!nodeFound) {
           if (domain.rootCreateMode == Domain.NO_CREATE_MODE) {
             throw new NoSuchNodeException("No existing root node " + domain.rootNodePath);
           } else {

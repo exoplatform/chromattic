@@ -70,8 +70,8 @@ public class SessionWrapperImpl implements SessionWrapper {
     this.sessionLifeCycle = sessionLifeCycle;
     this.session = session;
     this.linkMgrs = new AbstractLinkManager[] {
-      new ReferenceLinkManager(session),
-      new PathLinkManager(session)
+      new ReferenceLinkManager(session, hasPropertyOptimized),
+      new PathLinkManager(session, hasPropertyOptimized)
     };
   }
 
@@ -186,12 +186,12 @@ public class SessionWrapperImpl implements SessionWrapper {
     return (Iterator<Node>)parentNode.getNodes();
   }
 
+  public boolean hasChildren(Node parentNode) throws RepositoryException {
+    return parentNode.hasNodes();
+  }
+
   public Node getChild(Node parentNode, String name) throws RepositoryException {
-    if (parentNode.hasNode(name)) {
-      return parentNode.getNode(name);
-    } else {
-      return null;
-    }
+    return getNode(parentNode, name);
   }
 
   public boolean hasChild(Node parentNode, String name) throws RepositoryException {

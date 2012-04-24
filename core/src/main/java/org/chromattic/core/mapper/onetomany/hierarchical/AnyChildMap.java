@@ -69,6 +69,11 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
   }
 
   @Override
+  public boolean isEmpty() {
+    return !parentCtx.hasChildren();
+  }
+  
+  @Override
   public boolean containsKey(Object key) {
     if (key instanceof String) {
       String name = (String)key;
@@ -77,6 +82,20 @@ public class AnyChildMap<E> extends AbstractMap<String, E> {
     return false;
   }
 
+  @Override
+  public boolean containsValue(Object value) {
+    if (value == null) {
+      throw new NullPointerException();
+    }
+    if (!relatedClass.isInstance(value)) {
+      throw new ClassCastException("Cannot cast object with class " + value.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
+
+    //
+    EntityContext childCtx = parentCtx.getSession().unwrapEntity(value);
+    return parentCtx.hasChild(prefix, childCtx.getLocalName());
+  }
+  
   @Override
   public E remove(Object key) {
     if (key instanceof String) {

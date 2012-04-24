@@ -57,6 +57,8 @@ public interface SessionWrapper {
 
   Iterator<Node> getChildren(Node parentNode) throws RepositoryException;
 
+  boolean hasChildren(Node parentNode) throws RepositoryException;
+  
   Node getChild(Node parentNode, String name) throws RepositoryException;
 
   boolean hasChild(Node parentNode, String name) throws RepositoryException;
