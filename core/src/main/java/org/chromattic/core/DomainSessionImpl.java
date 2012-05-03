@@ -19,35 +19,22 @@
 
 package org.chromattic.core;
 
-import static org.chromattic.common.JCR.qualify;
-
-import org.chromattic.api.DuplicateNameException;
-import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.NoSuchNodeException;
 import org.chromattic.api.Status;
-import org.chromattic.core.jcr.LinkType;
-import org.chromattic.core.jcr.SessionWrapper;
+import org.chromattic.api.DuplicateNameException;
+import org.chromattic.api.NameConflictResolution;
 import org.chromattic.core.jcr.type.MixinTypeInfo;
 import org.chromattic.core.jcr.type.PrimaryTypeInfo;
+import org.chromattic.core.jcr.SessionWrapper;
+import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
+import static org.chromattic.common.JCR.qualify;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -827,30 +814,8 @@ public class DomainSessionImpl extends DomainSession {
     String rootNodeType = domain.rootNodeType;
     boolean created = false;
     if (!pathSegments.isEmpty()) {
-      // We first try to get the root node directly as it should already exist most of the time
-      // this can help to skip loading ACLs of the ancestors of the root node when it is not needed
-      StringBuilder path = new StringBuilder(128);
-      for (int i = 0, length = pathSegments.size();i < length;i++) {
-        path.append(pathSegments.get(i));
-        if (i < length - 1) {
-          path.append('/'); 
-        }
-      }
-      String relPath = path.toString();
-      if (domain.isHasNodeOptimized()) {
-        try {
-          return current.getNode(relPath);
-        } catch (PathNotFoundException e) {
-          if (log.isTraceEnabled())
-            log.trace("The node '" + relPath + "' could not be found under " + current.getPath(), e);
-        }
-      } else {
-        if (current.hasNode(relPath)) {
-          return current.getNode(relPath);
-        }
-      }
       // We use that kind of loop to avoid object creation
-      for (int i = 0, length = pathSegments.size();i < length;i++) {
+      for (int i = 0;i < pathSegments.size();i++) {
         String pathSegment = pathSegments.get(i);
         boolean nodeFound = false;
         if (domain.isHasNodeOptimized()) {
