@@ -22,8 +22,9 @@ package org.chromattic.test.property.map;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 
-import javax.jcr.Node;
 import java.util.Map;
+
+import javax.jcr.Node;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -74,7 +75,11 @@ public class PrefixedPropertiesTestCase extends AbstractTestCase {
   public void testGet() throws Exception {
     Map<String, Object> props = c.getProperties();
     assertNull(props.get("foo"));
-    cNode.setProperty("property_map:foo", "foo_value");
+    if (getConfig().isStateCacheDisabled()) {
+      cNode.setProperty("property_map:foo", "foo_value");
+    } else {
+      props.put("foo", "foo_value");
+    }
     assertEquals("foo_value", props.get("foo"));
   }
 
@@ -105,8 +110,10 @@ public class PrefixedPropertiesTestCase extends AbstractTestCase {
 
   public void testPut() throws Exception {
     Map<String, Object> props = c.getProperties();
-    props.put("property_map:bar", "bar_value");
+    props.put("bar", "bar_value");
     assertEquals("bar_value", cNode.getProperty("property_map:bar").getString());
+    assertEquals(true, props.containsKey("bar"));
+    assertEquals("bar_value", props.get("bar"));
   }
 
   public void testPutThrowsNPE() throws Exception {
@@ -166,7 +173,11 @@ public class PrefixedPropertiesTestCase extends AbstractTestCase {
   public void testContains() throws Exception {
     Map<String, Object> props = c.getProperties();
     assertEquals(false, props.containsKey("foo"));
-    cNode.setProperty("property_map:foo", "foo_value");
+    if (getConfig().isStateCacheDisabled()) {
+      cNode.setProperty("property_map:foo", "foo_value");
+    } else {
+      props.put("foo", "foo_value");
+    }
     assertEquals(true, props.containsKey("foo"));
   }
 

@@ -25,15 +25,20 @@ import org.chromattic.common.CloneableInputStream;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
+import org.chromattic.core.mapper.PropertyMapper;
+import org.chromattic.core.mapper.property.JCRPropertyMapper;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.spi.instrument.MethodHandler;
 
-import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.jcr.RepositoryException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -41,6 +46,8 @@ import java.util.List;
  */
 public abstract class ObjectContext<O extends ObjectContext<O>> implements MethodHandler {
 
+  private final AtomicBoolean initialized = new AtomicBoolean();
+   
   public abstract ObjectMapper<O> getMapper();
 
   public abstract Object getObject();
@@ -113,7 +120,44 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     return new AssertionError(msg);
   }
 
+  /**
+   * Checks if the entity has been initialized if not it will load all the properties at the same time
+   */
+  @SuppressWarnings("rawtypes")
+  private void checkInitialized() throws RepositoryException {
+    if (!initialized.get()) {
+      try {
+        if (getStatus() == Status.PERSISTENT) {
+          EntityContext ctx = getEntity();
+          EntityContextState state = ctx.state;
+          Domain domain = state.getSession().domain;
+          if (!domain.isHasPropertyOptimized()) {
+            return;
+          }
+          ObjectMapper<O> mapper = getMapper();
+          Map<String, ValueDefinition<?, ?>> properties = new HashMap<String, ValueDefinition<?, ?>>();
+          for (PropertyMapper<?, ?, O, ?> pm : mapper.getPropertyMappers()) {
+            if (pm instanceof JCRPropertyMapper) {
+              JCRPropertyMapper jpm = ((JCRPropertyMapper)pm);
+              String propertyName = jpm.getJCRPropertyName(); 
+              propertyName = domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
+              properties.put(propertyName, jpm.getValueDefinition());
+            }
+          }
+          if (properties.size() > 1) {
+            // We load the properties if and only if we have at least 2 properties to load
+            NodeTypeInfo typeInfo = getTypeInfo();
+            state.loadProperties(typeInfo, properties);
+          }
+        }
+      } finally {
+         initialized.set(true);
+      }
+    }
+  }
+  
   public final <V> boolean hasProperty(String propertyName, ValueDefinition<?, V> type) throws RepositoryException {
+    checkInitialized();
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -127,6 +171,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
   }
 
   public final <V> V getPropertyValue(String propertyName, ValueDefinition<?, V> type) throws RepositoryException {
+    checkInitialized();
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
@@ -140,6 +185,7 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
   }
 
   public final <L, V> L getPropertyValues(String propertyName, ValueDefinition<?, V> simpleType, ArrayType<L, V> arrayType) throws RepositoryException {
+    checkInitialized();
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 

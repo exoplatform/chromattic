@@ -19,22 +19,35 @@
 
 package org.chromattic.core;
 
-import org.chromattic.api.NoSuchNodeException;
-import org.chromattic.api.Status;
-import org.chromattic.api.DuplicateNameException;
-import org.chromattic.api.NameConflictResolution;
-import org.chromattic.core.jcr.type.MixinTypeInfo;
-import org.chromattic.core.jcr.type.PrimaryTypeInfo;
-import org.chromattic.core.jcr.SessionWrapper;
-import org.chromattic.core.jcr.LinkType;
-import org.chromattic.core.mapper.ObjectMapper;
-import org.chromattic.metamodel.mapping.NodeTypeKind;
 import static org.chromattic.common.JCR.qualify;
 
-import javax.jcr.*;
+import org.chromattic.api.DuplicateNameException;
+import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.NoSuchNodeException;
+import org.chromattic.api.Status;
+import org.chromattic.core.jcr.LinkType;
+import org.chromattic.core.jcr.SessionWrapper;
+import org.chromattic.core.jcr.type.MixinTypeInfo;
+import org.chromattic.core.jcr.type.PrimaryTypeInfo;
+import org.chromattic.core.mapper.ObjectMapper;
+import org.chromattic.metamodel.mapping.NodeTypeKind;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
-import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -879,7 +892,7 @@ public class DomainSessionImpl extends DomainSession {
    * <li>otherwise an entity context is created from the related chromattic type and is inserted in the session</li>
    * <li>a load event is broadcasted to listeners</li>
    * </ul>
-   * The node must have the mixin mix:referenceable otherwise a repositoty exception will be thrown.</p>
+   * The node must have the mixin mix:referenceable otherwise a repository exception will be thrown.</p>
    *
    * <p>When the node is not mapped, null is returned.</p>
    *

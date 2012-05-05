@@ -25,8 +25,8 @@ import org.chromattic.test.property.value.multi.MultiValuedMappedToSingleValuedT
 import org.chromattic.test.support.MultiValue;
 
 import javax.jcr.Node;
-import javax.jcr.ValueFactory;
 import javax.jcr.PropertyType;
+import javax.jcr.ValueFactory;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>

@@ -22,17 +22,27 @@ package org.chromattic.core.jcr;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
-import javax.jcr.*;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.RandomAccess;
+
+import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.List;
-import java.util.RandomAccess;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -78,6 +88,12 @@ public class SessionWrapperImpl implements SessionWrapper {
   public Iterator<Property> getProperties(Node node) throws RepositoryException {
     @SuppressWarnings("unchecked")
     Iterator<Property> properties = node.getProperties();
+    return properties;
+  }
+
+  public Iterator<Property> getProperties(Node node, String namePattern) throws RepositoryException {
+    @SuppressWarnings("unchecked")
+    Iterator<Property> properties = node.getProperties(namePattern);
     return properties;
   }
 

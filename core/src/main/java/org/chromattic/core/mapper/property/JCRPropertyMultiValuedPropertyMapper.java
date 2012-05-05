@@ -21,21 +21,19 @@ package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ArrayType;
 import org.chromattic.core.ObjectContext;
-import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.vt2.ValueDefinition;
-import org.chromattic.metamodel.bean.PropertyInfo;
 import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.ValueKind;
-import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.metamodel.mapping.ValueMapping;
+import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
 import org.chromattic.spi.type.SimpleTypeProvider;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertyMultiValuedPropertyMapper<O extends ObjectContext<O>, E, I, K extends ValueKind.Multi>
-  extends PropertyMapper<PropertyInfo<SimpleValueInfo<K>, ValueKind.Single>, SimpleValueInfo<K>, O, ValueKind.Single> {
+public class JCRPropertyMultiValuedPropertyMapper<O extends ObjectContext<O>, E, I,K extends ValueKind.Multi>
+  extends JCRPropertyMapper<O, E, I, K> {
 
   /** . */
   private final String jcrPropertyName;
@@ -88,5 +86,19 @@ public class JCRPropertyMultiValuedPropertyMapper<O extends ObjectContext<O>, E,
   @Override
   public void set(O context, Object value) throws Throwable {
     context.setPropertyValues(jcrPropertyName, vt, (ArrayType)arrayType, value);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public String getJCRPropertyName() {
+    return jcrPropertyName;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public ValueDefinition<I, E> getValueDefinition() {
+    return vt;
   }
 }

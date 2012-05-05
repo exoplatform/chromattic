@@ -19,25 +19,23 @@
 
 package org.chromattic.test;
 
+import junit.framework.AssertionFailedError;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestListener;
+import junit.framework.TestResult;
+
+import org.chromattic.api.Chromattic;
+import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.core.api.ChromatticSessionImpl;
-import org.chromattic.api.ChromatticBuilder;
-import org.chromattic.api.Chromattic;
 import org.chromattic.cglib.CGLibInstrumentor;
-
-import javax.jcr.SimpleCredentials;
-
-import junit.framework.TestCase;
-import junit.framework.TestResult;
-import junit.framework.TestListener;
-import junit.framework.Test;
-import junit.framework.AssertionFailedError;
+import org.chromattic.core.api.ChromatticSessionImpl;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -71,6 +69,8 @@ public abstract class AbstractTestCase extends TestCase {
 
   /** . */
   private static final String CGLIB_INSTRUMENTOR = CGLibInstrumentor.class.getName();
+
+  private static final ThreadLocal<Config> CONFIG = new ThreadLocal<Config>();
 
   /** . */
   private ChromatticBuilder builder;
@@ -151,12 +151,18 @@ public abstract class AbstractTestCase extends TestCase {
       sess.getRoot();
       sess.save();
     }
+    CONFIG.set(config);
   }
 
   @Override
   protected void tearDown() throws Exception {
     builder = null;
     chromattic = null;
+    CONFIG.remove();
+  }
+
+  public static Config getCurrentConfig() {
+    return CONFIG.get();
   }
 
   @Override
