@@ -19,17 +19,18 @@
 
 package org.chromattic.core;
 
-import org.chromattic.api.NoSuchNodeException;
-import org.chromattic.api.Status;
+import static org.chromattic.common.JCR.qualify;
+
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.NameConflictResolution;
+import org.chromattic.api.NoSuchNodeException;
+import org.chromattic.api.Status;
+import org.chromattic.core.jcr.LinkType;
+import org.chromattic.core.jcr.SessionWrapper;
 import org.chromattic.core.jcr.type.MixinTypeInfo;
 import org.chromattic.core.jcr.type.PrimaryTypeInfo;
-import org.chromattic.core.jcr.SessionWrapper;
-import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
-import static org.chromattic.common.JCR.qualify;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -105,7 +106,7 @@ public class DomainSessionImpl extends DomainSession {
         String name = node.getName();
         int index = name.indexOf(':');
         String localName = index == -1 ? name : name.substring(index + 1);
-        return domain.decodeName(parentNode, localName, NameKind.OBJECT);
+        return domain.decodeName(parentNode, localName);
     }
   }
 
@@ -197,7 +198,7 @@ public class DomainSessionImpl extends DomainSession {
     ObjectMapper mapper = dstCtx.mapper;
 
     //
-    localName = domain.encodeName(srcNode, localName, NameKind.OBJECT);
+    localName = domain.encodeName(srcNode, localName);
 
     //
     String name = qualify(prefix, localName);
@@ -496,7 +497,7 @@ public class DomainSessionImpl extends DomainSession {
     }
 
     //
-    dstLocalName = domain.encodeName(dstNode, dstLocalName, NameKind.OBJECT);
+    dstLocalName = domain.encodeName(dstNode, dstLocalName);
 
     //
     String dstName = qualify(dstPrefix, dstLocalName);
@@ -576,7 +577,7 @@ public class DomainSessionImpl extends DomainSession {
     //
     ObjectContext octx;
     if (typeMapper.getKind() == NodeTypeKind.PRIMARY) {
-      EntityContext ctx = new EntityContext((ObjectMapper<EntityContext>)typeMapper, state);
+      EntityContext ctx = new EntityContext((ObjectMapper<EntityContext>)typeMapper, this);
 
       //
       if (localName != null) {
@@ -768,7 +769,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected void _removeChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException {
-    localName = domain.encodeName(ctx, localName, NameKind.OBJECT);
+    localName = ctx.encodeName(localName);
     String name = qualify(prefix, localName);
     Node node = ctx.getEntity().state.getNode();
     Node childNode = sessionWrapper.getNode(node, name);
@@ -778,7 +779,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected EntityContext _getChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException {
-    localName = domain.encodeName(ctx, localName, NameKind.OBJECT);
+    localName = ctx.encodeName(localName);
     String name = qualify(prefix, localName);
     Node node = ctx.getEntity().state.getNode();
     log.trace("About to load the name child {} of context {}", name, this);
@@ -793,7 +794,7 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   protected boolean _hasChild(ObjectContext ctx, String prefix, String localName) throws RepositoryException {
-    localName = domain.encodeName(ctx, localName, NameKind.OBJECT);
+    localName = ctx.encodeName(localName);
     String name = qualify(prefix, localName);
     Node node = ctx.getEntity().state.getNode();
     return sessionWrapper.hasChild(node, name);
@@ -878,7 +879,7 @@ public class DomainSessionImpl extends DomainSession {
    * <li>otherwise an entity context is created from the related chromattic type and is inserted in the session</li>
    * <li>a load event is broadcasted to listeners</li>
    * </ul>
-   * The node must have the mixin mix:referenceable otherwise a repositoty exception will be thrown.</p>
+   * The node must have the mixin mix:referenceable otherwise a repository exception will be thrown.</p>
    *
    * <p>When the node is not mapped, null is returned.</p>
    *
@@ -893,7 +894,7 @@ public class DomainSessionImpl extends DomainSession {
     if (mapper != null) {
       EntityContext ctx = contexts.get(node.getUUID());
       if (ctx == null) {
-        ctx = new EntityContext((ObjectMapper<EntityContext>)mapper, new PersistentEntityContextState(node, this));
+        ctx = new EntityContext((ObjectMapper<EntityContext>)mapper, this, node);
         log.trace("Inserted context {} loaded from node path {}", ctx, node.getPath());
         contexts.put(node.getUUID(), ctx);
         broadcaster.loaded(ctx, ctx.getObject());
@@ -910,23 +911,15 @@ public class DomainSessionImpl extends DomainSession {
   }
 
   private void nodeAdded(Node node, EntityContext ctx) throws RepositoryException {
-    NodeType nodeType = node.getPrimaryNodeType();
-    String nodeTypeName = nodeType.getName();
-    ObjectMapper mapper = domain.getTypeMapper(nodeTypeName);
-    if (mapper != null) {
-      if (contexts.containsKey(node.getUUID())) {
-        String msg = "Attempt to replace an existing context " + ctx + " with path " + node.getPath();
-        log.error(msg);
-        throw new AssertionError(msg);
-      }
-      log.trace("Inserted context {} for path {}", ctx, node.getPath());
-      contexts.put(node.getUUID(), ctx);
-      ctx.state = new PersistentEntityContextState(node, this);
-      broadcaster.added(ctx, ctx.getObject());
+    if (contexts.containsKey(node.getUUID())) {
+      String msg = "Attempt to replace an existing context " + ctx + " with path " + node.getPath();
+      log.error(msg);
+      throw new AssertionError(msg);
     }
-    else {
-      log.trace("Could not find mapper for node type {}", nodeTypeName);
-    }
+    log.trace("Inserted context {} for path {}", ctx, node.getPath());
+    contexts.put(node.getUUID(), ctx);
+    ctx.state = new PersistentEntityContextState(ctx.mapper, node, this);
+    broadcaster.added(ctx, ctx.getObject());
   }
 
   public void _close() {

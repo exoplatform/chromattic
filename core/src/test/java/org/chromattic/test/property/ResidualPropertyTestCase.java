@@ -18,13 +18,14 @@
  */
 package org.chromattic.test.property;
 
-import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.chromattic.test.AbstractTestCase;
 import org.chromattic.testgenerator.GroovyTestGeneration;
+
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -61,7 +62,7 @@ public class ResidualPropertyTestCase extends AbstractTestCase {
     assertEquals("foo", o.getString());
     assertEquals(PropertyType.STRING, node.getProperty("string_property").getType());
     assertEquals("foo", node.getProperty("string_property").getString());
-    if (getConfig().isStateCacheDisabled()) {
+    if (getProfile().isStateCacheDisabled()) {
       node.setProperty("string_property", (String)null);
       assertEquals(null, o.getString());
     }
@@ -74,7 +75,7 @@ public class ResidualPropertyTestCase extends AbstractTestCase {
     assertEquals("foo", map.get("string_property"));
     assertEquals(PropertyType.STRING, node.getProperty("string_property").getType());
     assertEquals("foo", node.getProperty("string_property").getString());
-    if (getConfig().isStateCacheDisabled()) {
+    if (getProfile().isStateCacheDisabled()) {
       node.setProperty("string_property", (String)null);
       assertEquals(null, map.get("string_property"));
     }
@@ -89,11 +90,13 @@ public class ResidualPropertyTestCase extends AbstractTestCase {
     catch (ClassCastException ignore) {
     }
     node.setProperty("integer_property", "foo");
-    try {
-      o.getInteger();
-      fail();
-    }
-    catch (ClassCastException ignore) {
+    if (getProfile().isStateCacheDisabled()) {
+      try {
+        o.getInteger();
+        fail();
+      }
+      catch (ClassCastException ignore) {
+      }
     }
   }
 
@@ -118,7 +121,7 @@ public class ResidualPropertyTestCase extends AbstractTestCase {
     assertEquals("foo", o.getString());
     assertEquals(PropertyType.STRING, node.getProperty("string_property").getType());
     assertEquals("foo", node.getProperty("string_property").getString());
-    if (getConfig().isStateCacheDisabled()) {
+    if (getProfile().isStateCacheDisabled()) {
       node.setProperty("string_property", (String)null);
       assertEquals(null, o.getString());
     }
@@ -135,7 +138,7 @@ public class ResidualPropertyTestCase extends AbstractTestCase {
     assertEquals("foo", map.get("string_property"));
     assertEquals(PropertyType.STRING, node.getProperty("string_property").getType());
     assertEquals("foo", node.getProperty("string_property").getString());
-    if (getConfig().isStateCacheDisabled()) {
+    if (getProfile().isStateCacheDisabled()) {
       node.setProperty("string_property", (String)null);
       assertEquals(null, map.get("string_property"));
     }

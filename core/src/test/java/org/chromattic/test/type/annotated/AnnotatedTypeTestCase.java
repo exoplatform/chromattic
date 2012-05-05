@@ -51,7 +51,7 @@ public class AnnotatedTypeTestCase extends AbstractTestCase {
     assertEquals(PropertyType.STRING, bytes.getType());
     assertEquals("view", node.getProperty("foo").getString());
     node.setProperty("foo", (Value)null);
-    if (getConfig().isStateCacheDisabled()) {
+    if (getProfile().isStateCacheDisabled()) {
       assertEquals(null, a.getMode());
     } else {
       assertEquals("view", a.getMode().getName());

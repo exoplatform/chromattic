@@ -18,7 +18,6 @@
  */
 package org.chromattic.test.support;
 
-import junit.framework.Assert;
 import org.chromattic.common.Safe;
 
 import java.io.IOException;
@@ -76,6 +75,7 @@ public class PropertyChangedEvent extends StateChangeEvent {
         InputStream s1 = (InputStream)value;
         InputStream s2 = (InputStream)that.value;
         while (true) {
+          boolean keepGoing = false;
           try {
             int i1 = s1.read();
             int i2 = s2.read();
@@ -85,9 +85,18 @@ public class PropertyChangedEvent extends StateChangeEvent {
             if (i1 == -1) {
               break;
             }
+            keepGoing = true;
           }
           catch (IOException e) {
             return false;
+          } finally {
+            if (!keepGoing) {
+              try {
+                s1.reset();
+                s2.reset();
+              } catch (IOException e) {
+              }
+            }
           }
         }
       } else {

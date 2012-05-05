@@ -157,7 +157,7 @@
         </executions>
       </plugin>
 
-       <plugin>
+      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <compilerArguments>
@@ -166,6 +166,20 @@
         </configuration>
       </plugin>
     </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <systemPropertyVariables>
+              <chromattic.test.profile>${chromattic.test.profile}</chromattic.test.profile>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
   </build>
 
 </project>

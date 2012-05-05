@@ -23,13 +23,14 @@ import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.testgenerator.GroovyTestGeneration;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.Value;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.Value;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -181,7 +182,11 @@ public class PropertiesTestCase extends AbstractTestCase {
     Map<String, List<Object>> props = a.getAnyMultiProperties();
     List<Object> val = props.get("string_array_property");
     assertEquals(Arrays.<Object>asList("a"), val);
-    aNode.setProperty("string_array_property", (String)null);
+    if (getProfile().isStateCacheDisabled()) {
+      aNode.setProperty("string_array_property", (String)null);
+    } else {
+      props.remove("string_array_property");
+    }
     val = props.get("string_array_property");
     assertEquals(java.util.Collections.<Object>emptyList(), val);
 
@@ -203,7 +208,11 @@ public class PropertiesTestCase extends AbstractTestCase {
     Map<String, List<Object>> props = b.getAnyMultiProperties();
     List<Object> val = props.get("string_array_property");
     assertEquals(Arrays.<Object>asList("a", "b"), val);
-    bNode.setProperty("string_array_property", new String[0]);
+    if (getProfile().isStateCacheDisabled()) {
+       bNode.setProperty("string_array_property", new String[0]);
+     } else {
+       props.put("string_array_property", Arrays.<Object>asList(new String[0]));
+     }
     val = props.get("string_array_property");
     assertEquals(java.util.Collections.<Object>emptyList(), val);
 
