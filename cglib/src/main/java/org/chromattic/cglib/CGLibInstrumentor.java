@@ -19,11 +19,8 @@
 
 package org.chromattic.cglib;
 
-import net.sf.cglib.proxy.Callback;
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.ProxyType;
-import org.chromattic.spi.instrument.MethodHandler;
-import net.sf.cglib.proxy.Factory;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -31,18 +28,7 @@ import net.sf.cglib.proxy.Factory;
  */
 public class CGLibInstrumentor implements Instrumentor {
 
-  public <O> ProxyType<O> getProxyClass(Class<O> clazz) {
+  public <O> ProxyType<O> getProxyType(Class<O> clazz) {
     return new CGLibProxyType<O>(clazz);
-  }
-
-  public MethodHandler getInvoker(Object proxy) {
-    if (proxy instanceof Factory) {
-      Factory factory = (Factory)proxy;
-      Callback callback = factory.getCallback(0);
-      if (callback instanceof MethodInterceptorInvoker) {
-        return ((MethodInterceptorInvoker)callback).invoker;
-      }
-    }
-    return null;
   }
 }

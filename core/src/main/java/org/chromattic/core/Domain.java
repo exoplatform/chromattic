@@ -56,22 +56,12 @@ public class Domain {
       throw new UnsupportedOperationException("Cannot create proxy for " + handler);
     }
 
+    public MethodHandler getInvoker(Object proxy) {
+      return null;
+    }
+
     public Class<?> getType() {
       throw new UnsupportedOperationException("Cannot get proxy type for NULL_PROXY_TYPE");
-    }
-  };
-
-  /** . */
-  private static final Instrumentor NULL_INSTRUMENTOR = new Instrumentor() {
-
-    // This is OK as the class is *stateless*
-    @SuppressWarnings("unchecked")
-    public <O> ProxyType<O> getProxyClass(Class<O> clazz) {
-      return (ProxyType<O>) NULL_PROXY_TYPE;
-    }
-
-    public MethodHandler getInvoker(Object proxy) {
-      throw new UnsupportedOperationException();
     }
   };
 
@@ -97,10 +87,10 @@ public class Domain {
   private final Instrumentor  defaultInstrumentor;
 
   /** . */
-  private final Map<Class<?>, Instrumentor> proxyTypeToInstrumentor;
+  private final Map<Class<?>, ProxyType<?>> proxyTypeMap;
 
   /** . */
-  private final Map<Class<?>, Instrumentor> chromatticTypeToInstrumentor;
+  private final Map<Class<?>, ProxyType<?>> chromatticTypeMap;
 
   /** . */
   final ObjectFormatter objectFormatter;
@@ -153,8 +143,8 @@ public class Domain {
     }
     
     //
-    Map<Class<?>, Instrumentor> proxyTypeToInstrumentor = new HashMap<Class<?>, Instrumentor>();
-    Map<Class<?>, Instrumentor> chromatticTypeToInstrumentor = new HashMap<Class<?>, Instrumentor>();
+    Map<Class<?>, ProxyType<?>> proxyClassToProxyType = new HashMap<Class<?>, ProxyType<?>>();
+    Map<Class<?>, ProxyType<?>> chromatticClassToProxyType = new HashMap<Class<?>, ProxyType<?>>();
     mapping: for (ObjectMapper<?> mapper : mappers) {
       BeanMapping beanMapping = mapper.getMapping();
       Class<?> clazz = (Class<?>)beanMapping.getBean().getClassType().unwrap();
@@ -165,17 +155,19 @@ public class Domain {
             instrumentorClass = (Class<?>)annotation.annotationType().getMethod("value").invoke(annotation);
           } catch (Exception ignore) {}
           Instrumentor i = ObjectInstantiator.newInstance(instrumentorClass.getName(), Instrumentor.class);
-          proxyTypeToInstrumentor.put(i.getProxyClass(clazz).getType(), i);
-          chromatticTypeToInstrumentor.put(clazz, i);
+          ProxyType<?> proxyType = i.getProxyType(clazz);
+          proxyClassToProxyType.put(i.getProxyType(clazz).getType(), proxyType);
+          chromatticClassToProxyType.put(clazz, proxyType);
           continue mapping;
         }
       }
       if (Object.class.equals(clazz)) {
-        proxyTypeToInstrumentor.put(clazz, defaultInstrumentor);
-        chromatticTypeToInstrumentor.put(clazz, defaultInstrumentor);
+        proxyClassToProxyType.put(clazz, NULL_PROXY_TYPE);
+        chromatticClassToProxyType.put(clazz, NULL_PROXY_TYPE);
       } else {
-        proxyTypeToInstrumentor.put(defaultInstrumentor.getProxyClass(clazz).getType(), defaultInstrumentor);
-        chromatticTypeToInstrumentor.put(clazz, defaultInstrumentor);
+        ProxyType<?> proxyType = defaultInstrumentor.getProxyType(clazz);
+        proxyClassToProxyType.put(proxyType.getType(), proxyType);
+        chromatticClassToProxyType.put(clazz, proxyType);
       }
     }
 
@@ -214,8 +206,8 @@ public class Domain {
     this.queryManager = new QueryManager(rootNodePath);
     this.rootCreateMode = rootCreateMode;
     this.rootNodeType = rootNodeType;
-    this.proxyTypeToInstrumentor = proxyTypeToInstrumentor;
-    this.chromatticTypeToInstrumentor = chromatticTypeToInstrumentor;
+    this.proxyTypeMap = proxyClassToProxyType;
+    this.chromatticTypeMap = chromatticClassToProxyType;
   }
 
   public boolean isHasPropertyOptimized() {
@@ -227,13 +219,12 @@ public class Domain {
   }
 
   public MethodHandler getHandler(Object o) {
-    Instrumentor instrumentor = proxyTypeToInstrumentor.get(o.getClass());
+    ProxyType<?> instrumentor = proxyTypeMap.get(o.getClass());
     return instrumentor != null ? instrumentor.getInvoker(o) : null;
   }
 
   public <O> ProxyType<O> getProxyType(Class<O> type) {
-    Instrumentor instrumentor = chromatticTypeToInstrumentor.get(type);
-    return instrumentor.getProxyClass(type);
+    return (ProxyType<O>)chromatticTypeMap.get(type);
   }
 
   public ObjectMapper getTypeMapper(String nodeTypeName) {

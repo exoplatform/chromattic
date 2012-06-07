@@ -21,9 +21,6 @@ package org.chromattic.apt;
 
 import org.chromattic.spi.instrument.Instrumentor;
 import org.chromattic.spi.instrument.ProxyType;
-import org.chromattic.spi.instrument.MethodHandler;
-
-import java.lang.reflect.Field;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -31,24 +28,7 @@ import java.lang.reflect.Field;
  */
 public class InstrumentorImpl implements Instrumentor {
 
-  public <O> ProxyType<O> getProxyClass(Class<O> clazz) {
+  public <O> ProxyType<O> getProxyType(Class<O> clazz) {
     return new ProxyTypeImpl<O>(clazz);
-  }
-
-  public MethodHandler getInvoker(Object proxy) {
-    if (proxy instanceof Instrumented) {
-      try {
-        Field f = proxy.getClass().getField("handler");
-        return (MethodHandler)f.get(proxy);
-      }
-      catch (NoSuchFieldException e) {
-        throw new AssertionError(e);
-      }
-      catch (IllegalAccessException e) {
-        throw new AssertionError(e);
-      }
-    } else {
-      return null;
-    }
   }
 }

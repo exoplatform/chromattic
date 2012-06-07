@@ -19,6 +19,7 @@
 
 package org.chromattic.cglib;
 
+import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;
 import org.chromattic.spi.instrument.ProxyType;
@@ -60,6 +61,17 @@ public class CGLibProxyType<O> implements ProxyType<O> {
 
   public O createProxy(MethodHandler handler) {
     return (O)factory.newInstance(new MethodInterceptorInvoker(handler));
+  }
+
+  public MethodHandler getInvoker(Object proxy) {
+    if (proxy instanceof Factory) {
+      Factory factory = (Factory)proxy;
+      Callback callback = factory.getCallback(0);
+      if (callback instanceof MethodInterceptorInvoker) {
+        return ((MethodInterceptorInvoker)callback).invoker;
+      }
+    }
+    return null;
   }
 
   public Class<? extends O> getType() {
