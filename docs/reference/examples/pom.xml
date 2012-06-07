@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.chromattic</groupId>
     <artifactId>chromattic.docs.reference</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6-SNAPSHOT</version>
   </parent>
 
   <artifactId>chromattic.docs.reference.examples</artifactId>
