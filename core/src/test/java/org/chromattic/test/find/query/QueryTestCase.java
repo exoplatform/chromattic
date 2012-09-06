@@ -239,4 +239,96 @@ public class QueryTestCase extends AbstractTestCase {
     assertFalse(it.hasNext());
 
   }
+
+  public void testOrderByMultiValueDESC() throws Exception{
+    ChromatticSessionImpl session = login();
+
+    A a = session.insert(A.class, "a");
+    a.setFoo("a");
+    a.setBar("b");
+    A b = session.insert(A.class, "b");
+    b.setFoo("a");
+    b.setBar("a");
+    A c = session.insert(A.class, "c");
+    c.setFoo("b");
+    c.setBar("b");
+    session.save();
+
+        //
+    QueryResult<A> it = session.createQueryBuilder(A.class).orderBy("foo", Ordering.DESC).orderBy("bar", Ordering.DESC).get().objects();
+    assertTrue(it.hasNext());
+    A result = it.next();
+    assertEquals("b", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("a", result.getBar());
+    assertFalse(it.hasNext());
+
+    it = session.createQueryBuilder(A.class).orderBy("foo", Ordering.DESC).orderBy("bar", Ordering.ASC).get().objects();
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("b", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("a", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertFalse(it.hasNext());
+  }
+
+  public void testOrderByMultiValueASC() throws Exception{
+    ChromatticSessionImpl session = login();
+
+    A a = session.insert(A.class, "a");
+    a.setFoo("a");
+    a.setBar("b");
+    A b = session.insert(A.class, "b");
+    b.setFoo("a");
+    b.setBar("a");
+    A c = session.insert(A.class, "c");
+    c.setFoo("b");
+    c.setBar("b");
+    session.save();
+
+    //
+    QueryResult<A> it = session.createQueryBuilder(A.class).orderBy("foo", Ordering.ASC).orderBy("bar", Ordering.ASC).get().objects();
+    assertTrue(it.hasNext());
+    A result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("a", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("b", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertFalse(it.hasNext());
+
+    it = session.createQueryBuilder(A.class).orderBy("foo", Ordering.ASC).orderBy("bar", Ordering.DESC).get().objects();
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("a", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("b", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertFalse(it.hasNext());
+  }
 }
