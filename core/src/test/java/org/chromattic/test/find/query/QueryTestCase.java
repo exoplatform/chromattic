@@ -111,7 +111,6 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     assertEquals(3, it1.size());
-    assertEquals(3, it1.hits());
   }
 
   public void testOffset() throws Exception {
@@ -137,7 +136,6 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     assertEquals(2, it1.size());
-    assertEquals(3, it1.hits());
   }
 
   public void testLimit() throws Exception {
@@ -163,7 +161,6 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     assertEquals(2, it1.size());
-    assertEquals(3, it1.hits());
   }
 
   public void testOffsetLimit() throws Exception {
@@ -187,7 +184,6 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     assertEquals(1, it1.size());
-    assertEquals(3, it1.hits());
   }
 
   public void testOrderByASC() throws Exception {

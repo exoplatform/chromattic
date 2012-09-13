@@ -91,5 +91,4 @@ public interface SessionWrapper {
 
   QueryResult executeQuery(Query query, Long offset, Long limit) throws RepositoryException;
 
-  int hits(QueryResult result) throws RepositoryException;
 }

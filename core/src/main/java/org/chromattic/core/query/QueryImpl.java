@@ -66,8 +66,7 @@ public class QueryImpl<O> implements Query<O> {
     try {
       SessionWrapper wrapper = session.getSessionWrapper();
       QueryResult result = wrapper.executeQuery(jcrQuery, offset, limit);
-      int hits = wrapper.hits(result);
-      return new QueryResultImpl<O>(session, result.getNodes(), hits, clazz);
+      return new QueryResultImpl<O>(session, result.getNodes(), clazz);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
