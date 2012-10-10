@@ -495,7 +495,11 @@
           <systemProperties>
             <property>
               <name>com.arjuna.ats.arjuna.objectstore.objectStoreDir</name>
-              <value>${project.build.directory}</value>
+              <value>${project.build.directory}/dir1</value>
+            </property>
+            <property>
+              <name>ObjectStoreEnvironmentBean.objectStoreDir</name>
+              <value>${project.build.directory}/dir2</value>
             </property>
             <property>
               <name>log.output.path</name>
