@@ -57,7 +57,7 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.testgenerator</artifactId>
-      <scope>test-compile</scope>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
