@@ -66,14 +66,14 @@
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.metamodel</artifactId>
       <type>test-jar</type>
-      <scope>compile</scope>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
       <type>test-jar</type>
-      <scope>compile</scope>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -111,10 +111,10 @@
             <configuration>
               <tasks>
                 <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
-                  <classpath refid="maven.compile.classpath" />
+                  <classpath refid="maven.test.classpath" />
                 </taskdef>
                 <groovyc destdir="${project.build.outputDirectory}" srcdir="${basedir}/src/test/java/" listfiles="false">
-                  <classpath refid="maven.compile.classpath" />
+                  <classpath refid="maven.test.classpath" />
                 </groovyc>
               </tasks>
             </configuration>
@@ -129,11 +129,11 @@
             <configuration>
               <tasks>
                 <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
-                  <classpath refid="maven.compile.classpath" />
+                  <classpath refid="maven.test.classpath" />
                 </taskdef>
                 <groovyc destdir="${basedir}/target/test-classes/" srcdir="${basedir}/target/test-classes/" fork="no" listfiles="false">
                   <classpath>
-                     <path refid="maven.compile.classpath" />
+                     <path refid="maven.test.classpath" />
                   </classpath>
                 </groovyc>
               </tasks>
