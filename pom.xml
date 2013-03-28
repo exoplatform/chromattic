@@ -91,6 +91,11 @@
 
     <!-- Dependencies versions -->
     <reflext.version>1.1.0</reflext.version>
+    <org.exoplatform.kernel.version>2.4.2-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.ws.version>2.3.2-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.15.2-GA</org.exoplatform.jcr.version>
+    <org.slf4j.version>1.6.1</org.slf4j.version>
+    <ch.qos.logback.version>1.0.10</ch.qos.logback.version>
     
     <!-- Plugins settings -->
 
@@ -232,61 +237,61 @@
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
         <artifactId>exo.kernel.container</artifactId>
-        <version>2.4.0-GA</version>
+        <version>${org.exoplatform.kernel.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
         <artifactId>exo.kernel.component.command</artifactId>
-        <version>2.4.0-GA</version>
+        <version>${org.exoplatform.kernel.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.jcr</groupId>
         <artifactId>exo.jcr.component.core</artifactId>
-          <version>1.15.0-GA</version>
+          <version>${org.exoplatform.jcr.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.jcr</groupId>
         <artifactId>exo.jcr.component.ext</artifactId>
-        <version>1.15.0-GA</version>
+        <version>${org.exoplatform.jcr.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
         <artifactId>exo.ws.commons</artifactId>
-        <version>2.3.0-GA</version>
+        <version>${org.exoplatform.ws.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
         <artifactId>exo.ws.rest.core</artifactId>
-        <version>2.3.0-GA</version>
+        <version>${org.exoplatform.ws.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
         <artifactId>exo.ws.rest.ext</artifactId>
-        <version>2.3.0-GA</version>
+        <version>${org.exoplatform.ws.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
         <artifactId>exo.ws.testframework</artifactId>
-        <version>2.3.0-GA</version>
+        <version>${org.exoplatform.ws.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.5.8</version>
+        <version>${org.slf4j.version}</version>
       </dependency>
 
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>0.9.17</version>
+        <version>${ch.qos.logback.version}</version>
       </dependency>
 
       <dependency>
