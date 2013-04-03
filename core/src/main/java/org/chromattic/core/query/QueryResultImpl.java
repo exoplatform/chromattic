@@ -39,18 +39,14 @@ public class QueryResultImpl<O> extends AbstractFilterIterator<O, Node> implemen
   private final NodeIterator iterator;
 
   /** . */
-  private final int hits;
-
-  /** . */
   private final DomainSession session;
 
-  QueryResultImpl(DomainSession session, NodeIterator iterator, int hits, Class<O> clazz) throws NullPointerException {
+  QueryResultImpl(DomainSession session, NodeIterator iterator, Class<O> clazz) throws NullPointerException {
     super(JCR.adapt(iterator));
 
     //
     this.session = session;
     this.iterator = iterator;
-    this.hits = hits;
     this.clazz = clazz;
   }
 
@@ -66,9 +62,5 @@ public class QueryResultImpl<O> extends AbstractFilterIterator<O, Node> implemen
 
   public int size() {
     return (int)iterator.getSize();
-  }
-
-  public int hits() {
-    return hits;
   }
 }

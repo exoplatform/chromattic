@@ -41,6 +41,11 @@ public abstract class A {
 
   public abstract String getFoo();
 
+  @Property(name = "bar")
+  public abstract void setBar(String bar);
+
+  public abstract String getBar();
+
   @OneToOne
   @MappedBy("child")
   @Owner
