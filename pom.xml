@@ -565,8 +565,32 @@
            <module>docs</module>
            <module>site</module>
         </modules>
-     </profile>
+    </profile>
      
+    <profile>
+        <id>Java7</id>
+        <activation>
+           <jdk>1.7</jdk>
+        </activation>
+        <modules>
+           <module>test</module>
+           <module>api</module>
+           <module>spi</module>
+           <module>common</module>
+           <module>metamodel</module>
+           <module>apt</module>
+           <module>cglib</module>
+           <module>exo</module>
+           <module>core</module>
+           <module>ext</module>
+           <module>groovy</module>
+           <module>dataobject</module>
+           <module>testgenerator</module>
+           <module>docs</module>
+           <module>site</module>
+        </modules>
+    </profile>
+
     <profile>
 
       <!-- Generation of a jar containing the source code -->
