@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.chromattic</groupId>
     <artifactId>chromattic.docs.reference</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>chromattic.docs.reference.guide</artifactId>
@@ -48,35 +48,35 @@
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.api</artifactId>
-          <version>1.2.1</version>
+          <version>1.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.api</artifactId>
-          <version>1.2.1</version>
+          <version>1.2.2-SNAPSHOT</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
-          <version>1.2.1</version>
+          <version>1.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
-          <version>1.2.1</version>
+          <version>1.2.2-SNAPSHOT</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
-          <version>1.2.1</version>
+          <version>1.2.2-SNAPSHOT</version>
           <type>test-jar</type>
         </dependency>
         <dependency>
           <groupId>org.chromattic</groupId>
           <artifactId>chromattic.docs.reference.examples</artifactId>
-          <version>1.2.1</version>
+          <version>1.2.2-SNAPSHOT</version>
           <classifier>test-sources</classifier>
         </dependency>
   </dependencies>
