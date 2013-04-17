@@ -73,17 +73,6 @@
     <url>https://github.com/vietj/chromattic</url>
   </scm>
 
-  <distributionManagement>
-    <repository>
-      <id>repository.exoplatform.org</id>
-      <url>${chromattic.releases.repo.url}</url>
-    </repository>
-    <snapshotRepository>
-      <id>repository.exoplatform.org</id>
-      <url>${chromattic.snapshots.repo.url}</url>    
-    </snapshotRepository>
-  </distributionManagement>
-
   <properties>
     <!-- Repositories URLs -->
     <chromattic.releases.repo.url>http://repository.exoplatform.org/service/local/staging/deploy/maven2/</chromattic.releases.repo.url>
@@ -524,6 +513,25 @@
   </build>
 
   <profiles>
+
+    <profile>
+      <id>repo</id>
+      <activation>
+        <property>
+          <name>!skip-repo</name>
+        </property>
+      </activation>
+      <distributionManagement>
+        <repository>
+          <id>repository.exoplatform.org</id>
+          <url>${chromattic.releases.repo.url}</url>
+        </repository>
+        <snapshotRepository>
+          <id>repository.exoplatform.org</id>
+          <url>${chromattic.snapshots.repo.url}</url>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
 
      <profile>
         <id>Java5</id>
