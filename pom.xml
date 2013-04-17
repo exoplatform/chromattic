@@ -80,9 +80,9 @@
 
     <!-- Dependencies versions -->
     <reflext.version>1.1.0</reflext.version>
-    <org.exoplatform.kernel.version>2.4.2-GA</org.exoplatform.kernel.version>
-    <org.exoplatform.ws.version>2.3.2-GA</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.15.2-GA</org.exoplatform.jcr.version>
+    <org.exoplatform.kernel.version>2.4.3-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.ws.version>2.3.3-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.15.3-GA</org.exoplatform.jcr.version>
     <org.slf4j.version>1.6.1</org.slf4j.version>
     <ch.qos.logback.version>1.0.10</ch.qos.logback.version>
     
