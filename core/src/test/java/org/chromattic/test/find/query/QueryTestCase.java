@@ -19,9 +19,11 @@
 package org.chromattic.test.find.query;
 
 import org.chromattic.api.query.Ordering;
+import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.chromattic.core.query.QueryImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.A;
 import org.chromattic.testgenerator.GroovyTestGeneration;
@@ -326,5 +328,11 @@ public class QueryTestCase extends AbstractTestCase {
     assertEquals("b", result.getFoo());
     assertEquals("b", result.getBar());
     assertFalse(it.hasNext());
+  }
+
+  public void testQueryObject() throws Exception {
+    ChromatticSessionImpl session = login();
+    QueryImpl<A> foo = (QueryImpl<A>) session.createQueryBuilder(A.class).orderBy("foo", Ordering.ASC).get();
+    assertNotNull(foo.getNativeQuery());
   }
 }

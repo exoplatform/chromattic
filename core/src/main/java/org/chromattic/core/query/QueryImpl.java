@@ -48,6 +48,10 @@ public class QueryImpl<O> implements Query<O> {
     this.jcrQuery = jcrQuery;
   }
 
+  public javax.jcr.query.Query getNativeQuery() {
+    return jcrQuery;
+  }
+
   public org.chromattic.api.query.QueryResult<O> objects() throws ChromatticException {
     return objects(null, null);
   }
