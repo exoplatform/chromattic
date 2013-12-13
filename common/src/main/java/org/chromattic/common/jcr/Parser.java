@@ -132,8 +132,8 @@ class Parser {
     Uri ::= A URI, as defined in Section 3 in http://tools.ietf.org/html/rfc3986#section-3
     QualifiedName ::= [ Prefix ':' ] LocalName
     Prefix ::= Any string that matches the NCName production in  http://www.w3.org/TR/REC-xml-names
-    LocalName ::= ValidString Ð SelfOrParent
-    ValidString ::= XmlChar Ð InvalidChar
+    LocalName ::= ValidString SelfOrParent
+    ValidString ::= XmlChar InvalidChar
     InvalidChar ::= '/' | ':' | '[' | ']' | '|' | '*'
     XmlChar ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
     XmlChar ::= Any character that matches the Char production at http://www.w3.org/TR/xml/#NT-Char
