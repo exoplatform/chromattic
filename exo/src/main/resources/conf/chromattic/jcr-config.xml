@@ -49,9 +49,9 @@
               <property name="root-nodetype" value="nt:unstructured"/>
             </properties>
           </initializer>
-          <cache enabled="true" class="org.exoplatform.services.jcr.impl.dataflow.persistent.jbosscache.JBossCacheWorkspaceStorageCache">
+          <cache enabled="true" class="org.exoplatform.services.jcr.impl.dataflow.persistent.infinispan.ISPNCacheWorkspaceStorageCache">
             <properties>
-              <property name="jbosscache-configuration" value="conf/chromattic/jbosscache-config.xml" />
+              <property name="infinispan-configuration" value="conf/chromattic/infinispan-config.xml" />
             </properties>
           </cache>
           <query-handler class="org.exoplatform.services.jcr.impl.core.query.lucene.SearchIndex">
@@ -59,11 +59,19 @@
               <property name="index-dir" value="target/temp/index/db1/ws" />
             </properties>
           </query-handler>
-          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManagerImpl">
+          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.infinispan.ISPNCacheableLockManagerImpl">
             <properties>
               <property name="time-out" value="15m" />
-              <property name="jbosscache-configuration" value="conf/chromattic/jbosscache-lockconfig.xml" />
-             </properties>
+              <property name="infinispan-configuration" value="conf/chromattic/infinispan-lock.xml" />
+              <property name="infinispan-cl-cache.jdbc.table.name" value="lk" />
+              <property name="infinispan-cl-cache.jdbc.table.create" value="true" />
+              <property name="infinispan-cl-cache.jdbc.table.drop" value="false" />
+              <property name="infinispan-cl-cache.jdbc.id.column" value="id" />
+              <property name="infinispan-cl-cache.jdbc.data.column" value="data" />
+              <property name="infinispan-cl-cache.jdbc.timestamp.column" value="timestamp" />
+              <property name="infinispan-cl-cache.jdbc.datasource" value="jdbcjcr" />
+              <property name="infinispan-cl-cache.jdbc.connectionFactory" value="org.exoplatform.services.jcr.infinispan.ManagedConnectionFactory" />
+            </properties>
           </lock-manager>
         </workspace>
       </workspaces>
