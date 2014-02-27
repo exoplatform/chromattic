@@ -233,12 +233,7 @@ public class SessionWrapperImpl implements SessionWrapper {
   }
 
   public boolean haxMixin(Node node, String mixinTypeName) throws RepositoryException {
-    for (NodeType mixinNodeType : node.getMixinNodeTypes()) {
-      if (mixinNodeType.getName().equals(mixinTypeName)) {
-        return true;
-      }
-    }
-    return false;
+    return node.isNodeType(mixinTypeName);
   }
 
   /**
