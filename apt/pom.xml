@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.chromattic</groupId>
     <artifactId>chromattic.parent</artifactId>
-    <version>1.3.0-beta4</version>
+    <version>1.3.0-beta5-SNAPSHOT</version>
   </parent>
 
   <artifactId>chromattic.apt</artifactId>
