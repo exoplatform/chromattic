@@ -68,9 +68,9 @@
   </developers>
   
   <scm>
-    <connection>scm:git:git://github.com/vietj/chromattic.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/vietj/chromattic.git</developerConnection>
-    <url>https://github.com/vietj/chromattic</url>
+    <connection>scm:git:git://github.com/exoplatform/chromattic.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/exoplatform/chromattic.git</developerConnection>
+    <url>https://github.com/exoplatform/chromattic</url>
     <tag>HEAD</tag>
   </scm>
 
