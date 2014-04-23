@@ -22,7 +22,7 @@
    
    <groupId>org.chromattic</groupId>
    <artifactId>chromattic.parent</artifactId>
-   <version>1.2.4</version>
+   <version>1.2.5-SNAPSHOT</version>
   <packaging>pom</packaging>
 
    <name>Chromattic Framework</name>
@@ -80,9 +80,9 @@
 
     <!-- Dependencies versions -->
     <reflext.version>1.1.0</reflext.version>
-    <org.exoplatform.kernel.version>2.4.3-GA</org.exoplatform.kernel.version>
-    <org.exoplatform.ws.version>2.3.3-GA</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.15.3-GA</org.exoplatform.jcr.version>
+    <org.exoplatform.kernel.version>2.4.8-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.ws.version>2.3.8-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.15.8-GA</org.exoplatform.jcr.version>
     <org.slf4j.version>1.6.1</org.slf4j.version>
     <ch.qos.logback.version>1.0.10</ch.qos.logback.version>
     
@@ -106,7 +106,7 @@
     <autoVersionSubmodules>true</autoVersionSubmodules>
 
     <!-- site-maven-plugin -->
-    <chromattic.github.owner>vietj</chromattic.github.owner>
+    <chromattic.github.owner>exoplatform</chromattic.github.owner>
     <chromattic.github.repository>chromattic</chromattic.github.repository>
   </properties>
 
@@ -117,80 +117,80 @@
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.test</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- Internal dependencies -->
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.cglib</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.common</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.metamodel</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.core</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.exo</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.spi</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.ext</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.groovy</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.testgenerator</artifactId>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
@@ -198,7 +198,7 @@
         <artifactId>chromattic.docs.reference.guide</artifactId>
         <classifier>html</classifier>
         <type>zip</type>
-        <version>1.2.4</version>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- External dependencies -->
