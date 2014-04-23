@@ -19,11 +19,13 @@
 
 package org.chromattic.test.property.value.multi;
 
+import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.MultiValue;
 
-import javax.jcr.ValueFactory;
-import javax.jcr.Node;
 import java.lang.reflect.InvocationTargetException;
+
+import javax.jcr.Node;
+import javax.jcr.ValueFactory;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -39,7 +41,11 @@ public class MultiValuedMappedToSingleValuedTest extends AbstractMultiValuedTest
     safeArrayEquals(values.sub(), MultiValue.create(getter.invoke(o)));
 
     //
-    node.setProperty(propertyName, create(values.getObject(0)));
+    if (AbstractTestCase.getCurrentConfig().isStateCacheDisabled()) {
+      node.setProperty(propertyName, create(values.getObject(0)));
+    } else {
+      setter.invoke(o, values.sub(0).asNative());
+    }
     safeArrayEquals(values.sub(0), MultiValue.create(getter.invoke(o)));
     safeValueEquals(values.getObject(0), node.getProperty(propertyName).getValue());
 

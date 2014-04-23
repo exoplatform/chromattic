@@ -19,12 +19,28 @@
 
 package org.chromattic.core;
 
-import org.chromattic.api.*;
+import org.chromattic.api.ChromatticIOException;
+import org.chromattic.api.NoSuchPropertyException;
+import org.chromattic.api.Status;
+import org.chromattic.api.TypeConversionException;
+import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.common.CloneableInputStream;
 import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.jcr.type.PrimaryTypeInfo;
 import org.chromattic.core.jcr.type.PropertyDefinitionInfo;
-import org.chromattic.common.CloneableInputStream;
 import org.chromattic.core.vt2.ValueDefinition;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -32,9 +48,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import java.util.*;
-import java.io.InputStream;
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -42,11 +55,13 @@ import java.io.IOException;
  */
 class PersistentEntityContextState extends EntityContextState {
 
+  private static final List<Object> NULL_VALUE = new ArrayList<Object>(1);
+  
   /** . */
   private final DomainSession session;
 
   /** . */
-  private final Map<String, Object> propertyCache;
+  private final Map<String, List<Object>> propertyCache;
 
   /** . */
   private final Node node;
@@ -56,7 +71,7 @@ class PersistentEntityContextState extends EntityContextState {
 
   PersistentEntityContextState(Node node, DomainSession session) throws RepositoryException {
     this.session = session;
-    this.propertyCache = session.domain.propertyCacheEnabled ? new HashMap<String, Object>() : null;
+    this.propertyCache = session.domain.propertyCacheEnabled ? new HashMap<String, List<Object>>() : null;
     this.node = node;
     this.typeInfo = session.domain.nodeInfoManager.getPrimaryTypeInfo(node.getPrimaryNodeType());
   }
@@ -108,21 +123,86 @@ class PersistentEntityContextState extends EntityContextState {
     return typeInfo;
   }
 
+  void loadProperties(NodeTypeInfo nodeTypeInfo, Map<String, ValueDefinition<?, ?>> mProperties) {
+    StringBuilder sb = new StringBuilder(128);
+    int index = 0, length = mProperties.size();
+    for (String propertyName : mProperties.keySet()) {
+      sb.append(propertyName);
+      if (index++ < length - 1) {
+        sb.append('|');
+      }
+    }
+    if (sb.length() == 0) {
+      return; 
+    }
+    try {
+      Iterator<Property> properties = session.getSessionWrapper().getProperties(node, sb.toString());
+      if (propertyCache != null) {
+        Set<String> notFoundProperties = new HashSet<String>(mProperties.keySet());
+        while (properties.hasNext()) {
+          Property property = properties.next();
+          String propertyName = property.getName();
+          PropertyDefinitionInfo def = nodeTypeInfo.findPropertyDefinition(propertyName);
+          if (def == null) {
+            throw new NoSuchPropertyException("Property " + propertyName + " cannot be loaded from node " + node.getPath() +
+              "  with type " + node.getPrimaryNodeType().getName());
+          }
+          Value[] values;
+          if (def.isMultiple()) {
+            values = property.getValues();
+          } else {
+            values = new Value[]{property.getValue()};
+          }
+
+          ValueDefinition<?, ?> vt = mProperties.get(propertyName);
+          if (vt == null) {
+            // Try to determine a vt from the real value
+            vt = (ValueDefinition<?, ?>)ValueDefinition.get(def.getType());
+            if (vt == null) {
+              if (values != null && values.length > 0) {
+                vt = (ValueDefinition<?, ?>)ValueDefinition.get(values[0].getType());
+              }
+            }
+          }
+          List<Object> l = new ArrayList<Object>(values.length);
+          for (int i = 0;i < values.length;i++) {
+            Value value = values[i];
+            l.add(vt.get(value));
+          }
+          propertyCache.put(propertyName, l);
+          notFoundProperties.remove(propertyName);
+        }
+        for (String propertyName : notFoundProperties) {
+          propertyCache.put(propertyName, NULL_VALUE);
+        }
+      }
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+  
   <V> boolean hasProperty(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt) {
 
     //
-    V value = null;
+    Object value = null;
     if (propertyCache != null) {
-      value = (V)propertyCache.get(propertyName);
+      value = propertyCache.get(propertyName);
     }
 
     //
-    if (value != null) {
+    if (value == NULL_VALUE) {
+      return false;
+    } else if (value != null) {
       return true;
     }
     else {
       try {
-        return session.getSessionWrapper().hasProperty(node, propertyName);
+        boolean result = session.getSessionWrapper().hasProperty(node, propertyName);
+        if (propertyCache != null && !result) {
+           propertyCache.put(propertyName, NULL_VALUE);
+        }
+        return result;
       } catch (RepositoryException e) {
         return false;
       }
@@ -144,7 +224,15 @@ class PersistentEntityContextState extends EntityContextState {
       //
       if (propertyCache != null) {
         // That must be ok
-        value = (V)propertyCache.get(propertyName);
+        List<Object> l = propertyCache.get(propertyName);
+        if (l == NULL_VALUE) {
+          if (vt != null) {
+            return getDefaultValue(vt);
+          }
+          return null;
+        } else if (l != null) {
+          return l.isEmpty() ? null : (V)l.get(0);
+        }
       }
 
       //
@@ -195,17 +283,10 @@ class PersistentEntityContextState extends EntityContextState {
       if (value == null) {
         if (vt != null) {
           // Let's try default value
-          List<V> defaultValue = vt.getDefaultValue();
-
-          //
-          if (defaultValue != null && defaultValue.size() > 0) {
-            value = defaultValue.get(0);
-          }
-
-          //
-          if (value == null && vt.isPrimitive()) {
-            throw new NullPointerException("Cannot convert null to primitive type " + vt);
-          }
+          value = getDefaultValue(vt);
+        }
+        if (propertyCache != null) {
+          propertyCache.put(propertyName, NULL_VALUE);
         }
       } else {
         if (propertyCache != null) {
@@ -214,6 +295,7 @@ class PersistentEntityContextState extends EntityContextState {
           } else if (value instanceof Date) {
             value = (V)((Date)value).clone();
           }
+          propertyCache.put(propertyName, Collections.<Object>singletonList(value));
         }
       }
 
@@ -225,6 +307,22 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
+  private static <V> V getDefaultValue(ValueDefinition<?, V> vt) {
+    V value = null;
+    List<V> defaultValue = vt.getDefaultValue();
+
+    //
+    if (defaultValue != null && defaultValue.size() > 0) {
+      value = defaultValue.get(0);
+    }
+
+    //
+    if (value == null && vt.isPrimitive()) {
+      throw new NullPointerException("Cannot convert null to primitive type " + vt);
+    }
+    return value;
+  }
+  
   @Override
   <L, V> L getPropertyValues(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType) {
     try {
@@ -232,6 +330,24 @@ class PersistentEntityContextState extends EntityContextState {
       if (def == null) {
         throw new NoSuchPropertyException("Property " + propertyName + " cannot be from from node " + node.getPath() +
           "  with type " + node.getPrimaryNodeType().getName());
+      }
+      if (propertyCache != null) {
+        // That must be ok
+        List<Object> l = propertyCache.get(propertyName);
+        if (l == NULL_VALUE) {
+          if (vt != null) {
+            return getDefaultValues(def, vt, arrayType);
+          }
+          return arrayType.create(0);
+        } else if (l != null) {
+          int size = l.size();
+          L list = arrayType.create(size);
+          for (int i = 0 ;i < size;i++) {
+            V v = (V)l.get(i);
+            arrayType.set(list, i, v);
+          }
+          return list;
+        }
       }
 
       //
@@ -267,29 +383,20 @@ class PersistentEntityContextState extends EntityContextState {
             V v = vt.get(value);
             arrayType.set(list, i, v);
           }
+          if (propertyCache != null) {
+            propertyCache.put(propertyName, toList(arrayType, list));
+          }
         } else {
-          List<V> defaultValue = vt.getDefaultValue();
-          if (defaultValue != null) {
-            if (def.isMultiple()) {
-              list = arrayType.create(defaultValue.size());
-              for (int i = 0;i < defaultValue.size();i++) {
-                V v = defaultValue.get(i);
-                arrayType.set(list, i, v);
-              }
-            } else {
-              if (defaultValue.size() > 0) {
-                list = arrayType.create(1);
-                arrayType.set(list, 0, defaultValue.get(0));
-              } else {
-                list = arrayType.create(0);
-              }
-            }
-          } else {
-            list = null;
+          list = getDefaultValues(def, vt, arrayType);
+          if (propertyCache != null) {
+            propertyCache.put(propertyName, NULL_VALUE);
           }
         }
       } else {
         list = arrayType.create(0);
+        if (propertyCache != null) {
+          propertyCache.put(propertyName, NULL_VALUE);
+        }
       }
 
       //
@@ -300,6 +407,39 @@ class PersistentEntityContextState extends EntityContextState {
     }
   }
 
+  private static <L, V> L getDefaultValues(PropertyDefinitionInfo def, ValueDefinition<?, V> vt, ArrayType<L, V> arrayType) {
+    L list;
+    List<V> defaultValue = vt.getDefaultValue();
+    if (defaultValue != null) {
+      if (def.isMultiple()) {
+        list = arrayType.create(defaultValue.size());
+        for (int i = 0;i < defaultValue.size();i++) {
+          V v = defaultValue.get(i);
+          arrayType.set(list, i, v);
+        }
+      } else {
+        if (defaultValue.size() > 0) {
+          list = arrayType.create(1);
+          arrayType.set(list, 0, defaultValue.get(0));
+        } else {
+          list = arrayType.create(0);
+        }
+      }
+    } else {
+      list = null;
+    }
+    return list;
+  }
+  
+  private static <L> List<Object> toList(ArrayType<L, ?> arrayType, L list) {
+    int size = arrayType.size(list);
+    List<Object> result = new ArrayList<Object>(size);
+    for (int i = 0; i < size; i++) {
+      result.add(arrayType.get(list, i));
+    }
+    return result;
+  }
+  
   <V> void setPropertyValue(NodeTypeInfo nodeTypeInfo, String propertyName, ValueDefinition<?, V> vt, V propertyValue) {
     try {
       //
@@ -374,7 +514,7 @@ class PersistentEntityContextState extends EntityContextState {
           } else if (propertyValue instanceof Date) {
             propertyValue = (V)((Date)propertyValue).clone();
           }
-          propertyCache.put(propertyName, propertyValue);
+          propertyCache.put(propertyName, Collections.<Object>singletonList(propertyValue));
         } else {
           propertyCache.remove(propertyName);
         }
@@ -435,13 +575,22 @@ class PersistentEntityContextState extends EntityContextState {
       if (jcrValues != null) {
         if (def.isMultiple()) {
           node.setProperty(propertyName, jcrValues);
+          if (propertyCache != null) {
+             propertyCache.put(propertyName, toList(arrayType, propertyValues));
+          }
         } else {
           if (jcrValues.length > 1) {
             throw new IllegalArgumentException("Cannot update with an array of length greater than 1");
           } else if (jcrValues.length == 1) {
             node.setProperty(propertyName, jcrValues[0]);
+            if (propertyCache != null) {
+              propertyCache.put(propertyName, Collections.<Object>singletonList(arrayType.get(propertyValues, 0)));
+            }
           } else {
             node.setProperty(propertyName, (Value)null);
+            if (propertyCache != null) {
+              propertyCache.remove(propertyName);
+            }
           }
         }
       } else {
@@ -449,6 +598,9 @@ class PersistentEntityContextState extends EntityContextState {
           node.setProperty(propertyName, (Value[])null);
         } else {
           node.setProperty(propertyName, (Value)null);
+        }
+        if (propertyCache != null) {
+           propertyCache.remove(propertyName);
         }
       }
     }

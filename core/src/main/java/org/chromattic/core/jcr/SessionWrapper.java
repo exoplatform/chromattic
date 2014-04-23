@@ -19,15 +19,16 @@
 
 package org.chromattic.core.jcr;
 
-import javax.jcr.RepositoryException;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.jcr.Node;
-import javax.jcr.Session;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -40,6 +41,8 @@ public interface SessionWrapper {
   Property getProperty(Node node, String relPath) throws RepositoryException;
 
   Iterator<Property> getProperties(Node node) throws RepositoryException;
+
+  Iterator<Property> getProperties(Node node, String namePattern) throws RepositoryException;
 
   Node getNode(Node node, String relPath) throws RepositoryException;
 
@@ -57,6 +60,8 @@ public interface SessionWrapper {
 
   Iterator<Node> getChildren(Node parentNode) throws RepositoryException;
 
+  boolean hasChildren(Node parentNode) throws RepositoryException;
+  
   Node getChild(Node parentNode, String name) throws RepositoryException;
 
   boolean hasChild(Node parentNode, String name) throws RepositoryException;

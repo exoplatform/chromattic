@@ -47,6 +47,10 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
     addClass(manySide);
   }
 
+  protected String getPrefix() {
+     return "";
+  }
+  
   public abstract Collection<M> getMany(O many);
 
   public abstract void add(O o, M m);
@@ -113,9 +117,9 @@ public abstract class AbstractToManyTestCase<O, M> extends AbstractTestCase {
   public void testLoad() throws Exception {
     ChromatticSessionImpl session = login();
     Node rootNode = session.getRoot();
-    Node oNode = rootNode.addNode("o", getNodeTypeName(oneSide));
+    Node oNode = rootNode.addNode(getPrefix() + "o", getNodeTypeName(oneSide));
     String oId = oNode.getUUID();
-    Node mNode = oNode.addNode("m", getNodeTypeName(manySide));
+    Node mNode = oNode.addNode(getPrefix() + "m", getNodeTypeName(manySide));
     String mId = mNode.getUUID();
     rootNode.save();
 

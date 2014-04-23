@@ -19,17 +19,23 @@
 
 package org.chromattic.core.mapper.property;
 
-import org.chromattic.common.collection.AbstractFilterIterator;
-import org.chromattic.common.JCR;
 import org.chromattic.api.UndeclaredRepositoryException;
+import org.chromattic.common.JCR;
+import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.core.ArrayType;
 import org.chromattic.core.EntityContext;
 import org.chromattic.metamodel.bean.ValueKind;
 
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -100,7 +106,7 @@ class PropertyMap extends AbstractMap<String, Object> {
   public Object remove(Object key) {
     String s = validateKey(key);
     if (s != null) {
-      return put(s, null);
+      return update(s, null);
     } else {
       return null;
     }
@@ -110,9 +116,9 @@ class PropertyMap extends AbstractMap<String, Object> {
   public Object put(String key, Object value) {
     String s = validateKey(key);
     if (s != null) {
-      return update(key, value);
+      return update(s, value);
     } else {
-      throw new IllegalArgumentException("Invalid key " + key + " should being with the prefix " + mapper.namePrefix);
+      throw new IllegalArgumentException("Invalid key " + s + " should being with the prefix " + mapper.namePrefix);
     }
   }
 

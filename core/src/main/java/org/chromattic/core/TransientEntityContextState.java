@@ -20,12 +20,13 @@
 package org.chromattic.core;
 
 import org.chromattic.api.Status;
-import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.jcr.type.PrimaryTypeInfo;
+import org.chromattic.core.vt2.ValueDefinition;
+
+import java.util.Map;
 
 import javax.jcr.Node;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -96,6 +97,10 @@ class TransientEntityContextState extends EntityContextState {
     throw new IllegalStateException();
   }
 
+  void loadProperties(NodeTypeInfo typeInfo, Map<String, ValueDefinition<?, ?>> properties) {
+     throw new IllegalStateException(); 
+  }
+  
   public String toString() {
     return "ObjectStatus[status=" + Status.TRANSIENT + "]";
   }

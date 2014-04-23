@@ -18,13 +18,14 @@
  */
 package org.chromattic.test.property;
 
-import org.chromattic.test.AbstractTestCase;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.chromattic.test.AbstractTestCase;
 import org.chromattic.testgenerator.GroovyTestGeneration;
+
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -89,11 +90,13 @@ public class ResidualPropertyTestCase extends AbstractTestCase {
     catch (ClassCastException ignore) {
     }
     node.setProperty("integer_property", "foo");
-    try {
-      o.getInteger();
-      fail();
-    }
-    catch (ClassCastException ignore) {
+    if (getConfig().isStateCacheDisabled()) {
+      try {
+        o.getInteger();
+        fail();
+      }
+      catch (ClassCastException ignore) {
+      }
     }
   }
 

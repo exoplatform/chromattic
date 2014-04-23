@@ -44,6 +44,10 @@ public class PathLinkManager extends AbstractLinkManager {
     super(session);
   }
 
+  public PathLinkManager(Session session, boolean hasPropertyOptimized) {
+    super(session, hasPropertyOptimized);
+  }
+
   protected Node _getReferenced(Property property) throws RepositoryException {
     int type = property.getType();
     if (type == PropertyType.PATH) {

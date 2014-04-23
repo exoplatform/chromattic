@@ -19,12 +19,12 @@
 
 package org.chromattic.test.property.value.multi;
 
+import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.support.MultiValue;
 
 import javax.jcr.Node;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -40,7 +40,11 @@ public class NullableMultiValuedMappedToMultiValuedTest extends AbstractMultiVal
     assertNull(getter.invoke(o));
 
     //
-    node.setProperty(propertyName, new Value[]{create(values.getObject(0))});
+    if (AbstractTestCase.getCurrentConfig().isStateCacheDisabled()) {
+      node.setProperty(propertyName, new Value[]{create(values.getObject(0))});
+    } else {
+      setter.invoke(o, values.sub(0).asNative());
+    }
     safeArrayEquals(values.sub(0), MultiValue.create(getter.invoke(o)));
     safeArrayEquals(values.sub(0), node.getProperty(propertyName).getValues());
 

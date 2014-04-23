@@ -21,17 +21,20 @@ package org.chromattic.core.jcr;
 
 import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.common.collection.CompoundIterator;
+import org.chromattic.common.logging.Logger;
 
-import javax.jcr.Node;
-import javax.jcr.Session;
-import javax.jcr.RepositoryException;
-import javax.jcr.Property;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.HashMap;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 /**
  * <p>The reference manager takes care of managing references between nodes. The main reason is that
@@ -48,13 +51,24 @@ import java.util.ConcurrentModificationException;
 public abstract class AbstractLinkManager {
 
   /** . */
+  private static final Logger log = Logger.getLogger(AbstractLinkManager.class);
+
+  /** . */
   private Map<String, Entry> entries = new HashMap<String, Entry>();
 
   /** . */
   protected final Session session;
+  
+  /** . */
+  protected final boolean hasPropertyOptimized;
 
   public AbstractLinkManager(Session session) {
+    this(session, false);
+  }
+
+  public AbstractLinkManager(Session session, boolean hasPropertyOptimized) {
     this.session = session;
+    this.hasPropertyOptimized = hasPropertyOptimized;
   }
 
   public Iterator<Node> getReferents(Node referenced, String propertyName) throws RepositoryException {
@@ -69,8 +83,20 @@ public abstract class AbstractLinkManager {
   protected abstract Iterator<Node> _getReferents(Node referenced, String propertyName) throws RepositoryException;
 
   public Node getReferenced(Node referent, String propertyName) throws RepositoryException {
-    if (referent.hasProperty(propertyName)) {
-      Property property = referent.getProperty(propertyName);
+    Property property = null;
+    if (hasPropertyOptimized) {
+      try {
+        property = referent.getProperty(propertyName);
+      } catch (PathNotFoundException e) {
+        if (log.isTraceEnabled())
+          log.trace("The property '" + propertyName + "' could not be found under " + referent.getPath(), e);
+      }
+    } else {
+      if (referent.hasProperty(propertyName)) {
+        property = referent.getProperty(propertyName);
+      }
+    }
+    if (property != null) {
       return _getReferenced(property);
     } else {
       return null;
@@ -80,8 +106,20 @@ public abstract class AbstractLinkManager {
   public Node setReferenced(Node referent, String propertyName, Node referenced) throws RepositoryException {
 
     Node oldReferenced = null;
-    if (referent.hasProperty(propertyName)) {
-      Property property = referent.getProperty(propertyName);
+    Property property = null;
+    if (hasPropertyOptimized) {
+      try {
+        property = referent.getProperty(propertyName);
+      } catch (PathNotFoundException e) {
+        if (log.isTraceEnabled())
+          log.trace("The property '" + propertyName + "' could not be found under " + referent.getPath(), e);
+      }
+    } else {
+      if (referent.hasProperty(propertyName)) {
+        property = referent.getProperty(propertyName);
+      }
+    }    
+    if (property != null) {
       oldReferenced = _getReferenced(property);
       if (oldReferenced != null) {
         Entry entry = getEntry(oldReferenced);

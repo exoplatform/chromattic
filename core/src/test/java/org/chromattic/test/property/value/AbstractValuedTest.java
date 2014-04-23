@@ -20,17 +20,18 @@ package org.chromattic.test.property.value;
 
 import junit.framework.Assert;
 
-import javax.jcr.ValueFactory;
+import org.chromattic.test.support.MultiValue;
+
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jcr.Node;
 import javax.jcr.Value;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.HashMap;
-import java.io.InputStream;
-
-import org.chromattic.test.support.MultiValue;
+import javax.jcr.ValueFactory;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
