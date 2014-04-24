@@ -81,5 +81,15 @@
     </childNodeDefinitions>
   </nodeType>
 
+  <!-- Node type generated for the class org.chromattic.test.onetomany.reference.B1 -->
+  <nodeType name="weird_bug2" isMixin="false" hasOrderableChildNodes="false">
+    <propertyDefinitions>
+      <propertyDefinition name="ref" requiredType="Path" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+    </propertyDefinitions>
+    <childNodeDefinitions/>
+  </nodeType>
+
 </nodeTypes>
   

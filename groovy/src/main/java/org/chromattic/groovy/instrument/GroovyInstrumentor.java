@@ -20,7 +20,6 @@
 package org.chromattic.groovy.instrument;
 
 import org.chromattic.spi.instrument.Instrumentor;
-import org.chromattic.spi.instrument.MethodHandler;
 import org.chromattic.spi.instrument.ProxyType;
 
 /**
@@ -28,18 +27,7 @@ import org.chromattic.spi.instrument.ProxyType;
  * @version $Revision$
  */
 public class GroovyInstrumentor implements Instrumentor {
-  public <O> ProxyType<O> getProxyClass(Class<O> clazz) {
-    return new GroovyProxyType(clazz);
-  }
-
-  public MethodHandler getInvoker(Object proxy) {
-    try {
-        return (MethodHandler) proxy.getClass().getMethod("getChromatticInvoker").invoke(proxy);
-    }
-    catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException(e.getMessage(), e);
-    } catch (Exception e) {
-      throw new AssertionError(e);
-    }
+  public <O> ProxyType<O> getProxyType(Class<O> clazz) {
+    return new GroovyProxyType<O>(clazz);
   }
 }

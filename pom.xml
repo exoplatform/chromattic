@@ -22,7 +22,7 @@
    
    <groupId>org.chromattic</groupId>
    <artifactId>chromattic.parent</artifactId>
-   <version>1.1.5-SNAPSHOT</version>
+   <version>1.2.5-SNAPSHOT</version>
   <packaging>pom</packaging>
 
    <name>Chromattic Framework</name>
@@ -73,17 +73,6 @@
     <url>https://github.com/vietj/chromattic</url>
   </scm>
 
-  <distributionManagement>
-    <repository>
-      <id>repository.exoplatform.org</id>
-      <url>${chromattic.releases.repo.url}</url>
-    </repository>
-    <snapshotRepository>
-      <id>repository.exoplatform.org</id>
-      <url>${chromattic.snapshots.repo.url}</url>    
-    </snapshotRepository>
-  </distributionManagement>
-
   <properties>
     <!-- Repositories URLs -->
     <chromattic.releases.repo.url>http://repository.exoplatform.org/service/local/staging/deploy/maven2/</chromattic.releases.repo.url>
@@ -91,6 +80,11 @@
 
     <!-- Dependencies versions -->
     <reflext.version>1.1.0</reflext.version>
+    <org.exoplatform.kernel.version>2.4.8-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.ws.version>2.3.8-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.15.8-GA</org.exoplatform.jcr.version>
+    <org.slf4j.version>1.6.1</org.slf4j.version>
+    <ch.qos.logback.version>1.0.10</ch.qos.logback.version>
     
     <!-- Plugins settings -->
 
@@ -112,7 +106,7 @@
     <autoVersionSubmodules>true</autoVersionSubmodules>
 
     <!-- site-maven-plugin -->
-    <chromattic.github.owner>vietj</chromattic.github.owner>
+    <chromattic.github.owner>exoplatform</chromattic.github.owner>
     <chromattic.github.repository>chromattic</chromattic.github.repository>
   </properties>
 
@@ -123,80 +117,80 @@
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.test</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- Internal dependencies -->
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.cglib</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.common</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.metamodel</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.core</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.exo</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.spi</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.ext</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.groovy</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.testgenerator</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
@@ -204,7 +198,7 @@
         <artifactId>chromattic.docs.reference.guide</artifactId>
         <classifier>html</classifier>
         <type>zip</type>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- External dependencies -->
@@ -232,61 +226,61 @@
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
         <artifactId>exo.kernel.container</artifactId>
-        <version>2.3.6-GA</version>
+        <version>${org.exoplatform.kernel.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
         <artifactId>exo.kernel.component.command</artifactId>
-        <version>2.3.6-GA</version>
+        <version>${org.exoplatform.kernel.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.jcr</groupId>
         <artifactId>exo.jcr.component.core</artifactId>
-        <version>1.14.6-GA</version>
+          <version>${org.exoplatform.jcr.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.jcr</groupId>
         <artifactId>exo.jcr.component.ext</artifactId>
-        <version>1.14.6-GA</version>
+        <version>${org.exoplatform.jcr.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
         <artifactId>exo.ws.commons</artifactId>
-        <version>2.2.6-GA</version>
+        <version>${org.exoplatform.ws.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
         <artifactId>exo.ws.rest.core</artifactId>
-        <version>2.2.6-GA</version>
+        <version>${org.exoplatform.ws.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
         <artifactId>exo.ws.rest.ext</artifactId>
-        <version>2.2.6-GA</version>
+        <version>${org.exoplatform.ws.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
         <artifactId>exo.ws.testframework</artifactId>
-        <version>2.2.6-GA</version>
+        <version>${org.exoplatform.ws.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.5.8</version>
+        <version>${org.slf4j.version}</version>
       </dependency>
 
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>0.9.17</version>
+        <version>${ch.qos.logback.version}</version>
       </dependency>
 
       <dependency>
@@ -495,7 +489,11 @@
           <systemProperties>
             <property>
               <name>com.arjuna.ats.arjuna.objectstore.objectStoreDir</name>
-              <value>${project.build.directory}</value>
+              <value>${project.build.directory}/dir1</value>
+            </property>
+            <property>
+              <name>ObjectStoreEnvironmentBean.objectStoreDir</name>
+              <value>${project.build.directory}/dir2</value>
             </property>
             <property>
               <name>log.output.path</name>
@@ -515,6 +513,25 @@
   </build>
 
   <profiles>
+
+    <profile>
+      <id>repo</id>
+      <activation>
+        <property>
+          <name>!skip-repo</name>
+        </property>
+      </activation>
+      <distributionManagement>
+        <repository>
+          <id>repository.exoplatform.org</id>
+          <url>${chromattic.releases.repo.url}</url>
+        </repository>
+        <snapshotRepository>
+          <id>repository.exoplatform.org</id>
+          <url>${chromattic.snapshots.repo.url}</url>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
 
      <profile>
         <id>Java5</id>
@@ -561,8 +578,32 @@
            <module>docs</module>
            <module>site</module>
         </modules>
-     </profile>
+    </profile>
      
+    <profile>
+        <id>Java7</id>
+        <activation>
+           <jdk>1.7</jdk>
+        </activation>
+        <modules>
+           <module>test</module>
+           <module>api</module>
+           <module>spi</module>
+           <module>common</module>
+           <module>metamodel</module>
+           <module>apt</module>
+           <module>cglib</module>
+           <module>exo</module>
+           <module>core</module>
+           <module>ext</module>
+           <module>groovy</module>
+           <module>dataobject</module>
+           <module>testgenerator</module>
+           <module>docs</module>
+           <module>site</module>
+        </modules>
+    </profile>
+
     <profile>
 
       <!-- Generation of a jar containing the source code -->

@@ -360,16 +360,6 @@ public class SessionWrapperImpl implements SessionWrapper {
     return query.execute();
   }
 
-  public int hits(QueryResult result) throws RepositoryException
-  {
-    int hits = invokeIntGetter(result, "getTotalSize");
-    if (hits < 0)
-    {
-      hits = (int)result.getNodes().getSize();
-    }
-    return hits;
-  }
-
   private int invokeIntGetter(Object o, String methodName)
   {
     Class<?> clazz = o.getClass();

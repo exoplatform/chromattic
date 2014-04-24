@@ -824,7 +824,6 @@ public class DomainSessionImpl extends DomainSession {
     List<String> pathSegments = domain.rootNodePathSegments;
     Node current = session.getRootNode();
     String rootNodeType = domain.rootNodeType;
-    boolean created = false;
     if (!pathSegments.isEmpty()) {
       // We use that kind of loop to avoid object creation
       for (int i = 0;i < pathSegments.size();i++) {
@@ -833,28 +832,38 @@ public class DomainSessionImpl extends DomainSession {
         if (next == null) {
           if (domain.rootCreateMode == Domain.NO_CREATE_MODE) {
             throw new NoSuchNodeException("No existing root node " + domain.rootNodePath);
+          } else if (domain.rootCreateMode == Domain.CREATE_MODE) {
+            try {
+              Node newNode;
+              if (rootNodeType != null) {
+                newNode = current.addNode(pathSegment, rootNodeType);
+              } else {
+                newNode = current.addNode(pathSegment);
+              }
+              if (newNode.getIndex() > 1) {
+                // The node has already been created by a concurrent session
+                current.refresh(false);
+                current = current.getNode(pathSegment);
+              } else {
+                current.save();
+                current = newNode;
+              }
+            } catch (ItemExistsException e) {
+              current.refresh(false);
+              // Need to check until the concurrent tx that caused this ItemExistsException is fully committed
+              while (!current.hasNode(pathSegment));
+              current = current.getNode(pathSegment);
+            }
           } else {
             if (rootNodeType != null) {
               current = current.addNode(pathSegment, rootNodeType);
             } else {
               current = current.addNode(pathSegment);
             }
-            created = true;
           }
         } else {
           current = next;
         }
-      }
-    }
-    if (created) {
-      if (domain.rootCreateMode == Domain.CREATE_MODE) {
-        // Find first persistent ancestor
-        Node toSave = current;
-        while (toSave.isNew()) {
-          toSave = toSave.getParent();
-        }
-        // And save it
-        toSave.save();
       }
     }
     return current;

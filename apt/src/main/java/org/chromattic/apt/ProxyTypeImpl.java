@@ -23,6 +23,7 @@ import org.chromattic.spi.instrument.ProxyType;
 import org.chromattic.spi.instrument.MethodHandler;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 
 /**
  * Implements the SPI {@link ProxyType} interface.
@@ -35,19 +36,39 @@ public class ProxyTypeImpl<O> implements ProxyType<O> {
   /** . */
   private final Constructor<? extends O> ctor;
 
+  private final Field f;
+
   public ProxyTypeImpl(Class<O> objectClass) {
 
     Constructor<? extends O> ctor;
+    Field handler;
     try {
       ClassLoader classLoader = objectClass.getClassLoader();
       Class<? extends O> proxyClass = (Class<? extends O>)classLoader.loadClass(objectClass.getName() + "_Chromattic");
       ctor = proxyClass.getConstructor(MethodHandler.class);
+      handler = proxyClass.getField("handler");
     }
     catch (Exception e) {
-      throw new AssertionError(e);
+      AssertionError ae = new AssertionError("Could not create proxy type for " + objectClass);
+      ae.initCause(e);
+      throw ae;
     }
 
     this.ctor = ctor;
+    this.f = handler;
+  }
+
+  public MethodHandler getInvoker(Object proxy) {
+    if (proxy instanceof Instrumented) {
+      try {
+        return (MethodHandler)f.get(proxy);
+      }
+      catch (IllegalAccessException e) {
+        throw new AssertionError(e);
+      }
+    } else {
+      return null;
+    }
   }
 
   public O createProxy(MethodHandler handler) {

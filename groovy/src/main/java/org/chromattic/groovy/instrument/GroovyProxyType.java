@@ -50,6 +50,17 @@ public class GroovyProxyType<O> implements ProxyType<O> {
     }
   }
 
+  public MethodHandler getInvoker(Object proxy) {
+    try {
+      return (MethodHandler)proxy.getClass().getMethod("getChromatticInvoker").invoke(proxy);
+    }
+    catch (NoSuchMethodException e) {
+      throw new IllegalArgumentException(e.getMessage(), e);
+    } catch (Exception e) {
+      throw new AssertionError(e);
+    }
+  }
+
   public Class<? extends O> getType() {
     return ctor.getDeclaringClass();
   }

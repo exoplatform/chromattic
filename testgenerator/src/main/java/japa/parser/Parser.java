@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Júlio Vilmar Gesser.
+ * Copyright (C) 2008 Julio Vilmar Gesser.
  *
  * This file is part of Java 1.5 parser and Abstract Syntax Tree.
  *
@@ -35,7 +35,7 @@ import java.io.InputStream;
  * by calling the method {@link setCacheParser} with <code>false</code>
  * as argument.</p>
  *
- * @author Júlio Vilmar Gesser
+ * @author Julio Vilmar Gesser
  */
 public final class Parser
 {

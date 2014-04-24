@@ -19,9 +19,11 @@
 package org.chromattic.test.find.query;
 
 import org.chromattic.api.query.Ordering;
+import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.common.collection.Collections;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.chromattic.core.query.QueryImpl;
 import org.chromattic.test.AbstractTestCase;
 import org.chromattic.test.find.A;
 import org.chromattic.testgenerator.GroovyTestGeneration;
@@ -111,7 +113,6 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     assertEquals(3, it1.size());
-    assertEquals(3, it1.hits());
   }
 
   public void testOffset() throws Exception {
@@ -137,7 +138,6 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     assertEquals(2, it1.size());
-    assertEquals(3, it1.hits());
   }
 
   public void testLimit() throws Exception {
@@ -163,7 +163,6 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     assertEquals(2, it1.size());
-    assertEquals(3, it1.hits());
   }
 
   public void testOffsetLimit() throws Exception {
@@ -187,7 +186,6 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     assertEquals(1, it1.size());
-    assertEquals(3, it1.hits());
   }
 
   public void testOrderByASC() throws Exception {
@@ -238,5 +236,103 @@ public class QueryTestCase extends AbstractTestCase {
     assertEquals("a", it.next().getFoo());
     assertFalse(it.hasNext());
 
+  }
+
+  public void testOrderByMultiValueDESC() throws Exception{
+    ChromatticSessionImpl session = login();
+
+    A a = session.insert(A.class, "a");
+    a.setFoo("a");
+    a.setBar("b");
+    A b = session.insert(A.class, "b");
+    b.setFoo("a");
+    b.setBar("a");
+    A c = session.insert(A.class, "c");
+    c.setFoo("b");
+    c.setBar("b");
+    session.save();
+
+        //
+    QueryResult<A> it = session.createQueryBuilder(A.class).orderBy("foo", Ordering.DESC).orderBy("bar", Ordering.DESC).get().objects();
+    assertTrue(it.hasNext());
+    A result = it.next();
+    assertEquals("b", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("a", result.getBar());
+    assertFalse(it.hasNext());
+
+    it = session.createQueryBuilder(A.class).orderBy("foo", Ordering.DESC).orderBy("bar", Ordering.ASC).get().objects();
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("b", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("a", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertFalse(it.hasNext());
+  }
+
+  public void testOrderByMultiValueASC() throws Exception{
+    ChromatticSessionImpl session = login();
+
+    A a = session.insert(A.class, "a");
+    a.setFoo("a");
+    a.setBar("b");
+    A b = session.insert(A.class, "b");
+    b.setFoo("a");
+    b.setBar("a");
+    A c = session.insert(A.class, "c");
+    c.setFoo("b");
+    c.setBar("b");
+    session.save();
+
+    //
+    QueryResult<A> it = session.createQueryBuilder(A.class).orderBy("foo", Ordering.ASC).orderBy("bar", Ordering.ASC).get().objects();
+    assertTrue(it.hasNext());
+    A result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("a", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("b", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertFalse(it.hasNext());
+
+    it = session.createQueryBuilder(A.class).orderBy("foo", Ordering.ASC).orderBy("bar", Ordering.DESC).get().objects();
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("a", result.getFoo());
+    assertEquals("a", result.getBar());
+    assertTrue(it.hasNext());
+    result = it.next();
+    assertEquals("b", result.getFoo());
+    assertEquals("b", result.getBar());
+    assertFalse(it.hasNext());
+  }
+
+  public void testQueryObject() throws Exception {
+    ChromatticSessionImpl session = login();
+    QueryImpl<A> foo = (QueryImpl<A>) session.createQueryBuilder(A.class).orderBy("foo", Ordering.ASC).get();
+    assertNotNull(foo.getNativeQuery());
   }
 }

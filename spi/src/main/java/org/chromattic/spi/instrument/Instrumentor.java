@@ -25,15 +25,13 @@ package org.chromattic.spi.instrument;
  */
 public interface Instrumentor {
 
-  <O> ProxyType<O> getProxyClass(Class<O> clazz);
-
   /**
-   * Returns the method handler for the specified proxy or null if the object argument is not
-   * instrumented.
+   * Returns a proxy type for a specified class.
    *
-   * @param proxy the instrumented proxy
-   * @return the method handler
+   * @param clazz the class for which we want a proxy type
+   * @param <O> the generic type
+   * @return the related proxy type
    */
-  MethodHandler getInvoker(Object proxy);
+  <O> ProxyType<O> getProxyType(Class<O> clazz);
 
 }
