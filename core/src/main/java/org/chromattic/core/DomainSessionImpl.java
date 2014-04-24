@@ -40,11 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 
