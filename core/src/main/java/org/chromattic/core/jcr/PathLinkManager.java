@@ -40,8 +40,8 @@ import java.util.Iterator;
  */
 public class PathLinkManager extends AbstractLinkManager {
 
-  public PathLinkManager(Session session) {
-    super(session);
+  public PathLinkManager(SessionWrapper sessionWrapper) {
+    super(sessionWrapper);
   }
 
   protected Node _getReferenced(Property property) throws RepositoryException {
@@ -49,7 +49,7 @@ public class PathLinkManager extends AbstractLinkManager {
     if (type == PropertyType.PATH) {
       String path = property.getString();
       try {
-        return (Node)session.getItem(path);
+        return (Node)sessionWrapper.getSession().getItem(path);
       }
       catch (PathNotFoundException e) {
         // The node has been transiently removed or concurrently removed
@@ -65,7 +65,7 @@ public class PathLinkManager extends AbstractLinkManager {
   protected void _setReferenced(Node referent, String propertyName, Node referenced) throws RepositoryException {
     if (referenced != null) {
       String path = referenced.getPath();
-      ValueFactory valueFactory = session.getValueFactory();
+      ValueFactory valueFactory = sessionWrapper.getSession().getValueFactory();
       Value value = valueFactory.createValue(path, PropertyType.PATH);
       referent.setProperty(propertyName, value);
     } else {
@@ -75,7 +75,7 @@ public class PathLinkManager extends AbstractLinkManager {
 
   protected Iterator<Node> _getReferents(Node referenced, String propertyName) throws RepositoryException {
     String path = referenced.getPath();
-    QueryManager queryMgr = session.getWorkspace().getQueryManager();
+    QueryManager queryMgr = sessionWrapper.getSession().getWorkspace().getQueryManager();
     Query query = queryMgr.createQuery("SELECT * FROM nt:base WHERE " + propertyName + "='" + path + "'", Query.SQL);
     QueryResult result = query.execute();
     @SuppressWarnings("unchecked") Iterator<Node> nodes = result.getNodes();

@@ -19,25 +19,22 @@
 
 package org.chromattic.test;
 
+import junit.framework.AssertionFailedError;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestListener;
+import junit.framework.TestResult;
+
+import org.chromattic.api.Chromattic;
+import org.chromattic.api.ChromatticBuilder;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.core.api.ChromatticSessionImpl;
-import org.chromattic.api.ChromatticBuilder;
-import org.chromattic.api.Chromattic;
-import org.chromattic.cglib.CGLibInstrumentor;
-
-import javax.jcr.SimpleCredentials;
-
-import junit.framework.TestCase;
-import junit.framework.TestResult;
-import junit.framework.TestListener;
-import junit.framework.Test;
-import junit.framework.AssertionFailedError;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -46,31 +43,13 @@ import java.util.LinkedList;
 public abstract class AbstractTestCase extends TestCase {
 
   /** . */
-  public static final String CHROMATTIC_TEST_MODE = "chromattic.test.mode";
+  public static final String CHROMATTIC_TEST_PROFILE = "chromattic.test.profile";
 
   /** . */
-  public static final String MODE_CGLIB = "cglib";
+  static final String APT_INSTRUMENTOR = "org.chromattic.apt.InstrumentorImpl";
 
   /** . */
-  public static final String MODE_APT = "apt";
-
-  /** . */
-  public static final String MODE_CACHE = "cache";
-
-  /** . */
-  public static final String MODE_HAS_NODE = "has_node";
-
-  /** . */
-  public static final String MODE_HAS_PROPERTY = "has_property";
-
-  /** . */
-  public static final String MODE_ALL = "all";
-
-  /** . */
-  private static final String APT_INSTRUMENTOR = "org.chromattic.apt.InstrumentorImpl";
-
-  /** . */
-  private static final String CGLIB_INSTRUMENTOR = CGLibInstrumentor.class.getName();
+  private static final ThreadLocal<TestProfile> PROFILE = new ThreadLocal<TestProfile>();
 
   /** . */
   private ChromatticBuilder builder;
@@ -79,7 +58,7 @@ public abstract class AbstractTestCase extends TestCase {
   private Chromattic chromattic;
 
   /** . */
-  private Config config;
+  private TestProfile profile;
 
   /** . */
   private String testName;
@@ -101,23 +80,18 @@ public abstract class AbstractTestCase extends TestCase {
     }
   };
 
-  public Config getConfig() {
-    return config;
+  public TestProfile getProfile() {
+    return profile;
   }
 
   @Override
   protected void setUp() throws Exception {
     String p1 = getClass().getName().replace('.', '_');
-    String p2 = config.propertyCacheEnabled ? "propertycached" : "propertynotcached";
-    String p3 = config.optimizeHasNodeEnabled ? "hasnodeoptimized" : "hasnodenotoptimized";
-    String p4 = config.optimizeHasPropertyEnabled ? "haspropertyoptimized" : "haspropertynotoptimized";
-    String p5 = config.instrumentorClassName.lastIndexOf('.') == -1 ?
-      config.instrumentorClassName :
-      config.instrumentorClassName.substring(config.instrumentorClassName.lastIndexOf('.') + 1);
-    String p6 = testName;
+    String p2 = profile.name();
+    String p3 = testName;
 
     //
-    rootNodePath = "/" + p1 + "/" + p2 + "/" + p3 + "/" + p4  + "/" + p5 + "/" + p6;
+    rootNodePath = "/" + p1 + "/" + p2 + "/" + p3;
 
     //
     builder = ChromatticBuilder.create();
@@ -131,10 +105,11 @@ public abstract class AbstractTestCase extends TestCase {
     //
     builder.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, rootNodePath);
     builder.setOptionValue(ChromatticBuilder.ROOT_NODE_TYPE, "nt:unstructured");
-    builder.setOptionValue(ChromatticBuilder.PROPERTY_CACHE_ENABLED, config.propertyCacheEnabled);
-    builder.setOptionValue(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, config.instrumentorClassName);
-    builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, config.optimizeHasPropertyEnabled);
-    builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, config.optimizeHasNodeEnabled);
+    builder.setOptionValue(ChromatticBuilder.PROPERTY_CACHE_ENABLED, profile.propertyCacheEnabled);
+    builder.setOptionValue(ChromatticBuilder.PROPERTY_LOAD_GROUP_ENABLED, profile.propertyLoadGroupEnabled);
+    builder.setOptionValue(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, profile.instrumentorClassName);
+    builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, profile.optimizeHasPropertyEnabled);
+    builder.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, profile.optimizeHasNodeEnabled);
 
     //
     if (pingRootNode) {
@@ -151,12 +126,18 @@ public abstract class AbstractTestCase extends TestCase {
       sess.getRoot();
       sess.save();
     }
+    PROFILE.set(profile);
   }
 
   @Override
   protected void tearDown() throws Exception {
     builder = null;
     chromattic = null;
+    PROFILE.remove();
+  }
+
+  public static TestProfile getCurrentProfile() {
+    return PROFILE.get();
   }
 
   @Override
@@ -164,50 +145,32 @@ public abstract class AbstractTestCase extends TestCase {
     result.addListener(listener);
 
     //
-    List<Config> configs = new LinkedList<Config>();
+    List<TestProfile> profiles = new LinkedList<TestProfile>();
 
     //
-    boolean aptEnabled = false;
-    try {
-      Thread.currentThread().getContextClassLoader().loadClass(APT_INSTRUMENTOR);
-      aptEnabled = true;
-    }
-    catch (ClassNotFoundException ignore) {
-    }
+    String testProfile = System.getProperty(CHROMATTIC_TEST_PROFILE);
 
     //
-    String testMode = System.getProperty(CHROMATTIC_TEST_MODE);
-    if (testMode == null) {
-      testMode = MODE_ALL;
-    }
-
-    //
-    if (MODE_ALL.equals(testMode)) {
-      if (aptEnabled) {
-        configs.add(new Config(APT_INSTRUMENTOR, false, false, false));
-        configs.add(new Config(APT_INSTRUMENTOR, true, false, false));
-        configs.add(new Config(APT_INSTRUMENTOR, false, true, false));
-        configs.add(new Config(APT_INSTRUMENTOR, false, false, true));
+    if (testProfile == null || testProfile.trim().length() == 0) {
+      profiles.add(TestProfile.BASE);
+      profiles.add(TestProfile.PROPERTY_CACHE);
+      profiles.add(TestProfile.PROPERTY_LOAD_GROUP);
+      profiles.add(TestProfile.HAS_NODE);
+      profiles.add(TestProfile.HAS_PROPERTY);
+    } else {
+      try {
+        profiles.add(TestProfile.valueOf(testProfile.trim().toUpperCase()));
       }
-//      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, false));
-//      configs.add(new Config(CGLIB_INSTRUMENTOR, true, false, false));
-//      configs.add(new Config(CGLIB_INSTRUMENTOR, false, true, false));
-//      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, true));
-    } else if (MODE_APT.equals(testMode)) {
-      configs.add(new Config(APT_INSTRUMENTOR, false, false, false));
-    } /*else if (MODE_CGLIB.equals(testMode)) {
-      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, false));
-    } else if (MODE_CACHE.equals(testMode)) {
-      configs.add(new Config(CGLIB_INSTRUMENTOR, true, false, false));
-    } else if (MODE_HAS_NODE.equals(testMode)) {
-      configs.add(new Config(CGLIB_INSTRUMENTOR, false, false, true));
-    } else if (MODE_HAS_PROPERTY.equals(testMode)) {
-      configs.add(new Config(CGLIB_INSTRUMENTOR, true, true, false));
-    }*/
+      catch (IllegalArgumentException e) {
+        AssertionFailedError afe = new AssertionFailedError("Invalid test profile " + testProfile);
+        afe.initCause(e);
+        throw afe;
+      }
+    }
 
     //
-    for (Config config : configs) {
-      this.config = config;
+    for (TestProfile profile : profiles) {
+      this.profile = profile;
       try {
         super.run(result);
       }
@@ -276,47 +239,4 @@ public abstract class AbstractTestCase extends TestCase {
 
   protected abstract void createDomain();
 
-  public static class Config {
-
-    /** . */
-    private final String instrumentorClassName;
-
-    /** . */
-    private final boolean propertyCacheEnabled;
-
-    /** . */
-    private final boolean optimizeHasPropertyEnabled;
-
-    /** . */
-    private final boolean optimizeHasNodeEnabled;
-
-    public Config(
-      String instrumentorClassName,
-      boolean propertyCacheEnabled,
-      boolean optimizeHasPropertyEnabled,
-      boolean optimizeHasNodeEnabled) {
-      this.instrumentorClassName = instrumentorClassName;
-      this.propertyCacheEnabled = propertyCacheEnabled;
-      this.optimizeHasNodeEnabled = optimizeHasNodeEnabled;
-      this.optimizeHasPropertyEnabled = optimizeHasPropertyEnabled;
-    }
-
-    public String getInstrumentorClassName() {
-      return instrumentorClassName;
-    }
-
-    public boolean isPropertyCacheEnabled() {
-      return propertyCacheEnabled;
-    }
-
-    public boolean isStateCacheDisabled() {
-      return !propertyCacheEnabled;
-    }
-
-    @Override
-    public String toString() {
-      return "Config[instrumentorClassName=" + instrumentorClassName + ",stateCacheEnaled=" + propertyCacheEnabled + "" +
-        ",optimizeHasNodeEnabled=" + optimizeHasNodeEnabled + ",optimizeHasPropertyEnabled=" + optimizeHasPropertyEnabled + "]";
-    }
-  }
 }

@@ -22,16 +22,16 @@ package org.chromattic.core.jcr;
 import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.common.collection.CompoundIterator;
 
-import javax.jcr.Node;
-import javax.jcr.Session;
-import javax.jcr.RepositoryException;
-import javax.jcr.Property;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.HashMap;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 /**
  * <p>The reference manager takes care of managing references between nodes. The main reason is that
@@ -51,10 +51,10 @@ public abstract class AbstractLinkManager {
   private Map<String, Entry> entries = new HashMap<String, Entry>();
 
   /** . */
-  protected final Session session;
+  protected final SessionWrapper sessionWrapper;
 
-  public AbstractLinkManager(Session session) {
-    this.session = session;
+  public AbstractLinkManager(SessionWrapper sessionWrapper) {
+    this.sessionWrapper = sessionWrapper;
   }
 
   public Iterator<Node> getReferents(Node referenced, String propertyName) throws RepositoryException {
@@ -69,8 +69,8 @@ public abstract class AbstractLinkManager {
   protected abstract Iterator<Node> _getReferents(Node referenced, String propertyName) throws RepositoryException;
 
   public Node getReferenced(Node referent, String propertyName) throws RepositoryException {
-    if (referent.hasProperty(propertyName)) {
-      Property property = referent.getProperty(propertyName);
+    Property property = sessionWrapper.getProperty(referent, propertyName);
+    if (property != null) {
       return _getReferenced(property);
     } else {
       return null;
@@ -80,8 +80,8 @@ public abstract class AbstractLinkManager {
   public Node setReferenced(Node referent, String propertyName, Node referenced) throws RepositoryException {
 
     Node oldReferenced = null;
-    if (referent.hasProperty(propertyName)) {
-      Property property = referent.getProperty(propertyName);
+    Property property = sessionWrapper.getProperty(referent, propertyName);
+    if (property != null) {
       oldReferenced = _getReferenced(property);
       if (oldReferenced != null) {
         Entry entry = getEntry(oldReferenced);

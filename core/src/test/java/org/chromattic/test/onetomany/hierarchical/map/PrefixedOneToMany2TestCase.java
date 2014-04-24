@@ -44,4 +44,8 @@ public class PrefixedOneToMany2TestCase extends AbstractToManyTestCase<A5, B5> {
   public boolean supportsAddToCollection() {
     return false;
   }
+
+  protected String getPrefix() {
+     return "onetomany_h_map:";
+  }  
 }

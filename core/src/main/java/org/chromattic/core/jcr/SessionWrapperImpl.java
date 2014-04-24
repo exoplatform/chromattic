@@ -22,17 +22,27 @@ package org.chromattic.core.jcr;
 import org.chromattic.common.logging.Logger;
 import org.chromattic.spi.jcr.SessionLifeCycle;
 
-import javax.jcr.*;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.RandomAccess;
+
+import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.List;
-import java.util.RandomAccess;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -70,15 +80,19 @@ public class SessionWrapperImpl implements SessionWrapper {
     this.sessionLifeCycle = sessionLifeCycle;
     this.session = session;
     this.linkMgrs = new AbstractLinkManager[] {
-      new ReferenceLinkManager(session),
-      new PathLinkManager(session)
+      new ReferenceLinkManager(this),
+      new PathLinkManager(this)
     };
   }
 
+  @SuppressWarnings("unchecked")
   public Iterator<Property> getProperties(Node node) throws RepositoryException {
-    @SuppressWarnings("unchecked")
-    Iterator<Property> properties = node.getProperties();
-    return properties;
+    return node.getProperties();
+  }
+
+  @SuppressWarnings("unchecked")
+  public Iterator<Property> getProperties(Node node, String names) throws RepositoryException {
+    return node.getProperties(names);
   }
 
   public boolean hasProperty(Node node, String relPath) throws RepositoryException {
@@ -91,6 +105,9 @@ public class SessionWrapperImpl implements SessionWrapper {
         return node.getProperty(relPath);
       }
       catch (PathNotFoundException e) {
+        if (log.isTraceEnabled()) {
+          log.trace("The property '" + relPath + "' could not be found under " + node.getPath(), e);
+        }
         return null;
       }
     } else {
@@ -186,12 +203,12 @@ public class SessionWrapperImpl implements SessionWrapper {
     return (Iterator<Node>)parentNode.getNodes();
   }
 
+  public boolean hasChildren(Node parentNode) throws RepositoryException {
+    return parentNode.hasNodes();
+  }
+
   public Node getChild(Node parentNode, String name) throws RepositoryException {
-    if (parentNode.hasNode(name)) {
-      return parentNode.getNode(name);
-    } else {
-      return null;
-    }
+    return getNode(parentNode, name);
   }
 
   public boolean hasChild(Node parentNode, String name) throws RepositoryException {

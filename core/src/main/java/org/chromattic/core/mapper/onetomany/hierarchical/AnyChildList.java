@@ -23,8 +23,9 @@ import org.chromattic.core.DomainSession;
 import org.chromattic.core.EntityContext;
 import org.chromattic.core.ThrowableFactory;
 
-import java.util.Iterator;
 import java.util.AbstractList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -45,6 +46,85 @@ class AnyChildList<E> extends AbstractList<E> {
     this.relatedClass = relatedClass;
     this.prefix = prefix;
     this.parentCtx = parentCtx;
+  }
+
+  @Override
+  public boolean add(E addedElement) {
+    if (addedElement == null) {
+      throw new NullPointerException("No null element can be inserted");
+    }
+    if (!relatedClass.isInstance(addedElement)) {
+      throw new ClassCastException("Cannot cast object with class " + addedElement.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
+
+    // Get the session
+    DomainSession session = parentCtx.getSession();
+
+    // Get the added context
+    EntityContext addedCtx = session.unwrapEntity(addedElement);
+
+    //
+    parentCtx.addChild(ThrowableFactory.ISE, ThrowableFactory.IAE, prefix, addedCtx);
+    
+    return true;
+  }
+  
+  @Override
+  public boolean addAll(Collection<? extends E> c) {
+    if (c == null) {
+      throw new NullPointerException("No null collection can be inserted");
+    }
+    int cSize = c.size();
+    if (cSize == 0)
+       return false;
+    
+    for (E addedElement : c) {
+       add(addedElement);
+    }
+    this.modCount += cSize;
+    return true;
+  }  
+  
+  @Override
+  public boolean contains(Object child) {
+    if (child == null) {
+      throw new NullPointerException();
+    }
+    if (!relatedClass.isInstance(child)) {
+      throw new ClassCastException("Cannot cast object with class " + child.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
+
+    //
+    EntityContext childCtx = parentCtx.getSession().unwrapEntity(child);
+    return parentCtx.hasChild(prefix, childCtx.getLocalName());
+  }
+
+  @Override
+  public boolean remove(Object child) {
+    if (child == null) {
+      throw new NullPointerException();
+    }
+    if (!relatedClass.isInstance(child)) {
+      throw new ClassCastException("Cannot cast object with class " + child.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
+
+    //
+    EntityContext childCtx = parentCtx.getSession().unwrapEntity(child);
+    childCtx.remove();
+    return true;
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return !parentCtx.hasChildren();
+  }
+
+  @Override
+  public void clear() {
+     for (Iterator<E> iterator = iterator();iterator.hasNext();) {
+       iterator.next();
+       iterator.remove();
+     }
   }
 
   @Override

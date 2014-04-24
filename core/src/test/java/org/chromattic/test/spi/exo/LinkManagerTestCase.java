@@ -19,12 +19,16 @@
 
 package org.chromattic.test.spi.exo;
 
+import javax.jcr.Credentials;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Node;
 
 import org.chromattic.common.collection.Collections;
 import org.chromattic.core.jcr.AbstractLinkManager;
+import org.chromattic.core.jcr.SessionWrapper;
+import org.chromattic.core.jcr.SessionWrapperImpl;
+import org.chromattic.spi.jcr.SessionLifeCycle;
 import org.chromattic.test.jcr.AbstractJCRTestCase;
 
 import java.util.Iterator;
@@ -36,7 +40,30 @@ import java.util.ConcurrentModificationException;
  */
 public abstract class LinkManagerTestCase extends AbstractJCRTestCase {
 
-  protected abstract AbstractLinkManager createLinkManager(Session session);
+  protected abstract AbstractLinkManager doCreateLinkManager(SessionWrapper session);
+
+  protected final AbstractLinkManager createLinkManager(Session session) {
+    return doCreateLinkManager(new SessionWrapperImpl(new SessionLifeCycle() {
+      public Session login() throws RepositoryException {
+        throw new UnsupportedOperationException();
+      }
+      public Session login(String workspace) throws RepositoryException {
+        throw new UnsupportedOperationException();
+      }
+      public Session login(Credentials credentials, String workspace) throws RepositoryException {
+        throw new UnsupportedOperationException();
+      }
+      public Session login(Credentials credentials) throws RepositoryException {
+        throw new UnsupportedOperationException();
+      }
+      public void save(Session session) throws RepositoryException {
+        throw new UnsupportedOperationException();
+      }
+      public void close(Session session) {
+        throw new UnsupportedOperationException();
+      }
+    }, session, false, false));
+  }
 
   public void testAdd() throws Exception {
     Session session = login();

@@ -21,8 +21,7 @@ package org.chromattic.test.spi.exo;
 
 import org.chromattic.core.jcr.AbstractLinkManager;
 import org.chromattic.core.jcr.PathLinkManager;
-
-import javax.jcr.Session;
+import org.chromattic.core.jcr.SessionWrapper;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -30,7 +29,7 @@ import javax.jcr.Session;
  */
 public class PathLinkManagerTestCase extends LinkManagerTestCase {
 
-  protected AbstractLinkManager createLinkManager(Session session) {
+  protected AbstractLinkManager doCreateLinkManager(SessionWrapper session) {
     return new PathLinkManager(session);
   }
 }

@@ -20,7 +20,6 @@
 package org.chromattic.core.api;
 
 import org.chromattic.api.ChromatticBuilder;
-import org.chromattic.api.format.DefaultObjectFormatter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,7 +37,7 @@ public class ChromatticBuilderConfigurationFactoryImpl extends ChromatticBuilder
    */
   private final static Set<ChromatticBuilder.Option> SYSTEM_OPTIONS = Collections.unmodifiableSet(new HashSet<ChromatticBuilder.Option>(Arrays.asList(
     ChromatticBuilder.PROPERTY_CACHE_ENABLED,
-    ChromatticBuilder.PROPERTY_READ_AHEAD_ENABLED,
+    ChromatticBuilder.PROPERTY_LOAD_GROUP_ENABLED,
     ChromatticBuilder.JCR_OPTIMIZE_ENABLED,
     ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED,
     ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED,
@@ -65,9 +64,8 @@ public class ChromatticBuilderConfigurationFactoryImpl extends ChromatticBuilder
 
     config.setOptionValue(ChromatticBuilder.INSTRUMENTOR_CLASSNAME, "org.chromattic.apt.InstrumentorImpl", false);
     config.setOptionValue(ChromatticBuilder.SESSION_LIFECYCLE_CLASSNAME, "org.chromattic.exo.ExoSessionLifeCycle", false);
-    config.setOptionValue(ChromatticBuilder.OBJECT_FORMATTER_CLASSNAME, DefaultObjectFormatter.class.getName(), false);
     config.setOptionValue(ChromatticBuilder.PROPERTY_CACHE_ENABLED, false, false);
-    config.setOptionValue(ChromatticBuilder.PROPERTY_READ_AHEAD_ENABLED, false, false);
+    config.setOptionValue(ChromatticBuilder.PROPERTY_LOAD_GROUP_ENABLED, false, false);
     config.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_PROPERTY_ENABLED, false, false);
     config.setOptionValue(ChromatticBuilder.JCR_OPTIMIZE_HAS_NODE_ENABLED, false, false);
     config.setOptionValue(ChromatticBuilder.ROOT_NODE_PATH, "/", false);

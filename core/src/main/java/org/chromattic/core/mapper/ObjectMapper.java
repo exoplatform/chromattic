@@ -23,12 +23,15 @@ import org.chromattic.api.NameConflictResolution;
 import org.chromattic.api.format.ObjectFormatter;
 import org.chromattic.core.MethodInvoker;
 import org.chromattic.core.ObjectContext;
+import org.chromattic.core.mapper.property.JCRPropertyMapper;
+import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.NodeTypeKind;
 import org.chromattic.metamodel.mapping.PropertyMapping;
 import org.reflext.api.MethodInfo;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -72,6 +75,12 @@ public class ObjectMapper<C extends ObjectContext<C>> {
   /** . */
   private final Map<String, PropertyMapper<?, ?, C, ?>> propertyMapperMap;
 
+  /** . */
+  private final Map<String, ValueDefinition<?, ?>> properties;
+
+  /** . */
+  private final String propertiesPattern;
+
   public ObjectMapper(
     BeanMapping mapping,
     boolean abstract_,
@@ -80,7 +89,6 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     Set<MethodMapper<C>> methodMappers,
     NameConflictResolution onDuplicate,
     ObjectFormatter formatter,
-//    Instrumentor instrumentor,
     String typeName,
     NodeTypeKind kind) {
 
@@ -107,6 +115,26 @@ public class ObjectMapper<C extends ObjectContext<C>> {
       dispatchers.put((Method)methodMapper.getMethod().unwrap(), methodMapper);
     }
 
+    // Compute properties
+    Map<String, ValueDefinition<?, ?>> properties = new HashMap<String, ValueDefinition<?, ?>>();
+    for (PropertyMapper<?, ?, ?, ?> pm : propertyMappers) {
+      if (pm instanceof JCRPropertyMapper) {
+        JCRPropertyMapper jpm = ((JCRPropertyMapper)pm);
+        String propertyName = jpm.getJCRPropertyName();
+        properties.put(propertyName, jpm.getValueDefinition());
+      }
+    }
+    properties = Collections.unmodifiableMap(properties);
+
+    // Compute properties pattern once
+    StringBuilder propertiesPattern = new StringBuilder();
+    for (String propertyName : properties.keySet()) {
+      if (propertiesPattern.length() > 0) {
+        propertiesPattern.append('|');
+      }
+      propertiesPattern.append(propertyName);
+    }
+
     //
     this.mapping = mapping;
     this.abstract_ = abstract_;
@@ -119,6 +147,36 @@ public class ObjectMapper<C extends ObjectContext<C>> {
     this.nodeTypeName = typeName;
     this.kind = kind;
     this.propertyMapperMap = propertyMapperMap;
+    this.properties = properties;
+    this.propertiesPattern = propertiesPattern.toString();
+  }
+
+  public ObjectMapper(ObjectMapper<C> mapper, ObjectFormatter formatter) {
+    this.mapping = mapper.mapping;
+    this.abstract_ = mapper.abstract_;
+    this.dispatchers = mapper.dispatchers;
+    this.objectClass = mapper.objectClass;
+    this.methodMappers = mapper.methodMappers;
+    this.formatter = formatter;
+    this.onDuplicate = mapper.onDuplicate;
+    this.propertyMappers = mapper.propertyMappers;
+    this.nodeTypeName = mapper.nodeTypeName;
+    this.kind = mapper.kind;
+    this.propertyMapperMap = mapper.propertyMapperMap;
+    this.properties = mapper.properties;
+    this.propertiesPattern = mapper.propertiesPattern;
+  }
+
+  public ObjectMapper<C> with(ObjectFormatter formatter) {
+    return new ObjectMapper<C>(this, formatter);
+  }
+
+  public Map<String, ValueDefinition<?, ?>> getProperties() {
+    return properties;
+  }
+
+  public String getPropertiesPattern() {
+    return propertiesPattern;
   }
 
   public MethodInvoker<C> getInvoker(Method method) {

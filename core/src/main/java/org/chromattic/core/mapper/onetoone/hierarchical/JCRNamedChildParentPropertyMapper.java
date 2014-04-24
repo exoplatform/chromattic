@@ -61,7 +61,7 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext<O>> exten
     EntityContext entityCtx = ctx.getEntity();
 
     //
-    String externalRelatedName = entityCtx.decodeName(relatedName, NameKind.OBJECT);
+    String externalRelatedName = entityCtx.decodeName(relatedName);
 
     //
     EntityContext childCtx = entityCtx.getChild(relatedPrefix, externalRelatedName);
@@ -83,7 +83,7 @@ public class JCRNamedChildParentPropertyMapper<O extends ObjectContext<O>> exten
     EntityContext entity = context.getEntity();
 
     // Decode name
-    String externalRelatedName = entity.decodeName(relatedName, NameKind.OBJECT);
+    String externalRelatedName = entity.decodeName(relatedName);
 
     if (child != null) {
       EntityContext entityCtx = entity.getSession().unwrapEntity(child);
