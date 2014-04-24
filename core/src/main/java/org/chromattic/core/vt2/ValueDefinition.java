@@ -141,38 +141,54 @@ public class ValueDefinition<I, E> {
   private final SimpleTypeProvider<I, E> valueType;
 
   /** . */
-  private final List<String> defaultValue;
+  private final List<String> defaultValueList;
 
   /** . */
   private final PropertyMetaType<I> propertyMetaType;
+
+  /** . */
+  private E defaultValue;
 
   public ValueDefinition(
     Class<?> realType,
     PropertyMetaType<I> propertyMetaType,
     SimpleTypeProvider<I, E> valueType,
-    List<String> defaultValue) {
+    List<String> defaultValueList) {
+
+    //
+    E defaultValue;
+    if (defaultValueList != null && defaultValueList.size() > 0) {
+      defaultValue = valueType.fromString(defaultValueList.get(0));
+    } else {
+      defaultValue = null;
+    }
+
+    //
     this.realType = realType;
     this.valueType = valueType;
-    this.defaultValue = defaultValue;
+    this.defaultValueList = defaultValueList;
     this.propertyMetaType = propertyMetaType;
+    this.defaultValue = defaultValue;
   }
 
   public boolean isPrimitive() {
     return realType.isPrimitive();
   }
 
-  public List<E> getDefaultValue() {
-    if (defaultValue != null) {
+  public List<E> getDefaultValueList() {
+    if (defaultValueList != null) {
       ArrayList<E> a = new ArrayList<E>();
-
-      for (String d : defaultValue) {
+      for (String d : defaultValueList) {
         a.add(valueType.fromString(d));
       }
-
       return a;
     } else {
       return null;
     }
+  }
+
+  public E getDefaultValue() {
+    return defaultValue;
   }
 
   /**

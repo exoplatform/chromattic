@@ -19,12 +19,15 @@
 package org.chromattic.test.property.value.single;
 
 import junit.framework.AssertionFailedError;
-import org.chromattic.test.support.MultiValue;
-import org.chromattic.test.support.EventQueue;
 
-import javax.jcr.ValueFactory;
-import javax.jcr.Node;
+import org.chromattic.test.AbstractTestCase;
+import org.chromattic.test.support.EventQueue;
+import org.chromattic.test.support.MultiValue;
+
 import java.lang.reflect.InvocationTargetException;
+
+import javax.jcr.Node;
+import javax.jcr.ValueFactory;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -62,11 +65,18 @@ public class SingleValuedMappedToSingleValuedTest extends AbstractSingleValuedTe
     events.assertEmpty();
 
     //
-    node.setProperty(propertyName, create(values.getObject(0)));
+    if (AbstractTestCase.getCurrentProfile().isStateCacheDisabled()) {
+      node.setProperty(propertyName, create(values.getObject(0)));
+    } else {
+      setter.invoke(o, values.getObject(0));
+    }
     safeValueEquals(values.getObject(0), getter.invoke(o));
     setter.invoke(o, values.getObject(1));
     assertTrue(node.hasProperty(propertyName));
     safeValueEquals(values.getObject(1), node.getProperty(propertyName).getValue());
+    if (!AbstractTestCase.getCurrentProfile().isStateCacheDisabled()) {
+      events.assertPropertyChangedEvent(node.getUUID(), o, propertyName, values.getObject(0));
+    }
     events.assertPropertyChangedEvent(node.getUUID(), o, propertyName, values.getObject(1));
     events.assertEmpty();
 

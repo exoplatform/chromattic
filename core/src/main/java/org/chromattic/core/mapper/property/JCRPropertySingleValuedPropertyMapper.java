@@ -20,10 +20,7 @@
 package org.chromattic.core.mapper.property;
 
 import org.chromattic.core.ObjectContext;
-import org.chromattic.core.mapper.PropertyMapper;
 import org.chromattic.core.vt2.ValueDefinition;
-import org.chromattic.metamodel.bean.PropertyInfo;
-import org.chromattic.metamodel.bean.SimpleValueInfo;
 import org.chromattic.metamodel.bean.ValueKind;
 import org.chromattic.metamodel.mapping.ValueMapping;
 import org.chromattic.metamodel.mapping.jcr.PropertyMetaType;
@@ -33,7 +30,8 @@ import org.chromattic.spi.type.SimpleTypeProvider;
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
  * @version $Revision$
  */
-public class JCRPropertySingleValuedPropertyMapper<O extends ObjectContext<O>, E, I> extends PropertyMapper<PropertyInfo<SimpleValueInfo<ValueKind.Single>, ValueKind.Single>, SimpleValueInfo<ValueKind.Single>, O, ValueKind.Single> {
+public class JCRPropertySingleValuedPropertyMapper<O extends ObjectContext<O>, E, I> 
+  extends JCRPropertyMapper<O, E, I, ValueKind.Single> {
 
   /** . */
   private final String jcrPropertyName;
@@ -80,5 +78,19 @@ public class JCRPropertySingleValuedPropertyMapper<O extends ObjectContext<O>, E
     } else {
       throw new ClassCastException("Cannot cast " + o.getClass().getName() + " to " + javaType.getName());
     }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public String getJCRPropertyName() {
+    return jcrPropertyName;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public ValueDefinition<I, E> getValueDefinition() {
+    return vt;
   }
 }

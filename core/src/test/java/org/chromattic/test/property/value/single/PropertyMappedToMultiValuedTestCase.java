@@ -19,15 +19,16 @@
 
 package org.chromattic.test.property.value.single;
 
-import org.chromattic.test.AbstractTestCase;
-import org.chromattic.test.support.MultiValue;
-import org.chromattic.test.support.EventQueue;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.chromattic.test.AbstractTestCase;
+import org.chromattic.test.support.EventQueue;
+import org.chromattic.test.support.MultiValue;
+
+import java.util.Date;
 
 import javax.jcr.Node;
-import javax.jcr.ValueFactory;
 import javax.jcr.PropertyType;
-import java.util.Date;
+import javax.jcr.ValueFactory;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -96,6 +97,6 @@ public class PropertyMappedToMultiValuedTestCase extends AbstractTestCase {
   }
 
   public void testDate() throws Exception {
-    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "date_array_property", "getDateProperty", "setDateProperty", PropertyType.LONG, new MultiValue.List(new Date(0), new Date(0)), events).run();
+    new SingleValuedMappedToMultiValuedTest(factory, e, eNode, "date_array_property", "getDateProperty", "setDateProperty", PropertyType.LONG, new MultiValue.List(new Date(0), new Date(1)), events).run();
   }
 }

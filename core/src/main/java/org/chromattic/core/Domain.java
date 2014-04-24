@@ -20,6 +20,7 @@
 package org.chromattic.core;
 
 import org.chromattic.api.BuilderException;
+import org.chromattic.api.format.DefaultObjectFormatter;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
@@ -99,7 +100,7 @@ public class Domain {
   final boolean propertyCacheEnabled;
 
   /** . */
-  final boolean propertyReadAheadEnabled;
+  final boolean propertyLoadGroupEnabled;
 
   /** . */
   final boolean hasPropertyOptimized;
@@ -130,7 +131,7 @@ public class Domain {
     Instrumentor defaultInstrumentor,
     ObjectFormatter objectFormatter,
     boolean propertyCacheEnabled,
-    boolean propertyReadAheadEnabled,
+    boolean propertyLoadGroupEnabled,
     boolean hasPropertyOptimized,
     boolean hasNodeOptimized,
     String rootNodePath,
@@ -197,7 +198,7 @@ public class Domain {
     this.defaultInstrumentor = defaultInstrumentor;
     this.objectFormatter = objectFormatter;
     this.propertyCacheEnabled = propertyCacheEnabled;
-    this.propertyReadAheadEnabled = propertyReadAheadEnabled;
+    this.propertyLoadGroupEnabled = propertyLoadGroupEnabled;
     this.hasPropertyOptimized = hasPropertyOptimized;
     this.hasNodeOptimized = hasNodeOptimized;
     this.rootNodePath = rootNodePath;
@@ -239,7 +240,7 @@ public class Domain {
     return queryManager;
   }
 
-  String decodeName(Node ownerNode, String internal, NameKind nameKind) throws
+  String decodeName(Node ownerNode, String internal) throws
     NullPointerException, UndeclaredThrowableException, IllegalStateException, RepositoryException {
     if (ownerNode == null) {
       throw new NullPointerException();
@@ -249,36 +250,22 @@ public class Domain {
     ObjectFormatter formatter = null;
     if (ownerMapper != null) {
       formatter = ownerMapper.getFormatter();
-    }
-    return decodeName(formatter, internal, nameKind);
-  }
-
-  String decodeName(ObjectContext ownerCtx, String internal, NameKind nameKind) throws
-    NullPointerException, UndeclaredThrowableException, IllegalStateException, RepositoryException {
-    if (ownerCtx == null) {
-      throw new NullPointerException();
-    }
-    return decodeName(ownerCtx.getMapper().getFormatter(), internal, nameKind);
-  }
-
-  private String decodeName(ObjectFormatter formatter, String internal, NameKind nameKind) throws
-    UndeclaredThrowableException, IllegalStateException, RepositoryException {
-    if (nameKind == NameKind.PROPERTY) {
-      return internal;
-    }
-    if (formatter == null) {
+    } else {
       formatter = objectFormatter;
+    }
+    return decodeName(formatter, internal);
+  }
+
+  public static String decodeName(ObjectFormatter formatter, String internal) throws
+    UndeclaredThrowableException, IllegalStateException, RepositoryException {
+    if (formatter == null) {
+      formatter = DefaultObjectFormatter.getInstance();
     }
 
     //
     String external;
     try {
-      if (nameKind == NameKind.OBJECT) {
-        external = formatter.decodeNodeName(null, internal);
-      } else {
-        // external = formatter.decodePropertyName(null, internal);
-        throw new UnsupportedOperationException();
-      }
+      external = formatter.decodeNodeName(null, internal);
     }
     catch (Exception e) {
       if (e instanceof IllegalStateException) {
@@ -287,9 +274,7 @@ public class Domain {
       throw new UndeclaredThrowableException(e);
     }
     if (external == null) {
-      if (nameKind == NameKind.OBJECT) {
-        throw new IllegalStateException();
-      }
+      throw new IllegalStateException();
     }
     return external;
   }
@@ -299,69 +284,40 @@ public class Domain {
    *
    * @param ownerNode the node
    * @param externalName the external name
-   * @param nameKind the name kind
    * @return the encoded name
    * @throws NullPointerException if the owner context argument is null
    * @throws UndeclaredThrowableException when the formatter throws an exception
    * @throws RepositoryException any repository exception
    */
-  String encodeName(Node ownerNode, String externalName, NameKind nameKind) throws
+  String encodeName(Node ownerNode, String externalName) throws
     NullPointerException, UndeclaredThrowableException, RepositoryException {
     if (ownerNode == null) {
       throw new NullPointerException();
     }
     String nodeTypeName = ownerNode.getPrimaryNodeType().getName();
     ObjectMapper ownerMapper = getTypeMapper(nodeTypeName);
-    ObjectFormatter formatter = null;
+    ObjectFormatter formatter;
     if (ownerMapper != null) {
       formatter = ownerMapper.getFormatter();
+    } else {
+      formatter = objectFormatter;
     }
-    return encodeName(formatter, externalName, nameKind);
+    return encodeName(formatter, externalName);
   }
 
-  /**
-   * Encodes the name for the specified context.
-   *
-   * @param ownerCtx the context
-   * @param externalName the external name
-   * @param nameKind the name kind
-   * @return the encoded name
-   * @throws NullPointerException if any argument is null
-   * @throws UndeclaredThrowableException when the formatter throws an exception
-   * @throws RepositoryException any repository exception
-   */
-  String encodeName(ObjectContext ownerCtx, String externalName, NameKind nameKind) throws
-    NullPointerException, UndeclaredThrowableException, RepositoryException {
-    if (ownerCtx == null) {
-      throw new NullPointerException("No null owner node accepted");
-    }
-    return encodeName(ownerCtx.getMapper().getFormatter(), externalName, nameKind);
-  }
-
-  private String encodeName(ObjectFormatter formatter, String externalName, NameKind nameKind) throws
-    UndeclaredThrowableException, NullPointerException, RepositoryException {
+  public static String encodeName(ObjectFormatter formatter, String externalName) throws
+    UndeclaredThrowableException, NullPointerException {
     if (externalName == null) {
       throw new NullPointerException("No null name accepted");
     }
-    if (nameKind == null) {
-      throw new NullPointerException("No null name kind accepted");
-    }
-    if (nameKind == NameKind.PROPERTY) {
-      return externalName;
-    }
     if (formatter == null) {
-      formatter = objectFormatter;
+      formatter = DefaultObjectFormatter.getInstance();
     }
 
     //
     String internal;
     try {
-      if (nameKind == NameKind.OBJECT) {
-        internal = formatter.encodeNodeName(null, externalName);
-      } else {
-        // internal = formatter.encodePropertyName(null, external);
-        throw new UnsupportedOperationException();
-      }
+      internal = formatter.encodeNodeName(null, externalName);
     }
     catch (Exception e) {
       if (e instanceof NullPointerException) {

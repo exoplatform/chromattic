@@ -112,6 +112,8 @@ public abstract class DomainSession {
 
   protected abstract <T> Iterator<T> _getChildren(ObjectContext ctx, Class<T> filterClass) throws RepositoryException;
 
+  protected abstract boolean _hasChildren(ObjectContext ctx) throws RepositoryException;
+  
   protected abstract EntityContext _getParent(EntityContext ctx) throws RepositoryException;
 
   protected abstract <E> E _findByPath(EntityContext ctx, Class<E> clazz, String relPath) throws RepositoryException;
@@ -377,6 +379,15 @@ public abstract class DomainSession {
   public final <T> Iterator<T> getChildren(ObjectContext ctx, Class<T> filterClass) throws UndeclaredRepositoryException {
     try {
       return _getChildren(ctx, filterClass);
+    }
+    catch (RepositoryException e) {
+      throw new UndeclaredRepositoryException(e);
+    }
+  }
+
+  public final boolean hasChildren(ObjectContext ctx) throws UndeclaredRepositoryException {
+    try {
+      return _hasChildren(ctx);
     }
     catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

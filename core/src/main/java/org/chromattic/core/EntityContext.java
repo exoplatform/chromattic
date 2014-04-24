@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.chromattic.api.Status;
-import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.common.logging.Logger;
 import org.chromattic.core.jcr.LinkType;
 import org.chromattic.core.jcr.type.PrimaryTypeInfo;
 import org.chromattic.core.mapper.ObjectMapper;
@@ -41,9 +39,6 @@ import javax.jcr.RepositoryException;
  */
 public final class EntityContext extends ObjectContext<EntityContext> {
 
-  /** The logger. */
-  private static final Logger log = Logger.getLogger(EntityContext.class);
-
   /** The related type. */
   final ObjectMapper<EntityContext> mapper;
 
@@ -56,7 +51,15 @@ public final class EntityContext extends ObjectContext<EntityContext> {
   /** The attributes. */
   private Map<Object, Object> attributes;
 
-  EntityContext(ObjectMapper<EntityContext> mapper, EntityContextState state) throws RepositoryException {
+  EntityContext(ObjectMapper<EntityContext> mapper, DomainSession session, Node node) throws RepositoryException {
+    this(mapper, new PersistentEntityContextState(mapper, node, session));
+  }
+
+  EntityContext(ObjectMapper<EntityContext> mapper, DomainSession session) throws RepositoryException {
+    this(mapper, new TransientEntityContextState(session));
+  }
+
+  private EntityContext(ObjectMapper<EntityContext> mapper, EntityContextState state) throws RepositoryException {
 
     // Create our proxy
     ProxyType pt = state.getSession().domain.getProxyType(mapper.getObjectClass());
@@ -128,24 +131,6 @@ public final class EntityContext extends ObjectContext<EntityContext> {
   public PrimaryTypeInfo getTypeInfo() {
     EntityContextState state = getEntity().state;
     return state.getTypeInfo();
-  }
-
-  public String decodeName(String name, NameKind nameKind) {
-    try {
-      return state.getSession().getDomain().decodeName(this, name, nameKind);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
-  }
-
-  public String encodeName(String name, NameKind nameKind) {
-    try {
-      return state.getSession().getDomain().encodeName(this, name, nameKind);
-    }
-    catch (RepositoryException e) {
-      throw new UndeclaredRepositoryException(e);
-    }
   }
 
   /**

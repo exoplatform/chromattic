@@ -91,13 +91,14 @@ public abstract class ChromatticBuilder {
       "property cache enabled");
 
   /**
-   * Todo.
+   * When set to true, all the properties declared by the chromattic type will be loaded
+   * when one of the property of the group is read.
    */
-  public static final Option<Boolean> PROPERTY_READ_AHEAD_ENABLED =
+  public static final Option<Boolean> PROPERTY_LOAD_GROUP_ENABLED =
     new Option<Boolean>(
       Option.Type.BOOLEAN,
-      "org.chromattic.api.Option.property.read_ahead.enabled",
-      "property read ahead enabled");
+      "org.chromattic.api.Option.property.load_group.enabled",
+      "property load group enabled");
 
   /**
    * Enable / disable all JCR optimizations.

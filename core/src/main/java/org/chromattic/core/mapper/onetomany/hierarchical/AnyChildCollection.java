@@ -78,4 +78,38 @@ class AnyChildCollection<E> extends AbstractCollection<E> {
     }
     return size;
   }
+
+  @Override
+  public boolean contains(Object child) {
+    if (child == null) {
+      throw new NullPointerException();
+    }
+    if (!relatedClass.isInstance(child)) {
+      throw new ClassCastException("Cannot cast object with class " + child.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
+
+    //
+    EntityContext childCtx = parentCtx.getSession().unwrapEntity(child);
+    return parentCtx.hasChild(prefix, childCtx.getLocalName());
+  }
+
+  @Override
+  public boolean remove(Object child) {
+    if (child == null) {
+      throw new NullPointerException();
+    }
+    if (!relatedClass.isInstance(child)) {
+      throw new ClassCastException("Cannot cast object with class " + child.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
+
+    //
+    EntityContext childCtx = parentCtx.getSession().unwrapEntity(child);
+    childCtx.remove();
+    return true;
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return !parentCtx.hasChildren();
+  }  
 }

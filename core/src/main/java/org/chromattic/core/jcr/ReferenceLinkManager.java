@@ -22,7 +22,6 @@ package org.chromattic.core.jcr;
 import org.chromattic.common.collection.AbstractFilterIterator;
 import org.chromattic.api.UndeclaredRepositoryException;
 
-import javax.jcr.Session;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -45,8 +44,8 @@ import java.util.Iterator;
  */
 public class ReferenceLinkManager extends AbstractLinkManager {
 
-  public ReferenceLinkManager(Session session) {
-    super(session);
+  public ReferenceLinkManager(SessionWrapper sessionWrapper) {
+    super(sessionWrapper);
   }
 
   protected Node _getReferenced(Property property) throws RepositoryException {

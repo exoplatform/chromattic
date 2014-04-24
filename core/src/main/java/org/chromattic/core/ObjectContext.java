@@ -28,12 +28,13 @@ import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.vt2.ValueDefinition;
 import org.chromattic.spi.instrument.MethodHandler;
 
-import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Iterator;
-import java.util.List;
+
+import javax.jcr.RepositoryException;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -113,12 +114,30 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     return new AssertionError(msg);
   }
 
+  /**
+   * Encodes the name for the specified context.
+   *
+   * @param externalName the external name
+   * @return the encoded name
+   * @throws NullPointerException if any argument is null
+   * @throws java.lang.reflect.UndeclaredThrowableException when the formatter throws an exception
+   * @throws RepositoryException any repository exception
+   */
+  public final String encodeName(String externalName) throws
+      NullPointerException, UndeclaredThrowableException, RepositoryException {
+    return Domain.encodeName(getMapper().getFormatter(), externalName);
+  }
+
+  public final String decodeName(String internal) throws
+      NullPointerException, UndeclaredThrowableException, IllegalStateException, RepositoryException {
+    return Domain.decodeName(getMapper().getFormatter(), internal);
+  }
+
   public final <V> boolean hasProperty(String propertyName, ValueDefinition<?, V> type) throws RepositoryException {
     EntityContext ctx = getEntity();
     EntityContextState state = ctx.state;
 
     //
-    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
     Path.validateName(propertyName);
 
     //
@@ -131,7 +150,6 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     EntityContextState state = ctx.state;
 
     //
-    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
     Path.validateName(propertyName);
 
     //
@@ -144,7 +162,6 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     EntityContextState state = ctx.state;
 
     //
-    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
     Path.validateName(propertyName);
 
     //
@@ -157,7 +174,6 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     EntityContextState state = ctx.state;
 
     //
-    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
     Path.validateName(propertyName);
 
     //
@@ -192,7 +208,6 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
     EntityContextState state = ctx.state;
 
     //
-    propertyName = state.getSession().domain.encodeName(ctx, propertyName, NameKind.PROPERTY);
     Path.validateName(propertyName);
 
     //
@@ -248,4 +263,8 @@ public abstract class ObjectContext<O extends ObjectContext<O>> implements Metho
   public final <T> Iterator<T> getChildren(Class<T> filterClass) {
     return getSession().getChildren(this, filterClass);
   }
+  
+  public final boolean hasChildren() {
+     return getSession().hasChildren(this);
+   }
 }

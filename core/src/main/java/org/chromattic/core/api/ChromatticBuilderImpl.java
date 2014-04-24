@@ -40,10 +40,7 @@ import org.reflext.core.TypeResolverImpl;
 import org.reflext.jlr.JavaLangReflectReflectionModel;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
@@ -136,12 +133,33 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
 
     //
     boolean propertyCacheEnabled = options.getOptionValue(PROPERTY_CACHE_ENABLED);
-    boolean propertyReadAheadEnabled = options.getOptionValue(PROPERTY_READ_AHEAD_ENABLED);
+    boolean propertyLoadGroupEnabled = options.getOptionValue(PROPERTY_LOAD_GROUP_ENABLED);
+
+    //
+    ObjectFormatter objectFormatter = null;
+    Option.Instance<String> formatterOptionInstance = options.getOptionInstance(OBJECT_FORMATTER_CLASSNAME);
+    if (formatterOptionInstance != null) {
+      objectFormatter = create(formatterOptionInstance, ObjectFormatter.class);
+    }
 
     //
     Instrumentor instrumentor = create(options.getOptionInstance(INSTRUMENTOR_CLASSNAME), Instrumentor.class);
-    ObjectFormatter objectFormatter = create(options.getOptionInstance(OBJECT_FORMATTER_CLASSNAME), ObjectFormatter.class);
     SessionLifeCycle sessionLifeCycle = create(options.getOptionInstance(SESSION_LIFECYCLE_CLASSNAME), SessionLifeCycle.class);
+
+    // Update formatter on mappers if needed
+    Collection<ObjectMapper<?>> mappers;
+    if (objectFormatter != null) {
+      ArrayList<ObjectMapper<?>> list = new ArrayList<ObjectMapper<?>>(this.mappers);
+      for (int i = 0;i < list.size();i++) {
+        ObjectMapper<?> mapper = list.get(i);
+        if (mapper.getFormatter() == null) {
+          list.set(i, mapper.with(objectFormatter));
+        }
+      }
+      mappers = list;
+    } else {
+      mappers = this.mappers;
+    }
 
     // Build domain
     Domain domain = new Domain(
@@ -149,7 +167,7 @@ public class ChromatticBuilderImpl extends ChromatticBuilder {
       instrumentor,
       objectFormatter,
       propertyCacheEnabled,
-      propertyReadAheadEnabled,
+      propertyLoadGroupEnabled,
       hasPropertyOptimized,
       hasNodeOptimized,
       rootNodePath,

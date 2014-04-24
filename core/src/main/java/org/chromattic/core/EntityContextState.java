@@ -24,8 +24,9 @@ import org.chromattic.core.jcr.type.NodeTypeInfo;
 import org.chromattic.core.jcr.type.PrimaryTypeInfo;
 import org.chromattic.core.vt2.ValueDefinition;
 
+import java.util.Map;
+
 import javax.jcr.Node;
-import java.util.List;
 
 /**
  * @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a>
