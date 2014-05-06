@@ -55,11 +55,20 @@ public interface QueryBuilder<O> {
   QueryBuilder<O> orderBy(String orderByProperty, Ordering orderBy) throws NullPointerException;
 
   /**
-   * <p>Compute and returns the <tt>ObjectQuery</tt> for this builder.</p>
+   * <p>Compute and returns the <tt>ObjectQuery</tt> for this builder with <code>autoAddJCRPath</code> enabled.</p>
    *
    * @return this object query
    * @throws IllegalStateException if the builder cannot build the query
    */
   Query<O> get() throws IllegalStateException;
+
+  /**
+   * <p>Compute and returns the <tt>ObjectQuery</tt> for this builder.</p>
+   *
+   * @autoAddJCRPath Indicates whether a jcr:path should be automatically added in case no jcr:path has been set.
+   * @return this object query
+   * @throws IllegalStateException if the builder cannot build the query
+   */
+  Query<O> get(boolean autoAddJCRPath) throws IllegalStateException;
 
 }

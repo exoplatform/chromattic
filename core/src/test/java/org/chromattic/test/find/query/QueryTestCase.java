@@ -43,6 +43,17 @@ public class QueryTestCase extends AbstractTestCase {
   protected void createDomain() {
     addClass(A.class);
   }
+  @Override
+  protected void tearDown() throws Exception {
+    ChromatticSessionImpl session = login();
+    Iterator<A> it = session.createQueryBuilder(A.class).get(false).objects();
+    while (it.hasNext()) {
+      session.remove(it.next());
+    }
+    session.save();
+    session.close();
+    super.tearDown();
+  }
 
   public void testQueryWithJCRPath() throws Exception {
     ChromatticSessionImpl session = login();
@@ -66,9 +77,14 @@ public class QueryTestCase extends AbstractTestCase {
     a.setFoo(value);
     session.save();
 
+    testQuery(session, value, a, true);
+    testQuery(session, value, a, false);
+  }
+
+  private void testQuery(ChromatticSessionImpl session, String value, A a, boolean autoAddJCRPath) throws Exception {
     //
     Collection<A> r1 = new ArrayList<A>();
-    Iterator<A> it1 = session.createQueryBuilder(A.class).get().objects();
+    Iterator<A> it1 = session.createQueryBuilder(A.class).get(autoAddJCRPath).objects();
     while (it1.hasNext()) {
       A b = it1.next();
       r1.add(b);
@@ -78,7 +94,7 @@ public class QueryTestCase extends AbstractTestCase {
 
     //
     Collection<A> r2 = new ArrayList<A>();
-    Iterator<A> it2 = session.createQueryBuilder(A.class).where("foo='" + value + "'").get().objects();
+    Iterator<A> it2 = session.createQueryBuilder(A.class).where("foo='" + value + "'").get(autoAddJCRPath).objects();
     while (it2.hasNext()) {
       A b = it2.next();
       r2.add(b);

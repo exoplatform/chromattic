@@ -116,6 +116,10 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
   private static final Pattern JCR_LIKE_PATH = Pattern.compile("jcr:path[\\s]*[^\\s]+[\\s]*'[^']*'");
 
   public Query<O> get() {
+    return get(true);
+  }
+
+  public Query<O> get(boolean autoAddJCRPath) {
     if (fromClass == null) {
       throw new IllegalStateException();
     }
@@ -128,8 +132,8 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
 
     //
     if (where != null) {
-      Matcher matcher = JCR_LIKE_PATH.matcher(where);
-      if (!matcher.find()) {
+      Matcher matcher = autoAddJCRPath ? JCR_LIKE_PATH.matcher(where) : null;
+      if (matcher != null && !matcher.find()) {
         sb.append(" WHERE jcr:path LIKE '").append(rootNodePath).append("/%'");
         sb.append(" AND ");
         sb.append(where);
@@ -137,7 +141,7 @@ public class QueryBuilderImpl<O> implements QueryBuilder<O> {
         sb.append(" WHERE ");
         sb.append(where);
       }
-    } else {
+    } else if (autoAddJCRPath) {
       sb.append(" WHERE jcr:path LIKE '").append(rootNodePath).append("/%'");
     }
 
