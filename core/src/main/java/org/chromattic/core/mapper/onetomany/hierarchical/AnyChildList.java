@@ -99,6 +99,27 @@ class AnyChildList<E> extends AbstractList<E> {
   }
 
   @Override
+  public boolean add(E addedElement) {
+    if (addedElement == null) {
+      throw new NullPointerException("No null element can be inserted");
+    }
+    if (!relatedClass.isInstance(addedElement)) {
+      throw new ClassCastException("Cannot cast object with class " + addedElement.getClass().getName() + " as child expected class " + relatedClass.getName());
+    }
+
+    // Get the session
+    DomainSession session = parentCtx.getSession();
+
+    // Get the added context
+    EntityContext addedCtx = session.unwrapEntity(addedElement);
+
+    //
+    parentCtx.addChild(ThrowableFactory.ISE, ThrowableFactory.IAE, prefix, addedCtx);
+
+    return true;
+  }
+
+  @Override
   public E set(int index, E addedElement) {
     if (addedElement == null) {
       throw new NullPointerException("No null element can be inserted");
