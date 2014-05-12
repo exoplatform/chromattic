@@ -22,7 +22,7 @@
    
    <groupId>org.chromattic</groupId>
    <artifactId>chromattic.parent</artifactId>
-   <version>1.2.5-SNAPSHOT</version>
+   <version>1.2.5</version>
   <packaging>pom</packaging>
 
    <name>Chromattic Framework</name>
