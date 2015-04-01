@@ -93,7 +93,7 @@ public final class Invoker {
     try {
       return methodInvoker.invoke(obj, method);
     }
-    catch (Throwable e) {
+    catch (Throwable e) {// NOSONAR
       if (e instanceof RuntimeException) {
         throw (RuntimeException)e;
       } else if (e instanceof Error) {
@@ -107,7 +107,7 @@ public final class Invoker {
     try {
       return methodInvoker.invoke(obj, method, arg);
     }
-    catch (Throwable e) {
+    catch (Throwable e) {// NOSONAR
       if (e instanceof RuntimeException) {
         throw (RuntimeException)e;
       } else if (e instanceof Error) {
@@ -121,7 +121,7 @@ public final class Invoker {
     try {
       return methodInvoker.invoke(obj, method, args);
     }
-    catch (Throwable e) {
+    catch (Throwable e) {// NOSONAR
       if (e instanceof RuntimeException) {
         throw (RuntimeException)e;
       } else if (e instanceof Error) {

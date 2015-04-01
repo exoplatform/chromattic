@@ -23,6 +23,7 @@ import japa.parser.ParseException;
 import japa.parser.Parser;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.visitor.DumpVisitorFactory;
+import org.chromattic.common.logging.Logger;
 import org.chromattic.testgenerator.builder.GroovyFromJavaSourceChromatticBuilder;
 import org.chromattic.testgenerator.builder.GroovyFromJavaSourceTestBuilder;
 import org.chromattic.testgenerator.visitor.renderer.GroovyCompatibilityFactory;
@@ -30,15 +31,12 @@ import org.chromattic.testgenerator.visitor.renderer.GroovyPropertiesFactory;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.*;
 
 /**
@@ -49,6 +47,7 @@ import java.util.*;
 @SupportedAnnotationTypes({"*"})
 public class GroovyGeneratorProcessor extends AbstractProcessor
 {
+   private static final Logger log = Logger.getLogger(GroovyGeneratorProcessor.class);
    enum Module
    {
       CORE("core"),
@@ -91,7 +90,7 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
                }
             }
          }
-         catch (Exception e) { e.printStackTrace(); }
+         catch (Exception e) {log.error(e.getMessage(),e); }
       }
       return false;
    }
@@ -124,7 +123,7 @@ public class GroovyGeneratorProcessor extends AbstractProcessor
                      chromatticBuilder.build();
                      SourceUtil.writeSource(chromatticBuilder.toString(), chromatticOs);
                   }
-                  catch (FilerException ignore)
+                  catch (FilerException ignore)// NOSONAR
                   { /* already written */ }
                }
                break;

@@ -43,6 +43,10 @@
       <artifactId>chromattic.test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.common</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

@@ -84,7 +84,7 @@ public final class EventBroadcaster implements EventListener {
       try {
         ((LifeCycleListener)listener).created(o);
       }
-      catch (Exception ignore) {
+      catch (Exception ignore) {// NOSONAR
       }
     }
   }
@@ -100,7 +100,7 @@ public final class EventBroadcaster implements EventListener {
       try {
         ((LifeCycleListener)listener).loaded(id, path, name, o);
       }
-      catch (Exception ignore) {
+      catch (Exception ignore) {// NOSONAR
       }
     }
   }
@@ -116,7 +116,7 @@ public final class EventBroadcaster implements EventListener {
       try {
         ((LifeCycleListener)listener).added(id, path, name, o);
       }
-      catch (Exception ignore) {
+      catch (Exception ignore) {// NOSONAR
       }
     }
   }
@@ -129,7 +129,7 @@ public final class EventBroadcaster implements EventListener {
       try {
         ((LifeCycleListener)listener).removed(id, path, name, o);
       }
-      catch (Exception ignore) {
+      catch (Exception ignore) {// NOSONAR
       }
     }
   }
@@ -146,7 +146,7 @@ public final class EventBroadcaster implements EventListener {
           ((StateChangeListener)listener).propertyChanged(id, o, propertyName, propertyValue);
         }
       }
-      catch (Exception ignore) {
+      catch (Exception ignore) {// NOSONAR
       }
     }
   }

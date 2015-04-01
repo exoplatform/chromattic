@@ -24,6 +24,7 @@ import org.chromattic.api.annotations.NodeTypeDefs;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.common.collection.SetMap;
+import org.chromattic.common.logging.Logger;
 import org.chromattic.metamodel.mapping.BeanMapping;
 import org.chromattic.metamodel.mapping.BeanMappingBuilder;
 import org.chromattic.metamodel.typegen.CNDNodeTypeSerializer;
@@ -73,6 +74,8 @@ import java.util.TreeMap;
   "org.chromattic.api.annotations.Generate"})
 public class ChromatticProcessor extends AbstractProcessor {
 
+  private static final Logger log = Logger.getLogger(ChromatticProcessor.class);
+
   /** . */
   private final TypeResolver<Object> domain = TypeResolverImpl.create(JavaxLangReflectionModel.getInstance());
 
@@ -95,7 +98,7 @@ public class ChromatticProcessor extends AbstractProcessor {
       return _process(annotations, roundEnv);
     }
     catch (RuntimeException e) {
-      e.printStackTrace();
+      log.error(e.getMessage(),e);
       throw e;
     }
   }

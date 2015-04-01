@@ -53,14 +53,14 @@ public class ChromatticAnnotationMover {
     generateGetter(classNode, fieldNode);
     try {
       addFieldAnnotationToMethod(classNode, fieldNode, defaultAnnotatedNode);
-    } catch (NoSuchGetterException ignore) { }
+    } catch (NoSuchGetterException ignore) { }// NOSONAR
   }
 
   public void generateSetter(ClassNode classNode, FieldNode fieldNode) {
     GroovyUtils.createSetter(classNode, fieldNode);
     try {
       addSetterDelegationAnnotation(classNode, fieldNode);
-    } catch (NoSuchSetterException ignore) { }
+    } catch (NoSuchSetterException ignore) { }// NOSONAR
   }
 
   public void removeChromatticAnnotation(FieldNode fieldNode) {

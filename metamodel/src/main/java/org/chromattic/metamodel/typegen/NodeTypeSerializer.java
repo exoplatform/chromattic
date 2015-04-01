@@ -160,7 +160,7 @@ public abstract class NodeTypeSerializer {
     // Take care of children as dependencies
     for (NodeDefinition childDef : nodeType.getChildNodeDefinitions().values()) {
       NodeType childDefNodeType = nodeTypes.get(childDef.getNodeTypeName());
-      if (childDefNodeType == nodeType) {
+      if (childDefNodeType == nodeType) {// NOSONAR
         // Recursive / do nothing
       } else if (childDefNodeType != null) {
         write(childDefNodeType, done, queued);
