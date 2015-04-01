@@ -70,7 +70,7 @@ public class ChromatticGroovyInvocation {
       throw re;
     } catch (Error e) {
       throw e;
-    } catch (Throwable t) {
+    } catch (Throwable t) {// NOSONAR
       throw new AssertionError(t);
     }
   }

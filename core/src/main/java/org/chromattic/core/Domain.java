@@ -153,7 +153,7 @@ public class Domain {
           Class<?> instrumentorClass = null;
           try {
             instrumentorClass = (Class<?>)annotation.annotationType().getMethod("value").invoke(annotation);
-          } catch (Exception ignore) {}
+          } catch (Exception ignore) {}// NOSONAR
           Instrumentor i = ObjectInstantiator.newInstance(instrumentorClass.getName(), Instrumentor.class);
           ProxyType<?> proxyType = i.getProxyType(clazz);
           proxyClassToProxyType.put(i.getProxyType(clazz).getType(), proxyType);

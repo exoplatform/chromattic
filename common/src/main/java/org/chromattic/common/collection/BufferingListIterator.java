@@ -131,7 +131,7 @@ public class BufferingListIterator<E> implements ListIterator<E> {
   }
 
   public void remove() {
-    if (e == MARKER) {
+    if (e == MARKER) {// NOSONAR
       throw new IllegalStateException();
     }
 

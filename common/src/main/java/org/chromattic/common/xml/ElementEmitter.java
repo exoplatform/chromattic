@@ -103,7 +103,7 @@ public class ElementEmitter extends XMLEmitter {
     if (value == null) {
       throw new NullPointerException();
     }
-    if (attrs == EMPTY) {
+    if (attrs == EMPTY) {// NOSONAR
       attrs = new AttributesImpl();
     }
     attrs.addAttribute("", "", qName, "", value);

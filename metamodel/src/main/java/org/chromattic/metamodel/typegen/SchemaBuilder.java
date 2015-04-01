@@ -265,7 +265,7 @@ public class SchemaBuilder {
         // Take all delcared node types and find out which are the super types
         // based on the relationship between the java types
         for (NodeType otherNodeType : nodeTypes.values()) {
-          if (otherNodeType != nodeType) {
+          if (otherNodeType != nodeType) {// NOSONAR
             if (cti.isSubType((otherNodeType).mapping.getBean().getClassType())) {
               nodeType.superTypes.add(otherNodeType);
             }
@@ -281,7 +281,7 @@ public class SchemaBuilder {
         foo:
         for (NodeType superNodeType : nodeType.superTypes) {
           for (NodeType otherSuperNodeType : nodeType.superTypes) {
-            if (otherSuperNodeType != superNodeType && ((NodeType)otherSuperNodeType).mapping.getBean().getClassType().isSubType(((NodeType)superNodeType).mapping.getBean().getClassType())) {
+            if (otherSuperNodeType != superNodeType && ((NodeType)otherSuperNodeType).mapping.getBean().getClassType().isSubType(((NodeType)superNodeType).mapping.getBean().getClassType())) {// NOSONAR
               continue foo;
             }
           }

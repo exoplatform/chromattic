@@ -336,7 +336,7 @@ public class DomainSessionImpl extends DomainSession {
     } else {
       EmbeddedContext previousMixinCtx = (EmbeddedContext)entityCtx.getAttribute(mixinCtx.mapper);
       if (previousMixinCtx != null) {
-        if (previousMixinCtx != mixinCtx) {
+        if (previousMixinCtx != mixinCtx) {// NOSONAR
           throw new IllegalStateException();
         }
       } else {

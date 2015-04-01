@@ -109,7 +109,7 @@ public class SessionWrapperImpl implements SessionWrapper {
         return (Node)item;
       }
     }
-    catch (PathNotFoundException ignore) {
+    catch (PathNotFoundException ignore) {// NOSONAR
     }
     return null;
   }

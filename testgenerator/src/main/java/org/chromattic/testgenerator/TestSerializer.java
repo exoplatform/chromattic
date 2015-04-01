@@ -19,6 +19,7 @@
 
 package org.chromattic.testgenerator;
 
+import org.chromattic.common.logging.Logger;
 import javax.lang.model.element.TypeElement;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -36,6 +37,7 @@ import java.util.Set;
  */
 public class TestSerializer
 {
+   private static final Logger log = Logger.getLogger(TestSerializer.class);
    private static final String ROOT_TAG = "testgen";
    private static final String TEST_TAG = "test";
 
@@ -115,7 +117,7 @@ public class TestSerializer
       }
       catch (Exception e)
       {
-         e.printStackTrace();
+         log.error(e.getMessage(),e);
          return null;
       }
    }

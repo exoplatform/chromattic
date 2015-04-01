@@ -63,7 +63,7 @@ public class JCRNamedChildPropertyMapper extends JCRChildNodePropertyMapper<Prop
       EntityContext parentChildWithRelatedNameCtx = parentCtx.getChild(relatedPrefix, externalRelatedName);
 
       // Find out if we are mapped on this parent by the related name
-      if (parentChildWithRelatedNameCtx == context) {
+      if (parentChildWithRelatedNameCtx == context) {// NOSONAR
         Class<?> relatedClass =  getRelatedClass();
         return parentCtx.adapt(relatedClass);
       }

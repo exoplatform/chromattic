@@ -62,7 +62,7 @@ public class JCR {
    */
   public static boolean equals(Node a, Node b) throws RepositoryException {
     boolean equals;
-    if (a == b) {
+    if (a == b) {// NOSONAR
       equals = true;
     } else if (a == null || b == null) {
       return false;

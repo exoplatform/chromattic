@@ -172,7 +172,8 @@ public class ChromatticDelegate {
     );
     try {
       plugGetProperty(classNode);
-    } catch (NoSuchMethodException ignore) { }
+    } catch (NoSuchMethodException ignore) { // NOSONAR
+    }
   }
 
   public void generateSetProperty(ClassNode classNode) {
@@ -186,7 +187,8 @@ public class ChromatticDelegate {
     );
     try {
       plugSetProperty(classNode);
-    } catch (NoSuchMethodException ignore) { }
+    } catch (NoSuchMethodException ignore) { // NOSONAR
+    }
   }
 
   public void generateInvokeMethod(ClassNode classNode) {
@@ -200,7 +202,8 @@ public class ChromatticDelegate {
     );
     try {
       plugInvokeMethod(classNode);
-    } catch (NoSuchMethodException ignore) { }
+    } catch (NoSuchMethodException ignore) { // NOSONAR
+    }
   }
 
   public void plugInjector(FieldNode fieldNode, ClassNode injectorClass) throws NoSuchSetterException

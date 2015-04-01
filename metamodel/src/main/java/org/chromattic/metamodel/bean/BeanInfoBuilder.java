@@ -83,7 +83,7 @@ public class BeanInfoBuilder {
 
       @Override
       protected boolean accept(ClassTypeInfo type) {
-        return type == current || !classTypes.contains(type);
+        return type == current || !classTypes.contains(type);// NOSONAR
       }
     }
 

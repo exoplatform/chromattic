@@ -19,6 +19,7 @@
 
 package org.chromattic.dataobject.runtime;
 
+import org.chromattic.common.logging.Logger;
 import org.chromattic.groovy.ChromatticDelegate;
 import org.chromattic.groovy.GroovyUtils;
 import org.chromattic.groovy.exceptions.NoSuchSetterException;
@@ -40,6 +41,7 @@ import java.util.List;
  */
 @GroovyASTTransformation(phase= CompilePhase.INSTRUCTION_SELECTION)
 public class ChromatticTransformer implements ASTTransformation {
+  private static final Logger log = Logger.getLogger(ChromatticTransformer.class);
   private final ChromatticDelegate delegate = new ChromatticDelegate();
 
   public void visit(final ASTNode[] nodes, final SourceUnit source) {
@@ -57,7 +59,7 @@ public class ChromatticTransformer implements ASTTransformation {
           {
             delegate.plugInjector(fieldNode, new ClassNode(ChromatticInjector.class));
           }
-          catch (NoSuchSetterException ignore){ ignore.printStackTrace();}
+          catch (NoSuchSetterException ignore){ log.error(ignore.getMessage(),ignore);}
         }
       }
     }
