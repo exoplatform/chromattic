@@ -32,6 +32,10 @@
   <name>Chromattic Framework Metamodel</name>
   <description>Chromattic Framework Metamodel</description>
 
+  <properties>
+     <sonar.test.exclusions>**/PropertyAnnotationTestCase.java</sonar.test.exclusions>
+  </properties>
+
   <repositories>
     <repository>
       <id>exo-central</id>
