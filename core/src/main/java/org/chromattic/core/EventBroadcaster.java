@@ -23,6 +23,7 @@ import org.chromattic.api.event.LifeCycleListener;
 import org.chromattic.api.event.EventListener;
 import org.chromattic.api.event.StateChangeListener;
 import org.chromattic.common.CloneableInputStream;
+import org.chromattic.common.logging.Logger;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
  * @version $Revision$
  */
 public final class EventBroadcaster implements EventListener {
+
+  private static final Logger log = Logger.getLogger(EventBroadcaster.class);
 
   /** . */
   private List<LifeCycleListener> lifeCycleListeners;
@@ -84,7 +87,8 @@ public final class EventBroadcaster implements EventListener {
       try {
         ((LifeCycleListener)listener).created(o);
       }
-      catch (Exception ignore) {// NOSONAR
+      catch (Exception ignore) {
+         log.error(ignore.getMessage(), ignore);
       }
     }
   }
@@ -100,7 +104,8 @@ public final class EventBroadcaster implements EventListener {
       try {
         ((LifeCycleListener)listener).loaded(id, path, name, o);
       }
-      catch (Exception ignore) {// NOSONAR
+      catch (Exception ignore) {
+         log.error(ignore.getMessage(), ignore);
       }
     }
   }
@@ -116,7 +121,8 @@ public final class EventBroadcaster implements EventListener {
       try {
         ((LifeCycleListener)listener).added(id, path, name, o);
       }
-      catch (Exception ignore) {// NOSONAR
+      catch (Exception ignore) {
+         log.error(ignore.getMessage(), ignore);
       }
     }
   }
@@ -129,7 +135,8 @@ public final class EventBroadcaster implements EventListener {
       try {
         ((LifeCycleListener)listener).removed(id, path, name, o);
       }
-      catch (Exception ignore) {// NOSONAR
+      catch (Exception ignore) {
+         log.error(ignore.getMessage(), ignore);
       }
     }
   }
@@ -146,7 +153,8 @@ public final class EventBroadcaster implements EventListener {
           ((StateChangeListener)listener).propertyChanged(id, o, propertyName, propertyValue);
         }
       }
-      catch (Exception ignore) {// NOSONAR
+      catch (Exception ignore) {
+         log.error(ignore.getMessage(), ignore);
       }
     }
   }

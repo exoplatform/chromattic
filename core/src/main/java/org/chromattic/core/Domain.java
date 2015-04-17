@@ -23,6 +23,7 @@ import org.chromattic.api.BuilderException;
 import org.chromattic.common.ObjectInstantiator;
 import org.chromattic.common.jcr.Path;
 import org.chromattic.common.jcr.PathException;
+import org.chromattic.common.logging.Logger;
 import org.chromattic.core.mapper.ObjectMapper;
 import org.chromattic.core.jcr.type.TypeManager;
 import org.chromattic.core.query.QueryManager;
@@ -49,6 +50,8 @@ import org.chromattic.spi.instrument.ProxyType;
  * @version $Revision$
  */
 public class Domain {
+
+  private static final Logger log = Logger.getLogger(Domain.class);
 
   /** . */
   private static final ProxyType<?> NULL_PROXY_TYPE = new ProxyType<Object>() {
@@ -153,7 +156,9 @@ public class Domain {
           Class<?> instrumentorClass = null;
           try {
             instrumentorClass = (Class<?>)annotation.annotationType().getMethod("value").invoke(annotation);
-          } catch (Exception ignore) {}// NOSONAR
+          } catch (Exception ignore) {
+             log.error(ignore.getMessage(), ignore);
+          }
           Instrumentor i = ObjectInstantiator.newInstance(instrumentorClass.getName(), Instrumentor.class);
           ProxyType<?> proxyType = i.getProxyType(clazz);
           proxyClassToProxyType.put(i.getProxyType(clazz).getType(), proxyType);
